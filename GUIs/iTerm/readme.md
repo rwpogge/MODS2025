@@ -1,4 +1,4 @@
-# iTerm - interactive ICIMACS command terminal 
+# iTerm - ICIMACS terminal
 
 iTerm is a Qt4 GUI that implements a "terminal" style command interface to 
 communicate with the MODS instrument control system at the ICIMACS
