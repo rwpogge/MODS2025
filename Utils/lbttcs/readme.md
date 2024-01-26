@@ -3,7 +3,9 @@
 Version: v3.0.1-bino
 
 Author: R. Pogge, OSU Astronomy (pogge.1@osu.edu)
+
 Last Revision: 2015 Aug 11
+
 Last Build: 2015 Dec 31 [LBT flight]
 
 ## Overview
