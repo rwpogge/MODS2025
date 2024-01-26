@@ -6,7 +6,7 @@ Author: Ray Gonzalez (ex-OSU Astronomy)
 
 ## Overview
 
-imsTool provides a basic interface GUI to communicate with an IMC MicroLYNX microstepping motorcontroller
+imsTool is a Qt4 app that implements a basic interface GUI to communicate with an IMC MicroLYNX microstepping motorcontroller
 connected to a Comtrol TCP/IP serial port server on the network.
 
 imsTool is used to provide engineering-level access to an individual motor controller on a live system.  User can talk directly 
