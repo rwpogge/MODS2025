@@ -1,6 +1,7 @@
 # imsTool - MicroLYNX motor controller tool
 
 Version: 1.1.0
+
 Author: Ray Gonzalez (ex-OSU Astronomy)
 
 ## Overview
