@@ -1,0 +1,24 @@
+#!/bin/csh
+#
+setenv IMS_HOME  /home2/mods/modsUI/imsTool
+setenv QT4  /usr/local/Trolltech/Qt-4.4.3/bin
+
+setenv CDATE `date +'%Y-%b-%d'`
+setenv CTIME `date +'%T'`
+#
+set file = $IMS_HOME/ims.make   
+
+if ( -f ${file} || $1 == "imspro" || $1 == "help" ) then
+else
+    echo "You typed make $1"
+    echo "...................................................."
+    echo "You need to configure the make file - 'make config'"
+    echo "Next start building the ims GUI - 'make all'"
+    echo "This will build the Utilities and the GUI"
+    echo "...................................................."
+    echo ""
+    exit
+endif
+
+make -f Makefile.linux $1 "COMPDATE=$CDATE" "COMPTIME=$CTIME"
+exit
