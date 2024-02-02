@@ -1,7 +1,7 @@
 #ifndef ISISCLIENT_H
 #define ISISCLIENT_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 #include <QUdpSocket>
 
 class QString;

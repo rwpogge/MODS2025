@@ -11,7 +11,7 @@
 
 */
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtNetwork>
 
 #include "isisclient.h"
@@ -122,11 +122,11 @@ bool ISISClient::send(const QString &toAddr, const QString &msgStr)
 
   // Build the IMPv2 datagram.  We do this quite explicitly here...
 
-  datagram.append(clientID);
+  datagram.append(clientID.toUtf8());
   datagram.append(">");
-  datagram.append(toAddr.toUpper());  // upcase the destination address
+  datagram.append(toAddr.toUpper().toUtf8());  // upcase the destination address
   datagram.append(" ");
-  datagram.append(msgStr);
+  datagram.append(msgStr.toUtf8());
   datagram.append("\r");
 
   // ...and send it
@@ -138,7 +138,7 @@ bool ISISClient::send(const QString &toAddr, const QString &msgStr)
 
   // log message signal
 
-  emit logMessage(QString::QString(datagram).trimmed());
+  emit logMessage(QString(datagram).trimmed());
 
   // all done!
 

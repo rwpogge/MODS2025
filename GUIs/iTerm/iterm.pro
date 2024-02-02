@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET = iterm
 MOC_DIR = moc
 OBJECTS_DIR = obj
 DEPENDPATH += .
@@ -13,4 +13,6 @@ INCLUDEPATH += .
 HEADERS += isisclient.h iterm.h console.h texthistentry.h
 SOURCES += isisclient.cpp console.cpp main.cpp texthistentry.cpp
 RESOURCES += iterm.qrc
+
 QT += network
+QT += widgets
