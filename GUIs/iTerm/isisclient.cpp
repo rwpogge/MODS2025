@@ -445,7 +445,7 @@ int ISISClient::getKeys(const QString &msgStr, QHash<QString,QString> *hash)
   // into keywords simpler.
 
   QString testStr = msgStr;
-  testStr.simplified();
+  //testStr.simplified(); // TODO: Evaluate this line. Why is it here? 
 
   QStringList argList = testStr.split(" ");
   if (argList.size() == 0) return 0;
