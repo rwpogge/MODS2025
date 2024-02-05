@@ -1,7 +1,7 @@
 #ifndef TEXTHISTENTRY_H
 #define TEXTHISTENTRY_H
 
-#include <QtWidgets/QWidget>
+#include <QWidget>
 
 class QLineEdit;
 class QLabel;

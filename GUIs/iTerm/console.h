@@ -1,7 +1,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <QtWidgets/QWidget>
+#include <QWidget>
 
 class QString;
 class QTextEdit;

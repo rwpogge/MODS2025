@@ -1,2 +1,7 @@
 /.vscode/
 /obj/
+/moc/
+
+iterm
+Makefile
+qrc_*

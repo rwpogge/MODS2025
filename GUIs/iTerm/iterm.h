@@ -11,7 +11,7 @@
 
 // Runtime configuration files
 
-#define ITERM_CONFIG_FILE "/home/mods/Config/iterm.ini" //!< Default config file
+#define ITERM_CONFIG_FILE "./iterm.ini" //!< Default config file
 
 // ISIS Server and Client info defaults
 

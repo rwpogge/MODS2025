@@ -10,8 +10,9 @@
 //---------------------------------------------------------------------------
 
 #include <QApplication>
-#include <QCleanlooksStyle>
 #include <QtDebug>
+#include <QStyleFactory>
+#include <QtGui/QIcon>
 
 #include "iterm.h"
 #include "console.h"
@@ -38,7 +39,7 @@ int main(int argc, char *argv[])
     cfgFile = ITERM_CONFIG_FILE;
   }
 
-  qApp->setStyle(new QCleanlooksStyle);
+  qApp->setStyle(QStyleFactory::create("Fusion"));
   qApp->setFont(QFont(ITERM_BASE_FONT,fontSize,QFont::Normal));
   app.setWindowIcon(QIcon(":images/prospero.xbm"));
   
