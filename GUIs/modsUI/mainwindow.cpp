@@ -1,6 +1,7 @@
-#include <QtGui>
+#include <QtWidgets>
 #include <QSplashScreen>
 
+#include "unistd.h"
 #include "mainwindow.h"
 #include "dashboard.h"
 #include "commviewer.h"

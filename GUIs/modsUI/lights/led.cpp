@@ -2,7 +2,7 @@
 // Silly little widget that shows a colored LED indicator
 //
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "led.h"
 

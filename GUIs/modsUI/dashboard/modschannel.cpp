@@ -1,5 +1,6 @@
-#include <QtGui>
+#include <QtWidgets>
 #include <QtNetwork>
+#include <QStyleFactory>
 #include <math.h>
 
 #include "modschannel.h"
@@ -441,7 +442,7 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   expProgress = new QProgressBar(this);
   expProgress->setFormat("%vs");
   //expProgress->setStyle(new QPlastiqueStyle);
-  expProgress->setStyle(new QCDEStyle);
+  expProgress->setStyle(QStyleFactory::create("Fusion"));
   expProgress->setMaximumHeight((int)(0.9*expProgress->minimumSizeHint().height()));
   expProgress->reset();
   progressLayout->addRow(tr("Exposure:"),expProgress);
@@ -449,7 +450,7 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   readProgress = new QProgressBar(this);
   readProgress->setFormat("%p%");
   //readProgress->setStyle(new QPlastiqueStyle);
-  readProgress->setStyle(new QCDEStyle);
+  readProgress->setStyle(QStyleFactory::create("Fusion"));
   readProgress->setMaximumHeight((int)(0.9*readProgress->minimumSizeHint().height()));
   readProgress->reset();
   readProgress->setRange(0,100);
@@ -685,7 +686,7 @@ void MODSChannel::parse(const QString &cmdStr,
   bool ok;
 
   QString msgStr = cmdStr;
-  msgStr.simplified();
+  msgStr = msgStr.simplified(); // TODO: Evaluate this line. Why is it here? 
 
   if (msgStr.isEmpty()) return; // Empty messages are ignored
   

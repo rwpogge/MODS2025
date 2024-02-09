@@ -1,0 +1,7 @@
+/.vscode/
+/obj/
+/moc/
+
+modsUI
+Makefile
+qrc_*

@@ -23,7 +23,7 @@
 //
 //---------------------------------------------------------------------------
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "numberentry.h"
 

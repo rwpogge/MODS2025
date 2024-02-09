@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 
 #include "indexedselector.h"
 #include "indexedmechanism.h"

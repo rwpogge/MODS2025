@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 
 #include "powerswitch.h"
 #include "powerbutton.h"

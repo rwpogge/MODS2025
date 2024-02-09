@@ -8,8 +8,9 @@
 //---------------------------------------------------------------------------
 
 #include <QApplication>
-#include <QCleanlooksStyle>
+#include <QStyleFactory>
 #include <QtDebug>
+#include <QtGui/QIcon>
 
 #include "mods.h"
 #include "mainwindow.h"
@@ -59,7 +60,7 @@ int main(int argc, char *argv[])
     appFontSize = atoi(argv[2]);
   }
   
-  qApp->setStyle(new QCleanlooksStyle);
+  qApp->setStyle(QStyleFactory::create("Fusion"));
   qApp->setFont(QFont(MODS_BASE_FONT,appFontSize,QFont::Normal));
   app.setWindowIcon(QIcon(":images/MODS.png"));
   MainWindow console(cfgFile);

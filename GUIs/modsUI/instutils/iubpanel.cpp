@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 #include <QtNetwork>
 #include <math.h>
 
@@ -424,7 +424,7 @@ void IUBPanel::parse(const QString &remHost,
   bool isRed = false;
 
   QString msgStr = cmdStr;
-  msgStr.simplified();
+  msgStr = msgStr.simplified(); // TODO: Evaluate this line. Why is it here? 
 
   if (msgStr.isEmpty()) return; // Empty messages are ignored
   

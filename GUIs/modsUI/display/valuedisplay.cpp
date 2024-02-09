@@ -15,7 +15,7 @@
 //
 //---------------------------------------------------------------------------
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "valuedisplay.h"
 

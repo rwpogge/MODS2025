@@ -15,7 +15,7 @@
 //
 //---------------------------------------------------------------------------
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "texthistentry.h"
 

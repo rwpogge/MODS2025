@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 #include <QtNetwork>
 #include <math.h>
 
@@ -204,7 +204,7 @@ void InstConfig::parse(const QString &cmdStr,
   bool cmdFault = false;  // Flag: command completed with a fault
 
   QString msgStr = cmdStr;
-  msgStr.simplified();
+  msgStr = msgStr.simplified(); // TODO: Evaluate this line. Why is it here? 
 
   if (msgStr.isEmpty()) return; // Empty messages are ignored
   

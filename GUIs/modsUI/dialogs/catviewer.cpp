@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 
 #include "mods.h"
 #include "catviewer.h"
@@ -48,7 +48,7 @@ CatalogViewer::CatalogViewer(const QString &myTitle, QWidget *parent)
   QStringList catHeader;
   catHeader << "Target" << "RA" << "Dec" << "pmRA" << "pmDec" << "Equinox" << "Epoch" << "PA" << "Guide" << "RA" << "Dec" << "pmRA" << "pmDec" << "Equinox" << "Epoch" << "Rmag" << "B-R";
   catalogTable->setHorizontalHeaderLabels(catHeader); 
-  catalogTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+  catalogTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
   catalogTable->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
   catalogTable->resizeColumnsToContents();
   connect(catalogTable,SIGNAL(itemSelectionChanged()),this,SLOT(selection()));

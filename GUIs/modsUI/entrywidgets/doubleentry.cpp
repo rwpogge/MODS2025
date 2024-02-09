@@ -16,7 +16,7 @@
 //
 //---------------------------------------------------------------------------
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "doubleentry.h"
 

@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 
 #include "commlog.h"
 
@@ -20,7 +20,7 @@ CommLog::CommLog(const QString &logTitle, int width, int height,
   // Big text widget, readonly, to show the message traffic
 
   commDisplay = new QTextEdit(this);
-  commDisplay->setReadOnly(TRUE);
+  commDisplay->setReadOnly(true);
   commDisplay->setLineWrapMode(QTextEdit::NoWrap);
 
   // Clear and Dismiss buttons

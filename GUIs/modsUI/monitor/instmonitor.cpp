@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 #include <QtNetwork>
 #include <math.h>
 
@@ -189,7 +189,7 @@ void InstMonitor::parseISIS()
   // We have a valid message, see if we need to do anything with it
 
   QString msgStr = isis->body();
-  msgStr.simplified();
+  msgStr = msgStr.simplified(); // TODO: Evaluate this line. Why is it here? 
 
   if (msgStr.isEmpty()) return; // Empty messages are ignored 
 
@@ -397,7 +397,7 @@ void InstMonitor::parseShared(const QString &msgStr)
   // Extract the body, the keys, and the host name
 
   QString msgBody = isis->body();
-  msgBody.simplified();
+  msgBody = msgBody.simplified(); // TODO: Evaluate this line. Why is it here? 
   if (msgBody.isEmpty()) return; // nothing to do...
 
   QHash<QString,QString> keyDict; // keyword dictionary

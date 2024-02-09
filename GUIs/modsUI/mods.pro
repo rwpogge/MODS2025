@@ -127,8 +127,9 @@ SOURCES += main.cpp \
            instutils/utilpanel.cpp \
            monitor/instmonitor.cpp \
            monitor/envpanel.cpp \
-	   setup/configmanager.cpp \
+	       setup/configmanager.cpp \
            setup/instconfig.cpp \
            setup/fileconfig.cpp
 RESOURCES += mods.qrc
 QT += network
+QT += widgets

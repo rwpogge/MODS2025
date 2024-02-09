@@ -18,7 +18,7 @@
 
 */
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtNetwork>
 
 #include "isisclient.h"
@@ -146,10 +146,10 @@ bool ISISClient::send(const QString &toAddr, const QString &msgStr)
   // Build the IMPv2 datagram...
 
   if (msgStr.isEmpty()) { // heartbeat pulse
-    datagram.append(QString("%1>%2\r").arg(clientID).arg(toAddr.toUpper()));
+    datagram.append(QString("%1>%2\r").arg(clientID).arg(toAddr.toUpper()).toUtf8());
   }
   else {
-    datagram.append(QString("%1>%2 %3\r").arg(clientID).arg(toAddr.toUpper()).arg(msgStr));
+    datagram.append(QString("%1>%2 %3\r").arg(clientID).arg(toAddr.toUpper()).arg(msgStr).toUtf8());
   }
 
   // ...and send it
@@ -161,7 +161,7 @@ bool ISISClient::send(const QString &toAddr, const QString &msgStr)
 
   // log message signal
 
-  emit logMessage(QString::QString(datagram).trimmed());
+  emit logMessage(QString(datagram).trimmed());
 
   // all done!
 
@@ -469,7 +469,7 @@ int ISISClient::getKeys(const QString &msgStr, QHash<QString,QString> *hash)
   // into keywords simpler.
 
   QString testStr = msgStr;
-  testStr.simplified();
+  testStr = testStr.simplified(); // TODO: Evaluate this line. Why is it here? 
 
   QStringList argList = testStr.split(" ");
   if (argList.size() == 0) return 0;
@@ -529,7 +529,7 @@ int ISISClient::getKeys(const QString &msgStr, QHash<QString,QString> *hash)
 	    quoted = false;
 	  }
 	  newVal.append(" ");
-	  newVal.append(nextStr);
+	  newVal.append(nextStr.toUtf8());
 	}
 	else
 	  quoted = false;   // premature end of value

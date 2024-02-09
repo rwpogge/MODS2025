@@ -11,7 +11,7 @@
 //
 //---------------------------------------------------------------------------
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "angleentry.h"
 

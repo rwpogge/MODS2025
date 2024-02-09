@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 
 #include "toggleswitch.h"
 #include "lightbutton.h"

@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 
 #include "linearsetting.h"
 #include "linearmechanism.h"

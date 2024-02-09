@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 #include <QtNetwork>
 #include <math.h>
 
@@ -157,7 +157,7 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
   bool ok;
 
   QString msgStr = cmdStr;
-  msgStr.simplified();
+  msgStr = msgStr.simplified(); // TODO: Evaluate this line. Why is it here? 
 
   if (msgStr.isEmpty()) return; // Empty messages are ignored
   
@@ -257,7 +257,7 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
 	  int ctr = fileBits.at(2).toInt(&ok,10);
 	  if (ok) {
 	    ::snprintf(buf,BufSize,"%04d",ctr);
-	    ctrStr = QString::fromAscii(buf);
+	    ctrStr = QString::fromUtf8(buf);
 	  }
 	  if (isRed) {
 	    redRootName = fileBits.at(1);
@@ -284,7 +284,7 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
 	  int ctr = fileBits.at(1).toInt(&ok,10);
 	  if (ok) {
 	    ::snprintf(buf,BufSize,"%04d",ctr);
-	    ctrStr = QString::fromAscii(buf);
+	    ctrStr = QString::fromUtf8(buf);
 	  }
 	  if (isRed) {
 	    redRootName = fileBits.at(0);
@@ -395,7 +395,7 @@ void FileConfig::setBlueNum(const QString &numStr)
     size_t BufSize = 10;
     char buf[BufSize];
     ::snprintf(buf,BufSize,"%04d",ctr);
-    ctrStr = QString::fromAscii(buf);
+    ctrStr = QString::fromUtf8(buf);
   }
   if (ok && (ctr > 0 && ctr < MODS_MAX_FILENUM)) {
     blueCounter = ctr;
@@ -427,7 +427,7 @@ void FileConfig::setRedNum(const QString &numStr)
     size_t BufSize = 10;
     char buf[BufSize];
     ::snprintf(buf,BufSize,"%04d",ctr);
-    ctrStr = QString::fromAscii(buf);
+    ctrStr = QString::fromUtf8(buf);
   }
   if (ok && (ctr > 0 && ctr < MODS_MAX_FILENUM)) {
     redCounter = ctr;

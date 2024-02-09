@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 
 #include "bistatecontrol.h"
 #include "bistatemechanism.h"

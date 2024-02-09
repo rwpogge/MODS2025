@@ -1,4 +1,4 @@
-#include <QtGui>
+#include <QtWidgets>
 
 #include "isisconsole.h"
 #include "texthistentry.h"
@@ -311,7 +311,7 @@ void ISISConsole::parseISIS()
   // We got a valid message, see if we need to do anything with it
 
   QString msgStr = isis->body();
-  msgStr.simplified();
+  msgStr = msgStr.simplified(); // TODO: Evaluate this line. Why is it here? 
 
   if (msgStr.isEmpty()) return; // empty messages ignored
 

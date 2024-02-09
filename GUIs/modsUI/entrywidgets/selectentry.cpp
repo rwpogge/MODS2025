@@ -15,7 +15,7 @@
 //                 select-entry implementations [rwp/osu]
 //---------------------------------------------------------------------------
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "selectentry.h"
 
