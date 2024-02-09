@@ -14,6 +14,11 @@ Software (Jan. 30, 2012)
  microLynxErrors.h - GUI error definitions (added 11-09-2012)
  timeMethods.h     - secs, msecs, and usecs  (added 11-09-2012)
 
+*********   Using qmake to build the makefiles
+
+	prompt> qmake -o ims.make
+
+
 *********	Building the utilities and the ims executable
 
 Unpacking the ims.tgz tar file.

@@ -6,7 +6,8 @@ HEADERS       = client.h
 SOURCES       = client.cpp \
                 main.cpp
 RESOURCES     = ims.qrc
-QT            += network
+QT           += network
+QT           += widgets
 CONFIG       += warn_off
 
 # install

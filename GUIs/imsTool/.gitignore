@@ -1,0 +1,7 @@
+/.vscode/
+/obj/
+/moc/
+
+imsTool
+qrc_*
+ims.make

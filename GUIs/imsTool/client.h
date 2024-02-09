@@ -8,7 +8,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 #include <Qt>
-#include <QtGui>
+#include <QtWidgets>
 #include <QTcpSocket>
 #include <QAbstractSocket>
 #include <QLineEdit>

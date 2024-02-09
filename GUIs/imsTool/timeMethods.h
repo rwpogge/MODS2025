@@ -14,7 +14,7 @@
 
 */
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QThread>
 class misWindow;
 

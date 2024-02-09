@@ -11,6 +11,7 @@
 #endif
 
 #include <client.h>
+#include <unistd.h>
 
 Client::Client( const QString &host, const QString &port )
 {

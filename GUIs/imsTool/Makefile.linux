@@ -37,7 +37,7 @@ HELP:
 all:	clean imspro imsmake
 
 imspro: 
-	$(QT4)/qmake -o ims.make ims.pro
+	qmake -o ims.make ims.pro
 
 imsmake:
 	$(MAKE) -f ims.make
