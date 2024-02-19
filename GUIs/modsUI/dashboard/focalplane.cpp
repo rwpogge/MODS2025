@@ -349,7 +349,8 @@ void FocalPlane::parse(const QString &cmdStr,
 		       const int &msgType, 
 		       const QHash<QString,QString> &keyDict)
 {
-  bool cmdDone = false;   // Flag: message is a command completion
+  // TODO: Unused cmdDone flag. Commented out on 2-19-24
+  // bool cmdDone = false;   // Flag: message is a command completion
   bool cmdFault = false;  // Flag: command completed with a fault
   bool ok;
 
@@ -358,31 +359,31 @@ void FocalPlane::parse(const QString &cmdStr,
 
   if (msgStr.isEmpty()) return; // Empty messages are ignored
   
+  // TODO: Unused cmdDone flag. Commented out on 2-19-24
   // Our response depends on the type of message we received. 
-
   switch (msgType) {
   case ISISClient::ERROR:
-    cmdDone = true;
+    // cmdDone = true;
     cmdFault = true;
     break;
 
   case ISISClient::WARNING:
-    cmdDone = true;
+    // cmdDone = true;
     cmdFault = false;
     break;
 
   case ISISClient::FATAL:
-    cmdDone = true;
+    // cmdDone = true;
     cmdFault = true;
     break;
 
   case ISISClient::DONE:
-    cmdDone = true;
+    // cmdDone = true;
     cmdFault = false;
     break;
 
   case ISISClient::STATUS:
-    cmdDone = false;
+    // cmdDone = false;
     cmdFault = false;
     break;
 

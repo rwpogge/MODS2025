@@ -680,9 +680,10 @@ void MODSChannel::parse(const QString &cmdStr,
 			const int &msgType, 
 			const QHash<QString,QString> &keyDict)
 {
+  // TODO: Unused cmdWarn flag. Commented out on 2-19-24
   bool cmdDone = false;   // Flag: message is a command completion
   bool cmdFault = false;  // Flag: command completed with a fault
-  bool cmdWarn = false;   // Flag: command generated a warning
+  // bool cmdWarn = false;   // Flag: command generated a warning
   bool ok;
 
   QString msgStr = cmdStr;
@@ -690,38 +691,37 @@ void MODSChannel::parse(const QString &cmdStr,
 
   if (msgStr.isEmpty()) return; // Empty messages are ignored
   
+  // TODO: Unused cmdWarn flag. Commented out on 2-19-24
   // Our response depends on the type of message we received. 
-
-
   switch (msgType) {
   case ISISClient::ERROR:
     cmdDone = true;
     cmdFault = true;
-    cmdWarn = false;
+    // cmdWarn = false;
     break;
 
   case ISISClient::WARNING:
     cmdDone = false;
     cmdFault = false;
-    cmdWarn = true;
+    // cmdWarn = true;
     break;
 
   case ISISClient::FATAL:
     cmdDone = true;
     cmdFault = true;
-    cmdWarn = false;
+    // cmdWarn = false;
     break;
 
   case ISISClient::DONE:
     cmdDone = true;
     cmdFault = false;
-    cmdWarn = false;
+    // cmdWarn = false;
     break;
 
   case ISISClient::STATUS:
     cmdDone = false;
     cmdFault = false;
-    cmdWarn = false;
+    // cmdWarn = false;
     break;
 
   default:

@@ -416,9 +416,10 @@ void ConfigManager::doCommand(const QString &cmdStr, QString *replyStr)
 
 void ConfigManager::parseISIS()
 {
+  // TODO: Unused cmdFault flag. Commented out on 2-19-24
   bool execCmd = false;   // Flag: message is a command execution request
   bool cmdDone = false;   // Flag: message is a command completion
-  bool cmdFault = false;  // Flag: command completed with a fault
+  // bool cmdFault = false;  // Flag: command completed with a fault
 
   QString typeStr;
 
@@ -448,40 +449,41 @@ void ConfigManager::parseISIS()
 
   remoteHost = isis->sender();
 
+  // TODO: Unused cmdFault flag. Commented out on 2-19-24
   switch (isis->type()) {
   case ISISClient::ERROR:
     addStatus(QString("%1> %2").arg(remoteHost).arg(msgStr),Qt::red,true);
     typeStr = "ERROR:";
     cmdDone = true;
-    cmdFault = true;
+    // cmdFault = true;
     break;
 
   case ISISClient::WARNING:
     addStatus(QString("%1> %2").arg(remoteHost).arg(msgStr),QColor(255,165,0,255),true);
     typeStr = "WARNING:";
     cmdDone = false;
-    cmdFault = false;
+    // cmdFault = false;
     break;
 
   case ISISClient::FATAL:
     addStatus(QString("%1> %2").arg(remoteHost).arg(msgStr),Qt::magenta,true);
     typeStr = "FATAL:";
     cmdDone = true;
-    cmdFault = true;
+    // cmdFault = true;
     break;
 
   case ISISClient::DONE:
     addStatus(QString("%1> %2").arg(remoteHost).arg(msgStr),Qt::blue,true);
     typeStr = "DONE:";
     cmdDone = true;
-    cmdFault = false;
+    // cmdFault = false;
     break;
 
   case ISISClient::STATUS:
     addStatus(QString("%1> %2").arg(remoteHost).arg(msgStr),Qt::blue,true);
     typeStr = "STATUS:";
     cmdDone = false;
-    cmdFault = false;
+    // cmdFault = false;
     break;
 
   case ISISClient::EXEC:

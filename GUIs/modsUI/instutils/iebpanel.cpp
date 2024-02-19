@@ -271,8 +271,9 @@ void IEBPanel::parse(const QString &cmdStr,
 		     const int &msgType, 
 		     const QHash<QString,QString> &keyDict)
 {
-  bool cmdDone = false;   // Flag: message is a command completion
-  bool cmdFault = false;  // Flag: command completed with a fault
+  // TODO: Unused flags. Commented out on 2-19-24
+  // bool cmdDone = false;   // Flag: message is a command completion
+  // bool cmdFault = false;  // Flag: command completed with a fault
   QString iebIndex;       // IEB index (B or R) for keyword disambiguation
   bool ok;
 
@@ -281,32 +282,32 @@ void IEBPanel::parse(const QString &cmdStr,
 
   if (msgStr.isEmpty()) return; // Empty messages are ignored
   
+  // TODO: Unused flags. Commented out on 2-19-24
   // Our response depends on the type of message we received. 
-
   switch (msgType) {
   case ISISClient::ERROR:
-    cmdDone = true;
-    cmdFault = true;
+    // cmdDone = true;
+    // cmdFault = true;
     break;
 
   case ISISClient::WARNING:
-    cmdDone = true;
-    cmdFault = false;
+    // cmdDone = true;
+    // cmdFault = false;
     break;
 
   case ISISClient::FATAL:
-    cmdDone = true;
-    cmdFault = true;
+    // cmdDone = true;
+    // cmdFault = true;
     break;
 
   case ISISClient::DONE:
-    cmdDone = true;
-    cmdFault = false;
+    // cmdDone = true;
+    // cmdFault = false;
     break;
 
   case ISISClient::STATUS:
-    cmdDone = false;
-    cmdFault = false;
+    // cmdDone = false;
+    // cmdFault = false;
     break;
 
   default:
