@@ -2624,12 +2624,13 @@ void MODSChannel::loadConfigTable(const QString &fileName)
 
 	      // CCD readout Region-of-Interest (ROI)
 
-	      if (cfgSpec.section(' ',6,6).compare("Any",Qt::CaseInsensitive)!=0) 
-		if (cfgSpec.section(' ',6,6).compare("Full",Qt::CaseInsensitive)==0) 
-		  cmdList.append(QString("%1 ROI OFF").arg(channelName));
-		else
-		  cmdList.append(QString("%1 ROI %2").arg(channelName).arg(cfgSpec.section(' ',6,6)));
-
+	      if (cfgSpec.section(' ',6,6).compare("Any",Qt::CaseInsensitive)!=0){
+		      if (cfgSpec.section(' ',6,6).compare("Full",Qt::CaseInsensitive)==0) 
+		        cmdList.append(QString("%1 ROI OFF").arg(channelName));
+		      else
+		        cmdList.append(QString("%1 ROI %2").arg(channelName).arg(cfgSpec.section(' ',6,6)));
+        }
+        
 	      // The CCD binning factor - must be defined
 
 	      cmdList.append(QString("%1 CCDBIN %2").arg(channelName).arg(cfgSpec.section(' ',7,8)));
