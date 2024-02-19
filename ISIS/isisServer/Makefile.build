@@ -1,0 +1,67 @@
+#
+# Makefile for ISIS v3
+#
+# Build the package using the "build" script not with make.
+#
+# We now compile with the much stricter g++ compiler instead of gcc.
+#
+# Version 3 is for the MODS2025 project
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge.1@osu.edu
+#
+# Notes:
+#   Version 3 was started 2024 Feb 2 - Migration to Alma 9.3 and modern systems[rwp/osu] 
+#       
+VERSION     = 3.0.1
+# MODS root directory
+ROOTDIR = /home/dts
+# Directory for installed "public" binaries
+BINDIR = ../bin
+######################################
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+INCDIR      = $(ROOTDIR)/include
+#
+CFLAGS      = -w -c
+VFLAGS      = -DISIS_VERSION='"$(VERSION)"' -DISIS_COMPDATE='"$(COMPDATE)"' \
+              -DISIS_COMPTIME='"$(COMPTIME)"' -DISIS_CONFIG='"$(CONFIG)"' \
+              -DISIS_LOGS='"$(LOGS)"' -DISIS_DCONFIG='"$(DCONFIG)"'
+LIBS        = -I$(INCDIR) -lreadline -lhistory -lncurses
+LFLAGS      = -o isis
+LFLAGSD     = -o isisd
+
+#
+OBJS        = interfaces.o messages.o commands.o serverlog.o \
+              clients.o loadconfig.o utils.o
+#
+.c.o:       isisserver.h 
+	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
+#
+all:        isis.a isis isisd
+#
+isis.a:  $(OBJS) 
+	    /bin/rm -f  isis.a
+	    $(AR) cr isis.a $(OBJS)
+	    ranlib isis.a
+#	    \cp isis.a $(ROOTDIR)/ulib
+#
+# Interactive ISIS server
+#
+isis:	    isis.a isisserver.h 
+	    $(CC) $(VFLAGS) $(LFLAGS) main.c isis.a $(LIBS)
+#	    \cp isis ../bin
+#
+# Non-CLI ISIS [pseudo]daemon
+#
+isisd:	    isis.a isisserver.h 
+	    $(CC) $(VFLAGS) $(LFLAGSD) isisd.c isis.a $(LIBS)
+#	    \cp isisd ../bin
+#
+clean:
+	    /bin/rm -f isis isisd isis.a *.o
+
+install:
+	    \cp isis $(BINDIR)/
+	    \cp isisd $(BINDIR)/
+	    /bin/rm -f *.o
