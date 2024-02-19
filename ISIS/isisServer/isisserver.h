@@ -8,7 +8,7 @@
 // pogge@astronomy.ohio-state.edu
 // 2003 January 20
 //
-// Last modification: 2009 May 8 [v2.x]
+// Last modification: 2024 Feb 19 [v3.x]
 //
 
 /*!
@@ -51,20 +51,18 @@
 #endif
 
 #ifndef ISIS_CONFIG
-#define ISIS_CONFIG  "/lhome/dts/Config/isis.ini"   //!< ISIS config 
+#define ISIS_CONFIG  "/home/dts/Config/isis.ini"   //!< ISIS config 
 #endif
 
 #ifndef ISIS_DCONFIG
-#define ISIS_DCONFIG  "/lhome/dts/Config/isisd.ini"   //!< isisd daemon config file
+#define ISIS_DCONFIG  "/home/dts/Config/isisd.ini"   //!< isisd daemon config file
 #endif
 
 #ifndef ISIS_LOGS
-#define ISIS_LOGS  "/lhome/Logs/ISIS/isis.log"   //!< ISIS runtime log
+#define ISIS_LOGS  "/home/Logs/ISIS/isis.log"   //!< ISIS runtime log
 #endif
 
 // Various site-dependent but system-independent default values 
-
-// These are for ISIS running at MDM
 
 #define DEFAULT_LOCALHOST "IS"  //!< Default ISIS server host ID
 #define DEFAULT_ISISPORT  0  //!< default ISIS server port number
