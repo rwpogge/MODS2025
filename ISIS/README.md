@@ -6,7 +6,7 @@ Author: R. Pogge, OSU Astronomy Dept (pogge.1@osu.edu)
 
 ## Overview
 
-ISIS is a lightweight message-passing server used by the data-taking system of new-generation OSU instruments for interprocess communication and coordination.  
+ISIS is a lightweight message-passing server used by the data-taking system of new-generation OSU instruments for interprocess communication and coordination.
 The messaging syntax is the ICIMACS Messaging Protocol v2.5 (IMPv2.5) in used in the older DOS-based instrument systems.  Instrument data-taking processes are 
 ISIS client nodes, and communicate with each other through ISIS (a few legacy clients can communicate directly with each other, but ideally clients
 are non-routing nodes).
