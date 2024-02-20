@@ -22,6 +22,11 @@ The modsEnv agent has two modes
 
 Logs are kept on the local MODSn server machine.
 
+## Dependencies
+
+ * `isisClient` - ISIS client library (`libisis`) on the same machine
+ * `libmodbus` - open source libmodbus libraries (http://libmodbus.org) - verified with v3.1.7 (needs `libmodbus` and `libmodbus-devel`).
+
 ## Release Notes
 
 Version 2.0 was written in 2013 to support the commissioning of MODS2 and initiation
