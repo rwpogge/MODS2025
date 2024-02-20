@@ -1,4 +1,4 @@
-# modsenv - MODS instrument environmental monitor
+# modsenv - MODS instrument environmental sensor monitor
 
 Version: 3.0
 
