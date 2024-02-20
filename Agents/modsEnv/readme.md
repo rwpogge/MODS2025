@@ -36,7 +36,7 @@ but conveyed no particular utility to sustain it. V2 will be retired along with 
 old server hardware in ~2025 as we can no longer support using the proprietary FieldTalk
 libraries for WAGO Modbus interaction.
 
-Version 3.0 was written in 2024 and retired the proprietary FieldTalk libraries in favor
+Version 3.0 was written in 2024 to retire use of the proprietary FieldTalk libraries in favor
 of the open source libmodbus libraries (http://libmodbus.org) for Modbus/TCP communication
 with the WAGO fieldbus controllers. This allowed us to port the modsEnv code to AlmaLinux 9.3 which 
 became the new OS standard at LBT for all instrument.
