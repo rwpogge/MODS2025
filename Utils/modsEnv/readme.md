@@ -20,4 +20,4 @@ change of ownership of FieldTalk (FOCUS Software Engineering Pty Ltd became proc
 changes to terms and conditions OSU legal cannot support, we are retiring this version of modsEnv and rewriting it to 
 use the open source libmodbus libraries. 
 
-The code is here for reference and while it calls FieldTalk routines, none of the licensed source code is present.
+The code is here for reference, and while it calls FieldTalk routines none of the licensed source code is present.
