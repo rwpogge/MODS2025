@@ -1,0 +1,9 @@
+#!/bin/csh
+#
+
+setenv CDATE `date +'%Y-%m-%d'`
+setenv CTIME `date +'%T'`
+make clean
+make "COMPDATE=$CDATE" "COMPTIME=$CTIME"
+/bin/rm *.o
+exit
