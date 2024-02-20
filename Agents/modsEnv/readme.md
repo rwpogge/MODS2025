@@ -32,7 +32,9 @@ Logs are kept on the local MODSn server machine.
 Version 2.0 was written in 2013 to support the commissioning of MODS2 and initiation
 of binocular operation at the LBT.  At that time we experimentally implemented
 sharing the environmental data via the MMS shared memory (shmem) sector. This worked
-but conveyed no particular utility to sustain it.
+but conveyed no particular utility to sustain it. V2 will be retired along with the
+old server hardware in ~2025 as we can no longer support using the proprietary FieldTalk
+libraries for WAGO Modbus interaction.
 
 Version 3.0 was written in 2024 and retired the proprietary FieldTalk libraries in favor
 of the open source libmodbus libraries (http://libmodbus.org) for Modbus/TCP communication
