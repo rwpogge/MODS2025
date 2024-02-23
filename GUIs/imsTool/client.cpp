@@ -586,18 +586,16 @@ void Client::socketReadyRead()
 
   quint64 numRead      = 0;
   quint64 numReadTotal = 0;
-  int i                = 0;
   int j                = -1;
-  int prompt           = -1;
   int err              = -1;
   QString errStr;
   QString errStr2;
 
-  QLineEdit *displyData = new QLineEdit();
+  // QLineEdit *displyData = new QLineEdit();   //TODO: What was this used for?
 
   QTextStream os(socket);
 
-  while ( numRead = socket->canReadLine() ) {
+  while ( (numRead = socket->canReadLine()) ) {
     inputCommand->clear();
     numReadTotal += numRead;
     dat += socket->readLine();
@@ -664,7 +662,6 @@ void Client::socketConnected()
 {
   QTextStream os(socket);
   QString version;
-  int i = 0;
 
   fileLoader = 0;  
 
@@ -727,7 +724,7 @@ void Client::socketErr(QAbstractSocket::SocketError socketError)
 void Client::upLoad()
 {
   e = infoText;
-  const int Timeout = 1 * 1000;
+  // const int Timeout = 1 * 1000;  //TODO: What was this used for?
   int i = 0;
   int j = 0;
   int k = 0;
@@ -868,7 +865,7 @@ void Client::upLoad()
 void Client::clearNVM()
 {
   int i;
-  const int Timeout = 1 * 1000;
+  // const int Timeout = 1 * 1000;  //TODO: What was this used for?
 
   e = infoText;
   fileLoader = 0;  

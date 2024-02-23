@@ -3,6 +3,6 @@
 /moc/
 
 imsTool
+Makefile
 qrc_*
-ims.make
 .qmake.stash
