@@ -26,3 +26,8 @@ imsTool is how we update microcode on the MODS mechanism motor controllers after
 Run the following commands from the imsTool directory.
 1) `qmake -o Makefile`
 2) `make`
+
+## Usage Instructions
+Run the executable with the following optional command line arguments.
+- `./imsTool <host> <port>`
+- `./imsTool`

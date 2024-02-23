@@ -12,3 +12,12 @@ Longer description to follow.
 Run the following commands from the modsUI directory.
 1) `qmake -o Makefile`
 2) `make`
+
+## Usage Instructions
+Run the executable with the following optional command line arguments.
+- `./modsUI <config_file> <font_size>`
+- `./modsUI <config_gile>`
+- `./modsUI`
+
+- <config_file>: A path to the configuration *.ini file (default='./iterm.ini').
+- <font_size>: The font size that should be used (default=12).
