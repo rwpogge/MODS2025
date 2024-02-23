@@ -1,0 +1,110 @@
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:03:32
+(16:03:36.053444): FW>AL ping
+(16:03:36.053671): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:04:35
+(16:04:40.569796): FW>AL ping
+(16:04:40.570638): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:07:11
+(16:07:19.745249): FW>AL ping
+(16:07:19.745482): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:08:32
+(16:08:42.341723): FW>AL ping
+(16:08:42.341923): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:09:27
+(16:09:35.522525): FW>AL ping
+(16:09:35.522755): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:10:22
+(16:10:27.624976): FW>AL ping
+(16:10:27.625393): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:12:19
+(16:12:22.617560): FW>AL ping
+(16:12:22.617772): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:13:52
+(16:14:11.579205): FW>AL ping
+(16:14:11.579433): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:15:50
+(16:15:55.287886): FW>AL ping
+(16:15:55.288113): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:17:06
+(16:17:17.430756): FW>AL ping
+(16:17:17.430963): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:18:41
+(16:19:01.998638): FW>AL ping
+(16:19:01.998848): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:22:16
+(16:22:23.466749): FW>AL ping
+(16:22:23.466966): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:25:50
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:27:07
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:27:43
+(16:27:46.307417): FW>AL ping
+(16:27:46.307926): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:29:20
+(16:29:26.907845): FW>AL ping
+(16:29:26.908053): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:30:06
+(16:30:09.449775): FW>AL ping
+(16:30:09.450004): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:37:41
+(16:37:45.331737): FW>AL ping
+(16:37:45.332605): IS>FW PONG
+(16:37:54.270239): FW>is ping
+(16:37:54.270811): IS>FW PONG
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:37:59
+(16:38:04.217113): FW>is ping
+(16:38:04.217802): IS>FW PONG
+(16:38:12.588533): IS>fw status
+(16:38:12.941737): FW>IS DONE: FWState=Ready FILTER=4 LOAD=2
+(16:38:20.513654): IS>fw filter 5
+(16:38:24.190192): FW>IS DONE: FILTER=5
+------------------------------
+IS runtime log for 2004-05-14 (re)started at UTC 20:38:52
+(16:38:57.639147): FW>is ping
+(16:38:57.639805): IS>FW PONG
+(16:39:15.664874): IS>fw fwinit
+(16:39:15.665318): FW>IS ERROR: Unknown command - fwinit
+(16:39:18.442127): IS>fw init
+(16:39:18.442655): FW>IS DONE: filter wheel microstep drive initialized (use mstatus to check)
+(16:39:23.708793): IS>fw help
+(16:39:23.709268): FW>IS ERROR: Cannot exec help command - remote operation not allowed
+(16:39:28.105072): IS>fw status
+(16:39:28.433004): FW>IS DONE: FWState=Ready FILTER=5 LOAD=3
+(16:39:30.025448): IS>fw filter
+(16:39:30.082706): FW>IS DONE: FILTER=5
+(16:39:32.378217): IS>fw load
+(16:39:32.432380): FW>IS DONE: LOAD=3
+(16:39:34.516496): IS>fw load 4
+(16:39:38.181883): FW>IS DONE: LOAD=4
+(16:40:06.955206): IS>fw load
+(16:40:07.028492): FW>IS DONE: LOAD=4
+(16:40:10.468632): IS>fw load 5
+(16:40:14.127787): FW>IS DONE: LOAD=5
+(16:41:00.205730): IS>fw rdpos
+(16:41:00.272033): FW>IS DONE: Mech='filter wheel' Inputs=11111111 InPos=IN EncPos=7
+(16:41:05.383732): IS>fw speed
+(16:41:05.421584): FW>IS DONE: Speed=2.000 rev/sec
+(16:41:10.151391): IS>fw abort
+(16:41:10.220897): FW>IS DONE: Controller idle, ABORT completed successfully.
+(16:41:26.811700): IS>fw filter 3
+(16:41:30.057089): IS>fw abort
+(16:41:34.518373): FW>IS DONE: FILTER=3
+(16:41:34.568032): FW>IS DONE: Controller idle, ABORT completed successfully.

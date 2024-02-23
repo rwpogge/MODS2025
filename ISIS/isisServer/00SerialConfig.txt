@@ -1,0 +1,27 @@
+Serial Port Configuration
+2009 Mar 18
+
+Before a general user can run any process that uses serial ports, the 
+device permissions have to be set to allow them access.
+
+Procedure:
+
+0) Be root.
+
+1) cd /etc/udev/permissions.d
+
+2) edit 50-udev.permissions
+
+Serial ports (either native to the MB or connected via a USB serial 
+port converter) have root names /dev/ttyS on most systems.  Search 
+for the line that looks like this
+
+     # serial+dialup devices
+     ttyS*:root:uucp:0660
+
+and change the permission mask above from 0660 to 0666, then exit the
+file.
+
+3) Should work OK after a reboot, but you can finesse it on the short
+run by setting chmod 0666 /dev/ttyS0
+

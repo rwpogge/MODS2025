@@ -1,0 +1,48 @@
+#
+# Makefile for ISIS v2
+#
+# Build the package using the "build" script not with make.
+#
+# We now compile with the much stricter g++ compiler instead of gcc.
+#
+# Version 2 now introduces date-based logging and daemon modes (-d)
+# using getopts among other things.
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge@astronomy.ohio-state.edu
+# Version 2 was started 2009 Mar 18 [rwp/osu]
+#
+VERSION     = ISIS v2.0.6
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+
+CFLAGS      = -w -c
+VFLAGS      = -DISIS_VERSION='"$(VERSION)"' -DISIS_COMPDATE='"$(COMPDATE)"' \
+              -DISIS_COMPTIME='"$(COMPTIME)"' -DISIS_CONFIG='"$(CONFIG)"' \
+              -DISIS_LOGS='"$(LOGS)"'
+
+LIBS        = -lreadline -lhistory -lncurses
+LFLAGS      = -o isis
+
+OBJS      = interfaces.o messages.o commands.o serverlog.o \
+	    clients.o  loadconfig.o utils.o
+
+.c.o:       isisserver.h 
+	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
+
+all:        isis.a isis
+
+isis.a:  $(OBJS) 
+	    /bin/rm -f  isis.a
+	    $(AR) cr isis.a $(OBJS)
+	    ranlib isis.a
+
+isis:	    isis.a isisserver.h 
+	    $(CC) $(VFLAGS) $(LFLAGS) main.c isis.a $(LIBS)
+
+clean:
+	    /bin/rm -f isis isis.a *.o
+
+install:
+	    \cp isis ../bin/
+	    /bin/rm -f *.o
