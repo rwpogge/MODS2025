@@ -5,3 +5,4 @@
 iterm
 Makefile
 qrc_*
+.qmake.stash

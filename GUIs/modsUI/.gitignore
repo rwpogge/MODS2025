@@ -5,3 +5,4 @@
 modsUI
 Makefile
 qrc_*
+.qmake.stash
