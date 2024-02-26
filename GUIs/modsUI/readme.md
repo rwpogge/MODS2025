@@ -19,5 +19,5 @@ Run the executable with the following optional command line arguments.
 - `./modsUI <config_gile>`
 - `./modsUI`
 
-- <config_file>: A path to the configuration *.ini file (default='./iterm.ini').
+- <config_file>: A path to the configuration *.ini file.
 - <font_size>: The font size that should be used (default=12).
