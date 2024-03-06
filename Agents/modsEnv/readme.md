@@ -1,4 +1,4 @@
-# modsenv - MODS instrument environmental sensor monitor
+# modsenv - MODS environmental sensor monitor agent
 
 Version: 3.0
 
@@ -39,4 +39,4 @@ libraries for WAGO Modbus interaction.
 Version 3.0 was written in 2024 to retire use of the proprietary FieldTalk libraries in favor
 of the open source libmodbus libraries (http://libmodbus.org) for Modbus/TCP communication
 with the WAGO fieldbus controllers. This allowed us to port the modsEnv code to AlmaLinux 9.3 which 
-is the new OS standard at LBT for all instruments and subsystems.
+is the new OS standard at LBT for all instruments and subsystems.  **Version 3 replaces all Version 2.x**
