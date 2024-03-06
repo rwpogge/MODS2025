@@ -1,6 +1,6 @@
 # modsEnv - MODS environmental sensor logger
 
-Version 2.2.0 [2014 July 15]
+Version 2.2.0 [2014 July 15] - **Latest version is 3.0.0 for MODS2025**
 
 Author: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
