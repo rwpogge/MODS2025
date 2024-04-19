@@ -11,6 +11,7 @@
 #   2013 Aug 15 - Start of v2.x development [rwp/osu]
 #   2014 Jul 10 - Added shared memory utilization [rwp/osu]
 #   2024 Feb 18 - migrating to open source libmodbus [rwp/osu]
+#   2024 May 21 - Moving libmodbus to a standalone interface [xc/osu]
 #-------------------------------------------------------------
 
 # Version Number: <major>.<minor>.<build>
@@ -38,9 +39,9 @@ LIBS        = $(INCLUDES) $(LIBRARIES) -L/usr/X11R6/lib -lX11 \
 
 LFLAGS      = -o modsenv
 
-OBJS        = clientutils.o loadconfig.o commands.o 
+OBJS        = clientutils.o loadconfig.o commands.o modbusutils.o
 
-.c.o:       client.h commands.h
+.c.o:       client.h commands.h modbusutils.h
 	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
 
 all:        modsenv
