@@ -24,7 +24,7 @@
 
 // Default enviromental log file path and rootname 
 
-#define ENV_LOGS   "/home/mods/Logs/Env/modsenv"
+#define ENV_LOGS   "dts/Logs/Env/modsenv"
 
 // Default ISIS server information (see loadconfig.c if used)
 
