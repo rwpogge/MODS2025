@@ -26,10 +26,7 @@
   structures with delinquent information.
 
 */
-
-void
-initEnvData(envdata_t *envi) 
-{
+void initEnvData(envdata_t *envi){
   strcpy(envi->modsID,"None");
   envi->cadence = DEFAULT_CADENCE;  // default monitoring cadence (see client.h)
   envi->pause = 0;                  // start running (no pause)
@@ -77,12 +74,12 @@ initEnvData(envdata_t *envi)
   envi->irlaserTemp = 0.0;    
   envi->irlaserTempSet = 0.0; 
 
-  envi->doLogging = 1;  // enable enviromental data logging by default
+  envi->doLogging = 1;                      // enable enviromental data logging by default
   strcpy(envi->logRoot,ENV_LOGS);
   strcpy(envi->logFile,"");
   strcpy(envi->lastDate,"");
   strcpy(envi->utcDate,"");
-  if (envi->logFD > 0) close(envi->logFD); // just in case...
+  if (envi->logFD > 0) close(envi->logFD);  // just in case...
   envi->logFD = 0;
 }
 
@@ -96,10 +93,7 @@ initEnvData(envdata_t *envi)
   the query occurred.  
 
 */
-
-void
-printEnvData(envdata_t *envi)
-{
+void printEnvData(envdata_t *envi){
   if (!useCLI) return;
 
   printf("Enviromental Monitor Agent Info:\n");
@@ -152,25 +146,22 @@ printEnvData(envdata_t *envi)
   the results into the enviromental data structure
 
 */
-
-int
-getEnvData(envdata_t *envi) 
-{
+int getEnvData(envdata_t *envi) {
   int ierr;
-  uint16_t iubData[10];  // raw IUB WAGO data array
-  uint16_t iebRData[10]; // raw Red IEB WAGO data array
-  uint16_t iebBData[10]; // raw Blue IEB WAGO data array
-  uint16_t llbData[10]; // raw Blue IEB WAGO data array
-  int iubPower   = 0; // IUB AC power request status word
-  int iubBreaker = 0; // IUB AC power breaker status word
+  uint16_t iubData[10];   // raw IUB WAGO data array
+  uint16_t iebRData[10];  // raw Red IEB WAGO data array
+  uint16_t iebBData[10];  // raw Blue IEB WAGO data array
+  uint16_t llbData[10];   // raw Blue IEB WAGO data array
+  int iubPower   = 0;     // IUB AC power request status word
+  int iubBreaker = 0;     // IUB AC power breaker status word
 
   // Get data from the IUB environmental sensors
-
   ierr = wagoSetGet(0,envi->iub_Addr,1,10,iubData);
   if (ierr != 0) {
     if (useCLI) printf("WARNING: %s IUB WAGO read error",envi->modsID);
     return ierr;
   }
+
   envi->glycolSupplyPres = (float)iubData[0]/327.64;
   envi->glycolReturnPres = (float)iubData[1]/327.64;
   envi->glycolSupplyTemp = (float)iubData[4]/10.0;
@@ -180,7 +171,6 @@ getEnvData(envdata_t *envi)
   envi->ambientTemp = (float)iubData[8]/10.0;
 
   // Get the IUB AC power control status data
-
   ierr = wagoSetGet(0,envi->iub_Addr,513,1,iubData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s IUB WAGO error reading power status word",envi->modsID);
@@ -191,7 +181,6 @@ getEnvData(envdata_t *envi)
     // On/Off state depends on the wiring of the AC power switching
     // relay: normally-open (OFF on mains power up) or normally-closed
     // (ON on mains power up)
-
     envi->iebR_Switch = ((iubPower & IEB_R_POWER) != IEB_R_POWER); // normally closed
     envi->iebB_Switch = ((iubPower & IEB_B_POWER) != IEB_B_POWER); // normally closed
     envi->hebR_Switch = ((iubPower & HEB_R_POWER) == HEB_R_POWER); // normally OPEN
@@ -202,7 +191,6 @@ getEnvData(envdata_t *envi)
   }
   
   // Get the IUB AC power breaker output side current sensor data
-
   ierr = wagoSetGet(0,envi->iub_Addr,11,1,iubData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s cannot read IUB breaker output status",envi->modsID);
@@ -219,7 +207,6 @@ getEnvData(envdata_t *envi)
   }
   
   // Get data from the Red IEB environmental sensors
-
   ierr = wagoSetGet(0,envi->iebR_Addr,1,10,iebRData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Red IEB WAGO read error",envi->modsID);
@@ -232,7 +219,6 @@ getEnvData(envdata_t *envi)
   }
   
   // Get data from the Blue IEB environmental sensors
-  
   ierr = wagoSetGet(0,envi->iebB_Addr,1,10,iebBData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue WAGO IEB read error",envi->modsID);
@@ -256,13 +242,10 @@ getEnvData(envdata_t *envi)
   //
 
   // Get the UTC date/time of the query (ISIS client utility routine)
-
   strcpy(envi->utcDate,ISODate());
 
   // All done (logging is done by the calling program)
-
   return 0;
-  
 }
 
 /*!
@@ -276,26 +259,20 @@ getEnvData(envdata_t *envi)
   Log entries are created by the logEnvData() function.
 
 */
-
-int 
-initEnvLog(envdata_t *envi)
-{
+int initEnvLog(envdata_t *envi){
   int ierr;
   char logStr[MED_STR_SIZE];
   int exists;
 
   // Get the UTC Date in CCYYMMDD format
-
   strcpy(envi->lastDate,UTCDateTag());
   
   // Build the log file name from the /path/rootname provided
   // at runtime, and see if it already exists.
-
   sprintf(envi->logFile,"%s.%s.log",envi->logRoot,envi->lastDate);
   exists = fileExists(envi->logFile);
 
   // Open the new runtime log file, append to it if it exists 
-  
   if (envi->logFD > 0) close(envi->logFD);
 
   envi->logFD = open(envi->logFile,(O_WRONLY|O_CREAT|O_APPEND));
@@ -310,13 +287,11 @@ initEnvLog(envdata_t *envi)
 
   // If this is the first time the file has been opened, print the
   // log header, otherwise just note the log has been restarted
-
   if (exists)
     logMessage(envi,"Monitor agent re-started");
   else {
     // This is the first time we've had this file open, write the
     // detailed file header.
-
     memset(logStr,0,sizeof(logStr));
     sprintf(logStr,"#\n# %s Environmental Sensor Data Log\n#\n",envi->modsID);
     ierr = write(envi->logFD,logStr,strlen(logStr));
@@ -349,27 +324,21 @@ initEnvLog(envdata_t *envi)
   the data from temperature and pressure sensors.
 
 */
-
-int
-logEnvData(envdata_t *envi)
-{
+int logEnvData(envdata_t *envi){
   int ierr;
   char dateTag[MED_STR_SIZE];  
   char logStr[BIG_STR_SIZE];
 
   // If logging is disabled, return now
-
   if (!envi->doLogging) return 0;
 
   // Did we cross over into the next day?  If so, we need to close the
   // current log file and start a new one.
-
   strcpy(dateTag,UTCDateTag());
   if (strcasecmp(dateTag,envi->lastDate) != 0)
     if (initEnvLog(envi)<0) return -1;
 
   // Append the current enviromental sensor data to the data log
-
   memset(logStr,0,sizeof(logStr));
   sprintf(logStr,"%s %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f"
 	  " %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f\n",
@@ -402,22 +371,17 @@ logEnvData(envdata_t *envi)
   \sa initEnvLog(), logEnvData()
 */
 
-int
-logMessage(envdata_t *envi, char *msgStr)
-{
+int logMessage(envdata_t *envi, char *msgStr){
   int ierr;
   char logStr[BIG_STR_SIZE];
 
   // If logging is disabled, return now
-
   if (!envi->doLogging) return 0;
 
   // If the message string is blank, return now
-
   if (strlen(msgStr) == 0) return 0;
 
   // Append the message as a comment to the enviromental sensor data log
-
   memset(logStr,0,sizeof(logStr));
   sprintf(logStr,"# %s %s\n",ISODate(),msgStr);
   ierr = write(envi->logFD,logStr,strlen(logStr));
@@ -437,10 +401,7 @@ logMessage(envdata_t *envi, char *msgStr)
   with a non-regular file.
 
 */
-
-int
-fileExists(char *fileName)
-{
+int fileExists(char *fileName){
   struct stat statBuf;
   int itype;
 
@@ -465,70 +426,4 @@ fileExists(char *fileName)
     return 1;
   else
     return -itype;
-
 }
-
-//---------------------------------------------------------------------------
-//
-// wagoSetGet() function
-//
-// Write (set) or read (get) data from WAGO modbus registers
-//
-// @param setGet (int) 1 = set (write), 0 = get (read)
-// @param regAddr (int) register address (range: 1 - 0x10000)
-// @param regLen (int) register length = number of data values (range: 1-100)
-// @param regData (uint16) array of data to write or read
-// @return 0 on send success, value or error code on faults
-//
-// This version rewritten for libmodbus to replace defunct and
-// unsupported proprietary FieldTalk code. [rwp/osu - 2024 Feb 20]
-//
-//---------------------------------------------------------------------------
-
-int
-wagoSetGet(int setGet, char *wagoAddr, int regAddr, int regLen, uint16_t regData[])
-{
-  int i;
-  int ierr;
-  char responseBufSz[256];
-  short readArr[1];
-
-  // using libmodbus
-  
-  modbus_t *mb;
-
-  int result;
-
-  // Open a Modbus/TCP connection to the WAGO
-
-  mb = modbus_new_tcp(wagoAddr,502);
-  if (modbus_connect(mb) == -1) {
-    printf("ERROR: Cannot connect to WAGO host %s: %s",wagoAddr,modbus_strerror(errno));
-    modbus_free(mb);
-    return -1;
-  }
-
-  // Slight pause to give a slow TCP link a chance to catch up
-
-  MilliSleep(10);
-
-  // If setGet = 1 (true), we are writing data to WAGO registers
-  
-  if (setGet) //set: write data to the WAGO
-    result = modbus_write_registers(mb,regAddr,regLen,regData);
-
-  else // get: read data from the WAGO
-    result = modbus_read_registers(mb,regAddr,regLen,regData);
-
-  // close connection and free libmodbus context
-  
-  modbus_close(mb);
-  modbus_free(mb);
-
-  // Return status: 0 on success, -1 on errors with errno set by modbus_xxx_registers()
-  if (result == -1)
-    return -1;
-  else
-    return 0;
-}
-

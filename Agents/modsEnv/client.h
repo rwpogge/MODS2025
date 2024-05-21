@@ -20,7 +20,7 @@
 
 #define DEFAULT_MYID      "ENV"  //!< default client ISIS node name
 #define DEFAULT_MYPORT    10901 //!< default client socket port   
-#define DEFAULT_RCFILE    (char *)"/home/mods/Config/MODS/modsenv.ini" //!< default client runtime config file
+#define DEFAULT_RCFILE    (char *)"./modsenv.ini" //!< default client runtime config file
 
 // Default enviromental log file path and rootname 
 
@@ -37,7 +37,7 @@
 // 
 //----------------------------------------------------------------
 
-// System header files 
+// System header files   
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -90,9 +90,7 @@ extern isisclient_t client; // global client runtime config table
 #include "MbusTcpMasterProtocol.hpp" // WAGO FieldTalk Modbus/TCP master protocol header
 */
 
-// libmodbus include file
-
-#include <modbus.h>
+#include "modbusutils.h"
 
 // MODS Instrument Server Shared Memory
 
