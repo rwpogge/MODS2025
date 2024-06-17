@@ -30,7 +30,7 @@ class QAbstractSocket;
 class QNetworkSession;
 class QPlainTextEdit;
 class QMainWindow;
-class QStringList;
+//class QStringList;
 class QFont;
 
 #ifdef MICROLYNXERRORS_H
@@ -46,7 +46,7 @@ class Client : public QMainWindow
 
 public:
   Client( const QString &host, const QString &port );
-  Client(QWidget *parent = 0 );
+  //Client(QWidget *parent = 0 );
   QTextEdit *infoText;
   QTextEdit *e;
   QMainWindow *mainWindow;

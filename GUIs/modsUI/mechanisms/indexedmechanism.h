@@ -4,7 +4,7 @@
 #include <QObject>
 
 class QString;
-class QStringList;
+//class QStringList;
 class QFile;
 class QTextStream;
 

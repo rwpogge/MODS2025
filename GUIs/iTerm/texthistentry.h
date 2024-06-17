@@ -6,7 +6,7 @@
 class QLineEdit;
 class QLabel;
 class QString;
-class QStringList;
+//class QStringList;
 
 class TextHistEntry : public QWidget
 {

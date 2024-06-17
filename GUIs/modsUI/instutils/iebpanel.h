@@ -9,7 +9,7 @@
 // Qt widgets
 
 class QString;
-class QStringList;
+//class QStringList;
 class QCheckBox;
 
 // Custom widgets
