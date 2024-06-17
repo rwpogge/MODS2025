@@ -1,6 +1,6 @@
 # lbtTCS - LBT Telescope Control System interface agent
 
-Version: v3.0.1-bino
+Version: v3.0.1-bino - **Replacement will be v4.0.0 under Agents**
 
 Author: R. Pogge, OSU Astronomy (pogge.1@osu.edu)
 
