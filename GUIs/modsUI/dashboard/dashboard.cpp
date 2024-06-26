@@ -3496,7 +3496,7 @@ int DashBoard::posByName(const QString &cmdStr)
 
   // Set up the reg-exp search: case-insensitive exact match (no wildcards)
 
-  QRegExp rx(wordList.at(1),Qt::CaseInsensitive,QRegExp::RegExp);
+  QRegularExpression rx(wordList.at(1), QRegularExpression::CaseInsensitiveOption);
 
   // Make sure this device has a device table...
 

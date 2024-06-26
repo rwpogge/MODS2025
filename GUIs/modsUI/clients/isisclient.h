@@ -9,7 +9,7 @@
 class QString;
 class QUdpSocket;
 class QMessageBox;
-class QStringList;
+//class QStringList;    //Commented out during Qt5->Qt6 Port
 class QTimer;
 
 class ISISClient : public QWidget

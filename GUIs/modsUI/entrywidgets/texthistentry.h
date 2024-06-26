@@ -6,7 +6,7 @@
 class QLineEdit;
 class QLabel;
 class QString;
-class QStringList;
+//class QStringList;    //Commented out during Qt5->Qt6 Port
 
 class TextHistEntry : public QWidget
 {

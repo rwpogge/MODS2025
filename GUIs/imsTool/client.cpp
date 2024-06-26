@@ -591,7 +591,7 @@ void Client::socketReadyRead()
   QString errStr;
   QString errStr2;
 
-  // QLineEdit *displyData = new QLineEdit();   //TODO: What was this used for?
+  // QLineEdit *displyData = new QLineEdit();   //Commented out unnecessary line to remove warning
 
   QTextStream os(socket);
 
@@ -724,7 +724,7 @@ void Client::socketErr(QAbstractSocket::SocketError socketError)
 void Client::upLoad()
 {
   e = infoText;
-  // const int Timeout = 1 * 1000;  //TODO: What was this used for?
+  // const int Timeout = 1 * 1000;  //Commented out unnecessary line to remove warning
   int i = 0;
   int j = 0;
   int k = 0;
@@ -865,7 +865,7 @@ void Client::upLoad()
 void Client::clearNVM()
 {
   int i;
-  // const int Timeout = 1 * 1000;  //TODO: What was this used for?
+  // const int Timeout = 1 * 1000;  //Commented out unnecessary line to remove warning
 
   e = infoText;
   fileLoader = 0;  

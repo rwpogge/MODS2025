@@ -9,7 +9,7 @@
 // Qt widgets
 
 class QString;
-class QStringList;
+//class QStringList;    //Commented out during Qt5->Qt6 Port
 class QCheckBox;
 
 // Custom widgets

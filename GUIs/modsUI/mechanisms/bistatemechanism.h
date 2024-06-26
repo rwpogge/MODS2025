@@ -4,7 +4,7 @@
 #include <QObject>
 
 class QString;
-class QStringList;
+//class QStringList;    //Commented out during Qt5->Qt6 Port
 
 class BiStateMechanism : public QObject
 {
