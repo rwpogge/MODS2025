@@ -267,7 +267,6 @@ int  getEnvData(envdata_t *);   // get environmental data from the sensor WAGOs
 int  initEnvLog(envdata_t *);   // initialize the enviromental data log
 int  logEnvData(envdata_t *);   // append data to the environmental data log
 int  logMessage(envdata_t *, char *); // append a message (comment) to the data log
-int  wagoSetGet(int, char *, int, int, uint16_t []); // WAGO set/get data function - 20240220
 int  fileExists(char *);        // test to see if a file exists
 
 // Signal Handlers
