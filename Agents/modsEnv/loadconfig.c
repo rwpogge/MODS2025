@@ -142,6 +142,8 @@ loadConfig(char *cfgfile)
 
   initEnvData(&env);
 
+  if(env.useHdf5) initTelemetryData(&env);  //If HDF5 is being used, telemetry data needs initalized.
+
   useCLI = 1; // default: interactive shell enabled (also set in main)
 
   // Now open the config file, if not, gripe and return -1.  Opening the

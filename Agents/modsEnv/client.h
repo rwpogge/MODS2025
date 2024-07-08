@@ -58,6 +58,9 @@
 #include <termios.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <exception>
+
+#include <telcollection.hxx>  //LBT Telemetry Library
 
 // In case the version and compilation data are not defined
 // at compilation, put in some placeholders to prevent code barfing
@@ -79,6 +82,9 @@
 #ifndef MAXCFGLINE
 #define MAXCFGLINE 128 //!< Maximum characters/line in runtime config files
 #endif
+
+#define MAX_TELEMETRY_BUFFER_BYTES 10000000
+
 
 // ISIS common client utilties library header
 
@@ -177,12 +183,33 @@ typedef struct envData {
   // Logging information
 
   int  doLogging;                  //!< Is logging enabled?  
-  int  useHdf5;                    //!< Should HDF5 logs be created?  
   char utcDate[MED_STR_SIZE];      //!< UTC data/time of the last query
   char logRoot[MED_STR_SIZE];      //!< Full path/rootname of the enviromental data log
   char logFile[MED_STR_SIZE];      //!< Full path/name of the current enviromental data log
   char lastDate[SHORT_STR_SIZE];   //!< Most recent UTC date tag for the data log
   int  logFD;                      //!< File descriptor of the open data log
+
+  // HDF5 logging information
+
+  int useHdf5;                                                 //!< Should HDF5 logs be created?  
+
+  lbto::tel::float_measure::buf_proxy ambientTempMeasure;       //!< The numeric data in the telemetry stream
+  lbto::tel::float_measure::buf_proxy glycolSupplyPresMeasure;
+  lbto::tel::float_measure::buf_proxy glycolReturnPresMeasure;
+  lbto::tel::float_measure::buf_proxy glycolSupplyTempMeasure;
+  lbto::tel::float_measure::buf_proxy glycolReturnTempMeasure;
+  lbto::tel::float_measure::buf_proxy utilBoxTempMeasure;
+  lbto::tel::float_measure::buf_proxy agwHSTempMeasure;
+  lbto::tel::float_measure::buf_proxy iebBAirTempMeasure;
+  lbto::tel::float_measure::buf_proxy iebBReturnTempMeasure;
+  lbto::tel::float_measure::buf_proxy iebRAirTempMeasure;
+  lbto::tel::float_measure::buf_proxy iebRReturnTempMeasure;
+  lbto::tel::float_measure::buf_proxy airTopTempMeasure;
+  lbto::tel::float_measure::buf_proxy airBotTempMeasure;
+  lbto::tel::float_measure::buf_proxy trussTopTempMeasure;
+  lbto::tel::float_measure::buf_proxy trussBotTempMeasure;
+
+  std::shared_ptr<lbto::tel::collector> modsCollector;          //!< The telemetry collection interface
 
 } envdata_t;
 
@@ -263,10 +290,12 @@ void SocketCommand(char *);   // process messages from the client socket (see co
 // Client utility routines (defined in clientutils.c)
 
 void initEnvData(envdata_t *);  // initialize the envdata_t struct
+int  initTelemetryData(envdata_t *);  //initlaize the telemetry structures in envdata_t if HDF5 will be used
 void printEnvData(envdata_t *); // print the contents of the envdata_t struct (engineering)
 int  getEnvData(envdata_t *);   // get environmental data from the sensor WAGOs
 int  initEnvLog(envdata_t *);   // initialize the enviromental data log
 int  logEnvData(envdata_t *);   // append data to the environmental data log
+int  logTelemetryData(envdata_t *);   // append data to the telemetry stream for the HDF5 file. 
 int  logMessage(envdata_t *, char *); // append a message (comment) to the data log
 int  fileExists(char *);        // test to see if a file exists
 

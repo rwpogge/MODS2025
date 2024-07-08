@@ -245,12 +245,6 @@ main(int argc, char *argv[])
       printf("OUT: %s\n",buf);
   }
 
-
-  // Enabling HDF5 output
-  if (env.useHdf5){
-    printf("[NOTICE]: HDF5 Enabeled!!!!\n");
-  }
-
   // Set the SIGINT signal trap 
   
   signal(SIGINT ,HandleInt);  // Trap Ctrl+C 
@@ -260,7 +254,11 @@ main(int argc, char *argv[])
   // One last thing, make an initial sensor query
 
   ierr = getEnvData(&env);
-  if (ierr == 0 && env.doLogging) logEnvData(&env);
+  if(ierr == 0){
+    if (env.doLogging) logEnvData(&env);
+    if (env.useHdf5) logTelemetryData(&env);
+  }
+
 
   //----------------------------------------------------------------------
   //
@@ -309,8 +307,12 @@ main(int argc, char *argv[])
       // enviromental sensors unless we are in a monitor pause
 
       if (!env.pause) {
-	ierr = getEnvData(&env);
-	if (ierr == 0 && env.doLogging) logEnvData(&env); 
+	      ierr = getEnvData(&env);
+
+        if(ierr == 0){
+          if (env.doLogging) logEnvData(&env); 
+          if (env.useHdf5) logTelemetryData(&env); 
+        }
       }
     }
     

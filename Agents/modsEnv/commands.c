@@ -649,7 +649,8 @@ cmd_estatus(char *args, MsgType msgtype, char *reply)
     strcpy(reply,"Cannot read the enviromental sensors");
     return CMD_ERR;
   }
-  if (env.doLogging) logEnvData(&env); // log it, if enabled
+  if (env.doLogging) logEnvData(&env);      // log it as ASCII, if enabled
+  if (env.useHdf5) logTelemetryData(&env);  // log it as HDF5, if enabled
 
   // Craft the reply string...
 
@@ -793,7 +794,8 @@ cmd_pstatus(char *args, MsgType msgtype, char *reply)
     strcpy(reply,"Cannot read the enviromental sensors");
     return CMD_ERR;
   }
-  if (env.doLogging) logEnvData(&env); // log it, if enabled
+  if (env.doLogging) logEnvData(&env);        // log it as ASCII, if enabled
+  if (env.useHdf5) logTelemetryData(&env);    // log it as HDF5, if enabled
 
   // Craft the reply string...
 
