@@ -139,6 +139,10 @@ main(int argc, char *argv[])
   struct timeval timeout;
   static int sel_wid;
 
+  //HDF5 variables
+
+  int useHdf5 = 0;
+
   // Basic initializations
   
   // setup_ids();  // setup access to the MODS SHRMEM sector
@@ -239,6 +243,12 @@ main(int argc, char *argv[])
     }
     if (client.isVerbose && useCLI)
       printf("OUT: %s\n",buf);
+  }
+
+
+  // Enabling HDF5 output
+  if (env.useHdf5){
+    printf("[NOTICE]: HDF5 Enabeled!!!!\n");
   }
 
   // Set the SIGINT signal trap 

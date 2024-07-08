@@ -177,6 +177,7 @@ typedef struct envData {
   // Logging information
 
   int  doLogging;                  //!< Is logging enabled?  
+  int  useHdf5;                    //!< Should HDF5 logs be created?  
   char utcDate[MED_STR_SIZE];      //!< UTC data/time of the last query
   char logRoot[MED_STR_SIZE];      //!< Full path/rootname of the enviromental data log
   char logFile[MED_STR_SIZE];      //!< Full path/name of the current enviromental data log

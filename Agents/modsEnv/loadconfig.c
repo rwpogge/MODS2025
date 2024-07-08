@@ -58,9 +58,10 @@
    IUB     192.168.139.122
    IEB_R   192.168.139.100
    IEB_B   192.168.139.110
-   #NoLog
 
    # Runtime flags 
+   USEHDF5
+   NoLog
 
    VERBOSE
    #debug
@@ -329,6 +330,13 @@ loadConfig(char *cfgfile)
       else if (strcasecmp(keyword,"VERBOSE")==0) {
 	client.isVerbose = 1;
 	
+      }
+
+      // HDF5 Output: When enabeled, HDF5 log files will be created.
+      
+      else if (strcasecmp(keyword,"USEHDF5")==0) {
+	env.useHdf5 = 1;
+
       }
 
       // Debug: Enable runtime debugging out (superverbose mode)
