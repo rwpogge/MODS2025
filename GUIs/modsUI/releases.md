@@ -1,7 +1,13 @@
 # modsUI Release Notes
 Original Build: 2009 Feb 24
 
-Last Build: 2024 Feb 23
+Last Build: 2024 Jul 8
+
+## Version 2.2.0
+Friday, July 8th, 2024
+
+- Qt 5.X -> Qt 6.X
+    - The GUI should now be compiled using Qt 6.
 
 ## Version 2.1.0
 Friday, February 23rd, 2024

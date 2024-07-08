@@ -1,5 +1,11 @@
 # iTerm Release Notes
-Last Build: 2024 Feb 23
+Last Build: 2024 Jul 8
+
+## Version 1.3.0
+Monday, July 8th, 2024
+
+- Qt 5.X -> Qt 6.X
+    - The GUI should now be compiled using Qt 6.
 
 ## Version 1.2.0
 Friday, February 23rd, 2024

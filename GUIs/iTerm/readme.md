@@ -1,10 +1,10 @@
 # iTerm - ICIMACS terminal
-Version: 2.1.0
+Version: 2.2.0
 
 Author: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
 ## Overview
-iTerm is a Qt5 GUI that implements a "terminal" style command interface to communicate with the MODS instrument control system at the ICIMACS command protocol level (aka "bare metal").
+iTerm is a Qt6 GUI that implements a "terminal" style command interface to communicate with the MODS instrument control system at the ICIMACS command protocol level (aka "bare metal").
 
 It connects to the local isis server with UDP sockets and handles command and response traffic.
 
