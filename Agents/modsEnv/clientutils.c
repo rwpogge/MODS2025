@@ -96,6 +96,9 @@ void initEnvData(envdata_t *envi){
 
 */
 int initTelemetryData(envdata_t *envi){
+  std::shared_ptr<lbto::tel::ambassador> callBack(new TelemetryCallback());
+  lbto::tel::collection_manager::init(callBack);
+
   try{
     //Defining a telemetry stream with modlue name "mods" and stream name "modsenv".
     lbto::tel::telemeter_definer modsDefiner = lbto::tel::collection_manager::instance().make_telemeter_definer(

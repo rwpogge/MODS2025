@@ -215,6 +215,41 @@ typedef struct envData {
 
 extern envdata_t env;
 
+/*!
+  \brief A class which provides callback methods for Hdf5 output.
+
+  This class is used to initalize the telemetry library. The telemetry 
+  library is used to generate Hdf5 output files.
+*/
+class TelemetryCallback : public lbto::tel::ambassador{
+public:
+  TelemetryCallback(){}
+  ~TelemetryCallback(){}
+
+  lbto::tel::name get_name(){return lbto::tel::name("testing");}
+  std::string get_hdf_path_name(){return "./data";}
+  std::string get_leap_seconds_file_name(){return "./data/leap-seconds.list";}
+  std::string get_disk_buffer_dir(){return "/tmp";}
+  uint64_t get_disk_buffer_size(){return MAX_TELEMETRY_BUFFER_BYTES;}
+
+  void notice(const std::string msg){
+    printf("Telemetry Notice: %s\n", msg.c_str());
+  }
+
+  void handle_critical(const std::string msg){
+    printf("Telemetry Critical: %s\n", msg.c_str());
+  }
+
+  void notify_connected(const lbto::tel::name& telemeterName, const lbto::tel::system& system){
+    printf("%s collection connected to telemetry\n", std::string(telemeterName).c_str());
+  }
+
+  void notify_disconnected(const lbto::tel::name& telemeterName, const lbto::tel::system& system){
+    printf("%s collection disconnected to telemetry\n", std::string(telemeterName).c_str());
+  }
+};
+
+
 //----------------------------------
 //
 // IUB Power/Breaker State Addresses
