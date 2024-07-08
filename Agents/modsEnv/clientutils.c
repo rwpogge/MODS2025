@@ -77,6 +77,8 @@ void initEnvData(envdata_t *envi){
   envi->doLogging = 1;                      // enable enviromental data logging by default
   envi->useHdf5 = 0;                        // default: do not output enviornmental data to Hdf5
   strcpy(envi->logRoot,ENV_LOGS);
+  strcpy(envi->hdfRoot,HDF_LOGS);
+  strcpy(envi->leapSecondsFile,LEAP_SECONDS_FILE);
   strcpy(envi->logFile,"");
   strcpy(envi->lastDate,"");
   strcpy(envi->utcDate,"");
@@ -93,6 +95,8 @@ void initEnvData(envdata_t *envi){
 
   Initializes the lib-telemetry structures used for outputing telemetry data to an 
   HDF5 file. If HDF5 is being used, then this function is called on initalization.
+
+  This function can only be called once.
 
 */
 int initTelemetryData(envdata_t *envi){

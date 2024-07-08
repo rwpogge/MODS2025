@@ -287,6 +287,16 @@ loadConfig(char *cfgfile)
 	env.doLogging = 1;
       }
 
+      else if (strcasecmp(keyword,"HDFLOG")==0) {
+	GetArg(inStr,2,argStr);
+	strcpy(env.hdfRoot,argStr);
+      }
+
+      else if (strcasecmp(keyword,"LEAPSECONDSFILE")==0) {
+	GetArg(inStr,2,argStr);
+	strcpy(env.leapSecondsFile,argStr);
+      }
+
       // IUB: IP address of the Instrument Utility Box WAGO FieldBus controller
 
       else if (strcasecmp(keyword,"IUB")==0) {

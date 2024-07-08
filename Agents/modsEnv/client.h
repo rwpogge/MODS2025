@@ -24,7 +24,9 @@
 
 // Default enviromental log file path and rootname 
 
-#define ENV_LOGS   "/home/dts/Logs/Env/modsenv"
+#define ENV_LOGS "/home/dts/Logs/Env/modsenv"
+#define HDF_LOGS "/home/dts/Logs/Env/modsenv-hdf5"
+#define LEAP_SECONDS_FILE "/home/dts/Logs/Env/modsenv-hdf5/leap-seconds.list"
 
 // Default ISIS server information (see loadconfig.c if used)
 
@@ -191,7 +193,9 @@ typedef struct envData {
 
   // HDF5 logging information
 
-  int useHdf5;                                                 //!< Should HDF5 logs be created?  
+  int useHdf5;                        //!< Should HDF5 logs be created?  
+  char hdfRoot[MED_STR_SIZE];         //!< Full path/rootname of the HDF5 log directory
+  char leapSecondsFile[MED_STR_SIZE]; //!< Full path/rootname of the leap-seconds.list
 
   lbto::tel::float_measure::buf_proxy ambientTempMeasure;       //!< The numeric data in the telemetry stream
   lbto::tel::float_measure::buf_proxy glycolSupplyPresMeasure;
@@ -226,9 +230,9 @@ public:
   TelemetryCallback(){}
   ~TelemetryCallback(){}
 
-  lbto::tel::name get_name(){return lbto::tel::name("testing");}
-  std::string get_hdf_path_name(){return "./data";}
-  std::string get_leap_seconds_file_name(){return "./data/leap-seconds.list";}
+  lbto::tel::name get_name(){return lbto::tel::name("mods");}
+  std::string get_hdf_path_name(){return std::string(env.hdfRoot);}
+  std::string get_leap_seconds_file_name(){return std::string(env.leapSecondsFile);}
   std::string get_disk_buffer_dir(){return "/tmp";}
   uint64_t get_disk_buffer_size(){return MAX_TELEMETRY_BUFFER_BYTES;}
 
