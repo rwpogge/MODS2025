@@ -346,7 +346,12 @@ loadConfig(char *cfgfile)
       
       else if (strcasecmp(keyword,"USEHDF5")==0) {
 	env.useHdf5 = 1;
-      initTelemetryData(&env);  //If HDF5 is being used, telemetry data needs initalized.
+
+        //If HDF5 is being used, telemetry data needs initalized.
+        if(initTelemetryData(&env) != 0){
+          printf("Telemetry could not be started - hdf5 will not be used.\n");
+          env.useHdf5 = 0;
+        }  
       }
 
       // Debug: Enable runtime debugging out (superverbose mode)
