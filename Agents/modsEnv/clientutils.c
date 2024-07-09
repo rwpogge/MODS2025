@@ -99,11 +99,12 @@ void initEnvData(envdata_t *envi){
   This function can only be called once.
 
 */
-int initTelemetryData(envdata_t *envi){
-  std::shared_ptr<lbto::tel::ambassador> callBack(new TelemetryCallback());
-  lbto::tel::collection_manager::init(callBack);
-
+int initTelemetryData(envdata_t* envi){
   try{
+    //Initalizing telemetry.
+    std::shared_ptr<lbto::tel::ambassador> callBack(new TelemetryCallback());
+    lbto::tel::collection_manager::init(callBack);
+
     //Defining a telemetry stream with modlue name "mods" and stream name "modsenv".
     lbto::tel::telemeter_definer modsDefiner = lbto::tel::collection_manager::instance().make_telemeter_definer(
       lbto::tel::system(lbto::tel::name("mods")), lbto::tel::name("modsenv")
@@ -215,6 +216,22 @@ int initTelemetryData(envdata_t *envi){
   }
 
   return 0;
+}
+
+/*!
+  \brief Cleanly closes the telemetry data structures used for HDF5 output.
+
+  \param envi pointer to an #envdata_t data structure
+
+  If telemetry is being used this function should be called once before the program 
+  terminates.
+*/
+void closeTelemetryData(envdata_t* envi){
+  while(envi->modsCollector->count_buffered_samples() != 0){
+    sleep(1);
+  }
+
+  envi->modsCollector.reset();
 }
 
 /*!
@@ -576,6 +593,8 @@ int fileExists(char *fileName){
 
 */
 int logTelemetryData(envdata_t *envi){
+  time_t commitTime = time(NULL);
+
   try{    
     //Storing variable data in the streams.
     envi->ambientTempMeasure.store(envi->ambientTemp);
@@ -595,7 +614,7 @@ int logTelemetryData(envdata_t *envi){
     envi->trussBotTempMeasure.store(envi->trussBotTemp);
 
     //Commiting the data to the HDF5 file.
-    envi->modsCollector->commit_sample(lbto::tel::date::from_posix_utc_s(time(NULL)));    //TODO: Fix time stamps.
+    envi->modsCollector->commit_sample(lbto::tel::date::from_posix_utc_s(commitTime));    //TODO: Fix time stamps.
 
   //Catching exceptions thrown while sending lib-telemetry data to an output stream.
   }catch(lbto::tel::sample_dropped const& exn){

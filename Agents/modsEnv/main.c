@@ -377,7 +377,8 @@ main(int argc, char *argv[])
 
   logMessage(&env,(char *)"modsEnv agent shutting down");
 
-  if (env.logFD > 0) close(env.logFD);
+  if (env.logFD > 0) close(env.logFD);          //Closes the ascii log.
+  if (env.useHdf5) closeTelemetryData(&env);    //Closes the hdf5 log.
 
   // Remove the readline() callback handler
 

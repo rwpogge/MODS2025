@@ -26,7 +26,7 @@
 
 #define ENV_LOGS "/home/dts/Logs/Env/modsenv"
 #define HDF_LOGS "/home/dts/Logs/Env/modsenv-hdf5"
-#define LEAP_SECONDS_FILE "/home/dts/Logs/Env/modsenv-hdf5/leap-seconds.list"
+#define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"
 
 // Default ISIS server information (see loadconfig.c if used)
 
@@ -62,7 +62,7 @@
 #include <signal.h>
 #include <exception>
 
-#include <telcollection.hxx>  //LBT Telemetry Library
+#include <telcollection.hxx>  //LBTO Telemetry Library
 
 // In case the version and compilation data are not defined
 // at compilation, put in some placeholders to prevent code barfing
@@ -85,7 +85,7 @@
 #define MAXCFGLINE 128 //!< Maximum characters/line in runtime config files
 #endif
 
-#define MAX_TELEMETRY_BUFFER_BYTES 10000000
+#define MAX_TELEMETRY_BUFFER_BYTES 12000000
 
 
 // ISIS common client utilties library header
@@ -328,15 +328,16 @@ void SocketCommand(char *);   // process messages from the client socket (see co
 
 // Client utility routines (defined in clientutils.c)
 
-void initEnvData(envdata_t *);  // initialize the envdata_t struct
-int  initTelemetryData(envdata_t *);  //initlaize the telemetry structures in envdata_t if HDF5 will be used
-void printEnvData(envdata_t *); // print the contents of the envdata_t struct (engineering)
-int  getEnvData(envdata_t *);   // get environmental data from the sensor WAGOs
-int  initEnvLog(envdata_t *);   // initialize the enviromental data log
-int  logEnvData(envdata_t *);   // append data to the environmental data log
-int  logTelemetryData(envdata_t *);   // append data to the telemetry stream for the HDF5 file. 
-int  logMessage(envdata_t *, char *); // append a message (comment) to the data log
-int  fileExists(char *);        // test to see if a file exists
+void initEnvData(envdata_t *);          // initialize the envdata_t struct
+int  initTelemetryData(envdata_t *);    // initlaize the telemetry structures in envdata_t if HDF5 will be used
+void closeTelemetryData(envdata_t *);   // cleanly closes the telemetry structures in envdata_t if HDF5 was used
+void printEnvData(envdata_t *);         // print the contents of the envdata_t struct (engineering)
+int  getEnvData(envdata_t *);           // get environmental data from the sensor WAGOs
+int  initEnvLog(envdata_t *);           // initialize the enviromental data log
+int  logEnvData(envdata_t *);           // append data to the environmental data log
+int  logTelemetryData(envdata_t *);     // append data to the telemetry stream for the HDF5 file. 
+int  logMessage(envdata_t *, char *);   // append a message (comment) to the data log
+int  fileExists(char *);                // test to see if a file exists
 
 // Signal Handlers
 
