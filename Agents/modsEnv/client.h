@@ -211,19 +211,21 @@ void SocketCommand(char *);   // process messages from the client socket (see co
 
 // Client utility routines (defined in clientutils.c)
 
-void initEnvData(envdata_t *);          // initialize the envdata_t struct
+void initEnvData(envdata_t *);                                    // initialize the envdata_t struct
+void printEnvData(envdata_t *);                                   // print the contents of the envdata_t struct (engineering)
+int  getEnvData(envdata_t *);                                     // get environmental data from the sensor WAGOs
+void qc2vdc(uint16_t* rawData, float* outputData);                // converts raw qcell data into a DC voltage.
+void ptRTD2C(uint16_t* rawData, float* outputData, int numRtds);  // converts raw RTD data into a temperature.
+
+// Log utility routines (defined in logutils.c)
+
 int  initTelemetryData(envdata_t *);    // initlaize the telemetry structures in envdata_t if HDF5 will be used
 void closeTelemetryData(envdata_t *);   // cleanly closes the telemetry structures in envdata_t if HDF5 was used
-void printEnvData(envdata_t *);         // print the contents of the envdata_t struct (engineering)
-int  getEnvData(envdata_t *);           // get environmental data from the sensor WAGOs
+int  logTelemetryData(envdata_t *);     // append data to the telemetry stream for the HDF5 file. 
 int  initEnvLog(envdata_t *);           // initialize the enviromental data log
 int  logEnvData(envdata_t *);           // append data to the environmental data log
-int  logTelemetryData(envdata_t *);     // append data to the telemetry stream for the HDF5 file. 
 int  logMessage(envdata_t *, char *);   // append a message (comment) to the data log
 int  fileExists(char *);                // test to see if a file exists
-
-void qc2vdc(uint16_t* rawData, float* outputData);
-void ptRTD2C(uint16_t* rawData, float* outputData, int numRtds);
 
 // Signal Handlers
 
