@@ -55,9 +55,7 @@
    InstID  MODS1
    Cadence 60
    DataLog /home/dts/Logs/Env/mods1
-   IUB     192.168.139.122
-   IEB_R   192.168.139.100
-   IEB_B   192.168.139.110
+   HEB     192.168.139.122
 
    # Runtime flags 
    USEHDF5
@@ -297,35 +295,11 @@ loadConfig(char *cfgfile)
 	strcpy(env.leapSecondsFile,argStr);
       }
 
-      // IUB: IP address of the Instrument Utility Box WAGO FieldBus controller
+      // HEB: IP address of the Head Electronics Box WAGO FieldBus controller
 
-      else if (strcasecmp(keyword,"IUB")==0) {
+      else if (strcasecmp(keyword,"HEB")==0) {
 	GetArg(inStr,2,argStr);
-	strcpy(env.iub_Addr,argStr);
-      }
-
-      // IEB_R: IP address of the Red Channel Instrument Electronics Box (IEB)
-      //        WAGO FieldBus controller
-
-      else if (strcasecmp(keyword,"IEB_R")==0) {
-	GetArg(inStr,2,argStr);
-	strcpy(env.iebR_Addr,argStr);
-      }
-
-      // IEB_B: IP address of the Blue Channel Instrument Electronics Box (IEB)
-      //        WAGO FieldBus controller
-
-      else if (strcasecmp(keyword,"IEB_B")==0) {
-	GetArg(inStr,2,argStr);
-	strcpy(env.iebB_Addr,argStr);
-      }
-
-      // LLB: IP address of the Lamp/Laser Box (LLB)
-      //      WAGO FieldBus controller
-
-      else if (strcasecmp(keyword,"LLB")==0) {
-	GetArg(inStr,2,argStr);
-	strcpy(env.llb_Addr,argStr);
+	strcpy(env.heb_Addr,argStr);
       }
 
       // NoLog: Explicitly disable data logging

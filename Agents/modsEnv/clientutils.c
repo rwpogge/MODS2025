@@ -30,49 +30,12 @@ void initEnvData(envdata_t *envi){
   strcpy(envi->modsID,"None");
   envi->cadence = DEFAULT_CADENCE;  // default monitoring cadence (see client.h)
   envi->pause = 0;                  // start running (no pause)
-  strcpy(envi->iub_Addr,"");
+  strcpy(envi->heb_Addr,"");
   envi->ambientTemp = 0.0;
-  envi->glycolSupplyPres = 0.0;
-  envi->glycolReturnPres = 0.0;
-  envi->glycolSupplyTemp = 0.0;
-  envi->glycolReturnTemp = 0.0;
-  envi->utilBoxTemp = 0.0;     
-  envi->agwHSTemp = 0.0;       
-
-  envi->iebB_Switch  = 0;  
-  envi->iebB_Breaker = 0;
-  envi->iebR_Switch  = 0;  
-  envi->iebR_Breaker = 0;
-  envi->hebB_Switch  = 0;  
-  envi->hebB_Breaker = 0;
-  envi->hebR_Switch  = 0;  
-  envi->hebR_Breaker = 0;
-  envi->llb_Switch   = 0;   
-  envi->llb_Breaker  = 0; 
-  envi->gcam_Switch  = 0;  
-  envi->gcam_Breaker = 0;
-  envi->wfs_Switch   = 0;   
-  envi->wfs_Breaker  = 0; 
-
-  strcpy(envi->iebR_Addr,"");
-  envi->iebR_AirTemp = 0.0;
-  envi->iebR_ReturnTemp = 0.0;
-  envi->airTopTemp = 0.0; 
-  envi->airBotTemp = 0.0;
-
-  strcpy(envi->iebB_Addr,"");
-  envi->iebB_AirTemp = 0.0;
-  envi->iebB_ReturnTemp = 0.0;
-  envi->trussTopTemp = 0.0; 
-  envi->trussBotTemp = 0.0;
-
-  strcpy(envi->llb_Addr,"");
-  envi->irlaserState = 0;   
-  envi->irlaserPowerSet = 0.0;
-  envi->irlaserPowerOut = 0.0;
-  envi->irlaserBeam = 0;    
-  envi->irlaserTemp = 0.0;    
-  envi->irlaserTempSet = 0.0; 
+  envi->quadcell[0] = 0.0;
+  envi->quadcell[1] = 0.0;
+  envi->quadcell[2] = 0.0;
+  envi->quadcell[3] = 0.0;
 
   envi->doLogging = 1;                      // enable enviromental data logging by default
   envi->useHdf5 = 0;                        // default: do not output enviornmental data to Hdf5
@@ -107,7 +70,7 @@ int initTelemetryData(envdata_t* envi){
 
     //Defining a telemetry stream with modlue name "mods" and stream name "modsenv".
     lbto::tel::telemeter_definer modsDefiner = lbto::tel::collection_manager::instance().make_telemeter_definer(
-      lbto::tel::system(lbto::tel::name("mods")), lbto::tel::name("modsenv")
+      lbto::tel::system(lbto::tel::name("tel")), lbto::tel::name("mods")
     );
 
     //Adding measures to the telemetry.
@@ -115,91 +78,31 @@ int initTelemetryData(envdata_t* envi){
       envi->ambientTempMeasure, 
       lbto::tel::unit::celsius(), 
       lbto::tel::name("ambientTemp"),
-      lbto::tel::description("Outside ambient air temperature in degrees C")
+      lbto::tel::description("Temperature from the in-box sensor.")
     ));
     modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolSupplyPresMeasure, 
-      lbto::tel::unit::kilopascal(), 
-      lbto::tel::name("glycolSupplyPres"),
-      lbto::tel::description("Instrument glycol supply pressure in psi-g")
+      envi->quadcellMeasure[0], 
+      lbto::tel::unit::volt(), 
+      lbto::tel::name("quadcellreading0"),
+      lbto::tel::description("Readings from the quadcell.")
     ));
     modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolReturnPresMeasure, 
-      lbto::tel::unit::kilopascal(), 
-      lbto::tel::name("glycolReturnPres"),
-      lbto::tel::description("Instrument glycol return pressure in psi-g")
+      envi->quadcellMeasure[1], 
+      lbto::tel::unit::volt(), 
+      lbto::tel::name("quadcellreading1"),
+      lbto::tel::description("Readings from the quadcell.")
     ));
     modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolSupplyTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("glycolSupplyTemp"),
-      lbto::tel::description("Instrument glycol supply temperature in degrees C")
+      envi->quadcellMeasure[2], 
+      lbto::tel::unit::volt(), 
+      lbto::tel::name("quadcellreading2"),
+      lbto::tel::description("Readings from the quadcell.")
     ));
     modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolReturnTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("glycolReturnTemp"),
-      lbto::tel::description("Instrument glycol return temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->utilBoxTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("utilBoxTemp"),
-      lbto::tel::description("IUB inside-box air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->agwHSTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("agwHSTemp"),
-      lbto::tel::description("AGw camera controller heat sink temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebBAirTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebB_AirTemp"),
-      lbto::tel::description("Blue IEB box air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebBReturnTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebB_ReturnTemp"),
-      lbto::tel::description("Blue IEB glycol return temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebRAirTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebR_AirTemp"),
-      lbto::tel::description("Red IEB box air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebRReturnTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebR_ReturnTemp"),
-      lbto::tel::description("Red IEB glycol return temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->airTopTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("airTopTemp"),
-      lbto::tel::description("MODS instrument Top inside air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->airBotTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("airBotTemp"),
-      lbto::tel::description("MODS instrument Bottom inside air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->trussTopTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("trussTopTemp"),
-      lbto::tel::description("MODS collimator truss tube Top temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->trussBotTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("trussBotTemp"),
-      lbto::tel::description("MODS collimator truss tube Bottom temperature in degrees C")
+      envi->quadcellMeasure[3], 
+      lbto::tel::unit::volt(), 
+      lbto::tel::name("quadcellreading3"),
+      lbto::tel::description("Readings from the quadcell.")
     ));
 
     //Adding this definition to the telemetry store.
@@ -249,33 +152,15 @@ void printEnvData(envdata_t *envi){
 
   printf("Enviromental Monitor Agent Info:\n");
   printf("  Instrument: %s\n",envi->modsID);
-  printf("  Blue IEB WAGO IP Address: %s\n",envi->iebB_Addr);
-  printf("   Red IEB WAGO IP Address: %s\n",envi->iebR_Addr);
-  printf("       IUB WAGO IP Address: %s\n",envi->iub_Addr);
+  printf("      HEB WAGO IP Address: %s\n",envi->heb_Addr);
   printf("  Monitor Status: %s\n",(envi->pause) ? "PAUSED" : "Active");
   printf("  Sampling Cadence: %d seconds\n",envi->cadence);
   printf("  Data Logging: %s\n",(envi->doLogging) ? "Enabled" : "Disabled");
-  if (envi->logFD == 0)
-    printf("  Data Log File: CLOSED\n");
-  else
-    printf("  Data Log File: %s\n",envi->logFile);
+  envi->logFD == 0 ? printf("  Data Log File: CLOSED\n") : printf("  Data Log File: %s\n",envi->logFile);
   printf("Most Recent Sensor Data:\n");
   printf("  Date/Time: UTC %s\n",envi->utcDate);
   printf("  Ambient Temp: %.1f C\n",envi->ambientTemp);
-  printf("  Glycol Supply: P=%.1f psi-g  T=%.1f C\n",
-	 envi->glycolSupplyPres,envi->glycolSupplyTemp);
-  printf("         Return: P=%.1f psi-g  T=%.1f C\n",
-	 envi->glycolReturnPres,envi->glycolReturnTemp);
-  printf("  IEB Air: Red=%.1f Blue=%.1f C\n",
-	 envi->iebR_AirTemp, envi->iebB_AirTemp);
-  printf("   Glycol: Red=%.1f Blue_B=%.1f C\n",
-	 envi->iebR_ReturnTemp, envi->iebB_ReturnTemp);
-  printf("  IUB Air: %.1f C   HeatSink: %.1f C\n",
-	 envi->utilBoxTemp, envi->agwHSTemp);
-  printf("  Instrument Air Temp: Top=%.1f Bot=%.1f C\n",
-	 envi->airTopTemp, envi->airBotTemp);
-  printf("  Instrument Truss Temp: Top=%.1f Bot=%.1f C\n",
-	 envi->trussTopTemp, envi->trussBotTemp);
+  printf("  Quadcell: 1:%f 2:%f 3:%f 4:%f\n", envi->quadcell[0], envi->quadcell[1], envi->quadcell[2], envi->quadcell[3]);
   printf("Client Info:\n");
   printf("  Mode: %s\n",(client.useISIS) ? "ISIS client" : "Standalone");
   printf("  ISIS Host: %s (%s:%d)\n",client.ID,client.Host,client.Port);
@@ -299,99 +184,18 @@ void printEnvData(envdata_t *envi){
 */
 int getEnvData(envdata_t *envi) {
   int ierr;
-  uint16_t iubData[10];   // raw IUB WAGO data array
-  uint16_t iebRData[10];  // raw Red IEB WAGO data array
-  uint16_t iebBData[10];  // raw Blue IEB WAGO data array
-  uint16_t llbData[10];   // raw Blue IEB WAGO data array
-  int iubPower   = 0;     // IUB AC power request status word
-  int iubBreaker = 0;     // IUB AC power breaker status word
+  uint16_t hebData[5];  // raw HEB WAGO data array
 
-  // Get data from the IUB environmental sensors
-  ierr = wagoSetGet(0,envi->iub_Addr,1,10,iubData);
+  // Get data from the HEB environmental sensors
+  ierr = wagoSetGet(0,envi->heb_Addr,0,5,hebData);
   if (ierr != 0) {
-    if (useCLI) printf("WARNING: %s IUB WAGO read error",envi->modsID);
+    if (useCLI) printf("WARNING: %s HEB WAGO read error",envi->modsID);
     return ierr;
   }
 
-  envi->glycolSupplyPres = (float)iubData[0]/327.64;
-  envi->glycolReturnPres = (float)iubData[1]/327.64;
-  envi->glycolSupplyTemp = (float)iubData[4]/10.0;
-  envi->glycolReturnTemp = (float)iubData[5]/10.0;
-  envi->agwHSTemp   = (float)iubData[6]/10.0;
-  envi->utilBoxTemp = (float)iubData[7]/10.0;
-  envi->ambientTemp = (float)iubData[8]/10.0;
-
-  // Get the IUB AC power control status data
-  ierr = wagoSetGet(0,envi->iub_Addr,513,1,iubData);
-  if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s IUB WAGO error reading power status word",envi->modsID);
-  }
-  else {
-    iubPower = iubData[0];
+  qc2vdc(hebData, envi->quadcell);
+  ptRTD2C(hebData+4, &(envi->ambientTemp), 1);
   
-    // On/Off state depends on the wiring of the AC power switching
-    // relay: normally-open (OFF on mains power up) or normally-closed
-    // (ON on mains power up)
-    envi->iebR_Switch = ((iubPower & IEB_R_POWER) != IEB_R_POWER); // normally closed
-    envi->iebB_Switch = ((iubPower & IEB_B_POWER) != IEB_B_POWER); // normally closed
-    envi->hebR_Switch = ((iubPower & HEB_R_POWER) == HEB_R_POWER); // normally OPEN
-    envi->hebB_Switch = ((iubPower & HEB_B_POWER) == HEB_B_POWER); // normally OPEN
-    envi->gcam_Switch = ((iubPower & GCAM_POWER)  == GCAM_POWER);  // normally OPEN
-    envi->wfs_Switch  = ((iubPower & WFS_POWER)   == WFS_POWER);   // normally OPEN
-    envi->llb_Switch  = ((iubPower & LLB_POWER)   != LLB_POWER);   // normally closed
-  }
-  
-  // Get the IUB AC power breaker output side current sensor data
-  ierr = wagoSetGet(0,envi->iub_Addr,11,1,iubData);
-  if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s cannot read IUB breaker output status",envi->modsID);
-  }
-  else {
-    iubBreaker = iubData[0];
-    envi->iebR_Breaker = ((iubBreaker & IEB_R_BREAKER) == IEB_R_BREAKER);
-    envi->iebB_Breaker = ((iubBreaker & IEB_B_BREAKER) == IEB_B_BREAKER);
-    envi->hebR_Breaker = ((iubBreaker & HEB_R_BREAKER) == HEB_R_BREAKER);
-    envi->hebB_Breaker = ((iubBreaker & HEB_B_BREAKER) == HEB_B_BREAKER);
-    envi->gcam_Breaker = ((iubBreaker & GCAM_BREAKER)  == GCAM_BREAKER);
-    envi->wfs_Breaker  = ((iubBreaker & WFS_BREAKER)   == WFS_BREAKER);
-    envi->llb_Breaker  = ((iubBreaker & LLB_BREAKER)   == LLB_BREAKER);
-  }
-  
-  // Get data from the Red IEB environmental sensors
-  ierr = wagoSetGet(0,envi->iebR_Addr,1,10,iebRData);
-  if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s Red IEB WAGO read error",envi->modsID);
-  }
-  else {
-    envi->iebR_AirTemp = (float)iebRData[4]/10.0;
-    envi->iebR_ReturnTemp = (float)iebRData[5]/10.0;
-    envi->airTopTemp = (float)iebRData[6]/10.0;
-    envi->airBotTemp = (float)iebRData[7]/10.0;
-  }
-  
-  // Get data from the Blue IEB environmental sensors
-  ierr = wagoSetGet(0,envi->iebB_Addr,1,10,iebBData);
-  if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s Blue WAGO IEB read error",envi->modsID);
-  }
-  else {
-    envi->iebB_AirTemp = (float)iebBData[4]/10.0;
-    envi->iebB_ReturnTemp = (float)iebBData[5]/10.0;
-    envi->trussTopTemp = (float)iebBData[6]/10.0;
-    envi->trussBotTemp = (float)iebBData[7]/10.0;
-  }
-  
-  // In the future, might put IR laser state info here, but laser
-  // control logic is complicated...
-  //
-  // Addresses we need:
-  //  IR Laser Power Out: 2
-  //  IR Laser Temp Set Point: 3
-  //  IR Laser Temp: 4
-  //  IR Laser Power Set Point: 514
-  //  LLBONOFF: 517
-  //
-
   // Get the UTC date/time of the query (ISIS client utility routine)
   strcpy(envi->utcDate,ISODate());
 
@@ -453,8 +257,7 @@ int initEnvLog(envdata_t *envi){
     ierr = write(envi->logFD,logStr,strlen(logStr));
 
     memset(logStr,0,sizeof(logStr));
-    sprintf(logStr,"# UTC Date/Time      Tamb  Psup  Pret  Tsup  Tret  Tiub"
-	    "  Tagw  Bair  Bret  Rair  Rret  AirT  AirB  ColT  ColB\n");
+    sprintf(logStr,"# UTC Date/Time      Tamb Qcl0     Qcl1     Qcl2     Qcl3\n");
     ierr = write(envi->logFD,logStr,strlen(logStr));
   }
   return 0;
@@ -491,16 +294,9 @@ int logEnvData(envdata_t *envi){
 
   // Append the current enviromental sensor data to the data log
   memset(logStr,0,sizeof(logStr));
-  sprintf(logStr,"%s %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f"
-	  " %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f\n",
-	  envi->utcDate, envi->ambientTemp,
-	  envi->glycolSupplyPres, envi->glycolReturnPres,
-	  envi->glycolSupplyTemp, envi->glycolReturnTemp,
-	  envi->utilBoxTemp, envi->agwHSTemp,
-	  envi->iebB_AirTemp, envi->iebB_ReturnTemp,
-	  envi->iebR_AirTemp, envi->iebR_ReturnTemp,
-	  envi->airTopTemp, envi->airBotTemp,
-	  envi->trussTopTemp, envi->trussBotTemp);
+  sprintf(logStr,"%s %5.1f %5.5f, %5.5f, %5.5f, %5.5f\n", 
+    envi->utcDate, envi->ambientTemp, envi->quadcell[0], envi->quadcell[1], envi->quadcell[2], envi->quadcell[3]
+  );
   ierr = write(envi->logFD,logStr,strlen(logStr));
   
   return 0;
@@ -598,20 +394,7 @@ int logTelemetryData(envdata_t *envi){
   try{    
     //Storing variable data in the streams.
     envi->ambientTempMeasure.store(envi->ambientTemp);
-    envi->glycolSupplyPresMeasure.store(envi->glycolSupplyPres);
-    envi->glycolReturnPresMeasure.store(envi->glycolReturnPres);
-    envi->glycolSupplyTempMeasure.store(envi->glycolSupplyTemp);
-    envi->glycolReturnTempMeasure.store(envi->glycolReturnTemp);
-    envi->utilBoxTempMeasure.store(envi->utilBoxTemp);
-    envi->agwHSTempMeasure.store(envi->agwHSTemp);
-    envi->iebBAirTempMeasure.store(envi->iebB_AirTemp);
-    envi->iebBReturnTempMeasure.store(envi->iebB_ReturnTemp);
-    envi->iebRAirTempMeasure.store(envi->iebR_AirTemp);
-    envi->iebRReturnTempMeasure.store(envi->iebR_ReturnTemp);
-    envi->airTopTempMeasure.store(envi->airTopTemp);
-    envi->airBotTempMeasure.store(envi->airBotTemp);
-    envi->trussTopTempMeasure.store(envi->trussTopTemp);
-    envi->trussBotTempMeasure.store(envi->trussBotTemp);
+    for(int i=0; i<4; i++) envi->quadcellMeasure[i].store(envi->quadcell[i]);
 
     //Commiting the data to the HDF5 file.
     envi->modsCollector->commit_sample(lbto::tel::date::from_posix_utc_s(commitTime));    //TODO: Fix time stamps.
@@ -629,4 +412,32 @@ int logTelemetryData(envdata_t *envi){
   }
 
   return 0;
+}
+
+//Converts an array of raw quadcell data into its equivalent DC voltage.
+void qc2vdc(uint16_t* rawData, float* outputData){
+  for(int i=0; i<4; i++){
+    int posMax = pow(2, 15) - 1;
+    int negMin = pow(2, 16) - 2;
+    
+    if(rawData[i] > posMax)
+        outputData[i] = 10.0*((rawData[i]-negMin)/posMax);
+    else
+        outputData[i] = 10.0*((float)rawData[i]/posMax);
+  }
+}
+
+//Converts an array of raw RTD data into its equivalent Temperature.
+void ptRTD2C(uint16_t* rawData, float* outputData, int numRtds){
+  float tempRes = 0.1;
+  float tempMax = 850.0;
+  float wrapT = tempRes*(pow(2.0, 16)-1);
+    
+  for(int i=0; i<numRtds; i++){
+      float temp = tempRes*rawData[i];
+      if (temp > tempMax)
+        temp -= wrapT;
+      
+      outputData[i] = temp;
+  }
 }
