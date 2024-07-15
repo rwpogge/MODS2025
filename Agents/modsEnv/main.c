@@ -42,6 +42,8 @@
   resume	 - Resume monitoring after a PAUSE
   log <enable|disable> - Enable/Disable enviromental sensor data logging
   logging <enable|disable> - Enable/Disable enviromental sensor data logging
+  hdflog <enable|disable> - Enable/Disable hdf formatted telemetry logging
+  hdflogging <enable|disable> - Enable/Disable hdf formatted telemetry logging
   comment \<message\> - Append a comment to the log
   config	 - Report agent configuration [engineering]
   help \<cmd\>	 - Help command (alias: ? \<cmd\>)
@@ -166,7 +168,7 @@ main(int argc, char *argv[])
     printf("\nUnable to load config file %s - modsenv aborting\n",client.rcFile);
     exit(1);
   }
-  
+
   // So far so good, give the welcome information
   
   if (useCLI) {
@@ -205,6 +207,15 @@ main(int argc, char *argv[])
   else
     printf("Started modsenv as standalone agent %s on %s port %d\n",
 	   client.ID, client.Host, client.Port);
+
+  //Hdf telemetry data needs initalized.
+
+  if(env.useHdf5){
+    if(initTelemetryData(&env) != 0){
+      printf("Telemetry could not be started - hdf5 will not be used.\n");
+      env.useHdf5 = 0;
+    }
+  }
 
   // All set to rock-n-roll...
 
@@ -373,7 +384,7 @@ main(int argc, char *argv[])
   logMessage(&env,(char *)"modsEnv agent shutting down");
 
   if (env.logFD > 0) close(env.logFD);          //Closes the ascii log.
-  if (env.useHdf5) closeTelemetryData(&env);    //Closes the hdf5 log.
+  closeTelemetryData(&env);                     //Closes the hdf5 log.
 
   // Remove the readline() callback handler
 

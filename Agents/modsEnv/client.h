@@ -142,7 +142,8 @@ typedef struct envData {
 
   // HDF5 logging information
 
-  int useHdf5;                        //!< Should HDF5 logs be created?  
+  int hdfInitalized;                  //!< The first time hdf is used, it needs to be initalized.
+  int useHdf5;                        //!< Should HDF5 logs be created?
   char hdfRoot[MED_STR_SIZE];         //!< Full path/rootname of the HDF5 log directory
   char leapSecondsFile[MED_STR_SIZE]; //!< Full path/rootname of the leap-seconds.list
 

@@ -22,11 +22,13 @@
 
   Initializes the lib-telemetry structures used for outputing telemetry data to an 
   HDF5 file. If HDF5 is being used, then this function is called on initalization.
-
-  This function can only be called once.
+  If HDF5 is activated, then this function is called.
 
 */
 int initTelemetryData(envdata_t* envi){
+  if(envi->hdfInitalized) return 0;
+  envi->hdfInitalized = 1;
+
   try{
     //Initalizing telemetry.
     std::shared_ptr<lbto::tel::ambassador> callBack(new TelemetryCallback());
@@ -94,6 +96,8 @@ int initTelemetryData(envdata_t* envi){
   terminates.
 */
 void closeTelemetryData(envdata_t* envi){
+  if(!envi->hdfInitalized) return;
+  
   while(envi->modsCollector->count_buffered_samples() != 0){
     sleep(1);
   }

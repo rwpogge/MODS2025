@@ -339,11 +339,13 @@ cmd_info(char *args, MsgType msgtype, char *reply)
   // Environmental Monitor information
 
   sprintf(reply,"%s InstID=%s Cadence=%d HEBAddr=%s"
-	  " runState=%s Logging=%s logFile=%s",
+	  " runState=%s Logging=%s logFile=%s HdfLogging=%s HdfLogDir=%s",
 	  reply,env.modsID,env.cadence,env.heb_Addr,
 	  ((env.pause) ? "Paused" : "Active"),
 	  ((env.doLogging) ? "Enabled" : "Disabled"),
-	  env.logFile
+	  env.logFile,
+    ((env.useHdf5) ? "Enabled" : "Disabled"),
+    env.hdfRoot
   );
 
   // Report application runtime flags
@@ -778,6 +780,62 @@ cmd_logging(char *args, MsgType msgtype, char *reply)
   sprintf(reply,"Logging=%s logFile=%s runState=%s",
 	  ((env.doLogging) ? "Enabled" : "Disabled"),
 	  env.logFile,
+	  ((env.pause) ? "Paused" : "Active"));
+  return CMD_OK;
+}
+
+/*!  
+  \brief hdflog command - enable/disable hdf data logging
+  \param args string with the command-line arguments
+  \param msgtype message type if the command was sent as an IMPv2 message
+  \param reply string to contain the command return reply
+  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
+  an error message.
+
+  \par Usage:
+  hdflog [enable|disable]
+
+  Enables or disabled instrument sensor data logging in the hdf format.  
+  If given with no arguments, it reports the current hdf logging state.  
+  Note that the logging state does not affect the pause/resume run state 
+  of the data monitor.
+
+  We recognize ON and OFF as aliases for ENABLE and DISABLE.
+
+  \sa cmd_pause(), cmd_resume()
+*/
+
+int
+cmd_hdf_logging(char *args, MsgType msgtype, char *reply)
+{
+  char argBuf[32];
+
+  if (strlen(args) > 0) {
+    GetArg(args,1,argBuf);
+    if (strcasecmp(argBuf,"ENABLE")==0 || strcasecmp(argBuf,"ON")==0) {
+      env.useHdf5 = 1;
+
+      if(initTelemetryData(&env) == 0){
+        logMessage(&env,"Hdf sensor data logging enabled");
+      }else{
+        printf("Telemetry could not be started - hdf5 will not be used.\n");
+        env.useHdf5 = 0;
+      }
+      
+    }
+    else if (strcasecmp(argBuf,"DISABLE")==0 || strcasecmp(argBuf,"OFF")==0) {
+      logMessage(&env,"Hdf sensor data logging disabled");
+      env.useHdf5 = 0;
+    }
+    else {
+      sprintf("Unrecognized argument '%s' - usage: logging [enable|disable]",
+	      args);
+      return CMD_ERR;
+    }
+  }
+  sprintf(reply,"HdfLogging=%s HdflogDir=%s runState=%s",
+	  ((env.useHdf5) ? "Enabled" : "Disabled"),
+	  env.hdfRoot,
 	  ((env.pause) ? "Paused" : "Active"));
   return CMD_OK;
 }

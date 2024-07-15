@@ -39,6 +39,7 @@ void initEnvData(envdata_t *envi){
 
   envi->doLogging = 1;                      // enable enviromental data logging by default
   envi->useHdf5 = 0;                        // default: do not output enviornmental data to Hdf5
+  envi->hdfInitalized = 0;
   strcpy(envi->logRoot,ENV_LOGS);
   strcpy(envi->hdfRoot,HDF_LOGS);
   strcpy(envi->leapSecondsFile,LEAP_SECONDS_FILE);
@@ -69,6 +70,8 @@ void printEnvData(envdata_t *envi){
   printf("  Sampling Cadence: %d seconds\n",envi->cadence);
   printf("  Data Logging: %s\n",(envi->doLogging) ? "Enabled" : "Disabled");
   envi->logFD == 0 ? printf("  Data Log File: CLOSED\n") : printf("  Data Log File: %s\n",envi->logFile);
+  printf("  Hdf Logging: %s\n",(envi->useHdf5) ? "Enabled" : "Disabled");
+  envi->useHdf5 == 0 ? printf("  Hdf Log Dir: CLOSED\n") : printf("  Hdf Log Dir: %s\n",envi->hdfRoot);
   printf("Most Recent Sensor Data:\n");
   printf("  Date/Time: UTC %s\n",envi->utcDate);
   printf("  Ambient Temp: %.1f C\n",envi->ambientTemp);

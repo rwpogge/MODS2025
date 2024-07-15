@@ -34,6 +34,8 @@ int cmd_cadence (char *, MsgType, char *);  // Query/Set the monitoring cadence 
 int cmd_pause   (char *, MsgType, char *);  // Pause monitoring
 int cmd_resume  (char *, MsgType, char *);  // Resume monitoring
 int cmd_logging (char *, MsgType, char *);  // Enable/Disable/Query the data logging state
+int cmd_hdf_logging (char *, MsgType, char *); // Enable/Disable/Query the hdf data logging state
+int cmd_hdf_log (char *, MsgType, char *);  // Enable/Disable/Query the hdf data logging state
 int cmd_config  (char *, MsgType, char *);  // Print the agent config info (engineering)
 int cmd_comment (char *, MsgType, char *);  // Append a comment to the log
 
@@ -92,6 +94,8 @@ cmdtab[] = {   //!< global scope command table for this application
   {"resume"  ,cmd_resume  ,"resume","Resume monitoring after a PAUSE"},
   {"log"     ,cmd_logging ,"log <enable|disable>","Enable/Disable enviromental sensor data logging"},
   {"logging" ,cmd_logging ,"logging <enable|disable>","Enable/Disable enviromental sensor data logging"},
+  {"hdflog"  ,cmd_hdf_logging ,"hdflog <enable|disable>","Enable/Disable hdf formatted telemetry logging"},
+  {"hdflogging" ,cmd_hdf_logging ,"hdflogging <enable|disable>","Enable/Disable hdf formatted telemetry logging"},
   {"comment" ,cmd_comment ,"comment <message>","Append a comment to the log"},
   {"config"  ,cmd_config  ,"config","Report agent configuration [engineering]"},
   {"help"    ,cmd_help    ,"help <cmd>","Help command (alias: ? <cmd>)"},
