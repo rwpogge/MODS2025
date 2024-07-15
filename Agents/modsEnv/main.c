@@ -30,15 +30,15 @@
   <pre>
   quit     - Terminate the client session
   verbose	 - Toggle verbose output mode on/off
-  debug		 - Toggle super-verbose debugging output mode on/off
+  debug    - Toggle super-verbose debugging output mode on/off
   history	 - Show the command history (console only)
-  info		 - Report client session runtime info
+  info     - Report client session runtime info
   status	 - Report the client runtime status (alias for info)
   version	 - Report the client version and compilation time
   estatus	 - Report the current MODS environmental sensor status
   pstatus  - Report the current MODS AC power control system sensor status
   cadence	 - Set/Query the monitoring cadence in seconds
-  pause		 - Pause monitoring (see RESUME)
+  pause    - Pause monitoring (see RESUME)
   resume	 - Resume monitoring after a PAUSE
   log <enable|disable> - Enable/Disable enviromental sensor data logging
   logging <enable|disable> - Enable/Disable enviromental sensor data logging
