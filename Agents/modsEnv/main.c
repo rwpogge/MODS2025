@@ -28,7 +28,7 @@
 
   These are the interactive commands for modsenv:
   <pre>
-  quit		 - Terminate the client session
+  quit     - Terminate the client session
   verbose	 - Toggle verbose output mode on/off
   debug		 - Toggle super-verbose debugging output mode on/off
   history	 - Show the command history (console only)
@@ -36,6 +36,7 @@
   status	 - Report the client runtime status (alias for info)
   version	 - Report the client version and compilation time
   estatus	 - Report the current MODS environmental sensor status
+  pstatus  - Report the current MODS AC power control system sensor status
   cadence	 - Set/Query the monitoring cadence in seconds
   pause		 - Pause monitoring (see RESUME)
   resume	 - Resume monitoring after a PAUSE
@@ -75,13 +76,7 @@
   This application uses the ISISclient library for UDP socket
   communications and IMPv2 message processing and creation.
 
-  \section Mods Modification History
-
-<pre>
-2010 Jun 21 - new client application
-2010 Dec 15 - introduced UseTTY for non-interactive (background)
-              operation [rwp/osu]
-</pre>
+  Release notes are tracked in the [releases.md](releases.md) file.
 
 */
 

@@ -1,3 +1,10 @@
+/*!
+  \file modbusutils.h
+  \brief Utility functions for working with libmodbus and WAGO fieldbus controllers.
+
+  \date 2024 July 15
+*/
+
 #ifndef MODBUSUTILS_H
     //libmodbus include file.
     #include <modbus.h>

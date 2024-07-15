@@ -30,3 +30,6 @@ The `libtelemetry` dependency requires an updated version of the `leap-seconds.l
 Run the executable with the following optional command line arguments.
 - `./modsenv <rcfile>`
 - `./modsenv`
+
+## Doxygen Documentation
+Generate the documentation by running the `doxygen` command from the modsEnv directory.

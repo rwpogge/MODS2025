@@ -1,5 +1,7 @@
 /.vscode/
-*.o
 /data/
+/doc/
+
+*.o
 
 modsenv

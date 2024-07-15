@@ -115,7 +115,12 @@ int getEnvData(envdata_t *envi) {
   return 0;
 }
 
-//Converts an array of raw quadcell data into its equivalent DC voltage.
+/*!
+  \brief Converts an array of raw quadcell data into its equivalent DC voltage.
+
+  \param rawData an array of data as collected from the WAGO.
+  \param outputData a pointer to the float array which should be filled with DC voltage.
+*/
 void qc2vdc(uint16_t* rawData, float* outputData){
   for(int i=0; i<4; i++){
     int posMax = pow(2, 15) - 1;
@@ -128,7 +133,13 @@ void qc2vdc(uint16_t* rawData, float* outputData){
   }
 }
 
-//Converts an array of raw RTD data into its equivalent temperature.
+/*!
+  \brief Converts an array of raw RTD data into its equivalent temperature.
+
+  \param rawData an array of data as collected from the WAGO.
+  \param outputData a pointer to the float array which should be filled with temperatures.
+  \param numRtds the number of RTD readings in the rawData array.
+*/
 void ptRTD2C(uint16_t* rawData, float* outputData, int numRtds){
   float tempRes = 0.1;
   float tempMax = 850.0;

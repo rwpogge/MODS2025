@@ -1,25 +1,25 @@
-//
-// modbusutils - Methods used to interface with the WAGO module are contained in this file.
-//
+/*!
+  \file modbusutils.c
+  \brief Utility functions for working with libmodbus and WAGO fieldbus controllers.
+
+  \date 2024 July 15
+*/
 
 #include "modbusutils.h"
 
-//---------------------------------------------------------------------------
-//
-// wagoSetGet() function
-//
-// Write (set) or read (get) data from WAGO modbus registers
-//
-// @param setGet (int) 1 = set (write), 0 = get (read)
-// @param regAddr (int) register address (range: 1 - 0x10000)
-// @param regLen (int) register length = number of data values (range: 1-100)
-// @param regData (uint16) array of data to write or read
-// @return 0 on send success, value or error code on faults
-//
-// This version rewritten for libmodbus to replace defunct and
-// unsupported proprietary FieldTalk code. [rwp/osu - 2024 Feb 20]
-//
-//---------------------------------------------------------------------------
+/*!
+  \brief Write (set) or read (get) data from WAGO modbus registers
+
+  \param setget  (int) 1 = set (write), 0 = get (read)
+  \param regAddr (int) register address (range: 1 - 0x10000)
+  \param regLen  (int) register length = number of data values (range: 1-100)
+  \param regData (uint16) array of data to write or read
+
+  \return 0 on send success, value or error code on faults
+
+  This version rewritten for libmodbus to replace defunct and unsupported proprietary 
+  FieldTalk code. [rwp/osu - 2024 Feb 20]
+*/
 int wagoSetGet(int setGet, char *wagoAddr, int regAddr, int regLen, uint16_t regData[]){
   char responseBufSz[256];
   short readArr[1];

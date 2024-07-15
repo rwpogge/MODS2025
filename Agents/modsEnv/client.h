@@ -8,10 +8,12 @@
 /*!
   \file client.h
   \brief MODS Environmental Monitor Agent Client Application Header
+  \date 2010 June 21
 
   ISIS client application header for the modsenv application.
 
-  \date 2010 June 21
+  Encapsulates the various sensor readings derived from the MODS
+  instrument controller system.
 */
 
 // Various site-dependent but system-independent default values 
@@ -22,11 +24,11 @@
 #define DEFAULT_MYPORT    10901 //!< default client socket port   
 #define DEFAULT_RCFILE    (char *)"./modsenv.ini" //!< default client runtime config file
 
-// Default enviromental log file path and rootname 
 
-#define ENV_LOGS "/home/dts/Logs/Env/modsenv"
-#define HDF_LOGS "/home/dts/Logs/Env/modsenv-hdf5"
-#define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"
+#define ENV_LOGS "/home/dts/Logs/Env/modsenv"       //!< Default enviromental log file path and rootname
+#define HDF_LOGS "/home/dts/Logs/Env/modsenv-hdf5"  //!< Default hdf5 telemetry log file path
+
+#define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"  //!< Default path to the leap-seconds.list file.
 
 // Default ISIS server information (see loadconfig.c if used)
 
@@ -85,7 +87,7 @@
 #define MAXCFGLINE 128 //!< Maximum characters/line in runtime config files
 #endif
 
-#define MAX_TELEMETRY_BUFFER_BYTES 12000000
+#define MAX_TELEMETRY_BUFFER_BYTES 12000000 //!< Maximum number of bytes that the lbt telemetry collector can use to store samples.
 
 
 // ISIS common client utilties library header
@@ -109,16 +111,11 @@ extern isisclient_t client; // global client runtime config table
 #include <isl_shmaddr.h>
 */
 
-/*!
-  \brief MODS instrument environmental sensor data structure
-
-  Encapsulates the various sensor readings derived from the MODS
-  instrument controller system.
-
-*/
-
 #define DEFAULT_CADENCE  300   //!< default monitoring cadence in seconds
 
+/*!
+  \brief A struct which holds all of the enviornment and telemetry data for this modsEnv instance.
+*/
 typedef struct envData {
 
   char  modsID[8];   //!< MODS instrument ID (MODS1 or MODS2)
