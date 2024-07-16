@@ -44,31 +44,91 @@ int initTelemetryData(envdata_t* envi){
       envi->ambientTempMeasure, 
       lbto::tel::unit::celsius(), 
       lbto::tel::name("ambientTemp"),
-      lbto::tel::description("Temperature from the in-box sensor.")
+      lbto::tel::description("Outside ambient air temperature in degrees C")
     ));
     modsDefiner.add_child(lbto::tel::float_measure(
-      envi->quadcellMeasure[0], 
-      lbto::tel::unit::volt(), 
-      lbto::tel::name("quadcellreading0"),
-      lbto::tel::description("Readings from the quadcell.")
+      envi->glycolSupplyPresMeasure, 
+      lbto::tel::unit::kilopascal(), 
+      lbto::tel::name("glycolSupplyPres"),
+      lbto::tel::description("Instrument glycol supply pressure in psi-g")
     ));
     modsDefiner.add_child(lbto::tel::float_measure(
-      envi->quadcellMeasure[1], 
-      lbto::tel::unit::volt(), 
-      lbto::tel::name("quadcellreading1"),
-      lbto::tel::description("Readings from the quadcell.")
+      envi->glycolReturnPresMeasure, 
+      lbto::tel::unit::kilopascal(), 
+      lbto::tel::name("glycolReturnPres"),
+      lbto::tel::description("Instrument glycol return pressure in psi-g")
     ));
     modsDefiner.add_child(lbto::tel::float_measure(
-      envi->quadcellMeasure[2], 
-      lbto::tel::unit::volt(), 
-      lbto::tel::name("quadcellreading2"),
-      lbto::tel::description("Readings from the quadcell.")
+      envi->glycolSupplyTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("glycolSupplyTemp"),
+      lbto::tel::description("Instrument glycol supply temperature in degrees C")
     ));
     modsDefiner.add_child(lbto::tel::float_measure(
-      envi->quadcellMeasure[3], 
-      lbto::tel::unit::volt(), 
-      lbto::tel::name("quadcellreading3"),
-      lbto::tel::description("Readings from the quadcell.")
+      envi->glycolReturnTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("glycolReturnTemp"),
+      lbto::tel::description("Instrument glycol return temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->utilBoxTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("utilBoxTemp"),
+      lbto::tel::description("IUB inside-box air temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->agwHSTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("agwHSTemp"),
+      lbto::tel::description("AGw camera controller heat sink temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->iebBAirTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("iebB_AirTemp"),
+      lbto::tel::description("Blue IEB box air temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->iebBReturnTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("iebB_ReturnTemp"),
+      lbto::tel::description("Blue IEB glycol return temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->iebRAirTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("iebR_AirTemp"),
+      lbto::tel::description("Red IEB box air temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->iebRReturnTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("iebR_ReturnTemp"),
+      lbto::tel::description("Red IEB glycol return temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->airTopTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("airTopTemp"),
+      lbto::tel::description("MODS instrument Top inside air temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->airBotTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("airBotTemp"),
+      lbto::tel::description("MODS instrument Bottom inside air temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->trussTopTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("trussTopTemp"),
+      lbto::tel::description("MODS collimator truss tube Top temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->trussBotTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("trussBotTemp"),
+      lbto::tel::description("MODS collimator truss tube Bottom temperature in degrees C")
     ));
 
     //Adding this definition to the telemetry store.
@@ -159,7 +219,9 @@ int initEnvLog(envdata_t *envi){
     ierr = write(envi->logFD,logStr,strlen(logStr));
 
     memset(logStr,0,sizeof(logStr));
-    sprintf(logStr,"# UTC Date/Time      Tamb Qcl0     Qcl1     Qcl2     Qcl3\n");
+    sprintf(logStr,"# UTC Date/Time      Tamb  Psup  Pret  Tsup  Tret  Tiub"
+	    "  Tagw  Bair  Bret  Rair  Rret  AirT  AirB  ColT  ColB\n"
+    );
     ierr = write(envi->logFD,logStr,strlen(logStr));
   }
   return 0;
@@ -196,8 +258,16 @@ int logEnvData(envdata_t *envi){
 
   // Append the current enviromental sensor data to the data log
   memset(logStr,0,sizeof(logStr));
-  sprintf(logStr,"%s %5.1f %5.5f, %5.5f, %5.5f, %5.5f\n", 
-    envi->utcDate, envi->ambientTemp, envi->quadcell[0], envi->quadcell[1], envi->quadcell[2], envi->quadcell[3]
+  sprintf(logStr,"%s %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f"
+	  " %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f\n",
+	  envi->utcDate, envi->ambientTemp,
+	  envi->glycolSupplyPres, envi->glycolReturnPres,
+	  envi->glycolSupplyTemp, envi->glycolReturnTemp,
+	  envi->utilBoxTemp, envi->agwHSTemp,
+	  envi->iebB_AirTemp, envi->iebB_ReturnTemp,
+	  envi->iebR_AirTemp, envi->iebR_ReturnTemp,
+	  envi->airTopTemp, envi->airBotTemp,
+	  envi->trussTopTemp, envi->trussBotTemp
   );
   ierr = write(envi->logFD,logStr,strlen(logStr));
   
@@ -302,8 +372,21 @@ int logTelemetryData(envdata_t *envi){
   try{    
     //Storing variable data in the streams.
     envi->ambientTempMeasure.store(envi->ambientTemp);
-    for(int i=0; i<4; i++) envi->quadcellMeasure[i].store(envi->quadcell[i]);
-
+    envi->glycolSupplyPresMeasure.store(envi->glycolSupplyPres);
+    envi->glycolReturnPresMeasure.store(envi->glycolReturnPres);
+    envi->glycolSupplyTempMeasure.store(envi->glycolSupplyTemp);
+    envi->glycolReturnTempMeasure.store(envi->glycolReturnTemp);
+    envi->utilBoxTempMeasure.store(envi->utilBoxTemp);
+    envi->agwHSTempMeasure.store(envi->agwHSTemp);
+    envi->iebBAirTempMeasure.store(envi->iebB_AirTemp);
+    envi->iebBReturnTempMeasure.store(envi->iebB_ReturnTemp);
+    envi->iebRAirTempMeasure.store(envi->iebR_AirTemp);
+    envi->iebRReturnTempMeasure.store(envi->iebR_ReturnTemp);
+    envi->airTopTempMeasure.store(envi->airTopTemp);
+    envi->airBotTempMeasure.store(envi->airBotTemp);
+    envi->trussTopTempMeasure.store(envi->trussTopTemp);
+    envi->trussBotTempMeasure.store(envi->trussBotTemp);
+    
     //Commiting the data to the HDF5 file.
     envi->modsCollector->commit_sample(lbto::tel::date::from_posix_utc_s(commitTime));    //TODO: Fix time stamps.
 

@@ -256,7 +256,6 @@ main(int argc, char *argv[])
     if (env.useHdf5) logTelemetryData(&env);
   }
 
-
   //----------------------------------------------------------------------
   //
   // Start the I/O event handling loop.

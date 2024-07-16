@@ -338,9 +338,9 @@ cmd_info(char *args, MsgType msgtype, char *reply)
 
   // Environmental Monitor information
 
-  sprintf(reply,"%s InstID=%s Cadence=%d HEBAddr=%s"
+  sprintf(reply,"%s InstID=%s Cadence=%d IUBAddr=%s IEBBAddr=%s IEBRAddr=%s"
 	  " runState=%s Logging=%s logFile=%s HdfLogging=%s HdfLogDir=%s",
-	  reply,env.modsID,env.cadence,env.heb_Addr,
+	  reply,env.modsID,env.cadence,env.iub_Addr,env.iebB_Addr,env.iebR_Addr,
 	  ((env.pause) ? "Paused" : "Active"),
 	  ((env.doLogging) ? "Enabled" : "Disabled"),
 	  env.logFile,
@@ -657,7 +657,108 @@ cmd_estatus(char *args, MsgType msgtype, char *reply)
 
   // Craft the reply string...
 
-  sprintf(reply,"AMBTEMP=%.1f", env.ambientTemp);
+  sprintf(reply,"IEBTEMPR=%.1f IEBGRT_R=%.1f TAIRTOP=%.1f TAIRBOT=%.1f "
+	  "IEBTEMPB=%.1f IEBGRT_B=%.1f TCOLLTOP=%.1f TCOLLBOT=%.1f "
+	  "GSPRES=%.1f GSTEMP=%.1f GRPRES=%.1f GRTEMP=%.1f IUBTAIR=%.1f "
+	  "AMBTEMP=%.1f AGHSTEMP=%.1f",
+	  env.iebR_AirTemp,env.iebR_ReturnTemp,env.airTopTemp,env.airBotTemp,
+	  env.iebB_AirTemp,env.iebB_ReturnTemp,env.trussTopTemp,env.trussBotTemp,
+	  env.glycolSupplyPres,env.glycolSupplyTemp,
+	  env.glycolReturnPres,env.glycolReturnTemp,
+	  env.utilBoxTemp,env.ambientTemp,env.agwHSTemp
+  );
+
+  // Evaluate the power state by looking at the switch and breaker
+  // state info and defining the power states as follows:
+  //
+  //    Switch  Breaker  State
+  //   ----------------------------
+  //    ON      ON       OK
+  //    OFF     OFF      OK
+  //    ON      OFF      FAULT
+  //    OFF     ON       MANUAL ON 
+  //   ----------------------------
+  // The latter applies only to the HEBs and AGw camera controllers.
+  //
+  // Yeah, this *is* brute force, but effective and makes sure if we have
+  // any rule exceptions, we can deal with them here. 
+
+  if (env.iebB_Switch) 
+    if (env.iebB_Breaker) 
+      sprintf(reply,"%s IEB_B_PWR=ON",reply);
+    else 
+      sprintf(reply,"%s IEB_B_PWR=FAULT",reply);
+  else
+    if (env.iebB_Breaker)
+      sprintf(reply,"%s IEB_B_PWR=ON",reply);
+    else 
+      sprintf(reply,"%s IEB_B_PWR=OFF",reply);
+
+  if (env.iebR_Switch) 
+    if (env.iebR_Breaker) 
+      sprintf(reply,"%s IEB_R_PWR=ON",reply);
+    else
+      sprintf(reply,"%s IEB_R_PWR=FAULT",reply);
+  else
+    if (env.iebR_Breaker)
+      sprintf(reply,"%s IEB_R_PWR=ON",reply);
+    else
+      sprintf(reply,"%s IEB_R_PWR=OFF",reply);
+    
+  if (env.hebB_Switch) 
+    if (env.hebB_Breaker)
+      sprintf(reply,"%s HEB_B_PWR=ON",reply);
+    else
+      sprintf(reply,"%s HEB_B_PWR=FAULT",reply);
+  else
+    if (env.hebB_Breaker)
+      sprintf(reply,"%s HEB_B_PWR=MANUAL",reply);
+    else
+      sprintf(reply,"%s HEB_B_PWR=OFF",reply);
+   
+  if (env.hebR_Switch) 
+    if (env.hebR_Breaker)
+      sprintf(reply,"%s HEB_R_PWR=ON",reply);
+    else
+      sprintf(reply,"%s HEB_R_PWR=FAULT",reply);
+  else
+    if (env.hebR_Breaker)
+      sprintf(reply,"%s HEB_R_PWR=MANUAL",reply);
+    else
+      sprintf(reply,"%s HEB_R_PWR=OFF",reply);
+    
+  if (env.llb_Switch) 
+    if (env.llb_Breaker)
+      sprintf(reply,"%s LLB_PWR=ON",reply);
+    else
+      sprintf(reply,"%s LLB_PWR=FAULT",reply);
+  else
+    if (env.llb_Breaker)
+      sprintf(reply,"%s LLB_PWR=ON",reply);  // Not really sure this state can happen, but...
+    else
+      sprintf(reply,"%s LLB_PWR=OFF",reply);
+
+  if (env.gcam_Switch) 
+    if (env.gcam_Breaker)
+      sprintf(reply,"%s GCAM_PWR=ON",reply);
+    else
+      sprintf(reply,"%s GCAM_PWR=FAULT",reply);
+  else
+    if (env.gcam_Breaker)
+      sprintf(reply,"%s GCAM_PWR=MANUAL",reply);
+    else
+      sprintf(reply,"%s GCAM_PWR=OFF",reply);
+
+  if (env.wfs_Switch) 
+    if (env.wfs_Breaker)
+      sprintf(reply,"%s WFS_PWR=ON",reply);
+    else
+      sprintf(reply,"%s WFS_PWR=FAULT",reply);
+  else
+    if (env.wfs_Breaker)
+      sprintf(reply,"%s WFS_PWR=MANUAL",reply);
+    else
+      sprintf(reply,"%s WFS_PWR=OFF",reply);
 
   return CMD_OK;
 }
@@ -701,6 +802,18 @@ cmd_pstatus(char *args, MsgType msgtype, char *reply)
   if (env.useHdf5) logTelemetryData(&env);    // log it as HDF5, if enabled
 
   // Craft the reply string...
+
+  sprintf(reply,"IEB_B_SW=%s IEB_B_AC=%s IEB_R_SW=%s IEB_R_AC=%s "
+	  "HEB_B_SW=%s HEB_B_AC=%s HEB_R_SW=%s HEB_R_AC=%s "
+	  "LLB_SW=%s LLB_AC=%s GCAM_SW=%s GCAM_AC=%s WFS_SW=%s WFS_AC=%s ",
+	  (env.iebB_Switch ? "ON" : "OFF"), (env.iebB_Breaker ? "ON" : "OFF"),
+	  (env.iebR_Switch ? "ON" : "OFF"), (env.iebR_Breaker ? "ON" : "OFF"),
+	  (env.hebB_Switch ? "ON" : "OFF"), (env.hebB_Breaker ? "ON" : "OFF"),
+	  (env.hebR_Switch ? "ON" : "OFF"), (env.hebR_Breaker ? "ON" : "OFF"),
+	  (env.llb_Switch  ? "ON" : "OFF"), (env.llb_Breaker  ? "ON" : "OFF"),
+	  (env.gcam_Switch ? "ON" : "OFF"), (env.gcam_Breaker ? "ON" : "OFF"),
+	  (env.wfs_Switch  ? "ON" : "OFF"), (env.wfs_Breaker  ? "ON" : "OFF")
+  );
 
   return CMD_OK;
 }
