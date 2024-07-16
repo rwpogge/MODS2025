@@ -208,15 +208,6 @@ main(int argc, char *argv[])
     printf("Started modsenv as standalone agent %s on %s port %d\n",
 	   client.ID, client.Host, client.Port);
 
-  //Hdf telemetry data needs initalized.
-
-  if(env.useHdf5){
-    if(initTelemetryData(&env) != 0){
-      printf("Telemetry could not be started - hdf5 will not be used.\n");
-      env.useHdf5 = 0;
-    }
-  }
-
   // All set to rock-n-roll...
 
   if (useCLI) {

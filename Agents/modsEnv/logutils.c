@@ -293,6 +293,12 @@ int fileExists(char *fileName){
 int logTelemetryData(envdata_t *envi){
   time_t commitTime = time(NULL);
 
+  //Check if telemetry has been initalized.
+  if(initTelemetryData(&env) != 0){
+    printf("Telemetry could not be started - hdf5 will not be used.\n");
+    env.useHdf5 = 0;
+  }
+
   try{    
     //Storing variable data in the streams.
     envi->ambientTempMeasure.store(envi->ambientTemp);

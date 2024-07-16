@@ -813,15 +813,8 @@ cmd_hdf_logging(char *args, MsgType msgtype, char *reply)
   if (strlen(args) > 0) {
     GetArg(args,1,argBuf);
     if (strcasecmp(argBuf,"ENABLE")==0 || strcasecmp(argBuf,"ON")==0) {
+      logMessage(&env,"Hdf sensor data logging enabled");
       env.useHdf5 = 1;
-
-      if(initTelemetryData(&env) == 0){
-        logMessage(&env,"Hdf sensor data logging enabled");
-      }else{
-        printf("Telemetry could not be started - hdf5 will not be used.\n");
-        env.useHdf5 = 0;
-      }
-      
     }
     else if (strcasecmp(argBuf,"DISABLE")==0 || strcasecmp(argBuf,"OFF")==0) {
       logMessage(&env,"Hdf sensor data logging disabled");
