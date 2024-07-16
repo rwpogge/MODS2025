@@ -1,5 +1,11 @@
 # MODS2025 Release Notes
-Last Release: 2024 Feb 23
+Last Release: 2024 July 16
+
+## Version 1.1.1
+Tuesday, July 16th, 2024
+
+- ModsEnv 3.0 -> ModsEnv 3.1.0
+    - Enviornmental sensing data can now be logged to Hdf5 files in the LBTO telemetry format.
 
 ## Version 1.1.0
 Friday, July 8th, 2024

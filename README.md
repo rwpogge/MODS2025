@@ -1,5 +1,5 @@
 # MODS2025
-Version 1.1.0
+Version 1.1.1
 
 Lead: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
