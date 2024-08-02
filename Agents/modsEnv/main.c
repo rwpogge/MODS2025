@@ -209,6 +209,7 @@ main(int argc, char *argv[])
   // Check if the leapseconds file (needed for hdf5 export) exists. If it doesn't use the fallback one.
   
   if (!fileExists(env.leapSecondsFile)){
+    printf("The leap-seconds.list file could not be loaded from [%s]. The fallback file will be used instead.", env.leapSecondsFile);
     strcpy(env.leapSecondsFile, FALLBACK_LEAP_SECONDS_FILE);
   }
 

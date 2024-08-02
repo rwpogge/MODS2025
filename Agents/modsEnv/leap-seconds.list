@@ -1,6 +1,6 @@
 #   This is the fallback leap-seconds file. This file is only used if the leap seconds
 #   file is not in the default location, or if the user supplied an invalid path to a leap
-#   seconds file.
+#   seconds file. The expiration date of this file is set to be the maximum NTP timestamp.
 #
 #   --------------------------------------------------------------------------------------------------------
 #
@@ -70,8 +70,7 @@
 #
 #	2) Expiration date of the file given on a semi-annual basis: last June or last December
 #
-#   Expiration date removed from fallback leap-seconds file.
-#
+#@	999999999999
 #
 #	LIST OF LEAP SECONDS
 #	NTP timestamp (X parameter) is the number of seconds since 1900.0
