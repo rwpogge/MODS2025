@@ -202,11 +202,15 @@ main(int argc, char *argv[])
   }
 
   if (client.useISIS)
-    printf("Started modsenv as ISIS client node %s on %s port %d\n",
-	   client.ID, client.Host, client.Port);
+    printf("Started modsenv as ISIS client node %s on %s port %d\n", client.ID, client.Host, client.Port);
   else
-    printf("Started modsenv as standalone agent %s on %s port %d\n",
-	   client.ID, client.Host, client.Port);
+    printf("Started modsenv as standalone agent %s on %s port %d\n", client.ID, client.Host, client.Port);
+
+  // Check if the leapseconds file (needed for hdf5 export) exists. If it doesn't use the fallback one.
+  
+  if (!fileExists(env.leapSecondsFile)){
+    strcpy(env.leapSecondsFile, FALLBACK_LEAP_SECONDS_FILE);
+  }
 
   // All set to rock-n-roll...
 

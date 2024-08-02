@@ -29,6 +29,7 @@
 #define HDF_LOGS "/home/dts/Logs/Env/modsenv-hdf5"  //!< Default hdf5 telemetry log file path
 
 #define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"  //!< Default path to the leap-seconds.list file.
+#define FALLBACK_LEAP_SECONDS_FILE "./leap-seconds.list"          //!< If an updated leap-seconds file can't be found, this one is used instead.
 
 // Default ISIS server information (see loadconfig.c if used)
 
