@@ -1,5 +1,10 @@
 # modsenv Release Notes
-Last Build: 2024 Jul 15
+Last Build: 2024 Aug 14
+
+## Version 3.1.1
+Wednesday, August 14th, 2024
+
+Added a fallback leap-seconds file. The fallback file ensures that if a leap-seconds file is not found, the program will not crash.
 
 ## Version 3.1.0
 Monday, July 15th, 2024

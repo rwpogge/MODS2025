@@ -143,6 +143,10 @@ int initIonSocket(int* sock, char* address, int port, int timeout){
     return 0;
 }
 
+/*! 
+    \brief The main function is provided for testing purposes only - to demonstrate how you should interact 
+    with the ion module. 
+*/
 int main(){
     //Creating the TCP socket.
     int ionSocket;

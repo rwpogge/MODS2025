@@ -1,6 +1,6 @@
 #Author: Xander Carroll
 
-#This Makefile compiles all *.cpp files in SRC_DIR into object files in BIN_DIR. 
+#This Makefile compiles all *.c files in SRC_DIR into object files in BIN_DIR. 
 #Then it combines all the object files into an executable.
 
 #The name of the target executable.

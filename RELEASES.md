@@ -1,5 +1,13 @@
 # MODS2025 Release Notes
-Last Release: 2024 July 16
+Last Release: 2024 Aug 14
+
+## Version 1.1.2
+Wednesday, August 14th, 2024
+
+- ModsEnv 3.1.0 -> ModsEnv 3.1.1
+    - Added a fallback leap-seconds file.
+- IonGuage 1.0.0
+    - C and Python code for interacting with the Micro-Ion Plus Vacuum Guage Module.
 
 ## Version 1.1.1
 Tuesday, July 16th, 2024
