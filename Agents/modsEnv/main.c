@@ -272,7 +272,7 @@ main(int argc, char *argv[])
     
     FD_ZERO(&read_fd); // clear the table of active file descriptors
     
-    // I using the interactive CLI mode, listen for console keyboard input
+    // If using the interactive CLI mode, listen for console keyboard input
     
     if (useCLI) FD_SET(kbdFD, &read_fd);
     

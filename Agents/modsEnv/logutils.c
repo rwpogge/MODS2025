@@ -34,9 +34,9 @@ int initTelemetryData(envdata_t* envi){
     std::shared_ptr<lbto::tel::ambassador> callBack(new TelemetryCallback());
     lbto::tel::collection_manager::init(callBack);
 
-    //Defining a telemetry stream with modlue name "mods" and stream name "modsenv".
+    //Defining a telemetry stream with modlue name "tel" and stream name "modsenv".
     lbto::tel::telemeter_definer modsDefiner = lbto::tel::collection_manager::instance().make_telemeter_definer(
-      lbto::tel::system(lbto::tel::name("tel")), lbto::tel::name("mods")
+      lbto::tel::system(lbto::tel::name("tel")), lbto::tel::name("modsenv")
     );
 
     //Adding measures to the telemetry.
