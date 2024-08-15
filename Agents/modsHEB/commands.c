@@ -45,6 +45,9 @@
   \date 2010 June 21
 */
 
+#include <readline/readline.h>  // Gnu readline utility
+#include <readline/history.h>   // Gnu history utility
+
 #include "client.h"     // Custom client application header file
 #include "commands.h"   // Command action functions header file
 
@@ -54,11 +57,6 @@
 //
 // Commands common to most ISIS client applications are defined here.
 //
-
-//---------------------------------------------------------------------------
-//
-// quit command - allowed only if EXEC from remote hosts (keyboard
-//                commands are always EXEC.
 
 /*!
   \brief QUIT command - terminate the client session
@@ -77,25 +75,17 @@
   by sending a QUIT command unqualified by the EXEC: directive.
 
 */
-
-int
-cmd_quit(char *args, MsgType msgtype, char *reply)
-{
+int cmd_quit(char *args, MsgType msgtype, char *reply) {
   if (msgtype == EXEC) {
     client.KeepGoing=0;
     sprintf(reply,"%s=DISABLED MODE=OFFLINE",client.ID);
-  }
-  else {
+  }else{
     strcpy(reply,"Cannot execute a remote quit command - operation disallowed");
     return CMD_ERR;
   }
+
   return CMD_OK;
 }
-
-//---------------------------------------------------------------------------
-//
-// ping - communication handshaking request
-//
 
 /*!
   \brief PING command - communication handshaking request
@@ -118,18 +108,10 @@ cmd_quit(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_pong
 */
-
-int
-cmd_ping(char *args, MsgType msgtype, char *reply)
-{
+int cmd_ping(char *args, MsgType msgtype, char *reply) {
   strcpy(reply,"PONG");
   return CMD_OK;
 }
-
-//---------------------------------------------------------------------------
-//
-// pong - communication handshaking acknowledge
-//
 
 /*!
   \brief PONG command - communication handshaking acknowledgment
@@ -152,18 +134,10 @@ cmd_ping(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_ping
 */
-
-int
-cmd_pong(char *args, MsgType msgtype, char *reply)
-{
+int cmd_pong(char *args, MsgType msgtype, char *reply) {
   if (client.isVerbose && useCLI) printf("PONG received\n");
   return CMD_NOOP;
 }
-
-//---------------------------------------------------------------------------
-//
-// version - report application version and compilation info
-//
 
 /*!
   \brief VERSION command - report application version and compilation info
@@ -186,19 +160,11 @@ cmd_pong(char *args, MsgType msgtype, char *reply)
   </pre>
 */
 
-int
-cmd_version(char *args, MsgType msgtype, char *reply)
-{
-  sprintf(reply,"modsenv Version=%s CompileDate=%s CompileTime=%s",
-	  APP_VERSION,APP_COMPDATE,APP_COMPTIME);
+int cmd_version(char *args, MsgType msgtype, char *reply) {
+  sprintf(reply,"modsenv Version=%s CompileDate=%s CompileTime=%s",APP_VERSION,APP_COMPDATE,APP_COMPTIME);
   return CMD_OK;
 }
-
-//---------------------------------------------------------------------------
-//
-// verbose - toggle verbose console output
-//
-  
+ 
 /*!
   \brief VERBOSE command - toggle verbose console output on/off
   \param args string with the command-line arguments
@@ -222,25 +188,17 @@ cmd_version(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_debug
 */
-
-int
-cmd_verbose(char *args, MsgType msgtype, char *reply)
-{
+int cmd_verbose(char *args, MsgType msgtype, char *reply) {
   if (client.isVerbose) {
     client.isVerbose = 0;
     sprintf(reply,"verbose mode disabled");
-  }
-  else {
+  }else{
     client.isVerbose = 1;
     sprintf(reply,"verbose mode enabled");
   }
+
   return CMD_OK;
 }
-
-//---------------------------------------------------------------------------
-// 
-// debug - toggle debugging output (super-verbose mode)
-//
 
 /*!
   \brief DEBUG command - toggle debugging (super-verbose) console output on/off
@@ -267,25 +225,17 @@ cmd_verbose(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_verbose
 */
-
-int
-cmd_debug(char *args, MsgType msgtype, char *reply)
-{
+int cmd_debug(char *args, MsgType msgtype, char *reply) {
   if (client.Debug) {
     client.Debug = 0;
     sprintf(reply,"debugging output disabled");
-  }
-  else {
+  }else{
     client.Debug = 1;
     sprintf(reply,"debugging output enabled");
   }
+
   return CMD_OK;
 }
-
-//---------------------------------------------------------------------------
-//
-// info - report application runtime configuration information
-//
 
 /*!
   \brief INFO command - report client application runtime information
@@ -307,65 +257,43 @@ cmd_debug(char *args, MsgType msgtype, char *reply)
   instrument or interface functions, the state of those functions should
   be reported in the info string, making it an omnibus "what is your
   status" command.
-
 */
-
-int
-cmd_info(char *args, MsgType msgtype, char *reply)
-{
+int cmd_info(char *args, MsgType msgtype, char *reply) {
   int i;
 
   // Start with the node ID, and host info
-
   sprintf(reply,"HostID=%s HostAddr=%s:%d",
 	  client.ID, client.Host, client.Port);
 
   // If configured as an ISIS client, report this and the ISIS host:port info,
   // otherwise if standalone, report that, and the host:port of the last
   // remote host to send us something, if known.
-
   if (client.useISIS) {
-    sprintf(reply,"%s Mode=ISISClient ISIS=%s ISISHost=%s:%d",reply,
-	    client.isisID,client.isisHost,client.isisPort);
-  }
-  else {
+    sprintf(reply,"%s Mode=ISISClient ISIS=%s ISISHost=%s:%d",reply,client.isisID,client.isisHost,client.isisPort);
+  }else{
     if (strlen(client.remHost)>0)
-      sprintf(reply,"%s Mode=STANDALONE RemHost=%s:%d",reply,
-	      client.remHost,client.remPort);
+      sprintf(reply,"%s Mode=STANDALONE RemHost=%s:%d",reply,client.remHost,client.remPort);
     else
       strcat(reply," Mode=STANDALONE");
   }
 
   // Environmental Monitor information
-
-  sprintf(reply,"%s InstID=%s Cadence=%d IUBAddr=%s IEBBAddr=%s IEBRAddr=%s"
-	  " runState=%s Logging=%s logFile=%s HdfLogging=%s HdfLogDir=%s",
-	  reply,env.modsID,env.cadence,env.iub_Addr,env.iebB_Addr,env.iebR_Addr,
-	  ((env.pause) ? "Paused" : "Active"),
-	  ((env.doLogging) ? "Enabled" : "Disabled"),
-	  env.logFile,
-    ((env.useHdf5) ? "Enabled" : "Disabled"),
-    env.hdfRoot
+  sprintf(reply,"%s InstID=%s Cadence=%d runState=%s Logging=%s logFile=%s HdfLogging=%s HdfLogDir=%s",
+	  reply, env.modsID, env.cadence, ((env.pause) ? "Paused" : "Active"), ((env.doLogging) ? "Enabled" : "Disabled"),
+	  env.logFile, ((env.useHdf5) ? "Enabled" : "Disabled"), env.hdfRoot
   );
 
   // Report application runtime flags
-
   sprintf(reply,"%s %s %s",reply,
 	  ((client.isVerbose) ? "Verbose" : "Concise"),
-	  ((client.Debug) ? "+DEBUG" : "-DEBUG"));
+	  ((client.Debug) ? "+DEBUG" : "-DEBUG")
+  );
 	 
   // Finally, report the application's runtime config info as required
-
   sprintf(reply,"%s rcfile=%s",reply,client.rcFile);
 
   return CMD_OK;
-
 }
-
-//---------------------------------------------------------------------------
-//
-// help - print a list of available commands on the client console
-//
 
 /*!
   \brief HELP command - print a list of commands on the client console
@@ -388,12 +316,8 @@ cmd_info(char *args, MsgType msgtype, char *reply)
   Help is meant to be simple.  It can give help on particular commands
   (really a reminder of the command's function and syntax), or a list
   of all commands.
-  
 */
-
-int
-cmd_help(char *args, MsgType msgtype, char *reply)
-{
+int cmd_help(char *args, MsgType msgtype, char *reply) {
   int i, icmd, found;
   int ls;
   char argbuf[32];
@@ -405,41 +329,42 @@ cmd_help(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  if (strlen(args)>0) {  // we are being asked for help on a specific command
+  // we are being asked for help on a specific command
+  if (strlen(args)>0) {  
     GetArg(args,1,argbuf);
 
     found = 0;
     for (i=0; i<NumCommands; i++) {
       if (strcasecmp(cmdtab[i].cmd,argbuf)==0) {
-	found++;
-	icmd = i;
-	break;
+	      found++;
+	      icmd = i;
+	      break;
       }
     }
+    
     if (found > 0) {
       printf("  %s - %s\n",cmdtab[i].cmd,cmdtab[i].description);
       printf("  usage: %s\n",cmdtab[i].usage);
-    } 
-    else {
+    }else{
       printf("Unknown Command '%s' (type 'help' to list all commands)\n",argbuf);
     }
   }
-  else { // no arguments, print the whole command list
-
+  
+  // no arguments, print the whole command list
+  else{
     printf("Interactive Command Summary:\n");
     for (i=0; i<NumCommands; i++) {
       ls = strlen(cmdtab[i].usage);
       if (ls > 0) {
-	if (ls < 6)
-	  printf("  %s\t\t - %s\n",cmdtab[i].usage,cmdtab[i].description);
-
-	else if (ls > 13)
-	  printf("  %s - %s\n",cmdtab[i].usage,cmdtab[i].description);
-
-	else
-	  printf("  %s\t - %s\n",cmdtab[i].usage,cmdtab[i].description);
+	      if (ls < 6)
+	        printf("  %s\t\t - %s\n",cmdtab[i].usage,cmdtab[i].description);
+	      else if (ls > 13)
+	        printf("  %s - %s\n",cmdtab[i].usage,cmdtab[i].description);
+	      else
+	        printf("  %s\t - %s\n",cmdtab[i].usage,cmdtab[i].description);
       }
     }
+
     printf("Command History:\n");
     printf("  !!  \t\t - repeat last command\n");
     printf("  !cmd\t\t - repeat last command matching 'cmd'\n");
@@ -447,16 +372,7 @@ cmd_help(char *args, MsgType msgtype, char *reply)
   }
 
   return CMD_NOOP;
-    
 }
-
-//---------------------------------------------------------------------------
-//
-// history - show the history list
-//
-
-#include <readline/readline.h>  // Gnu readline utility
-#include <readline/history.h>   // Gnu history utility
 
 /*!
   \brief HISTORY command - show the application's interactive command history
@@ -476,10 +392,7 @@ cmd_help(char *args, MsgType msgtype, char *reply)
 
   \sa KeyboardCommand()
 */
-
-int
-cmd_history(char *args, MsgType msgtype, char *reply)
-{
+int cmd_history(char *args, MsgType msgtype, char *reply) {
   register HIST_ENTRY **the_list;
   register int ihist;
   
@@ -489,16 +402,15 @@ cmd_history(char *args, MsgType msgtype, char *reply)
     the_list = history_list();
     if (the_list) {
       for (ihist=0; the_list[ihist]; ihist++) 
-	printf("%5d   %s\n",ihist+history_base,the_list[ihist]->line);
+	      printf("%5d   %s\n",ihist+history_base,the_list[ihist]->line);
     }
+
     return CMD_NOOP;
   }
 
   // can't do history unless you're on the console...
-
   strcpy(reply,"Cannot exec history command - remote operation not allowed");
   return CMD_ERR;
-
 }
 
 //***************************************************************************
@@ -526,32 +438,27 @@ cmd_history(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_pause(), cmd_resume()
 */
-
-int
-cmd_cadence(char *args, MsgType msgtype, char *reply)
-{
+int cmd_cadence(char *args, MsgType msgtype, char *reply) {
   char argbuf[32];
   int tcad;
 
   // if there are command arguments, parse them now
-
   if (strlen(args)>0) {
     GetArg(args,1,argbuf);
     tcad = atoi(argbuf);
+
     if (tcad >= 0) {
       env.cadence = tcad;
       sprintf(reply,"Cadence=%d seconds",env.cadence);
       if (env.doLogging) logMessage(&env,reply);
       return CMD_OK;
-    }
-    else {
+    }else{
       sprintf(reply,"Invalid cadence '%s', must be >0 seconds",args);
       return CMD_ERR;
     }
   }
 
   // Query, return the current value
-
   sprintf(reply,"Cadence=%d seconds",env.cadence);
   return CMD_OK;
 }
@@ -572,13 +479,11 @@ cmd_cadence(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_resume()
 */
-
-int
-cmd_pause(char *args, MsgType msgtype, char *reply)
-{
+int cmd_pause(char *args, MsgType msgtype, char *reply) {
   env.pause = 1;
   strcpy(reply,"Monitoring Paused runState=Paused");
   if (env.doLogging) logMessage(&env,"Monitoring Paused");
+
   return CMD_OK;
 }
 
@@ -598,13 +503,11 @@ cmd_pause(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_pause()
 */
-
-int
-cmd_resume(char *args, MsgType msgtype, char *reply)
-{
+int cmd_resume(char *args, MsgType msgtype, char *reply) {
   env.pause = 0;
   strcpy(reply,"Monitoring Resumed runState=Active");
   if (env.doLogging) logMessage(&env,"Monitoring Resumed");
+
   return CMD_OK;
 }
 
@@ -639,126 +542,22 @@ cmd_resume(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_cadence(), cmd_pause(), cmd_resume(), cmd_pstatus()
 */
-
-int
-cmd_estatus(char *args, MsgType msgtype, char *reply)
-{
+int cmd_estatus(char *args, MsgType msgtype, char *reply) {
   int ierr;
 
   // Read the enviromental sensors
-
   ierr = getEnvData(&env);
   if (ierr != 0) {
     strcpy(reply,"Cannot read the enviromental sensors");
     return CMD_ERR;
   }
-  if (env.doLogging) logEnvData(&env);      // log it as ASCII, if enabled
-  if (env.useHdf5) logTelemetryData(&env);  // log it as HDF5, if enabled
+
+  //Log to ASCII and HDF5, if enabled.
+  if (env.doLogging) logEnvData(&env);    
+  if (env.useHdf5) logTelemetryData(&env);
 
   // Craft the reply string...
-
-  sprintf(reply,"IEBTEMPR=%.1f IEBGRT_R=%.1f TAIRTOP=%.1f TAIRBOT=%.1f "
-	  "IEBTEMPB=%.1f IEBGRT_B=%.1f TCOLLTOP=%.1f TCOLLBOT=%.1f "
-	  "GSPRES=%.1f GSTEMP=%.1f GRPRES=%.1f GRTEMP=%.1f IUBTAIR=%.1f "
-	  "AMBTEMP=%.1f AGHSTEMP=%.1f",
-	  env.iebR_AirTemp,env.iebR_ReturnTemp,env.airTopTemp,env.airBotTemp,
-	  env.iebB_AirTemp,env.iebB_ReturnTemp,env.trussTopTemp,env.trussBotTemp,
-	  env.glycolSupplyPres,env.glycolSupplyTemp,
-	  env.glycolReturnPres,env.glycolReturnTemp,
-	  env.utilBoxTemp,env.ambientTemp,env.agwHSTemp
-  );
-
-  // Evaluate the power state by looking at the switch and breaker
-  // state info and defining the power states as follows:
-  //
-  //    Switch  Breaker  State
-  //   ----------------------------
-  //    ON      ON       OK
-  //    OFF     OFF      OK
-  //    ON      OFF      FAULT
-  //    OFF     ON       MANUAL ON 
-  //   ----------------------------
-  // The latter applies only to the HEBs and AGw camera controllers.
-  //
-  // Yeah, this *is* brute force, but effective and makes sure if we have
-  // any rule exceptions, we can deal with them here. 
-
-  if (env.iebB_Switch) 
-    if (env.iebB_Breaker) 
-      sprintf(reply,"%s IEB_B_PWR=ON",reply);
-    else 
-      sprintf(reply,"%s IEB_B_PWR=FAULT",reply);
-  else
-    if (env.iebB_Breaker)
-      sprintf(reply,"%s IEB_B_PWR=ON",reply);
-    else 
-      sprintf(reply,"%s IEB_B_PWR=OFF",reply);
-
-  if (env.iebR_Switch) 
-    if (env.iebR_Breaker) 
-      sprintf(reply,"%s IEB_R_PWR=ON",reply);
-    else
-      sprintf(reply,"%s IEB_R_PWR=FAULT",reply);
-  else
-    if (env.iebR_Breaker)
-      sprintf(reply,"%s IEB_R_PWR=ON",reply);
-    else
-      sprintf(reply,"%s IEB_R_PWR=OFF",reply);
-    
-  if (env.hebB_Switch) 
-    if (env.hebB_Breaker)
-      sprintf(reply,"%s HEB_B_PWR=ON",reply);
-    else
-      sprintf(reply,"%s HEB_B_PWR=FAULT",reply);
-  else
-    if (env.hebB_Breaker)
-      sprintf(reply,"%s HEB_B_PWR=MANUAL",reply);
-    else
-      sprintf(reply,"%s HEB_B_PWR=OFF",reply);
-   
-  if (env.hebR_Switch) 
-    if (env.hebR_Breaker)
-      sprintf(reply,"%s HEB_R_PWR=ON",reply);
-    else
-      sprintf(reply,"%s HEB_R_PWR=FAULT",reply);
-  else
-    if (env.hebR_Breaker)
-      sprintf(reply,"%s HEB_R_PWR=MANUAL",reply);
-    else
-      sprintf(reply,"%s HEB_R_PWR=OFF",reply);
-    
-  if (env.llb_Switch) 
-    if (env.llb_Breaker)
-      sprintf(reply,"%s LLB_PWR=ON",reply);
-    else
-      sprintf(reply,"%s LLB_PWR=FAULT",reply);
-  else
-    if (env.llb_Breaker)
-      sprintf(reply,"%s LLB_PWR=ON",reply);  // Not really sure this state can happen, but...
-    else
-      sprintf(reply,"%s LLB_PWR=OFF",reply);
-
-  if (env.gcam_Switch) 
-    if (env.gcam_Breaker)
-      sprintf(reply,"%s GCAM_PWR=ON",reply);
-    else
-      sprintf(reply,"%s GCAM_PWR=FAULT",reply);
-  else
-    if (env.gcam_Breaker)
-      sprintf(reply,"%s GCAM_PWR=MANUAL",reply);
-    else
-      sprintf(reply,"%s GCAM_PWR=OFF",reply);
-
-  if (env.wfs_Switch) 
-    if (env.wfs_Breaker)
-      sprintf(reply,"%s WFS_PWR=ON",reply);
-    else
-      sprintf(reply,"%s WFS_PWR=FAULT",reply);
-  else
-    if (env.wfs_Breaker)
-      sprintf(reply,"%s WFS_PWR=MANUAL",reply);
-    else
-      sprintf(reply,"%s WFS_PWR=OFF",reply);
+  sprintf(reply,"COMMAND NOT FINISHED YET");
 
   return CMD_OK;
 }
@@ -785,35 +584,22 @@ cmd_estatus(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_cadence(), cmd_pause(), cmd_resume(), cmd_estatus
 */
-
-int
-cmd_pstatus(char *args, MsgType msgtype, char *reply)
-{
+int cmd_pstatus(char *args, MsgType msgtype, char *reply) {
   int ierr;
 
   // Read the WAGOs
-
   ierr = getEnvData(&env);
   if (ierr != 0) {
     strcpy(reply,"Cannot read the enviromental sensors");
     return CMD_ERR;
   }
-  if (env.doLogging) logEnvData(&env);        // log it as ASCII, if enabled
-  if (env.useHdf5) logTelemetryData(&env);    // log it as HDF5, if enabled
+
+  // Log to ASCII and HDF5, if enabled
+  if (env.doLogging) logEnvData(&env);
+  if (env.useHdf5) logTelemetryData(&env);
 
   // Craft the reply string...
-
-  sprintf(reply,"IEB_B_SW=%s IEB_B_AC=%s IEB_R_SW=%s IEB_R_AC=%s "
-	  "HEB_B_SW=%s HEB_B_AC=%s HEB_R_SW=%s HEB_R_AC=%s "
-	  "LLB_SW=%s LLB_AC=%s GCAM_SW=%s GCAM_AC=%s WFS_SW=%s WFS_AC=%s ",
-	  (env.iebB_Switch ? "ON" : "OFF"), (env.iebB_Breaker ? "ON" : "OFF"),
-	  (env.iebR_Switch ? "ON" : "OFF"), (env.iebR_Breaker ? "ON" : "OFF"),
-	  (env.hebB_Switch ? "ON" : "OFF"), (env.hebB_Breaker ? "ON" : "OFF"),
-	  (env.hebR_Switch ? "ON" : "OFF"), (env.hebR_Breaker ? "ON" : "OFF"),
-	  (env.llb_Switch  ? "ON" : "OFF"), (env.llb_Breaker  ? "ON" : "OFF"),
-	  (env.gcam_Switch ? "ON" : "OFF"), (env.gcam_Breaker ? "ON" : "OFF"),
-	  (env.wfs_Switch  ? "ON" : "OFF"), (env.wfs_Breaker  ? "ON" : "OFF")
-  );
+  sprintf(reply, "COMMAND NOT FINISHED YET");
 
   return CMD_OK;
 }
@@ -835,16 +621,14 @@ cmd_pstatus(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_info()
 */
-
-int
-cmd_config(char *args, MsgType msgtype, char *reply)
-{
-  if (msgtype == EXEC)
+int cmd_config(char *args, MsgType msgtype, char *reply) {
+  if (msgtype == EXEC){
     printEnvData(&env);
-  else {
+  }else{
     strcpy(reply,"Cannot execute config remotely - use info instead");
     return CMD_ERR;
   }
+
   return CMD_OK;
 }
 
@@ -868,10 +652,7 @@ cmd_config(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_pause(), cmd_resume()
 */
-
-int
-cmd_logging(char *args, MsgType msgtype, char *reply)
-{
+int cmd_logging(char *args, MsgType msgtype, char *reply) {
   char argBuf[32];
 
   if (strlen(args) > 0) {
@@ -879,21 +660,19 @@ cmd_logging(char *args, MsgType msgtype, char *reply)
     if (strcasecmp(argBuf,"ENABLE")==0 || strcasecmp(argBuf,"ON")==0) {
       env.doLogging = 1;
       logMessage(&env,"Sensor data logging enabled");
-    }
-    else if (strcasecmp(argBuf,"DISABLE")==0 || strcasecmp(argBuf,"OFF")==0) {
+    }else if (strcasecmp(argBuf,"DISABLE")==0 || strcasecmp(argBuf,"OFF")==0) {
       logMessage(&env,"Sensor data logging disabled");
       env.doLogging = 0;
-    }
-    else {
-      sprintf("Unrecognized argument '%s' - usage: logging [enable|disable]",
-	      args);
+    }else{
+      sprintf("Unrecognized argument '%s' - usage: logging [enable|disable]",args);
       return CMD_ERR;
     }
   }
-  sprintf(reply,"Logging=%s logFile=%s runState=%s",
-	  ((env.doLogging) ? "Enabled" : "Disabled"),
-	  env.logFile,
-	  ((env.pause) ? "Paused" : "Active"));
+
+  sprintf(reply,"Logging=%s logFile=%s runState=%s", 
+    ((env.doLogging) ? "Enabled" : "Disabled"), env.logFile, ((env.pause) ? "Paused" : "Active")
+  );
+
   return CMD_OK;
 }
 
@@ -917,10 +696,7 @@ cmd_logging(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_pause(), cmd_resume()
 */
-
-int
-cmd_hdf_logging(char *args, MsgType msgtype, char *reply)
-{
+int cmd_hdf_logging(char *args, MsgType msgtype, char *reply) {
   char argBuf[32];
 
   if (strlen(args) > 0) {
@@ -928,21 +704,19 @@ cmd_hdf_logging(char *args, MsgType msgtype, char *reply)
     if (strcasecmp(argBuf,"ENABLE")==0 || strcasecmp(argBuf,"ON")==0) {
       logMessage(&env,"Hdf sensor data logging enabled");
       env.useHdf5 = 1;
-    }
-    else if (strcasecmp(argBuf,"DISABLE")==0 || strcasecmp(argBuf,"OFF")==0) {
+    }else if (strcasecmp(argBuf,"DISABLE")==0 || strcasecmp(argBuf,"OFF")==0) {
       logMessage(&env,"Hdf sensor data logging disabled");
       env.useHdf5 = 0;
-    }
-    else {
-      sprintf("Unrecognized argument '%s' - usage: logging [enable|disable]",
-	      args);
+    }else{
+      sprintf("Unrecognized argument '%s' - usage: logging [enable|disable]", args);
       return CMD_ERR;
     }
   }
+
   sprintf(reply,"HdfLogging=%s HdflogDir=%s runState=%s",
-	  ((env.useHdf5) ? "Enabled" : "Disabled"),
-	  env.hdfRoot,
-	  ((env.pause) ? "Paused" : "Active"));
+	  ((env.useHdf5) ? "Enabled" : "Disabled"), env.hdfRoot,((env.pause) ? "Paused" : "Active")
+  );
+
   return CMD_OK;
 }
 
@@ -961,12 +735,8 @@ cmd_hdf_logging(char *args, MsgType msgtype, char *reply)
   for annotating the log during testing (e.g., when doing experiments in
   which one or more systems are powered on or off and the sensor response
   is being measured).
-
 */
-
-int
-cmd_comment(char *args, MsgType msgtype, char *reply)
-{
+int cmd_comment(char *args, MsgType msgtype, char *reply) {
   char argBuf[32];
 
   if (strlen(args) > 0) {
@@ -974,6 +744,7 @@ cmd_comment(char *args, MsgType msgtype, char *reply)
     sprintf(reply,"Appended comment '%s' to the log", args);
     return CMD_OK;
   }
+
   strcpy(reply,"Cannot append a blank comment");
   return CMD_ERR;
 }
@@ -987,9 +758,6 @@ cmd_comment(char *args, MsgType msgtype, char *reply)
 //
 // KeyboardCommand() - process a command from the keyboard
 //
-
-#include <readline/readline.h>  // Gnu readline utility
-#include <readline/history.h>   // Gnu history utility
 
 /*!  
   \brief Process a command from the client's console keyboard
@@ -1020,62 +788,49 @@ cmd_comment(char *args, MsgType msgtype, char *reply)
 
   \sa SocketCommand()
 */
-
-void
-KeyboardCommand(char *line)
-{
+void KeyboardCommand(char *line) {
   char cmd[BIG_STR_SIZE];       // command string (oversized)
   char args[BIG_STR_SIZE];      // command-line argument buffer (oversized)
   char reply[ISIS_MSGSIZE];     // command reply buffer
 
   // ISIS message handling stuff
-
   char msg[ISIS_MSGSIZE];       // ISIS message buffer
   char srcID[ISIS_NODESIZE];    // ISIS message sending node ID
   char destID[ISIS_NODESIZE];   // ISIS message destination node ID
   char msgbody[ISIS_MSGSIZE];   // ISIS message body
 
   // Variables used to traverse the command tree
-
   int i;
   int nfound=0;
   int icmd=-1;
 
   // Pointer for the keyboard message buffer
-
   char *message;
 
   // Stuff for the history facility
-
   char *expansion;
   int result;
 
   // Debugging and diagnosis
-
   double t0, dt;
 
   // If line is NULL, we have nothing to do, return
-
   if (line==NULL) return;
 
   // Similarly, if line is blank, return
-
   if (strlen(line)==0) {
     free(line);
     return;
   }
 
   // Allocate memory for the message buffer and clear it
-
   message = (char *)malloc((ISIS_MSGSIZE)*sizeof(char));
   memset(message,0,ISIS_MSGSIZE);
 
   // Copy the keyboard input line into the message buffer 
-
   strcpy(message,line);
 
   // do any history expansion (!, !!, etc.) if required
-
   if (line[0]) {
     result = history_expand(line,&expansion);
     if (result)
@@ -1093,29 +848,23 @@ KeyboardCommand(char *line)
   }
 
   // We're all done with the original string from readline(), free it
-
   free(line);
 
   // Make sure Ctrl+C is set for motion aborts
-
   signal(SIGINT,HandleInt);  // reset the SIGINT handler
 
   // Remove any \n terminator on the message string
-
   if (message[strlen(message)-1]=='\n') message[strlen(message)-1]='\0';
 
   // Clear the command handling strings
-
   memset(reply,0,sizeof(reply));
   memset(args,0,sizeof(args));
   memset(cmd,0,sizeof(cmd));
 
   // Split message into command and argument strings
-
   sscanf(message,"%s %[^\n]",cmd,args);
 
   // We're all done with the message string, free its memory
-
   free(message);
 
   // Message Handling:
@@ -1125,7 +874,6 @@ KeyboardCommand(char *line)
   // Look for > in cmd, this means a redirect to another ISIS node.
   // This is handled outside the usual command tree, for the obvious
   // reason that the syntax is unique to this operation.
-
   if (strncasecmp(cmd,">",1)==0) {
     if (client.useISIS) {
       memset(msg,0,sizeof(msg));
@@ -1145,61 +893,53 @@ KeyboardCommand(char *line)
 
       SendToISISServer(&client,msg);
       if (client.isVerbose) {
-	msg[strlen(msg)-1]='\0';
-	printf("OUT: %s\n",msg);
+	      msg[strlen(msg)-1]='\0';
+	      printf("OUT: %s\n",msg);
       }
-    }
-    else {
+    }else{
       printf("No ISIS server active, > command unavailable\n");
     }
   }
   
   // All other commands use the cmd_xxx() action calls
+  else{ 
 
-  else { 
-
-    // Traverse the command table, matches are case-insensitive, but
-    // must be exact word matches (no abbreviations or aliases)
-    
+    // Traverse the command table, matches are case-insensitive, but must be exact word matches (no abbreviations or aliases)
     nfound = 0;
     for (i=0; i<NumCommands; i++) {
       if (strcasecmp(cmdtab[i].cmd,cmd)==0) { 
-	nfound++;
-	icmd=i;
-	break;
+	      nfound++;
+	      icmd=i;
+	      break;
       }
     }
 
     // If unknown command, gripe, otherwise do it
-
     if (nfound == 0) {
       if (strlen(cmd)>0) {
-	printf("ERROR: Unknown Command '%s' (type 'help' to list all commands)\n",cmd);
+	      printf("ERROR: Unknown Command '%s' (type 'help' to list all commands)\n",cmd);
       }
-    }
-    else {
-	
+    }else{
       // All console keyboard are treated as EXEC: type messages
-	
       t0 = SysTimestamp();
       switch (cmdtab[icmd].action(args,EXEC,reply)) {
 	
       case CMD_ERR:
-	printf("ERROR: %s %s\n",cmd,reply);
-	break;
+	      printf("ERROR: %s %s\n",cmd,reply);
+	      break;
 	
       case CMD_OK:
-	printf("DONE: %s %s\n",cmd,reply);
-	break;
+	      printf("DONE: %s %s\n",cmd,reply);
+	      break;
 	
       case CMD_NOOP:
       default:
-	break;
+	      break;
 	
       } // end of switch()
+
       dt = SysTimestamp() - t0;
-      if (client.Debug)
-	printf("   %s command execution time %.3f seconds\n",cmd,dt);
+      if (client.Debug) printf("   %s command execution time %.3f seconds\n",cmd,dt);
     }
   }
 }
@@ -1239,13 +979,9 @@ KeyboardCommand(char *line)
 
   \sa KeyboardCommand()
 */
-
-void
-SocketCommand(char *buf)
-{
+void SocketCommand(char *buf) {
 
   // ISIS message components 
-
   char msg[ISIS_MSGSIZE];       // Full ISIS message buffer
   char srcID[ISIS_NODESIZE];    // ISIS message sending node ID
   char destID[ISIS_NODESIZE];   // ISIS message destination node ID
@@ -1253,27 +989,23 @@ SocketCommand(char *buf)
   char msgbody[ISIS_MSGSIZE];   // ISIS message/command body
 
   // Command components (command args)
-
   char cmd[BIG_STR_SIZE];       // command string (oversized)
   char args[BIG_STR_SIZE];      // command-line argument buffer (oversized)
   char reply[ISIS_MSGSIZE];     // command reply string
 
   // Other working variables
-
   int i;
   int nfound=0;
   int icmd=-1;
   double t0, dt;
 
   // Some simple initializations
-
   memset(reply,0,sizeof(reply));
   memset(args,0,sizeof(args));
   memset(cmd,0,sizeof(cmd));
   memset(msg,0,ISIS_MSGSIZE);
 
   // Split the ISIS format message into components
-
   if (SplitMessage(buf,srcID,destID,&msgtype,msgbody)<0) {
     if (client.isVerbose && useCLI) printf("\nISIS IN: %s\n",buf);
     return;
@@ -1281,9 +1013,7 @@ SocketCommand(char *buf)
         
   // Immediate action depends on the type of message received as
   // recorded by the msgtype code.
-
   switch(msgtype) {
-
   case STATUS:  // we've been sent a status message, echo to console
     if (useCLI) printf("%s\n",buf);
     break;
@@ -1311,60 +1041,52 @@ SocketCommand(char *buf)
     sscanf(msgbody,"%s %[^\n]",cmd,args);  // split into command + args
 
     // Traverse the command table, exact case-insensitive match required
-
     nfound = 0;
     for (i=0; i<NumCommands; i++) {
       if (strcasecmp(cmdtab[i].cmd,cmd)==0) { 
-	nfound++;
-	icmd=i;
-	break;
+	      nfound++;
+	      icmd=i;
+	      break;
       }
     }
 
     // Unknown command, gripe back to the sender, otherwise try to do it
-
     if (nfound == 0) {
-      sprintf(msg,"%s>%s ERROR: Unknown command - %s\n",
-              client.ID,srcID,msgbody);
-    }
-    else {
+      sprintf(msg,"%s>%s ERROR: Unknown command - %s\n",client.ID,srcID,msgbody);
+    }else{
       t0 = SysTimestamp();
 
       switch(cmdtab[icmd].action(args,msgtype,reply)) {
-
       case CMD_ERR: // command generated an error
-	sprintf(msg,"%s>%s ERROR: %s %s\n",client.ID,srcID,cmd,reply);
-	break;
-
+	      sprintf(msg,"%s>%s ERROR: %s %s\n",client.ID,srcID,cmd,reply);
+	      break;
       case CMD_NOOP: // command is a no-op, debug/verbose output only
-	if (client.isVerbose && useCLI)
-	  printf("IN: %s from ISIS node %s\n",msgbody,srcID);
-	break;
-
+	      if (client.isVerbose && useCLI)
+	        printf("IN: %s from ISIS node %s\n",msgbody,srcID);
+	      break;
       case CMD_OK:  // command executed OK, return reply
       default:
-	sprintf(msg,"%s>%s DONE: %s %s\n",client.ID,srcID,cmd,reply);
-	break;
+	      sprintf(msg,"%s>%s DONE: %s %s\n",client.ID,srcID,cmd,reply);
+	      break;
 	
       } // end of switch on cmdtab.action()
 
       dt = SysTimestamp() - t0;
       if (client.Debug && useCLI)
-	printf("  %s command execution time %.3f seconds\n",cmd,dt);
+	      printf("  %s command execution time %.3f seconds\n",cmd,dt);
     }
 
     // An incoming PING requires special handling - it is an exception
     // to the usual messaging syntax since PONG is sent in reply 
-
     if (strcasecmp(cmd,"PING") == 0)
       sprintf(msg,"%s>%s %s\n",client.ID,srcID,reply);
       
     break;
 
   default:  // we don't know what we got, print for debugging purposes
-    if (useCLI) printf(" [Malformed message received on client port: '%s']\n",buf);
+    if (useCLI) 
+      printf(" [Malformed message received on client port: '%s']\n",buf);
     break;
-
   } // end of switch(msgtype) -- default falls through with no-op
 
   // Do we have something to send back? 
@@ -1375,7 +1097,6 @@ SocketCommand(char *buf)
   //
   // If we are configured as standalone (client.useISIS=false), send the
   // reply back to the remote host with SendToHost().
-
   if (strlen(msg)>0) { // we have something to send
     if (client.useISIS)
       SendToISISServer(&client,msg);
@@ -1387,6 +1108,5 @@ SocketCommand(char *buf)
       printf("OUT: %s\n",msg);
     }
   } // end of reply handling
-
 }
 

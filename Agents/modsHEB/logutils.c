@@ -1,14 +1,10 @@
-//
-// logutils - Functions used to export log files go here.
-//
-
 /*!
   \file logutils.c
   \brief Functions used to export ASCII and HDF5 log files go here
 
   \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
   \author X. Carroll, OSU.
-  \date 2010 June 21
+  \date 2024 August 15
 */
 
 #include "client.h" // custom client application header 
@@ -34,102 +30,12 @@ int initTelemetryData(envdata_t* envi){
     std::shared_ptr<lbto::tel::ambassador> callBack(new TelemetryCallback());
     lbto::tel::collection_manager::init(callBack);
 
-    //Defining a telemetry stream with modlue name "tel" and stream name "modsenv".
+    //Defining a telemetry stream with modlue name "tel" and stream name "modsHEB".
     lbto::tel::telemeter_definer modsDefiner = lbto::tel::collection_manager::instance().make_telemeter_definer(
-      lbto::tel::system(lbto::tel::name("tel")), lbto::tel::name("modsenv")
+      lbto::tel::system(lbto::tel::name("tel")), lbto::tel::name("modsHEB")
     );
 
-    //Adding measures to the telemetry.
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->ambientTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("ambientTemp"),
-      lbto::tel::description("Outside ambient air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolSupplyPresMeasure, 
-      lbto::tel::unit::kilopascal(), 
-      lbto::tel::name("glycolSupplyPres"),
-      lbto::tel::description("Instrument glycol supply pressure in psi-g")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolReturnPresMeasure, 
-      lbto::tel::unit::kilopascal(), 
-      lbto::tel::name("glycolReturnPres"),
-      lbto::tel::description("Instrument glycol return pressure in psi-g")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolSupplyTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("glycolSupplyTemp"),
-      lbto::tel::description("Instrument glycol supply temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolReturnTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("glycolReturnTemp"),
-      lbto::tel::description("Instrument glycol return temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->utilBoxTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("utilBoxTemp"),
-      lbto::tel::description("IUB inside-box air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->agwHSTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("agwHSTemp"),
-      lbto::tel::description("AGw camera controller heat sink temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebBAirTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebB_AirTemp"),
-      lbto::tel::description("Blue IEB box air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebBReturnTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebB_ReturnTemp"),
-      lbto::tel::description("Blue IEB glycol return temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebRAirTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebR_AirTemp"),
-      lbto::tel::description("Red IEB box air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebRReturnTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebR_ReturnTemp"),
-      lbto::tel::description("Red IEB glycol return temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->airTopTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("airTopTemp"),
-      lbto::tel::description("MODS instrument Top inside air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->airBotTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("airBotTemp"),
-      lbto::tel::description("MODS instrument Bottom inside air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->trussTopTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("trussTopTemp"),
-      lbto::tel::description("MODS collimator truss tube Top temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->trussBotTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("trussBotTemp"),
-      lbto::tel::description("MODS collimator truss tube Bottom temperature in degrees C")
-    ));
+    //ADD MEASURES HERE.
 
     //Adding this definition to the telemetry store.
     envi->modsCollector.reset(new lbto::tel::collector(modsDefiner.make_definition(), MAX_TELEMETRY_BUFFER_BYTES, false));
@@ -258,17 +164,7 @@ int logEnvData(envdata_t *envi){
 
   // Append the current enviromental sensor data to the data log
   memset(logStr,0,sizeof(logStr));
-  sprintf(logStr,"%s %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f"
-	  " %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f\n",
-	  envi->utcDate, envi->ambientTemp,
-	  envi->glycolSupplyPres, envi->glycolReturnPres,
-	  envi->glycolSupplyTemp, envi->glycolReturnTemp,
-	  envi->utilBoxTemp, envi->agwHSTemp,
-	  envi->iebB_AirTemp, envi->iebB_ReturnTemp,
-	  envi->iebR_AirTemp, envi->iebR_ReturnTemp,
-	  envi->airTopTemp, envi->airBotTemp,
-	  envi->trussTopTemp, envi->trussBotTemp
-  );
+  sprintf(logStr,"%s\n", envi->utcDate);
   ierr = write(envi->logFD,logStr,strlen(logStr));
   
   return 0;
@@ -370,25 +266,10 @@ int logTelemetryData(envdata_t *envi){
   }
 
   try{    
-    //Storing variable data in the streams.
-    envi->ambientTempMeasure.store(envi->ambientTemp);
-    envi->glycolSupplyPresMeasure.store(envi->glycolSupplyPres);
-    envi->glycolReturnPresMeasure.store(envi->glycolReturnPres);
-    envi->glycolSupplyTempMeasure.store(envi->glycolSupplyTemp);
-    envi->glycolReturnTempMeasure.store(envi->glycolReturnTemp);
-    envi->utilBoxTempMeasure.store(envi->utilBoxTemp);
-    envi->agwHSTempMeasure.store(envi->agwHSTemp);
-    envi->iebBAirTempMeasure.store(envi->iebB_AirTemp);
-    envi->iebBReturnTempMeasure.store(envi->iebB_ReturnTemp);
-    envi->iebRAirTempMeasure.store(envi->iebR_AirTemp);
-    envi->iebRReturnTempMeasure.store(envi->iebR_ReturnTemp);
-    envi->airTopTempMeasure.store(envi->airTopTemp);
-    envi->airBotTempMeasure.store(envi->airBotTemp);
-    envi->trussTopTempMeasure.store(envi->trussTopTemp);
-    envi->trussBotTempMeasure.store(envi->trussBotTemp);
+    //STORE VARIABLES IN THE DATA STREAMS.
     
     //Commiting the data to the HDF5 file.
-    envi->modsCollector->commit_sample(lbto::tel::date::from_posix_utc_s(commitTime));    //TODO: Fix time stamps.
+    envi->modsCollector->commit_sample(lbto::tel::date::from_posix_utc_s(commitTime));
 
   //Catching exceptions thrown while sending lib-telemetry data to an output stream.
   }catch(lbto::tel::sample_dropped const& exn){

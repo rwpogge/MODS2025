@@ -15,7 +15,6 @@
 */
 
 // Common interactive client commands 
-
 int cmd_quit   (char *, MsgType, char *); // quit the application
 int cmd_ping   (char *, MsgType, char *); // ping (comm handshake request)
 int cmd_pong   (char *, MsgType, char *); // pong (comm handshake acknowledge)
@@ -27,7 +26,6 @@ int cmd_help   (char *, MsgType, char *); // show command help
 int cmd_history(char *, MsgType, char *); // cli history utility
 
 // Application Commands
-
 int cmd_estatus (char *, MsgType, char *);  // Query MODS environment sensor status
 int cmd_pstatus (char *, MsgType, char *);  // Query MODS AC power control status
 int cmd_cadence (char *, MsgType, char *);  // Query/Set the monitoring cadence in seconds
@@ -104,11 +102,9 @@ cmdtab[] = {   //!< global scope command table for this application
 };
 
 // Number of commands defined (so we don't have to count correctly)
-  
 int NumCommands = sizeof(cmdtab)/sizeof(struct Commands);  //!< number of commands defined
 
 // command function return codes
-
 #define CMD_OK   0   //!< Command executed OK, return completion status
 #define CMD_ERR -1   //!< Command execution resulted in an error
 #define CMD_NOOP 1   //!< Command execution requires no further action (no-op)
