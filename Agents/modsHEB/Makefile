@@ -1,35 +1,36 @@
 #
-# Makefile for modsenv - MODS environmental monitor agent
+# Makefile for modsHEB
 #
-# Use "build", not "make" to build the modsenv executable.
+# Use "build", not "make" to build the modsheb executable.
+#
+# This Makefile compiles all *.c files in SRCDIR into object files in BUILDDIR.
+# Then it combines all the object files into an executable.
+#
+# X. Carroll
 #
 # R. Pogge, OSU Astronomy Dept.
 # pogge@astronomy.ohio-state.edu
-# Original 2010 June 21
 #
-# Modification History:
-#   2013 Aug 15 - Start of v2.x development [rwp/osu]
-#   2014 Jul 10 - Added shared memory utilization [rwp/osu]
-#   2024 Feb 18 - Migrating to open source libmodbus [rwp/osu]
-#   2024 May 21 - Moving libmodbus to a standalone interface [xc/osu]
-#   2024 Jul 08 - Adding LBTO's libtelemetry library [xc/osu]
+# Date: 2024 August 16
 #-------------------------------------------------------------
 
 # Version Number: <major>.<minor>.<build>
 
-VERSION     = v3.1.0
+VERSION     = v0.0.1
 
 # Compiler and libary info as required
 
 CC          = /usr/bin/g++
-AR          = /usr/bin/ar
 HOMEDIR     = /home/dts
 ISISLIB     = $(HOMEDIR)/ISIS/lib
 TELEMDIR	= /usr/include/lbto/lib-telemetry
 
-# keep binaries local during development
+# Flags, includes, etc
 
-BINDIR      = ./
+TARGET 		= modsheb
+
+SRCDIR 		= .
+BUILDDIR	= ./bin
 
 INCLUDES    = -I$(ISISLIB) -I/usr/include/modbus -I$(HOMEDIR)/include -I$(TELEMDIR)
 LIBRARIES   = -L$(ISISLIB) 
@@ -39,26 +40,23 @@ VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
 LIBS        = $(INCLUDES) $(LIBRARIES) -L/usr/X11R6/lib -lX11 \
               -lisis -lmodbus -lreadline -lhistory -lncurses -ltelcollection
 
-LFLAGS      = -o modsenv
+HEADERS		= client.h commands.h modbusutils.h
 
-OBJS        = clientutils.o loadconfig.o commands.o modbusutils.o logutils.o
+# A list of all the .c files in the SRCDIR directory, and an altered list of those files with a .o extension in the BUILDDIR directory.
 
-%.o : %.c client.h commands.h modbusutils.h
-	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
+C_FILES=$(wildcard $(SRCDIR)/*.c)
+OBJECTS=$(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(C_FILES) )
 
-all:        modsenv
+# The build instructions
 
-#
-# Interactive modsenv agent
-#
-modsenv:    $(OBJS) main.c
-	    $(CC) $(LFLAGS) $(VFLAGS) main.c $(OBJS) $(LIBS)
+all: $(TARGET)
 
+$(TARGET): $(OBJECTS)
+	$(CC) -o $(TARGET) $(VFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET)
+
+$(BUILDDIR)/%.o: $(SRCDIR)/%.c $(HEADERS)
+	mkdir -p $(BUILDDIR)
+	$(CC) $(CFLAGS) $(VFLAGS) -c $< -o $@
 
 clean:
-	    /bin/rm -f modsenv *.o
-
-install:
-	    \cp modsenv $(BINDIR)
-	    /bin/rm -f *.o
-	    doxygen >& /dev/null
+	/bin/rm -rf $(BUILDDIR) $(TARGET)

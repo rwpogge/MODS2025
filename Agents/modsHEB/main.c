@@ -19,7 +19,8 @@
   \brief modsheb main program and I/O event handler.
 */
 
-#include "client.h"   // Custom client application header
+// Custom client application header
+#include "client.h"
 
 // The client cli uses the GNU readline and history utilities
 #include <readline/readline.h>

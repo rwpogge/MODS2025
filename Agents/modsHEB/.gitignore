@@ -1,7 +1,6 @@
 /.vscode/
 /data/
 /doc/
+/bin/
 
-*.o
-
-modsenv
+modsheb

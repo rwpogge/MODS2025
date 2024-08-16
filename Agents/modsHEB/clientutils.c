@@ -67,6 +67,21 @@ void printEnvData(envdata_t *envi){
   printf("\n");
 }
 
+//Converts an array of raw RTD data into its equivalent Temperature.
+void ptRTD2C(uint16_t* rawData, float* outputData, int numRtds){
+  float tempRes = 0.1;
+  float tempMax = 850.0;
+  float wrapT = tempRes*(pow(2.0, 16)-1);
+    
+  for(int i=0; i<numRtds; i++){
+      float temp = tempRes*rawData[i];
+      if (temp > tempMax)
+        temp -= wrapT;
+      
+      outputData[i] = temp;
+  }
+}
+
 /*!
   \brief Get enviromental sensor data
 
@@ -81,6 +96,9 @@ int getEnvData(envdata_t *envi) {
   int ierr;
 
   //Query WAGOs and collect data here.
+  uint16_t rawRtdData;
+  wagoSetGet(0, "192.168.139.135", 4, 1, &rawRtdData);
+  ptRTD2C(&rawRtdData, &(envi->rtdData), 1);
 
   // Get the UTC date/time of the query (ISIS client utility routine)
   strcpy(envi->utcDate,ISODate());

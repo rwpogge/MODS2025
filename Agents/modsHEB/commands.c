@@ -45,11 +45,12 @@
   \date 2010 June 21
 */
 
+#include "client.h"     // Custom client application header file
+#include "commands.h"   // Command action functions header file
+
 #include <readline/readline.h>  // Gnu readline utility
 #include <readline/history.h>   // Gnu history utility
 
-#include "client.h"     // Custom client application header file
-#include "commands.h"   // Command action functions header file
 
 //***************************************************************************
 //

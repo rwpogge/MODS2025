@@ -93,6 +93,8 @@ typedef struct envData {
 
   char  modsID[8];   //!< MODS instrument ID (MODS1 or MODS2)
 
+  float rtdData;
+
   // Environmental monitoring parameters
   long  cadence;   //!< Monitor update cadence in seconds
   int   pause;     //!< Pause monitoring if 1, continue monitoring if 0
@@ -113,6 +115,8 @@ typedef struct envData {
 
   std::shared_ptr<lbto::tel::collector> modsCollector;  //!< The telemetry collection interface
 } envdata_t;
+
+extern envdata_t env;
 
 /*!
   \brief A class which provides callback methods for Hdf5 output.
@@ -154,13 +158,16 @@ public:
 // Remember to declare explicitly in main.c
 extern int useCLI;            //!< Use the command-line interface. 1=use it, 0=no cli
 extern isisclient_t client;   //!< Global client runtime config table
-extern envdata_t env;
-
 
 //// END of Global Variable Declerations. ----------------------------------
 //// START of Custom Client Function Declerations. -------------------------
 
-int  loadConfig(char *);      // Load/parse the agent runtime config file (see loadconfig.c)
+// Load/parse the agent runtime config file (see loadconfig.c)
+int  loadConfig(char *);
+
+// Functions for handling command input (see commands.c)
+void KeyboardCommand(char *); // process keyboard (cli) commands (see commands.c)
+void SocketCommand(char *);   // process messages from the client socket (see commands.c)
 
 // Client utility routines (defined in clientutils.c)
 void initEnvData(envdata_t *);    // initialize the envdata_t struct
@@ -182,4 +189,4 @@ void HandleKill(int); // SIGKILL handler
 
 //// END of Custom Client Function Declerations. ---------------------------
 
-#endif  // CLIENT_H
+#endif  // MODSHEB_CLIENT_H
