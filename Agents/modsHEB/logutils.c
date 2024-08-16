@@ -164,7 +164,7 @@ int logEnvData(envdata_t *envi){
 
   // Append the current enviromental sensor data to the data log
   memset(logStr,0,sizeof(logStr));
-  sprintf(logStr,"%s %f\n", envi->utcDate, envi->rtdData);
+  sprintf(logStr,"%s %f %f %f %f %f\n", envi->utcDate, envi->rtdData, envi->quadcellData[0], envi->quadcellData[1], envi->quadcellData[2], envi->quadcellData[3]);
   ierr = write(envi->logFD,logStr,strlen(logStr));
   
   return 0;

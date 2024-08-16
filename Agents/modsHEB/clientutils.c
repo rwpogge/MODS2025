@@ -82,6 +82,19 @@ void ptRTD2C(uint16_t* rawData, float* outputData, int numRtds){
   }
 }
 
+//Converts an array of raw quadcell data into its equivalent DC voltage.
+void qc2vdc(uint16_t* rawData, float* outputData){
+  for(int i=0; i<4; i++){
+    int posMax = pow(2, 15) - 1;
+    int negMin = pow(2, 16) - 2;
+    
+    if(rawData[i] > posMax)
+        outputData[i] = 10.0*((rawData[i]-negMin)/posMax);
+    else
+        outputData[i] = 10.0*((float)rawData[i]/posMax);
+  }
+}
+
 /*!
   \brief Get enviromental sensor data
 
@@ -96,9 +109,10 @@ int getEnvData(envdata_t *envi) {
   int ierr;
 
   //Query WAGOs and collect data here.
-  uint16_t rawRtdData;
-  wagoSetGet(0, "192.168.139.135", 4, 1, &rawRtdData);
-  ptRTD2C(&rawRtdData, &(envi->rtdData), 1);
+  uint16_t rawHebData[5];
+  wagoSetGet(0, "192.168.139.135", 0, 5, rawHebData);
+  ptRTD2C(rawHebData+4, envi->rtdData, 1);
+  qc2vdc(rawHebData, envi->quadcellData);
 
   // Get the UTC date/time of the query (ISIS client utility routine)
   strcpy(envi->utcDate,ISODate());

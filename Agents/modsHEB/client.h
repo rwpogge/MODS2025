@@ -93,7 +93,8 @@ typedef struct envData {
 
   char  modsID[8];   //!< MODS instrument ID (MODS1 or MODS2)
 
-  float rtdData;
+  float quadcellData[4];
+  float rtdData[1];
 
   // Environmental monitoring parameters
   long  cadence;   //!< Monitor update cadence in seconds
