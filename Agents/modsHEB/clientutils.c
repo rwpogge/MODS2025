@@ -62,37 +62,6 @@ void printEnvData(envdata_t *envi){
   printf("  ISIS Host: %s (%s:%d)\n",client.ID,client.Host,client.Port);
   printf("  Config File: %s\n",client.rcFile);
   printf("  %s\n",(client.isVerbose) ? "Verbose" : "Concise");
-
-  printf("\n NOTE: Data above could be stale, note the date/time above\n");
-  printf("\n");
-}
-
-//Converts an array of raw RTD data into its equivalent Temperature.
-void ptRTD2C(uint16_t* rawData, float* outputData, int numRtds){
-  float tempRes = 0.1;
-  float tempMax = 850.0;
-  float wrapT = tempRes*(pow(2.0, 16)-1);
-    
-  for(int i=0; i<numRtds; i++){
-      float temp = tempRes*rawData[i];
-      if (temp > tempMax)
-        temp -= wrapT;
-      
-      outputData[i] = temp;
-  }
-}
-
-//Converts an array of raw quadcell data into its equivalent DC voltage.
-void qc2vdc(uint16_t* rawData, float* outputData){
-  for(int i=0; i<4; i++){
-    int posMax = pow(2, 15) - 1;
-    int negMin = pow(2, 16) - 2;
-    
-    if(rawData[i] > posMax)
-        outputData[i] = 10.0*((rawData[i]-negMin)/posMax);
-    else
-        outputData[i] = 10.0*((float)rawData[i]/posMax);
-  }
 }
 
 /*!
@@ -111,8 +80,8 @@ int getEnvData(envdata_t *envi) {
   //Query WAGOs and collect data here.
   uint16_t rawHebData[5];
   wagoSetGet(0, "192.168.139.135", 0, 5, rawHebData);
-  ptRTD2C(rawHebData+4, envi->rtdData, 1);
-  qc2vdc(rawHebData, envi->quadcellData);
+  qc2vdc(rawHebData, envi->instrumentData+0);
+  ptRTD2C(rawHebData+4, envi->instrumentData+4, 1);
 
   // Get the UTC date/time of the query (ISIS client utility routine)
   strcpy(envi->utcDate,ISODate());

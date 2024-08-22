@@ -51,7 +51,10 @@
 
 #include <telcollection.hxx>  // LBTO telemetry library
 #include "isisclient.h"       // ISISClient library
+
 #include "modbusutils.h"      // Utility functions for libmodbus
+#include "instruments.h"      // Utility for custom instruments
+
 
 //// END of System Header Files. -------------------------------------------
 //// START of System Versioning. -------------------------------------------
@@ -93,8 +96,8 @@ typedef struct envData {
 
   char  modsID[8];   //!< MODS instrument ID (MODS1 or MODS2)
 
-  float quadcellData[4];
-  float rtdData[1];
+  //Enviornmental monitoring data
+  float instrumentData[NUM_INSTRUMENTS];  //!< All instrument data (floats and ints) are stored in this array.
 
   // Environmental monitoring parameters
   long  cadence;   //!< Monitor update cadence in seconds
@@ -114,7 +117,9 @@ typedef struct envData {
   char hdfRoot[MED_STR_SIZE];         //!< Full path/rootname of the HDF5 log directory
   char leapSecondsFile[MED_STR_SIZE]; //!< Full path/name of the leap-seconds.list
 
-  std::shared_ptr<lbto::tel::collector> modsCollector;  //!< The telemetry collection interface
+  lbto::tel::float_measure::buf_proxy floatMeasures[NUM_INSTRUMENTS];   //!< The float data in the telemetry stream
+  std::shared_ptr<lbto::tel::collector> modsCollector;                  //!< The telemetry collection interface
+
 } envdata_t;
 
 extern envdata_t env;

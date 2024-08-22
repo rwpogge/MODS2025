@@ -35,7 +35,15 @@ int initTelemetryData(envdata_t* envi){
       lbto::tel::system(lbto::tel::name("tel")), lbto::tel::name("modsHEB")
     );
 
-    //ADD MEASURES HERE.
+    //Adding measures based off the instrument table.
+    for(int i=0; i<NUM_INSTRUMENTS; i++){        
+      modsDefiner.add_child(lbto::tel::float_measure(
+        envi->floatMeasures[i],
+        instrumentTable[i].units, 
+        lbto::tel::name(instrumentTable[i].name),
+        lbto::tel::description(instrumentTable[i].description)
+      ));
+    }
 
     //Adding this definition to the telemetry store.
     envi->modsCollector.reset(new lbto::tel::collector(modsDefiner.make_definition(), MAX_TELEMETRY_BUFFER_BYTES, false));
@@ -164,7 +172,7 @@ int logEnvData(envdata_t *envi){
 
   // Append the current enviromental sensor data to the data log
   memset(logStr,0,sizeof(logStr));
-  sprintf(logStr,"%s %f %f %f %f %f\n", envi->utcDate, envi->rtdData, envi->quadcellData[0], envi->quadcellData[1], envi->quadcellData[2], envi->quadcellData[3]);
+  sprintf(logStr,"%s %f %f %f %f %f\n", envi->utcDate, envi->instrumentData[4], envi->instrumentData[0], envi->instrumentData[1], envi->instrumentData[2], envi->instrumentData[3]);
   ierr = write(envi->logFD,logStr,strlen(logStr));
   
   return 0;
@@ -266,8 +274,11 @@ int logTelemetryData(envdata_t *envi){
   }
 
   try{    
-    //STORE VARIABLES IN THE DATA STREAMS.
-    
+    //Storing data in the streams based on the instrument table.
+    for(int i=0; i<NUM_INSTRUMENTS; i++){
+      envi->floatMeasures[i].store(envi->instrumentData[i]);
+    }
+
     //Commiting the data to the HDF5 file.
     envi->modsCollector->commit_sample(lbto::tel::date::from_posix_utc_s(commitTime));
 
