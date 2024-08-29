@@ -94,6 +94,7 @@ int initEnvLog(envdata_t *envi){
   int ierr;
   char logStr[MED_STR_SIZE];
   int exists;
+  int stringLength = 0;
 
   // Get the UTC Date in CCYYMMDD format
   strcpy(envi->lastDate,UTCDateTag());
@@ -131,13 +132,22 @@ int initEnvLog(envdata_t *envi){
     sprintf(logStr,"# Started: UTC %s\n# Sampling Cadence: %d seconds\n#\n",
 	    ISODate(),envi->cadence);
     ierr = write(envi->logFD,logStr,strlen(logStr));
-
-    memset(logStr,0,sizeof(logStr));
-    sprintf(logStr,"# UTC Date/Time      Tamb  Psup  Pret  Tsup  Tret  Tiub"
-	    "  Tagw  Bair  Bret  Rair  Rret  AirT  AirB  ColT  ColB\n"
-    );
-    ierr = write(envi->logFD,logStr,strlen(logStr));
   }
+
+  //Creating the enviornmental data header string.
+  memset(logStr,0,sizeof(logStr));                                                    // Clear the string.
+  stringLength += snprintf(logStr, sizeof(logStr), "# UTC Date/Time    ");            // Append the date header.
+  for(int i=0; i<NUM_INSTRUMENTS; i++){                                               // Append each instrument header.
+    stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
+      " %-7.7s", instrumentTable[i].logName
+    );
+  }
+  stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, "\n");   // Append a new line.
+  sprintf(logStr+sizeof(logStr)-2, "\n");                                             // And make the last character a new line in-case of buffer overflow.
+  
+  //Write the header string to the log file.
+  ierr = write(envi->logFD,logStr,strlen(logStr));
+
   return 0;
 }
 
@@ -158,6 +168,7 @@ int initEnvLog(envdata_t *envi){
 */
 int logEnvData(envdata_t *envi){
   int ierr;
+  int stringLength = 0;
   char dateTag[MED_STR_SIZE];  
   char logStr[BIG_STR_SIZE];
 
@@ -170,9 +181,18 @@ int logEnvData(envdata_t *envi){
   if (strcasecmp(dateTag,envi->lastDate) != 0)
     if (initEnvLog(envi)<0) return -1;
 
-  // Append the current enviromental sensor data to the data log
-  memset(logStr,0,sizeof(logStr));
-  sprintf(logStr,"%s %f %f %f %f %f\n", envi->utcDate, envi->instrumentData[4], envi->instrumentData[0], envi->instrumentData[1], envi->instrumentData[2], envi->instrumentData[3]);
+  // Create the enviornmental data string.
+  memset(logStr, 0, sizeof(logStr));                                                  // Clear the string.
+  stringLength += snprintf(logStr, sizeof(logStr), "%s", envi->utcDate);              // Append the date.
+  for(int i=0; i<NUM_INSTRUMENTS; i++){                                               // Append each instrument reading.
+    stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
+      " %-7.3f", envi->instrumentData[i]
+    );
+  }
+  stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, "\n");   // Append a new line.
+  sprintf(logStr+sizeof(logStr)-2, "\n");                                             // And make the last character a new line in-case of buffer overflow.
+
+  // Write the data string to the log file.
   ierr = write(envi->logFD,logStr,strlen(logStr));
   
   return 0;

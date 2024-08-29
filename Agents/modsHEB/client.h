@@ -53,8 +53,6 @@
 #include "isisclient.h"       // ISISClient library
 
 #include "modbusutils.h"      // Utility functions for libmodbus
-#include "instruments.h"      // Utility for custom instruments
-
 
 //// END of System Header Files. -------------------------------------------
 //// START of System Versioning. -------------------------------------------
@@ -82,12 +80,33 @@
 
 #define DEFAULT_CADENCE  300  //!< default monitoring cadence in seconds
 
+#define NUM_INSTRUMENTS 5   //!< How many enviornmental sensors to store data for.
+
 #define MAX_TELEMETRY_BUFFER_BYTES 12000000                       //!< Maximum number of bytes that the lbt telemetry collector can use to store samples.
 #define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"  //!< Default path to the leap-seconds.list file.
 #define FALLBACK_LEAP_SECONDS_FILE "./leap-seconds.list"          //!< If an updated leap-seconds file can't be found, this one is used instead.
 
+
 //// END of Constants and Working Parameters. ------------------------------
 //// START of Class and Struct Definitions. --------------------------------
+
+/*!
+  \brief The data that will be stored for each enviornmental instrument.
+*/
+typedef struct InstrumentProfile{
+    char* name;
+    char* logName; 
+    char* description;
+    lbto::tel::unit units;
+    int type;
+} instrument_t;
+
+/*!
+  \brief A global table containing a list of every instrument that will be queried.
+
+  Found in "instruments.c"
+*/
+extern instrument_t instrumentTable[];
 
 /*!
   \brief A struct which holds all of the enviornment and telemetry data for this modsEnv instance.
@@ -175,7 +194,7 @@ int  loadConfig(char *);
 void KeyboardCommand(char *); // process keyboard (cli) commands (see commands.c)
 void SocketCommand(char *);   // process messages from the client socket (see commands.c)
 
-// Client utility routines (defined in clientutils.c)
+// Client utility routines (defined in instruments.c)
 void initEnvData(envdata_t *);    // initialize the envdata_t struct
 void printEnvData(envdata_t *);   // print the contents of the envdata_t struct (engineering)
 int  getEnvData(envdata_t *);     // get environmental data from the sensor WAGOs
