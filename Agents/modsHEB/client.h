@@ -80,8 +80,6 @@
 
 #define DEFAULT_CADENCE  300  //!< default monitoring cadence in seconds
 
-#define NUM_INSTRUMENTS 5   //!< How many enviornmental sensors to store data for.
-
 #define MAX_TELEMETRY_BUFFER_BYTES 12000000                       //!< Maximum number of bytes that the lbt telemetry collector can use to store samples.
 #define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"  //!< Default path to the leap-seconds.list file.
 #define FALLBACK_LEAP_SECONDS_FILE "./leap-seconds.list"          //!< If an updated leap-seconds file can't be found, this one is used instead.
@@ -116,7 +114,7 @@ typedef struct envData {
   char  modsID[8];   //!< MODS instrument ID (MODS1 or MODS2)
 
   //Enviornmental monitoring data
-  float instrumentData[NUM_INSTRUMENTS];  //!< All instrument data (floats and ints) are stored in this array.
+  float* instrumentData;  //!< All instrument data (floats and ints) are stored in this array.
 
   // Environmental monitoring parameters
   long  cadence;   //!< Monitor update cadence in seconds
@@ -136,8 +134,8 @@ typedef struct envData {
   char hdfRoot[MED_STR_SIZE];         //!< Full path/rootname of the HDF5 log directory
   char leapSecondsFile[MED_STR_SIZE]; //!< Full path/name of the leap-seconds.list
 
-  lbto::tel::float_measure::buf_proxy floatMeasures[NUM_INSTRUMENTS];   //!< The float data in the telemetry stream
-  std::shared_ptr<lbto::tel::collector> modsCollector;                  //!< The telemetry collection interface
+  lbto::tel::float_measure::buf_proxy* floatMeasures;   //!< The float data in the telemetry stream
+  std::shared_ptr<lbto::tel::collector> modsCollector;  //!< The telemetry collection interface
 
 } envdata_t;
 
@@ -181,8 +179,9 @@ public:
 //// START of Global Variable Declerations. --------------------------------
 
 // Remember to declare explicitly in main.c
-extern int useCLI;            //!< Use the command-line interface. 1=use it, 0=no cli
-extern isisclient_t client;   //!< Global client runtime config table
+extern int useCLI;                //!< Use the command-line interface. 1=use it, 0=no cli
+extern isisclient_t client;       //!< Global client runtime config table
+extern const int NUM_INSTRUMENTS; //!< The number of entries in the instrument table.
 
 //// END of Global Variable Declerations. ----------------------------------
 //// START of Custom Client Function Declerations. -------------------------
@@ -194,10 +193,14 @@ int  loadConfig(char *);
 void KeyboardCommand(char *); // process keyboard (cli) commands (see commands.c)
 void SocketCommand(char *);   // process messages from the client socket (see commands.c)
 
-// Client utility routines (defined in instruments.c)
+// Client utility routines (defined in clientutils.c)
 void initEnvData(envdata_t *);    // initialize the envdata_t struct
+void freeEnvData(envdata_t *);    // frees memory allocated by envdata_t struct
 void printEnvData(envdata_t *);   // print the contents of the envdata_t struct (engineering)
-int  getEnvData(envdata_t *);     // get environmental data from the sensor WAGOs
+
+// Utility routines for instrument data (defined in instruments.c)
+void initInstrumentData(envdata_t *);   // initalize envdata based on connected instruments
+int  getInstrumentData(envdata_t *);    // get environmental data from the sensor WAGOs
 
 // Log utility routines (defined in logutils.c)
 int  initTelemetryData(envdata_t *);    // initlaize the telemetry structures in envdata_t if HDF5 will be used

@@ -74,6 +74,7 @@ int main(int argc, char *argv[]){
   configStatus = loadConfig((argc == 2) ? argv[1] : DEFAULT_RCFILE);
   if (configStatus!=0) {
     printf("\nUnable to load config file %s - modsenv aborting\n",client.rcFile);
+    freeEnvData(&env);
     return 1;
   }
 
@@ -96,6 +97,7 @@ int main(int argc, char *argv[]){
   if (client.useISIS) {
     if (InitISISServer(&client)<0) {
       printf("\nISIS server connection initialization failed - modsenv aborting\n\n");
+      freeEnvData(&env);
       return 2;
     }
   }
@@ -103,6 +105,7 @@ int main(int argc, char *argv[]){
   // Open the client network socket port for interprocess communications
   if (OpenClientSocket(&client)<0) {
     printf("\nClient socket initialization failed - modsenv aborting\n\n");
+    freeEnvData(&env);
     return 3;
   }
 
@@ -153,7 +156,7 @@ int main(int argc, char *argv[]){
   signal(SIGPIPE,SIG_IGN);    // Ignore broken pipes
 
   // One last thing, make an initial sensor query
-  ierr = getEnvData(&env);
+  ierr = getInstrumentData(&env);
   if(ierr == 0){
     if (env.doLogging) logEnvData(&env);
     if (env.useHdf5) logTelemetryData(&env);
@@ -194,7 +197,7 @@ int main(int argc, char *argv[]){
 
       // We timed-out without doing anything, so query the instrument enviromental sensors unless we are in a monitor pause.
       if (!env.pause) {
-	      ierr = getEnvData(&env);
+	      ierr = getInstrumentData(&env);
 
         if(ierr == 0){
           if (env.doLogging) logEnvData(&env); 
@@ -254,6 +257,9 @@ int main(int argc, char *argv[]){
 
   if (env.logFD > 0) close(env.logFD);  //Closes the ascii log.
   closeTelemetryData(&env);             //Closes the hdf5 log.
+
+  // Free dynamically allocated memory
+  freeEnvData(&env);
 
   // Remove the readline() callback handler
   if (useCLI) rl_callback_handler_remove();

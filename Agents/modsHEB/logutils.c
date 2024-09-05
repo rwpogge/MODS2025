@@ -36,7 +36,7 @@ int initTelemetryData(envdata_t* envi){
     );
 
     //Adding measures based off the instrument table.
-    for(int i=0; i<NUM_INSTRUMENTS; i++){        
+    for(int i=0; i<NUM_INSTRUMENTS; i++){
       modsDefiner.add_child(lbto::tel::float_measure(
         envi->floatMeasures[i],
         instrumentTable[i].units, 
@@ -47,7 +47,6 @@ int initTelemetryData(envdata_t* envi){
 
     //Adding this definition to the telemetry store.
     envi->modsCollector.reset(new lbto::tel::collector(modsDefiner.make_definition(), MAX_TELEMETRY_BUFFER_BYTES, false));
-
 
   //Catching exceptions thrown while initalizing lib-telemetry data.
   }catch(std::exception const& exn){
@@ -161,9 +160,6 @@ int initEnvLog(envdata_t *envi){
   Appends the most recent environmental sensor readings to the current
   data log.  This routine checks the time and rolls over the data log
   at midnight UTC.
-
-  At present (v2.x) we do not log AC power status sensor data, only
-  the data from temperature and pressure sensors.
 
 */
 int logEnvData(envdata_t *envi){
@@ -279,9 +275,6 @@ int fileExists(char *fileName){
 
   Appends the most recent environmental sensor readings to the current
   HDF5 stream.
-
-  At present (v2.x) we do not log AC power status sensor data, only
-  the data from temperature and pressure sensors.
 
 */
 int logTelemetryData(envdata_t *envi){
