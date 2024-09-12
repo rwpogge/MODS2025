@@ -222,9 +222,26 @@ int loadConfig(char *cfgfile){
 	      client.Debug = 1;
       }
 
-      // Gripe if junk is in the config file
       else { 
-	      printf("Ignoring unrecognized config file entry - %s", inStr);
+        // Checking if the line was an instrument which should be used.
+        int inTable = 0;
+        for(int i=0; i<NUM_INSTRUMENTS; i++){
+          if(strcasecmp(keyword, instrumentTable[i].name) == 0){
+            inTable = 1;
+            instrumentTable[i].logEntry = 1;
+
+            //If there is an argument, it is the wago address.
+            GetArg(inStr, 2, argStr);
+            if(argStr != NULL){
+              instrumentTable[i].wagoAddress = atoi(argStr);
+            }
+
+            break;
+          }
+        }
+
+        // Gripe if junk is in the config file
+        if(!inTable) printf("Ignoring unrecognized config file entry - %s", inStr);
       }
     }
 

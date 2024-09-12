@@ -37,6 +37,8 @@ int initTelemetryData(envdata_t* envi){
 
     //Adding measures based off the instrument table.
     for(int i=0; i<NUM_INSTRUMENTS; i++){
+      if(!instrumentTable[i].logEntry) continue;
+
       modsDefiner.add_child(lbto::tel::float_measure(
         envi->floatMeasures[i],
         instrumentTable[i].units, 
@@ -137,6 +139,8 @@ int initEnvLog(envdata_t *envi){
   memset(logStr,0,sizeof(logStr));                                                    // Clear the string.
   stringLength += snprintf(logStr, sizeof(logStr), "# UTC Date/Time    ");            // Append the date header.
   for(int i=0; i<NUM_INSTRUMENTS; i++){                                               // Append each instrument header.
+    if(!instrumentTable[i].logEntry) continue;
+    
     stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
       " %-7.7s", instrumentTable[i].logName
     );
@@ -181,6 +185,8 @@ int logEnvData(envdata_t *envi){
   memset(logStr, 0, sizeof(logStr));                                                  // Clear the string.
   stringLength += snprintf(logStr, sizeof(logStr), "%s", envi->utcDate);              // Append the date.
   for(int i=0; i<NUM_INSTRUMENTS; i++){                                               // Append each instrument reading.
+    if(!instrumentTable[i].logEntry) continue;
+    
     stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
       " %-7.3f", envi->instrumentData[i]
     );
@@ -289,6 +295,8 @@ int logTelemetryData(envdata_t *envi){
   try{    
     //Storing data in the streams based on the instrument table.
     for(int i=0; i<NUM_INSTRUMENTS; i++){
+      if(!instrumentTable[i].logEntry) continue;
+
       envi->floatMeasures[i].store(envi->instrumentData[i]);
     }
 

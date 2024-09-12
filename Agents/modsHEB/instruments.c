@@ -8,19 +8,21 @@
 
 #include "client.h" // custom client application header 
 
-// CONSTANT ADDRESSES -------------------------------
+// CONSTANTS -------------------------------------------------------
 
 #define HEB_ADDRESS "192.168.139.135"
 
+#define QUADCELL_PROCESS 0
+#define RTD_PROCESS 1
 
 // GLOBAL TABLE WITH INSTRUMENT DATA -------------------------------
 
 instrument_t instrumentTable[] = {
-  {"QuadCell0", "Qcl0", "Reading from the quadcell sensor.",   lbto::tel::unit::volt()    },
-  {"QuadCell1", "Qcl1", "Reading from the quadcell sensor.",   lbto::tel::unit::volt()    },
-  {"QuadCell2", "Qcl2", "Reading from the quadcell sensor.",   lbto::tel::unit::volt()    },
-  {"QuadCell3", "Qcl3", "Reading from the quadcell sensor.",   lbto::tel::unit::volt()    },
-  {"Rtd",       "AmbT", "Temperature from the in-box sensor.", lbto::tel::unit::celsius() }
+  {"QuadCell0", "Qcl0", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    0, QUADCELL_PROCESS },
+  {"QuadCell1", "Qcl1", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    1, QUADCELL_PROCESS },
+  {"QuadCell2", "Qcl2", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    2, QUADCELL_PROCESS },
+  {"QuadCell3", "Qcl3", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    3, QUADCELL_PROCESS },
+  {"Rtd",       "AmbT", "Temperature from the in-box sensor.", lbto::tel::unit::celsius(), 4, RTD_PROCESS      }
 };
 
 const int NUM_INSTRUMENTS = sizeof(instrumentTable)/sizeof(instrument_t); //The number of entries in the table above.
@@ -29,42 +31,38 @@ const int NUM_INSTRUMENTS = sizeof(instrumentTable)/sizeof(instrument_t); //The 
 // UTILITY FUNCTIONS -----------------------------------------------
 
 /*!
-  \brief Converts an array of raw RTD data into its equivalent Temperature.
+  \brief Converts a raw RTD reading into its equivalent temperature.
 
-  \param rawData pointer to the RTD data as collected from the WAGO module.
-  \param outputData pointer to a float array where the converted data will be stored.
-  \param numRtds the size of the rawData array (the number of RTDs data was collected for).
+  \param rawData pointer to an RTD float as collected from the WAGO module.
+  \param outputData pointer to the float variable where the converted data will be stored.
 */
-void ptRTD2C(uint16_t* rawData, float* outputData, int numRtds){
+void ptRTD2C(uint16_t* rawData, float* outputData){
   float tempRes = 0.1;
   float tempMax = 850.0;
   float wrapT = tempRes*(pow(2.0, 16)-1);
     
-  for(int i=0; i<numRtds; i++){
-      float temp = tempRes*rawData[i];
-      if (temp > tempMax)
-        temp -= wrapT;
-      
-      outputData[i] = temp;
-  }
+  float temp = tempRes*(*rawData);
+  if (temp > tempMax)
+    temp -= wrapT;
+  
+  *outputData = temp;
 }
 
 /*!
-  \brief Converts an array of raw quadcell data into its equivalent DC voltage.
+  \brief Converts a raw quadcell reading into its equivalent DC voltage.
 
-  \param rawData pointer to the quadcell data as collected from the WAGO module.
-  \param outputData pointer to a float array where the converted data will be stored.
+  \param rawData pointer to the quadcell varaible as collected from the WAGO module.
+  \param outputData pointer to the float varaible where the converted data will be stored.
 */
 void qc2vdc(uint16_t* rawData, float* outputData){
-  for(int i=0; i<4; i++){
-    int posMax = pow(2, 15) - 1;
-    int negMin = pow(2, 16) - 2;
-    
-    if(rawData[i] > posMax)
-        outputData[i] = 10.0*((rawData[i]-negMin)/posMax);
-    else
-        outputData[i] = 10.0*((float)rawData[i]/posMax);
-  }
+  int posMax = pow(2, 15) - 1;
+  int negMin = pow(2, 16) - 2;
+  
+  if(*rawData > posMax)
+      *outputData = 10.0*(((*rawData)-negMin)/posMax);
+  else
+      *outputData = 10.0*((float)(*rawData)/posMax);
+  
 }
 
 
@@ -76,6 +74,9 @@ void qc2vdc(uint16_t* rawData, float* outputData){
   \param envi pointer to an #envdata_t data structure
 
   Initializes the enviromental sensor data structure variables that depend on connected instruments.
+  Called from initEnvData.
+
+  Variables are freed using freeEnvData function.
 */
 void initInstrumentData(envdata_t *envi){
   //Dynamically creating and clearing the instrument data array.
@@ -102,8 +103,22 @@ int getInstrumentData(envdata_t *envi) {
   wagoSetGet(0, HEB_ADDRESS, 0, 5, rawHebData);
 
   //Set the ENV data.
-  qc2vdc(rawHebData, envi->instrumentData+0);
-  ptRTD2C(rawHebData+4, envi->instrumentData+4, 1);
+
+  //Querying every instrument in the table.
+  for(int i=0; i<NUM_INSTRUMENTS; i++){
+    instrument_t inst = instrumentTable[i];
+
+    switch(inst.type){
+      case QUADCELL_PROCESS:
+        qc2vdc(rawHebData+inst.wagoAddress, envi->instrumentData+i);
+        break;
+      case RTD_PROCESS:
+        ptRTD2C(rawHebData+inst.wagoAddress, envi->instrumentData+i);
+        break;
+      default:
+        break;
+    }
+  }  
 
   // Get the UTC date/time of the query (ISIS client utility routine)
   strcpy(envi->utcDate,ISODate());

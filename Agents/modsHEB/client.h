@@ -47,6 +47,7 @@
 #include <termios.h>
 #include <fcntl.h>
 #include <signal.h>
+
 #include <exception>
 
 #include <telcollection.hxx>  // LBTO telemetry library
@@ -96,7 +97,9 @@ typedef struct InstrumentProfile{
     char* logName; 
     char* description;
     lbto::tel::unit units;
+    int wagoAddress;
     int type;
+    int logEntry=0;
 } instrument_t;
 
 /*!
