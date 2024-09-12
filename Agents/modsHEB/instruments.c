@@ -106,14 +106,14 @@ int getInstrumentData(envdata_t *envi) {
 
   //Querying every instrument in the table.
   for(int i=0; i<NUM_INSTRUMENTS; i++){
-    instrument_t inst = instrumentTable[i];
+    instrument_t* inst = instrumentTable+i;
 
-    switch(inst.type){
+    switch(inst->type){
       case QUADCELL_PROCESS:
-        qc2vdc(rawHebData+inst.wagoAddress, envi->instrumentData+i);
+        qc2vdc(rawHebData+inst->wagoAddress, envi->instrumentData+i);
         break;
       case RTD_PROCESS:
-        ptRTD2C(rawHebData+inst.wagoAddress, envi->instrumentData+i);
+        ptRTD2C(rawHebData+inst->wagoAddress, envi->instrumentData+i);
         break;
       default:
         break;

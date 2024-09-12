@@ -226,14 +226,21 @@ int loadConfig(char *cfgfile){
         // Checking if the line was an instrument which should be used.
         int inTable = 0;
         for(int i=0; i<NUM_INSTRUMENTS; i++){
-          if(strcasecmp(keyword, instrumentTable[i].name) == 0){
-            inTable = 1;
-            instrumentTable[i].logEntry = 1;
+          instrument_t* inst = instrumentTable+i;
 
-            //If there is an argument, it is the wago address.
+          if(strcasecmp(keyword, inst->name) == 0){
+            inTable = 1;
+
+            //If there is a second argument, it is the logEntry boolean.
             GetArg(inStr, 2, argStr);
-            if(argStr != NULL){
-              instrumentTable[i].wagoAddress = atoi(argStr);
+            if(argStr[0] != '\0' && (strcasecmp(argStr,"Y")==0 || strcasecmp(argStr,"T")==0)){
+              inst->logEntry = 1;
+            }
+
+            //If there is a third argument, it is the wagoAddress.
+            GetArg(inStr, 3, argStr);
+            if(argStr[0] != '\0'){
+              inst->wagoAddress = atoi(argStr);
             }
 
             break;
