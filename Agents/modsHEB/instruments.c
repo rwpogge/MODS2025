@@ -22,7 +22,9 @@ instrument_t instrumentTable[] = {
   {"QuadCell2", "Qcl2", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    2,   PROCESS_AS_QUADCELL },
   {"QuadCell3", "Qcl3", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    3,   PROCESS_AS_QUADCELL },
   {"Rtd",       "AmbT", "Temperature from the in-box sensor.", lbto::tel::unit::celsius(), 4,   PROCESS_AS_RTD      },
-  {"Archon",    "ArcS", "The power status of the Archon.",     lbto::tel::unit::none(),    512, PROCESS_AS_BOOLEAN  }
+  {"ArchonS",   "ArcS", "The power status of the Archon.",     lbto::tel::unit::none(),    512, PROCESS_AS_BOOLEAN  },
+  {"BogS",      "BogS", "The power status of the BOG heater.", lbto::tel::unit::none(),    513, PROCESS_AS_BOOLEAN  },
+  {"IonS",      "IonS", "The power status of the ion-gauge.",  lbto::tel::unit::none(),    514, PROCESS_AS_BOOLEAN  }
 };
 
 const int NUM_INSTRUMENTS = sizeof(instrumentTable)/sizeof(instrument_t); //The number of entries in the table above.
