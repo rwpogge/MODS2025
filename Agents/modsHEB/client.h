@@ -98,7 +98,7 @@ typedef struct InstrumentProfile{
     char* description;
     lbto::tel::unit units;
     int wagoAddress;
-    int type;
+    int processingType;
     int logEntry=0;
 } instrument_t;
 
@@ -117,7 +117,7 @@ typedef struct envData {
   char  modsID[8];   //!< MODS instrument ID (MODS1 or MODS2)
 
   // Enviornmental monitoring data
-  float* instrumentData;  //!< All instrument data (floats and ints) are stored in this array.
+  float* instrumentData;  //!< All instrument data (floats and booleans) are stored in this array.
 
   // WAGO Addresses
   char hebAddr[64];   //!< IP address of the HEB WAGO FieldBus controller

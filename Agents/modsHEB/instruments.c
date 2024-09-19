@@ -10,17 +10,19 @@
 
 // CONSTANTS -------------------------------------------------------
 
-#define QUADCELL_PROCESS 0
-#define RTD_PROCESS 1
+#define PROCESS_AS_BOOLEAN 0
+#define PROCESS_AS_RTD 1
+#define PROCESS_AS_QUADCELL 2
 
 // GLOBAL TABLE WITH INSTRUMENT DATA -------------------------------
 
 instrument_t instrumentTable[] = {
-  {"QuadCell0", "Qcl0", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    0, QUADCELL_PROCESS },
-  {"QuadCell1", "Qcl1", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    1, QUADCELL_PROCESS },
-  {"QuadCell2", "Qcl2", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    2, QUADCELL_PROCESS },
-  {"QuadCell3", "Qcl3", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    3, QUADCELL_PROCESS },
-  {"Rtd",       "AmbT", "Temperature from the in-box sensor.", lbto::tel::unit::celsius(), 4, RTD_PROCESS      }
+  {"QuadCell0", "Qcl0", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    0,   PROCESS_AS_QUADCELL },
+  {"QuadCell1", "Qcl1", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    1,   PROCESS_AS_QUADCELL },
+  {"QuadCell2", "Qcl2", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    2,   PROCESS_AS_QUADCELL },
+  {"QuadCell3", "Qcl3", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    3,   PROCESS_AS_QUADCELL },
+  {"Rtd",       "AmbT", "Temperature from the in-box sensor.", lbto::tel::unit::celsius(), 4,   PROCESS_AS_RTD      },
+  {"Archon",    "ArcS", "The power status of the Archon.",     lbto::tel::unit::none(),    512, PROCESS_AS_BOOLEAN  }
 };
 
 const int NUM_INSTRUMENTS = sizeof(instrumentTable)/sizeof(instrument_t); //The number of entries in the table above.
@@ -100,18 +102,24 @@ int getInstrumentData(envdata_t *envi) {
   uint16_t rawHebData[5];
   wagoSetGet(0, envi->hebAddr, 0, 5, rawHebData);
 
+  uint16_t rawHebDoData[3];
+  wagoSetGet(0, envi->hebAddr, 512, 3, rawHebDoData);
+
   //Set the ENV data.
 
   //Querying every instrument in the table.
   for(int i=0; i<NUM_INSTRUMENTS; i++){
     instrument_t* inst = instrumentTable+i;
 
-    switch(inst->type){
-      case QUADCELL_PROCESS:
-        qc2vdc(rawHebData+inst->wagoAddress, envi->instrumentData+i);
+    switch(inst->processingType){
+      case PROCESS_AS_BOOLEAN:
+        *(envi->instrumentData+i) = rawHebDoData[inst->wagoAddress-512];
         break;
-      case RTD_PROCESS:
+      case PROCESS_AS_RTD:
         ptRTD2C(rawHebData+inst->wagoAddress, envi->instrumentData+i);
+        break;
+      case PROCESS_AS_QUADCELL:
+        qc2vdc(rawHebData+inst->wagoAddress, envi->instrumentData+i);
         break;
       default:
         break;
