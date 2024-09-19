@@ -222,6 +222,12 @@ int loadConfig(char *cfgfile){
 	      client.Debug = 1;
       }
 
+      // HEB: IP address of the Head Electronic Box WAGO FieldBus controller
+      else if (strcasecmp(keyword,"HEB")==0) {
+	      GetArg(inStr,2,argStr);
+	      strcpy(env.hebAddr,argStr);
+      }
+
       else { 
         // Checking if the line was an instrument which should be used.
         int inTable = 0;

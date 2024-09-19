@@ -34,6 +34,8 @@ void initEnvData(envdata_t *envi){
   envi->useHdf5 = 0;                // default: do not output enviornmental data to Hdf5
   envi->hdfInitalized = 0;
 
+  strcpy(envi->hebAddr,"");
+
   //Dynamically creating and clearing the instrument data array.
   initInstrumentData(envi);
 

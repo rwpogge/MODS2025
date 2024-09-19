@@ -10,8 +10,6 @@
 
 // CONSTANTS -------------------------------------------------------
 
-#define HEB_ADDRESS "192.168.139.135"
-
 #define QUADCELL_PROCESS 0
 #define RTD_PROCESS 1
 
@@ -100,7 +98,7 @@ void initInstrumentData(envdata_t *envi){
 int getInstrumentData(envdata_t *envi) {
   //Query WAGOs and collect data here.
   uint16_t rawHebData[5];
-  wagoSetGet(0, HEB_ADDRESS, 0, 5, rawHebData);
+  wagoSetGet(0, envi->hebAddr, 0, 5, rawHebData);
 
   //Set the ENV data.
 
