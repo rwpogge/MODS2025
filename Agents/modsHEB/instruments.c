@@ -78,7 +78,7 @@ void qc2vdc(uint16_t* rawData, float* outputData){
   Initializes the enviromental sensor data structure variables that depend on connected instruments.
   Called from initEnvData.
 
-  Variables are freed using freeEnvData function.
+  Variables are freed using the freeInstrumentData function.
 */
 void initInstrumentData(envdata_t *envi){
   //Dynamically creating and clearing the instrument data array.
@@ -87,6 +87,18 @@ void initInstrumentData(envdata_t *envi){
 
   //Dynamically creating the HDF telemetry array.
   envi->floatMeasures = new lbto::tel::float_measure::buf_proxy[NUM_INSTRUMENTS];
+}
+
+/*!
+  \brief Correctly releases memory allocated for instrument data in an #envdata_t structure.
+
+  \param envi pointer to an #envdata_t data structure
+
+  Frees dynamically allocated memory needed for instrument data.
+*/
+void freeInstrumentData(envdata_t *envi){
+  free(envi->instrumentData);
+  delete[] envi->floatMeasures;
 }
 
 /*!

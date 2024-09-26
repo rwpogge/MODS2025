@@ -3,7 +3,7 @@
 
 /*!
   \file commands.h
-  \brief MODSEnv client application command tree header file
+  \brief MODSHeb client application command tree header file
 
   To add a command, you need to 
   <ol>

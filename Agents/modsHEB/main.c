@@ -66,14 +66,14 @@ int main(int argc, char *argv[]){
   if (argc>2) {
     printf("usage: %s [rcfile]\n", argv[0]);
     printf("  where: rcfile = optional runtime config file (default %s)\n",DEFAULT_RCFILE);
-    printf("modsenv aborted with errors on startup.\n");
+    printf("modsheb aborted with errors on startup.\n");
     return 1;
   }
 
   // Before we do anything, load the runtime configuration file
   configStatus = loadConfig((argc == 2) ? argv[1] : DEFAULT_RCFILE);
   if (configStatus!=0) {
-    printf("\nUnable to load config file %s - modsenv aborting\n",client.rcFile);
+    printf("\nUnable to load config file %s - modsheb aborting\n",client.rcFile);
     freeEnvData(&env);
     return 1;
   }
@@ -82,8 +82,8 @@ int main(int argc, char *argv[]){
   if (useCLI) {
     printf("\n");
     printf("  ---------------------------------------------------\n");
-    printf("                       modsenv\n");
-    printf("  Interactive MODS Enviromental Sensor Monitor/Logger\n");
+    printf("                       modsheb\n");
+    printf("  Interactive MODS Head Electronics Box Monitor/Logger\n");
     printf("  Version: %s (%s %s)\n",APP_VERSION,APP_COMPDATE,APP_COMPTIME);
     printf("  ---------------------------------------------------\n");
     printf("\n");
@@ -96,7 +96,7 @@ int main(int argc, char *argv[]){
   // the runtime config file.
   if (client.useISIS) {
     if (InitISISServer(&client)<0) {
-      printf("\nISIS server connection initialization failed - modsenv aborting\n\n");
+      printf("\nISIS server connection initialization failed - modsheb aborting\n\n");
       freeEnvData(&env);
       return 2;
     }
@@ -104,15 +104,15 @@ int main(int argc, char *argv[]){
 
   // Open the client network socket port for interprocess communications
   if (OpenClientSocket(&client)<0) {
-    printf("\nClient socket initialization failed - modsenv aborting\n\n");
+    printf("\nClient socket initialization failed - modsheb aborting\n\n");
     freeEnvData(&env);
     return 3;
   }
 
   if (client.useISIS)
-    printf("Started modsenv as ISIS client node %s on %s port %d\n", client.ID, client.Host, client.Port);
+    printf("Started modsheb as ISIS client node %s on %s port %d\n", client.ID, client.Host, client.Port);
   else
-    printf("Started modsenv as standalone agent %s on %s port %d\n", client.ID, client.Host, client.Port);
+    printf("Started modsheb as standalone agent %s on %s port %d\n", client.ID, client.Host, client.Port);
 
   // Check if the leapseconds file (needed for hdf5 export) exists. If it doesn't use the fallback one.
   if (!fileExists(env.leapSecondsFile)){
@@ -253,7 +253,7 @@ int main(int argc, char *argv[]){
   CloseClientSocket(&client);
 
   // Close any open data logs
-  logMessage(&env,(char *)"modsEnv agent shutting down");
+  logMessage(&env,(char *)"modsHeb agent shutting down");
 
   if (env.logFD > 0) close(env.logFD);  //Closes the ascii log.
   closeTelemetryData(&env);             //Closes the hdf5 log.

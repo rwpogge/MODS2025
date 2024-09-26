@@ -4,10 +4,10 @@
 
 /*!
   \file commands.c 
-  \brief modsenv Client application command interpreter functions.
+  \brief modsheb Client application command interpreter functions.
 
   This module contains the command "action" functions called to
-  service modsenv client commands.  These consist of a suite of \arg
+  service modsheb client commands.  These consist of a suite of \arg
   "common" client action functions common to most ISIS clients \arg
   client-specific functions that perform the client's particular tasks
   \arg common interface routines for keyboard and ISIS socket
@@ -162,7 +162,7 @@ int cmd_pong(char *args, MsgType msgtype, char *reply) {
 */
 
 int cmd_version(char *args, MsgType msgtype, char *reply) {
-  sprintf(reply,"modsenv Version=%s CompileDate=%s CompileTime=%s",APP_VERSION,APP_COMPDATE,APP_COMPTIME);
+  sprintf(reply,"modsheb Version=%s CompileDate=%s CompileTime=%s",APP_VERSION,APP_COMPDATE,APP_COMPTIME);
   return CMD_OK;
 }
  

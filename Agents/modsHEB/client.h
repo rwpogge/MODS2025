@@ -110,7 +110,7 @@ typedef struct InstrumentProfile{
 extern instrument_t instrumentTable[];
 
 /*!
-  \brief A struct which holds all of the enviornment and telemetry data for this modsEnv instance.
+  \brief A struct which holds all of the enviornment and telemetry data for this modsHeb instance.
 */
 typedef struct envData {
 
@@ -201,12 +201,13 @@ void SocketCommand(char *);   // process messages from the client socket (see co
 
 // Client utility routines (defined in clientutils.c)
 void initEnvData(envdata_t *);    // initialize the envdata_t struct
-void freeEnvData(envdata_t *);    // frees memory allocated by envdata_t struct
 void printEnvData(envdata_t *);   // print the contents of the envdata_t struct (engineering)
+void freeEnvData(envdata_t *);    // frees all dynamically allocated memory in the envdata_t struct
 
 // Utility routines for instrument data (defined in instruments.c)
 void initInstrumentData(envdata_t *);   // initalize envdata based on connected instruments
 int  getInstrumentData(envdata_t *);    // get environmental data from the sensor WAGOs
+void freeInstrumentData(envdata_t *);   // frees memory allocated for instruments in the envdata_t struct
 
 // Log utility routines (defined in logutils.c)
 int  initTelemetryData(envdata_t *);    // initlaize the telemetry structures in envdata_t if HDF5 will be used

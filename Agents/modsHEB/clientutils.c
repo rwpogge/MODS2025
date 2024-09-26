@@ -64,8 +64,7 @@ void initEnvData(envdata_t *envi){
   Frees all dynamically allocated memory needed by the #envdata_t structure.
 */
 void freeEnvData(envdata_t *envi){
-  free(envi->instrumentData);
-  delete[] envi->floatMeasures;
+  freeInstrumentData(envi);
 }
 
 /*!
