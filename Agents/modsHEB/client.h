@@ -208,11 +208,12 @@ void freeEnvData(envdata_t *);    // frees all dynamically allocated memory in t
 void initInstrumentData(envdata_t *);   // initalize envdata based on connected instruments
 int  getInstrumentData(envdata_t *);    // get environmental data from the sensor WAGOs
 void freeInstrumentData(envdata_t *);   // frees memory allocated for instruments in the envdata_t struct
+int setDigitalOutputs(envdata_t *, int, int, int*);  // sets digital outputs
 
 // Log utility routines (defined in logutils.c)
 int  initTelemetryData(envdata_t *);    // initlaize the telemetry structures in envdata_t if HDF5 will be used
 void closeTelemetryData(envdata_t *);   // cleanly closes the telemetry structures in envdata_t if HDF5 was used
-int  logTelemetryData(envdata_t *);     // append data to the telemetry stream for the HDF5 file. 
+int  logTelemetryData(envdata_t *);     // append data to the telemetry stream for the HDF5 file
 int  initEnvLog(envdata_t *);           // initialize the enviromental data log
 int  logEnvData(envdata_t *);           // append data to the environmental data log
 int  logMessage(envdata_t *, char *);   // append a message (comment) to the data log

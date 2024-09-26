@@ -722,6 +722,29 @@ int cmd_hdf_logging(char *args, MsgType msgtype, char *reply) {
 }
 
 /*!  
+  \brief cmd_set_all_do_true command - set all DOs to be true
+  \param args string with the command-line arguments
+  \param msgtype message type if the command was sent as an IMPv2 message
+  \param reply string to contain the command return reply
+  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
+  an error message.
+
+*/
+int cmd_set_all_do_true(char *args, MsgType msgtype, char *reply) {
+  int ierr;
+
+  // Set the registers
+  int states[3] = {1,1,1};
+  if (setDigitalOutputs(&env, 3, 512, states) != 0){
+    sprintf(reply, "Error reading from HEB wago.");
+    return CMD_ERR;
+  }
+
+  sprintf(reply, "All DOs set to true.");
+  return CMD_OK;
+}
+
+/*!  
   \brief comment command - append a comment to the environmental log
   \param args string with the command-line arguments
   \param msgtype message type if the command was sent as an IMPv2 message

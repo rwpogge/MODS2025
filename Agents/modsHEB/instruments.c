@@ -10,7 +10,7 @@
 
 // CONSTANTS -------------------------------------------------------
 
-#define PROCESS_AS_BOOLEAN 0
+#define PROCESS_AS_DO 0
 #define PROCESS_AS_RTD 1
 #define PROCESS_AS_QUADCELL 2
 
@@ -22,9 +22,9 @@ instrument_t instrumentTable[] = {
   {"QuadCell2", "Qcl2", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    2,   PROCESS_AS_QUADCELL },
   {"QuadCell3", "Qcl3", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    3,   PROCESS_AS_QUADCELL },
   {"Rtd",       "AmbT", "Temperature from the in-box sensor.", lbto::tel::unit::celsius(), 4,   PROCESS_AS_RTD      },
-  {"ArchonS",   "ArcS", "The power status of the Archon.",     lbto::tel::unit::none(),    512, PROCESS_AS_BOOLEAN  },
-  {"BogS",      "BogS", "The power status of the BOG heater.", lbto::tel::unit::none(),    513, PROCESS_AS_BOOLEAN  },
-  {"IonS",      "IonS", "The power status of the ion-gauge.",  lbto::tel::unit::none(),    514, PROCESS_AS_BOOLEAN  }
+  {"ArchonS",   "ArcS", "The power status of the Archon.",     lbto::tel::unit::none(),    1,   PROCESS_AS_DO       },
+  {"BogS",      "BogS", "The power status of the BOG heater.", lbto::tel::unit::none(),    2,   PROCESS_AS_DO       },
+  {"IonS",      "IonS", "The power status of the ion-gauge.",  lbto::tel::unit::none(),    4,   PROCESS_AS_DO       }
 };
 
 const int NUM_INSTRUMENTS = sizeof(instrumentTable)/sizeof(instrument_t); //The number of entries in the table above.
@@ -116,8 +116,8 @@ int getInstrumentData(envdata_t *envi) {
   uint16_t rawHebData[5];
   wagoSetGet(0, envi->hebAddr, 0, 5, rawHebData);
 
-  uint16_t rawHebDoData[3];
-  wagoSetGet(0, envi->hebAddr, 512, 3, rawHebDoData);
+  uint16_t rawHebDoData;
+  wagoSetGet(0, envi->hebAddr, 512, 1, &rawHebDoData);
 
   //Set the ENV data.
 
@@ -126,8 +126,8 @@ int getInstrumentData(envdata_t *envi) {
     instrument_t* inst = instrumentTable+i;
 
     switch(inst->processingType){
-      case PROCESS_AS_BOOLEAN:
-        *(envi->instrumentData+i) = rawHebDoData[inst->wagoAddress-512];
+      case PROCESS_AS_DO:
+        *(envi->instrumentData+i) = ((rawHebDoData & inst->wagoAddress) == inst->wagoAddress);
         break;
       case PROCESS_AS_RTD:
         ptRTD2C(rawHebData+inst->wagoAddress, envi->instrumentData+i);
@@ -145,4 +145,16 @@ int getInstrumentData(envdata_t *envi) {
 
   // All done (logging is done by the calling program)
   return 0;
+}
+
+int setDigitalOutputs(envdata_t *envi, int num, int baseAddress, int* states){
+  uint16_t state = 0;
+
+  for(int i=num-1; i>=0; i--){
+    state = state << 1;
+    if(states[i] == 1) state += 1;
+    printf("%#08x\n", state);
+  }
+
+  return wagoSetGet(1, envi->hebAddr, baseAddress, 1, &state);
 }

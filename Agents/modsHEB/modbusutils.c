@@ -21,9 +21,6 @@
   FieldTalk code. [rwp/osu - 2024 Feb 20]
 */
 int wagoSetGet(int setGet, char *wagoAddr, int regAddr, int regLen, uint16_t regData[]){
-  char responseBufSz[256];
-  short readArr[1];
-
   // using libmodbus
   modbus_t *modbus;
   int result;
