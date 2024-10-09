@@ -24,7 +24,7 @@ instrument_t instrumentTable[] = {
   {"Rtd",       "AmbT", "Temperature from the in-box sensor.", lbto::tel::unit::celsius(), 4,   PROCESS_AS_RTD      },
   {"ArchonS",   "ArcS", "The power status of the Archon.",     lbto::tel::unit::none(),    1,   PROCESS_AS_DO       },
   {"BogS",      "BogS", "The power status of the BOG heater.", lbto::tel::unit::none(),    2,   PROCESS_AS_DO       },
-  {"IonS",      "IonS", "The power status of the ion-gauge.",  lbto::tel::unit::none(),    4,   PROCESS_AS_DO       }
+  {"IonS",      "IonS", "The power status of the ion-gauge.",  lbto::tel::unit::none(),    3,   PROCESS_AS_DO       }
 };
 
 const int NUM_INSTRUMENTS = sizeof(instrumentTable)/sizeof(instrument_t); //The number of entries in the table above.
@@ -127,7 +127,7 @@ int getInstrumentData(envdata_t *envi) {
 
     switch(inst->processingType){
       case PROCESS_AS_DO:
-        *(envi->instrumentData+i) = ((rawHebDoData & inst->wagoAddress) == inst->wagoAddress);
+        *(envi->instrumentData+i) = ((rawHebDoData & (1 << inst->wagoAddress)) == inst->wagoAddress);
         break;
       case PROCESS_AS_RTD:
         ptRTD2C(rawHebData+inst->wagoAddress, envi->instrumentData+i);
@@ -153,7 +153,6 @@ int setDigitalOutputs(envdata_t *envi, int num, int baseAddress, int* states){
   for(int i=num-1; i>=0; i--){
     state = state << 1;
     if(states[i] == 1) state += 1;
-    printf("%#08x\n", state);
   }
 
   return wagoSetGet(1, envi->hebAddr, baseAddress, 1, &state);
