@@ -228,33 +228,34 @@ int loadConfig(char *cfgfile){
 	      strcpy(env.hebAddr,argStr);
       }
 
-      else { 
-        // Checking if the line was a device which should be edited.
-        int inTable = 0;
-        for(int i=0; i<NUM_DEVICES; i++){
-          device_t* inst = deviceTable+i;
+      // WAGO: The start of a WAGO device module. A set of devices should be listed on the following lines.
+      else if (strcasecmp(keyword,"WAGO")==0){
+        GetArg(inStr,2,argStr);   // The module name
+        GetArg(inStr,3,argStr);   // The type of module
+        GetArg(inStr,4,argStr);   // The base address of the module
 
-          if(strcasecmp(keyword, inst->name) == 0){
-            inTable = 1;
+        // The number of conneted devices
+        GetArg(inStr,5,argStr);
+        int numDevices = atoi(argStr);
+        printf("%d devices...\n", numDevices);
 
-            //If there is a second argument, it is the logEntry boolean.
-            GetArg(inStr, 2, argStr);
-            if(argStr[0] != '\0' && (strcasecmp(argStr,"Y")==0 || strcasecmp(argStr,"T")==0)){
-              inst->logEntry = 1;
-            }
+        // For every connected device, there should be a line with additional information.
+        for(int i=0; (i<numDevices && fgets(inStr, MAXCFGLINE, cfgFP)); i++){
+          
+          // Skipping blank lines and lines prefixed with the '#' character.
+          if ((inStr[0]=='#') || (inStr[0]=='\n')) continue;
 
-            //If there is a third argument, it is the wagoAddress.
-            GetArg(inStr, 3, argStr);
-            if(argStr[0] != '\0'){
-              inst->wagoAddress = atoi(argStr);
-            }
+          // Parsing the line.
+          inStr[MAXCFGLINE] ='\0';
 
-            break;
-          }
+          GetArg(inStr,2,argStr); // The device name
+          GetArg(inStr,3,argStr); // The device address
         }
+      }
 
-        // Gripe if junk is in the config file
-        if(!inTable) printf("Ignoring unrecognized config file entry - %s", inStr);
+      // Gripe if junk is in the config file
+      else {
+        printf("Ignoring unrecognized config file entry - %s", inStr);
       }
     }
 
