@@ -122,17 +122,17 @@ int getDeviceData(envdata_t *envi) {
 
   //Querying every device in the table.
   for(int i=0; i<NUM_DEVICES; i++){
-    device_t* inst = deviceTable+i;
+    device_t* device = deviceTable+i;
 
-    switch(inst->processingType){
+    switch(device->processingType){
       case PROCESS_AS_DO:
-        *(envi->deviceData+i) = ((rawHebDoData & (1 << inst->wagoAddress)) == inst->wagoAddress);
+        *(envi->deviceData+i) = ((rawHebDoData & (1 << device->wagoAddress)) == (1 << device->wagoAddress));
         break;
       case PROCESS_AS_RTD:
-        ptRTD2C(rawHebData+inst->wagoAddress, envi->deviceData+i);
+        ptRTD2C(rawHebData+device->wagoAddress, envi->deviceData+i);
         break;
       case PROCESS_AS_QUADCELL:
-        qc2vdc(rawHebData+inst->wagoAddress, envi->deviceData+i);
+        qc2vdc(rawHebData+device->wagoAddress, envi->deviceData+i);
         break;
       default:
         break;
