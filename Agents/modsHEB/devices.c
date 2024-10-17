@@ -81,11 +81,13 @@ void qc2vdc(uint16_t* rawData, float* outputData){
   Variables are freed using the freeDeviceData function.
 */
 void initDeviceData(envdata_t *envi){
-  //Dynamically creating and clearing the device data array.
+  //Dynamically creating the device data array.
+  //This code is primarily C code, so malloc and calloc are prefered for memory allocation.
   envi->deviceData = (float*) calloc(NUM_DEVICES, sizeof(float));
   memset(envi->deviceData, 0, NUM_DEVICES*sizeof(float));
 
   //Dynamically creating the HDF telemetry array.
+  //The objected oriented nature of the telemetry library makes the C++ new/delete keywords preferable here.
   envi->floatMeasures = new lbto::tel::float_measure::buf_proxy[NUM_DEVICES];
 }
 
@@ -97,8 +99,17 @@ void initDeviceData(envdata_t *envi){
   Frees dynamically allocated memory needed for device data.
 */
 void freeDeviceData(envdata_t *envi){
-  free(envi->deviceData);
-  delete[] envi->floatMeasures;
+  //If the deviceData array has not already been freed, do so now.
+  if(envi->deviceData != NULL){
+    free(envi->deviceData);
+    envi->deviceData = NULL;
+  } 
+  
+  //If the floatMeasures array has not already been freed, do so now.
+  if(envi->floatMeasures != NULL){
+    delete[] envi->floatMeasures;
+    envi->floatMeasures = NULL;
+  } 
 }
 
 /*!
