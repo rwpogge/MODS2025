@@ -36,11 +36,11 @@ void initEnvData(envdata_t *envi){
 
   strcpy(envi->hebAddr,"");
 
-  //Dynamically creating and clearing the instrument data array.
-  initInstrumentData(envi);
+  //Dynamically creating an empty device array.
+  initDeviceData(envi);
 
   //Dynamically creating the HDF telemetry array.
-  envi->floatMeasures = new lbto::tel::float_measure::buf_proxy[NUM_INSTRUMENTS];
+  envi->floatMeasures = new lbto::tel::float_measure::buf_proxy[NUM_DEVICES];
 
   //Setting all of the strings to their default values.
   strcpy(envi->modsID,"None");
@@ -64,7 +64,7 @@ void initEnvData(envdata_t *envi){
   Frees all dynamically allocated memory needed by the #envdata_t structure.
 */
 void freeEnvData(envdata_t *envi){
-  freeInstrumentData(envi);
+  freeDeviceData(envi);
 }
 
 /*!

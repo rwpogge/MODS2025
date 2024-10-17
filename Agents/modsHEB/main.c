@@ -156,7 +156,7 @@ int main(int argc, char *argv[]){
   signal(SIGPIPE,SIG_IGN);    // Ignore broken pipes
 
   // One last thing, make an initial sensor query
-  ierr = getInstrumentData(&env);
+  ierr = getDeviceData(&env);
   if(ierr == 0){
     if (env.doLogging) logEnvData(&env);
     if (env.useHdf5) logTelemetryData(&env);
@@ -197,7 +197,7 @@ int main(int argc, char *argv[]){
 
       // We timed-out without doing anything, so query the instrument enviromental sensors unless we are in a monitor pause.
       if (!env.pause) {
-	      ierr = getInstrumentData(&env);
+	      ierr = getDeviceData(&env);
 
         if(ierr == 0){
           if (env.doLogging) logEnvData(&env); 

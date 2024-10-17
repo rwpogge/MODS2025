@@ -35,15 +35,15 @@ int initTelemetryData(envdata_t* envi){
       lbto::tel::system(lbto::tel::name("tel")), lbto::tel::name("modsHEB")
     );
 
-    //Adding measures based off the instrument table.
-    for(int i=0; i<NUM_INSTRUMENTS; i++){
-      if(!instrumentTable[i].logEntry) continue;
+    //Adding measures based off the device table.
+    for(int i=0; i<NUM_DEVICES; i++){
+      if(!deviceTable[i].logEntry) continue;
 
       modsDefiner.add_child(lbto::tel::float_measure(
         envi->floatMeasures[i],
-        instrumentTable[i].units, 
-        lbto::tel::name(instrumentTable[i].name),
-        lbto::tel::description(instrumentTable[i].description)
+        deviceTable[i].units, 
+        lbto::tel::name(deviceTable[i].name),
+        lbto::tel::description(deviceTable[i].description)
       ));
     }
 
@@ -138,11 +138,11 @@ int initEnvLog(envdata_t *envi){
   //Creating the enviornmental data header string.
   memset(logStr,0,sizeof(logStr));                                                    // Clear the string.
   stringLength += snprintf(logStr, sizeof(logStr), "# UTC Date/Time    ");            // Append the date header.
-  for(int i=0; i<NUM_INSTRUMENTS; i++){                                               // Append each instrument header.
-    if(!instrumentTable[i].logEntry) continue;
+  for(int i=0; i<NUM_DEVICES; i++){                                                   // Append each device header.
+    if(!deviceTable[i].logEntry) continue;
     
     stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
-      " %-7.7s", instrumentTable[i].logName
+      " %-7.7s", deviceTable[i].logName
     );
   }
   stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, "\n");   // Append a new line.
@@ -184,11 +184,11 @@ int logEnvData(envdata_t *envi){
   // Create the enviornmental data string.
   memset(logStr, 0, sizeof(logStr));                                                  // Clear the string.
   stringLength += snprintf(logStr, sizeof(logStr), "%s", envi->utcDate);              // Append the date.
-  for(int i=0; i<NUM_INSTRUMENTS; i++){                                               // Append each instrument reading.
-    if(!instrumentTable[i].logEntry) continue;
+  for(int i=0; i<NUM_DEVICES; i++){                                                   // Append each device reading.
+    if(!deviceTable[i].logEntry) continue;
     
     stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
-      " %-7.3f", envi->instrumentData[i]
+      " %-7.3f", envi->deviceData[i]
     );
   }
   stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, "\n");   // Append a new line.
@@ -293,11 +293,11 @@ int logTelemetryData(envdata_t *envi){
   }
 
   try{    
-    //Storing data in the streams based on the instrument table.
-    for(int i=0; i<NUM_INSTRUMENTS; i++){
-      if(!instrumentTable[i].logEntry) continue;
+    //Storing data in the streams based on the device table.
+    for(int i=0; i<NUM_DEVICES; i++){
+      if(!deviceTable[i].logEntry) continue;
 
-      envi->floatMeasures[i].store(envi->instrumentData[i]);
+      envi->floatMeasures[i].store(envi->deviceData[i]);
     }
 
     //Commiting the data to the HDF5 file.

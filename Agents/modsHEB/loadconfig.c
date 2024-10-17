@@ -229,10 +229,10 @@ int loadConfig(char *cfgfile){
       }
 
       else { 
-        // Checking if the line was an instrument which should be used.
+        // Checking if the line was a device which should be edited.
         int inTable = 0;
-        for(int i=0; i<NUM_INSTRUMENTS; i++){
-          instrument_t* inst = instrumentTable+i;
+        for(int i=0; i<NUM_DEVICES; i++){
+          device_t* inst = deviceTable+i;
 
           if(strcasecmp(keyword, inst->name) == 0){
             inTable = 1;

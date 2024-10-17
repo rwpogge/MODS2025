@@ -90,9 +90,9 @@
 //// START of Class and Struct Definitions. --------------------------------
 
 /*!
-  \brief The data that will be stored for each enviornmental instrument.
+  \brief The data that will be stored for each enviornmental device.
 */
-typedef struct InstrumentProfile{
+typedef struct DeviceProfile{
     char* name;
     char* logName; 
     char* description;
@@ -100,14 +100,14 @@ typedef struct InstrumentProfile{
     int wagoAddress;
     int processingType;
     int logEntry=0;
-} instrument_t;
+} device_t;
 
 /*!
-  \brief A global table containing a list of every instrument that will be queried.
+  \brief A global table containing a list of every device that can be interacted with.
 
-  Found in "instruments.c"
+  Found in "devices.c"
 */
-extern instrument_t instrumentTable[];
+extern device_t deviceTable[];
 
 /*!
   \brief A struct which holds all of the enviornment and telemetry data for this modsHeb instance.
@@ -117,7 +117,7 @@ typedef struct envData {
   char  modsID[8];   //!< MODS instrument ID (MODS1 or MODS2)
 
   // Enviornmental monitoring data
-  float* instrumentData;  //!< All instrument data (floats and booleans) are stored in this array.
+  float* deviceData;  //!< All device data (floats and booleans) are stored in this array.
 
   // WAGO Addresses
   char hebAddr[64];   //!< IP address of the HEB WAGO FieldBus controller
@@ -187,7 +187,7 @@ public:
 // Remember to declare explicitly in main.c
 extern int useCLI;                //!< Use the command-line interface. 1=use it, 0=no cli
 extern isisclient_t client;       //!< Global client runtime config table
-extern const int NUM_INSTRUMENTS; //!< The number of entries in the instrument table.
+extern const int NUM_DEVICES; //!< The number of entries in the device table.
 
 //// END of Global Variable Declerations. ----------------------------------
 //// START of Custom Client Function Declerations. -------------------------
@@ -204,10 +204,10 @@ void initEnvData(envdata_t *);    // initialize the envdata_t struct
 void printEnvData(envdata_t *);   // print the contents of the envdata_t struct (engineering)
 void freeEnvData(envdata_t *);    // frees all dynamically allocated memory in the envdata_t struct
 
-// Utility routines for instrument data (defined in instruments.c)
-void initInstrumentData(envdata_t *);   // initalize envdata based on connected instruments
-int  getInstrumentData(envdata_t *);    // get environmental data from the sensor WAGOs
-void freeInstrumentData(envdata_t *);   // frees memory allocated for instruments in the envdata_t struct
+// Utility routines for device data (defined in devices.c)
+void initDeviceData(envdata_t *);   // initalize envdata based on connected devices
+int  getDeviceData(envdata_t *);    // get environmental data from the sensor WAGOs
+void freeDeviceData(envdata_t *);   // frees memory allocated for devices in the envdata_t struct
 int setDigitalOutputs(envdata_t *, int, int, int*);  // sets digital outputs
 
 // Log utility routines (defined in logutils.c)

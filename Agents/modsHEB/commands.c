@@ -547,7 +547,7 @@ int cmd_estatus(char *args, MsgType msgtype, char *reply) {
   int ierr;
 
   // Read the enviromental sensors
-  ierr = getInstrumentData(&env);
+  ierr = getDeviceData(&env);
   if (ierr != 0) {
     strcpy(reply,"Cannot read the enviromental sensors");
     return CMD_ERR;
@@ -589,7 +589,7 @@ int cmd_pstatus(char *args, MsgType msgtype, char *reply) {
   int ierr;
 
   // Read the WAGOs
-  ierr = getInstrumentData(&env);
+  ierr = getDeviceData(&env);
   if (ierr != 0) {
     strcpy(reply,"Cannot read the enviromental sensors");
     return CMD_ERR;

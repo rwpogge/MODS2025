@@ -1,5 +1,5 @@
 /*!
-  \file instruments.c
+  \file devices.c
   \brief All of the functions related to collecting enviornmental sensing data.
 
   \author X. Carroll, OSU.
@@ -14,20 +14,20 @@
 #define PROCESS_AS_RTD 1
 #define PROCESS_AS_QUADCELL 2
 
-// GLOBAL TABLE WITH INSTRUMENT DATA -------------------------------
+// GLOBAL TABLE WITH DEVICE DATA -------------------------------
 
-instrument_t instrumentTable[] = {
+device_t deviceTable[] = {
   {"QuadCell0", "Qcl0", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    0,   PROCESS_AS_QUADCELL },
   {"QuadCell1", "Qcl1", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    1,   PROCESS_AS_QUADCELL },
   {"QuadCell2", "Qcl2", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    2,   PROCESS_AS_QUADCELL },
   {"QuadCell3", "Qcl3", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    3,   PROCESS_AS_QUADCELL },
   {"Rtd",       "AmbT", "Temperature from the in-box sensor.", lbto::tel::unit::celsius(), 4,   PROCESS_AS_RTD      },
-  {"ArchonS",   "ArcS", "The power status of the Archon.",     lbto::tel::unit::none(),    1,   PROCESS_AS_DO       },
-  {"BogS",      "BogS", "The power status of the BOG heater.", lbto::tel::unit::none(),    2,   PROCESS_AS_DO       },
-  {"IonS",      "IonS", "The power status of the ion-gauge.",  lbto::tel::unit::none(),    3,   PROCESS_AS_DO       }
+  {"ArchonS",   "ArcS", "The power status of the Archon.",     lbto::tel::unit::none(),    0,   PROCESS_AS_DO       },
+  {"BogS",      "BogS", "The power status of the BOG heater.", lbto::tel::unit::none(),    1,   PROCESS_AS_DO       },
+  {"IonS",      "IonS", "The power status of the ion-gauge.",  lbto::tel::unit::none(),    2,   PROCESS_AS_DO       }
 };
 
-const int NUM_INSTRUMENTS = sizeof(instrumentTable)/sizeof(instrument_t); //The number of entries in the table above.
+const int NUM_DEVICES = sizeof(deviceTable)/sizeof(device_t); //The number of entries in the table above.
 
 
 // UTILITY FUNCTIONS -----------------------------------------------
@@ -71,33 +71,33 @@ void qc2vdc(uint16_t* rawData, float* outputData){
 // INTERACT WITH ENV DATA -----------------------------------------------
 
 /*!
-  \brief Initialize the envdata struct variables that depend on the connected instruments.
+  \brief Initialize the envdata struct variables that depend on the connected devices.
 
   \param envi pointer to an #envdata_t data structure
 
-  Initializes the enviromental sensor data structure variables that depend on connected instruments.
+  Initializes the enviromental sensor data structure variables that depend on connected devices.
   Called from initEnvData.
 
-  Variables are freed using the freeInstrumentData function.
+  Variables are freed using the freeDeviceData function.
 */
-void initInstrumentData(envdata_t *envi){
-  //Dynamically creating and clearing the instrument data array.
-  envi->instrumentData = (float*) calloc(NUM_INSTRUMENTS, sizeof(float));
-  memset(envi->instrumentData, 0, NUM_INSTRUMENTS*sizeof(float));
+void initDeviceData(envdata_t *envi){
+  //Dynamically creating and clearing the device data array.
+  envi->deviceData = (float*) calloc(NUM_DEVICES, sizeof(float));
+  memset(envi->deviceData, 0, NUM_DEVICES*sizeof(float));
 
   //Dynamically creating the HDF telemetry array.
-  envi->floatMeasures = new lbto::tel::float_measure::buf_proxy[NUM_INSTRUMENTS];
+  envi->floatMeasures = new lbto::tel::float_measure::buf_proxy[NUM_DEVICES];
 }
 
 /*!
-  \brief Correctly releases memory allocated for instrument data in an #envdata_t structure.
+  \brief Correctly releases memory allocated for device data in an #envdata_t structure.
 
   \param envi pointer to an #envdata_t data structure
 
-  Frees dynamically allocated memory needed for instrument data.
+  Frees dynamically allocated memory needed for device data.
 */
-void freeInstrumentData(envdata_t *envi){
-  free(envi->instrumentData);
+void freeDeviceData(envdata_t *envi){
+  free(envi->deviceData);
   delete[] envi->floatMeasures;
 }
 
@@ -108,10 +108,9 @@ void freeInstrumentData(envdata_t *envi){
 
   \return 0 on success, -1 on errors.  
 
-  Gets data from the instrument enviromental sensors and loads the results into the enviromental data 
-  structure.
+  Gets device data (enviromental sensor data) and loads the results into the enviromental data structure.
 */
-int getInstrumentData(envdata_t *envi) {
+int getDeviceData(envdata_t *envi) {
   //Query WAGOs and collect data here.
   uint16_t rawHebData[5];
   wagoSetGet(0, envi->hebAddr, 0, 5, rawHebData);
@@ -121,19 +120,19 @@ int getInstrumentData(envdata_t *envi) {
 
   //Set the ENV data.
 
-  //Querying every instrument in the table.
-  for(int i=0; i<NUM_INSTRUMENTS; i++){
-    instrument_t* inst = instrumentTable+i;
+  //Querying every device in the table.
+  for(int i=0; i<NUM_DEVICES; i++){
+    device_t* inst = deviceTable+i;
 
     switch(inst->processingType){
       case PROCESS_AS_DO:
-        *(envi->instrumentData+i) = ((rawHebDoData & (1 << inst->wagoAddress)) == inst->wagoAddress);
+        *(envi->deviceData+i) = ((rawHebDoData & (1 << inst->wagoAddress)) == inst->wagoAddress);
         break;
       case PROCESS_AS_RTD:
-        ptRTD2C(rawHebData+inst->wagoAddress, envi->instrumentData+i);
+        ptRTD2C(rawHebData+inst->wagoAddress, envi->deviceData+i);
         break;
       case PROCESS_AS_QUADCELL:
-        qc2vdc(rawHebData+inst->wagoAddress, envi->instrumentData+i);
+        qc2vdc(rawHebData+inst->wagoAddress, envi->deviceData+i);
         break;
       default:
         break;
