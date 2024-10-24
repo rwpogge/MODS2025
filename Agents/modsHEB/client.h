@@ -90,37 +90,45 @@
 //// START of Class and Struct Definitions. --------------------------------
 
 /*!
-  \brief The data that will be stored for each enviornmental device.
+  \brief The data that will be stored for each device.
 */
 typedef struct DeviceProfile{
-    char* name;
-    char* logName; 
-    char* description;
-    lbto::tel::unit units;
-    int wagoAddress;
-    int processingType;
-    int logEntry=0;
-} device_t;
+    float data;                     // The most recently collected data for the device
+    char name[MAXCFGLINE];          // The name of the device
+    int address;                    // The address of the device in the module
+
+    char description[MAXCFGLINE];   // The description of the device for HDF logs
+    int logEntry=0;                 // Non-Zero if the device data should be logged
+
+    lbto::tel::float_measure::buf_proxy floatMeasure;  // The data stream for HDF logs
+}device_t;
 
 /*!
-  \brief A global table containing a list of every device that can be interacted with.
-
-  Found in "devices.c"
+  \brief The data that will be stored for each module.
 */
-extern device_t deviceTable[];
+typedef struct DeviceModuleProfile{
+    device_t* devices;                  // An array of connected devices and their data
+    char name[MAXCFGLINE];              // The name of the module
+    char processingType[MAXCFGLINE];    // The type of processing to do to the device data
+    int baseAddress;                    // The address of the module
+    int numDevices;                     // The number of connected devices
+
+    lbto::tel::unit units;              // Units of devices in the module for HDF logs
+}device_module_t;
 
 /*!
   \brief A struct which holds all of the enviornment and telemetry data for this modsHeb instance.
 */
 typedef struct envData {
 
-  char  modsID[8];   //!< MODS instrument ID (MODS1 or MODS2)
-
-  // Enviornmental monitoring data
-  float* deviceData;  //!< All device data (floats and booleans) are stored in this array.
+  char modsID[8];    //!< MODS instrument ID (MODS1 or MODS2)
 
   // WAGO Addresses
   char hebAddr[64];   //!< IP address of the HEB WAGO FieldBus controller
+
+  // WAGO Modules
+  int numModules;
+  device_module_t* modules; //!< An array containing all connected modules
 
   // Environmental monitoring parameters
   long  cadence;   //!< Monitor update cadence in seconds
@@ -140,7 +148,6 @@ typedef struct envData {
   char hdfRoot[MED_STR_SIZE];         //!< Full path/rootname of the HDF5 log directory
   char leapSecondsFile[MED_STR_SIZE]; //!< Full path/name of the leap-seconds.list
 
-  lbto::tel::float_measure::buf_proxy* floatMeasures;   //!< The float data in the telemetry stream
   std::shared_ptr<lbto::tel::collector> modsCollector;  //!< The telemetry collection interface
 
 } envdata_t;
@@ -205,7 +212,6 @@ void printEnvData(envdata_t *);   // print the contents of the envdata_t struct 
 void freeEnvData(envdata_t *);    // frees all dynamically allocated memory in the envdata_t struct
 
 // Utility routines for device data (defined in devices.c)
-void initDeviceData(envdata_t *);   // initalize envdata based on connected devices
 int  getDeviceData(envdata_t *);    // get environmental data from the sensor WAGOs
 void freeDeviceData(envdata_t *);   // frees memory allocated for devices in the envdata_t struct
 int setDigitalOutputs(envdata_t *, int, int, int*);  // sets digital outputs

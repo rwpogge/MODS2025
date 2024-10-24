@@ -14,22 +14,6 @@
 #define PROCESS_AS_RTD 1
 #define PROCESS_AS_QUADCELL 2
 
-// GLOBAL TABLE WITH DEVICE DATA -------------------------------
-
-device_t deviceTable[] = {
-  {"QuadCell0", "Qcl0", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    0,   PROCESS_AS_QUADCELL },
-  {"QuadCell1", "Qcl1", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    1,   PROCESS_AS_QUADCELL },
-  {"QuadCell2", "Qcl2", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    2,   PROCESS_AS_QUADCELL },
-  {"QuadCell3", "Qcl3", "Reading from the quadcell sensor.",   lbto::tel::unit::volt(),    3,   PROCESS_AS_QUADCELL },
-  {"Rtd",       "AmbT", "Temperature from the in-box sensor.", lbto::tel::unit::celsius(), 4,   PROCESS_AS_RTD      },
-  {"ArchonS",   "ArcS", "The power status of the Archon.",     lbto::tel::unit::none(),    0,   PROCESS_AS_DO       },
-  {"BogS",      "BogS", "The power status of the BOG heater.", lbto::tel::unit::none(),    1,   PROCESS_AS_DO       },
-  {"IonS",      "IonS", "The power status of the ion-gauge.",  lbto::tel::unit::none(),    2,   PROCESS_AS_DO       }
-};
-
-const int NUM_DEVICES = sizeof(deviceTable)/sizeof(device_t); //The number of entries in the table above.
-
-
 // UTILITY FUNCTIONS -----------------------------------------------
 
 /*!
@@ -71,27 +55,6 @@ void qc2vdc(uint16_t* rawData, float* outputData){
 // INTERACT WITH ENV DATA -----------------------------------------------
 
 /*!
-  \brief Initialize the envdata struct variables that depend on the connected devices.
-
-  \param envi pointer to an #envdata_t data structure
-
-  Initializes the enviromental sensor data structure variables that depend on connected devices.
-  Called from initEnvData.
-
-  Variables are freed using the freeDeviceData function.
-*/
-void initDeviceData(envdata_t *envi){
-  //Dynamically creating the device data array.
-  //This code is primarily C code, so malloc and calloc are prefered for memory allocation.
-  envi->deviceData = (float*) calloc(NUM_DEVICES, sizeof(float));
-  memset(envi->deviceData, 0, NUM_DEVICES*sizeof(float));
-
-  //Dynamically creating the HDF telemetry array.
-  //The objected oriented nature of the telemetry library makes the C++ new/delete keywords preferable here.
-  envi->floatMeasures = new lbto::tel::float_measure::buf_proxy[NUM_DEVICES];
-}
-
-/*!
   \brief Correctly releases memory allocated for device data in an #envdata_t structure.
 
   \param envi pointer to an #envdata_t data structure
@@ -99,16 +62,17 @@ void initDeviceData(envdata_t *envi){
   Frees dynamically allocated memory needed for device data.
 */
 void freeDeviceData(envdata_t *envi){
-  //If the deviceData array has not already been freed, do so now.
-  if(envi->deviceData != NULL){
-    free(envi->deviceData);
-    envi->deviceData = NULL;
-  } 
-  
-  //If the floatMeasures array has not already been freed, do so now.
-  if(envi->floatMeasures != NULL){
-    delete[] envi->floatMeasures;
-    envi->floatMeasures = NULL;
+  //If the modules array has not already been freed, do so now.
+  if(envi->modules != NULL){
+    for(int i=0; i<envi->numModules; i++){
+      //Free every device connected to the module
+      if(envi->modules[i].devices != NULL) free(envi->modules[i].devices);
+      envi->modules[i].devices = NULL;
+    }
+
+    //Free every module
+    free(envi->modules);
+    envi->modules = NULL;
   } 
 }
 
@@ -122,34 +86,6 @@ void freeDeviceData(envdata_t *envi){
   Gets device data (enviromental sensor data) and loads the results into the enviromental data structure.
 */
 int getDeviceData(envdata_t *envi) {
-  //Query WAGOs and collect data here.
-  uint16_t rawHebData[5];
-  wagoSetGet(0, envi->hebAddr, 0, 5, rawHebData);
-
-  uint16_t rawHebDoData;
-  wagoSetGet(0, envi->hebAddr, 512, 1, &rawHebDoData);
-
-  //Set the ENV data.
-
-  //Querying every device in the table.
-  for(int i=0; i<NUM_DEVICES; i++){
-    device_t* device = deviceTable+i;
-
-    switch(device->processingType){
-      case PROCESS_AS_DO:
-        *(envi->deviceData+i) = ((rawHebDoData & (1 << device->wagoAddress)) == (1 << device->wagoAddress));
-        break;
-      case PROCESS_AS_RTD:
-        ptRTD2C(rawHebData+device->wagoAddress, envi->deviceData+i);
-        break;
-      case PROCESS_AS_QUADCELL:
-        qc2vdc(rawHebData+device->wagoAddress, envi->deviceData+i);
-        break;
-      default:
-        break;
-    }
-  }  
-
   // Get the UTC date/time of the query (ISIS client utility routine)
   strcpy(envi->utcDate,ISODate());
 

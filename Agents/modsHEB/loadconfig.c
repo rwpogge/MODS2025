@@ -23,31 +23,16 @@
 
 #include "client.h"   // Custom client application header file
 
-
 /*!
-  \brief Load/Parse ISIS client's runtime configuration file.
-  \param cfgfile Path/name of the client runtime configuration file
-  \return 0 if success, <0 if failure.  All error message are printed 
-  to the client's console.
-
-  The precise actions of LoadConfig() are tailored to the client application.
+  \brief Ensure defaults are set for most values in the env data struct.
+  \param cfgFP A file pointer to an open configuration file.
+  
+  If we need to initialize any default parameter values, do it here.
+  Note that as-written these variables have been defined in global scope
+  for the entire client application, e.g., in main.c for the
+  application.
 */
-int loadConfig(char *cfgfile){
-  char keyword[MAXCFGLINE];  // File is organized into KEYWORD VALUE pairs
-  char argList[MAXCFGLINE];  // Generic argument list string
-  char argStr[MAXCFGLINE];   // Generic argument token string
-  char inStr[MAXCFGLINE];    // Generic input string
-  char reply[256];           // Reply string
-
-  FILE *cfgFP;               // Configuration file pointer
-  int i;
-  char c;                    
-
-  // If we need to initialize any default parameter values, do it here.
-  // Note that as-written these variables have been defined in global scope
-  // for the entire client application, e.g., in main.c for the
-  // application.
-
+void loadDefaultConfigs(char *cfgfile){
   // Record the runtime config file in use.
   strcpy(client.rcFile,cfgfile);
 
@@ -71,10 +56,68 @@ int loadConfig(char *cfgfile){
   client.Debug = 0;                // default: no debugging
 
   // Reset the client global data structures to the compile-time defaults
-
   initEnvData(&env);
 
-  useCLI = 1; // default: interactive shell enabled (also set in main)
+  // default: interactive shell enabled (also set in main)
+  useCLI = 1;
+}
+
+/*!
+  \brief Determines how many WAGO modules are defined in the config file
+  \param cfgFP A file pointer to an open configuration file.
+  \return The number of wago modules in the file.
+
+  This function will reset the file pointer to the start of the file upon completion.
+*/
+int numWagoModules(FILE* cfgFP){
+  char keyword[MAXCFGLINE];  // File is organized into KEYWORD VALUE pairs
+  char argList[MAXCFGLINE];  // Generic argument list string
+  char inStr[MAXCFGLINE];    // Generic input string
+  int numModules = 0;
+  
+  // Do a pass of the file looking for occourences of the WAGO keyword
+  while(fgets(inStr, MAXCFGLINE, cfgFP)) {
+    // Skip comments (#) and blank lines
+    if ((inStr[0]!='#') && (inStr[0]!='\n') && inStr[0]!='\0'){
+      inStr[MAXCFGLINE] ='\0';
+      sscanf(inStr,"%s %[^\n]",keyword,argList);
+
+      if (strcasecmp(keyword,"WAGO")==0){
+        numModules++;
+      }
+    }
+	}
+
+  //Reset the file pointer to the start of the file.
+  rewind(cfgFP);
+
+  //Returning the number of modules present.
+  return numModules;
+}
+
+/*!
+  \brief Load/Parse ISIS client's runtime configuration file.
+  \param cfgfile Path/name of the client runtime configuration file
+  \return 0 if success, <0 if failure.  All error message are printed 
+  to the client's console.
+
+  The precise actions of LoadConfig() are tailored to the client application.
+*/
+int loadConfig(char *cfgfile){
+  char keyword[MAXCFGLINE];  // File is organized into KEYWORD VALUE pairs
+  char argList[MAXCFGLINE];  // Generic argument list string
+  char argStr[MAXCFGLINE];   // Generic argument token string
+  char inStr[MAXCFGLINE];    // Generic input string
+  char reply[256];           // Reply string
+
+  FILE *cfgFP;               // Configuration file pointer
+  int i;
+  char c;
+
+  int moduleIndex = 0;       // Used to count the number of device modules which have been added
+
+  //Loading sensible default config options.
+  loadDefaultConfigs(cfgfile);
 
   // Now open the config file, if not, gripe and return -1.  Opening the
   // file here ensures that sensible defaults are set even if the config
@@ -86,7 +129,14 @@ int loadConfig(char *cfgfile){
   }
 
   //----------------------------------------------------------------
-  
+
+  //Dynamically allocating memory for the modules.
+  env.numModules = numWagoModules(cfgFP);
+  env.modules = (device_module_t*) malloc(env.numModules*sizeof(device_module_t));
+  memset(env.modules, 0, env.numModules*sizeof(device_module_t));
+
+  //----------------------------------------------------------------
+
   // Config file parser loop. Read in each line of the config file and process it 
   while(fgets(inStr, MAXCFGLINE, cfgFP)) {
 
@@ -230,17 +280,25 @@ int loadConfig(char *cfgfile){
 
       // WAGO: The start of a WAGO device module. A set of devices should be listed on the following lines.
       else if (strcasecmp(keyword,"WAGO")==0){
-        GetArg(inStr,2,argStr);   // The module name
-        GetArg(inStr,3,argStr);   // The type of module
-        GetArg(inStr,4,argStr);   // The base address of the module
+        device_module_t* currentModule = env.modules+moduleIndex;
+
+        GetArg(inStr,2,currentModule->name);             // The module name
+        GetArg(inStr,3,currentModule->processingType);   // The type of module
+
+        // The base address of the module
+        GetArg(inStr,4,argStr);
+        currentModule->baseAddress = atoi(argStr);
 
         // The number of conneted devices
         GetArg(inStr,5,argStr);
-        int numDevices = atoi(argStr);
-        printf("%d devices...\n", numDevices);
+        currentModule->numDevices = atoi(argStr);
+
+        // Dynamically allocating memory for the devices
+        currentModule->devices = (device_t*) malloc(currentModule->numDevices*sizeof(device_t));
+        memset(currentModule->devices, 0, currentModule->numDevices*sizeof(device_t));
 
         // For every connected device, there should be a line with additional information.
-        for(int i=0; (i<numDevices && fgets(inStr, MAXCFGLINE, cfgFP)); i++){
+        for(int i=0; (i<currentModule->numDevices && fgets(inStr, MAXCFGLINE, cfgFP)); i++){
           
           // Skipping blank lines and lines prefixed with the '#' character.
           if ((inStr[0]=='#') || (inStr[0]=='\n')) continue;
@@ -248,9 +306,15 @@ int loadConfig(char *cfgfile){
           // Parsing the line.
           inStr[MAXCFGLINE] ='\0';
 
-          GetArg(inStr,2,argStr); // The device name
-          GetArg(inStr,3,argStr); // The device address
+          // The device name
+          GetArg(inStr,2,currentModule->devices[i].name); 
+
+          // The device address
+          GetArg(inStr,3,argStr);
+          currentModule->devices[i].address = atoi(argStr);
         }
+
+        moduleIndex++;
       }
 
       // Gripe if junk is in the config file

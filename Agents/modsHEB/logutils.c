@@ -36,15 +36,17 @@ int initTelemetryData(envdata_t* envi){
     );
 
     //Adding measures based off the device table.
-    for(int i=0; i<NUM_DEVICES; i++){
-      if(!deviceTable[i].logEntry) continue;
+    for(int i=0; i<envi->numModules; i++){
+      for(int j=0; j<envi->modules[i].numDevices; j++){
+        if(!envi->modules[i].devices[j].logEntry) continue;
 
-      modsDefiner.add_child(lbto::tel::float_measure(
-        envi->floatMeasures[i],
-        deviceTable[i].units, 
-        lbto::tel::name(deviceTable[i].name),
-        lbto::tel::description(deviceTable[i].description)
-      ));
+        modsDefiner.add_child(lbto::tel::float_measure(
+          envi->modules[i].devices[j].floatMeasure,
+          envi->modules[i].units, 
+          lbto::tel::name(envi->modules[i].devices[j].name),
+          lbto::tel::description(envi->modules[i].devices[j].description)
+        ));
+      }
     }
 
     //Adding this definition to the telemetry store.
@@ -138,13 +140,16 @@ int initEnvLog(envdata_t *envi){
   //Creating the enviornmental data header string.
   memset(logStr,0,sizeof(logStr));                                                    // Clear the string.
   stringLength += snprintf(logStr, sizeof(logStr), "# UTC Date/Time    ");            // Append the date header.
-  for(int i=0; i<NUM_DEVICES; i++){                                                   // Append each device header.
-    if(!deviceTable[i].logEntry) continue;
+  for(int i=0; i<envi->numModules; i++){
+    for(int j=0; j<envi->modules[i].numDevices; j++){
+      if(!envi->modules[i].devices[j].logEntry) continue;
     
-    stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
-      " %-7.7s", deviceTable[i].logName
-    );
+      stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
+        " %-7.7s", envi->modules[i].devices[j].name
+      );
+    }
   }
+
   stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, "\n");   // Append a new line.
   sprintf(logStr+sizeof(logStr)-2, "\n");                                             // And make the last character a new line in-case of buffer overflow.
   
@@ -184,13 +189,16 @@ int logEnvData(envdata_t *envi){
   // Create the enviornmental data string.
   memset(logStr, 0, sizeof(logStr));                                                  // Clear the string.
   stringLength += snprintf(logStr, sizeof(logStr), "%s", envi->utcDate);              // Append the date.
-  for(int i=0; i<NUM_DEVICES; i++){                                                   // Append each device reading.
-    if(!deviceTable[i].logEntry) continue;
-    
-    stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
-      " %-7.3f", envi->deviceData[i]
-    );
+  for(int i=0; i<envi->numModules; i++){
+    for(int j=0; j<envi->modules[i].numDevices; j++){                             // Append each device reading.
+      if(!envi->modules[i].devices[j].logEntry) continue;
+
+      stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
+        " %-7.3f", envi->modules[i].devices[j].data
+      );
+    }
   }
+
   stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, "\n");   // Append a new line.
   sprintf(logStr+sizeof(logStr)-2, "\n");                                             // And make the last character a new line in-case of buffer overflow.
 
@@ -293,11 +301,13 @@ int logTelemetryData(envdata_t *envi){
   }
 
   try{    
-    //Storing data in the streams based on the device table.
-    for(int i=0; i<NUM_DEVICES; i++){
-      if(!deviceTable[i].logEntry) continue;
+    //Storing data in the streams based on the module table.
+    for(int i=0; i<envi->numModules; i++){
+      for(int j=0; j<envi->modules[i].numDevices; j++){
+        if(!envi->modules[i].devices[j].logEntry) continue;
 
-      envi->floatMeasures[i].store(envi->deviceData[i]);
+        envi->modules[i].devices[j].floatMeasure.store(envi->modules[i].devices[j].data);
+      }
     }
 
     //Commiting the data to the HDF5 file.
