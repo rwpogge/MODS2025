@@ -2,24 +2,11 @@
   \file modbusutils.c
   \brief Utility functions for working with libmodbus and WAGO fieldbus controllers.
 
-  \date 2024 July 15
+  \date 2024 Oct 24
 */
 
 #include "modbusutils.h"
 
-/*!
-  \brief Write (set) or read (get) data from WAGO modbus registers
-
-  \param setget  (int) 1 = set (write), 0 = get (read)
-  \param regAddr (int) register address (range: 1 - 0x10000)
-  \param regLen  (int) register length = number of data values (range: 1-100)
-  \param regData (uint16) array of data to write or read
-
-  \return 0 on send success, value or error code on faults
-
-  This version rewritten for libmodbus to replace defunct and unsupported proprietary 
-  FieldTalk code. [rwp/osu - 2024 Feb 20]
-*/
 int wagoSetGet(int setGet, char *wagoAddr, int regAddr, int regLen, uint16_t regData[]){
   // using libmodbus
   modbus_t *modbus;
@@ -49,3 +36,28 @@ int wagoSetGet(int setGet, char *wagoAddr, int regAddr, int regLen, uint16_t reg
   return 0;
 }
 
+int wagoSetGetCoils(int setGet, char *wagoAddr, int coilAddr, int coilLen, uint16_t coilData[]){
+  uint16_t state = 0;
+
+  // If setGet = 1 (true), we are writing data to WAGO coils
+  if(setGet){
+    for(int i=coilLen-1; i>=0; i--){
+      state = state << 1;
+      if(coilData[i] != 0) state += 1;
+    }
+
+    return wagoSetGet(1, wagoAddr, coilAddr, 1, &state);
+  }
+
+  // If setGet = 0 (false), we are reading data from WAGO coils
+  else{
+    int error = wagoSetGet(0, wagoAddr, coilAddr, 1, &state);
+    if(error != 0) return error;
+
+    for(int i=0; i<coilLen; i++){
+      *(coilData+i) = ((state & (1 << i)) == (1 << i));
+    }
+    
+    return 0;
+  }
+}
