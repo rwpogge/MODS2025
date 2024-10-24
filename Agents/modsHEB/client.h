@@ -228,6 +228,7 @@ int  fileExists(char *);                // test to see if a file exists
 // Signal Handlers
 void HandleInt(int);  // SIGINT handler
 void HandleKill(int); // SIGKILL handler
+void CleanExit();     // Used to cleanly exit the program after the main select loop has started
 
 //// END of Custom Client Function Declerations. ---------------------------
 

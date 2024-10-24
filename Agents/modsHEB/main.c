@@ -247,13 +247,19 @@ int main(int argc, char *argv[]){
   //----------------------------------------------------------------
   // If we got here, the client was instructed to shut down
   
+  CleanExit();
+}
+
+//---------------------------------------------------------------------------
+
+void CleanExit(){
   printf("\nMODS Enviromental Monitor Agent Shutting Down...\n");
   
   // Tear down the application's client socket
   CloseClientSocket(&client);
 
   // Close any open data logs
-  logMessage(&env,(char *)"modsHeb agent shutting down");
+  logMessage(&env,(char*)"modsHeb agent shutting down");
 
   if (env.logFD > 0) close(env.logFD);  //Closes the ascii log.
   closeTelemetryData(&env);             //Closes the hdf5 log.
@@ -264,7 +270,7 @@ int main(int argc, char *argv[]){
   // Remove the readline() callback handler
   if (useCLI) rl_callback_handler_remove();
 
-  return 0;
+  exit(0);
 }
 
 //---------------------------------------------------------------------------
@@ -276,6 +282,8 @@ int main(int argc, char *argv[]){
 */
 void HandleInt(int signalValue){
   if (client.Debug && useCLI) printf("Caught Ctrl+C Abort...\n");
+
+  if(useCLI) CleanExit();
 }
 
 /*!
