@@ -22,7 +22,7 @@ const static struct{
     {RTD, "RTD"},
     {AI, "AI"}
 };
-const int PROCESS_MAP_LEN = sizeof(PROCESS_MAP)/sizeof(PROCESS_MAP[i]);
+const int PROCESS_MAP_LEN = sizeof(PROCESS_MAP)/sizeof(PROCESS_MAP[0]);
 
 
 // UTILITY FUNCTIONS -----------------------------------------------
@@ -114,23 +114,24 @@ void freeDeviceData(envdata_t *envi){
 */
 int getDeviceData(envdata_t *envi) {
   // Data as collected from the WAGO module.
-  uint16_t rawWagoData;
-
-  // Dynamically allocating the data collection memory.
-  rawWagoData = (device_t*) malloc(envi->modules[i].numDevices*sizeof(uint16_t));
-  memset(rawWagoData, 0, envi->modules[i].numDevices*sizeof(uint16_t));
+  uint16_t* rawWagoData;
 
   // For every connected module.
   for(int i=0; i<envi->numModules; i++){
+    // Dynamically allocating the data collection memory.
+    // TODO: This dynamic allocation should happen ONCE. Not every loop. Make that change.
+    rawWagoData = (uint16_t*) malloc(envi->modules[i].numDevices*sizeof(uint16_t));
+    memset(rawWagoData, 0, envi->modules[i].numDevices*sizeof(uint16_t));
+
     // Query the WAGO based on the processType.
     switch(envi->modules[i].processingType){
       //The register types.
-      case PROCESS.AI:
-      case PROCESS.RTD:
+      case AI:
+      case RTD:
         wagoSetGet(0, envi->hebAddr, envi->modules[i].baseAddress, envi->modules[i].numDevices, rawWagoData);
         break;
       //The coil types.
-      case PROESS.DO:
+      case DO:
         wagoSetGetCoils(0, envi->hebAddr, envi->modules[i].baseAddress, envi->modules[i].numDevices, rawWagoData);
         break;
       //Default case.
@@ -140,23 +141,23 @@ int getDeviceData(envdata_t *envi) {
 
     // For every connected device.
     for(int j=0; j<envi->modules[i].numDevices; j++){
-      device_t* device = envi->modules[i].devices[j];
+      device_t* device = envi->modules[i].devices+j;
 
       // Process the WAGO data based on the processType.
       switch(envi->modules[i].processingType){
-        case PROCESS.DO:  device->data = rawWagoData[device->address];        break;
-        case PROCESS.RTD: rtd2c(rawWagoData+device->address, &device->data);  break;
-        case PROCESS.AI:  ai2vdc(rawWagoData+device->address, &device->data); break;
+        case DO:  device->data = rawWagoData[device->address];        break;
+        case RTD: rtd2c(rawWagoData+device->address, &device->data);  break;
+        case AI:  ai2vdc(rawWagoData+device->address, &device->data); break;
         default: break;
       }
     }
-  }
 
-  //Freeing WAGO collection aray memory.
-  if(rawWagoData != NULL){
-    free(rawWagoData);
-    rawWagoData = NULL;
-  } 
+    //Freeing WAGO collection aray memory.
+    if(rawWagoData != NULL){
+      free(rawWagoData);
+      rawWagoData = NULL;
+    } 
+  }
 
   // Get the UTC date/time of the query (ISIS client utility routine)
   strcpy(envi->utcDate,ISODate());

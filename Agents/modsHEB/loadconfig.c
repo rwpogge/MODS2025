@@ -122,6 +122,8 @@ int strToInt(char* str, int* resultInt){
 
   // Setting the result integer.
   *resultInt = (int)resultLong;
+
+  return 0;
 }
 
 /*!
@@ -129,7 +131,7 @@ int strToInt(char* str, int* resultInt){
   \param cfgFp The file to close.
 */
 void warnAndClose(char* key, char* argStr, FILE* cfgFP){
-  printf("ERROR: %s option '%s' unrecognized\n",argStr);
+  printf("ERROR: %s option '%s' unrecognized\n",key, argStr);
   printf("Aborting - fix the config file (%s) and try again\n",client.rcFile);
 	if (cfgFP !=0) fclose(cfgFP);
 }
@@ -372,7 +374,7 @@ int loadConfig(char *cfgfile){
         memset(currentModule->devices, 0, currentModule->numDevices*sizeof(device_t));
 
         // For every connected device, there should be a line with additional information.
-        for(int i=0; (i<currentModule->numDevices && fgets(inStr, MAXCFGLINE, cfgFP)); i++){
+        for(i=0; (i<currentModule->numDevices && fgets(inStr, MAXCFGLINE, cfgFP)); i++){
           // Skipping blank lines and lines prefixed with the '#' character.
           if ((inStr[0]=='#') || (inStr[0]=='\n')) continue;
 
@@ -391,9 +393,10 @@ int loadConfig(char *cfgfile){
           } 
         }
 
+        //TODO: This only catches the end of the file. We still need to catch if we run out of lines not at the end of a file.
         //If there wern't enough connected device lines.
         if(i != currentModule->numDevices){
-          printf("ERROR: there were not enough devices in the %s wago module\n",currentModule->name);
+          printf("ERROR: there were not enough devices in the %s module\n",currentModule->name);
           printf("Aborting - fix the config file (%s) and try again\n",client.rcFile);
 	        if (cfgFP !=0) fclose(cfgFP);
           return -2;
