@@ -109,7 +109,7 @@ typedef struct DeviceProfile{
 typedef struct DeviceModuleProfile{
     device_t* devices;                  // An array of connected devices and their data
     char name[MAXCFGLINE];              // The name of the module
-    char processingType[MAXCFGLINE];    // The type of processing to do to the device data
+    int processingType;                 // The type of processing to do to the device data
     int baseAddress;                    // The address of the module
     int numDevices;                     // The number of connected devices
 
@@ -214,7 +214,7 @@ void freeEnvData(envdata_t *);    // frees all dynamically allocated memory in t
 // Utility routines for device data (defined in devices.c)
 int  getDeviceData(envdata_t *);    // get environmental data from the sensor WAGOs
 void freeDeviceData(envdata_t *);   // frees memory allocated for devices in the envdata_t struct
-int setDigitalOutputs(envdata_t *, int, int, int*);  // sets digital outputs
+int strToProcessType(char*);        // given the string value for a process_type, returns the integer value for that process type
 
 // Log utility routines (defined in logutils.c)
 int  initTelemetryData(envdata_t *);    // initlaize the telemetry structures in envdata_t if HDF5 will be used

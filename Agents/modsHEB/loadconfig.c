@@ -282,8 +282,13 @@ int loadConfig(char *cfgfile){
       else if (strcasecmp(keyword,"WAGO")==0){
         device_module_t* currentModule = env.modules+moduleIndex;
 
-        GetArg(inStr,2,currentModule->name);             // The module name
-        GetArg(inStr,3,currentModule->processingType);   // The type of module
+        // The module name
+        GetArg(inStr,2,currentModule->name);
+
+        // The type of module (DI, AI, RTD, etc.)
+        GetArg(inStr,3,argStr);
+        currentModule->processingType = strToProcessType(argStr);
+        if(currentModule->processingType == -1){ printf("ProcessType=%s is not a valid option. Aborting.", argStr); return -2;}
 
         // The base address of the module
         GetArg(inStr,4,argStr);

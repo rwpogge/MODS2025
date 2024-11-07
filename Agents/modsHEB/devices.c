@@ -10,11 +10,38 @@
 
 // CONSTANTS -------------------------------------------------------
 
-#define PROCESS_AS_DO 0
-#define PROCESS_AS_RTD 1
-#define PROCESS_AS_QUADCELL 2
+//An enum to make the integer values of process types more readable.
+typedef enum {DO, DO_NC, RTD, AI} PROCESS;
+ 
+//This maps the string values of the enum above to their numerical values.
+const static struct{
+    PROCESS value;
+    const char* string;
+}PROCESS_MAP[] = {
+    {DO, "DO"},
+    {RTD, "RTD"},
+    {AI, "AI"}
+};
+const int PROCESS_MAP_LEN = sizeof(PROCESS_MAP)/sizeof(PROCESS_MAP[i]);
+
 
 // UTILITY FUNCTIONS -----------------------------------------------
+
+/*!
+  \brief Finds the integer value associated with the given process type.
+
+  \param process the string value of the process type.
+
+  \return the integer value associated with the process type. -1 if the string isn't a process type.
+*/
+int strToProcessType(char* process){
+  int i;
+  for (i=0; i<PROCESS_MAP_LEN; i++)
+    if (!strcasecmp(process, PROCESS_MAP[i].string))
+      return PROCESS_MAP[i].value;
+
+  return -1;
+}
 
 /*!
   \brief Converts a raw RTD reading into its equivalent temperature.
@@ -22,7 +49,7 @@
   \param rawData pointer to an RTD float as collected from the WAGO module.
   \param outputData pointer to the float variable where the converted data will be stored.
 */
-void ptRTD2C(uint16_t* rawData, float* outputData){
+void rtd2c(uint16_t* rawData, float* outputData){
   float tempRes = 0.1;
   float tempMax = 850.0;
   float wrapT = tempRes*(pow(2.0, 16)-1);
@@ -35,12 +62,12 @@ void ptRTD2C(uint16_t* rawData, float* outputData){
 }
 
 /*!
-  \brief Converts a raw quadcell reading into its equivalent DC voltage.
+  \brief Converts a raw analog input reading into its equivalent DC voltage.
 
   \param rawData pointer to the quadcell varaible as collected from the WAGO module.
   \param outputData pointer to the float varaible where the converted data will be stored.
 */
-void qc2vdc(uint16_t* rawData, float* outputData){
+void ai2vdc(uint16_t* rawData, float* outputData){
   int posMax = pow(2, 15) - 1;
   int negMin = pow(2, 16) - 2;
   
@@ -76,6 +103,8 @@ void freeDeviceData(envdata_t *envi){
   } 
 }
 
+// INTERACT WITH DEVICES -----------------------------------------------
+
 /*!
   \brief Get enviromental sensor data
 
@@ -86,6 +115,51 @@ void freeDeviceData(envdata_t *envi){
   Gets device data (enviromental sensor data) and loads the results into the enviromental data structure.
 */
 int getDeviceData(envdata_t *envi) {
+  // Data as collected from the WAGO module.
+  uint16_t rawWagoData;
+
+  // Dynamically allocating the data collection memory.
+  rawWagoData = (device_t*) malloc(envi->modules[i].numDevices*sizeof(uint16_t));
+  memset(rawWagoData, 0, envi->modules[i].numDevices*sizeof(uint16_t));
+
+  // For every connected module.
+  for(int i=0; i<envi->numModules; i++){
+    // Query the WAGO based on the processType.
+    switch(envi->modules[i].processingType){
+      //The register types.
+      case PROCESS.AI:
+      case PROCESS.RTD:
+        wagoSetGet(0, envi->hebAddr, envi->modules[i].baseAddress, envi->modules[i].numDevices, rawWagoData);
+        break;
+      //The coil types.
+      case PROESS.DO:
+        wagoSetGetCoils(0, envi->hebAddr, envi->modules[i].baseAddress, envi->modules[i].numDevices, rawWagoData);
+        break;
+      //Default case.
+      default:
+        break;
+    }
+
+    // For every connected device.
+    for(int j=0; j<envi->modules[i].numDevices; j++){
+      device_t* device = envi->modules[i].devices[j];
+
+      // Process the WAGO data based on the processType.
+      switch(envi->modules[i].processingType){
+        case PROCESS.DO:  device->data = rawWagoData[device->address];        break;
+        case PROCESS.RTD: rtd2c(rawWagoData+device->address, &device->data);  break;
+        case PROCESS.AI:  ai2vdc(rawWagoData+device->address, &device->data); break;
+        default: break;
+      }
+    }
+  }
+
+  //Freeing WAGO collection aray memory.
+  if(rawWagoData != NULL){
+    free(rawWagoData);
+    rawWagoData = NULL;
+  } 
+
   // Get the UTC date/time of the query (ISIS client utility routine)
   strcpy(envi->utcDate,ISODate());
 
