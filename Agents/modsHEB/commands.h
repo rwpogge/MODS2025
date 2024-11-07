@@ -35,8 +35,6 @@ int cmd_logging (char *, MsgType, char *);  // Enable/Disable/Query the data log
 int cmd_hdf_logging (char *, MsgType, char *); // Enable/Disable/Query the hdf data logging state
 int cmd_config  (char *, MsgType, char *);  // Print the agent config info (engineering)
 int cmd_comment (char *, MsgType, char *);  // Append a comment to the log
-int cmd_set_all_do_true (char *, MsgType, char *);  // Set every DO to true
-
 
 // Application command/action structure
 
@@ -95,7 +93,6 @@ cmdtab[] = {   //!< global scope command table for this application
   {"logging" ,cmd_logging ,"logging <enable|disable>","Enable/Disable enviromental sensor data logging"},
   {"hdflog"  ,cmd_hdf_logging ,"hdflog <enable|disable>","Enable/Disable hdf formatted telemetry logging"},
   {"hdflogging" ,cmd_hdf_logging ,"hdflogging <enable|disable>","Enable/Disable hdf formatted telemetry logging"},
-  {"turnallon", cmd_set_all_do_true, "turnallon", "Set all of the digital outputs to be true"}, 
   {"comment" ,cmd_comment ,"comment <message>","Append a comment to the log"},
   {"config"  ,cmd_config  ,"config","Report agent configuration [engineering]"},
   {"help"    ,cmd_help    ,"help <cmd>","Help command (alias: ? <cmd>)"},

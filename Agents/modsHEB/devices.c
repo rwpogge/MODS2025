@@ -92,14 +92,3 @@ int getDeviceData(envdata_t *envi) {
   // All done (logging is done by the calling program)
   return 0;
 }
-
-int setDigitalOutputs(envdata_t *envi, int num, int baseAddress, int* states){
-  uint16_t state = 0;
-
-  for(int i=num-1; i>=0; i--){
-    state = state << 1;
-    if(states[i] == 1) state += 1;
-  }
-
-  return wagoSetGet(1, envi->hebAddr, baseAddress, 1, &state);
-}
