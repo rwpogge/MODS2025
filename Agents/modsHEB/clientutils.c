@@ -30,6 +30,7 @@ void initEnvData(envdata_t *envi){
   envi->cadence = DEFAULT_CADENCE;  // default monitoring cadence (see client.h)
   envi->pause = 0;                  // start running (no pause)
 
+  envi->modules = NULL;             // device module setup.
   envi->numModules = 0;
 
   envi->doLogging = 1;              // enable enviromental data logging by default

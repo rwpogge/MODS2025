@@ -47,6 +47,7 @@
 #include <termios.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <limits.h>
 
 #include <exception>
 

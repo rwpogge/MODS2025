@@ -85,8 +85,6 @@ void ai2vdc(uint16_t* rawData, float* outputData){
   \brief Correctly releases memory allocated for device data in an #envdata_t structure.
 
   \param envi pointer to an #envdata_t data structure
-
-  Frees dynamically allocated memory needed for device data.
 */
 void freeDeviceData(envdata_t *envi){
   //If the modules array has not already been freed, do so now.
