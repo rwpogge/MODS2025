@@ -367,7 +367,10 @@ int loadConfig(char *cfgfile){
         if(errValue){
           warnAndClose("NumDevices", argStr, cfgFP);
           return -2;
-        } 
+        }
+
+        // Setting the maximum number of module devices.
+        if(currentModule->numDevices > env.maxModuleDevices) env.maxModuleDevices = currentModule->numDevices;
 
         // Dynamically allocating memory for the devices
         currentModule->devices = (device_t*) malloc(currentModule->numDevices*sizeof(device_t));

@@ -115,14 +115,11 @@ void freeDeviceData(envdata_t *envi){
 int getDeviceData(envdata_t *envi) {
   // Data as collected from the WAGO module.
   uint16_t* rawWagoData;
+  rawWagoData = (uint16_t*) malloc(envi->maxModuleDevices*sizeof(uint16_t));
+  memset(rawWagoData, 0, envi->maxModuleDevices*sizeof(uint16_t));
 
   // For every connected module.
   for(int i=0; i<envi->numModules; i++){
-    // Dynamically allocating the data collection memory.
-    // TODO: This dynamic allocation should happen ONCE. Not every loop. Make that change.
-    rawWagoData = (uint16_t*) malloc(envi->modules[i].numDevices*sizeof(uint16_t));
-    memset(rawWagoData, 0, envi->modules[i].numDevices*sizeof(uint16_t));
-
     // Query the WAGO based on the processType.
     switch(envi->modules[i].processingType){
       //The register types.
@@ -151,13 +148,13 @@ int getDeviceData(envdata_t *envi) {
         default: break;
       }
     }
-
-    //Freeing WAGO collection aray memory.
-    if(rawWagoData != NULL){
-      free(rawWagoData);
-      rawWagoData = NULL;
-    } 
   }
+
+  //Freeing WAGO collection aray memory.
+  if(rawWagoData != NULL){
+    free(rawWagoData);
+    rawWagoData = NULL;
+  } 
 
   // Get the UTC date/time of the query (ISIS client utility routine)
   strcpy(envi->utcDate,ISODate());
