@@ -245,7 +245,7 @@ int loadConfig(char *cfgfile){
 	      GetArg(inStr, 2, argStr);
         errValue = strToInt(argStr, &(client.isisPort));
         if(errValue){
-          warnAndClose("Port", argStr, cfgFP);
+          warnAndClose("ISISPORT", argStr, cfgFP);
           return -1;
         } 
       }
@@ -279,7 +279,7 @@ int loadConfig(char *cfgfile){
         int dt;
         errValue = strToInt(argStr, &(dt));
         if(errValue || dt <= 0){
-          warnAndClose("Port", argStr, cfgFP);
+          warnAndClose("Cadence", argStr, cfgFP);
           return -1;
         }
 
@@ -337,7 +337,7 @@ int loadConfig(char *cfgfile){
       }
 
 
-      // KEYWORD MODULES ------------------------------
+      // KEYWORD MODULE -------------------------------
 
       // WAGO: The start of a WAGO device module. A set of devices should be listed on the following lines.
       else if (strcasecmp(keyword,"WAGO")==0){
@@ -412,8 +412,7 @@ int loadConfig(char *cfgfile){
           } 
         }
 
-        //TODO: This only catches the end of the file. We still need to catch if we run out of lines not at the end of a file.
-        //If there wern't enough connected device lines.
+        //If we hit the end of the file without finding enough devices, error out.
         if(i != currentModule->numDevices){
           printf("ERROR: there were not enough devices in the %s module\n",currentModule->name);
           printf("Aborting - fix the config file (%s) and try again\n",client.rcFile);
