@@ -98,7 +98,13 @@ void freeDeviceData(envdata_t *envi){
     //Free every module
     free(envi->modules);
     envi->modules = NULL;
-  } 
+  }
+
+  //If the WAGO memory has not already been freed, do so now.
+  if(envi->rawWagoData != NULL){
+    free(envi->rawWagoData);
+    envi->rawWagoData = NULL;
+  }
 }
 
 // INTERACT WITH DEVICES -----------------------------------------------
@@ -113,11 +119,6 @@ void freeDeviceData(envdata_t *envi){
   Gets device data (enviromental sensor data) and loads the results into the enviromental data structure.
 */
 int getDeviceData(envdata_t *envi) {
-  // Data as collected from the WAGO module.
-  uint16_t* rawWagoData;
-  rawWagoData = (uint16_t*) malloc(envi->maxModuleDevices*sizeof(uint16_t));
-  memset(rawWagoData, 0, envi->maxModuleDevices*sizeof(uint16_t));
-
   // For every connected module.
   for(int i=0; i<envi->numModules; i++){
     // Query the WAGO based on the processType.
@@ -125,11 +126,11 @@ int getDeviceData(envdata_t *envi) {
       //The register types.
       case AI:
       case RTD:
-        wagoSetGet(0, envi->hebAddr, envi->modules[i].baseAddress, envi->modules[i].numDevices, rawWagoData);
+        wagoSetGet(0, envi->hebAddr, envi->modules[i].baseAddress, envi->modules[i].numDevices, envi->rawWagoData);
         break;
       //The coil types.
       case DO:
-        wagoSetGetCoils(0, envi->hebAddr, envi->modules[i].baseAddress, envi->modules[i].numDevices, rawWagoData);
+        wagoSetGetCoils(0, envi->hebAddr, envi->modules[i].baseAddress, envi->modules[i].numDevices, envi->rawWagoData);
         break;
       //Default case.
       default:
@@ -142,19 +143,13 @@ int getDeviceData(envdata_t *envi) {
 
       // Process the WAGO data based on the processType.
       switch(envi->modules[i].processingType){
-        case DO:  device->data = rawWagoData[device->address];        break;
-        case RTD: rtd2c(rawWagoData+device->address, &device->data);  break;
-        case AI:  ai2vdc(rawWagoData+device->address, &device->data); break;
+        case DO:  device->data = envi->rawWagoData[device->address];        break;
+        case RTD: rtd2c(envi->rawWagoData+device->address, &device->data);  break;
+        case AI:  ai2vdc(envi->rawWagoData+device->address, &device->data); break;
         default: break;
       }
     }
   }
-
-  //Freeing WAGO collection aray memory.
-  if(rawWagoData != NULL){
-    free(rawWagoData);
-    rawWagoData = NULL;
-  } 
 
   // Get the UTC date/time of the query (ISIS client utility routine)
   strcpy(envi->utcDate,ISODate());

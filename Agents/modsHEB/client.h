@@ -129,7 +129,7 @@ typedef struct envData {
 
   // WAGO Modules
   int numModules;
-  int maxModuleDevices;     //!< The maximum number of devices connected to a module.
+  uint16_t* rawWagoData;    //!< The most recently collected data from the WAGO.
   device_module_t* modules; //!< An array containing all connected modules
 
   // Environmental monitoring parameters

@@ -158,6 +158,7 @@ int loadConfig(char *cfgfile){
   char c;
 
   int moduleIndex = 0;      // Used to count the number of device modules which have been added
+  int maxModuleDevices = 0; // Used to find the maximum number of devices connected to any module
   int errValue;             // Used to convert strings to integers 
 
   //Loading sensible default config options.
@@ -370,11 +371,13 @@ int loadConfig(char *cfgfile){
         }
 
         // Setting the maximum number of module devices.
-        if(currentModule->numDevices > env.maxModuleDevices) env.maxModuleDevices = currentModule->numDevices;
+        if(currentModule->numDevices > maxModuleDevices) maxModuleDevices = currentModule->numDevices;
 
         // Dynamically allocating memory for the devices
-        currentModule->devices = (device_t*) malloc(currentModule->numDevices*sizeof(device_t));
-        memset(currentModule->devices, 0, currentModule->numDevices*sizeof(device_t));
+        if(currentModule->devices == NULL){
+          currentModule->devices = (device_t*) malloc(currentModule->numDevices*sizeof(device_t));
+          memset(currentModule->devices, 0, currentModule->numDevices*sizeof(device_t));
+        }
 
         // For every connected device, there should be a line with additional information.
         for(i=0; (i<currentModule->numDevices && fgets(inStr, MAXCFGLINE, cfgFP)); i++){
@@ -440,6 +443,14 @@ int loadConfig(char *cfgfile){
     memset(inStr,0,sizeof(inStr)); 
   }
 
+  //----------------------------------------------------------------
+
+  //Now that we know the max devices, dynamically allocate memory for device data collection.
+  if(env.rawWagoData == NULL){
+    env.rawWagoData = (uint16_t*) malloc(maxModuleDevices*sizeof(uint16_t));
+    memset(env.rawWagoData, 0, maxModuleDevices*sizeof(uint16_t));
+  }
+  
   // all done, close the config file and return
   if (cfgFP!=0) fclose(cfgFP);
   return 0;

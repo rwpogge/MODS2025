@@ -31,8 +31,8 @@ void initEnvData(envdata_t *envi){
   envi->pause = 0;                  // start running (no pause)
 
   envi->modules = NULL;             // device module setup.
+  envi->rawWagoData = NULL;
   envi->numModules = 0;
-  envi->maxModuleDevices = 0;
 
   envi->doLogging = 1;              // enable enviromental data logging by default
   envi->useHdf5 = 0;                // default: do not output enviornmental data to Hdf5
