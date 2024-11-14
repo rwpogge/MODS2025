@@ -176,6 +176,12 @@ int loadConfig(char *cfgfile){
   //Dynamically allocating memory for the device modules.
   if(env.modules == NULL){
     env.numModules = numWagoModules(cfgFP);
+    if(env.numModules == 0){
+      printf("ERROR: No WAGO modules were found. Are you using an old configuration file?\n");
+      printf("Aborting - fix the config file (%s) and try again\n",client.rcFile);
+      return -2;
+    }
+
     env.modules = (device_module_t*) malloc(env.numModules*sizeof(device_module_t));
     memset(env.modules, 0, env.numModules*sizeof(device_module_t));
   }
