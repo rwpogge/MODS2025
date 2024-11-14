@@ -107,7 +107,7 @@ typedef struct DeviceProfile{
 /*!
   \brief The data that will be stored for each module.
 */
-typedef struct DeviceModuleProfile{
+typedef struct ModuleProfile{
     device_t* devices;                  // An array of connected devices and their data
     char name[MAXCFGLINE];              // The name of the module
     int processingType;                 // The type of processing to do to the device data
@@ -129,8 +129,8 @@ typedef struct envData {
 
   // WAGO Modules
   int numModules;
-  uint16_t* rawWagoData;    //!< The most recently collected data from the WAGO.
   device_module_t* modules; //!< An array containing all connected modules
+  uint16_t* rawWagoData;    //!< The most recently collected data from the WAGO.
 
   // Environmental monitoring parameters
   long  cadence;   //!< Monitor update cadence in seconds
