@@ -376,16 +376,29 @@ int loadConfig(char *cfgfile){
         // For every connected device, there should be a line with additional information.
         for(i=0; (i<currentModule->numDevices && fgets(inStr, MAXCFGLINE, cfgFP)); i++){
           // Skipping blank lines and lines prefixed with the '#' character.
-          if ((inStr[0]=='#') || (inStr[0]=='\n')) continue;
+          if ((inStr[0]=='#') || (inStr[0]=='\n')){
+            i--;        //This isn't a device.
+            continue;   //Get the next line.
+          } 
 
           // Parsing the line.
           inStr[MAXCFGLINE] ='\0';
 
+          // The device keyword
+          GetArg(inStr,2,argStr);
+
+          if(strcasecmp(argStr,"DEVICE") != 0){
+            printf("ERROR: couldn't find the next device in the %s module\n", currentModule->name);
+            printf("Aborting - fix the config file (%s) and try again\n", client.rcFile);
+	          if (cfgFP !=0) fclose(cfgFP);
+            return -2;
+          }
+          
           // The device name
-          GetArg(inStr,2,currentModule->devices[i].name); 
+          GetArg(inStr,3,currentModule->devices[i].name); 
 
           // The device address
-          GetArg(inStr,3,argStr);
+          GetArg(inStr,4,argStr);
           errValue = strToInt(argStr, &(currentModule->devices[i].address));
           if(errValue){
             warnAndClose("DeviceAddress", argStr, cfgFP);
@@ -408,6 +421,13 @@ int loadConfig(char *cfgfile){
 
       // KEYWORD JUNK ------------------------------
 
+      //We found a device outside of a module. That is a problem.
+      else if (strcasecmp(keyword,"DEVICE")==0) {
+	      printf("ERROR: A device was found outside of a module. You might have too many devices.\n");
+        printf("Aborting - fix the config file (%s) and try again\n",client.rcFile);
+        return -2;
+      }
+      
       // Gripe if junk is in the config file
       else {
         printf("Ignoring unrecognized config file entry - %s", inStr);
