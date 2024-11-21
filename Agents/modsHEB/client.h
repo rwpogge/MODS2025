@@ -90,6 +90,20 @@
 //// END of Constants and Working Parameters. ------------------------------
 //// START of Class and Struct Definitions. --------------------------------
 
+//An enum to make the integer values of process types more readable.
+typedef enum {DO, DO_NC, RTD, AI} PROCESS;
+ 
+//This maps the string values of the enum above to their numerical values.
+const static struct{
+    PROCESS value;
+    const char* string;
+}PROCESS_MAP[] = {
+    {DO, "DO"},
+    {RTD, "RTD"},
+    {AI, "AI"}
+};
+const int PROCESS_MAP_LEN = sizeof(PROCESS_MAP)/sizeof(PROCESS_MAP[0]);
+
 /*!
   \brief The data that will be stored for each device.
 */
@@ -214,9 +228,10 @@ void printEnvData(envdata_t *);   // print the contents of the envdata_t struct 
 void freeEnvData(envdata_t *);    // frees all dynamically allocated memory in the envdata_t struct
 
 // Utility routines for device data (defined in devices.c)
-int  getDeviceData(envdata_t *);    // get environmental data from the sensor WAGOs
-void freeDeviceData(envdata_t *);   // frees memory allocated for devices in the envdata_t struct
-int strToProcessType(char*);        // given the string value for a process_type, returns the integer value for that process type
+int  getDeviceData(envdata_t *, int i); // get environmental data from the sensor WAGO for one device.
+int  getAllDeviceData(envdata_t *);     // get environmental data from the sensor WAGO
+void freeDeviceData(envdata_t *);       // frees memory allocated for devices in the envdata_t struct
+int strToProcessType(char*);            // given the string value for a process_type, returns the integer value for that process type
 
 // Log utility routines (defined in logutils.c)
 int  initTelemetryData(envdata_t *);    // initlaize the telemetry structures in envdata_t if HDF5 will be used

@@ -547,7 +547,7 @@ int cmd_estatus(char *args, MsgType msgtype, char *reply) {
   int ierr;
 
   // Read the enviromental sensors
-  ierr = getDeviceData(&env);
+  ierr = getAllDeviceData(&env);
   if (ierr != 0) {
     strcpy(reply,"Cannot read the enviromental sensors");
     return CMD_ERR;
@@ -589,7 +589,7 @@ int cmd_pstatus(char *args, MsgType msgtype, char *reply) {
   int ierr;
 
   // Read the WAGOs
-  ierr = getDeviceData(&env);
+  ierr = getAllDeviceData(&env);
   if (ierr != 0) {
     strcpy(reply,"Cannot read the enviromental sensors");
     return CMD_ERR;
@@ -750,6 +750,97 @@ int cmd_comment(char *args, MsgType msgtype, char *reply) {
   return CMD_ERR;
 }
 
+/*!  
+  \brief unknown command - command to interact with a device
+  \param cmd the name of the command being run
+  \param args string with the command-line arguments
+  \param msgtype message type if the command was sent as an IMPv2 message
+  \param reply string to contain the command return reply
+  \return 0 if their is no device module with the given name, #CMD_OK on success, #CMD_ERR 
+  if errors occurred, reply contains an error message.
+
+  Any command that is unknown to the cmd table will be run through this function. If the command
+  is not in the device module table, then 0 will be returned.
+
+  if the given cmd is the name of a device module, then a device command is run.
+
+  The following commands are supported:
+    $ moduleName
+        device1=data1, device2=data2, ...
+
+    $ moduleName deviceName
+        deviceName=data
+
+    $ moduleName deviceName state
+        deviceName=state
+*/
+int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply){
+  //If the command is in the module table, run a device command.
+  for(int i=0; i<env.numModules; i++){
+    if(strcasecmp(cmd, env.modules[i].name)==0){
+      //If there are args, check them.
+      if(strlen(args) > 0){
+        char argBuf[32];
+
+        //Find a device with the name matching the first argument.
+        GetArg(args,1,argBuf);
+        int foundDevice = 0;
+        for(int j=0; j<env.modules[i].numDevices; j++){
+          if(strcasecmp(argBuf, env.modules[i].devices[j].name) == 0){
+
+            //Set the device to the state matching the second argument.
+            GetArg(args,2,argBuf);
+            if(strlen(argBuf) > 0){
+              //Only DO's can have their state changed.
+              if(env.modules[i].processingType != DO){
+                sprintf(reply,"%s is not a DO device. Only DO devices can have their state changed.", argBuf);
+                return CMD_ERR;
+              }
+
+              //TODO: SET DEVICE STATE
+            }
+
+            //Report the data of the device
+            //Query the module to get the most up to date data.
+            getDeviceData(&env, i);
+
+            //Record the device data.
+            sprintf(reply, "%s=%.3f", env.modules[i].devices[j].name, env.modules[i].devices[j].data);
+            
+            //We found the device, we can stop the loop.
+            foundDevice = 1;
+            break;
+          }
+        }
+        
+        //If no device was found with the matching name, the command was formated wrong.
+        if(!foundDevice){
+          sprintf(reply,"No device with name \"%s\" found in module \"%s\".", argBuf, env.modules[i].name);
+          return CMD_ERR;
+        }
+
+      }
+      
+      //In the case where we get a moduleName with no args, print all device data.
+      else{
+        int stringLength = 0;
+        for(int j=0; j<env.modules[i].numDevices; j++){
+          stringLength += snprintf(reply+stringLength, sizeof(reply)-stringLength, 
+            "%s=%.3f", env.modules[i].devices[j].name, env.modules[i].devices[j].data
+          );
+        }
+      }
+
+      //A command was run, so we can return CMD_OK.
+      return CMD_OK;
+    }
+  }
+
+  //If the command is not in the module table, return 0.
+  return 0;
+}
+
+
 //***************************************************************************
 //
 // Command Interpreter I/O Handlers
@@ -909,34 +1000,30 @@ void KeyboardCommand(char *line) {
     nfound = 0;
     for (i=0; i<NumCommands; i++) {
       if (strcasecmp(cmdtab[i].cmd,cmd)==0) { 
-	      nfound++;
+	      nfound=2;
 	      icmd=i;
 	      break;
       }
     }
 
+    //TODO: Commands that aren't in the command table might be in the module/device table.
+    if(nfound == 0) nfound = cmd_device(cmd,args,EXEC,reply);
+
     // If unknown command, gripe, otherwise do it
-    if (nfound == 0) {
-      if (strlen(cmd)>0) {
-	      printf("ERROR: Unknown Command '%s' (type 'help' to list all commands)\n",cmd);
-      }
+    if (nfound == 0 && strlen(cmd)>0) {
+	    printf("ERROR: Unknown Command '%s' (type 'help' to list all commands)\n",cmd);
     }else{
       // All console keyboard are treated as EXEC: type messages
       t0 = SysTimestamp();
-      switch (cmdtab[icmd].action(args,EXEC,reply)) {
-	
-      case CMD_ERR:
-	      printf("ERROR: %s %s\n",cmd,reply);
-	      break;
-	
-      case CMD_OK:
-	      printf("DONE: %s %s\n",cmd,reply);
-	      break;
-	
-      case CMD_NOOP:
+
+      int result = (nfound == 2) ? cmdtab[icmd].action(args,EXEC,reply) : nfound;
+
+      switch (result) {
+      case CMD_ERR: printf("ERROR: %s %s\n",cmd,reply); break;
+      case CMD_OK: printf("DONE: %s %s\n",cmd,reply); break;
+	    case CMD_NOOP:
       default:
 	      break;
-	
       } // end of switch()
 
       dt = SysTimestamp() - t0;
@@ -1051,6 +1138,7 @@ void SocketCommand(char *buf) {
       }
     }
 
+    //TODO: Unknown commands might be in the module/device table now. Check that.
     // Unknown command, gripe back to the sender, otherwise try to do it
     if (nfound == 0) {
       sprintf(msg,"%s>%s ERROR: Unknown command - %s\n",client.ID,srcID,msgbody);

@@ -35,6 +35,8 @@ int cmd_logging (char *, MsgType, char *);  // Enable/Disable/Query the data log
 int cmd_hdf_logging (char *, MsgType, char *); // Enable/Disable/Query the hdf data logging state
 int cmd_config  (char *, MsgType, char *);  // Print the agent config info (engineering)
 int cmd_comment (char *, MsgType, char *);  // Append a comment to the log
+int cmd_device (char*, char*, MsgType, char*); // Commands or interacts with a device
+
 
 // Application command/action structure
 

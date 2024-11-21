@@ -8,23 +8,6 @@
 
 #include "client.h" // custom client application header 
 
-// CONSTANTS -------------------------------------------------------
-
-//An enum to make the integer values of process types more readable.
-typedef enum {DO, DO_NC, RTD, AI} PROCESS;
- 
-//This maps the string values of the enum above to their numerical values.
-const static struct{
-    PROCESS value;
-    const char* string;
-}PROCESS_MAP[] = {
-    {DO, "DO"},
-    {RTD, "RTD"},
-    {AI, "AI"}
-};
-const int PROCESS_MAP_LEN = sizeof(PROCESS_MAP)/sizeof(PROCESS_MAP[0]);
-
-
 // UTILITY FUNCTIONS -----------------------------------------------
 
 /*!
@@ -113,41 +96,55 @@ void freeDeviceData(envdata_t *envi){
   \brief Get enviromental sensor data
 
   \param envi pointer to an #envdata_t struct
+  \param moduleIndex the index of the module to be querried.
 
   \return 0 on success, -1 on errors.  
 
-  Gets device data (enviromental sensor data) and loads the results into the enviromental data structure.
+  Gets device data (enviromental sensor data) for every module and loads the results into the enviromental data structure.
 */
-int getDeviceData(envdata_t *envi) {
-  // For every connected module.
+int getAllDeviceData(envdata_t *envi){
   for(int i=0; i<envi->numModules; i++){
-    // Query the WAGO based on the processType.
-    switch(envi->modules[i].processingType){
-      //The register types.
-      case AI:
-      case RTD:
-        wagoSetGet(0, envi->hebAddr, envi->modules[i].baseAddress, envi->modules[i].numDevices, envi->rawWagoData);
-        break;
-      //The coil types.
-      case DO:
-        wagoSetGetCoils(0, envi->hebAddr, envi->modules[i].baseAddress, envi->modules[i].numDevices, envi->rawWagoData);
-        break;
-      //Default case.
-      default:
-        break;
-    }
+    getDeviceData(envi, i);
+  }
+}
 
-    // For every connected device.
-    for(int j=0; j<envi->modules[i].numDevices; j++){
-      device_t* device = envi->modules[i].devices+j;
+/*!
+  \brief Get enviromental sensor data
 
-      // Process the WAGO data based on the processType.
-      switch(envi->modules[i].processingType){
-        case DO:  device->data = envi->rawWagoData[device->address];        break;
-        case RTD: rtd2c(envi->rawWagoData+device->address, &device->data);  break;
-        case AI:  ai2vdc(envi->rawWagoData+device->address, &device->data); break;
-        default: break;
-      }
+  \param envi pointer to an #envdata_t struct
+  \param moduleIndex the index of the module to be querried.
+
+  \return 0 on success, -1 on errors.  
+
+  Gets device data (enviromental sensor data) for one module and loads the results into the enviromental data structure.
+*/
+int getDeviceData(envdata_t *envi, int moduleIndex) {
+  // Query the WAGO based on the processType.
+  switch(envi->modules[moduleIndex].processingType){
+    //The register types.
+    case AI:
+    case RTD:
+      wagoSetGet(0, envi->hebAddr, envi->modules[moduleIndex].baseAddress, envi->modules[moduleIndex].numDevices, envi->rawWagoData);
+      break;
+    //The coil types.
+    case DO:
+      wagoSetGetCoils(0, envi->hebAddr, envi->modules[moduleIndex].baseAddress, envi->modules[moduleIndex].numDevices, envi->rawWagoData);
+      break;
+    //Default case.
+    default:
+      break;
+  }
+
+  // For every connected device.
+  for(int j=0; j<envi->modules[moduleIndex].numDevices; j++){
+    device_t* device = envi->modules[moduleIndex].devices+j;
+
+    // Process the WAGO data based on the processType.
+    switch(envi->modules[moduleIndex].processingType){
+      case DO:  device->data = envi->rawWagoData[device->address];        break;
+      case RTD: rtd2c(envi->rawWagoData+device->address, &device->data);  break;
+      case AI:  ai2vdc(envi->rawWagoData+device->address, &device->data); break;
+      default: break;
     }
   }
 
