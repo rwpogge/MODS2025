@@ -419,8 +419,16 @@ int loadConfig(char *cfgfile){
             return -2;
           }
 
+          int logParam = 5;
+          if(currentModule->processingType == DO){
+            //We should check for logging one parameter later.
+            logParam++;
+
+            //TODO: Check for NO/NC here.
+          }
+          
           // The device logging status
-          GetArg(inStr,5,argStr);
+          GetArg(inStr,logParam,argStr);
           if (strcasecmp(argStr,"T")==0 || strcasecmp(argStr,"Y")==0) {
 	          currentModule->devices[i].logEntry = 1;
 	        }else if (strcasecmp(argStr,"F")==0 || strcasecmp(argStr,"N")==0 || strcasecmp(argStr,"")==0) {

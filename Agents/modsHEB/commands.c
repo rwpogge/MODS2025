@@ -756,7 +756,7 @@ int cmd_comment(char *args, MsgType msgtype, char *reply) {
   \param args string with the command-line arguments
   \param msgtype message type if the command was sent as an IMPv2 message
   \param reply string to contain the command return reply
-  \return 0 if there is not a device module with the given name, #CMD_OK on success, #CMD_ERR 
+  \return 1 if there is not a device module with the given name, #CMD_OK on success, #CMD_ERR 
   if errors occurred, reply contains an error message.
 
   Any command that is unknown to the cmd table will be run through this function. If the command
@@ -774,7 +774,7 @@ int cmd_comment(char *args, MsgType msgtype, char *reply) {
     $ moduleName deviceName state
         deviceName=state
 */
-int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply){
+int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply, int replyBufferSize){
   //If the command is in the module table, run a device command.
   for(int i=0; i<env.numModules; i++){
     if(strcasecmp(cmd, env.modules[i].name)==0){
@@ -787,22 +787,17 @@ int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply){
         int foundDevice = 0;
         for(int j=0; j<env.modules[i].numDevices; j++){
           if(strcasecmp(argBuf, env.modules[i].devices[j].name) == 0){
-
             //Set the device to the state matching the second argument.
             GetArg(args,2,argBuf);
             if(strlen(argBuf) > 0){
               //Only DO's can have their state changed.
               if(env.modules[i].processingType != DO){
-                sprintf(reply,"%s is not a DO device. Only DO devices can have their state changed.", argBuf);
+                sprintf(reply,"%s is not a DO device. Only DO devices can have their state changed.", env.modules[i].devices[j].name);
                 return CMD_ERR;
               }
 
               //TODO: SET DEVICE STATE
             }
-
-            //Report the data of the device
-            //Query the module to get the most up to date data.
-            getDeviceData(&env, i);
 
             //Record the device data.
             sprintf(reply, "%s=%.3f", env.modules[i].devices[j].name, env.modules[i].devices[j].data);
@@ -825,10 +820,13 @@ int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply){
       else{
         int stringLength = 0;
         for(int j=0; j<env.modules[i].numDevices; j++){
-          stringLength += snprintf(reply+stringLength, sizeof(reply)-stringLength, 
-            "%s=%.3f", env.modules[i].devices[j].name, env.modules[i].devices[j].data
+          stringLength += snprintf(reply+stringLength, replyBufferSize-stringLength, 
+            "%s=%.3f, ", env.modules[i].devices[j].name, env.modules[i].devices[j].data
           );
         }
+
+        //Cut off the last comma.
+        if(stringLength > 0) reply[stringLength-2] = '\x00';
       }
 
       //A command was run, so we can return CMD_OK.
@@ -836,8 +834,8 @@ int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply){
     }
   }
 
-  //If the command is not in the module table, return 0.
-  return 0;
+  //If the command is not in the module table, return 1.
+  return 1;
 }
 
 
@@ -895,7 +893,8 @@ void KeyboardCommand(char *line) {
   int i;
   int nfound=0;
   int icmd=-1;
-
+  int cmdResult = -2;
+  
   // Pointer for the keyboard message buffer
   char *message;
 
@@ -1000,25 +999,29 @@ void KeyboardCommand(char *line) {
     nfound = 0;
     for (i=0; i<NumCommands; i++) {
       if (strcasecmp(cmdtab[i].cmd,cmd)==0) { 
-	      nfound=2;
+	      nfound++;
 	      icmd=i;
 	      break;
       }
     }
 
     //TODO: Commands that aren't in the command table might be in the module/device table.
-    if(nfound == 0) nfound = cmd_device(cmd,args,EXEC,reply);
+    if(nfound == 0){
+      cmdResult = cmd_device(cmd,args,EXEC,reply,sizeof(reply));
+      nfound++;
+    };
 
     // If unknown command, gripe, otherwise do it
-    if (nfound == 0 && strlen(cmd)>0) {
+    if (cmdResult == 1 || (nfound == 0 && strlen(cmd)>0)) {
 	    printf("ERROR: Unknown Command '%s' (type 'help' to list all commands)\n",cmd);
     }else{
       // All console keyboard are treated as EXEC: type messages
       t0 = SysTimestamp();
 
-      int result = (nfound == 2) ? cmdtab[icmd].action(args,EXEC,reply) : nfound;
+      // If the result hasn't been found yet, find it
+      if(cmdResult == -2) cmdResult = cmdtab[icmd].action(args,EXEC,reply);
 
-      switch (result) {
+      switch (cmdResult) {
       case CMD_ERR: printf("ERROR: %s %s\n",cmd,reply); break;
       case CMD_OK: printf("DONE: %s %s\n",cmd,reply); break;
 	    case CMD_NOOP:

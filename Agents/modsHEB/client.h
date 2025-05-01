@@ -230,10 +230,10 @@ void printEnvData(envdata_t *);   // print the contents of the envdata_t struct 
 void freeEnvData(envdata_t *);    // frees all dynamically allocated memory in the envdata_t struct
 
 // Utility routines for device data (defined in devices.c)
-int  getDeviceData(envdata_t *, int i); // get environmental data from the sensor WAGO for one device.
-int  getAllDeviceData(envdata_t *);     // get environmental data from the sensor WAGO
-void freeDeviceData(envdata_t *);       // frees memory allocated for devices in the envdata_t struct
-int strToProcessType(char*);            // given the string value for a process_type, returns the integer value for that process type
+int  getAllDeviceData(envdata_t *);           // get environmental data from the sensor WAGO
+int  getDeviceModuleData(envdata_t *, int i); // get environmental data from the sensor WAGO for one module.
+void freeAllDeviceData(envdata_t *);          // frees memory allocated for devices in the envdata_t struct
+int strToProcessType(char*);                  // given the string value for a process_type, returns the integer value for that process type
 
 // Log utility routines (defined in logutils.c)
 int  initTelemetryData(envdata_t *);    // initlaize the telemetry structures in envdata_t if HDF5 will be used

@@ -62,7 +62,7 @@ void initEnvData(envdata_t *envi){
   Frees all dynamically allocated memory needed by the #envdata_t structure.
 */
 void freeEnvData(envdata_t *envi){
-  freeDeviceData(envi);
+  freeAllDeviceData(envi);
 }
 
 /*!

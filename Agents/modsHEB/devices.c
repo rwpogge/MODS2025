@@ -69,7 +69,7 @@ void ai2vdc(uint16_t* rawData, float* outputData){
 
   \param envi pointer to an #envdata_t data structure
 */
-void freeDeviceData(envdata_t *envi){
+void freeAllDeviceData(envdata_t *envi){
   // Note: The modules and devices were allocated using the 'new' keyword, not 'malloc()'
   // This is because the structs contain C++ objects which need initalized.
 
@@ -107,7 +107,7 @@ void freeDeviceData(envdata_t *envi){
 */
 int getAllDeviceData(envdata_t *envi){
   for(int i=0; i<envi->numModules; i++){
-    getDeviceData(envi, i);
+    getDeviceModuleData(envi, i);
   }
 
   return 0;
@@ -121,9 +121,9 @@ int getAllDeviceData(envdata_t *envi){
 
   \return 0 on success, -1 on errors.  
 
-  Gets device data (enviromental sensor data) for one module and loads the results into the enviromental data structure.
+  Gets device data (enviromental sensor data) from one module and loads the results into the enviromental data structure.
 */
-int getDeviceData(envdata_t *envi, int moduleIndex) {
+int getDeviceModuleData(envdata_t *envi, int moduleIndex) {
   // Query the WAGO based on the processType.
   switch(envi->modules[moduleIndex].processingType){
     //The register types.
