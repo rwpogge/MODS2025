@@ -756,7 +756,7 @@ int cmd_comment(char *args, MsgType msgtype, char *reply) {
   \param args string with the command-line arguments
   \param msgtype message type if the command was sent as an IMPv2 message
   \param reply string to contain the command return reply
-  \return 0 if their is no device module with the given name, #CMD_OK on success, #CMD_ERR 
+  \return 0 if there is not a device module with the given name, #CMD_OK on success, #CMD_ERR 
   if errors occurred, reply contains an error message.
 
   Any command that is unknown to the cmd table will be run through this function. If the command

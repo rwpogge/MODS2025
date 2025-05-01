@@ -113,7 +113,7 @@ typedef struct DeviceProfile{
     int address;                    // The address of the device in the module
 
     char description[MAXCFGLINE];   // The description of the device for HDF logs
-    int logEntry=0;                 // Non-Zero if the device data should be logged
+    int logEntry;                   // Non-Zero if the device data should be logged
 
     lbto::tel::float_measure::buf_proxy floatMeasure;  // The data stream for HDF logs
 }device_t;
@@ -122,6 +122,8 @@ typedef struct DeviceProfile{
   \brief The data that will be stored for each module.
 */
 typedef struct ModuleProfile{
+    ModuleProfile():units(lbto::tel::unit::none()){}  // The units are a c++ object and need initalized.
+
     device_t* devices;                  // An array of connected devices and their data
     char name[MAXCFGLINE];              // The name of the module
     int processingType;                 // The type of processing to do to the device data

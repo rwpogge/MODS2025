@@ -182,8 +182,9 @@ int loadConfig(char *cfgfile){
       return -2;
     }
 
-    env.modules = (device_module_t*) malloc(env.numModules*sizeof(device_module_t));
-    memset(env.modules, 0, env.numModules*sizeof(device_module_t));
+    // NOTE: The C++ 'new' keyword is used instead of 'malloc()' here, because our struct 
+    // contains C++ objects which need to be initialized.
+    env.modules = new device_module_t[env.numModules];
   }
 
   //----------------------------------------------------------------
@@ -381,8 +382,9 @@ int loadConfig(char *cfgfile){
 
         // Dynamically allocating memory for the devices
         if(currentModule->devices == NULL){
-          currentModule->devices = (device_t*) malloc(currentModule->numDevices*sizeof(device_t));
-          memset(currentModule->devices, 0, currentModule->numDevices*sizeof(device_t));
+          // NOTE: The C++ 'new' keyword is used instead of 'malloc()' here, because our struct 
+          // contains C++ objects which need to be initialized.
+          currentModule->devices = new device_t[currentModule->numDevices];
         }
 
         // For every connected device, there should be a line with additional information.
@@ -415,7 +417,19 @@ int loadConfig(char *cfgfile){
           if(errValue){
             warnAndClose("DeviceAddress", argStr, cfgFP);
             return -2;
-          } 
+          }
+
+          // The device logging status
+          GetArg(inStr,5,argStr);
+          if (strcasecmp(argStr,"T")==0 || strcasecmp(argStr,"Y")==0) {
+	          currentModule->devices[i].logEntry = 1;
+	        }else if (strcasecmp(argStr,"F")==0 || strcasecmp(argStr,"N")==0 || strcasecmp(argStr,"")==0) {
+	          currentModule->devices[i].logEntry = 0;
+	        }else{
+            warnAndClose("DeviceLogging", argStr, cfgFP);
+            return -2;
+          }
+
         }
 
         //If we hit the end of the file without finding enough devices, error out.

@@ -115,7 +115,7 @@ int initEnvLog(envdata_t *envi){
   if (envi->logFD == -1) {
     printf("ERROR: cannot open environmental data log file %s - %s\n",
 	    envi->logFile,strerror(errno));
-    envi->doLogging == 0; // disable logging to prevent noise...
+    envi->doLogging = 0; // disable logging to prevent noise...
     return -1;
   }
   chmod(envi->logFile,0666);
@@ -132,7 +132,7 @@ int initEnvLog(envdata_t *envi){
     ierr = write(envi->logFD,logStr,strlen(logStr));
 
     memset(logStr,0,sizeof(logStr));
-    sprintf(logStr,"# Started: UTC %s\n# Sampling Cadence: %d seconds\n#\n",
+    sprintf(logStr,"# Started: UTC %s\n# Sampling Cadence: %ld seconds\n#\n",
 	    ISODate(),envi->cadence);
     ierr = write(envi->logFD,logStr,strlen(logStr));
   }
@@ -143,7 +143,6 @@ int initEnvLog(envdata_t *envi){
   for(int i=0; i<envi->numModules; i++){
     for(int j=0; j<envi->modules[i].numDevices; j++){
       if(!envi->modules[i].devices[j].logEntry) continue;
-    
       stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
         " %-7.7s", envi->modules[i].devices[j].name
       );

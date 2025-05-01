@@ -70,16 +70,19 @@ void ai2vdc(uint16_t* rawData, float* outputData){
   \param envi pointer to an #envdata_t data structure
 */
 void freeDeviceData(envdata_t *envi){
+  // Note: The modules and devices were allocated using the 'new' keyword, not 'malloc()'
+  // This is because the structs contain C++ objects which need initalized.
+
   //If the modules array has not already been freed, do so now.
   if(envi->modules != NULL){
     for(int i=0; i<envi->numModules; i++){
       //Free every device connected to the module
-      if(envi->modules[i].devices != NULL) free(envi->modules[i].devices);
+      if(envi->modules[i].devices != NULL) delete[] envi->modules[i].devices;
       envi->modules[i].devices = NULL;
     }
 
     //Free every module
-    free(envi->modules);
+    delete[] envi->modules;
     envi->modules = NULL;
   }
 
@@ -93,7 +96,7 @@ void freeDeviceData(envdata_t *envi){
 // INTERACT WITH DEVICES -----------------------------------------------
 
 /*!
-  \brief Get enviromental sensor data
+  \brief Get enviromental sensor data from every module
 
   \param envi pointer to an #envdata_t struct
   \param moduleIndex the index of the module to be querried.
@@ -106,10 +109,12 @@ int getAllDeviceData(envdata_t *envi){
   for(int i=0; i<envi->numModules; i++){
     getDeviceData(envi, i);
   }
+
+  return 0;
 }
 
 /*!
-  \brief Get enviromental sensor data
+  \brief Get enviromental sensor data from a single module
 
   \param envi pointer to an #envdata_t struct
   \param moduleIndex the index of the module to be querried.

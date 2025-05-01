@@ -1,8 +1,8 @@
 /*!
   \mainpage modsheb - Interactive MODS Head Electronics Box Monitor and Control Agent
 
-  \author X. Carroll
   \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
+  \author X. Carroll
   \date 2024 August 14
 
   \section Notes
