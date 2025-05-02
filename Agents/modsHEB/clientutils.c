@@ -34,8 +34,8 @@ void initEnvData(envdata_t *envi){
   envi->rawWagoData = NULL;
   envi->numModules = 0;
 
-  envi->doLogging = 1;              // enable enviromental data logging by default
-  envi->useHdf5 = 0;                // default: do not output enviornmental data to Hdf5
+  envi->doLogging = 1;              // enable enviromental ascii data logging by default
+  envi->useHdf5 = 1;                // default: enable enviornmental hdf5 data logging by default
   envi->hdfInitalized = 0;
 
   strcpy(envi->hebAddr,"");

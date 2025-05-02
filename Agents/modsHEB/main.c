@@ -53,9 +53,6 @@ int main(int argc, char *argv[]){
   struct timeval timeout;
   static int sel_wid;
 
-  // HDF5 variables
-  int useHdf5 = 0;
-
   // Basic initializations
   timeout.tv_usec = 0;        // The microseconds field of timeout won't be used.
 

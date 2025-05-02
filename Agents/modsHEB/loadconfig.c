@@ -323,19 +323,19 @@ int loadConfig(char *cfgfile){
 
       // KEYWORD FLAGS ------------------------------
 
-      // NoLog: Explicitly disable data logging
+      // NoLog: Explicitly disable ascii data logging
       else if (strcasecmp(keyword,"NOLOG")==0) {
 	      env.doLogging = 0;
       }
       
+      // HDF5 Output: Explicitly disable hdf5 data logging
+      else if (strcasecmp(keyword,"NOHDF5")==0) {
+	      env.useHdf5 = 0;
+      }
+
       // Verbose: Enable verbose output mode (e.g., for debugging)
       else if (strcasecmp(keyword,"VERBOSE")==0) {
 	      client.isVerbose = 1;
-      }
-
-      // HDF5 Output: When enabeled, HDF5 log files will be created.
-      else if (strcasecmp(keyword,"USEHDF5")==0) {
-	      env.useHdf5 = 1;
       }
 
       // Debug: Enable runtime debugging out (superverbose mode)
