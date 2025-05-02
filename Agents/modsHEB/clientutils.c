@@ -79,7 +79,7 @@ void printEnvData(envdata_t *envi){
   printf("Enviromental Monitor Agent Info:\n");
   printf("  Instrument: %s\n",envi->modsID);
   printf("  Monitor Status: %s\n",(envi->pause) ? "PAUSED" : "Active");
-  printf("  Sampling Cadence: %d seconds\n",envi->cadence);
+  printf("  Sampling Cadence: %ld seconds\n",envi->cadence);
   printf("  Data Logging: %s\n",(envi->doLogging) ? "Enabled" : "Disabled");
   envi->logFD == 0 ? printf("  Data Log File: CLOSED\n") : printf("  Data Log File: %s\n",envi->logFile);
   printf("  HDF Logging: %s\n",(envi->useHdf5) ? "Enabled" : "Disabled");

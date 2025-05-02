@@ -222,7 +222,7 @@ int logEnvData(envdata_t *envi){
 
   \sa initEnvLog(), logEnvData()
 */
-int logMessage(envdata_t *envi, char *msgStr){
+int logMessage(envdata_t *envi, const char* msgStr){
   int ierr;
   char logStr[BIG_STR_SIZE];
 

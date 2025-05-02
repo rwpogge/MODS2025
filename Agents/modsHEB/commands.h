@@ -45,7 +45,7 @@ int cmd_device (char*, char*, MsgType, char*); // Commands or interacts with a d
 */
 
 struct Commands {
-  char *cmd;        //!< command verb (e.g., read, quit, etc.)
+  const char *cmd;  //!< command verb (e.g., read, quit, etc.)
 
   /*!
     \brief Action function for this command
@@ -75,8 +75,8 @@ struct Commands {
 
   int(* action)(char *args, MsgType msgtype, char *reply);  
 
-  char *usage;        //!< command usage syntax, for the help facility and error messages
-  char *description;  //!< brief, 1-line command description for the help facility
+  const char *usage;        //!< command usage syntax, for the help facility and error messages
+  const char *description;  //!< brief, 1-line command description for the help facility
 }
 cmdtab[] = {   //!< global scope command table for this application
   {"quit"    ,cmd_quit    ,"quit","Terminate the client session"},

@@ -130,7 +130,7 @@ int strToInt(char* str, int* resultInt){
   \brief Acts as an alias for printing an error message and closing a file. 
   \param cfgFp The file to close.
 */
-void warnAndClose(char* key, char* argStr, FILE* cfgFP){
+void warnAndClose(const char* key, char* argStr, FILE* cfgFP){
   printf("ERROR: %s option '%s' unrecognized\n",key, argStr);
   printf("Aborting - fix the config file (%s) and try again\n",client.rcFile);
 	if (cfgFP !=0) fclose(cfgFP);
@@ -151,11 +151,9 @@ int loadConfig(char *cfgfile){
   char argList[MAXCFGLINE]; // Generic argument list string
   char argStr[MAXCFGLINE];  // Generic argument token string
   char inStr[MAXCFGLINE];   // Generic input string
-  char reply[256];          // Reply string
 
   FILE *cfgFP;              // Configuration file pointer
   int i;
-  char c;
 
   int moduleIndex = 0;      // Used to count the number of device modules which have been added
   int maxModuleDevices = 0; // Used to find the maximum number of devices connected to any module

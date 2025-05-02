@@ -37,11 +37,9 @@ int useCLI = 1;
 
 int main(int argc, char *argv[]){
   int configStatus;
-  double dt;
   int ierr;
 
   char buf[ISIS_MSGSIZE]; // command/message buffer
-  char reply[2048];       // generic reply string
   
   // Readline & history handling
   char cliPrompt[ISIS_NODESIZE+2]; // the console prompt is our ISIS node name
@@ -140,7 +138,7 @@ int main(int argc, char *argv[]){
     memset(buf,0,ISIS_MSGSIZE);
     sprintf(buf,"%s>AL ping\r",client.ID);
     if (SendToISISServer(&client,buf)<0) {
-      printf("Failed to PING the ISIS server...\n",strerror(errno));
+      printf("Failed to PING the ISIS server...\n");
       printf("  Probably bad - maybe quit now, check server status, and retry\n");
     }
     if (client.isVerbose && useCLI)

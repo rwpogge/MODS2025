@@ -260,38 +260,35 @@ int cmd_debug(char *args, MsgType msgtype, char *reply) {
   status" command.
 */
 int cmd_info(char *args, MsgType msgtype, char *reply) {
-  int i;
-
   // Start with the node ID, and host info
-  sprintf(reply,"HostID=%s HostAddr=%s:%d",
-	  client.ID, client.Host, client.Port);
+  int stringLength = sprintf(reply,"HostID=%s HostAddr=%s:%d", client.ID, client.Host, client.Port);
 
   // If configured as an ISIS client, report this and the ISIS host:port info,
   // otherwise if standalone, report that, and the host:port of the last
   // remote host to send us something, if known.
   if (client.useISIS) {
-    sprintf(reply,"%s Mode=ISISClient ISIS=%s ISISHost=%s:%d",reply,client.isisID,client.isisHost,client.isisPort);
+    stringLength += sprintf(reply + stringLength," Mode=ISISClient ISIS=%s ISISHost=%s:%d",client.isisID,client.isisHost,client.isisPort);
   }else{
     if (strlen(client.remHost)>0)
-      sprintf(reply,"%s Mode=STANDALONE RemHost=%s:%d",reply,client.remHost,client.remPort);
+    stringLength += sprintf(reply + stringLength," Mode=STANDALONE RemHost=%s:%d",client.remHost,client.remPort);
     else
       strcat(reply," Mode=STANDALONE");
   }
 
   // Environmental Monitor information
-  sprintf(reply,"%s InstID=%s Cadence=%d runState=%s Logging=%s logFile=%s HdfLogging=%s HdfLogDir=%s",
-	  reply, env.modsID, env.cadence, ((env.pause) ? "Paused" : "Active"), ((env.doLogging) ? "Enabled" : "Disabled"),
+  stringLength += sprintf(reply + stringLength," InstID=%s Cadence=%ld runState=%s Logging=%s logFile=%s HdfLogging=%s HdfLogDir=%s",
+	  env.modsID, env.cadence, ((env.pause) ? "Paused" : "Active"), ((env.doLogging) ? "Enabled" : "Disabled"),
 	  env.logFile, ((env.useHdf5) ? "Enabled" : "Disabled"), env.hdfRoot
   );
 
   // Report application runtime flags
-  sprintf(reply,"%s %s %s",reply,
+  stringLength += sprintf(reply + stringLength," %s %s",
 	  ((client.isVerbose) ? "Verbose" : "Concise"),
 	  ((client.Debug) ? "+DEBUG" : "-DEBUG")
   );
 	 
   // Finally, report the application's runtime config info as required
-  sprintf(reply,"%s rcfile=%s",reply,client.rcFile);
+  stringLength += sprintf(reply + stringLength," rcfile=%s",client.rcFile);
 
   return CMD_OK;
 }
@@ -319,7 +316,7 @@ int cmd_info(char *args, MsgType msgtype, char *reply) {
   of all commands.
 */
 int cmd_help(char *args, MsgType msgtype, char *reply) {
-  int i, icmd, found;
+  int i, found;
   int ls;
   char argbuf[32];
   
@@ -338,7 +335,6 @@ int cmd_help(char *args, MsgType msgtype, char *reply) {
     for (i=0; i<NumCommands; i++) {
       if (strcasecmp(cmdtab[i].cmd,argbuf)==0) {
 	      found++;
-	      icmd = i;
 	      break;
       }
     }
@@ -450,7 +446,7 @@ int cmd_cadence(char *args, MsgType msgtype, char *reply) {
 
     if (tcad >= 0) {
       env.cadence = tcad;
-      sprintf(reply,"Cadence=%d seconds",env.cadence);
+      sprintf(reply,"Cadence=%ld seconds",env.cadence);
       if (env.doLogging) logMessage(&env,reply);
       return CMD_OK;
     }else{
@@ -460,7 +456,7 @@ int cmd_cadence(char *args, MsgType msgtype, char *reply) {
   }
 
   // Query, return the current value
-  sprintf(reply,"Cadence=%d seconds",env.cadence);
+  sprintf(reply,"Cadence=%ld seconds",env.cadence);
   return CMD_OK;
 }
 
@@ -665,7 +661,7 @@ int cmd_logging(char *args, MsgType msgtype, char *reply) {
       logMessage(&env,"Sensor data logging disabled");
       env.doLogging = 0;
     }else{
-      sprintf("Unrecognized argument '%s' - usage: logging [enable|disable]",args);
+      sprintf(reply, "Unrecognized argument '%s' - usage: logging [enable|disable]",args);
       return CMD_ERR;
     }
   }
@@ -709,7 +705,7 @@ int cmd_hdf_logging(char *args, MsgType msgtype, char *reply) {
       logMessage(&env,"Hdf sensor data logging disabled");
       env.useHdf5 = 0;
     }else{
-      sprintf("Unrecognized argument '%s' - usage: logging [enable|disable]", args);
+      sprintf(reply, "Unrecognized argument '%s' - usage: logging [enable|disable]", args);
       return CMD_ERR;
     }
   }
@@ -738,8 +734,6 @@ int cmd_hdf_logging(char *args, MsgType msgtype, char *reply) {
   is being measured).
 */
 int cmd_comment(char *args, MsgType msgtype, char *reply) {
-  char argBuf[32];
-
   if (strlen(args) > 0) {
     logMessage(&env,args);
     sprintf(reply,"Appended comment '%s' to the log", args);
@@ -885,7 +879,6 @@ void KeyboardCommand(char *line) {
 
   // ISIS message handling stuff
   char msg[ISIS_MSGSIZE];       // ISIS message buffer
-  char srcID[ISIS_NODESIZE];    // ISIS message sending node ID
   char destID[ISIS_NODESIZE];   // ISIS message destination node ID
   char msgbody[ISIS_MSGSIZE];   // ISIS message body
 
