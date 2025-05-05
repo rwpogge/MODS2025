@@ -422,7 +422,16 @@ int loadConfig(char *cfgfile){
             //We should check for logging one parameter later.
             logParam++;
 
-            //TODO: Check for NO/NC here.
+            //Determine if the device is NO (Normally Open) or NC (Normally Closed).
+            currentModule->devices[i].nc = 0;
+            
+            GetArg(inStr,5,argStr);
+            if (strcasecmp(argStr,"NC")==0) {
+              currentModule->devices[i].nc = 1;
+            }else if(strcasecmp(argStr,"NO")!=0){
+              warnAndClose("DeviceNO/NC", argStr, cfgFP);
+              return -2;
+            }
           }
           
           // The device logging status

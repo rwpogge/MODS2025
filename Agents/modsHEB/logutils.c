@@ -143,6 +143,7 @@ int initEnvLog(envdata_t *envi){
   for(int i=0; i<envi->numModules; i++){
     for(int j=0; j<envi->modules[i].numDevices; j++){
       if(!envi->modules[i].devices[j].logEntry) continue;
+      
       stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
         " %-7.7s", envi->modules[i].devices[j].name
       );
@@ -192,9 +193,19 @@ int logEnvData(envdata_t *envi){
     for(int j=0; j<envi->modules[i].numDevices; j++){                             // Append each device reading.
       if(!envi->modules[i].devices[j].logEntry) continue;
 
-      stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
-        " %-7.3f", envi->modules[i].devices[j].data
-      );
+      // Print DO's as a simple On/Off
+      if(envi->modules[i].processingType == DO){
+        stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
+          " %-7.7s", envi->modules[i].devices[j].data ? "ON" : "OFF"
+        );
+      }
+      
+      // Print the float value for the device.      
+      else{
+        stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
+          " %-7.3f", envi->modules[i].devices[j].data
+        );
+      }
     }
   }
 

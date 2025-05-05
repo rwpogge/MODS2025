@@ -750,11 +750,11 @@ int cmd_comment(char *args, MsgType msgtype, char *reply) {
   \param args string with the command-line arguments
   \param msgtype message type if the command was sent as an IMPv2 message
   \param reply string to contain the command return reply
-  \return 1 if there is not a device module with the given name, #CMD_OK on success, #CMD_ERR 
-  if errors occurred, reply contains an error message.
+  \return #CMD_NOOP if there is not a device module with the given name, #CMD_OK on success, 
+  #CMD_ERR if errors occurred, reply contains an error message.
 
   Any command that is unknown to the cmd table will be run through this function. If the command
-  is not in the device module table, then 0 will be returned.
+  is not in the device module table, then #CMD_NOOP will be returned.
 
   if the given cmd is the name of a device module, then a device command is run.
 
@@ -767,71 +767,116 @@ int cmd_comment(char *args, MsgType msgtype, char *reply) {
 
     $ moduleName deviceName state
         deviceName=state
+
+  The third command type only works for digital outputs (DOs), because only DOs can have their 
+  state changed.  
 */
 int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply, int replyBufferSize){
-  //If the command is in the module table, run a device command.
-  for(int i=0; i<env.numModules; i++){
-    if(strcasecmp(cmd, env.modules[i].name)==0){
-      //If there are args, check them.
-      if(strlen(args) > 0){
-        char argBuf[32];
+  device_module_t* module;    // The module targeted by this command.
+  device_t* device;           // The device targeted by this command.
 
-        //Find a device with the name matching the first argument.
-        GetArg(args,1,argBuf);
-        int foundDevice = 0;
-        for(int j=0; j<env.modules[i].numDevices; j++){
-          if(strcasecmp(argBuf, env.modules[i].devices[j].name) == 0){
-            //Set the device to the state matching the second argument.
-            GetArg(args,2,argBuf);
-            if(strlen(argBuf) > 0){
-              //Only DO's can have their state changed.
-              if(env.modules[i].processingType != DO){
-                sprintf(reply,"%s is not a DO device. Only DO devices can have their state changed.", env.modules[i].devices[j].name);
-                return CMD_ERR;
-              }
+  char argBuf[MAXCFGLINE];    // A buffer that will be used to hold a command line argument.
 
-              //TODO: SET DEVICE STATE
-            }
+  int i;                      // For loop index.
+  int moduleIndex;            // The index of the module we are querying.
 
-            //Record the device data.
-            sprintf(reply, "%s=%.3f", env.modules[i].devices[j].name, env.modules[i].devices[j].data);
-            
-            //We found the device, we can stop the loop.
-            foundDevice = 1;
-            break;
-          }
-        }
-        
-        //If no device was found with the matching name, the command was formated wrong.
-        if(!foundDevice){
-          sprintf(reply,"No device with name \"%s\" found in module \"%s\".", argBuf, env.modules[i].name);
-          return CMD_ERR;
-        }
+  // Determine if the command is the name of a module.
+  for(moduleIndex=0; moduleIndex < env.numModules; moduleIndex++){
+    module = env.modules + moduleIndex;
 
-      }
-      
-      //In the case where we get a moduleName with no args, print all device data.
-      else{
-        int stringLength = 0;
-        for(int j=0; j<env.modules[i].numDevices; j++){
-          stringLength += snprintf(reply+stringLength, replyBufferSize-stringLength, 
-            "%s=%.3f, ", env.modules[i].devices[j].name, env.modules[i].devices[j].data
-          );
-        }
-
-        //Cut off the last comma.
-        if(stringLength > 0) reply[stringLength-2] = '\x00';
-      }
-
-      //A command was run, so we can return CMD_OK.
-      return CMD_OK;
-    }
+    // The matching module was found. We can stop looking.
+    if(strcasecmp(cmd, module->name)==0) break;
   }
 
-  //If the command is not in the module table, return 1.
-  return 1;
-}
+  // If no module was found, return that.
+  if(moduleIndex >= env.numModules) return CMD_NOOP;
 
+  //// At this point, the 'module' variable points to the correct structure, 
+  //// and we know this is a device command.
+
+  // If there are no arguments, print all of the connected devices. 
+  if(strlen(args) == 0){
+    // Craft a reply string with all of the device data.
+    int stringLength = 0;
+    for(i=0; i< module->numDevices; i++){
+      // Get the device at index i.
+      device = module->devices + i;
+        
+      // If this is a DO, we should print the strings "ON" and "OFF" rather than float values.
+      if(module->processingType == DO){
+        stringLength += snprintf(reply+stringLength, replyBufferSize-stringLength, 
+          "%s=%s, ", device->name, device->data ? "ON" : "OFF"
+        );
+      }
+
+      // If this is not a DO, we should just print the float values.
+      else{
+        stringLength += snprintf(reply+stringLength, replyBufferSize-stringLength, 
+          "%s=%.3f, ", device->name, device->data
+        );
+      }
+    }
+
+    //Cut off the last comma from the string.
+    if(stringLength > 0) reply[stringLength-2] = '\x00';
+
+    //A command was run, so we can return CMD_OK.
+    return CMD_OK;
+  }
+
+  // If there is an argument, find the target device.
+  GetArg(args,1,argBuf);
+  for(i=0; i < module->numDevices; i++){
+    device = module->devices + i;
+    
+    // The matching device was found. We can stop looking.
+    if(strcasecmp(argBuf, device->name)==0) break;
+  }
+
+  // If the device wasn't found (the second arg is not a device), return that.
+  if(i >= module->numDevices){
+    sprintf(reply,"No device with name \"%s\" found in module \"%s\".", argBuf, module->name);
+    return CMD_ERR;
+  };
+
+  //// At this point, the 'device' variable points to the correct structure.
+
+  // If there is a third argument, this is a "set" command.
+  GetArg(args,2,argBuf);
+  if(strlen(argBuf) > 0){
+    // Only DO's can have their state changed.
+    if(module->processingType != DO){
+      sprintf(reply,"%s is not a DO device. Only DO devices can have their state changed.", device->name);
+      return CMD_ERR;
+    }
+
+    uint16_t state;
+    if (strcasecmp(argBuf,"ON")==0) 
+      state = 1;
+    else if(strcasecmp(argBuf,"OFF")==0) 
+      state = 0;
+    else {
+      sprintf(reply,"%s is not a valid state.", argBuf);
+      return CMD_ERR;
+    }
+
+    // TODO: SET COIL STATE
+  }
+
+  // Query the module to get the most up to date data.
+  int ierr = getDeviceModuleData(&env, moduleIndex);
+  if (ierr != 0) {
+    sprintf(reply,"Cannot read the \"%s\" module.", module->name);
+    return CMD_ERR;
+  }
+
+  // Print just the choosen device data.
+  if(module->processingType == DO) sprintf(reply, "%s=%s", device->name, device->data ? "ON" : "OFF");
+  else sprintf(reply, "%s=%.3f", device->name, device->data);
+
+  // Everything went well. Return okay.
+  return CMD_OK;
+}
 
 //***************************************************************************
 //

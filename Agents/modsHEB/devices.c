@@ -146,9 +146,9 @@ int getDeviceModuleData(envdata_t *envi, int moduleIndex) {
 
     // Process the WAGO data based on the processType.
     switch(envi->modules[moduleIndex].processingType){
-      case DO:  device->data = envi->rawWagoData[device->address];        break;
-      case RTD: rtd2c(envi->rawWagoData+device->address, &device->data);  break;
-      case AI:  ai2vdc(envi->rawWagoData+device->address, &device->data); break;
+      case DO:  device->data = envi->rawWagoData[device->address] ^ device->nc; break;
+      case RTD: rtd2c(envi->rawWagoData+device->address, &device->data);        break;
+      case AI:  ai2vdc(envi->rawWagoData+device->address, &device->data);       break;
       default: break;
     }
   }

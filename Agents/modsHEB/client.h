@@ -49,11 +49,8 @@
 #include <signal.h>
 #include <limits.h>
 
-#include <exception>
-
 #include <telcollection.hxx>  // LBTO telemetry library
-#include "isisclient.h"       // ISISClient library
-
+#include <isisclient.h>       // ISISClient library
 #include "modbusutils.h"      // Utility functions for libmodbus
 
 //// END of System Header Files. -------------------------------------------
@@ -114,6 +111,8 @@ typedef struct DeviceProfile{
 
     char description[MAXCFGLINE];   // The description of the device for HDF logs
     int logEntry;                   // Non-Zero if the device data should be logged
+
+    int nc;                         // Non-Zero if this is a DO that is Normally closed, zero otherwise.
 
     lbto::tel::float_measure::buf_proxy floatMeasure;  // The data stream for HDF logs
 }device_t;
