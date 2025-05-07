@@ -278,7 +278,7 @@ void CleanExit(){
 void HandleInt(int signalValue){
   if (client.Debug && useCLI) printf("Caught Ctrl+C Abort...\n");
 
-  if(useCLI) CleanExit();
+  if(useCLI) CleanExit(); //TODO: Maybe remove this line. Ask Rick.
 }
 
 /*!

@@ -77,8 +77,10 @@ void freeAllDeviceData(envdata_t *envi){
   if(envi->modules != NULL){
     for(int i=0; i<envi->numModules; i++){
       //Free every device connected to the module
-      if(envi->modules[i].devices != NULL) delete[] envi->modules[i].devices;
-      envi->modules[i].devices = NULL;
+      if(envi->modules[i].devices != NULL){
+        delete[] envi->modules[i].devices;
+        envi->modules[i].devices = NULL;
+      } 
     }
 
     //Free every module
