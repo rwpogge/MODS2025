@@ -375,9 +375,6 @@ int loadConfig(char *cfgfile){
           return -2;
         }
 
-        // Setting the maximum number of module devices.
-        if(currentModule->numDevices > maxModuleDevices) maxModuleDevices = currentModule->numDevices;
-
         // Dynamically allocating memory for the devices
         if(currentModule->devices == NULL){
           // NOTE: The C++ 'new' keyword is used instead of 'malloc()' here, because our struct 
@@ -406,16 +403,25 @@ int loadConfig(char *cfgfile){
             return -2;
           }
           
+          // The current device.
+          device_t* currentDevice = currentModule->devices+i;
+
           // The device name
-          GetArg(inStr,3,currentModule->devices[i].name); 
+          GetArg(inStr,3,currentDevice->name); 
 
           // The device address
           GetArg(inStr,4,argStr);
-          errValue = strToInt(argStr, &(currentModule->devices[i].address));
+          errValue = strToInt(argStr, &(currentDevice->address));
           if(errValue){
             warnAndClose("DeviceAddress", argStr, cfgFP);
             return -2;
           }
+
+          // Update the maximum offset of the module if this device has a higher offset.
+          if(currentDevice->address > currentModule->maxOffset) currentModule->maxOffset = currentDevice->address;
+
+          // Setting the maximum number of module devices.
+          if(currentModule->maxOffset+1 > maxModuleDevices) maxModuleDevices = currentModule->maxOffset+1;
 
           int logParam = 5;
           if(currentModule->processingType == DO){
@@ -423,11 +429,11 @@ int loadConfig(char *cfgfile){
             logParam++;
 
             //Determine if the device is NO (Normally Open) or NC (Normally Closed).
-            currentModule->devices[i].nc = 0;
+            currentDevice->nc = 0;
             
             GetArg(inStr,5,argStr);
             if (strcasecmp(argStr,"NC")==0) {
-              currentModule->devices[i].nc = 1;
+              currentDevice->nc = 1;
             }else if(strcasecmp(argStr,"NO")!=0){
               warnAndClose("DeviceNO/NC", argStr, cfgFP);
               return -2;
@@ -437,9 +443,9 @@ int loadConfig(char *cfgfile){
           // The device logging status
           GetArg(inStr,logParam,argStr);
           if (strcasecmp(argStr,"T")==0 || strcasecmp(argStr,"Y")==0) {
-	          currentModule->devices[i].logEntry = 1;
+	          currentDevice->logEntry = 1;
 	        }else if (strcasecmp(argStr,"F")==0 || strcasecmp(argStr,"N")==0 || strcasecmp(argStr,"")==0) {
-	          currentModule->devices[i].logEntry = 0;
+	          currentDevice->logEntry = 0;
 	        }else{
             warnAndClose("DeviceLogging", argStr, cfgFP);
             return -2;

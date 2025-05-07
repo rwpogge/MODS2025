@@ -860,7 +860,12 @@ int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply, int replyBu
       return CMD_ERR;
     }
 
-    // TODO: SET COIL STATE
+    // First get the value of all the coils.
+    wagoSetGetCoils(0, env.hebAddr, module->baseAddress, module->maxOffset+1, (uint8_t*)env.rawWagoData);
+
+    // Change the value of the desired coil, and send it back.
+    ((uint8_t*)env.rawWagoData)[device->address] = state ^ device->nc;
+    wagoSetGetCoils(1, env.hebAddr, module->baseAddress, module->maxOffset+1, (uint8_t*)env.rawWagoData);
   }
 
   // Query the module to get the most up to date data.

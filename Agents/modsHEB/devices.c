@@ -131,11 +131,11 @@ int getDeviceModuleData(envdata_t *envi, int moduleIndex) {
     //The register types.
     case AI:
     case RTD:
-      wagoSetGet(0, envi->hebAddr, envi->modules[moduleIndex].baseAddress, envi->modules[moduleIndex].numDevices, envi->rawWagoData);
+      wagoSetGetRegisters(0, envi->hebAddr, envi->modules[moduleIndex].baseAddress, envi->modules[moduleIndex].maxOffset+1, envi->rawWagoData);
       break;
     //The coil types.
     case DO:
-      wagoSetGetCoils(0, envi->hebAddr, envi->modules[moduleIndex].baseAddress, envi->modules[moduleIndex].numDevices, envi->rawWagoData);
+      wagoSetGetCoils(0, envi->hebAddr, envi->modules[moduleIndex].baseAddress, envi->modules[moduleIndex].maxOffset+1, (uint8_t*)envi->rawWagoData);
       break;
     //Default case.
     default:
@@ -148,10 +148,17 @@ int getDeviceModuleData(envdata_t *envi, int moduleIndex) {
 
     // Process the WAGO data based on the processType.
     switch(envi->modules[moduleIndex].processingType){
-      case DO:  device->data = envi->rawWagoData[device->address] ^ device->nc; break;
-      case RTD: rtd2c(envi->rawWagoData+device->address, &device->data);        break;
-      case AI:  ai2vdc(envi->rawWagoData+device->address, &device->data);       break;
-      default: break;
+      case DO:
+        device->data = ((uint8_t*) envi->rawWagoData)[device->address] ^ device->nc;
+        break;
+      case RTD: 
+        rtd2c(envi->rawWagoData+device->address, &device->data);
+        break;
+      case AI: 
+        ai2vdc(envi->rawWagoData+device->address, &device->data);
+        break;
+      default:
+        break;
     }
   }
 
