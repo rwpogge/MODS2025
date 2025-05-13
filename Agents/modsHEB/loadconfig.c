@@ -136,6 +136,158 @@ void warnAndClose(const char* key, char* argStr, FILE* cfgFP){
 	if (cfgFP !=0) fclose(cfgFP);
 }
 
+
+/*!
+  \brief Used to parse lines that start with WAGO, and the DEVICE lines that come after.
+  \param cfgFP A pointer the config file.
+  \param inStr The input string from the loadConfig loop.
+  \param argStr The argument token string from the loadConfig loop.
+  \param moduleIndex The current module index (number of times the WAGO string has appeared so far).
+  \param maxDeviceOffset The current highest offset seen on any device.
+  \return 0 on success, <0 on failure.
+
+  This function will parse a WAGO module that is in the following format:
+    WAGO <ModuleName> <ModuleType> <BaseAddress> <NumDevices>
+    DEVICE <Name1> <DeviceOfset1> <ShouldLog1>
+    DEVICE <Name2> <DeviceOfset2> <ShouldLog2>
+    ...
+  
+  If the module is of type DO, you also need to include if the device is NO/NC:
+    WAGO <ModuleName> DO <BaseAddress> <NumDevices>
+    DEVICE <Name1> <DeviceOfset1> <NO/NC> <ShouldLog1>
+    DEVICE <Name2> <DeviceOfset2> <NO/NC> <ShouldLog2>
+    ...
+
+  An example module is:
+    WAGO Power DO 512 3
+    DEVICE archon  0 no Y
+    DEVICE bog     1 nc Y
+    DEVICE ion     2 no N
+*/
+int parseWagoModule(FILE* cfgFP, char* inStr, char* argStr, int* moduleIndex, int* maxDeviceOffset){
+  int errValue; // Used to convert strings to integers
+  int i;        // Loop index
+
+  // The current module list object
+  device_module_t* currentModule = env.modules+(*moduleIndex);
+
+  // The module name
+  GetArg(inStr,2,currentModule->name);
+
+  // The type of module (DO, AI, RTD, etc.)
+  GetArg(inStr,3,argStr);
+  currentModule->processingType = strToProcessType(argStr);
+  if(currentModule->processingType == -1){
+    warnAndClose("ProcessType", argStr, cfgFP);
+    return -2;
+  }
+
+  // The base address of the module
+  GetArg(inStr,4,argStr);
+  errValue = strToInt(argStr, &(currentModule->baseAddress));
+  if(errValue){
+    warnAndClose("BaseAddress", argStr, cfgFP);
+    return -2;
+  } 
+
+  // The number of conneted devices
+  GetArg(inStr,5,argStr);
+  errValue = strToInt(argStr, &(currentModule->numDevices));
+  if(errValue){
+    warnAndClose("NumDevices", argStr, cfgFP);
+    return -2;
+  }
+
+  // Dynamically allocating memory for the devices
+  if(currentModule->devices == NULL){
+    // NOTE: The C++ 'new' keyword is used instead of 'malloc()' here, because our struct 
+    // contains C++ objects which need to be initialized.
+    currentModule->devices = new device_t[currentModule->numDevices];
+  }
+
+  // For every connected device, there should be a line with additional information.
+  for(i=0; (i<currentModule->numDevices && fgets(inStr, MAXCFGLINE, cfgFP)); i++){
+    // Skipping blank lines and lines prefixed with the '#' character.
+    if ((inStr[0]=='#') || (inStr[0]=='\n')){
+      i--;        //This isn't a device.
+      continue;   //Get the next line.
+    } 
+
+    // Parsing the line
+    inStr[MAXCFGLINE] ='\0';
+
+    // The device keyword
+    GetArg(inStr,2,argStr);
+
+    if(strcasecmp(argStr,"DEVICE") != 0){
+      printf("ERROR: couldn't find the next device in the %s module\n", currentModule->name);
+      printf("Aborting - fix the config file (%s) and try again\n", client.rcFile);
+      if (cfgFP !=0) fclose(cfgFP);
+      return -2;
+    }
+    
+    // The current device list object
+    device_t* currentDevice = currentModule->devices+i;
+
+    // The device name
+    GetArg(inStr,3,currentDevice->name); 
+
+    // The device offset
+    GetArg(inStr,4,argStr);
+    errValue = strToInt(argStr, &(currentDevice->address));
+    if(errValue){
+      warnAndClose("DeviceOffset", argStr, cfgFP);
+      return -2;
+    }
+
+    // Updating the maximum device offset for this module.
+    if(currentDevice->address > currentModule->maxOffset) currentModule->maxOffset = currentDevice->address;
+
+    // Updating the maximum device offset for the whole file.
+    if(currentModule->maxOffset > *maxDeviceOffset) *maxDeviceOffset = currentModule->maxOffset;
+
+    int logParam = 5;
+    if(currentModule->processingType == DO){
+      //We should check for logging one parameter later.
+      logParam++;
+
+      //Determine if the device is NO (Normally Open) or NC (Normally Closed).
+      currentDevice->nc = 0;
+      
+      GetArg(inStr,5,argStr);
+      if (strcasecmp(argStr,"NC")==0) {
+        currentDevice->nc = 1;
+      }else if(strcasecmp(argStr,"NO")!=0){
+        warnAndClose("DeviceNO/NC", argStr, cfgFP);
+        return -2;
+      }
+    }
+    
+    // The device logging status
+    GetArg(inStr,logParam,argStr);
+    if (strcasecmp(argStr,"T")==0 || strcasecmp(argStr,"Y")==0) {
+      currentDevice->logEntry = 1;
+    }else if (strcasecmp(argStr,"F")==0 || strcasecmp(argStr,"N")==0 || strcasecmp(argStr,"")==0) {
+      currentDevice->logEntry = 0;
+    }else{
+      warnAndClose("DeviceLogging", argStr, cfgFP);
+      return -2;
+    }
+  }
+
+  //If we hit the end of the file without finding enough devices, error out.
+  if(i != currentModule->numDevices){
+    printf("ERROR: there were not enough devices in the %s module\n",currentModule->name);
+    printf("Aborting - fix the config file (%s) and try again\n",client.rcFile);
+    if (cfgFP !=0) fclose(cfgFP);
+    return -2;
+  }
+
+  (*moduleIndex)++;
+
+  return 0;
+}
+
 // PRIMARY FUNCTION -----------------------------------------------
 
 /*!
@@ -153,11 +305,10 @@ int loadConfig(char *cfgfile){
   char inStr[MAXCFGLINE];   // Generic input string
 
   FILE *cfgFP;              // Configuration file pointer
-  int i;
+  int errValue;             // Used to convert strings to integers 
 
   int moduleIndex = 0;      // Used to count the number of device modules which have been added
-  int maxModuleDevices = 0; // Used to find the maximum number of devices connected to any module
-  int errValue;             // Used to convert strings to integers 
+  int maxDeviceOffset = 0;  // Used to find the maximum offset of any device
 
   //Loading sensible default config options.
   loadDefaultConfigs(cfgfile);
@@ -346,128 +497,14 @@ int loadConfig(char *cfgfile){
 
       // WAGO: The start of a WAGO device module. A set of devices should be listed on the following lines.
       else if (strcasecmp(keyword,"WAGO")==0){
-        device_module_t* currentModule = env.modules+moduleIndex;
-
-        // The module name
-        GetArg(inStr,2,currentModule->name);
-
-        // The type of module (DI, AI, RTD, etc.)
-        GetArg(inStr,3,argStr);
-        currentModule->processingType = strToProcessType(argStr);
-        if(currentModule->processingType == -1){
-          warnAndClose("ProcessType", argStr, cfgFP);
-          return -2;
-        }
-
-        // The base address of the module
-        GetArg(inStr,4,argStr);
-        errValue = strToInt(argStr, &(currentModule->baseAddress));
-        if(errValue){
-          warnAndClose("BaseAddress", argStr, cfgFP);
-          return -2;
-        } 
-
-        // The number of conneted devices
-        GetArg(inStr,5,argStr);
-        errValue = strToInt(argStr, &(currentModule->numDevices));
-        if(errValue){
-          warnAndClose("NumDevices", argStr, cfgFP);
-          return -2;
-        }
-
-        // Dynamically allocating memory for the devices
-        if(currentModule->devices == NULL){
-          // NOTE: The C++ 'new' keyword is used instead of 'malloc()' here, because our struct 
-          // contains C++ objects which need to be initialized.
-          currentModule->devices = new device_t[currentModule->numDevices];
-        }
-
-        // For every connected device, there should be a line with additional information.
-        for(i=0; (i<currentModule->numDevices && fgets(inStr, MAXCFGLINE, cfgFP)); i++){
-          // Skipping blank lines and lines prefixed with the '#' character.
-          if ((inStr[0]=='#') || (inStr[0]=='\n')){
-            i--;        //This isn't a device.
-            continue;   //Get the next line.
-          } 
-
-          // Parsing the line.
-          inStr[MAXCFGLINE] ='\0';
-
-          // The device keyword
-          GetArg(inStr,2,argStr);
-
-          if(strcasecmp(argStr,"DEVICE") != 0){
-            printf("ERROR: couldn't find the next device in the %s module\n", currentModule->name);
-            printf("Aborting - fix the config file (%s) and try again\n", client.rcFile);
-	          if (cfgFP !=0) fclose(cfgFP);
-            return -2;
-          }
-          
-          // The current device.
-          device_t* currentDevice = currentModule->devices+i;
-
-          // The device name
-          GetArg(inStr,3,currentDevice->name); 
-
-          // The device address
-          GetArg(inStr,4,argStr);
-          errValue = strToInt(argStr, &(currentDevice->address));
-          if(errValue){
-            warnAndClose("DeviceAddress", argStr, cfgFP);
-            return -2;
-          }
-
-          // Update the maximum offset of the module if this device has a higher offset.
-          if(currentDevice->address > currentModule->maxOffset) currentModule->maxOffset = currentDevice->address;
-
-          // Setting the maximum number of module devices.
-          if(currentModule->maxOffset+1 > maxModuleDevices) maxModuleDevices = currentModule->maxOffset+1;
-
-          int logParam = 5;
-          if(currentModule->processingType == DO){
-            //We should check for logging one parameter later.
-            logParam++;
-
-            //Determine if the device is NO (Normally Open) or NC (Normally Closed).
-            currentDevice->nc = 0;
-            
-            GetArg(inStr,5,argStr);
-            if (strcasecmp(argStr,"NC")==0) {
-              currentDevice->nc = 1;
-            }else if(strcasecmp(argStr,"NO")!=0){
-              warnAndClose("DeviceNO/NC", argStr, cfgFP);
-              return -2;
-            }
-          }
-          
-          // The device logging status
-          GetArg(inStr,logParam,argStr);
-          if (strcasecmp(argStr,"T")==0 || strcasecmp(argStr,"Y")==0) {
-	          currentDevice->logEntry = 1;
-	        }else if (strcasecmp(argStr,"F")==0 || strcasecmp(argStr,"N")==0 || strcasecmp(argStr,"")==0) {
-	          currentDevice->logEntry = 0;
-	        }else{
-            warnAndClose("DeviceLogging", argStr, cfgFP);
-            return -2;
-          }
-
-        }
-
-        //If we hit the end of the file without finding enough devices, error out.
-        if(i != currentModule->numDevices){
-          printf("ERROR: there were not enough devices in the %s module\n",currentModule->name);
-          printf("Aborting - fix the config file (%s) and try again\n",client.rcFile);
-	        if (cfgFP !=0) fclose(cfgFP);
-          return -2;
-        }
-
-        moduleIndex++;
+        int result = parseWagoModule(cfgFP, inStr, argStr, &moduleIndex, &maxDeviceOffset);
+        if(result != 0) return result;
       }
 
 
       // KEYWORD JUNK ------------------------------
 
-      //We found a device outside of a module. That is a problem.
+      // We found a device outside of a module. That is a problem.
       else if (strcasecmp(keyword,"DEVICE")==0) {
 	      printf("ERROR: A device was found outside of a module. You might have too many devices.\n");
         printf("Aborting - fix the config file (%s) and try again\n",client.rcFile);
@@ -485,10 +522,10 @@ int loadConfig(char *cfgfile){
 
   //----------------------------------------------------------------
 
-  //Now that we know the max devices, dynamically allocate memory for device data collection.
+  // Now that we know the maximum device offset, dynamically allocate memory for data collection.
   if(env.rawWagoData == NULL){
-    env.rawWagoData = (uint16_t*) malloc(maxModuleDevices*sizeof(uint16_t));
-    memset(env.rawWagoData, 0, maxModuleDevices*sizeof(uint16_t));
+    env.rawWagoData = (uint16_t*) malloc((maxDeviceOffset+1)*sizeof(uint16_t));
+    memset(env.rawWagoData, 0, (maxDeviceOffset+1)*sizeof(uint16_t));
   }
   
   // all done, close the config file and return
