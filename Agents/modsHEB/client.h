@@ -121,16 +121,12 @@ typedef struct DeviceProfile{
   \brief The data that will be stored for each module.
 */
 typedef struct ModuleProfile{
-    ModuleProfile():units(lbto::tel::unit::none()){}  // The units are a c++ object and need initalized.
-
     device_t* devices;        // An array of connected devices and their data
     char name[MAXCFGLINE];    // The name of the module
     int processingType;       // The type of processing to do to the device data
     int baseAddress;          // The address of the module
     int numDevices;           // The number of connected devices
     int maxOffset;            // The largest offset of any device
-
-    lbto::tel::unit units;    // Units of devices in the module for HDF logs
 }device_module_t;
 
 /*!

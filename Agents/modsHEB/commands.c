@@ -1048,7 +1048,7 @@ void KeyboardCommand(char *line) {
       }
     }
 
-    //TODO: Commands that aren't in the command table might be in the module/device table.
+    // Commands that aren't in the command table might be device commands.
     if(nfound == 0){
       cmdResult = cmd_device(cmd,args,EXEC,reply,sizeof(reply));
       nfound++;
@@ -1131,6 +1131,7 @@ void SocketCommand(char *buf) {
   int i;
   int nfound=0;
   int icmd=-1;
+  int cmdResult = -2;
   double t0, dt;
 
   // Some simple initializations
@@ -1184,14 +1185,22 @@ void SocketCommand(char *buf) {
       }
     }
 
-    //TODO: Unknown commands might be in the module/device table now. Check that.
+    // Commands that aren't in the command table might be device commands.
+    if(nfound == 0){
+      cmdResult = cmd_device(cmd,args,msgtype,reply,sizeof(reply));
+      nfound++;
+    };
+
     // Unknown command, gripe back to the sender, otherwise try to do it
-    if (nfound == 0) {
+    if (cmdResult == 1 || nfound == 0) {
       sprintf(msg,"%s>%s ERROR: Unknown command - %s\n",client.ID,srcID,msgbody);
     }else{
       t0 = SysTimestamp();
 
-      switch(cmdtab[icmd].action(args,msgtype,reply)) {
+      // If the result hasn't been found yet, find it
+      if(cmdResult == -2) cmdResult = cmdtab[icmd].action(args,msgtype,reply);
+
+      switch(cmdResult) {
       case CMD_ERR: // command generated an error
 	      sprintf(msg,"%s>%s ERROR: %s %s\n",client.ID,srcID,cmd,reply);
 	      break;

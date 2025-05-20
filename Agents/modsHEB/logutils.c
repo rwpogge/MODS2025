@@ -37,12 +37,23 @@ int initTelemetryData(envdata_t* envi){
 
     //Adding measures based off the device table.
     for(int i=0; i<envi->numModules; i++){
+
+      //Set the correct units for this module.
+      lbto::tel::unit units = lbto::tel::unit::none();
+      switch(envi->modules[i].processingType){
+        case RTD: units = lbto::tel::unit::celsius(); break;
+        case  AI: units = lbto::tel::unit::volt();    break;
+        case  DO: units = lbto::tel::unit::none();    break;
+        default: break;
+      }
+
+      // Add all of the telemetry streams to the definer.  
       for(int j=0; j<envi->modules[i].numDevices; j++){
         if(!envi->modules[i].devices[j].logEntry) continue;
 
         modsDefiner.add_child(lbto::tel::float_measure(
           envi->modules[i].devices[j].floatMeasure,
-          envi->modules[i].units, 
+          units, 
           lbto::tel::name(envi->modules[i].devices[j].name),
           lbto::tel::description(envi->modules[i].devices[j].description)
         ));
