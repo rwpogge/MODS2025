@@ -65,6 +65,81 @@ void ai2vdc(uint16_t* rawData, float* outputData){
 // INTERACT WITH ENV DATA -----------------------------------------------
 
 /*!
+  \brief Turn device data from envdata into a status string.
+
+  \param envi pointer to an #envdata_t struct
+  \param moduleIndex the index of the module to be processed.
+  \param deviceIndex the index of the device to be processed, or <0 if the whole module should be processed.
+  \param buffer a char array to fill with the result string.
+  \param bufferSize the size of the supplied buffer in bytes.
+
+  \return 0 on success, -1 on errors.  
+
+  Processes device data in envdata into a status string. i.e. "arcon=on ion=on".
+*/
+int getDeviceModuleStatus(envdata_t *envi, int moduleIndex, int deviceIndex, char* buffer, int bufferSize){
+  device_module_t* module;  // The targeted module.
+  device_t* device;         // The targeted device.
+
+  // Get the module while checking for errors.
+  if(moduleIndex >= envi->numModules || moduleIndex < 0){
+    printf("module index given to getDeviceModuleStatus() is out of bounds.");
+    return -1;
+  }
+  module = env.modules + moduleIndex;
+
+  // Verify that the device is in range.
+  if(deviceIndex >= module->numDevices){
+    printf("device index given to getDeviceModuleStatus() is out of bounds.");
+    return -1;
+  }
+
+  // If deviceIndex is positive, we should only print the status of a single device 
+  if(deviceIndex >= 0){
+    device = module->devices + deviceIndex;
+    
+    switch(module->processingType){
+      case DO: snprintf(buffer, bufferSize, "%s=%s", device->name, device->data ? "ON" : "OFF"); break;
+      case RTD: snprintf(buffer, bufferSize, "%s=%.1f", device->name, device->data); break;
+      case AI: snprintf(buffer, bufferSize, "%s=%.4f", device->name, device->data); break;
+      default: break;
+    }
+
+    return 0;
+  }
+
+  // If the deviceIndex is negative, we should print the status of every device.
+  int stringLength = 0;
+  for(int i=0; i< module->numDevices; i++){
+    // Get the device at index i.
+    device = module->devices + i;
+
+    // Add the device data to the response buffer.
+    switch(module->processingType){
+      case DO:
+        stringLength += snprintf(buffer+stringLength, bufferSize-stringLength, 
+          "%s=%s ", device->name, device->data ? "ON" : "OFF"
+        );
+        break;
+      case RTD: 
+        stringLength += snprintf(buffer+stringLength, bufferSize-stringLength, 
+          "%s=%.1f ", device->name, device->data
+        );
+        break;
+      case AI: 
+        stringLength += snprintf(buffer+stringLength, bufferSize-stringLength, 
+          "%s=%.4f ", device->name, device->data
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  return 0;
+}
+
+/*!
   \brief Correctly releases memory allocated for device data in an #envdata_t structure.
 
   \param envi pointer to an #envdata_t data structure

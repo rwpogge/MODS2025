@@ -509,7 +509,7 @@ int cmd_resume(char *args, MsgType msgtype, char *reply) {
 }
 
 /*!  
-  \brief estatus command - read the instrument sensors return the data
+  \brief status command - read HEB device data and return the results
   \param args string with the command-line arguments
   \param msgtype message type if the command was sent as an IMPv2 message
   \param reply string to contain the command return reply
@@ -517,30 +517,25 @@ int cmd_resume(char *args, MsgType msgtype, char *reply) {
   an error message.
 
   \par Usage:
-  estatus
+  status
   
-  Reads the instrument's enviromental and AC power state sensors and
-  returns the data as keyword=value pairs.  It also logs the
-  temperature and pressure sensor measurements. If a remote host makes
-  a number of estatus queries, it could result in the logs showing a
-  stuttered cadence.  A consistent monitoring cadence is maintained
-  only when the agent is not otherwise occupied handling command
-  requests.
+  Reads the instrument's enviromental sensors power stats and
+  returns the data as keyword=value pairs for all modules. If a r
+  emote host makes a number of estatus queries, it could result in 
+  the logs showing a stuttered cadence.  A consistent monitoring 
+  cadence is maintained only when the agent is not otherwise occupied 
+  handling command requests.
 
-  Reports basic power state information, but not the details of the
-  requested switch and breaker sensor states.  For that info see
-  pstatus (which, in turns, does *not* evaluate the sensors in terms
-  off on/off/fault power state).
-
-  The ESTATUS command ignores the RunState of the agent, so that a
+  The STATUS command ignores the RunState of the agent, so that a
   remote host can read the environmental sensors even when the monitor
   is paused.  It does, however, obey the logging state, and will not
   update the log if logging is disabled.
 
   \sa cmd_cadence(), cmd_pause(), cmd_resume(), cmd_pstatus()
 */
-int cmd_estatus(char *args, MsgType msgtype, char *reply) {
+int cmd_status(char *args, MsgType msgtype, char *reply) {
   int ierr;
+  char statusString[ISIS_MSGSIZE];
 
   // Read the enviromental sensors
   ierr = getAllDeviceData(&env);
@@ -554,49 +549,20 @@ int cmd_estatus(char *args, MsgType msgtype, char *reply) {
   if (env.useHdf5) logTelemetryData(&env);
 
   // Craft the reply string...
-  sprintf(reply,"COMMAND NOT FINISHED YET");
+  int stringLength = 0;
+  for(int i=0; i<env.numModules; i++){
+    // Get the status string for this module while checking for errors.
+    int ierr = getDeviceModuleStatus(&env, i, -1, statusString, sizeof(statusString));
+    if(ierr != 0){
+      sprintf(reply, "Cannot create enviornmental sensor string");
+      return CMD_ERR;
+    }
 
-  return CMD_OK;
-}
-
-/*!  
-  \brief pstatus command - read just the instrument AC power status
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  pstatus
-  
-  Reads the instrument's AC power control status sensors and returns
-  the current power state of the instrument.  This is raw, unfiltered
-  output for diagnostic purposes as a more readable subset of the data
-  returned by the full estatus command.
-
-  This command only reports the switch and breaker state sensors, it does
-  not evaluate the end power state in terms of On/Off/Fault conditions.
-  See the estatus command for that.
-
-  \sa cmd_cadence(), cmd_pause(), cmd_resume(), cmd_estatus
-*/
-int cmd_pstatus(char *args, MsgType msgtype, char *reply) {
-  int ierr;
-
-  // Read the WAGOs
-  ierr = getAllDeviceData(&env);
-  if (ierr != 0) {
-    strcpy(reply,"Cannot read the enviromental sensors");
-    return CMD_ERR;
+    // Add the module to the reply string.
+    stringLength += snprintf(reply+stringLength, ISIS_MSGSIZE-stringLength, 
+      "\n%s\n  %s", (env.modules+i)->name, statusString
+    );
   }
-
-  // Log to ASCII and HDF5, if enabled
-  if (env.doLogging) logEnvData(&env);
-  if (env.useHdf5) logTelemetryData(&env);
-
-  // Craft the reply string...
-  sprintf(reply, "COMMAND NOT FINISHED YET");
 
   return CMD_OK;
 }
@@ -777,8 +743,8 @@ int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply, int replyBu
 
   char argBuf[MAXCFGLINE];    // A buffer that will be used to hold a command line argument.
 
-  int i;                      // For loop index.
   int moduleIndex;            // The index of the module we are querying.
+  int deviceIndex;            // The index of the device we are querying.
 
   // Determine if the command is the name of a module.
   for(moduleIndex=0; moduleIndex < env.numModules; moduleIndex++){
@@ -796,25 +762,22 @@ int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply, int replyBu
 
   // If there are no arguments, print all of the connected devices. 
   if(strlen(args) == 0){
-    // Craft a reply string with all of the device data.
-    int stringLength = 0;
-    for(i=0; i< module->numDevices; i++){
-      // Get the device at index i.
-      device = module->devices + i;
-        
-      // If this is a DO, we should print the strings "ON" and "OFF" rather than float values.
-      if(module->processingType == DO){
-        stringLength += snprintf(reply+stringLength, replyBufferSize-stringLength, 
-          "%s=%s ", device->name, device->data ? "ON" : "OFF"
-        );
-      }
+    // Query the module to get the most up to date data.
+    int ierr = getDeviceModuleData(&env, moduleIndex);
+    if (ierr != 0) {
+      sprintf(reply,"Cannot read the \"%s\" module.", module->name);
+      return CMD_ERR;
+    }
 
-      // If this is not a DO, we should just print the float values.
-      else{
-        stringLength += snprintf(reply+stringLength, replyBufferSize-stringLength, 
-          "%s=%.4f ", device->name, device->data
-        );
-      }
+    //Log to ASCII and HDF5, if enabled.
+    if (env.doLogging) logEnvData(&env);    
+    if (env.useHdf5) logTelemetryData(&env);
+
+    // Get the module status string while checking for errors.
+    ierr = getDeviceModuleStatus(&env, moduleIndex, -1, reply, replyBufferSize);
+    if (ierr != 0) {
+      sprintf(reply,"Cannot read the \"%s\" module.", module->name);
+      return CMD_ERR;
     }
 
     //A command was run, so we can return CMD_OK.
@@ -823,15 +786,15 @@ int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply, int replyBu
 
   // If there is an argument, find the target device.
   GetArg(args,1,argBuf);
-  for(i=0; i < module->numDevices; i++){
-    device = module->devices + i;
+  for(deviceIndex=0; deviceIndex < module->numDevices; deviceIndex++){
+    device = module->devices + deviceIndex;
     
     // The matching device was found. We can stop looking.
     if(strcasecmp(argBuf, device->name)==0) break;
   }
 
   // If the device wasn't found (the second arg is not a device), return that.
-  if(i >= module->numDevices){
+  if(deviceIndex >= module->numDevices){
     sprintf(reply,"No device with name \"%s\" found in module \"%s\".", argBuf, module->name);
     return CMD_ERR;
   };
@@ -872,9 +835,12 @@ int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply, int replyBu
     return CMD_ERR;
   }
 
-  // Print just the choosen device data.
-  if(module->processingType == DO) sprintf(reply, "%s=%s", device->name, device->data ? "ON" : "OFF");
-  else sprintf(reply, "%s=%.3f", device->name, device->data);
+  // Get the device status string while checking for errors.
+  ierr = getDeviceModuleStatus(&env, moduleIndex, deviceIndex, reply, replyBufferSize);
+  if (ierr != 0) {
+    sprintf(reply,"Cannot read the \"%s\" module.", module->name);
+    return CMD_ERR;
+  }
 
   // Everything went well. Return okay.
   return CMD_OK;

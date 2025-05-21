@@ -26,8 +26,7 @@ int cmd_help   (char *, MsgType, char *); // show command help
 int cmd_history(char *, MsgType, char *); // cli history utility
 
 // Application Commands
-int cmd_estatus (char *, MsgType, char *);  // Query MODS environment sensor status
-int cmd_pstatus (char *, MsgType, char *);  // Query MODS AC power control status
+int cmd_status (char *, MsgType, char *);   // Query all MODS devices and return the results
 int cmd_cadence (char *, MsgType, char *);  // Query/Set the monitoring cadence in seconds
 int cmd_pause   (char *, MsgType, char *);  // Pause monitoring
 int cmd_resume  (char *, MsgType, char *);  // Resume monitoring
@@ -84,10 +83,8 @@ cmdtab[] = {   //!< global scope command table for this application
   {"debug"   ,cmd_debug   ,"debug","Toggle super-verbose debugging output mode on/off"},
   {"history" ,cmd_history ,"history","Show the command history (console only)"},
   {"info"    ,cmd_info    ,"info","Report client session runtime info"},
-  {"status"  ,cmd_info    ,"status","Report the client runtime status (alias for info)"},
   {"version" ,cmd_version ,"version","Report the client version and compilation time"},
-  {"estatus" ,cmd_estatus ,"estatus","Report the current MODS environmental sensor status"},
-  {"pstatus" ,cmd_pstatus ,"pstatus","Report the current MODS AC power control system sensor status"},
+  {"status"  ,cmd_status  ,"status","Report the current status of all connected devices"},
   {"cadence" ,cmd_cadence ,"cadence","Set/Query the monitoring cadence in seconds"},
   {"pause"   ,cmd_pause   ,"pause","Pause monitoring (see RESUME)"},
   {"resume"  ,cmd_resume  ,"resume","Resume monitoring after a PAUSE"},
