@@ -41,7 +41,6 @@ void initEnvData(envdata_t *envi){
   strcpy(envi->hebAddr,"");
 
   //Setting all of the strings to their default values.
-  strcpy(envi->modsID,"None");
   strcpy(envi->logRoot,ENV_LOGS);
   strcpy(envi->hdfRoot,HDF_LOGS);
   strcpy(envi->leapSecondsFile,LEAP_SECONDS_FILE);
@@ -77,7 +76,6 @@ void printEnvData(envdata_t *envi){
   if (!useCLI) return;
 
   printf("Enviromental Monitor Agent Info:\n");
-  printf("  Instrument: %s\n",envi->modsID);
   printf("  Monitor Status: %s\n",(envi->pause) ? "PAUSED" : "Active");
   printf("  Sampling Cadence: %ld seconds\n",envi->cadence);
   printf("  Data Logging: %s\n",(envi->doLogging) ? "Enabled" : "Disabled");

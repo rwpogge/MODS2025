@@ -406,12 +406,6 @@ int loadConfig(char *cfgfile){
         } 
       }
 
-      // InstID: Formal ID of the MODS we're monitoring (e.g., MODS1)
-      else if (strcasecmp(keyword,"INSTID")==0) {
-	      GetArg(inStr, 2, argStr);
-	      strcpy(env.modsID,argStr);
-      }
-
       // UseTTY: enable/disable the interactive command shell
       //    Usage: UseTTY [T|F]  --> recognizes aliases T=Y and F=N
       else if (strcasecmp(keyword,"USETTY")==0) {
@@ -442,8 +436,8 @@ int loadConfig(char *cfgfile){
 	      env.cadence = (long) dt;
       }
 
-      // HEB: IP address of the Head Electronic Box WAGO FieldBus controller
-      else if (strcasecmp(keyword,"HEB")==0) {
+      // WAGOIP: IP address of the Head Electronic Box WAGO FieldBus controller
+      else if (strcasecmp(keyword,"WAGOIP")==0) {
 	      GetArg(inStr,2,argStr);
 	      strcpy(env.hebAddr,argStr);
       }
@@ -478,7 +472,7 @@ int loadConfig(char *cfgfile){
       }
       
       // HDF5 Output: Explicitly disable hdf5 data logging
-      else if (strcasecmp(keyword,"NOHDF5")==0) {
+      else if (strcasecmp(keyword,"NOHDF")==0) {
 	      env.useHdf5 = 0;
       }
 

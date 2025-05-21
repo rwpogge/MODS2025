@@ -134,8 +134,6 @@ typedef struct ModuleProfile{
 */
 typedef struct envData {
 
-  char modsID[8];    //!< MODS instrument ID (MODS1 or MODS2)
-
   // WAGO Addresses
   char hebAddr[64];   //!< IP address of the HEB WAGO FieldBus controller
 

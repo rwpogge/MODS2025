@@ -276,8 +276,8 @@ int cmd_info(char *args, MsgType msgtype, char *reply) {
   }
 
   // Environmental Monitor information
-  stringLength += sprintf(reply + stringLength," InstID=%s Cadence=%ld runState=%s Logging=%s logFile=%s HdfLogging=%s HdfLogDir=%s",
-	  env.modsID, env.cadence, ((env.pause) ? "Paused" : "Active"), ((env.doLogging) ? "Enabled" : "Disabled"),
+  stringLength += sprintf(reply + stringLength," Cadence=%ld runState=%s Logging=%s logFile=%s HdfLogging=%s HdfLogDir=%s",
+	  env.cadence, ((env.pause) ? "Paused" : "Active"), ((env.doLogging) ? "Enabled" : "Disabled"),
 	  env.logFile, ((env.useHdf5) ? "Enabled" : "Disabled"), env.hdfRoot
   );
 
@@ -805,20 +805,17 @@ int cmd_device (char* cmd, char* args, MsgType msgtype, char* reply, int replyBu
       // If this is a DO, we should print the strings "ON" and "OFF" rather than float values.
       if(module->processingType == DO){
         stringLength += snprintf(reply+stringLength, replyBufferSize-stringLength, 
-          "%s=%s, ", device->name, device->data ? "ON" : "OFF"
+          "%s=%s ", device->name, device->data ? "ON" : "OFF"
         );
       }
 
       // If this is not a DO, we should just print the float values.
       else{
         stringLength += snprintf(reply+stringLength, replyBufferSize-stringLength, 
-          "%s=%.3f, ", device->name, device->data
+          "%s=%.4f ", device->name, device->data
         );
       }
     }
-
-    //Cut off the last comma from the string.
-    if(stringLength > 0) reply[stringLength-2] = '\x00';
 
     //A command was run, so we can return CMD_OK.
     return CMD_OK;

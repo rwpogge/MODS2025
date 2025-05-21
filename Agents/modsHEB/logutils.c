@@ -139,7 +139,7 @@ int initEnvLog(envdata_t *envi){
     // This is the first time we've had this file open, write the
     // detailed file header.
     memset(logStr,0,sizeof(logStr));
-    sprintf(logStr,"#\n# %s Environmental Sensor Data Log\n#\n",envi->modsID);
+    sprintf(logStr,"#\n# Environmental Sensor Data Log\n#\n");
     ierr = write(envi->logFD,logStr,strlen(logStr));
 
     memset(logStr,0,sizeof(logStr));
