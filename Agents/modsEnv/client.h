@@ -22,7 +22,7 @@
 
 #define DEFAULT_MYID      "ENV"  //!< default client ISIS node name
 #define DEFAULT_MYPORT    10901 //!< default client socket port   
-#define DEFAULT_RCFILE    (char *)"./modsenv.ini" //!< default client runtime config file
+#define DEFAULT_RCFILE    (char *)"/home/dts/Config/modsenv.ini" //!< default client runtime config file
 
 
 #define ENV_LOGS "/home/dts/Logs/Env/modsenv"       //!< Default enviromental log file path and rootname
