@@ -11,13 +11,13 @@
 
 // Runtime configuration files
 
-#define ITERM_CONFIG_FILE "./iterm.ini" //!< Default config file
+#define ITERM_CONFIG_FILE "/home/dts/Config/iterm.ini" //!< Default config file
 
 // ISIS Server and Client info defaults
 
-#define ISIS_SERVER_ID            "IS" //!< Default ISIS server ID
-#define ISIS_SERVER_HOST "192.169.139.131" //!< Default ISIS server Host at LBT
-#define ISIS_SERVER_PORT          6600 //!< Default ISIS server Port
+#define ISIS_SERVER_ID "IS"                 //!< Default ISIS server ID
+#define ISIS_SERVER_HOST "192.169.139.131"  //!< Default ISIS server Host at LBT
+#define ISIS_SERVER_PORT 6600               //!< Default ISIS server Port
 
 #define ITERM_ID                  "IT" //!< Default client ID
 #define ITERM_PORT                   0 //!< Default ITerm client Port (0="any free port")
