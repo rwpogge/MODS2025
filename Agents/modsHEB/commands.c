@@ -560,7 +560,7 @@ int cmd_status(char *args, MsgType msgtype, char *reply) {
 
     // Add the module to the reply string.
     stringLength += snprintf(reply+stringLength, ISIS_MSGSIZE-stringLength, 
-      "\n%s\n  %s", (env.modules+i)->name, statusString
+      "%s", statusString
     );
   }
 
