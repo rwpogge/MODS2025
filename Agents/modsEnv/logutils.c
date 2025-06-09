@@ -157,7 +157,8 @@ int initTelemetryData(envdata_t* envi){
 */
 void closeTelemetryData(envdata_t* envi){
   if(!envi->hdfInitalized) return;
-  
+  if(envi->modsCollector == NULL) return;
+
   while(envi->modsCollector->count_buffered_samples() != 0){
     sleep(1);
   }
