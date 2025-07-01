@@ -47,8 +47,8 @@ void rtd2c(uint16_t* rawData, float* outputData){
 /*!
   \brief Converts a raw analog input reading into its equivalent DC voltage.
 
-  \param rawData pointer to the quadcell varaible as collected from the WAGO module.
-  \param outputData pointer to the float varaible where the converted data will be stored.
+  \param rawData pointer to the quadcell variable as collected from the WAGO module.
+  \param outputData pointer to the float variable where the converted data will be stored.
 */
 void ai2vdc(uint16_t* rawData, float* outputData){
   int posMax = pow(2, 15) - 1;

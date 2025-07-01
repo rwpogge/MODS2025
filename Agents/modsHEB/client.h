@@ -81,7 +81,7 @@
 
 #define MAX_TELEMETRY_BUFFER_BYTES 12000000                       //!< Maximum number of bytes that the lbt telemetry collector can use to store samples.
 #define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"  //!< Default path to the leap-seconds.list file.
-#define FALLBACK_LEAP_SECONDS_FILE "./leap-seconds.list"          //!< If an updated leap-seconds file can't be found, this one is used instead.
+#define FALLBACK_LEAP_SECONDS_FILE "./leap-seconds.list"          //!< If the leap-seconds file can't be found at the path above, this one is tried next.
 
 
 //// END of Constants and Working Parameters. ------------------------------

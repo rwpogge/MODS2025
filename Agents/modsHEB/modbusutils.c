@@ -1,6 +1,7 @@
 /*!
   \file modbusutils.c
   \brief Utility functions for working with libmodbus and WAGO fieldbus controllers.
+  \author Xander Carroll
 
   \date 2025 May 7
 */
@@ -44,7 +45,7 @@ int wagoSetGet(int setGet, int isRegister, char *wagoAddr, int addr, int len, vo
     else result = modbus_write_bits(modbus,addr,len,(uint8_t*)data);
   } 
 
-  // If setGet = 0 (false), we are writing data to WAGO registers/coils
+  // If setGet = 0 (false), we are reading data from WAGO registers/coils
   else{
     if(isRegister) result = modbus_read_registers(modbus,addr,len,(uint16_t*)data);
     else result = modbus_read_bits(modbus,addr,len,(uint8_t*)data);

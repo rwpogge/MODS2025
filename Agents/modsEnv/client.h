@@ -305,7 +305,7 @@ public:
 // ... more as needed ...
 
 #define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"  //!< Default path to the leap-seconds.list file.
-#define FALLBACK_LEAP_SECONDS_FILE "./leap-seconds.list"          //!< If an updated leap-seconds file can't be found, this one is used instead.
+#define FALLBACK_LEAP_SECONDS_FILE "./leap-seconds.list"          //!< If the leap-seconds file can't be found at the path above, this one is tried next.
 
 
 //------------------------------
