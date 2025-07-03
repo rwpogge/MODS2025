@@ -1,0 +1,31 @@
+# Make sure to don't leave spaces between the separator and the next field.
+# Also, add a newline at end of file.
+#
+# The tables below give the data dictionary entries corresponding to 
+# the entries in the lbtData struct. The index [side] is either 
+# 0=Left (SX) or 1=Right (DX). These are the DD names that would be 
+# passed into the SeqDD entry in the GetParameter() call.
+#
+# MODS information
+#
+iif.MODS.side[1].updateTime
+iif.MODS.side[1].timeStamp
+iif.MODS.side[1].modsName
+iif.MODS.side[1].powerState
+iif.MODS.side[1].hatch
+iif.MODS.side[1].imcsLaser
+iif.MODS.side[1].glycolSupplyPressure
+iif.MODS.side[1].glycolSupplyTemp
+iif.MODS.side[1].glycolReturnPressure
+iif.MODS.side[1].glycolReturnTemp
+iif.MODS.side[1].blueDewarPressure
+iif.MODS.side[1].blueDewarTemp
+iif.MODS.side[1].blueCCDTemp
+iif.MODS.side[1].redDewarPressure
+iif.MODS.side[1].redDewarTemp
+iif.MODS.side[1].redCCDTemp
+iif.MODS.side[1].blueIEBTemp
+iif.MODS.side[1].redIEBTemp
+iif.MODS.side[1].blueHEBTemp
+iif.MODS.side[1].redHEBTemp
+iif.MODS.side[1].utilBoxTemp

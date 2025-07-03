@@ -1,0 +1,83 @@
+#
+# The tables below give the data dictionary entries corresponding to 
+# the entries in the lbtData struct. The index [side] is either 
+# 0=Left (SX) or 1=Right (DX). These are the DD names that would be 
+# passed into the SeqDD entry in the GetParameter() call.
+#
+# Telescope Pointing Information
+#
+pcs.side[0].pointingStatus.achieved.achieved_RA.Radians
+pcs.side[0].pointingStatus.achieved.achieved_DEC.Radians
+pcs.pointingStatus.time_UT.UTString
+pcs.pointingStatus.time_SD.SDString
+pcs.side[0].pointingStatus.parallacticAngle
+pcs.side[0].pointingStatus.positionAngle
+pcs.side[0].pointingStatus.rotatorAngle
+pcs.side[0].pointingStatus.rotatorMode
+#
+# GCS guide star information
+#
+gcs.side[0].GuideCam.GS_RA
+gcs.side[0].GuideCam.GS_DEC
+#    
+# Low-level Mount data (az/alt/rot Encoders)
+mcs.azDrive.position
+mcs.elDrive.position
+#mcs.rotatorSide[0].rotators[5].actualPositionAsec
+#
+# Authorized Instrument ID
+iif.side[0].authorizedInstrument
+#
+# Primary Mirror Information
+psf.side[0].primaryMirror.collimation.collimation[0]
+psf.side[0].primaryMirror.collimation.collimation[1]
+psf.side[0].primaryMirror.collimation.collimation[2]
+psf.side[0].primaryMirror.collimation.collimation[3]
+psf.side[0].primaryMirror.collimation.collimation[4]
+psf.side[0].primaryMirror.collimation.collimation[5]
+psf.side[0].primaryMirror.collimation.temperature
+#    
+# Secondary Mirror Information
+psf.side[0].secondaryMirror.collimation.collimation[0]
+psf.side[0].secondaryMirror.collimation.collimation[1]
+psf.side[0].secondaryMirror.collimation.collimation[2]
+psf.side[0].secondaryMirror.collimation.collimation[3]
+psf.side[0].secondaryMirror.collimation.collimation[4]
+psf.side[0].secondaryMirror.collimation.collimation[5]
+psf.side[0].secondaryMirror.collimation.temperature
+#
+# Telescope Temperature Sensors
+ecs.instrCool.tempChan201
+ecs.instrCool.tempChan202
+ecs.instrCool.tempChan203
+ecs.instrCool.tempChan204
+ecs.instrCool.tempChan205
+ecs.instrCool.tempChan206
+ecs.instrCool.tempChan207
+ecs.instrCool.tempChan208
+ecs.instrCool.tempChan209
+ecs.instrCool.tempChan210
+ecs.instrCool.tempChan301
+ecs.instrCool.tempChan302
+ecs.instrCool.tempChan303
+ecs.instrCool.tempChan304
+ecs.instrCool.tempChan305
+ecs.instrCool.tempChan306
+ecs.instrCool.tempChan307
+ecs.instrCool.tempChan308
+ecs.instrCool.tempChan309
+ecs.instrCool.tempChan310
+#    
+# SMT Weather Information
+env.weather.smt.alive
+env.weather.smt.ambientPressure
+env.weather.smt.ambientTemperature
+env.weather.smt.humidity
+env.weather.smt.dewPoint
+#    
+# LBT Weather Information
+env.weather.lbt.alive
+env.weather.lbt.pressure
+env.weather.lbt.temperature
+env.weather.lbt.humidity
+env.weather.lbt.dewPoint
