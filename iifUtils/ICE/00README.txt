@@ -1,5 +1,6 @@
 iifUtils ZeroC ICE Slice language files
-Updated: 2015 Aug 10 [rwp/osu]
+Original: 2015 Aug 10 [rwp/osu]
+Updated: 2024 July 03 [rwp/osu]
 
 This directory contains the Slice language .ice files used to generate
 the C++ code for the LBT ICE-based IIF functions.
@@ -21,19 +22,24 @@ Overview:
 Ice Version
 
   On the MODS server machines (mods1 and mods2), we have installed
-  ZeroC Ice version 3.3.1.  LBT generally uses v3.3, but as of now the
-  current release from zeroc.com is v3.5.
+  ZeroC Ice version 3.3.1.  LBTO used v3.3 back in 2015 when we did
+  this for binocular operation, but as of 2025 for the MODS2025
+  Archon controller update, LBTO is using v3.7, including the
+  TCS simulator they provided.
 
+Retrieve from GitHub:
+  https://github.com/LBTO/tcs/tree/2024A/iif/ice
 
-Retrieve from SVN
-  svn export https://svn.lbto.org/repos/tcs/branches/2015B/iif/ice/Factory.ice
-  svn export https://svn.lbto.org/repos/tcs/branches/2015B/iif/ice/IIFServer.ice
+  Get Factory.ice and IIFServer.ice et al.
 
+  I had to hack IIFServer.ice to get a because there is a conflict of
+  using "result" which is apparently reserved.  Changed this to
+  "iifres", and elsewhere to get clean builds late.
+  
 Compilation:
 
   The .ice files are compiled using the slice2cpp program installed along
-  with the ZeroC Ice code.
-
+  with the ZeroC Ice code:
      slice2cpp Factory.ice
      slice2cpp IIFServer.ice
 
@@ -44,4 +50,4 @@ Compilation:
 
 ------------------------------
 R. Pogge, OSU Astronomy Dept.
-pogge@astronomy.ohio-state.edu
+pogge.1@osu.edu
