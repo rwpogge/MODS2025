@@ -9,3 +9,9 @@ The code on this repository is the version running at LBTO since 2014 for both M
 
 The `Makefile.build` is modified from the version used on the mountain as this is start of the port
 of the code to AlmaLinux 9.x.  We have ZeroC Ice 3.7 installed on the AlmaLinux box at OSU.
+
+The ICE folder contains the Factory.ice and IIFServer.ice files for the different TCS builds.  For
+The MODS2025 development, we are using a `ICE/Build2025X` (our name for it), hacked to fix a bug
+whereby "result" defined in the .ice file has a conflict with a reserved "result" definition in 
+Ice 3.7, changed to "iifres" to avoid this, edited, and regenerated files with `slice2cpp`.  Apparently
+this is not an issue with Java apps using Ice 3.7 
