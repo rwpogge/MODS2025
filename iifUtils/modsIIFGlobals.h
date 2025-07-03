@@ -6,7 +6,7 @@
 // Communicator and pointer to ZeroICE and IIF functions
 
 Ice::CommunicatorPtr communicator; // Ice communicator
-lbto::result res; // result object
+lbto::iifres res; // IIF result object
 lbto::IIFServerPrx iif;
 lbto::FactoryPrx factory;
 

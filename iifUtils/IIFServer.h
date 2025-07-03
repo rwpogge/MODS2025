@@ -222,9 +222,9 @@ using SeqModes = ::std::vector<double>;
 using SeqRes = ::std::vector<::std::string>;
 
 /**
- * @brief structure for result object
+ * @brief structure for iifres object
  */
-struct result
+struct iifres
 {
     int rescode;
     ::lbto::SeqRes resmsg;
@@ -288,387 +288,387 @@ public:
      */
     static const ::std::string& ice_staticId();
 
-    virtual result ApplyWaffleAO(SeqModes modes, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres ApplyWaffleAO(SeqModes modes, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_ApplyWaffleAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result Authorize(const ::Ice::Current& current) = 0;
+    virtual iifres Authorize(const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_Authorize(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result StepFocus(double relPos, ::std::string ope, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres StepFocus(double relPos, ::std::string ope, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_StepFocus(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result MoveFocus(double absPos, ::std::string ope, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres MoveFocus(double absPos, ::std::string ope, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_MoveFocus(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result OffsetPointing(double rotangle, double offx, double offy, ::std::string coordsys, ::std::string ope, ::std::string np, ::std::string movetype, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres OffsetPointing(double rotangle, double offx, double offy, ::std::string coordsys, ::std::string ope, ::std::string np, ::std::string movetype, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_OffsetPointing(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result OffsetPointing2(double rotangle, double offx, double offy, ::std::string coordsys, ::std::string movetype, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres OffsetPointing2(double rotangle, double offx, double offy, ::std::string coordsys, ::std::string movetype, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_OffsetPointing2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result OffsetGuiding(double rotangle, double offx, double offy, ::std::string coordsys, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres OffsetGuiding(double rotangle, double offx, double offy, ::std::string coordsys, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_OffsetGuiding(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result UpdatePointingReference(::std::string offsetcoord, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres UpdatePointingReference(::std::string offsetcoord, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_UpdatePointingReference(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result TipTilt(double xrot, double yrot, ::std::string ope, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres TipTilt(double xrot, double yrot, ::std::string ope, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_TipTilt(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetPMTerm(::std::string name, double value, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres SetPMTerm(::std::string name, double value, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetPMTerm(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetPMTerm2(::std::string name, double value, ::std::string movetype, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres SetPMTerm2(::std::string name, double value, ::std::string movetype, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetPMTerm2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result MoveXYZ(double xmov, double ymov, double zmov, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres MoveXYZ(double xmov, double ymov, double zmov, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_MoveXYZ(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result MoveXY(double xmov, double ymov, ::std::string ope, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres MoveXY(double xmov, double ymov, ::std::string ope, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_MoveXY(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result Move(double x, double y, double z, double rx, double ry, double rz, int dflag, ::std::string movetype, ::std::string OPE, int time, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres Move(double x, double y, double z, double rx, double ry, double rz, int dflag, ::std::string movetype, ::std::string OPE, int time, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_Move(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetTarget(double coord1, double coord2, ::std::string system, double epoch, float wavelength, const ::Ice::Current& current) = 0;
+    virtual iifres SetTarget(double coord1, double coord2, ::std::string system, double epoch, float wavelength, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetTarget(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetStars(SeqPos stars, const ::Ice::Current& current) = 0;
+    virtual iifres SetStars(SeqPos stars, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetStars(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetStarsNew(SeqNewPos stars, const ::Ice::Current& current) = 0;
+    virtual iifres SetStarsNew(SeqNewPos stars, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetStarsNew(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetStars2(SeqPos2 stars, const ::Ice::Current& current) = 0;
+    virtual iifres SetStars2(SeqPos2 stars, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetStars2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearStars(const ::Ice::Current& current) = 0;
+    virtual iifres ClearStars(const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearStars(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetHotspot(double coord1, double coord2, const ::Ice::Current& current) = 0;
+    virtual iifres SetHotspot(double coord1, double coord2, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetHotspot(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearHotspot(const ::Ice::Current& current) = 0;
+    virtual iifres ClearHotspot(const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearHotspot(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetOffset(double coord1, double coord2, ::std::string system, const ::Ice::Current& current) = 0;
+    virtual iifres SetOffset(double coord1, double coord2, ::std::string system, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetOffset(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetOffsetNew(double coord1, double coord2, ::std::string system, ::std::string movetype, const ::Ice::Current& current) = 0;
+    virtual iifres SetOffsetNew(double coord1, double coord2, ::std::string system, ::std::string movetype, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetOffsetNew(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetOffset2(double coord1, double coord2, ::std::string system, ::std::string movetype, const ::Ice::Current& current) = 0;
+    virtual iifres SetOffset2(double coord1, double coord2, ::std::string system, ::std::string movetype, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetOffset2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearOffset(const ::Ice::Current& current) = 0;
+    virtual iifres ClearOffset(const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearOffset(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetNonSidereal(nonsidereal target, bool override, const ::Ice::Current& current) = 0;
+    virtual iifres SetNonSidereal(nonsidereal target, bool override, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetNonSidereal(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearNonSidereal(bool override, const ::Ice::Current& current) = 0;
+    virtual iifres ClearNonSidereal(bool override, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearNonSidereal(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result UpdateNonSiderealTarget(double RArate, double DECrate, const ::Ice::Current& current) = 0;
+    virtual iifres UpdateNonSiderealTarget(double RArate, double DECrate, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_UpdateNonSiderealTarget(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetNonSiderealObject(::std::string objtype, nonsidereal target, bool override, const ::Ice::Current& current) = 0;
+    virtual iifres SetNonSiderealObject(::std::string objtype, nonsidereal target, bool override, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetNonSiderealObject(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearNonSiderealObject(::std::string objtype, bool override, const ::Ice::Current& current) = 0;
+    virtual iifres ClearNonSiderealObject(::std::string objtype, bool override, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearNonSiderealObject(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result UpdateNonSiderealObject(::std::string objtype, double RArate, double DECrate, const ::Ice::Current& current) = 0;
+    virtual iifres UpdateNonSiderealObject(::std::string objtype, double RArate, double DECrate, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_UpdateNonSiderealObject(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result PresetTelescope(double rotangle, ::std::string rotmode, ::std::string mode, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres PresetTelescope(double rotangle, ::std::string rotmode, ::std::string mode, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_PresetTelescope(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result BinocularControl(::std::string flag, const ::Ice::Current& current) = 0;
+    virtual iifres BinocularControl(::std::string flag, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_BinocularControl(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetParameter(SeqDD list, const ::Ice::Current& current) = 0;
+    virtual iifres GetParameter(SeqDD list, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_GetParameter(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetParameter(SeqDD list, const ::Ice::Current& current) = 0;
+    virtual iifres SetParameter(SeqDD list, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetParameter(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotateCommon(double z, double angle, double direction, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres RotateCommon(double z, double angle, double direction, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_RotateCommon(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotateZ(double angle, ::std::string movetype, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres RotateZ(double angle, ::std::string movetype, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_RotateZ(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotatePrimary(double distance, double angle, double direction, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres RotatePrimary(double distance, double angle, double direction, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_RotatePrimary(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SendWavefront(SeqWF wfs, ::std::string OPE, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres SendWavefront(SeqWF wfs, ::std::string OPE, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SendWavefront(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result UpdateTargetWavelength(float wavelength, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres UpdateTargetWavelength(float wavelength, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_UpdateTargetWavelength(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result LogEvent(::std::string event, ::std::string description, const ::Ice::Current& current) = 0;
+    virtual iifres LogEvent(::std::string event, ::std::string description, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_LogEvent(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetRotatorTrajectory(double seconds, double interval, double start, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres GetRotatorTrajectory(double seconds, double interval, double start, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_GetRotatorTrajectory(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetRotatorPolynomials(double start, int count, double interval, int order, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres GetRotatorPolynomials(double start, int count, double interval, int order, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_GetRotatorPolynomials(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result Standby(int level, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres Standby(int level, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_Standby(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result MaximizeWrapTime(bool azflag, bool rotflag, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres MaximizeWrapTime(bool azflag, bool rotflag, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_MaximizeWrapTime(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result PauseGuiding(::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres PauseGuiding(::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_PauseGuiding(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ResumeGuiding(::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres ResumeGuiding(::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_ResumeGuiding(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result StopGuiding(::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres StopGuiding(::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_StopGuiding(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetGuidingHotspot(double coord1, double coord2, ::std::string movetype, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres SetGuidingHotspot(double coord1, double coord2, ::std::string movetype, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetGuidingHotspot(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetAGWFilter(int filterNumber, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres SetAGWFilter(int filterNumber, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetAGWFilter(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetGuidingBinning(int factor, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres SetGuidingBinning(int factor, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetGuidingBinning(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotReady(bool enable, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres RotReady(bool enable, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_RotReady(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotHold(::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres RotHold(::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_RotHold(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotTrack(::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres RotTrack(::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_RotTrack(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotServicePosition(double angle, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres RotServicePosition(double angle, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_RotServicePosition(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result PauseAO(::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres PauseAO(::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_PauseAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ResumeAO(::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres ResumeAO(::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_ResumeAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result StartAO(::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres StartAO(::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_StartAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result StopAO(::std::string reason, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres StopAO(::std::string reason, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_StopAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result AcquireRefAO(bool repointFlag, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres AcquireRefAO(bool repointFlag, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_AcquireRefAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result CheckRefAO(::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres CheckRefAO(::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_CheckRefAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RefineAO(::std::string method, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres RefineAO(::std::string method, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_RefineAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RunAO(::std::string type, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres RunAO(::std::string type, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_RunAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result PresetFlatAO(::std::string flat, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres PresetFlatAO(::std::string flat, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_PresetFlatAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result CorrectModesAO(SeqModes modes, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres CorrectModesAO(SeqModes modes, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_CorrectModesAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ModifyAO(int NModes, double Freq, int Nbins, double TTMod, ::std::string F1spec, ::std::string F2spec, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres ModifyAO(int NModes, double Freq, int Nbins, double TTMod, ::std::string F1spec, ::std::string F2spec, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_ModifyAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result PresetAO(::std::string AOMode, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres PresetAO(::std::string AOMode, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_PresetAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result OffsetXYAO(double DeltaX, double DeltaY, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres OffsetXYAO(double DeltaX, double DeltaY, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_OffsetXYAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result OffsetZAO(double DeltaZ, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres OffsetZAO(double DeltaZ, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_OffsetZAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetReference(SeqPos stars, const ::Ice::Current& current) = 0;
+    virtual iifres SetReference(SeqPos stars, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetReference(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetReferenceNew(SeqNewPos stars, const ::Ice::Current& current) = 0;
+    virtual iifres SetReferenceNew(SeqNewPos stars, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetReferenceNew(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetReference2(SeqPos2 stars, const ::Ice::Current& current) = 0;
+    virtual iifres SetReference2(SeqPos2 stars, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_SetReference2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearReference(const ::Ice::Current& current) = 0;
+    virtual iifres ClearReference(const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearReference(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetKFPCoordinates(SeqPos stars, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres GetKFPCoordinates(SeqPos stars, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_GetKFPCoordinates(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetKFPCoordinatesNew(SeqNewPos stars, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres GetKFPCoordinatesNew(SeqNewPos stars, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_GetKFPCoordinatesNew(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetKFPCoordinates2(SeqPos2 stars, ::std::string side, const ::Ice::Current& current) = 0;
+    virtual iifres GetKFPCoordinates2(SeqPos2 stars, ::std::string side, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_GetKFPCoordinates2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result NSQuery(::std::string targenName, ::std::string startDate, ::std::string startTime, ::std::string endDate, ::std::string endTime, ::std::string interval, ::std::string fileName, const ::Ice::Current& current) = 0;
+    virtual iifres NSQuery(::std::string targenName, ::std::string startDate, ::std::string startTime, ::std::string endDate, ::std::string endTime, ::std::string interval, ::std::string fileName, const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_NSQuery(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
@@ -695,2001 +695,2001 @@ class IIFServerPrx : public virtual ::Ice::Proxy<IIFServerPrx, ::Ice::ObjectPrx>
 {
 public:
 
-    result ApplyWaffleAO(const SeqModes& modes, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres ApplyWaffleAO(const SeqModes& modes, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_ApplyWaffleAO, modes, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_ApplyWaffleAO, modes, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto ApplyWaffleAOAsync(const SeqModes& modes, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_ApplyWaffleAO, modes, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_ApplyWaffleAO, modes, side, context);
     }
 
     ::std::function<void()>
     ApplyWaffleAOAsync(const SeqModes& modes, const ::std::string& side,
-                       ::std::function<void(::lbto::result)> response,
+                       ::std::function<void(::lbto::iifres)> response,
                        ::std::function<void(::std::exception_ptr)> ex = nullptr,
                        ::std::function<void(bool)> sent = nullptr,
                        const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ApplyWaffleAO, modes, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ApplyWaffleAO, modes, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_ApplyWaffleAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqModes&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_ApplyWaffleAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqModes&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result Authorize(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres Authorize(const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_Authorize, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_Authorize, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto AuthorizeAsync(const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_Authorize, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_Authorize, context);
     }
 
     ::std::function<void()>
-    AuthorizeAsync(::std::function<void(::lbto::result)> response,
+    AuthorizeAsync(::std::function<void(::lbto::iifres)> response,
                    ::std::function<void(::std::exception_ptr)> ex = nullptr,
                    ::std::function<void(bool)> sent = nullptr,
                    const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_Authorize, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_Authorize, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_Authorize(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::Ice::Context&);
+    void _iceI_Authorize(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::Ice::Context&);
     /// \endcond
 
-    result StepFocus(double relPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres StepFocus(double relPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_StepFocus, relPos, ope, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_StepFocus, relPos, ope, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto StepFocusAsync(double relPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_StepFocus, relPos, ope, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_StepFocus, relPos, ope, side, context);
     }
 
     ::std::function<void()>
     StepFocusAsync(double relPos, const ::std::string& ope, const ::std::string& side,
-                   ::std::function<void(::lbto::result)> response,
+                   ::std::function<void(::lbto::iifres)> response,
                    ::std::function<void(::std::exception_ptr)> ex = nullptr,
                    ::std::function<void(bool)> sent = nullptr,
                    const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_StepFocus, relPos, ope, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_StepFocus, relPos, ope, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_StepFocus(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_StepFocus(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result MoveFocus(double absPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres MoveFocus(double absPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_MoveFocus, absPos, ope, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_MoveFocus, absPos, ope, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto MoveFocusAsync(double absPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_MoveFocus, absPos, ope, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_MoveFocus, absPos, ope, side, context);
     }
 
     ::std::function<void()>
     MoveFocusAsync(double absPos, const ::std::string& ope, const ::std::string& side,
-                   ::std::function<void(::lbto::result)> response,
+                   ::std::function<void(::lbto::iifres)> response,
                    ::std::function<void(::std::exception_ptr)> ex = nullptr,
                    ::std::function<void(bool)> sent = nullptr,
                    const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_MoveFocus, absPos, ope, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_MoveFocus, absPos, ope, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_MoveFocus(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_MoveFocus(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result OffsetPointing(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& ope, const ::std::string& np, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres OffsetPointing(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& ope, const ::std::string& np, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_OffsetPointing, rotangle, offx, offy, coordsys, ope, np, movetype, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_OffsetPointing, rotangle, offx, offy, coordsys, ope, np, movetype, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto OffsetPointingAsync(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& ope, const ::std::string& np, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_OffsetPointing, rotangle, offx, offy, coordsys, ope, np, movetype, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_OffsetPointing, rotangle, offx, offy, coordsys, ope, np, movetype, side, context);
     }
 
     ::std::function<void()>
     OffsetPointingAsync(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& ope, const ::std::string& np, const ::std::string& movetype, const ::std::string& side,
-                        ::std::function<void(::lbto::result)> response,
+                        ::std::function<void(::lbto::iifres)> response,
                         ::std::function<void(::std::exception_ptr)> ex = nullptr,
                         ::std::function<void(bool)> sent = nullptr,
                         const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_OffsetPointing, rotangle, offx, offy, coordsys, ope, np, movetype, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_OffsetPointing, rotangle, offx, offy, coordsys, ope, np, movetype, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_OffsetPointing(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, double, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_OffsetPointing(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, double, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result OffsetPointing2(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres OffsetPointing2(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_OffsetPointing2, rotangle, offx, offy, coordsys, movetype, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_OffsetPointing2, rotangle, offx, offy, coordsys, movetype, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto OffsetPointing2Async(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_OffsetPointing2, rotangle, offx, offy, coordsys, movetype, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_OffsetPointing2, rotangle, offx, offy, coordsys, movetype, side, context);
     }
 
     ::std::function<void()>
     OffsetPointing2Async(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& movetype, const ::std::string& side,
-                         ::std::function<void(::lbto::result)> response,
+                         ::std::function<void(::lbto::iifres)> response,
                          ::std::function<void(::std::exception_ptr)> ex = nullptr,
                          ::std::function<void(bool)> sent = nullptr,
                          const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_OffsetPointing2, rotangle, offx, offy, coordsys, movetype, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_OffsetPointing2, rotangle, offx, offy, coordsys, movetype, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_OffsetPointing2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, double, const ::std::string&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_OffsetPointing2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, double, const ::std::string&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result OffsetGuiding(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres OffsetGuiding(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_OffsetGuiding, rotangle, offx, offy, coordsys, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_OffsetGuiding, rotangle, offx, offy, coordsys, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto OffsetGuidingAsync(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_OffsetGuiding, rotangle, offx, offy, coordsys, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_OffsetGuiding, rotangle, offx, offy, coordsys, side, context);
     }
 
     ::std::function<void()>
     OffsetGuidingAsync(double rotangle, double offx, double offy, const ::std::string& coordsys, const ::std::string& side,
-                       ::std::function<void(::lbto::result)> response,
+                       ::std::function<void(::lbto::iifres)> response,
                        ::std::function<void(::std::exception_ptr)> ex = nullptr,
                        ::std::function<void(bool)> sent = nullptr,
                        const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_OffsetGuiding, rotangle, offx, offy, coordsys, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_OffsetGuiding, rotangle, offx, offy, coordsys, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_OffsetGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_OffsetGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result UpdatePointingReference(const ::std::string& offsetcoord, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres UpdatePointingReference(const ::std::string& offsetcoord, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_UpdatePointingReference, offsetcoord, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_UpdatePointingReference, offsetcoord, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto UpdatePointingReferenceAsync(const ::std::string& offsetcoord, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_UpdatePointingReference, offsetcoord, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_UpdatePointingReference, offsetcoord, side, context);
     }
 
     ::std::function<void()>
     UpdatePointingReferenceAsync(const ::std::string& offsetcoord, const ::std::string& side,
-                                 ::std::function<void(::lbto::result)> response,
+                                 ::std::function<void(::lbto::iifres)> response,
                                  ::std::function<void(::std::exception_ptr)> ex = nullptr,
                                  ::std::function<void(bool)> sent = nullptr,
                                  const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_UpdatePointingReference, offsetcoord, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_UpdatePointingReference, offsetcoord, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_UpdatePointingReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_UpdatePointingReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result TipTilt(double xrot, double yrot, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres TipTilt(double xrot, double yrot, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_TipTilt, xrot, yrot, ope, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_TipTilt, xrot, yrot, ope, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto TipTiltAsync(double xrot, double yrot, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_TipTilt, xrot, yrot, ope, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_TipTilt, xrot, yrot, ope, side, context);
     }
 
     ::std::function<void()>
     TipTiltAsync(double xrot, double yrot, const ::std::string& ope, const ::std::string& side,
-                 ::std::function<void(::lbto::result)> response,
+                 ::std::function<void(::lbto::iifres)> response,
                  ::std::function<void(::std::exception_ptr)> ex = nullptr,
                  ::std::function<void(bool)> sent = nullptr,
                  const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_TipTilt, xrot, yrot, ope, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_TipTilt, xrot, yrot, ope, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_TipTilt(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_TipTilt(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result SetPMTerm(const ::std::string& name, double value, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetPMTerm(const ::std::string& name, double value, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetPMTerm, name, value, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetPMTerm, name, value, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetPMTermAsync(const ::std::string& name, double value, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetPMTerm, name, value, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetPMTerm, name, value, side, context);
     }
 
     ::std::function<void()>
     SetPMTermAsync(const ::std::string& name, double value, const ::std::string& side,
-                   ::std::function<void(::lbto::result)> response,
+                   ::std::function<void(::lbto::iifres)> response,
                    ::std::function<void(::std::exception_ptr)> ex = nullptr,
                    ::std::function<void(bool)> sent = nullptr,
                    const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetPMTerm, name, value, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetPMTerm, name, value, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetPMTerm(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, double, const ::std::string&, const ::Ice::Context&);
+    void _iceI_SetPMTerm(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, double, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result SetPMTerm2(const ::std::string& name, double value, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetPMTerm2(const ::std::string& name, double value, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetPMTerm2, name, value, movetype, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetPMTerm2, name, value, movetype, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetPMTerm2Async(const ::std::string& name, double value, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetPMTerm2, name, value, movetype, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetPMTerm2, name, value, movetype, side, context);
     }
 
     ::std::function<void()>
     SetPMTerm2Async(const ::std::string& name, double value, const ::std::string& movetype, const ::std::string& side,
-                    ::std::function<void(::lbto::result)> response,
+                    ::std::function<void(::lbto::iifres)> response,
                     ::std::function<void(::std::exception_ptr)> ex = nullptr,
                     ::std::function<void(bool)> sent = nullptr,
                     const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetPMTerm2, name, value, movetype, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetPMTerm2, name, value, movetype, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetPMTerm2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_SetPMTerm2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result MoveXYZ(double xmov, double ymov, double zmov, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres MoveXYZ(double xmov, double ymov, double zmov, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_MoveXYZ, xmov, ymov, zmov, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_MoveXYZ, xmov, ymov, zmov, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto MoveXYZAsync(double xmov, double ymov, double zmov, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_MoveXYZ, xmov, ymov, zmov, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_MoveXYZ, xmov, ymov, zmov, side, context);
     }
 
     ::std::function<void()>
     MoveXYZAsync(double xmov, double ymov, double zmov, const ::std::string& side,
-                 ::std::function<void(::lbto::result)> response,
+                 ::std::function<void(::lbto::iifres)> response,
                  ::std::function<void(::std::exception_ptr)> ex = nullptr,
                  ::std::function<void(bool)> sent = nullptr,
                  const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_MoveXYZ, xmov, ymov, zmov, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_MoveXYZ, xmov, ymov, zmov, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_MoveXYZ(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, double, const ::std::string&, const ::Ice::Context&);
+    void _iceI_MoveXYZ(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, double, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result MoveXY(double xmov, double ymov, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres MoveXY(double xmov, double ymov, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_MoveXY, xmov, ymov, ope, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_MoveXY, xmov, ymov, ope, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto MoveXYAsync(double xmov, double ymov, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_MoveXY, xmov, ymov, ope, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_MoveXY, xmov, ymov, ope, side, context);
     }
 
     ::std::function<void()>
     MoveXYAsync(double xmov, double ymov, const ::std::string& ope, const ::std::string& side,
-                ::std::function<void(::lbto::result)> response,
+                ::std::function<void(::lbto::iifres)> response,
                 ::std::function<void(::std::exception_ptr)> ex = nullptr,
                 ::std::function<void(bool)> sent = nullptr,
                 const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_MoveXY, xmov, ymov, ope, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_MoveXY, xmov, ymov, ope, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_MoveXY(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_MoveXY(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result Move(double x, double y, double z, double rx, double ry, double rz, int dflag, const ::std::string& movetype, const ::std::string& OPE, int time, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres Move(double x, double y, double z, double rx, double ry, double rz, int dflag, const ::std::string& movetype, const ::std::string& OPE, int time, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_Move, x, y, z, rx, ry, rz, dflag, movetype, OPE, time, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_Move, x, y, z, rx, ry, rz, dflag, movetype, OPE, time, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto MoveAsync(double x, double y, double z, double rx, double ry, double rz, int dflag, const ::std::string& movetype, const ::std::string& OPE, int time, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_Move, x, y, z, rx, ry, rz, dflag, movetype, OPE, time, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_Move, x, y, z, rx, ry, rz, dflag, movetype, OPE, time, side, context);
     }
 
     ::std::function<void()>
     MoveAsync(double x, double y, double z, double rx, double ry, double rz, int dflag, const ::std::string& movetype, const ::std::string& OPE, int time, const ::std::string& side,
-              ::std::function<void(::lbto::result)> response,
+              ::std::function<void(::lbto::iifres)> response,
               ::std::function<void(::std::exception_ptr)> ex = nullptr,
               ::std::function<void(bool)> sent = nullptr,
               const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_Move, x, y, z, rx, ry, rz, dflag, movetype, OPE, time, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_Move, x, y, z, rx, ry, rz, dflag, movetype, OPE, time, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_Move(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, double, double, double, double, int, const ::std::string&, const ::std::string&, int, const ::std::string&, const ::Ice::Context&);
+    void _iceI_Move(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, double, double, double, double, int, const ::std::string&, const ::std::string&, int, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result SetTarget(double coord1, double coord2, const ::std::string& system, double epoch, float wavelength, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetTarget(double coord1, double coord2, const ::std::string& system, double epoch, float wavelength, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetTarget, coord1, coord2, system, epoch, wavelength, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetTarget, coord1, coord2, system, epoch, wavelength, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetTargetAsync(double coord1, double coord2, const ::std::string& system, double epoch, float wavelength, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetTarget, coord1, coord2, system, epoch, wavelength, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetTarget, coord1, coord2, system, epoch, wavelength, context);
     }
 
     ::std::function<void()>
     SetTargetAsync(double coord1, double coord2, const ::std::string& system, double epoch, float wavelength,
-                   ::std::function<void(::lbto::result)> response,
+                   ::std::function<void(::lbto::iifres)> response,
                    ::std::function<void(::std::exception_ptr)> ex = nullptr,
                    ::std::function<void(bool)> sent = nullptr,
                    const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetTarget, coord1, coord2, system, epoch, wavelength, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetTarget, coord1, coord2, system, epoch, wavelength, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetTarget(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, const ::std::string&, double, float, const ::Ice::Context&);
+    void _iceI_SetTarget(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, const ::std::string&, double, float, const ::Ice::Context&);
     /// \endcond
 
-    result SetStars(const SeqPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetStars(const SeqPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetStars, stars, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetStars, stars, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetStarsAsync(const SeqPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetStars, stars, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetStars, stars, context);
     }
 
     ::std::function<void()>
     SetStarsAsync(const SeqPos& stars,
-                  ::std::function<void(::lbto::result)> response,
+                  ::std::function<void(::lbto::iifres)> response,
                   ::std::function<void(::std::exception_ptr)> ex = nullptr,
                   ::std::function<void(bool)> sent = nullptr,
                   const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetStars, stars, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetStars, stars, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetStars(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqPos&, const ::Ice::Context&);
+    void _iceI_SetStars(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqPos&, const ::Ice::Context&);
     /// \endcond
 
-    result SetStarsNew(const SeqNewPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetStarsNew(const SeqNewPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetStarsNew, stars, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetStarsNew, stars, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetStarsNewAsync(const SeqNewPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetStarsNew, stars, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetStarsNew, stars, context);
     }
 
     ::std::function<void()>
     SetStarsNewAsync(const SeqNewPos& stars,
-                     ::std::function<void(::lbto::result)> response,
+                     ::std::function<void(::lbto::iifres)> response,
                      ::std::function<void(::std::exception_ptr)> ex = nullptr,
                      ::std::function<void(bool)> sent = nullptr,
                      const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetStarsNew, stars, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetStarsNew, stars, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetStarsNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqNewPos&, const ::Ice::Context&);
+    void _iceI_SetStarsNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqNewPos&, const ::Ice::Context&);
     /// \endcond
 
-    result SetStars2(const SeqPos2& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetStars2(const SeqPos2& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetStars2, stars, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetStars2, stars, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetStars2Async(const SeqPos2& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetStars2, stars, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetStars2, stars, context);
     }
 
     ::std::function<void()>
     SetStars2Async(const SeqPos2& stars,
-                   ::std::function<void(::lbto::result)> response,
+                   ::std::function<void(::lbto::iifres)> response,
                    ::std::function<void(::std::exception_ptr)> ex = nullptr,
                    ::std::function<void(bool)> sent = nullptr,
                    const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetStars2, stars, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetStars2, stars, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetStars2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqPos2&, const ::Ice::Context&);
+    void _iceI_SetStars2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqPos2&, const ::Ice::Context&);
     /// \endcond
 
-    result ClearStars(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres ClearStars(const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_ClearStars, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_ClearStars, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto ClearStarsAsync(const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_ClearStars, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_ClearStars, context);
     }
 
     ::std::function<void()>
-    ClearStarsAsync(::std::function<void(::lbto::result)> response,
+    ClearStarsAsync(::std::function<void(::lbto::iifres)> response,
                     ::std::function<void(::std::exception_ptr)> ex = nullptr,
                     ::std::function<void(bool)> sent = nullptr,
                     const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearStars, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearStars, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_ClearStars(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::Ice::Context&);
+    void _iceI_ClearStars(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::Ice::Context&);
     /// \endcond
 
-    result SetHotspot(double coord1, double coord2, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetHotspot(double coord1, double coord2, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetHotspot, coord1, coord2, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetHotspot, coord1, coord2, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetHotspotAsync(double coord1, double coord2, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetHotspot, coord1, coord2, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetHotspot, coord1, coord2, context);
     }
 
     ::std::function<void()>
     SetHotspotAsync(double coord1, double coord2,
-                    ::std::function<void(::lbto::result)> response,
+                    ::std::function<void(::lbto::iifres)> response,
                     ::std::function<void(::std::exception_ptr)> ex = nullptr,
                     ::std::function<void(bool)> sent = nullptr,
                     const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetHotspot, coord1, coord2, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetHotspot, coord1, coord2, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, const ::Ice::Context&);
+    void _iceI_SetHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, const ::Ice::Context&);
     /// \endcond
 
-    result ClearHotspot(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres ClearHotspot(const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_ClearHotspot, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_ClearHotspot, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto ClearHotspotAsync(const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_ClearHotspot, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_ClearHotspot, context);
     }
 
     ::std::function<void()>
-    ClearHotspotAsync(::std::function<void(::lbto::result)> response,
+    ClearHotspotAsync(::std::function<void(::lbto::iifres)> response,
                       ::std::function<void(::std::exception_ptr)> ex = nullptr,
                       ::std::function<void(bool)> sent = nullptr,
                       const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearHotspot, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearHotspot, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_ClearHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::Ice::Context&);
+    void _iceI_ClearHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::Ice::Context&);
     /// \endcond
 
-    result SetOffset(double coord1, double coord2, const ::std::string& system, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetOffset(double coord1, double coord2, const ::std::string& system, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetOffset, coord1, coord2, system, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetOffset, coord1, coord2, system, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetOffsetAsync(double coord1, double coord2, const ::std::string& system, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetOffset, coord1, coord2, system, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetOffset, coord1, coord2, system, context);
     }
 
     ::std::function<void()>
     SetOffsetAsync(double coord1, double coord2, const ::std::string& system,
-                   ::std::function<void(::lbto::result)> response,
+                   ::std::function<void(::lbto::iifres)> response,
                    ::std::function<void(::std::exception_ptr)> ex = nullptr,
                    ::std::function<void(bool)> sent = nullptr,
                    const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetOffset, coord1, coord2, system, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetOffset, coord1, coord2, system, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetOffset(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, const ::std::string&, const ::Ice::Context&);
+    void _iceI_SetOffset(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result SetOffsetNew(double coord1, double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetOffsetNew(double coord1, double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetOffsetNew, coord1, coord2, system, movetype, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetOffsetNew, coord1, coord2, system, movetype, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetOffsetNewAsync(double coord1, double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetOffsetNew, coord1, coord2, system, movetype, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetOffsetNew, coord1, coord2, system, movetype, context);
     }
 
     ::std::function<void()>
     SetOffsetNewAsync(double coord1, double coord2, const ::std::string& system, const ::std::string& movetype,
-                      ::std::function<void(::lbto::result)> response,
+                      ::std::function<void(::lbto::iifres)> response,
                       ::std::function<void(::std::exception_ptr)> ex = nullptr,
                       ::std::function<void(bool)> sent = nullptr,
                       const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetOffsetNew, coord1, coord2, system, movetype, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetOffsetNew, coord1, coord2, system, movetype, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetOffsetNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_SetOffsetNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result SetOffset2(double coord1, double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetOffset2(double coord1, double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetOffset2, coord1, coord2, system, movetype, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetOffset2, coord1, coord2, system, movetype, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetOffset2Async(double coord1, double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetOffset2, coord1, coord2, system, movetype, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetOffset2, coord1, coord2, system, movetype, context);
     }
 
     ::std::function<void()>
     SetOffset2Async(double coord1, double coord2, const ::std::string& system, const ::std::string& movetype,
-                    ::std::function<void(::lbto::result)> response,
+                    ::std::function<void(::lbto::iifres)> response,
                     ::std::function<void(::std::exception_ptr)> ex = nullptr,
                     ::std::function<void(bool)> sent = nullptr,
                     const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetOffset2, coord1, coord2, system, movetype, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetOffset2, coord1, coord2, system, movetype, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetOffset2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_SetOffset2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result ClearOffset(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres ClearOffset(const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_ClearOffset, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_ClearOffset, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto ClearOffsetAsync(const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_ClearOffset, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_ClearOffset, context);
     }
 
     ::std::function<void()>
-    ClearOffsetAsync(::std::function<void(::lbto::result)> response,
+    ClearOffsetAsync(::std::function<void(::lbto::iifres)> response,
                      ::std::function<void(::std::exception_ptr)> ex = nullptr,
                      ::std::function<void(bool)> sent = nullptr,
                      const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearOffset, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearOffset, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_ClearOffset(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::Ice::Context&);
+    void _iceI_ClearOffset(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::Ice::Context&);
     /// \endcond
 
-    result SetNonSidereal(const nonsidereal& target, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetNonSidereal(const nonsidereal& target, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetNonSidereal, target, override, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetNonSidereal, target, override, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetNonSiderealAsync(const nonsidereal& target, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetNonSidereal, target, override, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetNonSidereal, target, override, context);
     }
 
     ::std::function<void()>
     SetNonSiderealAsync(const nonsidereal& target, bool override,
-                        ::std::function<void(::lbto::result)> response,
+                        ::std::function<void(::lbto::iifres)> response,
                         ::std::function<void(::std::exception_ptr)> ex = nullptr,
                         ::std::function<void(bool)> sent = nullptr,
                         const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetNonSidereal, target, override, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetNonSidereal, target, override, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetNonSidereal(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const nonsidereal&, bool, const ::Ice::Context&);
+    void _iceI_SetNonSidereal(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const nonsidereal&, bool, const ::Ice::Context&);
     /// \endcond
 
-    result ClearNonSidereal(bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres ClearNonSidereal(bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_ClearNonSidereal, override, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_ClearNonSidereal, override, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto ClearNonSiderealAsync(bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_ClearNonSidereal, override, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_ClearNonSidereal, override, context);
     }
 
     ::std::function<void()>
     ClearNonSiderealAsync(bool override,
-                          ::std::function<void(::lbto::result)> response,
+                          ::std::function<void(::lbto::iifres)> response,
                           ::std::function<void(::std::exception_ptr)> ex = nullptr,
                           ::std::function<void(bool)> sent = nullptr,
                           const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearNonSidereal, override, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearNonSidereal, override, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_ClearNonSidereal(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, bool, const ::Ice::Context&);
+    void _iceI_ClearNonSidereal(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, bool, const ::Ice::Context&);
     /// \endcond
 
-    result UpdateNonSiderealTarget(double RArate, double DECrate, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres UpdateNonSiderealTarget(double RArate, double DECrate, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_UpdateNonSiderealTarget, RArate, DECrate, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_UpdateNonSiderealTarget, RArate, DECrate, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto UpdateNonSiderealTargetAsync(double RArate, double DECrate, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_UpdateNonSiderealTarget, RArate, DECrate, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_UpdateNonSiderealTarget, RArate, DECrate, context);
     }
 
     ::std::function<void()>
     UpdateNonSiderealTargetAsync(double RArate, double DECrate,
-                                 ::std::function<void(::lbto::result)> response,
+                                 ::std::function<void(::lbto::iifres)> response,
                                  ::std::function<void(::std::exception_ptr)> ex = nullptr,
                                  ::std::function<void(bool)> sent = nullptr,
                                  const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_UpdateNonSiderealTarget, RArate, DECrate, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_UpdateNonSiderealTarget, RArate, DECrate, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_UpdateNonSiderealTarget(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, const ::Ice::Context&);
+    void _iceI_UpdateNonSiderealTarget(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, const ::Ice::Context&);
     /// \endcond
 
-    result SetNonSiderealObject(const ::std::string& objtype, const nonsidereal& target, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetNonSiderealObject(const ::std::string& objtype, const nonsidereal& target, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetNonSiderealObject, objtype, target, override, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetNonSiderealObject, objtype, target, override, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetNonSiderealObjectAsync(const ::std::string& objtype, const nonsidereal& target, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetNonSiderealObject, objtype, target, override, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetNonSiderealObject, objtype, target, override, context);
     }
 
     ::std::function<void()>
     SetNonSiderealObjectAsync(const ::std::string& objtype, const nonsidereal& target, bool override,
-                              ::std::function<void(::lbto::result)> response,
+                              ::std::function<void(::lbto::iifres)> response,
                               ::std::function<void(::std::exception_ptr)> ex = nullptr,
                               ::std::function<void(bool)> sent = nullptr,
                               const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetNonSiderealObject, objtype, target, override, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetNonSiderealObject, objtype, target, override, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const nonsidereal&, bool, const ::Ice::Context&);
+    void _iceI_SetNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const nonsidereal&, bool, const ::Ice::Context&);
     /// \endcond
 
-    result ClearNonSiderealObject(const ::std::string& objtype, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres ClearNonSiderealObject(const ::std::string& objtype, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_ClearNonSiderealObject, objtype, override, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_ClearNonSiderealObject, objtype, override, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto ClearNonSiderealObjectAsync(const ::std::string& objtype, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_ClearNonSiderealObject, objtype, override, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_ClearNonSiderealObject, objtype, override, context);
     }
 
     ::std::function<void()>
     ClearNonSiderealObjectAsync(const ::std::string& objtype, bool override,
-                                ::std::function<void(::lbto::result)> response,
+                                ::std::function<void(::lbto::iifres)> response,
                                 ::std::function<void(::std::exception_ptr)> ex = nullptr,
                                 ::std::function<void(bool)> sent = nullptr,
                                 const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearNonSiderealObject, objtype, override, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearNonSiderealObject, objtype, override, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_ClearNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, bool, const ::Ice::Context&);
+    void _iceI_ClearNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, bool, const ::Ice::Context&);
     /// \endcond
 
-    result UpdateNonSiderealObject(const ::std::string& objtype, double RArate, double DECrate, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres UpdateNonSiderealObject(const ::std::string& objtype, double RArate, double DECrate, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_UpdateNonSiderealObject, objtype, RArate, DECrate, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_UpdateNonSiderealObject, objtype, RArate, DECrate, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto UpdateNonSiderealObjectAsync(const ::std::string& objtype, double RArate, double DECrate, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_UpdateNonSiderealObject, objtype, RArate, DECrate, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_UpdateNonSiderealObject, objtype, RArate, DECrate, context);
     }
 
     ::std::function<void()>
     UpdateNonSiderealObjectAsync(const ::std::string& objtype, double RArate, double DECrate,
-                                 ::std::function<void(::lbto::result)> response,
+                                 ::std::function<void(::lbto::iifres)> response,
                                  ::std::function<void(::std::exception_ptr)> ex = nullptr,
                                  ::std::function<void(bool)> sent = nullptr,
                                  const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_UpdateNonSiderealObject, objtype, RArate, DECrate, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_UpdateNonSiderealObject, objtype, RArate, DECrate, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_UpdateNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, double, double, const ::Ice::Context&);
+    void _iceI_UpdateNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, double, double, const ::Ice::Context&);
     /// \endcond
 
-    result PresetTelescope(double rotangle, const ::std::string& rotmode, const ::std::string& mode, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres PresetTelescope(double rotangle, const ::std::string& rotmode, const ::std::string& mode, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_PresetTelescope, rotangle, rotmode, mode, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_PresetTelescope, rotangle, rotmode, mode, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto PresetTelescopeAsync(double rotangle, const ::std::string& rotmode, const ::std::string& mode, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_PresetTelescope, rotangle, rotmode, mode, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_PresetTelescope, rotangle, rotmode, mode, side, context);
     }
 
     ::std::function<void()>
     PresetTelescopeAsync(double rotangle, const ::std::string& rotmode, const ::std::string& mode, const ::std::string& side,
-                         ::std::function<void(::lbto::result)> response,
+                         ::std::function<void(::lbto::iifres)> response,
                          ::std::function<void(::std::exception_ptr)> ex = nullptr,
                          ::std::function<void(bool)> sent = nullptr,
                          const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_PresetTelescope, rotangle, rotmode, mode, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_PresetTelescope, rotangle, rotmode, mode, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_PresetTelescope(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, const ::std::string&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_PresetTelescope(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, const ::std::string&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result BinocularControl(const ::std::string& flag, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres BinocularControl(const ::std::string& flag, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_BinocularControl, flag, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_BinocularControl, flag, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto BinocularControlAsync(const ::std::string& flag, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_BinocularControl, flag, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_BinocularControl, flag, context);
     }
 
     ::std::function<void()>
     BinocularControlAsync(const ::std::string& flag,
-                          ::std::function<void(::lbto::result)> response,
+                          ::std::function<void(::lbto::iifres)> response,
                           ::std::function<void(::std::exception_ptr)> ex = nullptr,
                           ::std::function<void(bool)> sent = nullptr,
                           const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_BinocularControl, flag, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_BinocularControl, flag, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_BinocularControl(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_BinocularControl(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result GetParameter(const SeqDD& list, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres GetParameter(const SeqDD& list, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_GetParameter, list, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_GetParameter, list, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto GetParameterAsync(const SeqDD& list, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_GetParameter, list, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_GetParameter, list, context);
     }
 
     ::std::function<void()>
     GetParameterAsync(const SeqDD& list,
-                      ::std::function<void(::lbto::result)> response,
+                      ::std::function<void(::lbto::iifres)> response,
                       ::std::function<void(::std::exception_ptr)> ex = nullptr,
                       ::std::function<void(bool)> sent = nullptr,
                       const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetParameter, list, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetParameter, list, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_GetParameter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqDD&, const ::Ice::Context&);
+    void _iceI_GetParameter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqDD&, const ::Ice::Context&);
     /// \endcond
 
-    result SetParameter(const SeqDD& list, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetParameter(const SeqDD& list, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetParameter, list, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetParameter, list, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetParameterAsync(const SeqDD& list, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetParameter, list, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetParameter, list, context);
     }
 
     ::std::function<void()>
     SetParameterAsync(const SeqDD& list,
-                      ::std::function<void(::lbto::result)> response,
+                      ::std::function<void(::lbto::iifres)> response,
                       ::std::function<void(::std::exception_ptr)> ex = nullptr,
                       ::std::function<void(bool)> sent = nullptr,
                       const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetParameter, list, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetParameter, list, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetParameter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqDD&, const ::Ice::Context&);
+    void _iceI_SetParameter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqDD&, const ::Ice::Context&);
     /// \endcond
 
-    result RotateCommon(double z, double angle, double direction, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres RotateCommon(double z, double angle, double direction, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_RotateCommon, z, angle, direction, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_RotateCommon, z, angle, direction, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto RotateCommonAsync(double z, double angle, double direction, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_RotateCommon, z, angle, direction, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_RotateCommon, z, angle, direction, side, context);
     }
 
     ::std::function<void()>
     RotateCommonAsync(double z, double angle, double direction, const ::std::string& side,
-                      ::std::function<void(::lbto::result)> response,
+                      ::std::function<void(::lbto::iifres)> response,
                       ::std::function<void(::std::exception_ptr)> ex = nullptr,
                       ::std::function<void(bool)> sent = nullptr,
                       const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotateCommon, z, angle, direction, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotateCommon, z, angle, direction, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_RotateCommon(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, double, const ::std::string&, const ::Ice::Context&);
+    void _iceI_RotateCommon(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, double, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result RotateZ(double angle, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres RotateZ(double angle, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_RotateZ, angle, movetype, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_RotateZ, angle, movetype, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto RotateZAsync(double angle, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_RotateZ, angle, movetype, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_RotateZ, angle, movetype, side, context);
     }
 
     ::std::function<void()>
     RotateZAsync(double angle, const ::std::string& movetype, const ::std::string& side,
-                 ::std::function<void(::lbto::result)> response,
+                 ::std::function<void(::lbto::iifres)> response,
                  ::std::function<void(::std::exception_ptr)> ex = nullptr,
                  ::std::function<void(bool)> sent = nullptr,
                  const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotateZ, angle, movetype, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotateZ, angle, movetype, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_RotateZ(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_RotateZ(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result RotatePrimary(double distance, double angle, double direction, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres RotatePrimary(double distance, double angle, double direction, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_RotatePrimary, distance, angle, direction, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_RotatePrimary, distance, angle, direction, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto RotatePrimaryAsync(double distance, double angle, double direction, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_RotatePrimary, distance, angle, direction, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_RotatePrimary, distance, angle, direction, side, context);
     }
 
     ::std::function<void()>
     RotatePrimaryAsync(double distance, double angle, double direction, const ::std::string& side,
-                       ::std::function<void(::lbto::result)> response,
+                       ::std::function<void(::lbto::iifres)> response,
                        ::std::function<void(::std::exception_ptr)> ex = nullptr,
                        ::std::function<void(bool)> sent = nullptr,
                        const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotatePrimary, distance, angle, direction, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotatePrimary, distance, angle, direction, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_RotatePrimary(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, double, const ::std::string&, const ::Ice::Context&);
+    void _iceI_RotatePrimary(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, double, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result SendWavefront(const SeqWF& wfs, const ::std::string& OPE, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SendWavefront(const SeqWF& wfs, const ::std::string& OPE, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SendWavefront, wfs, OPE, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SendWavefront, wfs, OPE, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SendWavefrontAsync(const SeqWF& wfs, const ::std::string& OPE, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SendWavefront, wfs, OPE, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SendWavefront, wfs, OPE, side, context);
     }
 
     ::std::function<void()>
     SendWavefrontAsync(const SeqWF& wfs, const ::std::string& OPE, const ::std::string& side,
-                       ::std::function<void(::lbto::result)> response,
+                       ::std::function<void(::lbto::iifres)> response,
                        ::std::function<void(::std::exception_ptr)> ex = nullptr,
                        ::std::function<void(bool)> sent = nullptr,
                        const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SendWavefront, wfs, OPE, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SendWavefront, wfs, OPE, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SendWavefront(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqWF&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_SendWavefront(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqWF&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result UpdateTargetWavelength(float wavelength, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres UpdateTargetWavelength(float wavelength, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_UpdateTargetWavelength, wavelength, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_UpdateTargetWavelength, wavelength, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto UpdateTargetWavelengthAsync(float wavelength, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_UpdateTargetWavelength, wavelength, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_UpdateTargetWavelength, wavelength, side, context);
     }
 
     ::std::function<void()>
     UpdateTargetWavelengthAsync(float wavelength, const ::std::string& side,
-                                ::std::function<void(::lbto::result)> response,
+                                ::std::function<void(::lbto::iifres)> response,
                                 ::std::function<void(::std::exception_ptr)> ex = nullptr,
                                 ::std::function<void(bool)> sent = nullptr,
                                 const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_UpdateTargetWavelength, wavelength, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_UpdateTargetWavelength, wavelength, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_UpdateTargetWavelength(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, float, const ::std::string&, const ::Ice::Context&);
+    void _iceI_UpdateTargetWavelength(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, float, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result LogEvent(const ::std::string& event, const ::std::string& description, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres LogEvent(const ::std::string& event, const ::std::string& description, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_LogEvent, event, description, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_LogEvent, event, description, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto LogEventAsync(const ::std::string& event, const ::std::string& description, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_LogEvent, event, description, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_LogEvent, event, description, context);
     }
 
     ::std::function<void()>
     LogEventAsync(const ::std::string& event, const ::std::string& description,
-                  ::std::function<void(::lbto::result)> response,
+                  ::std::function<void(::lbto::iifres)> response,
                   ::std::function<void(::std::exception_ptr)> ex = nullptr,
                   ::std::function<void(bool)> sent = nullptr,
                   const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_LogEvent, event, description, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_LogEvent, event, description, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_LogEvent(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_LogEvent(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result GetRotatorTrajectory(double seconds, double interval, double start, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres GetRotatorTrajectory(double seconds, double interval, double start, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_GetRotatorTrajectory, seconds, interval, start, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_GetRotatorTrajectory, seconds, interval, start, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto GetRotatorTrajectoryAsync(double seconds, double interval, double start, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_GetRotatorTrajectory, seconds, interval, start, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_GetRotatorTrajectory, seconds, interval, start, side, context);
     }
 
     ::std::function<void()>
     GetRotatorTrajectoryAsync(double seconds, double interval, double start, const ::std::string& side,
-                              ::std::function<void(::lbto::result)> response,
+                              ::std::function<void(::lbto::iifres)> response,
                               ::std::function<void(::std::exception_ptr)> ex = nullptr,
                               ::std::function<void(bool)> sent = nullptr,
                               const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetRotatorTrajectory, seconds, interval, start, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetRotatorTrajectory, seconds, interval, start, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_GetRotatorTrajectory(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, double, const ::std::string&, const ::Ice::Context&);
+    void _iceI_GetRotatorTrajectory(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, double, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result GetRotatorPolynomials(double start, int count, double interval, int order, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres GetRotatorPolynomials(double start, int count, double interval, int order, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_GetRotatorPolynomials, start, count, interval, order, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_GetRotatorPolynomials, start, count, interval, order, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto GetRotatorPolynomialsAsync(double start, int count, double interval, int order, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_GetRotatorPolynomials, start, count, interval, order, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_GetRotatorPolynomials, start, count, interval, order, side, context);
     }
 
     ::std::function<void()>
     GetRotatorPolynomialsAsync(double start, int count, double interval, int order, const ::std::string& side,
-                               ::std::function<void(::lbto::result)> response,
+                               ::std::function<void(::lbto::iifres)> response,
                                ::std::function<void(::std::exception_ptr)> ex = nullptr,
                                ::std::function<void(bool)> sent = nullptr,
                                const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetRotatorPolynomials, start, count, interval, order, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetRotatorPolynomials, start, count, interval, order, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_GetRotatorPolynomials(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, int, double, int, const ::std::string&, const ::Ice::Context&);
+    void _iceI_GetRotatorPolynomials(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, int, double, int, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result Standby(int level, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres Standby(int level, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_Standby, level, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_Standby, level, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto StandbyAsync(int level, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_Standby, level, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_Standby, level, side, context);
     }
 
     ::std::function<void()>
     StandbyAsync(int level, const ::std::string& side,
-                 ::std::function<void(::lbto::result)> response,
+                 ::std::function<void(::lbto::iifres)> response,
                  ::std::function<void(::std::exception_ptr)> ex = nullptr,
                  ::std::function<void(bool)> sent = nullptr,
                  const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_Standby, level, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_Standby, level, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_Standby(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, int, const ::std::string&, const ::Ice::Context&);
+    void _iceI_Standby(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, int, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result MaximizeWrapTime(bool azflag, bool rotflag, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres MaximizeWrapTime(bool azflag, bool rotflag, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_MaximizeWrapTime, azflag, rotflag, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_MaximizeWrapTime, azflag, rotflag, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto MaximizeWrapTimeAsync(bool azflag, bool rotflag, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_MaximizeWrapTime, azflag, rotflag, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_MaximizeWrapTime, azflag, rotflag, side, context);
     }
 
     ::std::function<void()>
     MaximizeWrapTimeAsync(bool azflag, bool rotflag, const ::std::string& side,
-                          ::std::function<void(::lbto::result)> response,
+                          ::std::function<void(::lbto::iifres)> response,
                           ::std::function<void(::std::exception_ptr)> ex = nullptr,
                           ::std::function<void(bool)> sent = nullptr,
                           const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_MaximizeWrapTime, azflag, rotflag, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_MaximizeWrapTime, azflag, rotflag, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_MaximizeWrapTime(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, bool, bool, const ::std::string&, const ::Ice::Context&);
+    void _iceI_MaximizeWrapTime(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, bool, bool, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result PauseGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres PauseGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_PauseGuiding, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_PauseGuiding, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto PauseGuidingAsync(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_PauseGuiding, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_PauseGuiding, side, context);
     }
 
     ::std::function<void()>
     PauseGuidingAsync(const ::std::string& side,
-                      ::std::function<void(::lbto::result)> response,
+                      ::std::function<void(::lbto::iifres)> response,
                       ::std::function<void(::std::exception_ptr)> ex = nullptr,
                       ::std::function<void(bool)> sent = nullptr,
                       const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_PauseGuiding, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_PauseGuiding, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_PauseGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_PauseGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result ResumeGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres ResumeGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_ResumeGuiding, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_ResumeGuiding, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto ResumeGuidingAsync(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_ResumeGuiding, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_ResumeGuiding, side, context);
     }
 
     ::std::function<void()>
     ResumeGuidingAsync(const ::std::string& side,
-                       ::std::function<void(::lbto::result)> response,
+                       ::std::function<void(::lbto::iifres)> response,
                        ::std::function<void(::std::exception_ptr)> ex = nullptr,
                        ::std::function<void(bool)> sent = nullptr,
                        const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ResumeGuiding, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ResumeGuiding, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_ResumeGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_ResumeGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result StopGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres StopGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_StopGuiding, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_StopGuiding, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto StopGuidingAsync(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_StopGuiding, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_StopGuiding, side, context);
     }
 
     ::std::function<void()>
     StopGuidingAsync(const ::std::string& side,
-                     ::std::function<void(::lbto::result)> response,
+                     ::std::function<void(::lbto::iifres)> response,
                      ::std::function<void(::std::exception_ptr)> ex = nullptr,
                      ::std::function<void(bool)> sent = nullptr,
                      const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_StopGuiding, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_StopGuiding, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_StopGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_StopGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result SetGuidingHotspot(double coord1, double coord2, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetGuidingHotspot(double coord1, double coord2, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetGuidingHotspot, coord1, coord2, movetype, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetGuidingHotspot, coord1, coord2, movetype, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetGuidingHotspotAsync(double coord1, double coord2, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetGuidingHotspot, coord1, coord2, movetype, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetGuidingHotspot, coord1, coord2, movetype, side, context);
     }
 
     ::std::function<void()>
     SetGuidingHotspotAsync(double coord1, double coord2, const ::std::string& movetype, const ::std::string& side,
-                           ::std::function<void(::lbto::result)> response,
+                           ::std::function<void(::lbto::iifres)> response,
                            ::std::function<void(::std::exception_ptr)> ex = nullptr,
                            ::std::function<void(bool)> sent = nullptr,
                            const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetGuidingHotspot, coord1, coord2, movetype, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetGuidingHotspot, coord1, coord2, movetype, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetGuidingHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_SetGuidingHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result SetAGWFilter(int filterNumber, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetAGWFilter(int filterNumber, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetAGWFilter, filterNumber, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetAGWFilter, filterNumber, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetAGWFilterAsync(int filterNumber, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetAGWFilter, filterNumber, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetAGWFilter, filterNumber, side, context);
     }
 
     ::std::function<void()>
     SetAGWFilterAsync(int filterNumber, const ::std::string& side,
-                      ::std::function<void(::lbto::result)> response,
+                      ::std::function<void(::lbto::iifres)> response,
                       ::std::function<void(::std::exception_ptr)> ex = nullptr,
                       ::std::function<void(bool)> sent = nullptr,
                       const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetAGWFilter, filterNumber, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetAGWFilter, filterNumber, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetAGWFilter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, int, const ::std::string&, const ::Ice::Context&);
+    void _iceI_SetAGWFilter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, int, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result SetGuidingBinning(int factor, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetGuidingBinning(int factor, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetGuidingBinning, factor, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetGuidingBinning, factor, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetGuidingBinningAsync(int factor, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetGuidingBinning, factor, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetGuidingBinning, factor, side, context);
     }
 
     ::std::function<void()>
     SetGuidingBinningAsync(int factor, const ::std::string& side,
-                           ::std::function<void(::lbto::result)> response,
+                           ::std::function<void(::lbto::iifres)> response,
                            ::std::function<void(::std::exception_ptr)> ex = nullptr,
                            ::std::function<void(bool)> sent = nullptr,
                            const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetGuidingBinning, factor, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetGuidingBinning, factor, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetGuidingBinning(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, int, const ::std::string&, const ::Ice::Context&);
+    void _iceI_SetGuidingBinning(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, int, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result RotReady(bool enable, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres RotReady(bool enable, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_RotReady, enable, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_RotReady, enable, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto RotReadyAsync(bool enable, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_RotReady, enable, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_RotReady, enable, side, context);
     }
 
     ::std::function<void()>
     RotReadyAsync(bool enable, const ::std::string& side,
-                  ::std::function<void(::lbto::result)> response,
+                  ::std::function<void(::lbto::iifres)> response,
                   ::std::function<void(::std::exception_ptr)> ex = nullptr,
                   ::std::function<void(bool)> sent = nullptr,
                   const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotReady, enable, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotReady, enable, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_RotReady(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, bool, const ::std::string&, const ::Ice::Context&);
+    void _iceI_RotReady(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, bool, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result RotHold(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres RotHold(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_RotHold, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_RotHold, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto RotHoldAsync(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_RotHold, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_RotHold, side, context);
     }
 
     ::std::function<void()>
     RotHoldAsync(const ::std::string& side,
-                 ::std::function<void(::lbto::result)> response,
+                 ::std::function<void(::lbto::iifres)> response,
                  ::std::function<void(::std::exception_ptr)> ex = nullptr,
                  ::std::function<void(bool)> sent = nullptr,
                  const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotHold, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotHold, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_RotHold(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_RotHold(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result RotTrack(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres RotTrack(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_RotTrack, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_RotTrack, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto RotTrackAsync(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_RotTrack, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_RotTrack, side, context);
     }
 
     ::std::function<void()>
     RotTrackAsync(const ::std::string& side,
-                  ::std::function<void(::lbto::result)> response,
+                  ::std::function<void(::lbto::iifres)> response,
                   ::std::function<void(::std::exception_ptr)> ex = nullptr,
                   ::std::function<void(bool)> sent = nullptr,
                   const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotTrack, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotTrack, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_RotTrack(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_RotTrack(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result RotServicePosition(double angle, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres RotServicePosition(double angle, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_RotServicePosition, angle, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_RotServicePosition, angle, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto RotServicePositionAsync(double angle, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_RotServicePosition, angle, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_RotServicePosition, angle, side, context);
     }
 
     ::std::function<void()>
     RotServicePositionAsync(double angle, const ::std::string& side,
-                            ::std::function<void(::lbto::result)> response,
+                            ::std::function<void(::lbto::iifres)> response,
                             ::std::function<void(::std::exception_ptr)> ex = nullptr,
                             ::std::function<void(bool)> sent = nullptr,
                             const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotServicePosition, angle, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RotServicePosition, angle, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_RotServicePosition(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, const ::std::string&, const ::Ice::Context&);
+    void _iceI_RotServicePosition(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result PauseAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres PauseAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_PauseAO, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_PauseAO, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto PauseAOAsync(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_PauseAO, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_PauseAO, side, context);
     }
 
     ::std::function<void()>
     PauseAOAsync(const ::std::string& side,
-                 ::std::function<void(::lbto::result)> response,
+                 ::std::function<void(::lbto::iifres)> response,
                  ::std::function<void(::std::exception_ptr)> ex = nullptr,
                  ::std::function<void(bool)> sent = nullptr,
                  const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_PauseAO, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_PauseAO, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_PauseAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_PauseAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result ResumeAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres ResumeAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_ResumeAO, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_ResumeAO, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto ResumeAOAsync(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_ResumeAO, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_ResumeAO, side, context);
     }
 
     ::std::function<void()>
     ResumeAOAsync(const ::std::string& side,
-                  ::std::function<void(::lbto::result)> response,
+                  ::std::function<void(::lbto::iifres)> response,
                   ::std::function<void(::std::exception_ptr)> ex = nullptr,
                   ::std::function<void(bool)> sent = nullptr,
                   const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ResumeAO, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ResumeAO, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_ResumeAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_ResumeAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result StartAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres StartAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_StartAO, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_StartAO, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto StartAOAsync(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_StartAO, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_StartAO, side, context);
     }
 
     ::std::function<void()>
     StartAOAsync(const ::std::string& side,
-                 ::std::function<void(::lbto::result)> response,
+                 ::std::function<void(::lbto::iifres)> response,
                  ::std::function<void(::std::exception_ptr)> ex = nullptr,
                  ::std::function<void(bool)> sent = nullptr,
                  const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_StartAO, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_StartAO, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_StartAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_StartAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result StopAO(const ::std::string& reason, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres StopAO(const ::std::string& reason, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_StopAO, reason, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_StopAO, reason, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto StopAOAsync(const ::std::string& reason, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_StopAO, reason, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_StopAO, reason, side, context);
     }
 
     ::std::function<void()>
     StopAOAsync(const ::std::string& reason, const ::std::string& side,
-                ::std::function<void(::lbto::result)> response,
+                ::std::function<void(::lbto::iifres)> response,
                 ::std::function<void(::std::exception_ptr)> ex = nullptr,
                 ::std::function<void(bool)> sent = nullptr,
                 const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_StopAO, reason, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_StopAO, reason, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_StopAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_StopAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result AcquireRefAO(bool repointFlag, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres AcquireRefAO(bool repointFlag, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_AcquireRefAO, repointFlag, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_AcquireRefAO, repointFlag, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto AcquireRefAOAsync(bool repointFlag, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_AcquireRefAO, repointFlag, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_AcquireRefAO, repointFlag, side, context);
     }
 
     ::std::function<void()>
     AcquireRefAOAsync(bool repointFlag, const ::std::string& side,
-                      ::std::function<void(::lbto::result)> response,
+                      ::std::function<void(::lbto::iifres)> response,
                       ::std::function<void(::std::exception_ptr)> ex = nullptr,
                       ::std::function<void(bool)> sent = nullptr,
                       const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_AcquireRefAO, repointFlag, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_AcquireRefAO, repointFlag, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_AcquireRefAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, bool, const ::std::string&, const ::Ice::Context&);
+    void _iceI_AcquireRefAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, bool, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result CheckRefAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres CheckRefAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_CheckRefAO, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_CheckRefAO, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto CheckRefAOAsync(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_CheckRefAO, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_CheckRefAO, side, context);
     }
 
     ::std::function<void()>
     CheckRefAOAsync(const ::std::string& side,
-                    ::std::function<void(::lbto::result)> response,
+                    ::std::function<void(::lbto::iifres)> response,
                     ::std::function<void(::std::exception_ptr)> ex = nullptr,
                     ::std::function<void(bool)> sent = nullptr,
                     const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_CheckRefAO, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_CheckRefAO, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_CheckRefAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_CheckRefAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result RefineAO(const ::std::string& method, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres RefineAO(const ::std::string& method, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_RefineAO, method, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_RefineAO, method, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto RefineAOAsync(const ::std::string& method, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_RefineAO, method, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_RefineAO, method, side, context);
     }
 
     ::std::function<void()>
     RefineAOAsync(const ::std::string& method, const ::std::string& side,
-                  ::std::function<void(::lbto::result)> response,
+                  ::std::function<void(::lbto::iifres)> response,
                   ::std::function<void(::std::exception_ptr)> ex = nullptr,
                   ::std::function<void(bool)> sent = nullptr,
                   const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RefineAO, method, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RefineAO, method, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_RefineAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_RefineAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result RunAO(const ::std::string& type, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres RunAO(const ::std::string& type, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_RunAO, type, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_RunAO, type, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto RunAOAsync(const ::std::string& type, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_RunAO, type, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_RunAO, type, side, context);
     }
 
     ::std::function<void()>
     RunAOAsync(const ::std::string& type, const ::std::string& side,
-               ::std::function<void(::lbto::result)> response,
+               ::std::function<void(::lbto::iifres)> response,
                ::std::function<void(::std::exception_ptr)> ex = nullptr,
                ::std::function<void(bool)> sent = nullptr,
                const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RunAO, type, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_RunAO, type, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_RunAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_RunAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result PresetFlatAO(const ::std::string& flat, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres PresetFlatAO(const ::std::string& flat, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_PresetFlatAO, flat, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_PresetFlatAO, flat, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto PresetFlatAOAsync(const ::std::string& flat, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_PresetFlatAO, flat, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_PresetFlatAO, flat, side, context);
     }
 
     ::std::function<void()>
     PresetFlatAOAsync(const ::std::string& flat, const ::std::string& side,
-                      ::std::function<void(::lbto::result)> response,
+                      ::std::function<void(::lbto::iifres)> response,
                       ::std::function<void(::std::exception_ptr)> ex = nullptr,
                       ::std::function<void(bool)> sent = nullptr,
                       const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_PresetFlatAO, flat, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_PresetFlatAO, flat, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_PresetFlatAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_PresetFlatAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result CorrectModesAO(const SeqModes& modes, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres CorrectModesAO(const SeqModes& modes, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_CorrectModesAO, modes, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_CorrectModesAO, modes, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto CorrectModesAOAsync(const SeqModes& modes, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_CorrectModesAO, modes, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_CorrectModesAO, modes, side, context);
     }
 
     ::std::function<void()>
     CorrectModesAOAsync(const SeqModes& modes, const ::std::string& side,
-                        ::std::function<void(::lbto::result)> response,
+                        ::std::function<void(::lbto::iifres)> response,
                         ::std::function<void(::std::exception_ptr)> ex = nullptr,
                         ::std::function<void(bool)> sent = nullptr,
                         const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_CorrectModesAO, modes, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_CorrectModesAO, modes, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_CorrectModesAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqModes&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_CorrectModesAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqModes&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result ModifyAO(int NModes, double Freq, int Nbins, double TTMod, const ::std::string& F1spec, const ::std::string& F2spec, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres ModifyAO(int NModes, double Freq, int Nbins, double TTMod, const ::std::string& F1spec, const ::std::string& F2spec, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_ModifyAO, NModes, Freq, Nbins, TTMod, F1spec, F2spec, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_ModifyAO, NModes, Freq, Nbins, TTMod, F1spec, F2spec, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto ModifyAOAsync(int NModes, double Freq, int Nbins, double TTMod, const ::std::string& F1spec, const ::std::string& F2spec, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_ModifyAO, NModes, Freq, Nbins, TTMod, F1spec, F2spec, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_ModifyAO, NModes, Freq, Nbins, TTMod, F1spec, F2spec, side, context);
     }
 
     ::std::function<void()>
     ModifyAOAsync(int NModes, double Freq, int Nbins, double TTMod, const ::std::string& F1spec, const ::std::string& F2spec, const ::std::string& side,
-                  ::std::function<void(::lbto::result)> response,
+                  ::std::function<void(::lbto::iifres)> response,
                   ::std::function<void(::std::exception_ptr)> ex = nullptr,
                   ::std::function<void(bool)> sent = nullptr,
                   const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ModifyAO, NModes, Freq, Nbins, TTMod, F1spec, F2spec, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ModifyAO, NModes, Freq, Nbins, TTMod, F1spec, F2spec, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_ModifyAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, int, double, int, double, const ::std::string&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_ModifyAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, int, double, int, double, const ::std::string&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result PresetAO(const ::std::string& AOMode, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres PresetAO(const ::std::string& AOMode, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_PresetAO, AOMode, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_PresetAO, AOMode, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto PresetAOAsync(const ::std::string& AOMode, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_PresetAO, AOMode, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_PresetAO, AOMode, side, context);
     }
 
     ::std::function<void()>
     PresetAOAsync(const ::std::string& AOMode, const ::std::string& side,
-                  ::std::function<void(::lbto::result)> response,
+                  ::std::function<void(::lbto::iifres)> response,
                   ::std::function<void(::std::exception_ptr)> ex = nullptr,
                   ::std::function<void(bool)> sent = nullptr,
                   const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_PresetAO, AOMode, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_PresetAO, AOMode, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_PresetAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_PresetAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result OffsetXYAO(double DeltaX, double DeltaY, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres OffsetXYAO(double DeltaX, double DeltaY, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_OffsetXYAO, DeltaX, DeltaY, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_OffsetXYAO, DeltaX, DeltaY, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto OffsetXYAOAsync(double DeltaX, double DeltaY, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_OffsetXYAO, DeltaX, DeltaY, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_OffsetXYAO, DeltaX, DeltaY, side, context);
     }
 
     ::std::function<void()>
     OffsetXYAOAsync(double DeltaX, double DeltaY, const ::std::string& side,
-                    ::std::function<void(::lbto::result)> response,
+                    ::std::function<void(::lbto::iifres)> response,
                     ::std::function<void(::std::exception_ptr)> ex = nullptr,
                     ::std::function<void(bool)> sent = nullptr,
                     const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_OffsetXYAO, DeltaX, DeltaY, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_OffsetXYAO, DeltaX, DeltaY, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_OffsetXYAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, double, const ::std::string&, const ::Ice::Context&);
+    void _iceI_OffsetXYAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, double, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result OffsetZAO(double DeltaZ, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres OffsetZAO(double DeltaZ, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_OffsetZAO, DeltaZ, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_OffsetZAO, DeltaZ, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto OffsetZAOAsync(double DeltaZ, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_OffsetZAO, DeltaZ, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_OffsetZAO, DeltaZ, side, context);
     }
 
     ::std::function<void()>
     OffsetZAOAsync(double DeltaZ, const ::std::string& side,
-                   ::std::function<void(::lbto::result)> response,
+                   ::std::function<void(::lbto::iifres)> response,
                    ::std::function<void(::std::exception_ptr)> ex = nullptr,
                    ::std::function<void(bool)> sent = nullptr,
                    const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_OffsetZAO, DeltaZ, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_OffsetZAO, DeltaZ, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_OffsetZAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, double, const ::std::string&, const ::Ice::Context&);
+    void _iceI_OffsetZAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, double, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result SetReference(const SeqPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetReference(const SeqPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetReference, stars, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetReference, stars, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetReferenceAsync(const SeqPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetReference, stars, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetReference, stars, context);
     }
 
     ::std::function<void()>
     SetReferenceAsync(const SeqPos& stars,
-                      ::std::function<void(::lbto::result)> response,
+                      ::std::function<void(::lbto::iifres)> response,
                       ::std::function<void(::std::exception_ptr)> ex = nullptr,
                       ::std::function<void(bool)> sent = nullptr,
                       const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetReference, stars, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetReference, stars, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqPos&, const ::Ice::Context&);
+    void _iceI_SetReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqPos&, const ::Ice::Context&);
     /// \endcond
 
-    result SetReferenceNew(const SeqNewPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetReferenceNew(const SeqNewPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetReferenceNew, stars, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetReferenceNew, stars, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetReferenceNewAsync(const SeqNewPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetReferenceNew, stars, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetReferenceNew, stars, context);
     }
 
     ::std::function<void()>
     SetReferenceNewAsync(const SeqNewPos& stars,
-                         ::std::function<void(::lbto::result)> response,
+                         ::std::function<void(::lbto::iifres)> response,
                          ::std::function<void(::std::exception_ptr)> ex = nullptr,
                          ::std::function<void(bool)> sent = nullptr,
                          const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetReferenceNew, stars, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetReferenceNew, stars, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetReferenceNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqNewPos&, const ::Ice::Context&);
+    void _iceI_SetReferenceNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqNewPos&, const ::Ice::Context&);
     /// \endcond
 
-    result SetReference2(const SeqPos2& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres SetReference2(const SeqPos2& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_SetReference2, stars, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_SetReference2, stars, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto SetReference2Async(const SeqPos2& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_SetReference2, stars, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_SetReference2, stars, context);
     }
 
     ::std::function<void()>
     SetReference2Async(const SeqPos2& stars,
-                       ::std::function<void(::lbto::result)> response,
+                       ::std::function<void(::lbto::iifres)> response,
                        ::std::function<void(::std::exception_ptr)> ex = nullptr,
                        ::std::function<void(bool)> sent = nullptr,
                        const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetReference2, stars, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_SetReference2, stars, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_SetReference2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqPos2&, const ::Ice::Context&);
+    void _iceI_SetReference2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqPos2&, const ::Ice::Context&);
     /// \endcond
 
-    result ClearReference(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres ClearReference(const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_ClearReference, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_ClearReference, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto ClearReferenceAsync(const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_ClearReference, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_ClearReference, context);
     }
 
     ::std::function<void()>
-    ClearReferenceAsync(::std::function<void(::lbto::result)> response,
+    ClearReferenceAsync(::std::function<void(::lbto::iifres)> response,
                         ::std::function<void(::std::exception_ptr)> ex = nullptr,
                         ::std::function<void(bool)> sent = nullptr,
                         const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearReference, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_ClearReference, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_ClearReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::Ice::Context&);
+    void _iceI_ClearReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::Ice::Context&);
     /// \endcond
 
-    result GetKFPCoordinates(const SeqPos& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres GetKFPCoordinates(const SeqPos& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_GetKFPCoordinates, stars, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_GetKFPCoordinates, stars, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto GetKFPCoordinatesAsync(const SeqPos& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_GetKFPCoordinates, stars, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_GetKFPCoordinates, stars, side, context);
     }
 
     ::std::function<void()>
     GetKFPCoordinatesAsync(const SeqPos& stars, const ::std::string& side,
-                           ::std::function<void(::lbto::result)> response,
+                           ::std::function<void(::lbto::iifres)> response,
                            ::std::function<void(::std::exception_ptr)> ex = nullptr,
                            ::std::function<void(bool)> sent = nullptr,
                            const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetKFPCoordinates, stars, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetKFPCoordinates, stars, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_GetKFPCoordinates(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqPos&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_GetKFPCoordinates(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqPos&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result GetKFPCoordinatesNew(const SeqNewPos& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres GetKFPCoordinatesNew(const SeqNewPos& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_GetKFPCoordinatesNew, stars, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_GetKFPCoordinatesNew, stars, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto GetKFPCoordinatesNewAsync(const SeqNewPos& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_GetKFPCoordinatesNew, stars, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_GetKFPCoordinatesNew, stars, side, context);
     }
 
     ::std::function<void()>
     GetKFPCoordinatesNewAsync(const SeqNewPos& stars, const ::std::string& side,
-                              ::std::function<void(::lbto::result)> response,
+                              ::std::function<void(::lbto::iifres)> response,
                               ::std::function<void(::std::exception_ptr)> ex = nullptr,
                               ::std::function<void(bool)> sent = nullptr,
                               const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetKFPCoordinatesNew, stars, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetKFPCoordinatesNew, stars, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_GetKFPCoordinatesNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqNewPos&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_GetKFPCoordinatesNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqNewPos&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result GetKFPCoordinates2(const SeqPos2& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres GetKFPCoordinates2(const SeqPos2& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_GetKFPCoordinates2, stars, side, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_GetKFPCoordinates2, stars, side, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto GetKFPCoordinates2Async(const SeqPos2& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_GetKFPCoordinates2, stars, side, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_GetKFPCoordinates2, stars, side, context);
     }
 
     ::std::function<void()>
     GetKFPCoordinates2Async(const SeqPos2& stars, const ::std::string& side,
-                            ::std::function<void(::lbto::result)> response,
+                            ::std::function<void(::lbto::iifres)> response,
                             ::std::function<void(::std::exception_ptr)> ex = nullptr,
                             ::std::function<void(bool)> sent = nullptr,
                             const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetKFPCoordinates2, stars, side, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_GetKFPCoordinates2, stars, side, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_GetKFPCoordinates2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const SeqPos2&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_GetKFPCoordinates2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const SeqPos2&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
-    result NSQuery(const ::std::string& targenName, const ::std::string& startDate, const ::std::string& startTime, const ::std::string& endDate, const ::std::string& endTime, const ::std::string& interval, const ::std::string& fileName, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    iifres NSQuery(const ::std::string& targenName, const ::std::string& startDate, const ::std::string& startTime, const ::std::string& endDate, const ::std::string& endTime, const ::std::string& interval, const ::std::string& fileName, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makePromiseOutgoing<::lbto::result>(true, this, &IIFServerPrx::_iceI_NSQuery, targenName, startDate, startTime, endDate, endTime, interval, fileName, context).get();
+        return _makePromiseOutgoing<::lbto::iifres>(true, this, &IIFServerPrx::_iceI_NSQuery, targenName, startDate, startTime, endDate, endTime, interval, fileName, context).get();
     }
 
     template<template<typename> class P = ::std::promise>
     auto NSQueryAsync(const ::std::string& targenName, const ::std::string& startDate, const ::std::string& startTime, const ::std::string& endDate, const ::std::string& endTime, const ::std::string& interval, const ::std::string& fileName, const ::Ice::Context& context = ::Ice::noExplicitContext)
-        -> decltype(::std::declval<P<::lbto::result>>().get_future())
+        -> decltype(::std::declval<P<::lbto::iifres>>().get_future())
     {
-        return _makePromiseOutgoing<::lbto::result, P>(false, this, &IIFServerPrx::_iceI_NSQuery, targenName, startDate, startTime, endDate, endTime, interval, fileName, context);
+        return _makePromiseOutgoing<::lbto::iifres, P>(false, this, &IIFServerPrx::_iceI_NSQuery, targenName, startDate, startTime, endDate, endTime, interval, fileName, context);
     }
 
     ::std::function<void()>
     NSQueryAsync(const ::std::string& targenName, const ::std::string& startDate, const ::std::string& startTime, const ::std::string& endDate, const ::std::string& endTime, const ::std::string& interval, const ::std::string& fileName,
-                 ::std::function<void(::lbto::result)> response,
+                 ::std::function<void(::lbto::iifres)> response,
                  ::std::function<void(::std::exception_ptr)> ex = nullptr,
                  ::std::function<void(bool)> sent = nullptr,
                  const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
-        return _makeLamdaOutgoing<::lbto::result>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_NSQuery, targenName, startDate, startTime, endDate, endTime, interval, fileName, context);
+        return _makeLamdaOutgoing<::lbto::iifres>(std::move(response), std::move(ex), std::move(sent), this, &lbto::IIFServerPrx::_iceI_NSQuery, targenName, startDate, startTime, endDate, endTime, interval, fileName, context);
     }
 
     /// \cond INTERNAL
-    void _iceI_NSQuery(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>&, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
+    void _iceI_NSQuery(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>&, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::std::string&, const ::Ice::Context&);
     /// \endcond
 
     void remove(const ::Ice::Context& context = ::Ice::noExplicitContext)
@@ -2825,7 +2825,7 @@ struct StreamReader<::lbto::nonsidereal, S>
 };
 
 template<>
-struct StreamableTraits<::lbto::result>
+struct StreamableTraits<::lbto::iifres>
 {
     static const StreamHelperCategory helper = StreamHelperCategoryStruct;
     static const int minWireSize = 5;
@@ -2833,9 +2833,9 @@ struct StreamableTraits<::lbto::result>
 };
 
 template<typename S>
-struct StreamReader<::lbto::result, S>
+struct StreamReader<::lbto::iifres, S>
 {
-    static void read(S* istr, ::lbto::result& v)
+    static void read(S* istr, ::lbto::iifres& v)
     {
         istr->readAll(v.rescode, v.resmsg);
     }
@@ -3092,9 +3092,9 @@ typedef ::std::vector< ::Ice::Double> SeqModes;
 typedef ::std::vector< ::std::string> SeqRes;
 
 /**
- * @brief structure for result object
+ * @brief structure for iifres object
  */
-struct result
+struct iifres
 {
     ::Ice::Int rescode;
     ::lbto::SeqRes resmsg;
@@ -3741,7 +3741,7 @@ class IIFServer : public virtual ::Ice::Proxy<IIFServer, ::IceProxy::Ice::Object
 {
 public:
 
-    ::lbto::result ApplyWaffleAO(const ::lbto::SeqModes& modes, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres ApplyWaffleAO(const ::lbto::SeqModes& modes, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_ApplyWaffleAO(_iceI_begin_ApplyWaffleAO(modes, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -3771,7 +3771,7 @@ public:
         return _iceI_begin_ApplyWaffleAO(modes, side, context, cb, cookie);
     }
 
-    ::lbto::result end_ApplyWaffleAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_ApplyWaffleAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -3779,7 +3779,7 @@ private:
 
 public:
 
-    ::lbto::result Authorize(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres Authorize(const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_Authorize(_iceI_begin_Authorize(context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -3809,7 +3809,7 @@ public:
         return _iceI_begin_Authorize(context, cb, cookie);
     }
 
-    ::lbto::result end_Authorize(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_Authorize(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -3817,7 +3817,7 @@ private:
 
 public:
 
-    ::lbto::result StepFocus(::Ice::Double relPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres StepFocus(::Ice::Double relPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_StepFocus(_iceI_begin_StepFocus(relPos, ope, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -3847,7 +3847,7 @@ public:
         return _iceI_begin_StepFocus(relPos, ope, side, context, cb, cookie);
     }
 
-    ::lbto::result end_StepFocus(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_StepFocus(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -3855,7 +3855,7 @@ private:
 
 public:
 
-    ::lbto::result MoveFocus(::Ice::Double absPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres MoveFocus(::Ice::Double absPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_MoveFocus(_iceI_begin_MoveFocus(absPos, ope, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -3885,7 +3885,7 @@ public:
         return _iceI_begin_MoveFocus(absPos, ope, side, context, cb, cookie);
     }
 
-    ::lbto::result end_MoveFocus(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_MoveFocus(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -3893,7 +3893,7 @@ private:
 
 public:
 
-    ::lbto::result OffsetPointing(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& ope, const ::std::string& np, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres OffsetPointing(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& ope, const ::std::string& np, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_OffsetPointing(_iceI_begin_OffsetPointing(rotangle, offx, offy, coordsys, ope, np, movetype, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -3923,7 +3923,7 @@ public:
         return _iceI_begin_OffsetPointing(rotangle, offx, offy, coordsys, ope, np, movetype, side, context, cb, cookie);
     }
 
-    ::lbto::result end_OffsetPointing(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_OffsetPointing(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -3931,7 +3931,7 @@ private:
 
 public:
 
-    ::lbto::result OffsetPointing2(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres OffsetPointing2(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_OffsetPointing2(_iceI_begin_OffsetPointing2(rotangle, offx, offy, coordsys, movetype, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -3961,7 +3961,7 @@ public:
         return _iceI_begin_OffsetPointing2(rotangle, offx, offy, coordsys, movetype, side, context, cb, cookie);
     }
 
-    ::lbto::result end_OffsetPointing2(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_OffsetPointing2(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -3969,7 +3969,7 @@ private:
 
 public:
 
-    ::lbto::result OffsetGuiding(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres OffsetGuiding(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_OffsetGuiding(_iceI_begin_OffsetGuiding(rotangle, offx, offy, coordsys, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -3999,7 +3999,7 @@ public:
         return _iceI_begin_OffsetGuiding(rotangle, offx, offy, coordsys, side, context, cb, cookie);
     }
 
-    ::lbto::result end_OffsetGuiding(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_OffsetGuiding(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4007,7 +4007,7 @@ private:
 
 public:
 
-    ::lbto::result UpdatePointingReference(const ::std::string& offsetcoord, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres UpdatePointingReference(const ::std::string& offsetcoord, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_UpdatePointingReference(_iceI_begin_UpdatePointingReference(offsetcoord, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4037,7 +4037,7 @@ public:
         return _iceI_begin_UpdatePointingReference(offsetcoord, side, context, cb, cookie);
     }
 
-    ::lbto::result end_UpdatePointingReference(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_UpdatePointingReference(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4045,7 +4045,7 @@ private:
 
 public:
 
-    ::lbto::result TipTilt(::Ice::Double xrot, ::Ice::Double yrot, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres TipTilt(::Ice::Double xrot, ::Ice::Double yrot, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_TipTilt(_iceI_begin_TipTilt(xrot, yrot, ope, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4075,7 +4075,7 @@ public:
         return _iceI_begin_TipTilt(xrot, yrot, ope, side, context, cb, cookie);
     }
 
-    ::lbto::result end_TipTilt(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_TipTilt(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4083,7 +4083,7 @@ private:
 
 public:
 
-    ::lbto::result SetPMTerm(const ::std::string& name, ::Ice::Double value, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetPMTerm(const ::std::string& name, ::Ice::Double value, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetPMTerm(_iceI_begin_SetPMTerm(name, value, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4113,7 +4113,7 @@ public:
         return _iceI_begin_SetPMTerm(name, value, side, context, cb, cookie);
     }
 
-    ::lbto::result end_SetPMTerm(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetPMTerm(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4121,7 +4121,7 @@ private:
 
 public:
 
-    ::lbto::result SetPMTerm2(const ::std::string& name, ::Ice::Double value, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetPMTerm2(const ::std::string& name, ::Ice::Double value, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetPMTerm2(_iceI_begin_SetPMTerm2(name, value, movetype, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4151,7 +4151,7 @@ public:
         return _iceI_begin_SetPMTerm2(name, value, movetype, side, context, cb, cookie);
     }
 
-    ::lbto::result end_SetPMTerm2(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetPMTerm2(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4159,7 +4159,7 @@ private:
 
 public:
 
-    ::lbto::result MoveXYZ(::Ice::Double xmov, ::Ice::Double ymov, ::Ice::Double zmov, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres MoveXYZ(::Ice::Double xmov, ::Ice::Double ymov, ::Ice::Double zmov, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_MoveXYZ(_iceI_begin_MoveXYZ(xmov, ymov, zmov, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4189,7 +4189,7 @@ public:
         return _iceI_begin_MoveXYZ(xmov, ymov, zmov, side, context, cb, cookie);
     }
 
-    ::lbto::result end_MoveXYZ(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_MoveXYZ(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4197,7 +4197,7 @@ private:
 
 public:
 
-    ::lbto::result MoveXY(::Ice::Double xmov, ::Ice::Double ymov, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres MoveXY(::Ice::Double xmov, ::Ice::Double ymov, const ::std::string& ope, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_MoveXY(_iceI_begin_MoveXY(xmov, ymov, ope, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4227,7 +4227,7 @@ public:
         return _iceI_begin_MoveXY(xmov, ymov, ope, side, context, cb, cookie);
     }
 
-    ::lbto::result end_MoveXY(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_MoveXY(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4235,7 +4235,7 @@ private:
 
 public:
 
-    ::lbto::result Move(::Ice::Double x, ::Ice::Double y, ::Ice::Double z, ::Ice::Double rx, ::Ice::Double ry, ::Ice::Double rz, ::Ice::Int dflag, const ::std::string& movetype, const ::std::string& OPE, ::Ice::Int time, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres Move(::Ice::Double x, ::Ice::Double y, ::Ice::Double z, ::Ice::Double rx, ::Ice::Double ry, ::Ice::Double rz, ::Ice::Int dflag, const ::std::string& movetype, const ::std::string& OPE, ::Ice::Int time, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_Move(_iceI_begin_Move(x, y, z, rx, ry, rz, dflag, movetype, OPE, time, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4265,7 +4265,7 @@ public:
         return _iceI_begin_Move(x, y, z, rx, ry, rz, dflag, movetype, OPE, time, side, context, cb, cookie);
     }
 
-    ::lbto::result end_Move(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_Move(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4273,7 +4273,7 @@ private:
 
 public:
 
-    ::lbto::result SetTarget(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, ::Ice::Double epoch, ::Ice::Float wavelength, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetTarget(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, ::Ice::Double epoch, ::Ice::Float wavelength, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetTarget(_iceI_begin_SetTarget(coord1, coord2, system, epoch, wavelength, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4303,7 +4303,7 @@ public:
         return _iceI_begin_SetTarget(coord1, coord2, system, epoch, wavelength, context, cb, cookie);
     }
 
-    ::lbto::result end_SetTarget(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetTarget(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4311,7 +4311,7 @@ private:
 
 public:
 
-    ::lbto::result SetStars(const ::lbto::SeqPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetStars(const ::lbto::SeqPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetStars(_iceI_begin_SetStars(stars, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4341,7 +4341,7 @@ public:
         return _iceI_begin_SetStars(stars, context, cb, cookie);
     }
 
-    ::lbto::result end_SetStars(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetStars(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4349,7 +4349,7 @@ private:
 
 public:
 
-    ::lbto::result SetStarsNew(const ::lbto::SeqNewPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetStarsNew(const ::lbto::SeqNewPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetStarsNew(_iceI_begin_SetStarsNew(stars, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4379,7 +4379,7 @@ public:
         return _iceI_begin_SetStarsNew(stars, context, cb, cookie);
     }
 
-    ::lbto::result end_SetStarsNew(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetStarsNew(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4387,7 +4387,7 @@ private:
 
 public:
 
-    ::lbto::result SetStars2(const ::lbto::SeqPos2& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetStars2(const ::lbto::SeqPos2& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetStars2(_iceI_begin_SetStars2(stars, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4417,7 +4417,7 @@ public:
         return _iceI_begin_SetStars2(stars, context, cb, cookie);
     }
 
-    ::lbto::result end_SetStars2(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetStars2(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4425,7 +4425,7 @@ private:
 
 public:
 
-    ::lbto::result ClearStars(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres ClearStars(const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_ClearStars(_iceI_begin_ClearStars(context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4455,7 +4455,7 @@ public:
         return _iceI_begin_ClearStars(context, cb, cookie);
     }
 
-    ::lbto::result end_ClearStars(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_ClearStars(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4463,7 +4463,7 @@ private:
 
 public:
 
-    ::lbto::result SetHotspot(::Ice::Double coord1, ::Ice::Double coord2, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetHotspot(::Ice::Double coord1, ::Ice::Double coord2, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetHotspot(_iceI_begin_SetHotspot(coord1, coord2, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4493,7 +4493,7 @@ public:
         return _iceI_begin_SetHotspot(coord1, coord2, context, cb, cookie);
     }
 
-    ::lbto::result end_SetHotspot(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetHotspot(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4501,7 +4501,7 @@ private:
 
 public:
 
-    ::lbto::result ClearHotspot(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres ClearHotspot(const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_ClearHotspot(_iceI_begin_ClearHotspot(context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4531,7 +4531,7 @@ public:
         return _iceI_begin_ClearHotspot(context, cb, cookie);
     }
 
-    ::lbto::result end_ClearHotspot(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_ClearHotspot(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4539,7 +4539,7 @@ private:
 
 public:
 
-    ::lbto::result SetOffset(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetOffset(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetOffset(_iceI_begin_SetOffset(coord1, coord2, system, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4569,7 +4569,7 @@ public:
         return _iceI_begin_SetOffset(coord1, coord2, system, context, cb, cookie);
     }
 
-    ::lbto::result end_SetOffset(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetOffset(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4577,7 +4577,7 @@ private:
 
 public:
 
-    ::lbto::result SetOffsetNew(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetOffsetNew(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetOffsetNew(_iceI_begin_SetOffsetNew(coord1, coord2, system, movetype, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4607,7 +4607,7 @@ public:
         return _iceI_begin_SetOffsetNew(coord1, coord2, system, movetype, context, cb, cookie);
     }
 
-    ::lbto::result end_SetOffsetNew(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetOffsetNew(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4615,7 +4615,7 @@ private:
 
 public:
 
-    ::lbto::result SetOffset2(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetOffset2(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetOffset2(_iceI_begin_SetOffset2(coord1, coord2, system, movetype, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4645,7 +4645,7 @@ public:
         return _iceI_begin_SetOffset2(coord1, coord2, system, movetype, context, cb, cookie);
     }
 
-    ::lbto::result end_SetOffset2(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetOffset2(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4653,7 +4653,7 @@ private:
 
 public:
 
-    ::lbto::result ClearOffset(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres ClearOffset(const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_ClearOffset(_iceI_begin_ClearOffset(context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4683,7 +4683,7 @@ public:
         return _iceI_begin_ClearOffset(context, cb, cookie);
     }
 
-    ::lbto::result end_ClearOffset(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_ClearOffset(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4691,7 +4691,7 @@ private:
 
 public:
 
-    ::lbto::result SetNonSidereal(const ::lbto::nonsidereal& target, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetNonSidereal(const ::lbto::nonsidereal& target, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetNonSidereal(_iceI_begin_SetNonSidereal(target, override, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4721,7 +4721,7 @@ public:
         return _iceI_begin_SetNonSidereal(target, override, context, cb, cookie);
     }
 
-    ::lbto::result end_SetNonSidereal(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetNonSidereal(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4729,7 +4729,7 @@ private:
 
 public:
 
-    ::lbto::result ClearNonSidereal(bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres ClearNonSidereal(bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_ClearNonSidereal(_iceI_begin_ClearNonSidereal(override, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4759,7 +4759,7 @@ public:
         return _iceI_begin_ClearNonSidereal(override, context, cb, cookie);
     }
 
-    ::lbto::result end_ClearNonSidereal(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_ClearNonSidereal(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4767,7 +4767,7 @@ private:
 
 public:
 
-    ::lbto::result UpdateNonSiderealTarget(::Ice::Double RArate, ::Ice::Double DECrate, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres UpdateNonSiderealTarget(::Ice::Double RArate, ::Ice::Double DECrate, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_UpdateNonSiderealTarget(_iceI_begin_UpdateNonSiderealTarget(RArate, DECrate, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4797,7 +4797,7 @@ public:
         return _iceI_begin_UpdateNonSiderealTarget(RArate, DECrate, context, cb, cookie);
     }
 
-    ::lbto::result end_UpdateNonSiderealTarget(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_UpdateNonSiderealTarget(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4805,7 +4805,7 @@ private:
 
 public:
 
-    ::lbto::result SetNonSiderealObject(const ::std::string& objtype, const ::lbto::nonsidereal& target, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetNonSiderealObject(const ::std::string& objtype, const ::lbto::nonsidereal& target, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetNonSiderealObject(_iceI_begin_SetNonSiderealObject(objtype, target, override, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4835,7 +4835,7 @@ public:
         return _iceI_begin_SetNonSiderealObject(objtype, target, override, context, cb, cookie);
     }
 
-    ::lbto::result end_SetNonSiderealObject(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetNonSiderealObject(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4843,7 +4843,7 @@ private:
 
 public:
 
-    ::lbto::result ClearNonSiderealObject(const ::std::string& objtype, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres ClearNonSiderealObject(const ::std::string& objtype, bool override, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_ClearNonSiderealObject(_iceI_begin_ClearNonSiderealObject(objtype, override, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4873,7 +4873,7 @@ public:
         return _iceI_begin_ClearNonSiderealObject(objtype, override, context, cb, cookie);
     }
 
-    ::lbto::result end_ClearNonSiderealObject(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_ClearNonSiderealObject(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4881,7 +4881,7 @@ private:
 
 public:
 
-    ::lbto::result UpdateNonSiderealObject(const ::std::string& objtype, ::Ice::Double RArate, ::Ice::Double DECrate, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres UpdateNonSiderealObject(const ::std::string& objtype, ::Ice::Double RArate, ::Ice::Double DECrate, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_UpdateNonSiderealObject(_iceI_begin_UpdateNonSiderealObject(objtype, RArate, DECrate, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4911,7 +4911,7 @@ public:
         return _iceI_begin_UpdateNonSiderealObject(objtype, RArate, DECrate, context, cb, cookie);
     }
 
-    ::lbto::result end_UpdateNonSiderealObject(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_UpdateNonSiderealObject(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4919,7 +4919,7 @@ private:
 
 public:
 
-    ::lbto::result PresetTelescope(::Ice::Double rotangle, const ::std::string& rotmode, const ::std::string& mode, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres PresetTelescope(::Ice::Double rotangle, const ::std::string& rotmode, const ::std::string& mode, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_PresetTelescope(_iceI_begin_PresetTelescope(rotangle, rotmode, mode, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4949,7 +4949,7 @@ public:
         return _iceI_begin_PresetTelescope(rotangle, rotmode, mode, side, context, cb, cookie);
     }
 
-    ::lbto::result end_PresetTelescope(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_PresetTelescope(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4957,7 +4957,7 @@ private:
 
 public:
 
-    ::lbto::result BinocularControl(const ::std::string& flag, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres BinocularControl(const ::std::string& flag, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_BinocularControl(_iceI_begin_BinocularControl(flag, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -4987,7 +4987,7 @@ public:
         return _iceI_begin_BinocularControl(flag, context, cb, cookie);
     }
 
-    ::lbto::result end_BinocularControl(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_BinocularControl(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -4995,7 +4995,7 @@ private:
 
 public:
 
-    ::lbto::result GetParameter(const ::lbto::SeqDD& list, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres GetParameter(const ::lbto::SeqDD& list, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_GetParameter(_iceI_begin_GetParameter(list, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5025,7 +5025,7 @@ public:
         return _iceI_begin_GetParameter(list, context, cb, cookie);
     }
 
-    ::lbto::result end_GetParameter(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_GetParameter(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5033,7 +5033,7 @@ private:
 
 public:
 
-    ::lbto::result SetParameter(const ::lbto::SeqDD& list, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetParameter(const ::lbto::SeqDD& list, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetParameter(_iceI_begin_SetParameter(list, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5063,7 +5063,7 @@ public:
         return _iceI_begin_SetParameter(list, context, cb, cookie);
     }
 
-    ::lbto::result end_SetParameter(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetParameter(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5071,7 +5071,7 @@ private:
 
 public:
 
-    ::lbto::result RotateCommon(::Ice::Double z, ::Ice::Double angle, ::Ice::Double direction, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres RotateCommon(::Ice::Double z, ::Ice::Double angle, ::Ice::Double direction, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_RotateCommon(_iceI_begin_RotateCommon(z, angle, direction, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5101,7 +5101,7 @@ public:
         return _iceI_begin_RotateCommon(z, angle, direction, side, context, cb, cookie);
     }
 
-    ::lbto::result end_RotateCommon(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_RotateCommon(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5109,7 +5109,7 @@ private:
 
 public:
 
-    ::lbto::result RotateZ(::Ice::Double angle, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres RotateZ(::Ice::Double angle, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_RotateZ(_iceI_begin_RotateZ(angle, movetype, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5139,7 +5139,7 @@ public:
         return _iceI_begin_RotateZ(angle, movetype, side, context, cb, cookie);
     }
 
-    ::lbto::result end_RotateZ(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_RotateZ(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5147,7 +5147,7 @@ private:
 
 public:
 
-    ::lbto::result RotatePrimary(::Ice::Double distance, ::Ice::Double angle, ::Ice::Double direction, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres RotatePrimary(::Ice::Double distance, ::Ice::Double angle, ::Ice::Double direction, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_RotatePrimary(_iceI_begin_RotatePrimary(distance, angle, direction, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5177,7 +5177,7 @@ public:
         return _iceI_begin_RotatePrimary(distance, angle, direction, side, context, cb, cookie);
     }
 
-    ::lbto::result end_RotatePrimary(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_RotatePrimary(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5185,7 +5185,7 @@ private:
 
 public:
 
-    ::lbto::result SendWavefront(const ::lbto::SeqWF& wfs, const ::std::string& OPE, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SendWavefront(const ::lbto::SeqWF& wfs, const ::std::string& OPE, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SendWavefront(_iceI_begin_SendWavefront(wfs, OPE, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5215,7 +5215,7 @@ public:
         return _iceI_begin_SendWavefront(wfs, OPE, side, context, cb, cookie);
     }
 
-    ::lbto::result end_SendWavefront(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SendWavefront(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5223,7 +5223,7 @@ private:
 
 public:
 
-    ::lbto::result UpdateTargetWavelength(::Ice::Float wavelength, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres UpdateTargetWavelength(::Ice::Float wavelength, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_UpdateTargetWavelength(_iceI_begin_UpdateTargetWavelength(wavelength, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5253,7 +5253,7 @@ public:
         return _iceI_begin_UpdateTargetWavelength(wavelength, side, context, cb, cookie);
     }
 
-    ::lbto::result end_UpdateTargetWavelength(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_UpdateTargetWavelength(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5261,7 +5261,7 @@ private:
 
 public:
 
-    ::lbto::result LogEvent(const ::std::string& event, const ::std::string& description, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres LogEvent(const ::std::string& event, const ::std::string& description, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_LogEvent(_iceI_begin_LogEvent(event, description, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5291,7 +5291,7 @@ public:
         return _iceI_begin_LogEvent(event, description, context, cb, cookie);
     }
 
-    ::lbto::result end_LogEvent(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_LogEvent(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5299,7 +5299,7 @@ private:
 
 public:
 
-    ::lbto::result GetRotatorTrajectory(::Ice::Double seconds, ::Ice::Double interval, ::Ice::Double start, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres GetRotatorTrajectory(::Ice::Double seconds, ::Ice::Double interval, ::Ice::Double start, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_GetRotatorTrajectory(_iceI_begin_GetRotatorTrajectory(seconds, interval, start, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5329,7 +5329,7 @@ public:
         return _iceI_begin_GetRotatorTrajectory(seconds, interval, start, side, context, cb, cookie);
     }
 
-    ::lbto::result end_GetRotatorTrajectory(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_GetRotatorTrajectory(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5337,7 +5337,7 @@ private:
 
 public:
 
-    ::lbto::result GetRotatorPolynomials(::Ice::Double start, ::Ice::Int count, ::Ice::Double interval, ::Ice::Int order, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres GetRotatorPolynomials(::Ice::Double start, ::Ice::Int count, ::Ice::Double interval, ::Ice::Int order, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_GetRotatorPolynomials(_iceI_begin_GetRotatorPolynomials(start, count, interval, order, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5367,7 +5367,7 @@ public:
         return _iceI_begin_GetRotatorPolynomials(start, count, interval, order, side, context, cb, cookie);
     }
 
-    ::lbto::result end_GetRotatorPolynomials(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_GetRotatorPolynomials(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5375,7 +5375,7 @@ private:
 
 public:
 
-    ::lbto::result Standby(::Ice::Int level, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres Standby(::Ice::Int level, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_Standby(_iceI_begin_Standby(level, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5405,7 +5405,7 @@ public:
         return _iceI_begin_Standby(level, side, context, cb, cookie);
     }
 
-    ::lbto::result end_Standby(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_Standby(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5413,7 +5413,7 @@ private:
 
 public:
 
-    ::lbto::result MaximizeWrapTime(bool azflag, bool rotflag, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres MaximizeWrapTime(bool azflag, bool rotflag, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_MaximizeWrapTime(_iceI_begin_MaximizeWrapTime(azflag, rotflag, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5443,7 +5443,7 @@ public:
         return _iceI_begin_MaximizeWrapTime(azflag, rotflag, side, context, cb, cookie);
     }
 
-    ::lbto::result end_MaximizeWrapTime(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_MaximizeWrapTime(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5451,7 +5451,7 @@ private:
 
 public:
 
-    ::lbto::result PauseGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres PauseGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_PauseGuiding(_iceI_begin_PauseGuiding(side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5481,7 +5481,7 @@ public:
         return _iceI_begin_PauseGuiding(side, context, cb, cookie);
     }
 
-    ::lbto::result end_PauseGuiding(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_PauseGuiding(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5489,7 +5489,7 @@ private:
 
 public:
 
-    ::lbto::result ResumeGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres ResumeGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_ResumeGuiding(_iceI_begin_ResumeGuiding(side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5519,7 +5519,7 @@ public:
         return _iceI_begin_ResumeGuiding(side, context, cb, cookie);
     }
 
-    ::lbto::result end_ResumeGuiding(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_ResumeGuiding(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5527,7 +5527,7 @@ private:
 
 public:
 
-    ::lbto::result StopGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres StopGuiding(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_StopGuiding(_iceI_begin_StopGuiding(side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5557,7 +5557,7 @@ public:
         return _iceI_begin_StopGuiding(side, context, cb, cookie);
     }
 
-    ::lbto::result end_StopGuiding(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_StopGuiding(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5565,7 +5565,7 @@ private:
 
 public:
 
-    ::lbto::result SetGuidingHotspot(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetGuidingHotspot(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& movetype, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetGuidingHotspot(_iceI_begin_SetGuidingHotspot(coord1, coord2, movetype, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5595,7 +5595,7 @@ public:
         return _iceI_begin_SetGuidingHotspot(coord1, coord2, movetype, side, context, cb, cookie);
     }
 
-    ::lbto::result end_SetGuidingHotspot(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetGuidingHotspot(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5603,7 +5603,7 @@ private:
 
 public:
 
-    ::lbto::result SetAGWFilter(::Ice::Int filterNumber, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetAGWFilter(::Ice::Int filterNumber, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetAGWFilter(_iceI_begin_SetAGWFilter(filterNumber, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5633,7 +5633,7 @@ public:
         return _iceI_begin_SetAGWFilter(filterNumber, side, context, cb, cookie);
     }
 
-    ::lbto::result end_SetAGWFilter(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetAGWFilter(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5641,7 +5641,7 @@ private:
 
 public:
 
-    ::lbto::result SetGuidingBinning(::Ice::Int factor, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetGuidingBinning(::Ice::Int factor, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetGuidingBinning(_iceI_begin_SetGuidingBinning(factor, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5671,7 +5671,7 @@ public:
         return _iceI_begin_SetGuidingBinning(factor, side, context, cb, cookie);
     }
 
-    ::lbto::result end_SetGuidingBinning(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetGuidingBinning(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5679,7 +5679,7 @@ private:
 
 public:
 
-    ::lbto::result RotReady(bool enable, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres RotReady(bool enable, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_RotReady(_iceI_begin_RotReady(enable, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5709,7 +5709,7 @@ public:
         return _iceI_begin_RotReady(enable, side, context, cb, cookie);
     }
 
-    ::lbto::result end_RotReady(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_RotReady(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5717,7 +5717,7 @@ private:
 
 public:
 
-    ::lbto::result RotHold(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres RotHold(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_RotHold(_iceI_begin_RotHold(side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5747,7 +5747,7 @@ public:
         return _iceI_begin_RotHold(side, context, cb, cookie);
     }
 
-    ::lbto::result end_RotHold(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_RotHold(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5755,7 +5755,7 @@ private:
 
 public:
 
-    ::lbto::result RotTrack(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres RotTrack(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_RotTrack(_iceI_begin_RotTrack(side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5785,7 +5785,7 @@ public:
         return _iceI_begin_RotTrack(side, context, cb, cookie);
     }
 
-    ::lbto::result end_RotTrack(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_RotTrack(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5793,7 +5793,7 @@ private:
 
 public:
 
-    ::lbto::result RotServicePosition(::Ice::Double angle, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres RotServicePosition(::Ice::Double angle, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_RotServicePosition(_iceI_begin_RotServicePosition(angle, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5823,7 +5823,7 @@ public:
         return _iceI_begin_RotServicePosition(angle, side, context, cb, cookie);
     }
 
-    ::lbto::result end_RotServicePosition(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_RotServicePosition(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5831,7 +5831,7 @@ private:
 
 public:
 
-    ::lbto::result PauseAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres PauseAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_PauseAO(_iceI_begin_PauseAO(side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5861,7 +5861,7 @@ public:
         return _iceI_begin_PauseAO(side, context, cb, cookie);
     }
 
-    ::lbto::result end_PauseAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_PauseAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5869,7 +5869,7 @@ private:
 
 public:
 
-    ::lbto::result ResumeAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres ResumeAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_ResumeAO(_iceI_begin_ResumeAO(side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5899,7 +5899,7 @@ public:
         return _iceI_begin_ResumeAO(side, context, cb, cookie);
     }
 
-    ::lbto::result end_ResumeAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_ResumeAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5907,7 +5907,7 @@ private:
 
 public:
 
-    ::lbto::result StartAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres StartAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_StartAO(_iceI_begin_StartAO(side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5937,7 +5937,7 @@ public:
         return _iceI_begin_StartAO(side, context, cb, cookie);
     }
 
-    ::lbto::result end_StartAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_StartAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5945,7 +5945,7 @@ private:
 
 public:
 
-    ::lbto::result StopAO(const ::std::string& reason, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres StopAO(const ::std::string& reason, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_StopAO(_iceI_begin_StopAO(reason, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -5975,7 +5975,7 @@ public:
         return _iceI_begin_StopAO(reason, side, context, cb, cookie);
     }
 
-    ::lbto::result end_StopAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_StopAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -5983,7 +5983,7 @@ private:
 
 public:
 
-    ::lbto::result AcquireRefAO(bool repointFlag, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres AcquireRefAO(bool repointFlag, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_AcquireRefAO(_iceI_begin_AcquireRefAO(repointFlag, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6013,7 +6013,7 @@ public:
         return _iceI_begin_AcquireRefAO(repointFlag, side, context, cb, cookie);
     }
 
-    ::lbto::result end_AcquireRefAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_AcquireRefAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6021,7 +6021,7 @@ private:
 
 public:
 
-    ::lbto::result CheckRefAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres CheckRefAO(const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_CheckRefAO(_iceI_begin_CheckRefAO(side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6051,7 +6051,7 @@ public:
         return _iceI_begin_CheckRefAO(side, context, cb, cookie);
     }
 
-    ::lbto::result end_CheckRefAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_CheckRefAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6059,7 +6059,7 @@ private:
 
 public:
 
-    ::lbto::result RefineAO(const ::std::string& method, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres RefineAO(const ::std::string& method, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_RefineAO(_iceI_begin_RefineAO(method, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6089,7 +6089,7 @@ public:
         return _iceI_begin_RefineAO(method, side, context, cb, cookie);
     }
 
-    ::lbto::result end_RefineAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_RefineAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6097,7 +6097,7 @@ private:
 
 public:
 
-    ::lbto::result RunAO(const ::std::string& type, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres RunAO(const ::std::string& type, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_RunAO(_iceI_begin_RunAO(type, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6127,7 +6127,7 @@ public:
         return _iceI_begin_RunAO(type, side, context, cb, cookie);
     }
 
-    ::lbto::result end_RunAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_RunAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6135,7 +6135,7 @@ private:
 
 public:
 
-    ::lbto::result PresetFlatAO(const ::std::string& flat, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres PresetFlatAO(const ::std::string& flat, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_PresetFlatAO(_iceI_begin_PresetFlatAO(flat, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6165,7 +6165,7 @@ public:
         return _iceI_begin_PresetFlatAO(flat, side, context, cb, cookie);
     }
 
-    ::lbto::result end_PresetFlatAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_PresetFlatAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6173,7 +6173,7 @@ private:
 
 public:
 
-    ::lbto::result CorrectModesAO(const ::lbto::SeqModes& modes, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres CorrectModesAO(const ::lbto::SeqModes& modes, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_CorrectModesAO(_iceI_begin_CorrectModesAO(modes, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6203,7 +6203,7 @@ public:
         return _iceI_begin_CorrectModesAO(modes, side, context, cb, cookie);
     }
 
-    ::lbto::result end_CorrectModesAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_CorrectModesAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6211,7 +6211,7 @@ private:
 
 public:
 
-    ::lbto::result ModifyAO(::Ice::Int NModes, ::Ice::Double Freq, ::Ice::Int Nbins, ::Ice::Double TTMod, const ::std::string& F1spec, const ::std::string& F2spec, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres ModifyAO(::Ice::Int NModes, ::Ice::Double Freq, ::Ice::Int Nbins, ::Ice::Double TTMod, const ::std::string& F1spec, const ::std::string& F2spec, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_ModifyAO(_iceI_begin_ModifyAO(NModes, Freq, Nbins, TTMod, F1spec, F2spec, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6241,7 +6241,7 @@ public:
         return _iceI_begin_ModifyAO(NModes, Freq, Nbins, TTMod, F1spec, F2spec, side, context, cb, cookie);
     }
 
-    ::lbto::result end_ModifyAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_ModifyAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6249,7 +6249,7 @@ private:
 
 public:
 
-    ::lbto::result PresetAO(const ::std::string& AOMode, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres PresetAO(const ::std::string& AOMode, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_PresetAO(_iceI_begin_PresetAO(AOMode, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6279,7 +6279,7 @@ public:
         return _iceI_begin_PresetAO(AOMode, side, context, cb, cookie);
     }
 
-    ::lbto::result end_PresetAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_PresetAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6287,7 +6287,7 @@ private:
 
 public:
 
-    ::lbto::result OffsetXYAO(::Ice::Double DeltaX, ::Ice::Double DeltaY, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres OffsetXYAO(::Ice::Double DeltaX, ::Ice::Double DeltaY, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_OffsetXYAO(_iceI_begin_OffsetXYAO(DeltaX, DeltaY, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6317,7 +6317,7 @@ public:
         return _iceI_begin_OffsetXYAO(DeltaX, DeltaY, side, context, cb, cookie);
     }
 
-    ::lbto::result end_OffsetXYAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_OffsetXYAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6325,7 +6325,7 @@ private:
 
 public:
 
-    ::lbto::result OffsetZAO(::Ice::Double DeltaZ, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres OffsetZAO(::Ice::Double DeltaZ, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_OffsetZAO(_iceI_begin_OffsetZAO(DeltaZ, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6355,7 +6355,7 @@ public:
         return _iceI_begin_OffsetZAO(DeltaZ, side, context, cb, cookie);
     }
 
-    ::lbto::result end_OffsetZAO(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_OffsetZAO(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6363,7 +6363,7 @@ private:
 
 public:
 
-    ::lbto::result SetReference(const ::lbto::SeqPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetReference(const ::lbto::SeqPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetReference(_iceI_begin_SetReference(stars, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6393,7 +6393,7 @@ public:
         return _iceI_begin_SetReference(stars, context, cb, cookie);
     }
 
-    ::lbto::result end_SetReference(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetReference(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6401,7 +6401,7 @@ private:
 
 public:
 
-    ::lbto::result SetReferenceNew(const ::lbto::SeqNewPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetReferenceNew(const ::lbto::SeqNewPos& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetReferenceNew(_iceI_begin_SetReferenceNew(stars, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6431,7 +6431,7 @@ public:
         return _iceI_begin_SetReferenceNew(stars, context, cb, cookie);
     }
 
-    ::lbto::result end_SetReferenceNew(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetReferenceNew(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6439,7 +6439,7 @@ private:
 
 public:
 
-    ::lbto::result SetReference2(const ::lbto::SeqPos2& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres SetReference2(const ::lbto::SeqPos2& stars, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_SetReference2(_iceI_begin_SetReference2(stars, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6469,7 +6469,7 @@ public:
         return _iceI_begin_SetReference2(stars, context, cb, cookie);
     }
 
-    ::lbto::result end_SetReference2(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_SetReference2(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6477,7 +6477,7 @@ private:
 
 public:
 
-    ::lbto::result ClearReference(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres ClearReference(const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_ClearReference(_iceI_begin_ClearReference(context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6507,7 +6507,7 @@ public:
         return _iceI_begin_ClearReference(context, cb, cookie);
     }
 
-    ::lbto::result end_ClearReference(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_ClearReference(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6515,7 +6515,7 @@ private:
 
 public:
 
-    ::lbto::result GetKFPCoordinates(const ::lbto::SeqPos& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres GetKFPCoordinates(const ::lbto::SeqPos& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_GetKFPCoordinates(_iceI_begin_GetKFPCoordinates(stars, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6545,7 +6545,7 @@ public:
         return _iceI_begin_GetKFPCoordinates(stars, side, context, cb, cookie);
     }
 
-    ::lbto::result end_GetKFPCoordinates(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_GetKFPCoordinates(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6553,7 +6553,7 @@ private:
 
 public:
 
-    ::lbto::result GetKFPCoordinatesNew(const ::lbto::SeqNewPos& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres GetKFPCoordinatesNew(const ::lbto::SeqNewPos& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_GetKFPCoordinatesNew(_iceI_begin_GetKFPCoordinatesNew(stars, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6583,7 +6583,7 @@ public:
         return _iceI_begin_GetKFPCoordinatesNew(stars, side, context, cb, cookie);
     }
 
-    ::lbto::result end_GetKFPCoordinatesNew(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_GetKFPCoordinatesNew(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6591,7 +6591,7 @@ private:
 
 public:
 
-    ::lbto::result GetKFPCoordinates2(const ::lbto::SeqPos2& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres GetKFPCoordinates2(const ::lbto::SeqPos2& stars, const ::std::string& side, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_GetKFPCoordinates2(_iceI_begin_GetKFPCoordinates2(stars, side, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6621,7 +6621,7 @@ public:
         return _iceI_begin_GetKFPCoordinates2(stars, side, context, cb, cookie);
     }
 
-    ::lbto::result end_GetKFPCoordinates2(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_GetKFPCoordinates2(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6629,7 +6629,7 @@ private:
 
 public:
 
-    ::lbto::result NSQuery(const ::std::string& targenName, const ::std::string& startDate, const ::std::string& startTime, const ::std::string& endDate, const ::std::string& endTime, const ::std::string& interval, const ::std::string& fileName, const ::Ice::Context& context = ::Ice::noExplicitContext)
+    ::lbto::iifres NSQuery(const ::std::string& targenName, const ::std::string& startDate, const ::std::string& startTime, const ::std::string& endDate, const ::std::string& endTime, const ::std::string& interval, const ::std::string& fileName, const ::Ice::Context& context = ::Ice::noExplicitContext)
     {
         return end_NSQuery(_iceI_begin_NSQuery(targenName, startDate, startTime, endDate, endTime, interval, fileName, context, ::IceInternal::dummyCallback, 0, true));
     }
@@ -6659,7 +6659,7 @@ public:
         return _iceI_begin_NSQuery(targenName, startDate, startTime, endDate, endTime, interval, fileName, context, cb, cookie);
     }
 
-    ::lbto::result end_NSQuery(const ::Ice::AsyncResultPtr& result);
+    ::lbto::iifres end_NSQuery(const ::Ice::AsyncResultPtr& result);
 
 private:
 
@@ -6771,387 +6771,387 @@ public:
      */
     static const ::std::string& ice_staticId();
 
-    virtual result ApplyWaffleAO(const SeqModes& modes, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres ApplyWaffleAO(const SeqModes& modes, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_ApplyWaffleAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result Authorize(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres Authorize(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_Authorize(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result StepFocus(::Ice::Double relPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres StepFocus(::Ice::Double relPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_StepFocus(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result MoveFocus(::Ice::Double absPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres MoveFocus(::Ice::Double absPos, const ::std::string& ope, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_MoveFocus(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result OffsetPointing(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& ope, const ::std::string& np, const ::std::string& movetype, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres OffsetPointing(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& ope, const ::std::string& np, const ::std::string& movetype, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_OffsetPointing(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result OffsetPointing2(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& movetype, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres OffsetPointing2(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& movetype, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_OffsetPointing2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result OffsetGuiding(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres OffsetGuiding(::Ice::Double rotangle, ::Ice::Double offx, ::Ice::Double offy, const ::std::string& coordsys, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_OffsetGuiding(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result UpdatePointingReference(const ::std::string& offsetcoord, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres UpdatePointingReference(const ::std::string& offsetcoord, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_UpdatePointingReference(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result TipTilt(::Ice::Double xrot, ::Ice::Double yrot, const ::std::string& ope, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres TipTilt(::Ice::Double xrot, ::Ice::Double yrot, const ::std::string& ope, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_TipTilt(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetPMTerm(const ::std::string& name, ::Ice::Double value, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetPMTerm(const ::std::string& name, ::Ice::Double value, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetPMTerm(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetPMTerm2(const ::std::string& name, ::Ice::Double value, const ::std::string& movetype, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetPMTerm2(const ::std::string& name, ::Ice::Double value, const ::std::string& movetype, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetPMTerm2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result MoveXYZ(::Ice::Double xmov, ::Ice::Double ymov, ::Ice::Double zmov, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres MoveXYZ(::Ice::Double xmov, ::Ice::Double ymov, ::Ice::Double zmov, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_MoveXYZ(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result MoveXY(::Ice::Double xmov, ::Ice::Double ymov, const ::std::string& ope, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres MoveXY(::Ice::Double xmov, ::Ice::Double ymov, const ::std::string& ope, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_MoveXY(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result Move(::Ice::Double x, ::Ice::Double y, ::Ice::Double z, ::Ice::Double rx, ::Ice::Double ry, ::Ice::Double rz, ::Ice::Int dflag, const ::std::string& movetype, const ::std::string& OPE, ::Ice::Int time, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres Move(::Ice::Double x, ::Ice::Double y, ::Ice::Double z, ::Ice::Double rx, ::Ice::Double ry, ::Ice::Double rz, ::Ice::Int dflag, const ::std::string& movetype, const ::std::string& OPE, ::Ice::Int time, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_Move(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetTarget(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, ::Ice::Double epoch, ::Ice::Float wavelength, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetTarget(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, ::Ice::Double epoch, ::Ice::Float wavelength, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetTarget(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetStars(const SeqPos& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetStars(const SeqPos& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetStars(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetStarsNew(const SeqNewPos& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetStarsNew(const SeqNewPos& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetStarsNew(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetStars2(const SeqPos2& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetStars2(const SeqPos2& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetStars2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearStars(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres ClearStars(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearStars(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetHotspot(::Ice::Double coord1, ::Ice::Double coord2, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetHotspot(::Ice::Double coord1, ::Ice::Double coord2, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetHotspot(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearHotspot(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres ClearHotspot(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearHotspot(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetOffset(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetOffset(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetOffset(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetOffsetNew(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetOffsetNew(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetOffsetNew(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetOffset2(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetOffset2(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& system, const ::std::string& movetype, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetOffset2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearOffset(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres ClearOffset(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearOffset(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetNonSidereal(const nonsidereal& target, bool override, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetNonSidereal(const nonsidereal& target, bool override, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetNonSidereal(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearNonSidereal(bool override, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres ClearNonSidereal(bool override, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearNonSidereal(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result UpdateNonSiderealTarget(::Ice::Double RArate, ::Ice::Double DECrate, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres UpdateNonSiderealTarget(::Ice::Double RArate, ::Ice::Double DECrate, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_UpdateNonSiderealTarget(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetNonSiderealObject(const ::std::string& objtype, const nonsidereal& target, bool override, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetNonSiderealObject(const ::std::string& objtype, const nonsidereal& target, bool override, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetNonSiderealObject(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearNonSiderealObject(const ::std::string& objtype, bool override, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres ClearNonSiderealObject(const ::std::string& objtype, bool override, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearNonSiderealObject(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result UpdateNonSiderealObject(const ::std::string& objtype, ::Ice::Double RArate, ::Ice::Double DECrate, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres UpdateNonSiderealObject(const ::std::string& objtype, ::Ice::Double RArate, ::Ice::Double DECrate, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_UpdateNonSiderealObject(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result PresetTelescope(::Ice::Double rotangle, const ::std::string& rotmode, const ::std::string& mode, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres PresetTelescope(::Ice::Double rotangle, const ::std::string& rotmode, const ::std::string& mode, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_PresetTelescope(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result BinocularControl(const ::std::string& flag, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres BinocularControl(const ::std::string& flag, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_BinocularControl(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetParameter(const SeqDD& list, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres GetParameter(const SeqDD& list, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_GetParameter(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetParameter(const SeqDD& list, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetParameter(const SeqDD& list, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetParameter(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotateCommon(::Ice::Double z, ::Ice::Double angle, ::Ice::Double direction, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres RotateCommon(::Ice::Double z, ::Ice::Double angle, ::Ice::Double direction, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_RotateCommon(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotateZ(::Ice::Double angle, const ::std::string& movetype, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres RotateZ(::Ice::Double angle, const ::std::string& movetype, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_RotateZ(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotatePrimary(::Ice::Double distance, ::Ice::Double angle, ::Ice::Double direction, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres RotatePrimary(::Ice::Double distance, ::Ice::Double angle, ::Ice::Double direction, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_RotatePrimary(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SendWavefront(const SeqWF& wfs, const ::std::string& OPE, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SendWavefront(const SeqWF& wfs, const ::std::string& OPE, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SendWavefront(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result UpdateTargetWavelength(::Ice::Float wavelength, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres UpdateTargetWavelength(::Ice::Float wavelength, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_UpdateTargetWavelength(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result LogEvent(const ::std::string& event, const ::std::string& description, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres LogEvent(const ::std::string& event, const ::std::string& description, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_LogEvent(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetRotatorTrajectory(::Ice::Double seconds, ::Ice::Double interval, ::Ice::Double start, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres GetRotatorTrajectory(::Ice::Double seconds, ::Ice::Double interval, ::Ice::Double start, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_GetRotatorTrajectory(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetRotatorPolynomials(::Ice::Double start, ::Ice::Int count, ::Ice::Double interval, ::Ice::Int order, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres GetRotatorPolynomials(::Ice::Double start, ::Ice::Int count, ::Ice::Double interval, ::Ice::Int order, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_GetRotatorPolynomials(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result Standby(::Ice::Int level, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres Standby(::Ice::Int level, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_Standby(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result MaximizeWrapTime(bool azflag, bool rotflag, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres MaximizeWrapTime(bool azflag, bool rotflag, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_MaximizeWrapTime(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result PauseGuiding(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres PauseGuiding(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_PauseGuiding(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ResumeGuiding(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres ResumeGuiding(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_ResumeGuiding(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result StopGuiding(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres StopGuiding(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_StopGuiding(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetGuidingHotspot(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& movetype, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetGuidingHotspot(::Ice::Double coord1, ::Ice::Double coord2, const ::std::string& movetype, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetGuidingHotspot(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetAGWFilter(::Ice::Int filterNumber, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetAGWFilter(::Ice::Int filterNumber, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetAGWFilter(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetGuidingBinning(::Ice::Int factor, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetGuidingBinning(::Ice::Int factor, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetGuidingBinning(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotReady(bool enable, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres RotReady(bool enable, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_RotReady(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotHold(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres RotHold(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_RotHold(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotTrack(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres RotTrack(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_RotTrack(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RotServicePosition(::Ice::Double angle, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres RotServicePosition(::Ice::Double angle, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_RotServicePosition(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result PauseAO(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres PauseAO(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_PauseAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ResumeAO(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres ResumeAO(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_ResumeAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result StartAO(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres StartAO(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_StartAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result StopAO(const ::std::string& reason, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres StopAO(const ::std::string& reason, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_StopAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result AcquireRefAO(bool repointFlag, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres AcquireRefAO(bool repointFlag, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_AcquireRefAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result CheckRefAO(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres CheckRefAO(const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_CheckRefAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RefineAO(const ::std::string& method, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres RefineAO(const ::std::string& method, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_RefineAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result RunAO(const ::std::string& type, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres RunAO(const ::std::string& type, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_RunAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result PresetFlatAO(const ::std::string& flat, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres PresetFlatAO(const ::std::string& flat, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_PresetFlatAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result CorrectModesAO(const SeqModes& modes, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres CorrectModesAO(const SeqModes& modes, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_CorrectModesAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ModifyAO(::Ice::Int NModes, ::Ice::Double Freq, ::Ice::Int Nbins, ::Ice::Double TTMod, const ::std::string& F1spec, const ::std::string& F2spec, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres ModifyAO(::Ice::Int NModes, ::Ice::Double Freq, ::Ice::Int Nbins, ::Ice::Double TTMod, const ::std::string& F1spec, const ::std::string& F2spec, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_ModifyAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result PresetAO(const ::std::string& AOMode, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres PresetAO(const ::std::string& AOMode, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_PresetAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result OffsetXYAO(::Ice::Double DeltaX, ::Ice::Double DeltaY, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres OffsetXYAO(::Ice::Double DeltaX, ::Ice::Double DeltaY, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_OffsetXYAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result OffsetZAO(::Ice::Double DeltaZ, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres OffsetZAO(::Ice::Double DeltaZ, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_OffsetZAO(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetReference(const SeqPos& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetReference(const SeqPos& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetReference(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetReferenceNew(const SeqNewPos& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetReferenceNew(const SeqNewPos& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetReferenceNew(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result SetReference2(const SeqPos2& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres SetReference2(const SeqPos2& stars, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_SetReference2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result ClearReference(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres ClearReference(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_ClearReference(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetKFPCoordinates(const SeqPos& stars, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres GetKFPCoordinates(const SeqPos& stars, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_GetKFPCoordinates(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetKFPCoordinatesNew(const SeqNewPos& stars, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres GetKFPCoordinatesNew(const SeqNewPos& stars, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_GetKFPCoordinatesNew(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result GetKFPCoordinates2(const SeqPos2& stars, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres GetKFPCoordinates2(const SeqPos2& stars, const ::std::string& side, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_GetKFPCoordinates2(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
-    virtual result NSQuery(const ::std::string& targenName, const ::std::string& startDate, const ::std::string& startTime, const ::std::string& endDate, const ::std::string& endTime, const ::std::string& interval, const ::std::string& fileName, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    virtual iifres NSQuery(const ::std::string& targenName, const ::std::string& startDate, const ::std::string& startTime, const ::std::string& endDate, const ::std::string& endTime, const ::std::string& interval, const ::std::string& fileName, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_NSQuery(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
@@ -7430,7 +7430,7 @@ struct StreamReader< ::lbto::nonsidereal, S>
 };
 
 template<>
-struct StreamableTraits< ::lbto::result>
+struct StreamableTraits< ::lbto::iifres>
 {
     static const StreamHelperCategory helper = StreamHelperCategoryStruct;
     static const int minWireSize = 5;
@@ -7438,9 +7438,9 @@ struct StreamableTraits< ::lbto::result>
 };
 
 template<typename S>
-struct StreamWriter< ::lbto::result, S>
+struct StreamWriter< ::lbto::iifres, S>
 {
-    static void write(S* ostr, const ::lbto::result& v)
+    static void write(S* ostr, const ::lbto::iifres& v)
     {
         ostr->write(v.rescode);
         ostr->write(v.resmsg);
@@ -7448,9 +7448,9 @@ struct StreamWriter< ::lbto::result, S>
 };
 
 template<typename S>
-struct StreamReader< ::lbto::result, S>
+struct StreamReader< ::lbto::iifres, S>
 {
-    static void read(S* istr, ::lbto::result& v)
+    static void read(S* istr, ::lbto::iifres& v)
     {
         istr->read(v.rescode);
         istr->read(v.resmsg);
@@ -7477,7 +7477,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_ApplyWaffleAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -7488,7 +7488,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ApplyWaffleAO(result);
@@ -7519,7 +7519,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ApplyWaffleAO.
  */
 template<class T> Callback_IIFServer_ApplyWaffleAOPtr
-newCallback_IIFServer_ApplyWaffleAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ApplyWaffleAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ApplyWaffleAO<T>(instance, cb, excb, sentcb);
 }
@@ -7533,7 +7533,7 @@ newCallback_IIFServer_ApplyWaffleAO(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ApplyWaffleAO.
  */
 template<class T> Callback_IIFServer_ApplyWaffleAOPtr
-newCallback_IIFServer_ApplyWaffleAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ApplyWaffleAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ApplyWaffleAO<T>(instance, cb, excb, sentcb);
 }
@@ -7552,7 +7552,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_ApplyWaffleAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -7563,7 +7563,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ApplyWaffleAO(result);
@@ -7595,7 +7595,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ApplyWaffleAO.
  */
 template<class T, typename CT> Callback_IIFServer_ApplyWaffleAOPtr
-newCallback_IIFServer_ApplyWaffleAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ApplyWaffleAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ApplyWaffleAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -7610,7 +7610,7 @@ newCallback_IIFServer_ApplyWaffleAO(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ApplyWaffleAO.
  */
 template<class T, typename CT> Callback_IIFServer_ApplyWaffleAOPtr
-newCallback_IIFServer_ApplyWaffleAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ApplyWaffleAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ApplyWaffleAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -7629,7 +7629,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_Authorize(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -7640,7 +7640,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_Authorize(result);
@@ -7671,7 +7671,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Authorize.
  */
 template<class T> Callback_IIFServer_AuthorizePtr
-newCallback_IIFServer_Authorize(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_Authorize(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_Authorize<T>(instance, cb, excb, sentcb);
 }
@@ -7685,7 +7685,7 @@ newCallback_IIFServer_Authorize(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Authorize.
  */
 template<class T> Callback_IIFServer_AuthorizePtr
-newCallback_IIFServer_Authorize(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_Authorize(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_Authorize<T>(instance, cb, excb, sentcb);
 }
@@ -7704,7 +7704,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_Authorize(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -7715,7 +7715,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_Authorize(result);
@@ -7747,7 +7747,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Authorize.
  */
 template<class T, typename CT> Callback_IIFServer_AuthorizePtr
-newCallback_IIFServer_Authorize(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_Authorize(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_Authorize<T, CT>(instance, cb, excb, sentcb);
 }
@@ -7762,7 +7762,7 @@ newCallback_IIFServer_Authorize(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Authorize.
  */
 template<class T, typename CT> Callback_IIFServer_AuthorizePtr
-newCallback_IIFServer_Authorize(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_Authorize(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_Authorize<T, CT>(instance, cb, excb, sentcb);
 }
@@ -7781,7 +7781,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_StepFocus(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -7792,7 +7792,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_StepFocus(result);
@@ -7823,7 +7823,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StepFocus.
  */
 template<class T> Callback_IIFServer_StepFocusPtr
-newCallback_IIFServer_StepFocus(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_StepFocus(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_StepFocus<T>(instance, cb, excb, sentcb);
 }
@@ -7837,7 +7837,7 @@ newCallback_IIFServer_StepFocus(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StepFocus.
  */
 template<class T> Callback_IIFServer_StepFocusPtr
-newCallback_IIFServer_StepFocus(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_StepFocus(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_StepFocus<T>(instance, cb, excb, sentcb);
 }
@@ -7856,7 +7856,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_StepFocus(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -7867,7 +7867,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_StepFocus(result);
@@ -7899,7 +7899,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StepFocus.
  */
 template<class T, typename CT> Callback_IIFServer_StepFocusPtr
-newCallback_IIFServer_StepFocus(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_StepFocus(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_StepFocus<T, CT>(instance, cb, excb, sentcb);
 }
@@ -7914,7 +7914,7 @@ newCallback_IIFServer_StepFocus(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StepFocus.
  */
 template<class T, typename CT> Callback_IIFServer_StepFocusPtr
-newCallback_IIFServer_StepFocus(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_StepFocus(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_StepFocus<T, CT>(instance, cb, excb, sentcb);
 }
@@ -7933,7 +7933,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_MoveFocus(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -7944,7 +7944,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_MoveFocus(result);
@@ -7975,7 +7975,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveFocus.
  */
 template<class T> Callback_IIFServer_MoveFocusPtr
-newCallback_IIFServer_MoveFocus(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_MoveFocus(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_MoveFocus<T>(instance, cb, excb, sentcb);
 }
@@ -7989,7 +7989,7 @@ newCallback_IIFServer_MoveFocus(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveFocus.
  */
 template<class T> Callback_IIFServer_MoveFocusPtr
-newCallback_IIFServer_MoveFocus(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_MoveFocus(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_MoveFocus<T>(instance, cb, excb, sentcb);
 }
@@ -8008,7 +8008,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_MoveFocus(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8019,7 +8019,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_MoveFocus(result);
@@ -8051,7 +8051,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveFocus.
  */
 template<class T, typename CT> Callback_IIFServer_MoveFocusPtr
-newCallback_IIFServer_MoveFocus(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_MoveFocus(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_MoveFocus<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8066,7 +8066,7 @@ newCallback_IIFServer_MoveFocus(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveFocus.
  */
 template<class T, typename CT> Callback_IIFServer_MoveFocusPtr
-newCallback_IIFServer_MoveFocus(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_MoveFocus(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_MoveFocus<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8085,7 +8085,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_OffsetPointing(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8096,7 +8096,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_OffsetPointing(result);
@@ -8127,7 +8127,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetPointing.
  */
 template<class T> Callback_IIFServer_OffsetPointingPtr
-newCallback_IIFServer_OffsetPointing(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_OffsetPointing(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_OffsetPointing<T>(instance, cb, excb, sentcb);
 }
@@ -8141,7 +8141,7 @@ newCallback_IIFServer_OffsetPointing(const IceUtil::Handle<T>& instance, void (T
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetPointing.
  */
 template<class T> Callback_IIFServer_OffsetPointingPtr
-newCallback_IIFServer_OffsetPointing(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_OffsetPointing(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_OffsetPointing<T>(instance, cb, excb, sentcb);
 }
@@ -8160,7 +8160,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_OffsetPointing(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8171,7 +8171,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_OffsetPointing(result);
@@ -8203,7 +8203,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetPointing.
  */
 template<class T, typename CT> Callback_IIFServer_OffsetPointingPtr
-newCallback_IIFServer_OffsetPointing(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_OffsetPointing(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_OffsetPointing<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8218,7 +8218,7 @@ newCallback_IIFServer_OffsetPointing(const IceUtil::Handle<T>& instance, void (T
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetPointing.
  */
 template<class T, typename CT> Callback_IIFServer_OffsetPointingPtr
-newCallback_IIFServer_OffsetPointing(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_OffsetPointing(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_OffsetPointing<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8237,7 +8237,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_OffsetPointing2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8248,7 +8248,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_OffsetPointing2(result);
@@ -8279,7 +8279,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetPointing2.
  */
 template<class T> Callback_IIFServer_OffsetPointing2Ptr
-newCallback_IIFServer_OffsetPointing2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_OffsetPointing2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_OffsetPointing2<T>(instance, cb, excb, sentcb);
 }
@@ -8293,7 +8293,7 @@ newCallback_IIFServer_OffsetPointing2(const IceUtil::Handle<T>& instance, void (
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetPointing2.
  */
 template<class T> Callback_IIFServer_OffsetPointing2Ptr
-newCallback_IIFServer_OffsetPointing2(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_OffsetPointing2(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_OffsetPointing2<T>(instance, cb, excb, sentcb);
 }
@@ -8312,7 +8312,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_OffsetPointing2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8323,7 +8323,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_OffsetPointing2(result);
@@ -8355,7 +8355,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetPointing2.
  */
 template<class T, typename CT> Callback_IIFServer_OffsetPointing2Ptr
-newCallback_IIFServer_OffsetPointing2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_OffsetPointing2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_OffsetPointing2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8370,7 +8370,7 @@ newCallback_IIFServer_OffsetPointing2(const IceUtil::Handle<T>& instance, void (
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetPointing2.
  */
 template<class T, typename CT> Callback_IIFServer_OffsetPointing2Ptr
-newCallback_IIFServer_OffsetPointing2(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_OffsetPointing2(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_OffsetPointing2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8389,7 +8389,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_OffsetGuiding(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8400,7 +8400,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_OffsetGuiding(result);
@@ -8431,7 +8431,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetGuiding.
  */
 template<class T> Callback_IIFServer_OffsetGuidingPtr
-newCallback_IIFServer_OffsetGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_OffsetGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_OffsetGuiding<T>(instance, cb, excb, sentcb);
 }
@@ -8445,7 +8445,7 @@ newCallback_IIFServer_OffsetGuiding(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetGuiding.
  */
 template<class T> Callback_IIFServer_OffsetGuidingPtr
-newCallback_IIFServer_OffsetGuiding(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_OffsetGuiding(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_OffsetGuiding<T>(instance, cb, excb, sentcb);
 }
@@ -8464,7 +8464,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_OffsetGuiding(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8475,7 +8475,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_OffsetGuiding(result);
@@ -8507,7 +8507,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetGuiding.
  */
 template<class T, typename CT> Callback_IIFServer_OffsetGuidingPtr
-newCallback_IIFServer_OffsetGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_OffsetGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_OffsetGuiding<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8522,7 +8522,7 @@ newCallback_IIFServer_OffsetGuiding(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetGuiding.
  */
 template<class T, typename CT> Callback_IIFServer_OffsetGuidingPtr
-newCallback_IIFServer_OffsetGuiding(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_OffsetGuiding(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_OffsetGuiding<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8541,7 +8541,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_UpdatePointingReference(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8552,7 +8552,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_UpdatePointingReference(result);
@@ -8583,7 +8583,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdatePointingReference.
  */
 template<class T> Callback_IIFServer_UpdatePointingReferencePtr
-newCallback_IIFServer_UpdatePointingReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_UpdatePointingReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_UpdatePointingReference<T>(instance, cb, excb, sentcb);
 }
@@ -8597,7 +8597,7 @@ newCallback_IIFServer_UpdatePointingReference(const IceUtil::Handle<T>& instance
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdatePointingReference.
  */
 template<class T> Callback_IIFServer_UpdatePointingReferencePtr
-newCallback_IIFServer_UpdatePointingReference(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_UpdatePointingReference(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_UpdatePointingReference<T>(instance, cb, excb, sentcb);
 }
@@ -8616,7 +8616,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_UpdatePointingReference(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8627,7 +8627,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_UpdatePointingReference(result);
@@ -8659,7 +8659,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdatePointingReference.
  */
 template<class T, typename CT> Callback_IIFServer_UpdatePointingReferencePtr
-newCallback_IIFServer_UpdatePointingReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_UpdatePointingReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_UpdatePointingReference<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8674,7 +8674,7 @@ newCallback_IIFServer_UpdatePointingReference(const IceUtil::Handle<T>& instance
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdatePointingReference.
  */
 template<class T, typename CT> Callback_IIFServer_UpdatePointingReferencePtr
-newCallback_IIFServer_UpdatePointingReference(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_UpdatePointingReference(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_UpdatePointingReference<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8693,7 +8693,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_TipTilt(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8704,7 +8704,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_TipTilt(result);
@@ -8735,7 +8735,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_TipTilt.
  */
 template<class T> Callback_IIFServer_TipTiltPtr
-newCallback_IIFServer_TipTilt(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_TipTilt(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_TipTilt<T>(instance, cb, excb, sentcb);
 }
@@ -8749,7 +8749,7 @@ newCallback_IIFServer_TipTilt(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_TipTilt.
  */
 template<class T> Callback_IIFServer_TipTiltPtr
-newCallback_IIFServer_TipTilt(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_TipTilt(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_TipTilt<T>(instance, cb, excb, sentcb);
 }
@@ -8768,7 +8768,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_TipTilt(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8779,7 +8779,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_TipTilt(result);
@@ -8811,7 +8811,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_TipTilt.
  */
 template<class T, typename CT> Callback_IIFServer_TipTiltPtr
-newCallback_IIFServer_TipTilt(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_TipTilt(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_TipTilt<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8826,7 +8826,7 @@ newCallback_IIFServer_TipTilt(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_TipTilt.
  */
 template<class T, typename CT> Callback_IIFServer_TipTiltPtr
-newCallback_IIFServer_TipTilt(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_TipTilt(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_TipTilt<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8845,7 +8845,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetPMTerm(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8856,7 +8856,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetPMTerm(result);
@@ -8887,7 +8887,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetPMTerm.
  */
 template<class T> Callback_IIFServer_SetPMTermPtr
-newCallback_IIFServer_SetPMTerm(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetPMTerm(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetPMTerm<T>(instance, cb, excb, sentcb);
 }
@@ -8901,7 +8901,7 @@ newCallback_IIFServer_SetPMTerm(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetPMTerm.
  */
 template<class T> Callback_IIFServer_SetPMTermPtr
-newCallback_IIFServer_SetPMTerm(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetPMTerm(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetPMTerm<T>(instance, cb, excb, sentcb);
 }
@@ -8920,7 +8920,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetPMTerm(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -8931,7 +8931,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetPMTerm(result);
@@ -8963,7 +8963,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetPMTerm.
  */
 template<class T, typename CT> Callback_IIFServer_SetPMTermPtr
-newCallback_IIFServer_SetPMTerm(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetPMTerm(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetPMTerm<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8978,7 +8978,7 @@ newCallback_IIFServer_SetPMTerm(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetPMTerm.
  */
 template<class T, typename CT> Callback_IIFServer_SetPMTermPtr
-newCallback_IIFServer_SetPMTerm(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetPMTerm(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetPMTerm<T, CT>(instance, cb, excb, sentcb);
 }
@@ -8997,7 +8997,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetPMTerm2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9008,7 +9008,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetPMTerm2(result);
@@ -9039,7 +9039,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetPMTerm2.
  */
 template<class T> Callback_IIFServer_SetPMTerm2Ptr
-newCallback_IIFServer_SetPMTerm2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetPMTerm2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetPMTerm2<T>(instance, cb, excb, sentcb);
 }
@@ -9053,7 +9053,7 @@ newCallback_IIFServer_SetPMTerm2(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetPMTerm2.
  */
 template<class T> Callback_IIFServer_SetPMTerm2Ptr
-newCallback_IIFServer_SetPMTerm2(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetPMTerm2(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetPMTerm2<T>(instance, cb, excb, sentcb);
 }
@@ -9072,7 +9072,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetPMTerm2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9083,7 +9083,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetPMTerm2(result);
@@ -9115,7 +9115,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetPMTerm2.
  */
 template<class T, typename CT> Callback_IIFServer_SetPMTerm2Ptr
-newCallback_IIFServer_SetPMTerm2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetPMTerm2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetPMTerm2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9130,7 +9130,7 @@ newCallback_IIFServer_SetPMTerm2(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetPMTerm2.
  */
 template<class T, typename CT> Callback_IIFServer_SetPMTerm2Ptr
-newCallback_IIFServer_SetPMTerm2(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetPMTerm2(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetPMTerm2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9149,7 +9149,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_MoveXYZ(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9160,7 +9160,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_MoveXYZ(result);
@@ -9191,7 +9191,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveXYZ.
  */
 template<class T> Callback_IIFServer_MoveXYZPtr
-newCallback_IIFServer_MoveXYZ(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_MoveXYZ(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_MoveXYZ<T>(instance, cb, excb, sentcb);
 }
@@ -9205,7 +9205,7 @@ newCallback_IIFServer_MoveXYZ(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveXYZ.
  */
 template<class T> Callback_IIFServer_MoveXYZPtr
-newCallback_IIFServer_MoveXYZ(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_MoveXYZ(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_MoveXYZ<T>(instance, cb, excb, sentcb);
 }
@@ -9224,7 +9224,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_MoveXYZ(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9235,7 +9235,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_MoveXYZ(result);
@@ -9267,7 +9267,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveXYZ.
  */
 template<class T, typename CT> Callback_IIFServer_MoveXYZPtr
-newCallback_IIFServer_MoveXYZ(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_MoveXYZ(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_MoveXYZ<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9282,7 +9282,7 @@ newCallback_IIFServer_MoveXYZ(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveXYZ.
  */
 template<class T, typename CT> Callback_IIFServer_MoveXYZPtr
-newCallback_IIFServer_MoveXYZ(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_MoveXYZ(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_MoveXYZ<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9301,7 +9301,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_MoveXY(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9312,7 +9312,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_MoveXY(result);
@@ -9343,7 +9343,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveXY.
  */
 template<class T> Callback_IIFServer_MoveXYPtr
-newCallback_IIFServer_MoveXY(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_MoveXY(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_MoveXY<T>(instance, cb, excb, sentcb);
 }
@@ -9357,7 +9357,7 @@ newCallback_IIFServer_MoveXY(const IceUtil::Handle<T>& instance, void (T::*cb)(c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveXY.
  */
 template<class T> Callback_IIFServer_MoveXYPtr
-newCallback_IIFServer_MoveXY(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_MoveXY(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_MoveXY<T>(instance, cb, excb, sentcb);
 }
@@ -9376,7 +9376,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_MoveXY(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9387,7 +9387,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_MoveXY(result);
@@ -9419,7 +9419,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveXY.
  */
 template<class T, typename CT> Callback_IIFServer_MoveXYPtr
-newCallback_IIFServer_MoveXY(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_MoveXY(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_MoveXY<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9434,7 +9434,7 @@ newCallback_IIFServer_MoveXY(const IceUtil::Handle<T>& instance, void (T::*cb)(c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MoveXY.
  */
 template<class T, typename CT> Callback_IIFServer_MoveXYPtr
-newCallback_IIFServer_MoveXY(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_MoveXY(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_MoveXY<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9453,7 +9453,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_Move(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9464,7 +9464,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_Move(result);
@@ -9495,7 +9495,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Move.
  */
 template<class T> Callback_IIFServer_MovePtr
-newCallback_IIFServer_Move(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_Move(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_Move<T>(instance, cb, excb, sentcb);
 }
@@ -9509,7 +9509,7 @@ newCallback_IIFServer_Move(const IceUtil::Handle<T>& instance, void (T::*cb)(con
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Move.
  */
 template<class T> Callback_IIFServer_MovePtr
-newCallback_IIFServer_Move(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_Move(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_Move<T>(instance, cb, excb, sentcb);
 }
@@ -9528,7 +9528,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_Move(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9539,7 +9539,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_Move(result);
@@ -9571,7 +9571,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Move.
  */
 template<class T, typename CT> Callback_IIFServer_MovePtr
-newCallback_IIFServer_Move(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_Move(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_Move<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9586,7 +9586,7 @@ newCallback_IIFServer_Move(const IceUtil::Handle<T>& instance, void (T::*cb)(con
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Move.
  */
 template<class T, typename CT> Callback_IIFServer_MovePtr
-newCallback_IIFServer_Move(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_Move(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_Move<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9605,7 +9605,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetTarget(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9616,7 +9616,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetTarget(result);
@@ -9647,7 +9647,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetTarget.
  */
 template<class T> Callback_IIFServer_SetTargetPtr
-newCallback_IIFServer_SetTarget(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetTarget(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetTarget<T>(instance, cb, excb, sentcb);
 }
@@ -9661,7 +9661,7 @@ newCallback_IIFServer_SetTarget(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetTarget.
  */
 template<class T> Callback_IIFServer_SetTargetPtr
-newCallback_IIFServer_SetTarget(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetTarget(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetTarget<T>(instance, cb, excb, sentcb);
 }
@@ -9680,7 +9680,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetTarget(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9691,7 +9691,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetTarget(result);
@@ -9723,7 +9723,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetTarget.
  */
 template<class T, typename CT> Callback_IIFServer_SetTargetPtr
-newCallback_IIFServer_SetTarget(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetTarget(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetTarget<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9738,7 +9738,7 @@ newCallback_IIFServer_SetTarget(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetTarget.
  */
 template<class T, typename CT> Callback_IIFServer_SetTargetPtr
-newCallback_IIFServer_SetTarget(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetTarget(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetTarget<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9757,7 +9757,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetStars(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9768,7 +9768,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetStars(result);
@@ -9799,7 +9799,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStars.
  */
 template<class T> Callback_IIFServer_SetStarsPtr
-newCallback_IIFServer_SetStars(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetStars(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetStars<T>(instance, cb, excb, sentcb);
 }
@@ -9813,7 +9813,7 @@ newCallback_IIFServer_SetStars(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStars.
  */
 template<class T> Callback_IIFServer_SetStarsPtr
-newCallback_IIFServer_SetStars(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetStars(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetStars<T>(instance, cb, excb, sentcb);
 }
@@ -9832,7 +9832,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetStars(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9843,7 +9843,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetStars(result);
@@ -9875,7 +9875,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStars.
  */
 template<class T, typename CT> Callback_IIFServer_SetStarsPtr
-newCallback_IIFServer_SetStars(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetStars(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetStars<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9890,7 +9890,7 @@ newCallback_IIFServer_SetStars(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStars.
  */
 template<class T, typename CT> Callback_IIFServer_SetStarsPtr
-newCallback_IIFServer_SetStars(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetStars(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetStars<T, CT>(instance, cb, excb, sentcb);
 }
@@ -9909,7 +9909,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetStarsNew(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9920,7 +9920,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetStarsNew(result);
@@ -9951,7 +9951,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStarsNew.
  */
 template<class T> Callback_IIFServer_SetStarsNewPtr
-newCallback_IIFServer_SetStarsNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetStarsNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetStarsNew<T>(instance, cb, excb, sentcb);
 }
@@ -9965,7 +9965,7 @@ newCallback_IIFServer_SetStarsNew(const IceUtil::Handle<T>& instance, void (T::*
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStarsNew.
  */
 template<class T> Callback_IIFServer_SetStarsNewPtr
-newCallback_IIFServer_SetStarsNew(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetStarsNew(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetStarsNew<T>(instance, cb, excb, sentcb);
 }
@@ -9984,7 +9984,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetStarsNew(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -9995,7 +9995,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetStarsNew(result);
@@ -10027,7 +10027,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStarsNew.
  */
 template<class T, typename CT> Callback_IIFServer_SetStarsNewPtr
-newCallback_IIFServer_SetStarsNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetStarsNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetStarsNew<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10042,7 +10042,7 @@ newCallback_IIFServer_SetStarsNew(const IceUtil::Handle<T>& instance, void (T::*
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStarsNew.
  */
 template<class T, typename CT> Callback_IIFServer_SetStarsNewPtr
-newCallback_IIFServer_SetStarsNew(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetStarsNew(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetStarsNew<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10061,7 +10061,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetStars2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10072,7 +10072,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetStars2(result);
@@ -10103,7 +10103,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStars2.
  */
 template<class T> Callback_IIFServer_SetStars2Ptr
-newCallback_IIFServer_SetStars2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetStars2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetStars2<T>(instance, cb, excb, sentcb);
 }
@@ -10117,7 +10117,7 @@ newCallback_IIFServer_SetStars2(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStars2.
  */
 template<class T> Callback_IIFServer_SetStars2Ptr
-newCallback_IIFServer_SetStars2(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetStars2(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetStars2<T>(instance, cb, excb, sentcb);
 }
@@ -10136,7 +10136,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetStars2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10147,7 +10147,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetStars2(result);
@@ -10179,7 +10179,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStars2.
  */
 template<class T, typename CT> Callback_IIFServer_SetStars2Ptr
-newCallback_IIFServer_SetStars2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetStars2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetStars2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10194,7 +10194,7 @@ newCallback_IIFServer_SetStars2(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetStars2.
  */
 template<class T, typename CT> Callback_IIFServer_SetStars2Ptr
-newCallback_IIFServer_SetStars2(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetStars2(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetStars2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10213,7 +10213,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_ClearStars(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10224,7 +10224,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearStars(result);
@@ -10255,7 +10255,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearStars.
  */
 template<class T> Callback_IIFServer_ClearStarsPtr
-newCallback_IIFServer_ClearStars(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearStars(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearStars<T>(instance, cb, excb, sentcb);
 }
@@ -10269,7 +10269,7 @@ newCallback_IIFServer_ClearStars(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearStars.
  */
 template<class T> Callback_IIFServer_ClearStarsPtr
-newCallback_IIFServer_ClearStars(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearStars(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearStars<T>(instance, cb, excb, sentcb);
 }
@@ -10288,7 +10288,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_ClearStars(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10299,7 +10299,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearStars(result);
@@ -10331,7 +10331,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearStars.
  */
 template<class T, typename CT> Callback_IIFServer_ClearStarsPtr
-newCallback_IIFServer_ClearStars(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearStars(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearStars<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10346,7 +10346,7 @@ newCallback_IIFServer_ClearStars(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearStars.
  */
 template<class T, typename CT> Callback_IIFServer_ClearStarsPtr
-newCallback_IIFServer_ClearStars(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearStars(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearStars<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10365,7 +10365,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetHotspot(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10376,7 +10376,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetHotspot(result);
@@ -10407,7 +10407,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetHotspot.
  */
 template<class T> Callback_IIFServer_SetHotspotPtr
-newCallback_IIFServer_SetHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetHotspot<T>(instance, cb, excb, sentcb);
 }
@@ -10421,7 +10421,7 @@ newCallback_IIFServer_SetHotspot(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetHotspot.
  */
 template<class T> Callback_IIFServer_SetHotspotPtr
-newCallback_IIFServer_SetHotspot(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetHotspot(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetHotspot<T>(instance, cb, excb, sentcb);
 }
@@ -10440,7 +10440,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetHotspot(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10451,7 +10451,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetHotspot(result);
@@ -10483,7 +10483,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetHotspot.
  */
 template<class T, typename CT> Callback_IIFServer_SetHotspotPtr
-newCallback_IIFServer_SetHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetHotspot<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10498,7 +10498,7 @@ newCallback_IIFServer_SetHotspot(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetHotspot.
  */
 template<class T, typename CT> Callback_IIFServer_SetHotspotPtr
-newCallback_IIFServer_SetHotspot(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetHotspot(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetHotspot<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10517,7 +10517,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_ClearHotspot(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10528,7 +10528,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearHotspot(result);
@@ -10559,7 +10559,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearHotspot.
  */
 template<class T> Callback_IIFServer_ClearHotspotPtr
-newCallback_IIFServer_ClearHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearHotspot<T>(instance, cb, excb, sentcb);
 }
@@ -10573,7 +10573,7 @@ newCallback_IIFServer_ClearHotspot(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearHotspot.
  */
 template<class T> Callback_IIFServer_ClearHotspotPtr
-newCallback_IIFServer_ClearHotspot(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearHotspot(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearHotspot<T>(instance, cb, excb, sentcb);
 }
@@ -10592,7 +10592,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_ClearHotspot(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10603,7 +10603,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearHotspot(result);
@@ -10635,7 +10635,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearHotspot.
  */
 template<class T, typename CT> Callback_IIFServer_ClearHotspotPtr
-newCallback_IIFServer_ClearHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearHotspot<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10650,7 +10650,7 @@ newCallback_IIFServer_ClearHotspot(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearHotspot.
  */
 template<class T, typename CT> Callback_IIFServer_ClearHotspotPtr
-newCallback_IIFServer_ClearHotspot(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearHotspot(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearHotspot<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10669,7 +10669,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetOffset(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10680,7 +10680,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetOffset(result);
@@ -10711,7 +10711,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffset.
  */
 template<class T> Callback_IIFServer_SetOffsetPtr
-newCallback_IIFServer_SetOffset(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetOffset(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetOffset<T>(instance, cb, excb, sentcb);
 }
@@ -10725,7 +10725,7 @@ newCallback_IIFServer_SetOffset(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffset.
  */
 template<class T> Callback_IIFServer_SetOffsetPtr
-newCallback_IIFServer_SetOffset(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetOffset(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetOffset<T>(instance, cb, excb, sentcb);
 }
@@ -10744,7 +10744,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetOffset(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10755,7 +10755,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetOffset(result);
@@ -10787,7 +10787,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffset.
  */
 template<class T, typename CT> Callback_IIFServer_SetOffsetPtr
-newCallback_IIFServer_SetOffset(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetOffset(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetOffset<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10802,7 +10802,7 @@ newCallback_IIFServer_SetOffset(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffset.
  */
 template<class T, typename CT> Callback_IIFServer_SetOffsetPtr
-newCallback_IIFServer_SetOffset(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetOffset(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetOffset<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10821,7 +10821,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetOffsetNew(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10832,7 +10832,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetOffsetNew(result);
@@ -10863,7 +10863,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffsetNew.
  */
 template<class T> Callback_IIFServer_SetOffsetNewPtr
-newCallback_IIFServer_SetOffsetNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetOffsetNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetOffsetNew<T>(instance, cb, excb, sentcb);
 }
@@ -10877,7 +10877,7 @@ newCallback_IIFServer_SetOffsetNew(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffsetNew.
  */
 template<class T> Callback_IIFServer_SetOffsetNewPtr
-newCallback_IIFServer_SetOffsetNew(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetOffsetNew(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetOffsetNew<T>(instance, cb, excb, sentcb);
 }
@@ -10896,7 +10896,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetOffsetNew(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10907,7 +10907,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetOffsetNew(result);
@@ -10939,7 +10939,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffsetNew.
  */
 template<class T, typename CT> Callback_IIFServer_SetOffsetNewPtr
-newCallback_IIFServer_SetOffsetNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetOffsetNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetOffsetNew<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10954,7 +10954,7 @@ newCallback_IIFServer_SetOffsetNew(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffsetNew.
  */
 template<class T, typename CT> Callback_IIFServer_SetOffsetNewPtr
-newCallback_IIFServer_SetOffsetNew(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetOffsetNew(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetOffsetNew<T, CT>(instance, cb, excb, sentcb);
 }
@@ -10973,7 +10973,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetOffset2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -10984,7 +10984,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetOffset2(result);
@@ -11015,7 +11015,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffset2.
  */
 template<class T> Callback_IIFServer_SetOffset2Ptr
-newCallback_IIFServer_SetOffset2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetOffset2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetOffset2<T>(instance, cb, excb, sentcb);
 }
@@ -11029,7 +11029,7 @@ newCallback_IIFServer_SetOffset2(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffset2.
  */
 template<class T> Callback_IIFServer_SetOffset2Ptr
-newCallback_IIFServer_SetOffset2(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetOffset2(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetOffset2<T>(instance, cb, excb, sentcb);
 }
@@ -11048,7 +11048,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetOffset2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11059,7 +11059,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetOffset2(result);
@@ -11091,7 +11091,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffset2.
  */
 template<class T, typename CT> Callback_IIFServer_SetOffset2Ptr
-newCallback_IIFServer_SetOffset2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetOffset2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetOffset2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11106,7 +11106,7 @@ newCallback_IIFServer_SetOffset2(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetOffset2.
  */
 template<class T, typename CT> Callback_IIFServer_SetOffset2Ptr
-newCallback_IIFServer_SetOffset2(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetOffset2(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetOffset2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11125,7 +11125,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_ClearOffset(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11136,7 +11136,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearOffset(result);
@@ -11167,7 +11167,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearOffset.
  */
 template<class T> Callback_IIFServer_ClearOffsetPtr
-newCallback_IIFServer_ClearOffset(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearOffset(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearOffset<T>(instance, cb, excb, sentcb);
 }
@@ -11181,7 +11181,7 @@ newCallback_IIFServer_ClearOffset(const IceUtil::Handle<T>& instance, void (T::*
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearOffset.
  */
 template<class T> Callback_IIFServer_ClearOffsetPtr
-newCallback_IIFServer_ClearOffset(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearOffset(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearOffset<T>(instance, cb, excb, sentcb);
 }
@@ -11200,7 +11200,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_ClearOffset(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11211,7 +11211,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearOffset(result);
@@ -11243,7 +11243,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearOffset.
  */
 template<class T, typename CT> Callback_IIFServer_ClearOffsetPtr
-newCallback_IIFServer_ClearOffset(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearOffset(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearOffset<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11258,7 +11258,7 @@ newCallback_IIFServer_ClearOffset(const IceUtil::Handle<T>& instance, void (T::*
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearOffset.
  */
 template<class T, typename CT> Callback_IIFServer_ClearOffsetPtr
-newCallback_IIFServer_ClearOffset(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearOffset(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearOffset<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11277,7 +11277,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetNonSidereal(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11288,7 +11288,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetNonSidereal(result);
@@ -11319,7 +11319,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetNonSidereal.
  */
 template<class T> Callback_IIFServer_SetNonSiderealPtr
-newCallback_IIFServer_SetNonSidereal(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetNonSidereal(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetNonSidereal<T>(instance, cb, excb, sentcb);
 }
@@ -11333,7 +11333,7 @@ newCallback_IIFServer_SetNonSidereal(const IceUtil::Handle<T>& instance, void (T
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetNonSidereal.
  */
 template<class T> Callback_IIFServer_SetNonSiderealPtr
-newCallback_IIFServer_SetNonSidereal(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetNonSidereal(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetNonSidereal<T>(instance, cb, excb, sentcb);
 }
@@ -11352,7 +11352,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetNonSidereal(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11363,7 +11363,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetNonSidereal(result);
@@ -11395,7 +11395,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetNonSidereal.
  */
 template<class T, typename CT> Callback_IIFServer_SetNonSiderealPtr
-newCallback_IIFServer_SetNonSidereal(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetNonSidereal(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetNonSidereal<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11410,7 +11410,7 @@ newCallback_IIFServer_SetNonSidereal(const IceUtil::Handle<T>& instance, void (T
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetNonSidereal.
  */
 template<class T, typename CT> Callback_IIFServer_SetNonSiderealPtr
-newCallback_IIFServer_SetNonSidereal(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetNonSidereal(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetNonSidereal<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11429,7 +11429,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_ClearNonSidereal(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11440,7 +11440,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearNonSidereal(result);
@@ -11471,7 +11471,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearNonSidereal.
  */
 template<class T> Callback_IIFServer_ClearNonSiderealPtr
-newCallback_IIFServer_ClearNonSidereal(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearNonSidereal(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearNonSidereal<T>(instance, cb, excb, sentcb);
 }
@@ -11485,7 +11485,7 @@ newCallback_IIFServer_ClearNonSidereal(const IceUtil::Handle<T>& instance, void 
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearNonSidereal.
  */
 template<class T> Callback_IIFServer_ClearNonSiderealPtr
-newCallback_IIFServer_ClearNonSidereal(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearNonSidereal(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearNonSidereal<T>(instance, cb, excb, sentcb);
 }
@@ -11504,7 +11504,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_ClearNonSidereal(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11515,7 +11515,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearNonSidereal(result);
@@ -11547,7 +11547,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearNonSidereal.
  */
 template<class T, typename CT> Callback_IIFServer_ClearNonSiderealPtr
-newCallback_IIFServer_ClearNonSidereal(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearNonSidereal(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearNonSidereal<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11562,7 +11562,7 @@ newCallback_IIFServer_ClearNonSidereal(const IceUtil::Handle<T>& instance, void 
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearNonSidereal.
  */
 template<class T, typename CT> Callback_IIFServer_ClearNonSiderealPtr
-newCallback_IIFServer_ClearNonSidereal(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearNonSidereal(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearNonSidereal<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11581,7 +11581,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_UpdateNonSiderealTarget(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11592,7 +11592,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_UpdateNonSiderealTarget(result);
@@ -11623,7 +11623,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateNonSiderealTarget.
  */
 template<class T> Callback_IIFServer_UpdateNonSiderealTargetPtr
-newCallback_IIFServer_UpdateNonSiderealTarget(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_UpdateNonSiderealTarget(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_UpdateNonSiderealTarget<T>(instance, cb, excb, sentcb);
 }
@@ -11637,7 +11637,7 @@ newCallback_IIFServer_UpdateNonSiderealTarget(const IceUtil::Handle<T>& instance
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateNonSiderealTarget.
  */
 template<class T> Callback_IIFServer_UpdateNonSiderealTargetPtr
-newCallback_IIFServer_UpdateNonSiderealTarget(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_UpdateNonSiderealTarget(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_UpdateNonSiderealTarget<T>(instance, cb, excb, sentcb);
 }
@@ -11656,7 +11656,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_UpdateNonSiderealTarget(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11667,7 +11667,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_UpdateNonSiderealTarget(result);
@@ -11699,7 +11699,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateNonSiderealTarget.
  */
 template<class T, typename CT> Callback_IIFServer_UpdateNonSiderealTargetPtr
-newCallback_IIFServer_UpdateNonSiderealTarget(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_UpdateNonSiderealTarget(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_UpdateNonSiderealTarget<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11714,7 +11714,7 @@ newCallback_IIFServer_UpdateNonSiderealTarget(const IceUtil::Handle<T>& instance
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateNonSiderealTarget.
  */
 template<class T, typename CT> Callback_IIFServer_UpdateNonSiderealTargetPtr
-newCallback_IIFServer_UpdateNonSiderealTarget(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_UpdateNonSiderealTarget(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_UpdateNonSiderealTarget<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11733,7 +11733,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetNonSiderealObject(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11744,7 +11744,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetNonSiderealObject(result);
@@ -11775,7 +11775,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetNonSiderealObject.
  */
 template<class T> Callback_IIFServer_SetNonSiderealObjectPtr
-newCallback_IIFServer_SetNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetNonSiderealObject<T>(instance, cb, excb, sentcb);
 }
@@ -11789,7 +11789,7 @@ newCallback_IIFServer_SetNonSiderealObject(const IceUtil::Handle<T>& instance, v
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetNonSiderealObject.
  */
 template<class T> Callback_IIFServer_SetNonSiderealObjectPtr
-newCallback_IIFServer_SetNonSiderealObject(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetNonSiderealObject(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetNonSiderealObject<T>(instance, cb, excb, sentcb);
 }
@@ -11808,7 +11808,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetNonSiderealObject(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11819,7 +11819,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetNonSiderealObject(result);
@@ -11851,7 +11851,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetNonSiderealObject.
  */
 template<class T, typename CT> Callback_IIFServer_SetNonSiderealObjectPtr
-newCallback_IIFServer_SetNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetNonSiderealObject<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11866,7 +11866,7 @@ newCallback_IIFServer_SetNonSiderealObject(const IceUtil::Handle<T>& instance, v
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetNonSiderealObject.
  */
 template<class T, typename CT> Callback_IIFServer_SetNonSiderealObjectPtr
-newCallback_IIFServer_SetNonSiderealObject(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetNonSiderealObject(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetNonSiderealObject<T, CT>(instance, cb, excb, sentcb);
 }
@@ -11885,7 +11885,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_ClearNonSiderealObject(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11896,7 +11896,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearNonSiderealObject(result);
@@ -11927,7 +11927,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearNonSiderealObject.
  */
 template<class T> Callback_IIFServer_ClearNonSiderealObjectPtr
-newCallback_IIFServer_ClearNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearNonSiderealObject<T>(instance, cb, excb, sentcb);
 }
@@ -11941,7 +11941,7 @@ newCallback_IIFServer_ClearNonSiderealObject(const IceUtil::Handle<T>& instance,
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearNonSiderealObject.
  */
 template<class T> Callback_IIFServer_ClearNonSiderealObjectPtr
-newCallback_IIFServer_ClearNonSiderealObject(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearNonSiderealObject(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearNonSiderealObject<T>(instance, cb, excb, sentcb);
 }
@@ -11960,7 +11960,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_ClearNonSiderealObject(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -11971,7 +11971,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearNonSiderealObject(result);
@@ -12003,7 +12003,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearNonSiderealObject.
  */
 template<class T, typename CT> Callback_IIFServer_ClearNonSiderealObjectPtr
-newCallback_IIFServer_ClearNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearNonSiderealObject<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12018,7 +12018,7 @@ newCallback_IIFServer_ClearNonSiderealObject(const IceUtil::Handle<T>& instance,
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearNonSiderealObject.
  */
 template<class T, typename CT> Callback_IIFServer_ClearNonSiderealObjectPtr
-newCallback_IIFServer_ClearNonSiderealObject(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearNonSiderealObject(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearNonSiderealObject<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12037,7 +12037,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_UpdateNonSiderealObject(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12048,7 +12048,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_UpdateNonSiderealObject(result);
@@ -12079,7 +12079,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateNonSiderealObject.
  */
 template<class T> Callback_IIFServer_UpdateNonSiderealObjectPtr
-newCallback_IIFServer_UpdateNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_UpdateNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_UpdateNonSiderealObject<T>(instance, cb, excb, sentcb);
 }
@@ -12093,7 +12093,7 @@ newCallback_IIFServer_UpdateNonSiderealObject(const IceUtil::Handle<T>& instance
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateNonSiderealObject.
  */
 template<class T> Callback_IIFServer_UpdateNonSiderealObjectPtr
-newCallback_IIFServer_UpdateNonSiderealObject(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_UpdateNonSiderealObject(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_UpdateNonSiderealObject<T>(instance, cb, excb, sentcb);
 }
@@ -12112,7 +12112,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_UpdateNonSiderealObject(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12123,7 +12123,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_UpdateNonSiderealObject(result);
@@ -12155,7 +12155,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateNonSiderealObject.
  */
 template<class T, typename CT> Callback_IIFServer_UpdateNonSiderealObjectPtr
-newCallback_IIFServer_UpdateNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_UpdateNonSiderealObject(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_UpdateNonSiderealObject<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12170,7 +12170,7 @@ newCallback_IIFServer_UpdateNonSiderealObject(const IceUtil::Handle<T>& instance
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateNonSiderealObject.
  */
 template<class T, typename CT> Callback_IIFServer_UpdateNonSiderealObjectPtr
-newCallback_IIFServer_UpdateNonSiderealObject(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_UpdateNonSiderealObject(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_UpdateNonSiderealObject<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12189,7 +12189,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_PresetTelescope(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12200,7 +12200,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_PresetTelescope(result);
@@ -12231,7 +12231,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetTelescope.
  */
 template<class T> Callback_IIFServer_PresetTelescopePtr
-newCallback_IIFServer_PresetTelescope(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_PresetTelescope(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_PresetTelescope<T>(instance, cb, excb, sentcb);
 }
@@ -12245,7 +12245,7 @@ newCallback_IIFServer_PresetTelescope(const IceUtil::Handle<T>& instance, void (
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetTelescope.
  */
 template<class T> Callback_IIFServer_PresetTelescopePtr
-newCallback_IIFServer_PresetTelescope(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_PresetTelescope(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_PresetTelescope<T>(instance, cb, excb, sentcb);
 }
@@ -12264,7 +12264,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_PresetTelescope(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12275,7 +12275,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_PresetTelescope(result);
@@ -12307,7 +12307,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetTelescope.
  */
 template<class T, typename CT> Callback_IIFServer_PresetTelescopePtr
-newCallback_IIFServer_PresetTelescope(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_PresetTelescope(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_PresetTelescope<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12322,7 +12322,7 @@ newCallback_IIFServer_PresetTelescope(const IceUtil::Handle<T>& instance, void (
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetTelescope.
  */
 template<class T, typename CT> Callback_IIFServer_PresetTelescopePtr
-newCallback_IIFServer_PresetTelescope(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_PresetTelescope(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_PresetTelescope<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12341,7 +12341,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_BinocularControl(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12352,7 +12352,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_BinocularControl(result);
@@ -12383,7 +12383,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_BinocularControl.
  */
 template<class T> Callback_IIFServer_BinocularControlPtr
-newCallback_IIFServer_BinocularControl(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_BinocularControl(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_BinocularControl<T>(instance, cb, excb, sentcb);
 }
@@ -12397,7 +12397,7 @@ newCallback_IIFServer_BinocularControl(const IceUtil::Handle<T>& instance, void 
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_BinocularControl.
  */
 template<class T> Callback_IIFServer_BinocularControlPtr
-newCallback_IIFServer_BinocularControl(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_BinocularControl(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_BinocularControl<T>(instance, cb, excb, sentcb);
 }
@@ -12416,7 +12416,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_BinocularControl(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12427,7 +12427,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_BinocularControl(result);
@@ -12459,7 +12459,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_BinocularControl.
  */
 template<class T, typename CT> Callback_IIFServer_BinocularControlPtr
-newCallback_IIFServer_BinocularControl(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_BinocularControl(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_BinocularControl<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12474,7 +12474,7 @@ newCallback_IIFServer_BinocularControl(const IceUtil::Handle<T>& instance, void 
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_BinocularControl.
  */
 template<class T, typename CT> Callback_IIFServer_BinocularControlPtr
-newCallback_IIFServer_BinocularControl(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_BinocularControl(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_BinocularControl<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12493,7 +12493,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_GetParameter(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12504,7 +12504,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetParameter(result);
@@ -12535,7 +12535,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetParameter.
  */
 template<class T> Callback_IIFServer_GetParameterPtr
-newCallback_IIFServer_GetParameter(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetParameter(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetParameter<T>(instance, cb, excb, sentcb);
 }
@@ -12549,7 +12549,7 @@ newCallback_IIFServer_GetParameter(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetParameter.
  */
 template<class T> Callback_IIFServer_GetParameterPtr
-newCallback_IIFServer_GetParameter(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetParameter(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetParameter<T>(instance, cb, excb, sentcb);
 }
@@ -12568,7 +12568,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_GetParameter(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12579,7 +12579,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetParameter(result);
@@ -12611,7 +12611,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetParameter.
  */
 template<class T, typename CT> Callback_IIFServer_GetParameterPtr
-newCallback_IIFServer_GetParameter(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetParameter(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetParameter<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12626,7 +12626,7 @@ newCallback_IIFServer_GetParameter(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetParameter.
  */
 template<class T, typename CT> Callback_IIFServer_GetParameterPtr
-newCallback_IIFServer_GetParameter(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetParameter(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetParameter<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12645,7 +12645,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetParameter(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12656,7 +12656,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetParameter(result);
@@ -12687,7 +12687,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetParameter.
  */
 template<class T> Callback_IIFServer_SetParameterPtr
-newCallback_IIFServer_SetParameter(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetParameter(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetParameter<T>(instance, cb, excb, sentcb);
 }
@@ -12701,7 +12701,7 @@ newCallback_IIFServer_SetParameter(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetParameter.
  */
 template<class T> Callback_IIFServer_SetParameterPtr
-newCallback_IIFServer_SetParameter(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetParameter(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetParameter<T>(instance, cb, excb, sentcb);
 }
@@ -12720,7 +12720,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetParameter(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12731,7 +12731,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetParameter(result);
@@ -12763,7 +12763,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetParameter.
  */
 template<class T, typename CT> Callback_IIFServer_SetParameterPtr
-newCallback_IIFServer_SetParameter(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetParameter(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetParameter<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12778,7 +12778,7 @@ newCallback_IIFServer_SetParameter(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetParameter.
  */
 template<class T, typename CT> Callback_IIFServer_SetParameterPtr
-newCallback_IIFServer_SetParameter(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetParameter(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetParameter<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12797,7 +12797,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_RotateCommon(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12808,7 +12808,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotateCommon(result);
@@ -12839,7 +12839,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotateCommon.
  */
 template<class T> Callback_IIFServer_RotateCommonPtr
-newCallback_IIFServer_RotateCommon(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotateCommon(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotateCommon<T>(instance, cb, excb, sentcb);
 }
@@ -12853,7 +12853,7 @@ newCallback_IIFServer_RotateCommon(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotateCommon.
  */
 template<class T> Callback_IIFServer_RotateCommonPtr
-newCallback_IIFServer_RotateCommon(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotateCommon(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotateCommon<T>(instance, cb, excb, sentcb);
 }
@@ -12872,7 +12872,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_RotateCommon(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12883,7 +12883,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotateCommon(result);
@@ -12915,7 +12915,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotateCommon.
  */
 template<class T, typename CT> Callback_IIFServer_RotateCommonPtr
-newCallback_IIFServer_RotateCommon(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotateCommon(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotateCommon<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12930,7 +12930,7 @@ newCallback_IIFServer_RotateCommon(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotateCommon.
  */
 template<class T, typename CT> Callback_IIFServer_RotateCommonPtr
-newCallback_IIFServer_RotateCommon(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotateCommon(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotateCommon<T, CT>(instance, cb, excb, sentcb);
 }
@@ -12949,7 +12949,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_RotateZ(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -12960,7 +12960,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotateZ(result);
@@ -12991,7 +12991,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotateZ.
  */
 template<class T> Callback_IIFServer_RotateZPtr
-newCallback_IIFServer_RotateZ(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotateZ(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotateZ<T>(instance, cb, excb, sentcb);
 }
@@ -13005,7 +13005,7 @@ newCallback_IIFServer_RotateZ(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotateZ.
  */
 template<class T> Callback_IIFServer_RotateZPtr
-newCallback_IIFServer_RotateZ(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotateZ(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotateZ<T>(instance, cb, excb, sentcb);
 }
@@ -13024,7 +13024,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_RotateZ(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13035,7 +13035,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotateZ(result);
@@ -13067,7 +13067,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotateZ.
  */
 template<class T, typename CT> Callback_IIFServer_RotateZPtr
-newCallback_IIFServer_RotateZ(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotateZ(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotateZ<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13082,7 +13082,7 @@ newCallback_IIFServer_RotateZ(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotateZ.
  */
 template<class T, typename CT> Callback_IIFServer_RotateZPtr
-newCallback_IIFServer_RotateZ(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotateZ(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotateZ<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13101,7 +13101,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_RotatePrimary(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13112,7 +13112,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotatePrimary(result);
@@ -13143,7 +13143,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotatePrimary.
  */
 template<class T> Callback_IIFServer_RotatePrimaryPtr
-newCallback_IIFServer_RotatePrimary(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotatePrimary(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotatePrimary<T>(instance, cb, excb, sentcb);
 }
@@ -13157,7 +13157,7 @@ newCallback_IIFServer_RotatePrimary(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotatePrimary.
  */
 template<class T> Callback_IIFServer_RotatePrimaryPtr
-newCallback_IIFServer_RotatePrimary(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotatePrimary(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotatePrimary<T>(instance, cb, excb, sentcb);
 }
@@ -13176,7 +13176,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_RotatePrimary(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13187,7 +13187,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotatePrimary(result);
@@ -13219,7 +13219,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotatePrimary.
  */
 template<class T, typename CT> Callback_IIFServer_RotatePrimaryPtr
-newCallback_IIFServer_RotatePrimary(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotatePrimary(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotatePrimary<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13234,7 +13234,7 @@ newCallback_IIFServer_RotatePrimary(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotatePrimary.
  */
 template<class T, typename CT> Callback_IIFServer_RotatePrimaryPtr
-newCallback_IIFServer_RotatePrimary(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotatePrimary(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotatePrimary<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13253,7 +13253,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SendWavefront(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13264,7 +13264,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SendWavefront(result);
@@ -13295,7 +13295,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SendWavefront.
  */
 template<class T> Callback_IIFServer_SendWavefrontPtr
-newCallback_IIFServer_SendWavefront(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SendWavefront(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SendWavefront<T>(instance, cb, excb, sentcb);
 }
@@ -13309,7 +13309,7 @@ newCallback_IIFServer_SendWavefront(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SendWavefront.
  */
 template<class T> Callback_IIFServer_SendWavefrontPtr
-newCallback_IIFServer_SendWavefront(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SendWavefront(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SendWavefront<T>(instance, cb, excb, sentcb);
 }
@@ -13328,7 +13328,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SendWavefront(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13339,7 +13339,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SendWavefront(result);
@@ -13371,7 +13371,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SendWavefront.
  */
 template<class T, typename CT> Callback_IIFServer_SendWavefrontPtr
-newCallback_IIFServer_SendWavefront(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SendWavefront(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SendWavefront<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13386,7 +13386,7 @@ newCallback_IIFServer_SendWavefront(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SendWavefront.
  */
 template<class T, typename CT> Callback_IIFServer_SendWavefrontPtr
-newCallback_IIFServer_SendWavefront(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SendWavefront(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SendWavefront<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13405,7 +13405,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_UpdateTargetWavelength(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13416,7 +13416,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_UpdateTargetWavelength(result);
@@ -13447,7 +13447,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateTargetWavelength.
  */
 template<class T> Callback_IIFServer_UpdateTargetWavelengthPtr
-newCallback_IIFServer_UpdateTargetWavelength(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_UpdateTargetWavelength(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_UpdateTargetWavelength<T>(instance, cb, excb, sentcb);
 }
@@ -13461,7 +13461,7 @@ newCallback_IIFServer_UpdateTargetWavelength(const IceUtil::Handle<T>& instance,
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateTargetWavelength.
  */
 template<class T> Callback_IIFServer_UpdateTargetWavelengthPtr
-newCallback_IIFServer_UpdateTargetWavelength(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_UpdateTargetWavelength(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_UpdateTargetWavelength<T>(instance, cb, excb, sentcb);
 }
@@ -13480,7 +13480,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_UpdateTargetWavelength(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13491,7 +13491,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_UpdateTargetWavelength(result);
@@ -13523,7 +13523,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateTargetWavelength.
  */
 template<class T, typename CT> Callback_IIFServer_UpdateTargetWavelengthPtr
-newCallback_IIFServer_UpdateTargetWavelength(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_UpdateTargetWavelength(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_UpdateTargetWavelength<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13538,7 +13538,7 @@ newCallback_IIFServer_UpdateTargetWavelength(const IceUtil::Handle<T>& instance,
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_UpdateTargetWavelength.
  */
 template<class T, typename CT> Callback_IIFServer_UpdateTargetWavelengthPtr
-newCallback_IIFServer_UpdateTargetWavelength(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_UpdateTargetWavelength(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_UpdateTargetWavelength<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13557,7 +13557,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_LogEvent(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13568,7 +13568,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_LogEvent(result);
@@ -13599,7 +13599,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_LogEvent.
  */
 template<class T> Callback_IIFServer_LogEventPtr
-newCallback_IIFServer_LogEvent(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_LogEvent(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_LogEvent<T>(instance, cb, excb, sentcb);
 }
@@ -13613,7 +13613,7 @@ newCallback_IIFServer_LogEvent(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_LogEvent.
  */
 template<class T> Callback_IIFServer_LogEventPtr
-newCallback_IIFServer_LogEvent(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_LogEvent(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_LogEvent<T>(instance, cb, excb, sentcb);
 }
@@ -13632,7 +13632,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_LogEvent(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13643,7 +13643,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_LogEvent(result);
@@ -13675,7 +13675,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_LogEvent.
  */
 template<class T, typename CT> Callback_IIFServer_LogEventPtr
-newCallback_IIFServer_LogEvent(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_LogEvent(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_LogEvent<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13690,7 +13690,7 @@ newCallback_IIFServer_LogEvent(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_LogEvent.
  */
 template<class T, typename CT> Callback_IIFServer_LogEventPtr
-newCallback_IIFServer_LogEvent(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_LogEvent(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_LogEvent<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13709,7 +13709,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_GetRotatorTrajectory(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13720,7 +13720,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetRotatorTrajectory(result);
@@ -13751,7 +13751,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetRotatorTrajectory.
  */
 template<class T> Callback_IIFServer_GetRotatorTrajectoryPtr
-newCallback_IIFServer_GetRotatorTrajectory(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetRotatorTrajectory(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetRotatorTrajectory<T>(instance, cb, excb, sentcb);
 }
@@ -13765,7 +13765,7 @@ newCallback_IIFServer_GetRotatorTrajectory(const IceUtil::Handle<T>& instance, v
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetRotatorTrajectory.
  */
 template<class T> Callback_IIFServer_GetRotatorTrajectoryPtr
-newCallback_IIFServer_GetRotatorTrajectory(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetRotatorTrajectory(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetRotatorTrajectory<T>(instance, cb, excb, sentcb);
 }
@@ -13784,7 +13784,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_GetRotatorTrajectory(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13795,7 +13795,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetRotatorTrajectory(result);
@@ -13827,7 +13827,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetRotatorTrajectory.
  */
 template<class T, typename CT> Callback_IIFServer_GetRotatorTrajectoryPtr
-newCallback_IIFServer_GetRotatorTrajectory(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetRotatorTrajectory(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetRotatorTrajectory<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13842,7 +13842,7 @@ newCallback_IIFServer_GetRotatorTrajectory(const IceUtil::Handle<T>& instance, v
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetRotatorTrajectory.
  */
 template<class T, typename CT> Callback_IIFServer_GetRotatorTrajectoryPtr
-newCallback_IIFServer_GetRotatorTrajectory(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetRotatorTrajectory(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetRotatorTrajectory<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13861,7 +13861,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_GetRotatorPolynomials(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13872,7 +13872,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetRotatorPolynomials(result);
@@ -13903,7 +13903,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetRotatorPolynomials.
  */
 template<class T> Callback_IIFServer_GetRotatorPolynomialsPtr
-newCallback_IIFServer_GetRotatorPolynomials(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetRotatorPolynomials(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetRotatorPolynomials<T>(instance, cb, excb, sentcb);
 }
@@ -13917,7 +13917,7 @@ newCallback_IIFServer_GetRotatorPolynomials(const IceUtil::Handle<T>& instance, 
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetRotatorPolynomials.
  */
 template<class T> Callback_IIFServer_GetRotatorPolynomialsPtr
-newCallback_IIFServer_GetRotatorPolynomials(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetRotatorPolynomials(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetRotatorPolynomials<T>(instance, cb, excb, sentcb);
 }
@@ -13936,7 +13936,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_GetRotatorPolynomials(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -13947,7 +13947,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetRotatorPolynomials(result);
@@ -13979,7 +13979,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetRotatorPolynomials.
  */
 template<class T, typename CT> Callback_IIFServer_GetRotatorPolynomialsPtr
-newCallback_IIFServer_GetRotatorPolynomials(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetRotatorPolynomials(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetRotatorPolynomials<T, CT>(instance, cb, excb, sentcb);
 }
@@ -13994,7 +13994,7 @@ newCallback_IIFServer_GetRotatorPolynomials(const IceUtil::Handle<T>& instance, 
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetRotatorPolynomials.
  */
 template<class T, typename CT> Callback_IIFServer_GetRotatorPolynomialsPtr
-newCallback_IIFServer_GetRotatorPolynomials(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetRotatorPolynomials(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetRotatorPolynomials<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14013,7 +14013,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_Standby(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14024,7 +14024,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_Standby(result);
@@ -14055,7 +14055,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Standby.
  */
 template<class T> Callback_IIFServer_StandbyPtr
-newCallback_IIFServer_Standby(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_Standby(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_Standby<T>(instance, cb, excb, sentcb);
 }
@@ -14069,7 +14069,7 @@ newCallback_IIFServer_Standby(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Standby.
  */
 template<class T> Callback_IIFServer_StandbyPtr
-newCallback_IIFServer_Standby(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_Standby(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_Standby<T>(instance, cb, excb, sentcb);
 }
@@ -14088,7 +14088,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_Standby(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14099,7 +14099,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_Standby(result);
@@ -14131,7 +14131,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Standby.
  */
 template<class T, typename CT> Callback_IIFServer_StandbyPtr
-newCallback_IIFServer_Standby(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_Standby(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_Standby<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14146,7 +14146,7 @@ newCallback_IIFServer_Standby(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_Standby.
  */
 template<class T, typename CT> Callback_IIFServer_StandbyPtr
-newCallback_IIFServer_Standby(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_Standby(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_Standby<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14165,7 +14165,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_MaximizeWrapTime(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14176,7 +14176,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_MaximizeWrapTime(result);
@@ -14207,7 +14207,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MaximizeWrapTime.
  */
 template<class T> Callback_IIFServer_MaximizeWrapTimePtr
-newCallback_IIFServer_MaximizeWrapTime(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_MaximizeWrapTime(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_MaximizeWrapTime<T>(instance, cb, excb, sentcb);
 }
@@ -14221,7 +14221,7 @@ newCallback_IIFServer_MaximizeWrapTime(const IceUtil::Handle<T>& instance, void 
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MaximizeWrapTime.
  */
 template<class T> Callback_IIFServer_MaximizeWrapTimePtr
-newCallback_IIFServer_MaximizeWrapTime(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_MaximizeWrapTime(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_MaximizeWrapTime<T>(instance, cb, excb, sentcb);
 }
@@ -14240,7 +14240,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_MaximizeWrapTime(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14251,7 +14251,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_MaximizeWrapTime(result);
@@ -14283,7 +14283,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MaximizeWrapTime.
  */
 template<class T, typename CT> Callback_IIFServer_MaximizeWrapTimePtr
-newCallback_IIFServer_MaximizeWrapTime(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_MaximizeWrapTime(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_MaximizeWrapTime<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14298,7 +14298,7 @@ newCallback_IIFServer_MaximizeWrapTime(const IceUtil::Handle<T>& instance, void 
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_MaximizeWrapTime.
  */
 template<class T, typename CT> Callback_IIFServer_MaximizeWrapTimePtr
-newCallback_IIFServer_MaximizeWrapTime(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_MaximizeWrapTime(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_MaximizeWrapTime<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14317,7 +14317,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_PauseGuiding(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14328,7 +14328,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_PauseGuiding(result);
@@ -14359,7 +14359,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PauseGuiding.
  */
 template<class T> Callback_IIFServer_PauseGuidingPtr
-newCallback_IIFServer_PauseGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_PauseGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_PauseGuiding<T>(instance, cb, excb, sentcb);
 }
@@ -14373,7 +14373,7 @@ newCallback_IIFServer_PauseGuiding(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PauseGuiding.
  */
 template<class T> Callback_IIFServer_PauseGuidingPtr
-newCallback_IIFServer_PauseGuiding(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_PauseGuiding(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_PauseGuiding<T>(instance, cb, excb, sentcb);
 }
@@ -14392,7 +14392,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_PauseGuiding(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14403,7 +14403,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_PauseGuiding(result);
@@ -14435,7 +14435,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PauseGuiding.
  */
 template<class T, typename CT> Callback_IIFServer_PauseGuidingPtr
-newCallback_IIFServer_PauseGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_PauseGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_PauseGuiding<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14450,7 +14450,7 @@ newCallback_IIFServer_PauseGuiding(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PauseGuiding.
  */
 template<class T, typename CT> Callback_IIFServer_PauseGuidingPtr
-newCallback_IIFServer_PauseGuiding(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_PauseGuiding(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_PauseGuiding<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14469,7 +14469,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_ResumeGuiding(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14480,7 +14480,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ResumeGuiding(result);
@@ -14511,7 +14511,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ResumeGuiding.
  */
 template<class T> Callback_IIFServer_ResumeGuidingPtr
-newCallback_IIFServer_ResumeGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ResumeGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ResumeGuiding<T>(instance, cb, excb, sentcb);
 }
@@ -14525,7 +14525,7 @@ newCallback_IIFServer_ResumeGuiding(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ResumeGuiding.
  */
 template<class T> Callback_IIFServer_ResumeGuidingPtr
-newCallback_IIFServer_ResumeGuiding(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ResumeGuiding(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ResumeGuiding<T>(instance, cb, excb, sentcb);
 }
@@ -14544,7 +14544,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_ResumeGuiding(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14555,7 +14555,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ResumeGuiding(result);
@@ -14587,7 +14587,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ResumeGuiding.
  */
 template<class T, typename CT> Callback_IIFServer_ResumeGuidingPtr
-newCallback_IIFServer_ResumeGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ResumeGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ResumeGuiding<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14602,7 +14602,7 @@ newCallback_IIFServer_ResumeGuiding(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ResumeGuiding.
  */
 template<class T, typename CT> Callback_IIFServer_ResumeGuidingPtr
-newCallback_IIFServer_ResumeGuiding(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ResumeGuiding(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ResumeGuiding<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14621,7 +14621,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_StopGuiding(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14632,7 +14632,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_StopGuiding(result);
@@ -14663,7 +14663,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StopGuiding.
  */
 template<class T> Callback_IIFServer_StopGuidingPtr
-newCallback_IIFServer_StopGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_StopGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_StopGuiding<T>(instance, cb, excb, sentcb);
 }
@@ -14677,7 +14677,7 @@ newCallback_IIFServer_StopGuiding(const IceUtil::Handle<T>& instance, void (T::*
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StopGuiding.
  */
 template<class T> Callback_IIFServer_StopGuidingPtr
-newCallback_IIFServer_StopGuiding(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_StopGuiding(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_StopGuiding<T>(instance, cb, excb, sentcb);
 }
@@ -14696,7 +14696,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_StopGuiding(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14707,7 +14707,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_StopGuiding(result);
@@ -14739,7 +14739,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StopGuiding.
  */
 template<class T, typename CT> Callback_IIFServer_StopGuidingPtr
-newCallback_IIFServer_StopGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_StopGuiding(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_StopGuiding<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14754,7 +14754,7 @@ newCallback_IIFServer_StopGuiding(const IceUtil::Handle<T>& instance, void (T::*
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StopGuiding.
  */
 template<class T, typename CT> Callback_IIFServer_StopGuidingPtr
-newCallback_IIFServer_StopGuiding(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_StopGuiding(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_StopGuiding<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14773,7 +14773,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetGuidingHotspot(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14784,7 +14784,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetGuidingHotspot(result);
@@ -14815,7 +14815,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetGuidingHotspot.
  */
 template<class T> Callback_IIFServer_SetGuidingHotspotPtr
-newCallback_IIFServer_SetGuidingHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetGuidingHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetGuidingHotspot<T>(instance, cb, excb, sentcb);
 }
@@ -14829,7 +14829,7 @@ newCallback_IIFServer_SetGuidingHotspot(const IceUtil::Handle<T>& instance, void
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetGuidingHotspot.
  */
 template<class T> Callback_IIFServer_SetGuidingHotspotPtr
-newCallback_IIFServer_SetGuidingHotspot(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetGuidingHotspot(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetGuidingHotspot<T>(instance, cb, excb, sentcb);
 }
@@ -14848,7 +14848,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetGuidingHotspot(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14859,7 +14859,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetGuidingHotspot(result);
@@ -14891,7 +14891,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetGuidingHotspot.
  */
 template<class T, typename CT> Callback_IIFServer_SetGuidingHotspotPtr
-newCallback_IIFServer_SetGuidingHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetGuidingHotspot(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetGuidingHotspot<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14906,7 +14906,7 @@ newCallback_IIFServer_SetGuidingHotspot(const IceUtil::Handle<T>& instance, void
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetGuidingHotspot.
  */
 template<class T, typename CT> Callback_IIFServer_SetGuidingHotspotPtr
-newCallback_IIFServer_SetGuidingHotspot(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetGuidingHotspot(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetGuidingHotspot<T, CT>(instance, cb, excb, sentcb);
 }
@@ -14925,7 +14925,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetAGWFilter(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -14936,7 +14936,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetAGWFilter(result);
@@ -14967,7 +14967,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetAGWFilter.
  */
 template<class T> Callback_IIFServer_SetAGWFilterPtr
-newCallback_IIFServer_SetAGWFilter(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetAGWFilter(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetAGWFilter<T>(instance, cb, excb, sentcb);
 }
@@ -14981,7 +14981,7 @@ newCallback_IIFServer_SetAGWFilter(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetAGWFilter.
  */
 template<class T> Callback_IIFServer_SetAGWFilterPtr
-newCallback_IIFServer_SetAGWFilter(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetAGWFilter(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetAGWFilter<T>(instance, cb, excb, sentcb);
 }
@@ -15000,7 +15000,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetAGWFilter(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15011,7 +15011,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetAGWFilter(result);
@@ -15043,7 +15043,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetAGWFilter.
  */
 template<class T, typename CT> Callback_IIFServer_SetAGWFilterPtr
-newCallback_IIFServer_SetAGWFilter(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetAGWFilter(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetAGWFilter<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15058,7 +15058,7 @@ newCallback_IIFServer_SetAGWFilter(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetAGWFilter.
  */
 template<class T, typename CT> Callback_IIFServer_SetAGWFilterPtr
-newCallback_IIFServer_SetAGWFilter(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetAGWFilter(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetAGWFilter<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15077,7 +15077,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetGuidingBinning(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15088,7 +15088,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetGuidingBinning(result);
@@ -15119,7 +15119,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetGuidingBinning.
  */
 template<class T> Callback_IIFServer_SetGuidingBinningPtr
-newCallback_IIFServer_SetGuidingBinning(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetGuidingBinning(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetGuidingBinning<T>(instance, cb, excb, sentcb);
 }
@@ -15133,7 +15133,7 @@ newCallback_IIFServer_SetGuidingBinning(const IceUtil::Handle<T>& instance, void
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetGuidingBinning.
  */
 template<class T> Callback_IIFServer_SetGuidingBinningPtr
-newCallback_IIFServer_SetGuidingBinning(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetGuidingBinning(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetGuidingBinning<T>(instance, cb, excb, sentcb);
 }
@@ -15152,7 +15152,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetGuidingBinning(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15163,7 +15163,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetGuidingBinning(result);
@@ -15195,7 +15195,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetGuidingBinning.
  */
 template<class T, typename CT> Callback_IIFServer_SetGuidingBinningPtr
-newCallback_IIFServer_SetGuidingBinning(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetGuidingBinning(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetGuidingBinning<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15210,7 +15210,7 @@ newCallback_IIFServer_SetGuidingBinning(const IceUtil::Handle<T>& instance, void
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetGuidingBinning.
  */
 template<class T, typename CT> Callback_IIFServer_SetGuidingBinningPtr
-newCallback_IIFServer_SetGuidingBinning(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetGuidingBinning(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetGuidingBinning<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15229,7 +15229,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_RotReady(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15240,7 +15240,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotReady(result);
@@ -15271,7 +15271,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotReady.
  */
 template<class T> Callback_IIFServer_RotReadyPtr
-newCallback_IIFServer_RotReady(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotReady(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotReady<T>(instance, cb, excb, sentcb);
 }
@@ -15285,7 +15285,7 @@ newCallback_IIFServer_RotReady(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotReady.
  */
 template<class T> Callback_IIFServer_RotReadyPtr
-newCallback_IIFServer_RotReady(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotReady(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotReady<T>(instance, cb, excb, sentcb);
 }
@@ -15304,7 +15304,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_RotReady(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15315,7 +15315,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotReady(result);
@@ -15347,7 +15347,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotReady.
  */
 template<class T, typename CT> Callback_IIFServer_RotReadyPtr
-newCallback_IIFServer_RotReady(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotReady(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotReady<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15362,7 +15362,7 @@ newCallback_IIFServer_RotReady(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotReady.
  */
 template<class T, typename CT> Callback_IIFServer_RotReadyPtr
-newCallback_IIFServer_RotReady(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotReady(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotReady<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15381,7 +15381,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_RotHold(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15392,7 +15392,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotHold(result);
@@ -15423,7 +15423,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotHold.
  */
 template<class T> Callback_IIFServer_RotHoldPtr
-newCallback_IIFServer_RotHold(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotHold(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotHold<T>(instance, cb, excb, sentcb);
 }
@@ -15437,7 +15437,7 @@ newCallback_IIFServer_RotHold(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotHold.
  */
 template<class T> Callback_IIFServer_RotHoldPtr
-newCallback_IIFServer_RotHold(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotHold(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotHold<T>(instance, cb, excb, sentcb);
 }
@@ -15456,7 +15456,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_RotHold(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15467,7 +15467,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotHold(result);
@@ -15499,7 +15499,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotHold.
  */
 template<class T, typename CT> Callback_IIFServer_RotHoldPtr
-newCallback_IIFServer_RotHold(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotHold(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotHold<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15514,7 +15514,7 @@ newCallback_IIFServer_RotHold(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotHold.
  */
 template<class T, typename CT> Callback_IIFServer_RotHoldPtr
-newCallback_IIFServer_RotHold(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotHold(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotHold<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15533,7 +15533,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_RotTrack(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15544,7 +15544,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotTrack(result);
@@ -15575,7 +15575,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotTrack.
  */
 template<class T> Callback_IIFServer_RotTrackPtr
-newCallback_IIFServer_RotTrack(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotTrack(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotTrack<T>(instance, cb, excb, sentcb);
 }
@@ -15589,7 +15589,7 @@ newCallback_IIFServer_RotTrack(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotTrack.
  */
 template<class T> Callback_IIFServer_RotTrackPtr
-newCallback_IIFServer_RotTrack(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotTrack(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotTrack<T>(instance, cb, excb, sentcb);
 }
@@ -15608,7 +15608,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_RotTrack(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15619,7 +15619,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotTrack(result);
@@ -15651,7 +15651,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotTrack.
  */
 template<class T, typename CT> Callback_IIFServer_RotTrackPtr
-newCallback_IIFServer_RotTrack(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotTrack(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotTrack<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15666,7 +15666,7 @@ newCallback_IIFServer_RotTrack(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotTrack.
  */
 template<class T, typename CT> Callback_IIFServer_RotTrackPtr
-newCallback_IIFServer_RotTrack(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotTrack(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotTrack<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15685,7 +15685,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_RotServicePosition(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15696,7 +15696,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotServicePosition(result);
@@ -15727,7 +15727,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotServicePosition.
  */
 template<class T> Callback_IIFServer_RotServicePositionPtr
-newCallback_IIFServer_RotServicePosition(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotServicePosition(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotServicePosition<T>(instance, cb, excb, sentcb);
 }
@@ -15741,7 +15741,7 @@ newCallback_IIFServer_RotServicePosition(const IceUtil::Handle<T>& instance, voi
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotServicePosition.
  */
 template<class T> Callback_IIFServer_RotServicePositionPtr
-newCallback_IIFServer_RotServicePosition(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RotServicePosition(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RotServicePosition<T>(instance, cb, excb, sentcb);
 }
@@ -15760,7 +15760,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_RotServicePosition(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15771,7 +15771,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RotServicePosition(result);
@@ -15803,7 +15803,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotServicePosition.
  */
 template<class T, typename CT> Callback_IIFServer_RotServicePositionPtr
-newCallback_IIFServer_RotServicePosition(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotServicePosition(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotServicePosition<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15818,7 +15818,7 @@ newCallback_IIFServer_RotServicePosition(const IceUtil::Handle<T>& instance, voi
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RotServicePosition.
  */
 template<class T, typename CT> Callback_IIFServer_RotServicePositionPtr
-newCallback_IIFServer_RotServicePosition(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RotServicePosition(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RotServicePosition<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15837,7 +15837,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_PauseAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15848,7 +15848,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_PauseAO(result);
@@ -15879,7 +15879,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PauseAO.
  */
 template<class T> Callback_IIFServer_PauseAOPtr
-newCallback_IIFServer_PauseAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_PauseAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_PauseAO<T>(instance, cb, excb, sentcb);
 }
@@ -15893,7 +15893,7 @@ newCallback_IIFServer_PauseAO(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PauseAO.
  */
 template<class T> Callback_IIFServer_PauseAOPtr
-newCallback_IIFServer_PauseAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_PauseAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_PauseAO<T>(instance, cb, excb, sentcb);
 }
@@ -15912,7 +15912,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_PauseAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -15923,7 +15923,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_PauseAO(result);
@@ -15955,7 +15955,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PauseAO.
  */
 template<class T, typename CT> Callback_IIFServer_PauseAOPtr
-newCallback_IIFServer_PauseAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_PauseAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_PauseAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15970,7 +15970,7 @@ newCallback_IIFServer_PauseAO(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PauseAO.
  */
 template<class T, typename CT> Callback_IIFServer_PauseAOPtr
-newCallback_IIFServer_PauseAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_PauseAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_PauseAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -15989,7 +15989,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_ResumeAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16000,7 +16000,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ResumeAO(result);
@@ -16031,7 +16031,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ResumeAO.
  */
 template<class T> Callback_IIFServer_ResumeAOPtr
-newCallback_IIFServer_ResumeAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ResumeAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ResumeAO<T>(instance, cb, excb, sentcb);
 }
@@ -16045,7 +16045,7 @@ newCallback_IIFServer_ResumeAO(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ResumeAO.
  */
 template<class T> Callback_IIFServer_ResumeAOPtr
-newCallback_IIFServer_ResumeAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ResumeAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ResumeAO<T>(instance, cb, excb, sentcb);
 }
@@ -16064,7 +16064,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_ResumeAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16075,7 +16075,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ResumeAO(result);
@@ -16107,7 +16107,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ResumeAO.
  */
 template<class T, typename CT> Callback_IIFServer_ResumeAOPtr
-newCallback_IIFServer_ResumeAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ResumeAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ResumeAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16122,7 +16122,7 @@ newCallback_IIFServer_ResumeAO(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ResumeAO.
  */
 template<class T, typename CT> Callback_IIFServer_ResumeAOPtr
-newCallback_IIFServer_ResumeAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ResumeAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ResumeAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16141,7 +16141,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_StartAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16152,7 +16152,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_StartAO(result);
@@ -16183,7 +16183,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StartAO.
  */
 template<class T> Callback_IIFServer_StartAOPtr
-newCallback_IIFServer_StartAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_StartAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_StartAO<T>(instance, cb, excb, sentcb);
 }
@@ -16197,7 +16197,7 @@ newCallback_IIFServer_StartAO(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StartAO.
  */
 template<class T> Callback_IIFServer_StartAOPtr
-newCallback_IIFServer_StartAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_StartAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_StartAO<T>(instance, cb, excb, sentcb);
 }
@@ -16216,7 +16216,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_StartAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16227,7 +16227,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_StartAO(result);
@@ -16259,7 +16259,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StartAO.
  */
 template<class T, typename CT> Callback_IIFServer_StartAOPtr
-newCallback_IIFServer_StartAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_StartAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_StartAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16274,7 +16274,7 @@ newCallback_IIFServer_StartAO(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StartAO.
  */
 template<class T, typename CT> Callback_IIFServer_StartAOPtr
-newCallback_IIFServer_StartAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_StartAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_StartAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16293,7 +16293,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_StopAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16304,7 +16304,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_StopAO(result);
@@ -16335,7 +16335,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StopAO.
  */
 template<class T> Callback_IIFServer_StopAOPtr
-newCallback_IIFServer_StopAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_StopAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_StopAO<T>(instance, cb, excb, sentcb);
 }
@@ -16349,7 +16349,7 @@ newCallback_IIFServer_StopAO(const IceUtil::Handle<T>& instance, void (T::*cb)(c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StopAO.
  */
 template<class T> Callback_IIFServer_StopAOPtr
-newCallback_IIFServer_StopAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_StopAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_StopAO<T>(instance, cb, excb, sentcb);
 }
@@ -16368,7 +16368,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_StopAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16379,7 +16379,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_StopAO(result);
@@ -16411,7 +16411,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StopAO.
  */
 template<class T, typename CT> Callback_IIFServer_StopAOPtr
-newCallback_IIFServer_StopAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_StopAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_StopAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16426,7 +16426,7 @@ newCallback_IIFServer_StopAO(const IceUtil::Handle<T>& instance, void (T::*cb)(c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_StopAO.
  */
 template<class T, typename CT> Callback_IIFServer_StopAOPtr
-newCallback_IIFServer_StopAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_StopAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_StopAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16445,7 +16445,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_AcquireRefAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16456,7 +16456,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_AcquireRefAO(result);
@@ -16487,7 +16487,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_AcquireRefAO.
  */
 template<class T> Callback_IIFServer_AcquireRefAOPtr
-newCallback_IIFServer_AcquireRefAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_AcquireRefAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_AcquireRefAO<T>(instance, cb, excb, sentcb);
 }
@@ -16501,7 +16501,7 @@ newCallback_IIFServer_AcquireRefAO(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_AcquireRefAO.
  */
 template<class T> Callback_IIFServer_AcquireRefAOPtr
-newCallback_IIFServer_AcquireRefAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_AcquireRefAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_AcquireRefAO<T>(instance, cb, excb, sentcb);
 }
@@ -16520,7 +16520,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_AcquireRefAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16531,7 +16531,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_AcquireRefAO(result);
@@ -16563,7 +16563,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_AcquireRefAO.
  */
 template<class T, typename CT> Callback_IIFServer_AcquireRefAOPtr
-newCallback_IIFServer_AcquireRefAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_AcquireRefAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_AcquireRefAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16578,7 +16578,7 @@ newCallback_IIFServer_AcquireRefAO(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_AcquireRefAO.
  */
 template<class T, typename CT> Callback_IIFServer_AcquireRefAOPtr
-newCallback_IIFServer_AcquireRefAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_AcquireRefAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_AcquireRefAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16597,7 +16597,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_CheckRefAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16608,7 +16608,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_CheckRefAO(result);
@@ -16639,7 +16639,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_CheckRefAO.
  */
 template<class T> Callback_IIFServer_CheckRefAOPtr
-newCallback_IIFServer_CheckRefAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_CheckRefAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_CheckRefAO<T>(instance, cb, excb, sentcb);
 }
@@ -16653,7 +16653,7 @@ newCallback_IIFServer_CheckRefAO(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_CheckRefAO.
  */
 template<class T> Callback_IIFServer_CheckRefAOPtr
-newCallback_IIFServer_CheckRefAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_CheckRefAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_CheckRefAO<T>(instance, cb, excb, sentcb);
 }
@@ -16672,7 +16672,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_CheckRefAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16683,7 +16683,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_CheckRefAO(result);
@@ -16715,7 +16715,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_CheckRefAO.
  */
 template<class T, typename CT> Callback_IIFServer_CheckRefAOPtr
-newCallback_IIFServer_CheckRefAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_CheckRefAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_CheckRefAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16730,7 +16730,7 @@ newCallback_IIFServer_CheckRefAO(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_CheckRefAO.
  */
 template<class T, typename CT> Callback_IIFServer_CheckRefAOPtr
-newCallback_IIFServer_CheckRefAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_CheckRefAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_CheckRefAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16749,7 +16749,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_RefineAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16760,7 +16760,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RefineAO(result);
@@ -16791,7 +16791,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RefineAO.
  */
 template<class T> Callback_IIFServer_RefineAOPtr
-newCallback_IIFServer_RefineAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RefineAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RefineAO<T>(instance, cb, excb, sentcb);
 }
@@ -16805,7 +16805,7 @@ newCallback_IIFServer_RefineAO(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RefineAO.
  */
 template<class T> Callback_IIFServer_RefineAOPtr
-newCallback_IIFServer_RefineAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RefineAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RefineAO<T>(instance, cb, excb, sentcb);
 }
@@ -16824,7 +16824,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_RefineAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16835,7 +16835,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RefineAO(result);
@@ -16867,7 +16867,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RefineAO.
  */
 template<class T, typename CT> Callback_IIFServer_RefineAOPtr
-newCallback_IIFServer_RefineAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RefineAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RefineAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16882,7 +16882,7 @@ newCallback_IIFServer_RefineAO(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RefineAO.
  */
 template<class T, typename CT> Callback_IIFServer_RefineAOPtr
-newCallback_IIFServer_RefineAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RefineAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RefineAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -16901,7 +16901,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_RunAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16912,7 +16912,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RunAO(result);
@@ -16943,7 +16943,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RunAO.
  */
 template<class T> Callback_IIFServer_RunAOPtr
-newCallback_IIFServer_RunAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RunAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RunAO<T>(instance, cb, excb, sentcb);
 }
@@ -16957,7 +16957,7 @@ newCallback_IIFServer_RunAO(const IceUtil::Handle<T>& instance, void (T::*cb)(co
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RunAO.
  */
 template<class T> Callback_IIFServer_RunAOPtr
-newCallback_IIFServer_RunAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_RunAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_RunAO<T>(instance, cb, excb, sentcb);
 }
@@ -16976,7 +16976,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_RunAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -16987,7 +16987,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_RunAO(result);
@@ -17019,7 +17019,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RunAO.
  */
 template<class T, typename CT> Callback_IIFServer_RunAOPtr
-newCallback_IIFServer_RunAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RunAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RunAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17034,7 +17034,7 @@ newCallback_IIFServer_RunAO(const IceUtil::Handle<T>& instance, void (T::*cb)(co
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_RunAO.
  */
 template<class T, typename CT> Callback_IIFServer_RunAOPtr
-newCallback_IIFServer_RunAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_RunAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_RunAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17053,7 +17053,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_PresetFlatAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17064,7 +17064,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_PresetFlatAO(result);
@@ -17095,7 +17095,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetFlatAO.
  */
 template<class T> Callback_IIFServer_PresetFlatAOPtr
-newCallback_IIFServer_PresetFlatAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_PresetFlatAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_PresetFlatAO<T>(instance, cb, excb, sentcb);
 }
@@ -17109,7 +17109,7 @@ newCallback_IIFServer_PresetFlatAO(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetFlatAO.
  */
 template<class T> Callback_IIFServer_PresetFlatAOPtr
-newCallback_IIFServer_PresetFlatAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_PresetFlatAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_PresetFlatAO<T>(instance, cb, excb, sentcb);
 }
@@ -17128,7 +17128,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_PresetFlatAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17139,7 +17139,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_PresetFlatAO(result);
@@ -17171,7 +17171,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetFlatAO.
  */
 template<class T, typename CT> Callback_IIFServer_PresetFlatAOPtr
-newCallback_IIFServer_PresetFlatAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_PresetFlatAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_PresetFlatAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17186,7 +17186,7 @@ newCallback_IIFServer_PresetFlatAO(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetFlatAO.
  */
 template<class T, typename CT> Callback_IIFServer_PresetFlatAOPtr
-newCallback_IIFServer_PresetFlatAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_PresetFlatAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_PresetFlatAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17205,7 +17205,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_CorrectModesAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17216,7 +17216,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_CorrectModesAO(result);
@@ -17247,7 +17247,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_CorrectModesAO.
  */
 template<class T> Callback_IIFServer_CorrectModesAOPtr
-newCallback_IIFServer_CorrectModesAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_CorrectModesAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_CorrectModesAO<T>(instance, cb, excb, sentcb);
 }
@@ -17261,7 +17261,7 @@ newCallback_IIFServer_CorrectModesAO(const IceUtil::Handle<T>& instance, void (T
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_CorrectModesAO.
  */
 template<class T> Callback_IIFServer_CorrectModesAOPtr
-newCallback_IIFServer_CorrectModesAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_CorrectModesAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_CorrectModesAO<T>(instance, cb, excb, sentcb);
 }
@@ -17280,7 +17280,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_CorrectModesAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17291,7 +17291,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_CorrectModesAO(result);
@@ -17323,7 +17323,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_CorrectModesAO.
  */
 template<class T, typename CT> Callback_IIFServer_CorrectModesAOPtr
-newCallback_IIFServer_CorrectModesAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_CorrectModesAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_CorrectModesAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17338,7 +17338,7 @@ newCallback_IIFServer_CorrectModesAO(const IceUtil::Handle<T>& instance, void (T
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_CorrectModesAO.
  */
 template<class T, typename CT> Callback_IIFServer_CorrectModesAOPtr
-newCallback_IIFServer_CorrectModesAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_CorrectModesAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_CorrectModesAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17357,7 +17357,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_ModifyAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17368,7 +17368,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ModifyAO(result);
@@ -17399,7 +17399,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ModifyAO.
  */
 template<class T> Callback_IIFServer_ModifyAOPtr
-newCallback_IIFServer_ModifyAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ModifyAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ModifyAO<T>(instance, cb, excb, sentcb);
 }
@@ -17413,7 +17413,7 @@ newCallback_IIFServer_ModifyAO(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ModifyAO.
  */
 template<class T> Callback_IIFServer_ModifyAOPtr
-newCallback_IIFServer_ModifyAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ModifyAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ModifyAO<T>(instance, cb, excb, sentcb);
 }
@@ -17432,7 +17432,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_ModifyAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17443,7 +17443,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ModifyAO(result);
@@ -17475,7 +17475,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ModifyAO.
  */
 template<class T, typename CT> Callback_IIFServer_ModifyAOPtr
-newCallback_IIFServer_ModifyAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ModifyAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ModifyAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17490,7 +17490,7 @@ newCallback_IIFServer_ModifyAO(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ModifyAO.
  */
 template<class T, typename CT> Callback_IIFServer_ModifyAOPtr
-newCallback_IIFServer_ModifyAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ModifyAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ModifyAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17509,7 +17509,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_PresetAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17520,7 +17520,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_PresetAO(result);
@@ -17551,7 +17551,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetAO.
  */
 template<class T> Callback_IIFServer_PresetAOPtr
-newCallback_IIFServer_PresetAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_PresetAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_PresetAO<T>(instance, cb, excb, sentcb);
 }
@@ -17565,7 +17565,7 @@ newCallback_IIFServer_PresetAO(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetAO.
  */
 template<class T> Callback_IIFServer_PresetAOPtr
-newCallback_IIFServer_PresetAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_PresetAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_PresetAO<T>(instance, cb, excb, sentcb);
 }
@@ -17584,7 +17584,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_PresetAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17595,7 +17595,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_PresetAO(result);
@@ -17627,7 +17627,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetAO.
  */
 template<class T, typename CT> Callback_IIFServer_PresetAOPtr
-newCallback_IIFServer_PresetAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_PresetAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_PresetAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17642,7 +17642,7 @@ newCallback_IIFServer_PresetAO(const IceUtil::Handle<T>& instance, void (T::*cb)
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_PresetAO.
  */
 template<class T, typename CT> Callback_IIFServer_PresetAOPtr
-newCallback_IIFServer_PresetAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_PresetAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_PresetAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17661,7 +17661,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_OffsetXYAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17672,7 +17672,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_OffsetXYAO(result);
@@ -17703,7 +17703,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetXYAO.
  */
 template<class T> Callback_IIFServer_OffsetXYAOPtr
-newCallback_IIFServer_OffsetXYAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_OffsetXYAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_OffsetXYAO<T>(instance, cb, excb, sentcb);
 }
@@ -17717,7 +17717,7 @@ newCallback_IIFServer_OffsetXYAO(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetXYAO.
  */
 template<class T> Callback_IIFServer_OffsetXYAOPtr
-newCallback_IIFServer_OffsetXYAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_OffsetXYAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_OffsetXYAO<T>(instance, cb, excb, sentcb);
 }
@@ -17736,7 +17736,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_OffsetXYAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17747,7 +17747,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_OffsetXYAO(result);
@@ -17779,7 +17779,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetXYAO.
  */
 template<class T, typename CT> Callback_IIFServer_OffsetXYAOPtr
-newCallback_IIFServer_OffsetXYAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_OffsetXYAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_OffsetXYAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17794,7 +17794,7 @@ newCallback_IIFServer_OffsetXYAO(const IceUtil::Handle<T>& instance, void (T::*c
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetXYAO.
  */
 template<class T, typename CT> Callback_IIFServer_OffsetXYAOPtr
-newCallback_IIFServer_OffsetXYAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_OffsetXYAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_OffsetXYAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17813,7 +17813,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_OffsetZAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17824,7 +17824,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_OffsetZAO(result);
@@ -17855,7 +17855,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetZAO.
  */
 template<class T> Callback_IIFServer_OffsetZAOPtr
-newCallback_IIFServer_OffsetZAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_OffsetZAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_OffsetZAO<T>(instance, cb, excb, sentcb);
 }
@@ -17869,7 +17869,7 @@ newCallback_IIFServer_OffsetZAO(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetZAO.
  */
 template<class T> Callback_IIFServer_OffsetZAOPtr
-newCallback_IIFServer_OffsetZAO(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_OffsetZAO(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_OffsetZAO<T>(instance, cb, excb, sentcb);
 }
@@ -17888,7 +17888,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_OffsetZAO(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17899,7 +17899,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_OffsetZAO(result);
@@ -17931,7 +17931,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetZAO.
  */
 template<class T, typename CT> Callback_IIFServer_OffsetZAOPtr
-newCallback_IIFServer_OffsetZAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_OffsetZAO(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_OffsetZAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17946,7 +17946,7 @@ newCallback_IIFServer_OffsetZAO(const IceUtil::Handle<T>& instance, void (T::*cb
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_OffsetZAO.
  */
 template<class T, typename CT> Callback_IIFServer_OffsetZAOPtr
-newCallback_IIFServer_OffsetZAO(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_OffsetZAO(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_OffsetZAO<T, CT>(instance, cb, excb, sentcb);
 }
@@ -17965,7 +17965,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetReference(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -17976,7 +17976,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetReference(result);
@@ -18007,7 +18007,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReference.
  */
 template<class T> Callback_IIFServer_SetReferencePtr
-newCallback_IIFServer_SetReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetReference<T>(instance, cb, excb, sentcb);
 }
@@ -18021,7 +18021,7 @@ newCallback_IIFServer_SetReference(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReference.
  */
 template<class T> Callback_IIFServer_SetReferencePtr
-newCallback_IIFServer_SetReference(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetReference(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetReference<T>(instance, cb, excb, sentcb);
 }
@@ -18040,7 +18040,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetReference(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18051,7 +18051,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetReference(result);
@@ -18083,7 +18083,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReference.
  */
 template<class T, typename CT> Callback_IIFServer_SetReferencePtr
-newCallback_IIFServer_SetReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetReference<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18098,7 +18098,7 @@ newCallback_IIFServer_SetReference(const IceUtil::Handle<T>& instance, void (T::
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReference.
  */
 template<class T, typename CT> Callback_IIFServer_SetReferencePtr
-newCallback_IIFServer_SetReference(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetReference(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetReference<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18117,7 +18117,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetReferenceNew(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18128,7 +18128,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetReferenceNew(result);
@@ -18159,7 +18159,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReferenceNew.
  */
 template<class T> Callback_IIFServer_SetReferenceNewPtr
-newCallback_IIFServer_SetReferenceNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetReferenceNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetReferenceNew<T>(instance, cb, excb, sentcb);
 }
@@ -18173,7 +18173,7 @@ newCallback_IIFServer_SetReferenceNew(const IceUtil::Handle<T>& instance, void (
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReferenceNew.
  */
 template<class T> Callback_IIFServer_SetReferenceNewPtr
-newCallback_IIFServer_SetReferenceNew(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetReferenceNew(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetReferenceNew<T>(instance, cb, excb, sentcb);
 }
@@ -18192,7 +18192,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetReferenceNew(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18203,7 +18203,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetReferenceNew(result);
@@ -18235,7 +18235,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReferenceNew.
  */
 template<class T, typename CT> Callback_IIFServer_SetReferenceNewPtr
-newCallback_IIFServer_SetReferenceNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetReferenceNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetReferenceNew<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18250,7 +18250,7 @@ newCallback_IIFServer_SetReferenceNew(const IceUtil::Handle<T>& instance, void (
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReferenceNew.
  */
 template<class T, typename CT> Callback_IIFServer_SetReferenceNewPtr
-newCallback_IIFServer_SetReferenceNew(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetReferenceNew(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetReferenceNew<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18269,7 +18269,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_SetReference2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18280,7 +18280,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetReference2(result);
@@ -18311,7 +18311,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReference2.
  */
 template<class T> Callback_IIFServer_SetReference2Ptr
-newCallback_IIFServer_SetReference2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetReference2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetReference2<T>(instance, cb, excb, sentcb);
 }
@@ -18325,7 +18325,7 @@ newCallback_IIFServer_SetReference2(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReference2.
  */
 template<class T> Callback_IIFServer_SetReference2Ptr
-newCallback_IIFServer_SetReference2(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_SetReference2(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_SetReference2<T>(instance, cb, excb, sentcb);
 }
@@ -18344,7 +18344,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_SetReference2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18355,7 +18355,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_SetReference2(result);
@@ -18387,7 +18387,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReference2.
  */
 template<class T, typename CT> Callback_IIFServer_SetReference2Ptr
-newCallback_IIFServer_SetReference2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetReference2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetReference2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18402,7 +18402,7 @@ newCallback_IIFServer_SetReference2(const IceUtil::Handle<T>& instance, void (T:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_SetReference2.
  */
 template<class T, typename CT> Callback_IIFServer_SetReference2Ptr
-newCallback_IIFServer_SetReference2(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_SetReference2(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_SetReference2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18421,7 +18421,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_ClearReference(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18432,7 +18432,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearReference(result);
@@ -18463,7 +18463,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearReference.
  */
 template<class T> Callback_IIFServer_ClearReferencePtr
-newCallback_IIFServer_ClearReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearReference<T>(instance, cb, excb, sentcb);
 }
@@ -18477,7 +18477,7 @@ newCallback_IIFServer_ClearReference(const IceUtil::Handle<T>& instance, void (T
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearReference.
  */
 template<class T> Callback_IIFServer_ClearReferencePtr
-newCallback_IIFServer_ClearReference(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_ClearReference(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_ClearReference<T>(instance, cb, excb, sentcb);
 }
@@ -18496,7 +18496,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_ClearReference(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18507,7 +18507,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_ClearReference(result);
@@ -18539,7 +18539,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearReference.
  */
 template<class T, typename CT> Callback_IIFServer_ClearReferencePtr
-newCallback_IIFServer_ClearReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearReference(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearReference<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18554,7 +18554,7 @@ newCallback_IIFServer_ClearReference(const IceUtil::Handle<T>& instance, void (T
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_ClearReference.
  */
 template<class T, typename CT> Callback_IIFServer_ClearReferencePtr
-newCallback_IIFServer_ClearReference(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_ClearReference(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_ClearReference<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18573,7 +18573,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_GetKFPCoordinates(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18584,7 +18584,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetKFPCoordinates(result);
@@ -18615,7 +18615,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinates.
  */
 template<class T> Callback_IIFServer_GetKFPCoordinatesPtr
-newCallback_IIFServer_GetKFPCoordinates(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetKFPCoordinates(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetKFPCoordinates<T>(instance, cb, excb, sentcb);
 }
@@ -18629,7 +18629,7 @@ newCallback_IIFServer_GetKFPCoordinates(const IceUtil::Handle<T>& instance, void
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinates.
  */
 template<class T> Callback_IIFServer_GetKFPCoordinatesPtr
-newCallback_IIFServer_GetKFPCoordinates(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetKFPCoordinates(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetKFPCoordinates<T>(instance, cb, excb, sentcb);
 }
@@ -18648,7 +18648,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_GetKFPCoordinates(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18659,7 +18659,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetKFPCoordinates(result);
@@ -18691,7 +18691,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinates.
  */
 template<class T, typename CT> Callback_IIFServer_GetKFPCoordinatesPtr
-newCallback_IIFServer_GetKFPCoordinates(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetKFPCoordinates(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetKFPCoordinates<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18706,7 +18706,7 @@ newCallback_IIFServer_GetKFPCoordinates(const IceUtil::Handle<T>& instance, void
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinates.
  */
 template<class T, typename CT> Callback_IIFServer_GetKFPCoordinatesPtr
-newCallback_IIFServer_GetKFPCoordinates(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetKFPCoordinates(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetKFPCoordinates<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18725,7 +18725,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_GetKFPCoordinatesNew(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18736,7 +18736,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetKFPCoordinatesNew(result);
@@ -18767,7 +18767,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinatesNew.
  */
 template<class T> Callback_IIFServer_GetKFPCoordinatesNewPtr
-newCallback_IIFServer_GetKFPCoordinatesNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetKFPCoordinatesNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetKFPCoordinatesNew<T>(instance, cb, excb, sentcb);
 }
@@ -18781,7 +18781,7 @@ newCallback_IIFServer_GetKFPCoordinatesNew(const IceUtil::Handle<T>& instance, v
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinatesNew.
  */
 template<class T> Callback_IIFServer_GetKFPCoordinatesNewPtr
-newCallback_IIFServer_GetKFPCoordinatesNew(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetKFPCoordinatesNew(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetKFPCoordinatesNew<T>(instance, cb, excb, sentcb);
 }
@@ -18800,7 +18800,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_GetKFPCoordinatesNew(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18811,7 +18811,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetKFPCoordinatesNew(result);
@@ -18843,7 +18843,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinatesNew.
  */
 template<class T, typename CT> Callback_IIFServer_GetKFPCoordinatesNewPtr
-newCallback_IIFServer_GetKFPCoordinatesNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetKFPCoordinatesNew(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetKFPCoordinatesNew<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18858,7 +18858,7 @@ newCallback_IIFServer_GetKFPCoordinatesNew(const IceUtil::Handle<T>& instance, v
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinatesNew.
  */
 template<class T, typename CT> Callback_IIFServer_GetKFPCoordinatesNewPtr
-newCallback_IIFServer_GetKFPCoordinatesNew(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetKFPCoordinatesNew(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetKFPCoordinatesNew<T, CT>(instance, cb, excb, sentcb);
 }
@@ -18877,7 +18877,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_GetKFPCoordinates2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18888,7 +18888,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetKFPCoordinates2(result);
@@ -18919,7 +18919,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinates2.
  */
 template<class T> Callback_IIFServer_GetKFPCoordinates2Ptr
-newCallback_IIFServer_GetKFPCoordinates2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetKFPCoordinates2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetKFPCoordinates2<T>(instance, cb, excb, sentcb);
 }
@@ -18933,7 +18933,7 @@ newCallback_IIFServer_GetKFPCoordinates2(const IceUtil::Handle<T>& instance, voi
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinates2.
  */
 template<class T> Callback_IIFServer_GetKFPCoordinates2Ptr
-newCallback_IIFServer_GetKFPCoordinates2(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_GetKFPCoordinates2(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_GetKFPCoordinates2<T>(instance, cb, excb, sentcb);
 }
@@ -18952,7 +18952,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_GetKFPCoordinates2(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -18963,7 +18963,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_GetKFPCoordinates2(result);
@@ -18995,7 +18995,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinates2.
  */
 template<class T, typename CT> Callback_IIFServer_GetKFPCoordinates2Ptr
-newCallback_IIFServer_GetKFPCoordinates2(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetKFPCoordinates2(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetKFPCoordinates2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -19010,7 +19010,7 @@ newCallback_IIFServer_GetKFPCoordinates2(const IceUtil::Handle<T>& instance, voi
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_GetKFPCoordinates2.
  */
 template<class T, typename CT> Callback_IIFServer_GetKFPCoordinates2Ptr
-newCallback_IIFServer_GetKFPCoordinates2(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_GetKFPCoordinates2(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_GetKFPCoordinates2<T, CT>(instance, cb, excb, sentcb);
 }
@@ -19029,7 +19029,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception&);
     typedef void (T::*Sent)(bool);
-    typedef void (T::*Response)(const result&);
+    typedef void (T::*Response)(const iifres&);
 
     CallbackNC_IIFServer_NSQuery(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -19040,7 +19040,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_NSQuery(result);
@@ -19071,7 +19071,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_NSQuery.
  */
 template<class T> Callback_IIFServer_NSQueryPtr
-newCallback_IIFServer_NSQuery(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_NSQuery(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_NSQuery<T>(instance, cb, excb, sentcb);
 }
@@ -19085,7 +19085,7 @@ newCallback_IIFServer_NSQuery(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_NSQuery.
  */
 template<class T> Callback_IIFServer_NSQueryPtr
-newCallback_IIFServer_NSQuery(T* instance, void (T::*cb)(const result&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+newCallback_IIFServer_NSQuery(T* instance, void (T::*cb)(const iifres&), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
 {
     return new CallbackNC_IIFServer_NSQuery<T>(instance, cb, excb, sentcb);
 }
@@ -19104,7 +19104,7 @@ public:
 
     typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
     typedef void (T::*Sent)(bool , const CT&);
-    typedef void (T::*Response)(const result&, const CT&);
+    typedef void (T::*Response)(const iifres&, const CT&);
 
     Callback_IIFServer_NSQuery(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
         : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
@@ -19115,7 +19115,7 @@ public:
     virtual void completed(const ::Ice::AsyncResultPtr& result) const
     {
         IIFServerPrx proxy = IIFServerPrx::uncheckedCast(result->getProxy());
-        result ret;
+        iifres ret;
         try
         {
             ret = proxy->end_NSQuery(result);
@@ -19147,7 +19147,7 @@ private:
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_NSQuery.
  */
 template<class T, typename CT> Callback_IIFServer_NSQueryPtr
-newCallback_IIFServer_NSQuery(const IceUtil::Handle<T>& instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_NSQuery(const IceUtil::Handle<T>& instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_NSQuery<T, CT>(instance, cb, excb, sentcb);
 }
@@ -19162,7 +19162,7 @@ newCallback_IIFServer_NSQuery(const IceUtil::Handle<T>& instance, void (T::*cb)(
  * @return An object that can be passed to an asynchronous invocation of IceProxy::lbto::IIFServer::begin_NSQuery.
  */
 template<class T, typename CT> Callback_IIFServer_NSQueryPtr
-newCallback_IIFServer_NSQuery(T* instance, void (T::*cb)(const result&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+newCallback_IIFServer_NSQuery(T* instance, void (T::*cb)(const iifres&, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_IIFServer_NSQuery<T, CT>(instance, cb, excb, sentcb);
 }

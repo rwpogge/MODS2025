@@ -29,7 +29,7 @@ OBJDIR      = ../obj
 CFGDIR      = /home/mods/Config/IIF
 
 INCS        = -I$(ISISDIR)/lib
-LIBS        = -L/lib64 -lIce -lIceUtil
+LIBS        = -L/lib64 -l/usr/include/Ice -l/usr/include/IceUtil
 
 CFLAGS      = -w -c $(INCS) 
 VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
@@ -42,15 +42,16 @@ OBJS        = modsIIFUtils.o Factory.o IIFServer.o
 .cpp.o:	    Factory.h IIFServer.h
 	    $(CC) $(CFLAGS) $(VFLAGS) $*.cpp
 
-all:        libiif.a
+all:        libiifutils.a
 
-libiif.a:   $(OBJS)
-	    /bin/rm -f libiif.a
-	    $(AR) cr libiif.a *.o
-	    ranlib libiif.a
+libiifutils.a:   $(OBJS)
+	    /bin/rm -f libiifutils.a
+	    $(AR) cr libiifutils.a *.o
+	    ranlib libiifutils.a
+	    \cp libiifutils.a $(ROOTDIR)/ulib/
 	    /bin/rm *.o
-
+            
 clean:
-	    /bin/rm -f libiif.a *.o
+	    /bin/rm -f libiifutils.a *.o
 install:
 	    \cp -f modsiif /usr/local/bin

@@ -253,7 +253,7 @@ lbto::IIFServer::_iceD_ApplyWaffleAO(::IceInternal::Incoming& inS, const ::Ice::
     ::std::string iceP_side;
     istr->readAll(iceP_modes, iceP_side);
     inS.endReadParams();
-    result ret = this->ApplyWaffleAO(::std::move(iceP_modes), ::std::move(iceP_side), current);
+    iifres ret = this->ApplyWaffleAO(::std::move(iceP_modes), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -267,7 +267,7 @@ lbto::IIFServer::_iceD_Authorize(::IceInternal::Incoming& inS, const ::Ice::Curr
 {
     _iceCheckMode(::Ice::OperationMode::Normal, current.mode);
     inS.readEmptyParams();
-    result ret = this->Authorize(current);
+    iifres ret = this->Authorize(current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -286,7 +286,7 @@ lbto::IIFServer::_iceD_StepFocus(::IceInternal::Incoming& inS, const ::Ice::Curr
     ::std::string iceP_side;
     istr->readAll(iceP_relPos, iceP_ope, iceP_side);
     inS.endReadParams();
-    result ret = this->StepFocus(iceP_relPos, ::std::move(iceP_ope), ::std::move(iceP_side), current);
+    iifres ret = this->StepFocus(iceP_relPos, ::std::move(iceP_ope), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -305,7 +305,7 @@ lbto::IIFServer::_iceD_MoveFocus(::IceInternal::Incoming& inS, const ::Ice::Curr
     ::std::string iceP_side;
     istr->readAll(iceP_absPos, iceP_ope, iceP_side);
     inS.endReadParams();
-    result ret = this->MoveFocus(iceP_absPos, ::std::move(iceP_ope), ::std::move(iceP_side), current);
+    iifres ret = this->MoveFocus(iceP_absPos, ::std::move(iceP_ope), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -329,7 +329,7 @@ lbto::IIFServer::_iceD_OffsetPointing(::IceInternal::Incoming& inS, const ::Ice:
     ::std::string iceP_side;
     istr->readAll(iceP_rotangle, iceP_offx, iceP_offy, iceP_coordsys, iceP_ope, iceP_np, iceP_movetype, iceP_side);
     inS.endReadParams();
-    result ret = this->OffsetPointing(iceP_rotangle, iceP_offx, iceP_offy, ::std::move(iceP_coordsys), ::std::move(iceP_ope), ::std::move(iceP_np), ::std::move(iceP_movetype), ::std::move(iceP_side), current);
+    iifres ret = this->OffsetPointing(iceP_rotangle, iceP_offx, iceP_offy, ::std::move(iceP_coordsys), ::std::move(iceP_ope), ::std::move(iceP_np), ::std::move(iceP_movetype), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -351,7 +351,7 @@ lbto::IIFServer::_iceD_OffsetPointing2(::IceInternal::Incoming& inS, const ::Ice
     ::std::string iceP_side;
     istr->readAll(iceP_rotangle, iceP_offx, iceP_offy, iceP_coordsys, iceP_movetype, iceP_side);
     inS.endReadParams();
-    result ret = this->OffsetPointing2(iceP_rotangle, iceP_offx, iceP_offy, ::std::move(iceP_coordsys), ::std::move(iceP_movetype), ::std::move(iceP_side), current);
+    iifres ret = this->OffsetPointing2(iceP_rotangle, iceP_offx, iceP_offy, ::std::move(iceP_coordsys), ::std::move(iceP_movetype), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -372,7 +372,7 @@ lbto::IIFServer::_iceD_OffsetGuiding(::IceInternal::Incoming& inS, const ::Ice::
     ::std::string iceP_side;
     istr->readAll(iceP_rotangle, iceP_offx, iceP_offy, iceP_coordsys, iceP_side);
     inS.endReadParams();
-    result ret = this->OffsetGuiding(iceP_rotangle, iceP_offx, iceP_offy, ::std::move(iceP_coordsys), ::std::move(iceP_side), current);
+    iifres ret = this->OffsetGuiding(iceP_rotangle, iceP_offx, iceP_offy, ::std::move(iceP_coordsys), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -390,7 +390,7 @@ lbto::IIFServer::_iceD_UpdatePointingReference(::IceInternal::Incoming& inS, con
     ::std::string iceP_side;
     istr->readAll(iceP_offsetcoord, iceP_side);
     inS.endReadParams();
-    result ret = this->UpdatePointingReference(::std::move(iceP_offsetcoord), ::std::move(iceP_side), current);
+    iifres ret = this->UpdatePointingReference(::std::move(iceP_offsetcoord), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -410,7 +410,7 @@ lbto::IIFServer::_iceD_TipTilt(::IceInternal::Incoming& inS, const ::Ice::Curren
     ::std::string iceP_side;
     istr->readAll(iceP_xrot, iceP_yrot, iceP_ope, iceP_side);
     inS.endReadParams();
-    result ret = this->TipTilt(iceP_xrot, iceP_yrot, ::std::move(iceP_ope), ::std::move(iceP_side), current);
+    iifres ret = this->TipTilt(iceP_xrot, iceP_yrot, ::std::move(iceP_ope), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -429,7 +429,7 @@ lbto::IIFServer::_iceD_SetPMTerm(::IceInternal::Incoming& inS, const ::Ice::Curr
     ::std::string iceP_side;
     istr->readAll(iceP_name, iceP_value, iceP_side);
     inS.endReadParams();
-    result ret = this->SetPMTerm(::std::move(iceP_name), iceP_value, ::std::move(iceP_side), current);
+    iifres ret = this->SetPMTerm(::std::move(iceP_name), iceP_value, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -449,7 +449,7 @@ lbto::IIFServer::_iceD_SetPMTerm2(::IceInternal::Incoming& inS, const ::Ice::Cur
     ::std::string iceP_side;
     istr->readAll(iceP_name, iceP_value, iceP_movetype, iceP_side);
     inS.endReadParams();
-    result ret = this->SetPMTerm2(::std::move(iceP_name), iceP_value, ::std::move(iceP_movetype), ::std::move(iceP_side), current);
+    iifres ret = this->SetPMTerm2(::std::move(iceP_name), iceP_value, ::std::move(iceP_movetype), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -469,7 +469,7 @@ lbto::IIFServer::_iceD_MoveXYZ(::IceInternal::Incoming& inS, const ::Ice::Curren
     ::std::string iceP_side;
     istr->readAll(iceP_xmov, iceP_ymov, iceP_zmov, iceP_side);
     inS.endReadParams();
-    result ret = this->MoveXYZ(iceP_xmov, iceP_ymov, iceP_zmov, ::std::move(iceP_side), current);
+    iifres ret = this->MoveXYZ(iceP_xmov, iceP_ymov, iceP_zmov, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -489,7 +489,7 @@ lbto::IIFServer::_iceD_MoveXY(::IceInternal::Incoming& inS, const ::Ice::Current
     ::std::string iceP_side;
     istr->readAll(iceP_xmov, iceP_ymov, iceP_ope, iceP_side);
     inS.endReadParams();
-    result ret = this->MoveXY(iceP_xmov, iceP_ymov, ::std::move(iceP_ope), ::std::move(iceP_side), current);
+    iifres ret = this->MoveXY(iceP_xmov, iceP_ymov, ::std::move(iceP_ope), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -516,7 +516,7 @@ lbto::IIFServer::_iceD_Move(::IceInternal::Incoming& inS, const ::Ice::Current& 
     ::std::string iceP_side;
     istr->readAll(iceP_x, iceP_y, iceP_z, iceP_rx, iceP_ry, iceP_rz, iceP_dflag, iceP_movetype, iceP_OPE, iceP_time, iceP_side);
     inS.endReadParams();
-    result ret = this->Move(iceP_x, iceP_y, iceP_z, iceP_rx, iceP_ry, iceP_rz, iceP_dflag, ::std::move(iceP_movetype), ::std::move(iceP_OPE), iceP_time, ::std::move(iceP_side), current);
+    iifres ret = this->Move(iceP_x, iceP_y, iceP_z, iceP_rx, iceP_ry, iceP_rz, iceP_dflag, ::std::move(iceP_movetype), ::std::move(iceP_OPE), iceP_time, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -537,7 +537,7 @@ lbto::IIFServer::_iceD_SetTarget(::IceInternal::Incoming& inS, const ::Ice::Curr
     float iceP_wavelength;
     istr->readAll(iceP_coord1, iceP_coord2, iceP_system, iceP_epoch, iceP_wavelength);
     inS.endReadParams();
-    result ret = this->SetTarget(iceP_coord1, iceP_coord2, ::std::move(iceP_system), iceP_epoch, iceP_wavelength, current);
+    iifres ret = this->SetTarget(iceP_coord1, iceP_coord2, ::std::move(iceP_system), iceP_epoch, iceP_wavelength, current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -554,7 +554,7 @@ lbto::IIFServer::_iceD_SetStars(::IceInternal::Incoming& inS, const ::Ice::Curre
     SeqPos iceP_stars;
     istr->readAll(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetStars(::std::move(iceP_stars), current);
+    iifres ret = this->SetStars(::std::move(iceP_stars), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -571,7 +571,7 @@ lbto::IIFServer::_iceD_SetStarsNew(::IceInternal::Incoming& inS, const ::Ice::Cu
     SeqNewPos iceP_stars;
     istr->readAll(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetStarsNew(::std::move(iceP_stars), current);
+    iifres ret = this->SetStarsNew(::std::move(iceP_stars), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -588,7 +588,7 @@ lbto::IIFServer::_iceD_SetStars2(::IceInternal::Incoming& inS, const ::Ice::Curr
     SeqPos2 iceP_stars;
     istr->readAll(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetStars2(::std::move(iceP_stars), current);
+    iifres ret = this->SetStars2(::std::move(iceP_stars), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -602,7 +602,7 @@ lbto::IIFServer::_iceD_ClearStars(::IceInternal::Incoming& inS, const ::Ice::Cur
 {
     _iceCheckMode(::Ice::OperationMode::Normal, current.mode);
     inS.readEmptyParams();
-    result ret = this->ClearStars(current);
+    iifres ret = this->ClearStars(current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -620,7 +620,7 @@ lbto::IIFServer::_iceD_SetHotspot(::IceInternal::Incoming& inS, const ::Ice::Cur
     double iceP_coord2;
     istr->readAll(iceP_coord1, iceP_coord2);
     inS.endReadParams();
-    result ret = this->SetHotspot(iceP_coord1, iceP_coord2, current);
+    iifres ret = this->SetHotspot(iceP_coord1, iceP_coord2, current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -634,7 +634,7 @@ lbto::IIFServer::_iceD_ClearHotspot(::IceInternal::Incoming& inS, const ::Ice::C
 {
     _iceCheckMode(::Ice::OperationMode::Normal, current.mode);
     inS.readEmptyParams();
-    result ret = this->ClearHotspot(current);
+    iifres ret = this->ClearHotspot(current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -653,7 +653,7 @@ lbto::IIFServer::_iceD_SetOffset(::IceInternal::Incoming& inS, const ::Ice::Curr
     ::std::string iceP_system;
     istr->readAll(iceP_coord1, iceP_coord2, iceP_system);
     inS.endReadParams();
-    result ret = this->SetOffset(iceP_coord1, iceP_coord2, ::std::move(iceP_system), current);
+    iifres ret = this->SetOffset(iceP_coord1, iceP_coord2, ::std::move(iceP_system), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -673,7 +673,7 @@ lbto::IIFServer::_iceD_SetOffsetNew(::IceInternal::Incoming& inS, const ::Ice::C
     ::std::string iceP_movetype;
     istr->readAll(iceP_coord1, iceP_coord2, iceP_system, iceP_movetype);
     inS.endReadParams();
-    result ret = this->SetOffsetNew(iceP_coord1, iceP_coord2, ::std::move(iceP_system), ::std::move(iceP_movetype), current);
+    iifres ret = this->SetOffsetNew(iceP_coord1, iceP_coord2, ::std::move(iceP_system), ::std::move(iceP_movetype), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -693,7 +693,7 @@ lbto::IIFServer::_iceD_SetOffset2(::IceInternal::Incoming& inS, const ::Ice::Cur
     ::std::string iceP_movetype;
     istr->readAll(iceP_coord1, iceP_coord2, iceP_system, iceP_movetype);
     inS.endReadParams();
-    result ret = this->SetOffset2(iceP_coord1, iceP_coord2, ::std::move(iceP_system), ::std::move(iceP_movetype), current);
+    iifres ret = this->SetOffset2(iceP_coord1, iceP_coord2, ::std::move(iceP_system), ::std::move(iceP_movetype), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -707,7 +707,7 @@ lbto::IIFServer::_iceD_ClearOffset(::IceInternal::Incoming& inS, const ::Ice::Cu
 {
     _iceCheckMode(::Ice::OperationMode::Normal, current.mode);
     inS.readEmptyParams();
-    result ret = this->ClearOffset(current);
+    iifres ret = this->ClearOffset(current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -725,7 +725,7 @@ lbto::IIFServer::_iceD_SetNonSidereal(::IceInternal::Incoming& inS, const ::Ice:
     bool iceP_override;
     istr->readAll(iceP_target, iceP_override);
     inS.endReadParams();
-    result ret = this->SetNonSidereal(::std::move(iceP_target), iceP_override, current);
+    iifres ret = this->SetNonSidereal(::std::move(iceP_target), iceP_override, current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -742,7 +742,7 @@ lbto::IIFServer::_iceD_ClearNonSidereal(::IceInternal::Incoming& inS, const ::Ic
     bool iceP_override;
     istr->readAll(iceP_override);
     inS.endReadParams();
-    result ret = this->ClearNonSidereal(iceP_override, current);
+    iifres ret = this->ClearNonSidereal(iceP_override, current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -760,7 +760,7 @@ lbto::IIFServer::_iceD_UpdateNonSiderealTarget(::IceInternal::Incoming& inS, con
     double iceP_DECrate;
     istr->readAll(iceP_RArate, iceP_DECrate);
     inS.endReadParams();
-    result ret = this->UpdateNonSiderealTarget(iceP_RArate, iceP_DECrate, current);
+    iifres ret = this->UpdateNonSiderealTarget(iceP_RArate, iceP_DECrate, current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -779,7 +779,7 @@ lbto::IIFServer::_iceD_SetNonSiderealObject(::IceInternal::Incoming& inS, const 
     bool iceP_override;
     istr->readAll(iceP_objtype, iceP_target, iceP_override);
     inS.endReadParams();
-    result ret = this->SetNonSiderealObject(::std::move(iceP_objtype), ::std::move(iceP_target), iceP_override, current);
+    iifres ret = this->SetNonSiderealObject(::std::move(iceP_objtype), ::std::move(iceP_target), iceP_override, current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -797,7 +797,7 @@ lbto::IIFServer::_iceD_ClearNonSiderealObject(::IceInternal::Incoming& inS, cons
     bool iceP_override;
     istr->readAll(iceP_objtype, iceP_override);
     inS.endReadParams();
-    result ret = this->ClearNonSiderealObject(::std::move(iceP_objtype), iceP_override, current);
+    iifres ret = this->ClearNonSiderealObject(::std::move(iceP_objtype), iceP_override, current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -816,7 +816,7 @@ lbto::IIFServer::_iceD_UpdateNonSiderealObject(::IceInternal::Incoming& inS, con
     double iceP_DECrate;
     istr->readAll(iceP_objtype, iceP_RArate, iceP_DECrate);
     inS.endReadParams();
-    result ret = this->UpdateNonSiderealObject(::std::move(iceP_objtype), iceP_RArate, iceP_DECrate, current);
+    iifres ret = this->UpdateNonSiderealObject(::std::move(iceP_objtype), iceP_RArate, iceP_DECrate, current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -836,7 +836,7 @@ lbto::IIFServer::_iceD_PresetTelescope(::IceInternal::Incoming& inS, const ::Ice
     ::std::string iceP_side;
     istr->readAll(iceP_rotangle, iceP_rotmode, iceP_mode, iceP_side);
     inS.endReadParams();
-    result ret = this->PresetTelescope(iceP_rotangle, ::std::move(iceP_rotmode), ::std::move(iceP_mode), ::std::move(iceP_side), current);
+    iifres ret = this->PresetTelescope(iceP_rotangle, ::std::move(iceP_rotmode), ::std::move(iceP_mode), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -853,7 +853,7 @@ lbto::IIFServer::_iceD_BinocularControl(::IceInternal::Incoming& inS, const ::Ic
     ::std::string iceP_flag;
     istr->readAll(iceP_flag);
     inS.endReadParams();
-    result ret = this->BinocularControl(::std::move(iceP_flag), current);
+    iifres ret = this->BinocularControl(::std::move(iceP_flag), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -870,7 +870,7 @@ lbto::IIFServer::_iceD_GetParameter(::IceInternal::Incoming& inS, const ::Ice::C
     SeqDD iceP_list;
     istr->readAll(iceP_list);
     inS.endReadParams();
-    result ret = this->GetParameter(::std::move(iceP_list), current);
+    iifres ret = this->GetParameter(::std::move(iceP_list), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -887,7 +887,7 @@ lbto::IIFServer::_iceD_SetParameter(::IceInternal::Incoming& inS, const ::Ice::C
     SeqDD iceP_list;
     istr->readAll(iceP_list);
     inS.endReadParams();
-    result ret = this->SetParameter(::std::move(iceP_list), current);
+    iifres ret = this->SetParameter(::std::move(iceP_list), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -907,7 +907,7 @@ lbto::IIFServer::_iceD_RotateCommon(::IceInternal::Incoming& inS, const ::Ice::C
     ::std::string iceP_side;
     istr->readAll(iceP_z, iceP_angle, iceP_direction, iceP_side);
     inS.endReadParams();
-    result ret = this->RotateCommon(iceP_z, iceP_angle, iceP_direction, ::std::move(iceP_side), current);
+    iifres ret = this->RotateCommon(iceP_z, iceP_angle, iceP_direction, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -926,7 +926,7 @@ lbto::IIFServer::_iceD_RotateZ(::IceInternal::Incoming& inS, const ::Ice::Curren
     ::std::string iceP_side;
     istr->readAll(iceP_angle, iceP_movetype, iceP_side);
     inS.endReadParams();
-    result ret = this->RotateZ(iceP_angle, ::std::move(iceP_movetype), ::std::move(iceP_side), current);
+    iifres ret = this->RotateZ(iceP_angle, ::std::move(iceP_movetype), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -946,7 +946,7 @@ lbto::IIFServer::_iceD_RotatePrimary(::IceInternal::Incoming& inS, const ::Ice::
     ::std::string iceP_side;
     istr->readAll(iceP_distance, iceP_angle, iceP_direction, iceP_side);
     inS.endReadParams();
-    result ret = this->RotatePrimary(iceP_distance, iceP_angle, iceP_direction, ::std::move(iceP_side), current);
+    iifres ret = this->RotatePrimary(iceP_distance, iceP_angle, iceP_direction, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -965,7 +965,7 @@ lbto::IIFServer::_iceD_SendWavefront(::IceInternal::Incoming& inS, const ::Ice::
     ::std::string iceP_side;
     istr->readAll(iceP_wfs, iceP_OPE, iceP_side);
     inS.endReadParams();
-    result ret = this->SendWavefront(::std::move(iceP_wfs), ::std::move(iceP_OPE), ::std::move(iceP_side), current);
+    iifres ret = this->SendWavefront(::std::move(iceP_wfs), ::std::move(iceP_OPE), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -983,7 +983,7 @@ lbto::IIFServer::_iceD_UpdateTargetWavelength(::IceInternal::Incoming& inS, cons
     ::std::string iceP_side;
     istr->readAll(iceP_wavelength, iceP_side);
     inS.endReadParams();
-    result ret = this->UpdateTargetWavelength(iceP_wavelength, ::std::move(iceP_side), current);
+    iifres ret = this->UpdateTargetWavelength(iceP_wavelength, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1001,7 +1001,7 @@ lbto::IIFServer::_iceD_LogEvent(::IceInternal::Incoming& inS, const ::Ice::Curre
     ::std::string iceP_description;
     istr->readAll(iceP_event, iceP_description);
     inS.endReadParams();
-    result ret = this->LogEvent(::std::move(iceP_event), ::std::move(iceP_description), current);
+    iifres ret = this->LogEvent(::std::move(iceP_event), ::std::move(iceP_description), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1021,7 +1021,7 @@ lbto::IIFServer::_iceD_GetRotatorTrajectory(::IceInternal::Incoming& inS, const 
     ::std::string iceP_side;
     istr->readAll(iceP_seconds, iceP_interval, iceP_start, iceP_side);
     inS.endReadParams();
-    result ret = this->GetRotatorTrajectory(iceP_seconds, iceP_interval, iceP_start, ::std::move(iceP_side), current);
+    iifres ret = this->GetRotatorTrajectory(iceP_seconds, iceP_interval, iceP_start, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1042,7 +1042,7 @@ lbto::IIFServer::_iceD_GetRotatorPolynomials(::IceInternal::Incoming& inS, const
     ::std::string iceP_side;
     istr->readAll(iceP_start, iceP_count, iceP_interval, iceP_order, iceP_side);
     inS.endReadParams();
-    result ret = this->GetRotatorPolynomials(iceP_start, iceP_count, iceP_interval, iceP_order, ::std::move(iceP_side), current);
+    iifres ret = this->GetRotatorPolynomials(iceP_start, iceP_count, iceP_interval, iceP_order, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1060,7 +1060,7 @@ lbto::IIFServer::_iceD_Standby(::IceInternal::Incoming& inS, const ::Ice::Curren
     ::std::string iceP_side;
     istr->readAll(iceP_level, iceP_side);
     inS.endReadParams();
-    result ret = this->Standby(iceP_level, ::std::move(iceP_side), current);
+    iifres ret = this->Standby(iceP_level, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1079,7 +1079,7 @@ lbto::IIFServer::_iceD_MaximizeWrapTime(::IceInternal::Incoming& inS, const ::Ic
     ::std::string iceP_side;
     istr->readAll(iceP_azflag, iceP_rotflag, iceP_side);
     inS.endReadParams();
-    result ret = this->MaximizeWrapTime(iceP_azflag, iceP_rotflag, ::std::move(iceP_side), current);
+    iifres ret = this->MaximizeWrapTime(iceP_azflag, iceP_rotflag, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1096,7 +1096,7 @@ lbto::IIFServer::_iceD_PauseGuiding(::IceInternal::Incoming& inS, const ::Ice::C
     ::std::string iceP_side;
     istr->readAll(iceP_side);
     inS.endReadParams();
-    result ret = this->PauseGuiding(::std::move(iceP_side), current);
+    iifres ret = this->PauseGuiding(::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1113,7 +1113,7 @@ lbto::IIFServer::_iceD_ResumeGuiding(::IceInternal::Incoming& inS, const ::Ice::
     ::std::string iceP_side;
     istr->readAll(iceP_side);
     inS.endReadParams();
-    result ret = this->ResumeGuiding(::std::move(iceP_side), current);
+    iifres ret = this->ResumeGuiding(::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1130,7 +1130,7 @@ lbto::IIFServer::_iceD_StopGuiding(::IceInternal::Incoming& inS, const ::Ice::Cu
     ::std::string iceP_side;
     istr->readAll(iceP_side);
     inS.endReadParams();
-    result ret = this->StopGuiding(::std::move(iceP_side), current);
+    iifres ret = this->StopGuiding(::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1150,7 +1150,7 @@ lbto::IIFServer::_iceD_SetGuidingHotspot(::IceInternal::Incoming& inS, const ::I
     ::std::string iceP_side;
     istr->readAll(iceP_coord1, iceP_coord2, iceP_movetype, iceP_side);
     inS.endReadParams();
-    result ret = this->SetGuidingHotspot(iceP_coord1, iceP_coord2, ::std::move(iceP_movetype), ::std::move(iceP_side), current);
+    iifres ret = this->SetGuidingHotspot(iceP_coord1, iceP_coord2, ::std::move(iceP_movetype), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1168,7 +1168,7 @@ lbto::IIFServer::_iceD_SetAGWFilter(::IceInternal::Incoming& inS, const ::Ice::C
     ::std::string iceP_side;
     istr->readAll(iceP_filterNumber, iceP_side);
     inS.endReadParams();
-    result ret = this->SetAGWFilter(iceP_filterNumber, ::std::move(iceP_side), current);
+    iifres ret = this->SetAGWFilter(iceP_filterNumber, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1186,7 +1186,7 @@ lbto::IIFServer::_iceD_SetGuidingBinning(::IceInternal::Incoming& inS, const ::I
     ::std::string iceP_side;
     istr->readAll(iceP_factor, iceP_side);
     inS.endReadParams();
-    result ret = this->SetGuidingBinning(iceP_factor, ::std::move(iceP_side), current);
+    iifres ret = this->SetGuidingBinning(iceP_factor, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1204,7 +1204,7 @@ lbto::IIFServer::_iceD_RotReady(::IceInternal::Incoming& inS, const ::Ice::Curre
     ::std::string iceP_side;
     istr->readAll(iceP_enable, iceP_side);
     inS.endReadParams();
-    result ret = this->RotReady(iceP_enable, ::std::move(iceP_side), current);
+    iifres ret = this->RotReady(iceP_enable, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1221,7 +1221,7 @@ lbto::IIFServer::_iceD_RotHold(::IceInternal::Incoming& inS, const ::Ice::Curren
     ::std::string iceP_side;
     istr->readAll(iceP_side);
     inS.endReadParams();
-    result ret = this->RotHold(::std::move(iceP_side), current);
+    iifres ret = this->RotHold(::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1238,7 +1238,7 @@ lbto::IIFServer::_iceD_RotTrack(::IceInternal::Incoming& inS, const ::Ice::Curre
     ::std::string iceP_side;
     istr->readAll(iceP_side);
     inS.endReadParams();
-    result ret = this->RotTrack(::std::move(iceP_side), current);
+    iifres ret = this->RotTrack(::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1256,7 +1256,7 @@ lbto::IIFServer::_iceD_RotServicePosition(::IceInternal::Incoming& inS, const ::
     ::std::string iceP_side;
     istr->readAll(iceP_angle, iceP_side);
     inS.endReadParams();
-    result ret = this->RotServicePosition(iceP_angle, ::std::move(iceP_side), current);
+    iifres ret = this->RotServicePosition(iceP_angle, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1273,7 +1273,7 @@ lbto::IIFServer::_iceD_PauseAO(::IceInternal::Incoming& inS, const ::Ice::Curren
     ::std::string iceP_side;
     istr->readAll(iceP_side);
     inS.endReadParams();
-    result ret = this->PauseAO(::std::move(iceP_side), current);
+    iifres ret = this->PauseAO(::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1290,7 +1290,7 @@ lbto::IIFServer::_iceD_ResumeAO(::IceInternal::Incoming& inS, const ::Ice::Curre
     ::std::string iceP_side;
     istr->readAll(iceP_side);
     inS.endReadParams();
-    result ret = this->ResumeAO(::std::move(iceP_side), current);
+    iifres ret = this->ResumeAO(::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1307,7 +1307,7 @@ lbto::IIFServer::_iceD_StartAO(::IceInternal::Incoming& inS, const ::Ice::Curren
     ::std::string iceP_side;
     istr->readAll(iceP_side);
     inS.endReadParams();
-    result ret = this->StartAO(::std::move(iceP_side), current);
+    iifres ret = this->StartAO(::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1325,7 +1325,7 @@ lbto::IIFServer::_iceD_StopAO(::IceInternal::Incoming& inS, const ::Ice::Current
     ::std::string iceP_side;
     istr->readAll(iceP_reason, iceP_side);
     inS.endReadParams();
-    result ret = this->StopAO(::std::move(iceP_reason), ::std::move(iceP_side), current);
+    iifres ret = this->StopAO(::std::move(iceP_reason), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1343,7 +1343,7 @@ lbto::IIFServer::_iceD_AcquireRefAO(::IceInternal::Incoming& inS, const ::Ice::C
     ::std::string iceP_side;
     istr->readAll(iceP_repointFlag, iceP_side);
     inS.endReadParams();
-    result ret = this->AcquireRefAO(iceP_repointFlag, ::std::move(iceP_side), current);
+    iifres ret = this->AcquireRefAO(iceP_repointFlag, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1360,7 +1360,7 @@ lbto::IIFServer::_iceD_CheckRefAO(::IceInternal::Incoming& inS, const ::Ice::Cur
     ::std::string iceP_side;
     istr->readAll(iceP_side);
     inS.endReadParams();
-    result ret = this->CheckRefAO(::std::move(iceP_side), current);
+    iifres ret = this->CheckRefAO(::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1378,7 +1378,7 @@ lbto::IIFServer::_iceD_RefineAO(::IceInternal::Incoming& inS, const ::Ice::Curre
     ::std::string iceP_side;
     istr->readAll(iceP_method, iceP_side);
     inS.endReadParams();
-    result ret = this->RefineAO(::std::move(iceP_method), ::std::move(iceP_side), current);
+    iifres ret = this->RefineAO(::std::move(iceP_method), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1396,7 +1396,7 @@ lbto::IIFServer::_iceD_RunAO(::IceInternal::Incoming& inS, const ::Ice::Current&
     ::std::string iceP_side;
     istr->readAll(iceP_type, iceP_side);
     inS.endReadParams();
-    result ret = this->RunAO(::std::move(iceP_type), ::std::move(iceP_side), current);
+    iifres ret = this->RunAO(::std::move(iceP_type), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1414,7 +1414,7 @@ lbto::IIFServer::_iceD_PresetFlatAO(::IceInternal::Incoming& inS, const ::Ice::C
     ::std::string iceP_side;
     istr->readAll(iceP_flat, iceP_side);
     inS.endReadParams();
-    result ret = this->PresetFlatAO(::std::move(iceP_flat), ::std::move(iceP_side), current);
+    iifres ret = this->PresetFlatAO(::std::move(iceP_flat), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1432,7 +1432,7 @@ lbto::IIFServer::_iceD_CorrectModesAO(::IceInternal::Incoming& inS, const ::Ice:
     ::std::string iceP_side;
     istr->readAll(iceP_modes, iceP_side);
     inS.endReadParams();
-    result ret = this->CorrectModesAO(::std::move(iceP_modes), ::std::move(iceP_side), current);
+    iifres ret = this->CorrectModesAO(::std::move(iceP_modes), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1455,7 +1455,7 @@ lbto::IIFServer::_iceD_ModifyAO(::IceInternal::Incoming& inS, const ::Ice::Curre
     ::std::string iceP_side;
     istr->readAll(iceP_NModes, iceP_Freq, iceP_Nbins, iceP_TTMod, iceP_F1spec, iceP_F2spec, iceP_side);
     inS.endReadParams();
-    result ret = this->ModifyAO(iceP_NModes, iceP_Freq, iceP_Nbins, iceP_TTMod, ::std::move(iceP_F1spec), ::std::move(iceP_F2spec), ::std::move(iceP_side), current);
+    iifres ret = this->ModifyAO(iceP_NModes, iceP_Freq, iceP_Nbins, iceP_TTMod, ::std::move(iceP_F1spec), ::std::move(iceP_F2spec), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1473,7 +1473,7 @@ lbto::IIFServer::_iceD_PresetAO(::IceInternal::Incoming& inS, const ::Ice::Curre
     ::std::string iceP_side;
     istr->readAll(iceP_AOMode, iceP_side);
     inS.endReadParams();
-    result ret = this->PresetAO(::std::move(iceP_AOMode), ::std::move(iceP_side), current);
+    iifres ret = this->PresetAO(::std::move(iceP_AOMode), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1492,7 +1492,7 @@ lbto::IIFServer::_iceD_OffsetXYAO(::IceInternal::Incoming& inS, const ::Ice::Cur
     ::std::string iceP_side;
     istr->readAll(iceP_DeltaX, iceP_DeltaY, iceP_side);
     inS.endReadParams();
-    result ret = this->OffsetXYAO(iceP_DeltaX, iceP_DeltaY, ::std::move(iceP_side), current);
+    iifres ret = this->OffsetXYAO(iceP_DeltaX, iceP_DeltaY, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1510,7 +1510,7 @@ lbto::IIFServer::_iceD_OffsetZAO(::IceInternal::Incoming& inS, const ::Ice::Curr
     ::std::string iceP_side;
     istr->readAll(iceP_DeltaZ, iceP_side);
     inS.endReadParams();
-    result ret = this->OffsetZAO(iceP_DeltaZ, ::std::move(iceP_side), current);
+    iifres ret = this->OffsetZAO(iceP_DeltaZ, ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1527,7 +1527,7 @@ lbto::IIFServer::_iceD_SetReference(::IceInternal::Incoming& inS, const ::Ice::C
     SeqPos iceP_stars;
     istr->readAll(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetReference(::std::move(iceP_stars), current);
+    iifres ret = this->SetReference(::std::move(iceP_stars), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1544,7 +1544,7 @@ lbto::IIFServer::_iceD_SetReferenceNew(::IceInternal::Incoming& inS, const ::Ice
     SeqNewPos iceP_stars;
     istr->readAll(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetReferenceNew(::std::move(iceP_stars), current);
+    iifres ret = this->SetReferenceNew(::std::move(iceP_stars), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1561,7 +1561,7 @@ lbto::IIFServer::_iceD_SetReference2(::IceInternal::Incoming& inS, const ::Ice::
     SeqPos2 iceP_stars;
     istr->readAll(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetReference2(::std::move(iceP_stars), current);
+    iifres ret = this->SetReference2(::std::move(iceP_stars), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1575,7 +1575,7 @@ lbto::IIFServer::_iceD_ClearReference(::IceInternal::Incoming& inS, const ::Ice:
 {
     _iceCheckMode(::Ice::OperationMode::Normal, current.mode);
     inS.readEmptyParams();
-    result ret = this->ClearReference(current);
+    iifres ret = this->ClearReference(current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1593,7 +1593,7 @@ lbto::IIFServer::_iceD_GetKFPCoordinates(::IceInternal::Incoming& inS, const ::I
     ::std::string iceP_side;
     istr->readAll(iceP_stars, iceP_side);
     inS.endReadParams();
-    result ret = this->GetKFPCoordinates(::std::move(iceP_stars), ::std::move(iceP_side), current);
+    iifres ret = this->GetKFPCoordinates(::std::move(iceP_stars), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1611,7 +1611,7 @@ lbto::IIFServer::_iceD_GetKFPCoordinatesNew(::IceInternal::Incoming& inS, const 
     ::std::string iceP_side;
     istr->readAll(iceP_stars, iceP_side);
     inS.endReadParams();
-    result ret = this->GetKFPCoordinatesNew(::std::move(iceP_stars), ::std::move(iceP_side), current);
+    iifres ret = this->GetKFPCoordinatesNew(::std::move(iceP_stars), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1629,7 +1629,7 @@ lbto::IIFServer::_iceD_GetKFPCoordinates2(::IceInternal::Incoming& inS, const ::
     ::std::string iceP_side;
     istr->readAll(iceP_stars, iceP_side);
     inS.endReadParams();
-    result ret = this->GetKFPCoordinates2(::std::move(iceP_stars), ::std::move(iceP_side), current);
+    iifres ret = this->GetKFPCoordinates2(::std::move(iceP_stars), ::std::move(iceP_side), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -1652,7 +1652,7 @@ lbto::IIFServer::_iceD_NSQuery(::IceInternal::Incoming& inS, const ::Ice::Curren
     ::std::string iceP_fileName;
     istr->readAll(iceP_targenName, iceP_startDate, iceP_startTime, iceP_endDate, iceP_endTime, iceP_interval, iceP_fileName);
     inS.endReadParams();
-    result ret = this->NSQuery(::std::move(iceP_targenName), ::std::move(iceP_startDate), ::std::move(iceP_startTime), ::std::move(iceP_endDate), ::std::move(iceP_endTime), ::std::move(iceP_interval), ::std::move(iceP_fileName), current);
+    iifres ret = this->NSQuery(::std::move(iceP_targenName), ::std::move(iceP_startDate), ::std::move(iceP_startTime), ::std::move(iceP_endDate), ::std::move(iceP_endTime), ::std::move(iceP_interval), ::std::move(iceP_fileName), current);
     auto ostr = inS.startWriteParams();
     ostr->writeAll(ret);
     inS.endWriteParams();
@@ -2023,7 +2023,7 @@ lbto::IIFServer::_iceDispatch(::IceInternal::Incoming& in, const ::Ice::Current&
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_ApplyWaffleAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqModes& iceP_modes, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_ApplyWaffleAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqModes& iceP_modes, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_ApplyWaffleAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_ApplyWaffleAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2037,7 +2037,7 @@ lbto::IIFServerPrx::_iceI_ApplyWaffleAO(const ::std::shared_ptr<::IceInternal::O
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_Authorize(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_Authorize(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_Authorize_name);
     outAsync->invoke(iceC_lbto_IIFServer_Authorize_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2048,7 +2048,7 @@ lbto::IIFServerPrx::_iceI_Authorize(const ::std::shared_ptr<::IceInternal::Outgo
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_StepFocus(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_relPos, const ::std::string& iceP_ope, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_StepFocus(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_relPos, const ::std::string& iceP_ope, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_StepFocus_name);
     outAsync->invoke(iceC_lbto_IIFServer_StepFocus_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2062,7 +2062,7 @@ lbto::IIFServerPrx::_iceI_StepFocus(const ::std::shared_ptr<::IceInternal::Outgo
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_MoveFocus(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_absPos, const ::std::string& iceP_ope, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_MoveFocus(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_absPos, const ::std::string& iceP_ope, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_MoveFocus_name);
     outAsync->invoke(iceC_lbto_IIFServer_MoveFocus_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2076,7 +2076,7 @@ lbto::IIFServerPrx::_iceI_MoveFocus(const ::std::shared_ptr<::IceInternal::Outgo
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_OffsetPointing(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_rotangle, double iceP_offx, double iceP_offy, const ::std::string& iceP_coordsys, const ::std::string& iceP_ope, const ::std::string& iceP_np, const ::std::string& iceP_movetype, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_OffsetPointing(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_rotangle, double iceP_offx, double iceP_offy, const ::std::string& iceP_coordsys, const ::std::string& iceP_ope, const ::std::string& iceP_np, const ::std::string& iceP_movetype, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_OffsetPointing_name);
     outAsync->invoke(iceC_lbto_IIFServer_OffsetPointing_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2090,7 +2090,7 @@ lbto::IIFServerPrx::_iceI_OffsetPointing(const ::std::shared_ptr<::IceInternal::
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_OffsetPointing2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_rotangle, double iceP_offx, double iceP_offy, const ::std::string& iceP_coordsys, const ::std::string& iceP_movetype, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_OffsetPointing2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_rotangle, double iceP_offx, double iceP_offy, const ::std::string& iceP_coordsys, const ::std::string& iceP_movetype, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_OffsetPointing2_name);
     outAsync->invoke(iceC_lbto_IIFServer_OffsetPointing2_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2104,7 +2104,7 @@ lbto::IIFServerPrx::_iceI_OffsetPointing2(const ::std::shared_ptr<::IceInternal:
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_OffsetGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_rotangle, double iceP_offx, double iceP_offy, const ::std::string& iceP_coordsys, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_OffsetGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_rotangle, double iceP_offx, double iceP_offy, const ::std::string& iceP_coordsys, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_OffsetGuiding_name);
     outAsync->invoke(iceC_lbto_IIFServer_OffsetGuiding_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2118,7 +2118,7 @@ lbto::IIFServerPrx::_iceI_OffsetGuiding(const ::std::shared_ptr<::IceInternal::O
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_UpdatePointingReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_offsetcoord, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_UpdatePointingReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_offsetcoord, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_UpdatePointingReference_name);
     outAsync->invoke(iceC_lbto_IIFServer_UpdatePointingReference_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2132,7 +2132,7 @@ lbto::IIFServerPrx::_iceI_UpdatePointingReference(const ::std::shared_ptr<::IceI
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_TipTilt(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_xrot, double iceP_yrot, const ::std::string& iceP_ope, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_TipTilt(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_xrot, double iceP_yrot, const ::std::string& iceP_ope, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_TipTilt_name);
     outAsync->invoke(iceC_lbto_IIFServer_TipTilt_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2146,7 +2146,7 @@ lbto::IIFServerPrx::_iceI_TipTilt(const ::std::shared_ptr<::IceInternal::Outgoin
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetPMTerm(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_name, double iceP_value, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetPMTerm(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_name, double iceP_value, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetPMTerm_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetPMTerm_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2160,7 +2160,7 @@ lbto::IIFServerPrx::_iceI_SetPMTerm(const ::std::shared_ptr<::IceInternal::Outgo
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetPMTerm2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_name, double iceP_value, const ::std::string& iceP_movetype, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetPMTerm2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_name, double iceP_value, const ::std::string& iceP_movetype, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetPMTerm2_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetPMTerm2_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2174,7 +2174,7 @@ lbto::IIFServerPrx::_iceI_SetPMTerm2(const ::std::shared_ptr<::IceInternal::Outg
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_MoveXYZ(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_xmov, double iceP_ymov, double iceP_zmov, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_MoveXYZ(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_xmov, double iceP_ymov, double iceP_zmov, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_MoveXYZ_name);
     outAsync->invoke(iceC_lbto_IIFServer_MoveXYZ_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2188,7 +2188,7 @@ lbto::IIFServerPrx::_iceI_MoveXYZ(const ::std::shared_ptr<::IceInternal::Outgoin
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_MoveXY(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_xmov, double iceP_ymov, const ::std::string& iceP_ope, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_MoveXY(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_xmov, double iceP_ymov, const ::std::string& iceP_ope, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_MoveXY_name);
     outAsync->invoke(iceC_lbto_IIFServer_MoveXY_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2202,7 +2202,7 @@ lbto::IIFServerPrx::_iceI_MoveXY(const ::std::shared_ptr<::IceInternal::Outgoing
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_Move(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_x, double iceP_y, double iceP_z, double iceP_rx, double iceP_ry, double iceP_rz, int iceP_dflag, const ::std::string& iceP_movetype, const ::std::string& iceP_OPE, int iceP_time, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_Move(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_x, double iceP_y, double iceP_z, double iceP_rx, double iceP_ry, double iceP_rz, int iceP_dflag, const ::std::string& iceP_movetype, const ::std::string& iceP_OPE, int iceP_time, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_Move_name);
     outAsync->invoke(iceC_lbto_IIFServer_Move_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2216,7 +2216,7 @@ lbto::IIFServerPrx::_iceI_Move(const ::std::shared_ptr<::IceInternal::OutgoingAs
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetTarget(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_coord1, double iceP_coord2, const ::std::string& iceP_system, double iceP_epoch, float iceP_wavelength, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetTarget(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_coord1, double iceP_coord2, const ::std::string& iceP_system, double iceP_epoch, float iceP_wavelength, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetTarget_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetTarget_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2230,7 +2230,7 @@ lbto::IIFServerPrx::_iceI_SetTarget(const ::std::shared_ptr<::IceInternal::Outgo
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetStars(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqPos& iceP_stars, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetStars(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqPos& iceP_stars, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetStars_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetStars_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2244,7 +2244,7 @@ lbto::IIFServerPrx::_iceI_SetStars(const ::std::shared_ptr<::IceInternal::Outgoi
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetStarsNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqNewPos& iceP_stars, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetStarsNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqNewPos& iceP_stars, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetStarsNew_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetStarsNew_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2258,7 +2258,7 @@ lbto::IIFServerPrx::_iceI_SetStarsNew(const ::std::shared_ptr<::IceInternal::Out
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetStars2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqPos2& iceP_stars, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetStars2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqPos2& iceP_stars, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetStars2_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetStars2_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2272,7 +2272,7 @@ lbto::IIFServerPrx::_iceI_SetStars2(const ::std::shared_ptr<::IceInternal::Outgo
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_ClearStars(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_ClearStars(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_ClearStars_name);
     outAsync->invoke(iceC_lbto_IIFServer_ClearStars_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2283,7 +2283,7 @@ lbto::IIFServerPrx::_iceI_ClearStars(const ::std::shared_ptr<::IceInternal::Outg
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_coord1, double iceP_coord2, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_coord1, double iceP_coord2, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetHotspot_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetHotspot_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2297,7 +2297,7 @@ lbto::IIFServerPrx::_iceI_SetHotspot(const ::std::shared_ptr<::IceInternal::Outg
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_ClearHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_ClearHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_ClearHotspot_name);
     outAsync->invoke(iceC_lbto_IIFServer_ClearHotspot_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2308,7 +2308,7 @@ lbto::IIFServerPrx::_iceI_ClearHotspot(const ::std::shared_ptr<::IceInternal::Ou
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetOffset(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_coord1, double iceP_coord2, const ::std::string& iceP_system, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetOffset(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_coord1, double iceP_coord2, const ::std::string& iceP_system, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetOffset_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetOffset_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2322,7 +2322,7 @@ lbto::IIFServerPrx::_iceI_SetOffset(const ::std::shared_ptr<::IceInternal::Outgo
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetOffsetNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_coord1, double iceP_coord2, const ::std::string& iceP_system, const ::std::string& iceP_movetype, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetOffsetNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_coord1, double iceP_coord2, const ::std::string& iceP_system, const ::std::string& iceP_movetype, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetOffsetNew_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetOffsetNew_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2336,7 +2336,7 @@ lbto::IIFServerPrx::_iceI_SetOffsetNew(const ::std::shared_ptr<::IceInternal::Ou
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetOffset2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_coord1, double iceP_coord2, const ::std::string& iceP_system, const ::std::string& iceP_movetype, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetOffset2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_coord1, double iceP_coord2, const ::std::string& iceP_system, const ::std::string& iceP_movetype, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetOffset2_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetOffset2_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2350,7 +2350,7 @@ lbto::IIFServerPrx::_iceI_SetOffset2(const ::std::shared_ptr<::IceInternal::Outg
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_ClearOffset(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_ClearOffset(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_ClearOffset_name);
     outAsync->invoke(iceC_lbto_IIFServer_ClearOffset_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2361,7 +2361,7 @@ lbto::IIFServerPrx::_iceI_ClearOffset(const ::std::shared_ptr<::IceInternal::Out
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetNonSidereal(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const nonsidereal& iceP_target, bool iceP_override, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetNonSidereal(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const nonsidereal& iceP_target, bool iceP_override, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetNonSidereal_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetNonSidereal_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2375,7 +2375,7 @@ lbto::IIFServerPrx::_iceI_SetNonSidereal(const ::std::shared_ptr<::IceInternal::
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_ClearNonSidereal(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, bool iceP_override, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_ClearNonSidereal(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, bool iceP_override, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_ClearNonSidereal_name);
     outAsync->invoke(iceC_lbto_IIFServer_ClearNonSidereal_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2389,7 +2389,7 @@ lbto::IIFServerPrx::_iceI_ClearNonSidereal(const ::std::shared_ptr<::IceInternal
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_UpdateNonSiderealTarget(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_RArate, double iceP_DECrate, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_UpdateNonSiderealTarget(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_RArate, double iceP_DECrate, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_UpdateNonSiderealTarget_name);
     outAsync->invoke(iceC_lbto_IIFServer_UpdateNonSiderealTarget_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2403,7 +2403,7 @@ lbto::IIFServerPrx::_iceI_UpdateNonSiderealTarget(const ::std::shared_ptr<::IceI
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_objtype, const nonsidereal& iceP_target, bool iceP_override, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_objtype, const nonsidereal& iceP_target, bool iceP_override, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetNonSiderealObject_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetNonSiderealObject_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2417,7 +2417,7 @@ lbto::IIFServerPrx::_iceI_SetNonSiderealObject(const ::std::shared_ptr<::IceInte
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_ClearNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_objtype, bool iceP_override, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_ClearNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_objtype, bool iceP_override, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_ClearNonSiderealObject_name);
     outAsync->invoke(iceC_lbto_IIFServer_ClearNonSiderealObject_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2431,7 +2431,7 @@ lbto::IIFServerPrx::_iceI_ClearNonSiderealObject(const ::std::shared_ptr<::IceIn
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_UpdateNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_objtype, double iceP_RArate, double iceP_DECrate, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_UpdateNonSiderealObject(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_objtype, double iceP_RArate, double iceP_DECrate, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_UpdateNonSiderealObject_name);
     outAsync->invoke(iceC_lbto_IIFServer_UpdateNonSiderealObject_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2445,7 +2445,7 @@ lbto::IIFServerPrx::_iceI_UpdateNonSiderealObject(const ::std::shared_ptr<::IceI
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_PresetTelescope(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_rotangle, const ::std::string& iceP_rotmode, const ::std::string& iceP_mode, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_PresetTelescope(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_rotangle, const ::std::string& iceP_rotmode, const ::std::string& iceP_mode, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_PresetTelescope_name);
     outAsync->invoke(iceC_lbto_IIFServer_PresetTelescope_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2459,7 +2459,7 @@ lbto::IIFServerPrx::_iceI_PresetTelescope(const ::std::shared_ptr<::IceInternal:
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_BinocularControl(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_flag, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_BinocularControl(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_flag, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_BinocularControl_name);
     outAsync->invoke(iceC_lbto_IIFServer_BinocularControl_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2473,7 +2473,7 @@ lbto::IIFServerPrx::_iceI_BinocularControl(const ::std::shared_ptr<::IceInternal
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_GetParameter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqDD& iceP_list, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_GetParameter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqDD& iceP_list, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_GetParameter_name);
     outAsync->invoke(iceC_lbto_IIFServer_GetParameter_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2487,7 +2487,7 @@ lbto::IIFServerPrx::_iceI_GetParameter(const ::std::shared_ptr<::IceInternal::Ou
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetParameter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqDD& iceP_list, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetParameter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqDD& iceP_list, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetParameter_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetParameter_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2501,7 +2501,7 @@ lbto::IIFServerPrx::_iceI_SetParameter(const ::std::shared_ptr<::IceInternal::Ou
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_RotateCommon(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_z, double iceP_angle, double iceP_direction, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_RotateCommon(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_z, double iceP_angle, double iceP_direction, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_RotateCommon_name);
     outAsync->invoke(iceC_lbto_IIFServer_RotateCommon_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2515,7 +2515,7 @@ lbto::IIFServerPrx::_iceI_RotateCommon(const ::std::shared_ptr<::IceInternal::Ou
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_RotateZ(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_angle, const ::std::string& iceP_movetype, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_RotateZ(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_angle, const ::std::string& iceP_movetype, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_RotateZ_name);
     outAsync->invoke(iceC_lbto_IIFServer_RotateZ_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2529,7 +2529,7 @@ lbto::IIFServerPrx::_iceI_RotateZ(const ::std::shared_ptr<::IceInternal::Outgoin
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_RotatePrimary(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_distance, double iceP_angle, double iceP_direction, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_RotatePrimary(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_distance, double iceP_angle, double iceP_direction, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_RotatePrimary_name);
     outAsync->invoke(iceC_lbto_IIFServer_RotatePrimary_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2543,7 +2543,7 @@ lbto::IIFServerPrx::_iceI_RotatePrimary(const ::std::shared_ptr<::IceInternal::O
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SendWavefront(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqWF& iceP_wfs, const ::std::string& iceP_OPE, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SendWavefront(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqWF& iceP_wfs, const ::std::string& iceP_OPE, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SendWavefront_name);
     outAsync->invoke(iceC_lbto_IIFServer_SendWavefront_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2557,7 +2557,7 @@ lbto::IIFServerPrx::_iceI_SendWavefront(const ::std::shared_ptr<::IceInternal::O
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_UpdateTargetWavelength(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, float iceP_wavelength, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_UpdateTargetWavelength(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, float iceP_wavelength, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_UpdateTargetWavelength_name);
     outAsync->invoke(iceC_lbto_IIFServer_UpdateTargetWavelength_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2571,7 +2571,7 @@ lbto::IIFServerPrx::_iceI_UpdateTargetWavelength(const ::std::shared_ptr<::IceIn
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_LogEvent(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_event, const ::std::string& iceP_description, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_LogEvent(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_event, const ::std::string& iceP_description, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_LogEvent_name);
     outAsync->invoke(iceC_lbto_IIFServer_LogEvent_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2585,7 +2585,7 @@ lbto::IIFServerPrx::_iceI_LogEvent(const ::std::shared_ptr<::IceInternal::Outgoi
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_GetRotatorTrajectory(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_seconds, double iceP_interval, double iceP_start, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_GetRotatorTrajectory(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_seconds, double iceP_interval, double iceP_start, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_GetRotatorTrajectory_name);
     outAsync->invoke(iceC_lbto_IIFServer_GetRotatorTrajectory_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2599,7 +2599,7 @@ lbto::IIFServerPrx::_iceI_GetRotatorTrajectory(const ::std::shared_ptr<::IceInte
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_GetRotatorPolynomials(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_start, int iceP_count, double iceP_interval, int iceP_order, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_GetRotatorPolynomials(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_start, int iceP_count, double iceP_interval, int iceP_order, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_GetRotatorPolynomials_name);
     outAsync->invoke(iceC_lbto_IIFServer_GetRotatorPolynomials_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2613,7 +2613,7 @@ lbto::IIFServerPrx::_iceI_GetRotatorPolynomials(const ::std::shared_ptr<::IceInt
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_Standby(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, int iceP_level, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_Standby(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, int iceP_level, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_Standby_name);
     outAsync->invoke(iceC_lbto_IIFServer_Standby_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2627,7 +2627,7 @@ lbto::IIFServerPrx::_iceI_Standby(const ::std::shared_ptr<::IceInternal::Outgoin
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_MaximizeWrapTime(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, bool iceP_azflag, bool iceP_rotflag, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_MaximizeWrapTime(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, bool iceP_azflag, bool iceP_rotflag, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_MaximizeWrapTime_name);
     outAsync->invoke(iceC_lbto_IIFServer_MaximizeWrapTime_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2641,7 +2641,7 @@ lbto::IIFServerPrx::_iceI_MaximizeWrapTime(const ::std::shared_ptr<::IceInternal
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_PauseGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_PauseGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_PauseGuiding_name);
     outAsync->invoke(iceC_lbto_IIFServer_PauseGuiding_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2655,7 +2655,7 @@ lbto::IIFServerPrx::_iceI_PauseGuiding(const ::std::shared_ptr<::IceInternal::Ou
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_ResumeGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_ResumeGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_ResumeGuiding_name);
     outAsync->invoke(iceC_lbto_IIFServer_ResumeGuiding_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2669,7 +2669,7 @@ lbto::IIFServerPrx::_iceI_ResumeGuiding(const ::std::shared_ptr<::IceInternal::O
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_StopGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_StopGuiding(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_StopGuiding_name);
     outAsync->invoke(iceC_lbto_IIFServer_StopGuiding_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2683,7 +2683,7 @@ lbto::IIFServerPrx::_iceI_StopGuiding(const ::std::shared_ptr<::IceInternal::Out
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetGuidingHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_coord1, double iceP_coord2, const ::std::string& iceP_movetype, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetGuidingHotspot(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_coord1, double iceP_coord2, const ::std::string& iceP_movetype, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetGuidingHotspot_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetGuidingHotspot_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2697,7 +2697,7 @@ lbto::IIFServerPrx::_iceI_SetGuidingHotspot(const ::std::shared_ptr<::IceInterna
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetAGWFilter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, int iceP_filterNumber, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetAGWFilter(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, int iceP_filterNumber, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetAGWFilter_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetAGWFilter_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2711,7 +2711,7 @@ lbto::IIFServerPrx::_iceI_SetAGWFilter(const ::std::shared_ptr<::IceInternal::Ou
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetGuidingBinning(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, int iceP_factor, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetGuidingBinning(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, int iceP_factor, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetGuidingBinning_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetGuidingBinning_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2725,7 +2725,7 @@ lbto::IIFServerPrx::_iceI_SetGuidingBinning(const ::std::shared_ptr<::IceInterna
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_RotReady(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, bool iceP_enable, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_RotReady(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, bool iceP_enable, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_RotReady_name);
     outAsync->invoke(iceC_lbto_IIFServer_RotReady_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2739,7 +2739,7 @@ lbto::IIFServerPrx::_iceI_RotReady(const ::std::shared_ptr<::IceInternal::Outgoi
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_RotHold(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_RotHold(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_RotHold_name);
     outAsync->invoke(iceC_lbto_IIFServer_RotHold_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2753,7 +2753,7 @@ lbto::IIFServerPrx::_iceI_RotHold(const ::std::shared_ptr<::IceInternal::Outgoin
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_RotTrack(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_RotTrack(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_RotTrack_name);
     outAsync->invoke(iceC_lbto_IIFServer_RotTrack_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2767,7 +2767,7 @@ lbto::IIFServerPrx::_iceI_RotTrack(const ::std::shared_ptr<::IceInternal::Outgoi
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_RotServicePosition(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_angle, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_RotServicePosition(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_angle, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_RotServicePosition_name);
     outAsync->invoke(iceC_lbto_IIFServer_RotServicePosition_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2781,7 +2781,7 @@ lbto::IIFServerPrx::_iceI_RotServicePosition(const ::std::shared_ptr<::IceIntern
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_PauseAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_PauseAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_PauseAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_PauseAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2795,7 +2795,7 @@ lbto::IIFServerPrx::_iceI_PauseAO(const ::std::shared_ptr<::IceInternal::Outgoin
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_ResumeAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_ResumeAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_ResumeAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_ResumeAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2809,7 +2809,7 @@ lbto::IIFServerPrx::_iceI_ResumeAO(const ::std::shared_ptr<::IceInternal::Outgoi
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_StartAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_StartAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_StartAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_StartAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2823,7 +2823,7 @@ lbto::IIFServerPrx::_iceI_StartAO(const ::std::shared_ptr<::IceInternal::Outgoin
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_StopAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_reason, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_StopAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_reason, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_StopAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_StopAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2837,7 +2837,7 @@ lbto::IIFServerPrx::_iceI_StopAO(const ::std::shared_ptr<::IceInternal::Outgoing
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_AcquireRefAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, bool iceP_repointFlag, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_AcquireRefAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, bool iceP_repointFlag, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_AcquireRefAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_AcquireRefAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2851,7 +2851,7 @@ lbto::IIFServerPrx::_iceI_AcquireRefAO(const ::std::shared_ptr<::IceInternal::Ou
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_CheckRefAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_CheckRefAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_CheckRefAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_CheckRefAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2865,7 +2865,7 @@ lbto::IIFServerPrx::_iceI_CheckRefAO(const ::std::shared_ptr<::IceInternal::Outg
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_RefineAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_method, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_RefineAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_method, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_RefineAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_RefineAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2879,7 +2879,7 @@ lbto::IIFServerPrx::_iceI_RefineAO(const ::std::shared_ptr<::IceInternal::Outgoi
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_RunAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_type, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_RunAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_type, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_RunAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_RunAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2893,7 +2893,7 @@ lbto::IIFServerPrx::_iceI_RunAO(const ::std::shared_ptr<::IceInternal::OutgoingA
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_PresetFlatAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_flat, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_PresetFlatAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_flat, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_PresetFlatAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_PresetFlatAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2907,7 +2907,7 @@ lbto::IIFServerPrx::_iceI_PresetFlatAO(const ::std::shared_ptr<::IceInternal::Ou
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_CorrectModesAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqModes& iceP_modes, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_CorrectModesAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqModes& iceP_modes, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_CorrectModesAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_CorrectModesAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2921,7 +2921,7 @@ lbto::IIFServerPrx::_iceI_CorrectModesAO(const ::std::shared_ptr<::IceInternal::
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_ModifyAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, int iceP_NModes, double iceP_Freq, int iceP_Nbins, double iceP_TTMod, const ::std::string& iceP_F1spec, const ::std::string& iceP_F2spec, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_ModifyAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, int iceP_NModes, double iceP_Freq, int iceP_Nbins, double iceP_TTMod, const ::std::string& iceP_F1spec, const ::std::string& iceP_F2spec, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_ModifyAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_ModifyAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2935,7 +2935,7 @@ lbto::IIFServerPrx::_iceI_ModifyAO(const ::std::shared_ptr<::IceInternal::Outgoi
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_PresetAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_AOMode, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_PresetAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_AOMode, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_PresetAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_PresetAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2949,7 +2949,7 @@ lbto::IIFServerPrx::_iceI_PresetAO(const ::std::shared_ptr<::IceInternal::Outgoi
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_OffsetXYAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_DeltaX, double iceP_DeltaY, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_OffsetXYAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_DeltaX, double iceP_DeltaY, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_OffsetXYAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_OffsetXYAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2963,7 +2963,7 @@ lbto::IIFServerPrx::_iceI_OffsetXYAO(const ::std::shared_ptr<::IceInternal::Outg
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_OffsetZAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, double iceP_DeltaZ, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_OffsetZAO(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, double iceP_DeltaZ, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_OffsetZAO_name);
     outAsync->invoke(iceC_lbto_IIFServer_OffsetZAO_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2977,7 +2977,7 @@ lbto::IIFServerPrx::_iceI_OffsetZAO(const ::std::shared_ptr<::IceInternal::Outgo
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqPos& iceP_stars, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqPos& iceP_stars, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetReference_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetReference_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -2991,7 +2991,7 @@ lbto::IIFServerPrx::_iceI_SetReference(const ::std::shared_ptr<::IceInternal::Ou
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetReferenceNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqNewPos& iceP_stars, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetReferenceNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqNewPos& iceP_stars, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetReferenceNew_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetReferenceNew_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -3005,7 +3005,7 @@ lbto::IIFServerPrx::_iceI_SetReferenceNew(const ::std::shared_ptr<::IceInternal:
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_SetReference2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqPos2& iceP_stars, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_SetReference2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqPos2& iceP_stars, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_SetReference2_name);
     outAsync->invoke(iceC_lbto_IIFServer_SetReference2_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -3019,7 +3019,7 @@ lbto::IIFServerPrx::_iceI_SetReference2(const ::std::shared_ptr<::IceInternal::O
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_ClearReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_ClearReference(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_ClearReference_name);
     outAsync->invoke(iceC_lbto_IIFServer_ClearReference_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -3030,7 +3030,7 @@ lbto::IIFServerPrx::_iceI_ClearReference(const ::std::shared_ptr<::IceInternal::
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_GetKFPCoordinates(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqPos& iceP_stars, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_GetKFPCoordinates(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqPos& iceP_stars, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_GetKFPCoordinates_name);
     outAsync->invoke(iceC_lbto_IIFServer_GetKFPCoordinates_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -3044,7 +3044,7 @@ lbto::IIFServerPrx::_iceI_GetKFPCoordinates(const ::std::shared_ptr<::IceInterna
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_GetKFPCoordinatesNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqNewPos& iceP_stars, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_GetKFPCoordinatesNew(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqNewPos& iceP_stars, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_GetKFPCoordinatesNew_name);
     outAsync->invoke(iceC_lbto_IIFServer_GetKFPCoordinatesNew_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -3058,7 +3058,7 @@ lbto::IIFServerPrx::_iceI_GetKFPCoordinatesNew(const ::std::shared_ptr<::IceInte
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_GetKFPCoordinates2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const SeqPos2& iceP_stars, const ::std::string& iceP_side, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_GetKFPCoordinates2(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const SeqPos2& iceP_stars, const ::std::string& iceP_side, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_GetKFPCoordinates2_name);
     outAsync->invoke(iceC_lbto_IIFServer_GetKFPCoordinates2_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -3072,7 +3072,7 @@ lbto::IIFServerPrx::_iceI_GetKFPCoordinates2(const ::std::shared_ptr<::IceIntern
 
 /// \cond INTERNAL
 void
-lbto::IIFServerPrx::_iceI_NSQuery(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::result>>& outAsync, const ::std::string& iceP_targenName, const ::std::string& iceP_startDate, const ::std::string& iceP_startTime, const ::std::string& iceP_endDate, const ::std::string& iceP_endTime, const ::std::string& iceP_interval, const ::std::string& iceP_fileName, const ::Ice::Context& context)
+lbto::IIFServerPrx::_iceI_NSQuery(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<::lbto::iifres>>& outAsync, const ::std::string& iceP_targenName, const ::std::string& iceP_startDate, const ::std::string& iceP_startTime, const ::std::string& iceP_endDate, const ::std::string& iceP_endTime, const ::std::string& iceP_interval, const ::std::string& iceP_fileName, const ::Ice::Context& context)
 {
     _checkTwowayOnly(iceC_lbto_IIFServer_NSQuery_name);
     outAsync->invoke(iceC_lbto_IIFServer_NSQuery_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
@@ -3316,11 +3316,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_ApplyWaffleAO(const ::lbto::SeqModes& ice
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_ApplyWaffleAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_ApplyWaffleAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3356,11 +3356,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_Authorize(const ::Ice::Context& context, 
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_Authorize(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_Authorize_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3400,11 +3400,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_StepFocus(::Ice::Double iceP_relPos, cons
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_StepFocus(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_StepFocus_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3444,11 +3444,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_MoveFocus(::Ice::Double iceP_absPos, cons
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_MoveFocus(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_MoveFocus_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3493,11 +3493,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_OffsetPointing(::Ice::Double iceP_rotangl
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_OffsetPointing(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_OffsetPointing_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3540,11 +3540,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_OffsetPointing2(::Ice::Double iceP_rotang
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_OffsetPointing2(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_OffsetPointing2_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3586,11 +3586,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_OffsetGuiding(::Ice::Double iceP_rotangle
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_OffsetGuiding(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_OffsetGuiding_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3629,11 +3629,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_UpdatePointingReference(const ::std::stri
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_UpdatePointingReference(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_UpdatePointingReference_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3674,11 +3674,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_TipTilt(::Ice::Double iceP_xrot, ::Ice::D
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_TipTilt(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_TipTilt_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3718,11 +3718,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetPMTerm(const ::std::string& iceP_name,
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetPMTerm(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetPMTerm_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3763,11 +3763,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetPMTerm2(const ::std::string& iceP_name
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetPMTerm2(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetPMTerm2_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3808,11 +3808,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_MoveXYZ(::Ice::Double iceP_xmov, ::Ice::D
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_MoveXYZ(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_MoveXYZ_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3853,11 +3853,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_MoveXY(::Ice::Double iceP_xmov, ::Ice::Do
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_MoveXY(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_MoveXY_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3905,11 +3905,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_Move(::Ice::Double iceP_x, ::Ice::Double 
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_Move(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_Move_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3951,11 +3951,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetTarget(::Ice::Double iceP_coord1, ::Ic
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetTarget(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetTarget_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -3993,11 +3993,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetStars(const ::lbto::SeqPos& iceP_stars
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetStars(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetStars_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4035,11 +4035,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetStarsNew(const ::lbto::SeqNewPos& iceP
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetStarsNew(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetStarsNew_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4077,11 +4077,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetStars2(const ::lbto::SeqPos2& iceP_sta
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetStars2(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetStars2_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4117,11 +4117,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_ClearStars(const ::Ice::Context& context,
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_ClearStars(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_ClearStars_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4160,11 +4160,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetHotspot(::Ice::Double iceP_coord1, ::I
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetHotspot(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetHotspot_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4200,11 +4200,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_ClearHotspot(const ::Ice::Context& contex
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_ClearHotspot(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_ClearHotspot_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4244,11 +4244,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetOffset(::Ice::Double iceP_coord1, ::Ic
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetOffset(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetOffset_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4289,11 +4289,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetOffsetNew(::Ice::Double iceP_coord1, :
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetOffsetNew(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetOffsetNew_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4334,11 +4334,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetOffset2(::Ice::Double iceP_coord1, ::I
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetOffset2(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetOffset2_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4374,11 +4374,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_ClearOffset(const ::Ice::Context& context
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_ClearOffset(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_ClearOffset_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4417,11 +4417,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetNonSidereal(const ::lbto::nonsidereal&
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetNonSidereal(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetNonSidereal_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4459,11 +4459,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_ClearNonSidereal(bool iceP_override, cons
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_ClearNonSidereal(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_ClearNonSidereal_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4502,11 +4502,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_UpdateNonSiderealTarget(::Ice::Double ice
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_UpdateNonSiderealTarget(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_UpdateNonSiderealTarget_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4546,11 +4546,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetNonSiderealObject(const ::std::string&
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetNonSiderealObject(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetNonSiderealObject_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4589,11 +4589,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_ClearNonSiderealObject(const ::std::strin
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_ClearNonSiderealObject(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_ClearNonSiderealObject_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4633,11 +4633,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_UpdateNonSiderealObject(const ::std::stri
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_UpdateNonSiderealObject(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_UpdateNonSiderealObject_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4678,11 +4678,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_PresetTelescope(::Ice::Double iceP_rotang
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_PresetTelescope(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_PresetTelescope_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4720,11 +4720,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_BinocularControl(const ::std::string& ice
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_BinocularControl(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_BinocularControl_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4762,11 +4762,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_GetParameter(const ::lbto::SeqDD& iceP_li
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_GetParameter(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_GetParameter_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4804,11 +4804,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetParameter(const ::lbto::SeqDD& iceP_li
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetParameter(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetParameter_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4849,11 +4849,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_RotateCommon(::Ice::Double iceP_z, ::Ice:
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_RotateCommon(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_RotateCommon_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4893,11 +4893,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_RotateZ(::Ice::Double iceP_angle, const :
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_RotateZ(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_RotateZ_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4938,11 +4938,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_RotatePrimary(::Ice::Double iceP_distance
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_RotatePrimary(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_RotatePrimary_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -4982,11 +4982,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SendWavefront(const ::lbto::SeqWF& iceP_w
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SendWavefront(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SendWavefront_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5025,11 +5025,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_UpdateTargetWavelength(::Ice::Float iceP_
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_UpdateTargetWavelength(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_UpdateTargetWavelength_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5068,11 +5068,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_LogEvent(const ::std::string& iceP_event,
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_LogEvent(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_LogEvent_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5113,11 +5113,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_GetRotatorTrajectory(::Ice::Double iceP_s
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_GetRotatorTrajectory(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_GetRotatorTrajectory_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5159,11 +5159,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_GetRotatorPolynomials(::Ice::Double iceP_
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_GetRotatorPolynomials(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_GetRotatorPolynomials_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5202,11 +5202,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_Standby(::Ice::Int iceP_level, const ::st
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_Standby(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_Standby_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5246,11 +5246,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_MaximizeWrapTime(bool iceP_azflag, bool i
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_MaximizeWrapTime(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_MaximizeWrapTime_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5288,11 +5288,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_PauseGuiding(const ::std::string& iceP_si
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_PauseGuiding(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_PauseGuiding_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5330,11 +5330,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_ResumeGuiding(const ::std::string& iceP_s
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_ResumeGuiding(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_ResumeGuiding_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5372,11 +5372,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_StopGuiding(const ::std::string& iceP_sid
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_StopGuiding(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_StopGuiding_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5417,11 +5417,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetGuidingHotspot(::Ice::Double iceP_coor
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetGuidingHotspot(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetGuidingHotspot_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5460,11 +5460,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetAGWFilter(::Ice::Int iceP_filterNumber
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetAGWFilter(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetAGWFilter_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5503,11 +5503,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetGuidingBinning(::Ice::Int iceP_factor,
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetGuidingBinning(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetGuidingBinning_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5546,11 +5546,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_RotReady(bool iceP_enable, const ::std::s
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_RotReady(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_RotReady_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5588,11 +5588,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_RotHold(const ::std::string& iceP_side, c
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_RotHold(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_RotHold_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5630,11 +5630,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_RotTrack(const ::std::string& iceP_side, 
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_RotTrack(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_RotTrack_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5673,11 +5673,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_RotServicePosition(::Ice::Double iceP_ang
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_RotServicePosition(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_RotServicePosition_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5715,11 +5715,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_PauseAO(const ::std::string& iceP_side, c
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_PauseAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_PauseAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5757,11 +5757,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_ResumeAO(const ::std::string& iceP_side, 
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_ResumeAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_ResumeAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5799,11 +5799,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_StartAO(const ::std::string& iceP_side, c
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_StartAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_StartAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5842,11 +5842,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_StopAO(const ::std::string& iceP_reason, 
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_StopAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_StopAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5885,11 +5885,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_AcquireRefAO(bool iceP_repointFlag, const
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_AcquireRefAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_AcquireRefAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5927,11 +5927,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_CheckRefAO(const ::std::string& iceP_side
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_CheckRefAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_CheckRefAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -5970,11 +5970,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_RefineAO(const ::std::string& iceP_method
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_RefineAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_RefineAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6013,11 +6013,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_RunAO(const ::std::string& iceP_type, con
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_RunAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_RunAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6056,11 +6056,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_PresetFlatAO(const ::std::string& iceP_fl
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_PresetFlatAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_PresetFlatAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6099,11 +6099,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_CorrectModesAO(const ::lbto::SeqModes& ic
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_CorrectModesAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_CorrectModesAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6147,11 +6147,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_ModifyAO(::Ice::Int iceP_NModes, ::Ice::D
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_ModifyAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_ModifyAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6190,11 +6190,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_PresetAO(const ::std::string& iceP_AOMode
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_PresetAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_PresetAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6234,11 +6234,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_OffsetXYAO(::Ice::Double iceP_DeltaX, ::I
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_OffsetXYAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_OffsetXYAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6277,11 +6277,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_OffsetZAO(::Ice::Double iceP_DeltaZ, cons
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_OffsetZAO(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_OffsetZAO_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6319,11 +6319,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetReference(const ::lbto::SeqPos& iceP_s
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetReference(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetReference_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6361,11 +6361,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetReferenceNew(const ::lbto::SeqNewPos& 
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetReferenceNew(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetReferenceNew_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6403,11 +6403,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_SetReference2(const ::lbto::SeqPos2& iceP
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_SetReference2(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_SetReference2_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6443,11 +6443,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_ClearReference(const ::Ice::Context& cont
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_ClearReference(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_ClearReference_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6486,11 +6486,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_GetKFPCoordinates(const ::lbto::SeqPos& i
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_GetKFPCoordinates(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_GetKFPCoordinates_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6529,11 +6529,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_GetKFPCoordinatesNew(const ::lbto::SeqNew
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_GetKFPCoordinatesNew(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_GetKFPCoordinatesNew_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6572,11 +6572,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_GetKFPCoordinates2(const ::lbto::SeqPos2&
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_GetKFPCoordinates2(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_GetKFPCoordinates2_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6620,11 +6620,11 @@ IceProxy::lbto::IIFServer::_iceI_begin_NSQuery(const ::std::string& iceP_targenN
     return result;
 }
 
-::lbto::result
+::lbto::iifres
 IceProxy::lbto::IIFServer::end_NSQuery(const ::Ice::AsyncResultPtr& result)
 {
     ::Ice::AsyncResult::_check(result, this, iceC_lbto_IIFServer_NSQuery_name);
-    ::lbto::result ret;
+    ::lbto::iifres ret;
     if(!result->_waitForResponse())
     {
         try
@@ -6738,7 +6738,7 @@ lbto::IIFServer::_iceD_ApplyWaffleAO(::IceInternal::Incoming& inS, const ::Ice::
     istr->read(iceP_modes);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->ApplyWaffleAO(iceP_modes, iceP_side, current);
+    iifres ret = this->ApplyWaffleAO(iceP_modes, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -6752,7 +6752,7 @@ lbto::IIFServer::_iceD_Authorize(::IceInternal::Incoming& inS, const ::Ice::Curr
 {
     _iceCheckMode(::Ice::Normal, current.mode);
     inS.readEmptyParams();
-    result ret = this->Authorize(current);
+    iifres ret = this->Authorize(current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -6773,7 +6773,7 @@ lbto::IIFServer::_iceD_StepFocus(::IceInternal::Incoming& inS, const ::Ice::Curr
     istr->read(iceP_ope);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->StepFocus(iceP_relPos, iceP_ope, iceP_side, current);
+    iifres ret = this->StepFocus(iceP_relPos, iceP_ope, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -6794,7 +6794,7 @@ lbto::IIFServer::_iceD_MoveFocus(::IceInternal::Incoming& inS, const ::Ice::Curr
     istr->read(iceP_ope);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->MoveFocus(iceP_absPos, iceP_ope, iceP_side, current);
+    iifres ret = this->MoveFocus(iceP_absPos, iceP_ope, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -6825,7 +6825,7 @@ lbto::IIFServer::_iceD_OffsetPointing(::IceInternal::Incoming& inS, const ::Ice:
     istr->read(iceP_movetype);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->OffsetPointing(iceP_rotangle, iceP_offx, iceP_offy, iceP_coordsys, iceP_ope, iceP_np, iceP_movetype, iceP_side, current);
+    iifres ret = this->OffsetPointing(iceP_rotangle, iceP_offx, iceP_offy, iceP_coordsys, iceP_ope, iceP_np, iceP_movetype, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -6852,7 +6852,7 @@ lbto::IIFServer::_iceD_OffsetPointing2(::IceInternal::Incoming& inS, const ::Ice
     istr->read(iceP_movetype);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->OffsetPointing2(iceP_rotangle, iceP_offx, iceP_offy, iceP_coordsys, iceP_movetype, iceP_side, current);
+    iifres ret = this->OffsetPointing2(iceP_rotangle, iceP_offx, iceP_offy, iceP_coordsys, iceP_movetype, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -6877,7 +6877,7 @@ lbto::IIFServer::_iceD_OffsetGuiding(::IceInternal::Incoming& inS, const ::Ice::
     istr->read(iceP_coordsys);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->OffsetGuiding(iceP_rotangle, iceP_offx, iceP_offy, iceP_coordsys, iceP_side, current);
+    iifres ret = this->OffsetGuiding(iceP_rotangle, iceP_offx, iceP_offy, iceP_coordsys, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -6896,7 +6896,7 @@ lbto::IIFServer::_iceD_UpdatePointingReference(::IceInternal::Incoming& inS, con
     istr->read(iceP_offsetcoord);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->UpdatePointingReference(iceP_offsetcoord, iceP_side, current);
+    iifres ret = this->UpdatePointingReference(iceP_offsetcoord, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -6919,7 +6919,7 @@ lbto::IIFServer::_iceD_TipTilt(::IceInternal::Incoming& inS, const ::Ice::Curren
     istr->read(iceP_ope);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->TipTilt(iceP_xrot, iceP_yrot, iceP_ope, iceP_side, current);
+    iifres ret = this->TipTilt(iceP_xrot, iceP_yrot, iceP_ope, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -6940,7 +6940,7 @@ lbto::IIFServer::_iceD_SetPMTerm(::IceInternal::Incoming& inS, const ::Ice::Curr
     istr->read(iceP_value);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->SetPMTerm(iceP_name, iceP_value, iceP_side, current);
+    iifres ret = this->SetPMTerm(iceP_name, iceP_value, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -6963,7 +6963,7 @@ lbto::IIFServer::_iceD_SetPMTerm2(::IceInternal::Incoming& inS, const ::Ice::Cur
     istr->read(iceP_movetype);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->SetPMTerm2(iceP_name, iceP_value, iceP_movetype, iceP_side, current);
+    iifres ret = this->SetPMTerm2(iceP_name, iceP_value, iceP_movetype, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -6986,7 +6986,7 @@ lbto::IIFServer::_iceD_MoveXYZ(::IceInternal::Incoming& inS, const ::Ice::Curren
     istr->read(iceP_zmov);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->MoveXYZ(iceP_xmov, iceP_ymov, iceP_zmov, iceP_side, current);
+    iifres ret = this->MoveXYZ(iceP_xmov, iceP_ymov, iceP_zmov, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7009,7 +7009,7 @@ lbto::IIFServer::_iceD_MoveXY(::IceInternal::Incoming& inS, const ::Ice::Current
     istr->read(iceP_ope);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->MoveXY(iceP_xmov, iceP_ymov, iceP_ope, iceP_side, current);
+    iifres ret = this->MoveXY(iceP_xmov, iceP_ymov, iceP_ope, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7046,7 +7046,7 @@ lbto::IIFServer::_iceD_Move(::IceInternal::Incoming& inS, const ::Ice::Current& 
     istr->read(iceP_time);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->Move(iceP_x, iceP_y, iceP_z, iceP_rx, iceP_ry, iceP_rz, iceP_dflag, iceP_movetype, iceP_OPE, iceP_time, iceP_side, current);
+    iifres ret = this->Move(iceP_x, iceP_y, iceP_z, iceP_rx, iceP_ry, iceP_rz, iceP_dflag, iceP_movetype, iceP_OPE, iceP_time, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7071,7 +7071,7 @@ lbto::IIFServer::_iceD_SetTarget(::IceInternal::Incoming& inS, const ::Ice::Curr
     istr->read(iceP_epoch);
     istr->read(iceP_wavelength);
     inS.endReadParams();
-    result ret = this->SetTarget(iceP_coord1, iceP_coord2, iceP_system, iceP_epoch, iceP_wavelength, current);
+    iifres ret = this->SetTarget(iceP_coord1, iceP_coord2, iceP_system, iceP_epoch, iceP_wavelength, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7088,7 +7088,7 @@ lbto::IIFServer::_iceD_SetStars(::IceInternal::Incoming& inS, const ::Ice::Curre
     SeqPos iceP_stars;
     istr->read(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetStars(iceP_stars, current);
+    iifres ret = this->SetStars(iceP_stars, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7105,7 +7105,7 @@ lbto::IIFServer::_iceD_SetStarsNew(::IceInternal::Incoming& inS, const ::Ice::Cu
     SeqNewPos iceP_stars;
     istr->read(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetStarsNew(iceP_stars, current);
+    iifres ret = this->SetStarsNew(iceP_stars, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7122,7 +7122,7 @@ lbto::IIFServer::_iceD_SetStars2(::IceInternal::Incoming& inS, const ::Ice::Curr
     SeqPos2 iceP_stars;
     istr->read(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetStars2(iceP_stars, current);
+    iifres ret = this->SetStars2(iceP_stars, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7136,7 +7136,7 @@ lbto::IIFServer::_iceD_ClearStars(::IceInternal::Incoming& inS, const ::Ice::Cur
 {
     _iceCheckMode(::Ice::Normal, current.mode);
     inS.readEmptyParams();
-    result ret = this->ClearStars(current);
+    iifres ret = this->ClearStars(current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7155,7 +7155,7 @@ lbto::IIFServer::_iceD_SetHotspot(::IceInternal::Incoming& inS, const ::Ice::Cur
     istr->read(iceP_coord1);
     istr->read(iceP_coord2);
     inS.endReadParams();
-    result ret = this->SetHotspot(iceP_coord1, iceP_coord2, current);
+    iifres ret = this->SetHotspot(iceP_coord1, iceP_coord2, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7169,7 +7169,7 @@ lbto::IIFServer::_iceD_ClearHotspot(::IceInternal::Incoming& inS, const ::Ice::C
 {
     _iceCheckMode(::Ice::Normal, current.mode);
     inS.readEmptyParams();
-    result ret = this->ClearHotspot(current);
+    iifres ret = this->ClearHotspot(current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7190,7 +7190,7 @@ lbto::IIFServer::_iceD_SetOffset(::IceInternal::Incoming& inS, const ::Ice::Curr
     istr->read(iceP_coord2);
     istr->read(iceP_system);
     inS.endReadParams();
-    result ret = this->SetOffset(iceP_coord1, iceP_coord2, iceP_system, current);
+    iifres ret = this->SetOffset(iceP_coord1, iceP_coord2, iceP_system, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7213,7 +7213,7 @@ lbto::IIFServer::_iceD_SetOffsetNew(::IceInternal::Incoming& inS, const ::Ice::C
     istr->read(iceP_system);
     istr->read(iceP_movetype);
     inS.endReadParams();
-    result ret = this->SetOffsetNew(iceP_coord1, iceP_coord2, iceP_system, iceP_movetype, current);
+    iifres ret = this->SetOffsetNew(iceP_coord1, iceP_coord2, iceP_system, iceP_movetype, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7236,7 +7236,7 @@ lbto::IIFServer::_iceD_SetOffset2(::IceInternal::Incoming& inS, const ::Ice::Cur
     istr->read(iceP_system);
     istr->read(iceP_movetype);
     inS.endReadParams();
-    result ret = this->SetOffset2(iceP_coord1, iceP_coord2, iceP_system, iceP_movetype, current);
+    iifres ret = this->SetOffset2(iceP_coord1, iceP_coord2, iceP_system, iceP_movetype, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7250,7 +7250,7 @@ lbto::IIFServer::_iceD_ClearOffset(::IceInternal::Incoming& inS, const ::Ice::Cu
 {
     _iceCheckMode(::Ice::Normal, current.mode);
     inS.readEmptyParams();
-    result ret = this->ClearOffset(current);
+    iifres ret = this->ClearOffset(current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7269,7 +7269,7 @@ lbto::IIFServer::_iceD_SetNonSidereal(::IceInternal::Incoming& inS, const ::Ice:
     istr->read(iceP_target);
     istr->read(iceP_override);
     inS.endReadParams();
-    result ret = this->SetNonSidereal(iceP_target, iceP_override, current);
+    iifres ret = this->SetNonSidereal(iceP_target, iceP_override, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7286,7 +7286,7 @@ lbto::IIFServer::_iceD_ClearNonSidereal(::IceInternal::Incoming& inS, const ::Ic
     bool iceP_override;
     istr->read(iceP_override);
     inS.endReadParams();
-    result ret = this->ClearNonSidereal(iceP_override, current);
+    iifres ret = this->ClearNonSidereal(iceP_override, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7305,7 +7305,7 @@ lbto::IIFServer::_iceD_UpdateNonSiderealTarget(::IceInternal::Incoming& inS, con
     istr->read(iceP_RArate);
     istr->read(iceP_DECrate);
     inS.endReadParams();
-    result ret = this->UpdateNonSiderealTarget(iceP_RArate, iceP_DECrate, current);
+    iifres ret = this->UpdateNonSiderealTarget(iceP_RArate, iceP_DECrate, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7326,7 +7326,7 @@ lbto::IIFServer::_iceD_SetNonSiderealObject(::IceInternal::Incoming& inS, const 
     istr->read(iceP_target);
     istr->read(iceP_override);
     inS.endReadParams();
-    result ret = this->SetNonSiderealObject(iceP_objtype, iceP_target, iceP_override, current);
+    iifres ret = this->SetNonSiderealObject(iceP_objtype, iceP_target, iceP_override, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7345,7 +7345,7 @@ lbto::IIFServer::_iceD_ClearNonSiderealObject(::IceInternal::Incoming& inS, cons
     istr->read(iceP_objtype);
     istr->read(iceP_override);
     inS.endReadParams();
-    result ret = this->ClearNonSiderealObject(iceP_objtype, iceP_override, current);
+    iifres ret = this->ClearNonSiderealObject(iceP_objtype, iceP_override, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7366,7 +7366,7 @@ lbto::IIFServer::_iceD_UpdateNonSiderealObject(::IceInternal::Incoming& inS, con
     istr->read(iceP_RArate);
     istr->read(iceP_DECrate);
     inS.endReadParams();
-    result ret = this->UpdateNonSiderealObject(iceP_objtype, iceP_RArate, iceP_DECrate, current);
+    iifres ret = this->UpdateNonSiderealObject(iceP_objtype, iceP_RArate, iceP_DECrate, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7389,7 +7389,7 @@ lbto::IIFServer::_iceD_PresetTelescope(::IceInternal::Incoming& inS, const ::Ice
     istr->read(iceP_mode);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->PresetTelescope(iceP_rotangle, iceP_rotmode, iceP_mode, iceP_side, current);
+    iifres ret = this->PresetTelescope(iceP_rotangle, iceP_rotmode, iceP_mode, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7406,7 +7406,7 @@ lbto::IIFServer::_iceD_BinocularControl(::IceInternal::Incoming& inS, const ::Ic
     ::std::string iceP_flag;
     istr->read(iceP_flag);
     inS.endReadParams();
-    result ret = this->BinocularControl(iceP_flag, current);
+    iifres ret = this->BinocularControl(iceP_flag, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7423,7 +7423,7 @@ lbto::IIFServer::_iceD_GetParameter(::IceInternal::Incoming& inS, const ::Ice::C
     SeqDD iceP_list;
     istr->read(iceP_list);
     inS.endReadParams();
-    result ret = this->GetParameter(iceP_list, current);
+    iifres ret = this->GetParameter(iceP_list, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7440,7 +7440,7 @@ lbto::IIFServer::_iceD_SetParameter(::IceInternal::Incoming& inS, const ::Ice::C
     SeqDD iceP_list;
     istr->read(iceP_list);
     inS.endReadParams();
-    result ret = this->SetParameter(iceP_list, current);
+    iifres ret = this->SetParameter(iceP_list, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7463,7 +7463,7 @@ lbto::IIFServer::_iceD_RotateCommon(::IceInternal::Incoming& inS, const ::Ice::C
     istr->read(iceP_direction);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->RotateCommon(iceP_z, iceP_angle, iceP_direction, iceP_side, current);
+    iifres ret = this->RotateCommon(iceP_z, iceP_angle, iceP_direction, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7484,7 +7484,7 @@ lbto::IIFServer::_iceD_RotateZ(::IceInternal::Incoming& inS, const ::Ice::Curren
     istr->read(iceP_movetype);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->RotateZ(iceP_angle, iceP_movetype, iceP_side, current);
+    iifres ret = this->RotateZ(iceP_angle, iceP_movetype, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7507,7 +7507,7 @@ lbto::IIFServer::_iceD_RotatePrimary(::IceInternal::Incoming& inS, const ::Ice::
     istr->read(iceP_direction);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->RotatePrimary(iceP_distance, iceP_angle, iceP_direction, iceP_side, current);
+    iifres ret = this->RotatePrimary(iceP_distance, iceP_angle, iceP_direction, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7528,7 +7528,7 @@ lbto::IIFServer::_iceD_SendWavefront(::IceInternal::Incoming& inS, const ::Ice::
     istr->read(iceP_OPE);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->SendWavefront(iceP_wfs, iceP_OPE, iceP_side, current);
+    iifres ret = this->SendWavefront(iceP_wfs, iceP_OPE, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7547,7 +7547,7 @@ lbto::IIFServer::_iceD_UpdateTargetWavelength(::IceInternal::Incoming& inS, cons
     istr->read(iceP_wavelength);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->UpdateTargetWavelength(iceP_wavelength, iceP_side, current);
+    iifres ret = this->UpdateTargetWavelength(iceP_wavelength, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7566,7 +7566,7 @@ lbto::IIFServer::_iceD_LogEvent(::IceInternal::Incoming& inS, const ::Ice::Curre
     istr->read(iceP_event);
     istr->read(iceP_description);
     inS.endReadParams();
-    result ret = this->LogEvent(iceP_event, iceP_description, current);
+    iifres ret = this->LogEvent(iceP_event, iceP_description, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7589,7 +7589,7 @@ lbto::IIFServer::_iceD_GetRotatorTrajectory(::IceInternal::Incoming& inS, const 
     istr->read(iceP_start);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->GetRotatorTrajectory(iceP_seconds, iceP_interval, iceP_start, iceP_side, current);
+    iifres ret = this->GetRotatorTrajectory(iceP_seconds, iceP_interval, iceP_start, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7614,7 +7614,7 @@ lbto::IIFServer::_iceD_GetRotatorPolynomials(::IceInternal::Incoming& inS, const
     istr->read(iceP_order);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->GetRotatorPolynomials(iceP_start, iceP_count, iceP_interval, iceP_order, iceP_side, current);
+    iifres ret = this->GetRotatorPolynomials(iceP_start, iceP_count, iceP_interval, iceP_order, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7633,7 +7633,7 @@ lbto::IIFServer::_iceD_Standby(::IceInternal::Incoming& inS, const ::Ice::Curren
     istr->read(iceP_level);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->Standby(iceP_level, iceP_side, current);
+    iifres ret = this->Standby(iceP_level, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7654,7 +7654,7 @@ lbto::IIFServer::_iceD_MaximizeWrapTime(::IceInternal::Incoming& inS, const ::Ic
     istr->read(iceP_rotflag);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->MaximizeWrapTime(iceP_azflag, iceP_rotflag, iceP_side, current);
+    iifres ret = this->MaximizeWrapTime(iceP_azflag, iceP_rotflag, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7671,7 +7671,7 @@ lbto::IIFServer::_iceD_PauseGuiding(::IceInternal::Incoming& inS, const ::Ice::C
     ::std::string iceP_side;
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->PauseGuiding(iceP_side, current);
+    iifres ret = this->PauseGuiding(iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7688,7 +7688,7 @@ lbto::IIFServer::_iceD_ResumeGuiding(::IceInternal::Incoming& inS, const ::Ice::
     ::std::string iceP_side;
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->ResumeGuiding(iceP_side, current);
+    iifres ret = this->ResumeGuiding(iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7705,7 +7705,7 @@ lbto::IIFServer::_iceD_StopGuiding(::IceInternal::Incoming& inS, const ::Ice::Cu
     ::std::string iceP_side;
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->StopGuiding(iceP_side, current);
+    iifres ret = this->StopGuiding(iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7728,7 +7728,7 @@ lbto::IIFServer::_iceD_SetGuidingHotspot(::IceInternal::Incoming& inS, const ::I
     istr->read(iceP_movetype);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->SetGuidingHotspot(iceP_coord1, iceP_coord2, iceP_movetype, iceP_side, current);
+    iifres ret = this->SetGuidingHotspot(iceP_coord1, iceP_coord2, iceP_movetype, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7747,7 +7747,7 @@ lbto::IIFServer::_iceD_SetAGWFilter(::IceInternal::Incoming& inS, const ::Ice::C
     istr->read(iceP_filterNumber);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->SetAGWFilter(iceP_filterNumber, iceP_side, current);
+    iifres ret = this->SetAGWFilter(iceP_filterNumber, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7766,7 +7766,7 @@ lbto::IIFServer::_iceD_SetGuidingBinning(::IceInternal::Incoming& inS, const ::I
     istr->read(iceP_factor);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->SetGuidingBinning(iceP_factor, iceP_side, current);
+    iifres ret = this->SetGuidingBinning(iceP_factor, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7785,7 +7785,7 @@ lbto::IIFServer::_iceD_RotReady(::IceInternal::Incoming& inS, const ::Ice::Curre
     istr->read(iceP_enable);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->RotReady(iceP_enable, iceP_side, current);
+    iifres ret = this->RotReady(iceP_enable, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7802,7 +7802,7 @@ lbto::IIFServer::_iceD_RotHold(::IceInternal::Incoming& inS, const ::Ice::Curren
     ::std::string iceP_side;
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->RotHold(iceP_side, current);
+    iifres ret = this->RotHold(iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7819,7 +7819,7 @@ lbto::IIFServer::_iceD_RotTrack(::IceInternal::Incoming& inS, const ::Ice::Curre
     ::std::string iceP_side;
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->RotTrack(iceP_side, current);
+    iifres ret = this->RotTrack(iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7838,7 +7838,7 @@ lbto::IIFServer::_iceD_RotServicePosition(::IceInternal::Incoming& inS, const ::
     istr->read(iceP_angle);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->RotServicePosition(iceP_angle, iceP_side, current);
+    iifres ret = this->RotServicePosition(iceP_angle, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7855,7 +7855,7 @@ lbto::IIFServer::_iceD_PauseAO(::IceInternal::Incoming& inS, const ::Ice::Curren
     ::std::string iceP_side;
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->PauseAO(iceP_side, current);
+    iifres ret = this->PauseAO(iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7872,7 +7872,7 @@ lbto::IIFServer::_iceD_ResumeAO(::IceInternal::Incoming& inS, const ::Ice::Curre
     ::std::string iceP_side;
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->ResumeAO(iceP_side, current);
+    iifres ret = this->ResumeAO(iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7889,7 +7889,7 @@ lbto::IIFServer::_iceD_StartAO(::IceInternal::Incoming& inS, const ::Ice::Curren
     ::std::string iceP_side;
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->StartAO(iceP_side, current);
+    iifres ret = this->StartAO(iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7908,7 +7908,7 @@ lbto::IIFServer::_iceD_StopAO(::IceInternal::Incoming& inS, const ::Ice::Current
     istr->read(iceP_reason);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->StopAO(iceP_reason, iceP_side, current);
+    iifres ret = this->StopAO(iceP_reason, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7927,7 +7927,7 @@ lbto::IIFServer::_iceD_AcquireRefAO(::IceInternal::Incoming& inS, const ::Ice::C
     istr->read(iceP_repointFlag);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->AcquireRefAO(iceP_repointFlag, iceP_side, current);
+    iifres ret = this->AcquireRefAO(iceP_repointFlag, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7944,7 +7944,7 @@ lbto::IIFServer::_iceD_CheckRefAO(::IceInternal::Incoming& inS, const ::Ice::Cur
     ::std::string iceP_side;
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->CheckRefAO(iceP_side, current);
+    iifres ret = this->CheckRefAO(iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7963,7 +7963,7 @@ lbto::IIFServer::_iceD_RefineAO(::IceInternal::Incoming& inS, const ::Ice::Curre
     istr->read(iceP_method);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->RefineAO(iceP_method, iceP_side, current);
+    iifres ret = this->RefineAO(iceP_method, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -7982,7 +7982,7 @@ lbto::IIFServer::_iceD_RunAO(::IceInternal::Incoming& inS, const ::Ice::Current&
     istr->read(iceP_type);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->RunAO(iceP_type, iceP_side, current);
+    iifres ret = this->RunAO(iceP_type, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8001,7 +8001,7 @@ lbto::IIFServer::_iceD_PresetFlatAO(::IceInternal::Incoming& inS, const ::Ice::C
     istr->read(iceP_flat);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->PresetFlatAO(iceP_flat, iceP_side, current);
+    iifres ret = this->PresetFlatAO(iceP_flat, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8020,7 +8020,7 @@ lbto::IIFServer::_iceD_CorrectModesAO(::IceInternal::Incoming& inS, const ::Ice:
     istr->read(iceP_modes);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->CorrectModesAO(iceP_modes, iceP_side, current);
+    iifres ret = this->CorrectModesAO(iceP_modes, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8049,7 +8049,7 @@ lbto::IIFServer::_iceD_ModifyAO(::IceInternal::Incoming& inS, const ::Ice::Curre
     istr->read(iceP_F2spec);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->ModifyAO(iceP_NModes, iceP_Freq, iceP_Nbins, iceP_TTMod, iceP_F1spec, iceP_F2spec, iceP_side, current);
+    iifres ret = this->ModifyAO(iceP_NModes, iceP_Freq, iceP_Nbins, iceP_TTMod, iceP_F1spec, iceP_F2spec, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8068,7 +8068,7 @@ lbto::IIFServer::_iceD_PresetAO(::IceInternal::Incoming& inS, const ::Ice::Curre
     istr->read(iceP_AOMode);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->PresetAO(iceP_AOMode, iceP_side, current);
+    iifres ret = this->PresetAO(iceP_AOMode, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8089,7 +8089,7 @@ lbto::IIFServer::_iceD_OffsetXYAO(::IceInternal::Incoming& inS, const ::Ice::Cur
     istr->read(iceP_DeltaY);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->OffsetXYAO(iceP_DeltaX, iceP_DeltaY, iceP_side, current);
+    iifres ret = this->OffsetXYAO(iceP_DeltaX, iceP_DeltaY, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8108,7 +8108,7 @@ lbto::IIFServer::_iceD_OffsetZAO(::IceInternal::Incoming& inS, const ::Ice::Curr
     istr->read(iceP_DeltaZ);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->OffsetZAO(iceP_DeltaZ, iceP_side, current);
+    iifres ret = this->OffsetZAO(iceP_DeltaZ, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8125,7 +8125,7 @@ lbto::IIFServer::_iceD_SetReference(::IceInternal::Incoming& inS, const ::Ice::C
     SeqPos iceP_stars;
     istr->read(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetReference(iceP_stars, current);
+    iifres ret = this->SetReference(iceP_stars, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8142,7 +8142,7 @@ lbto::IIFServer::_iceD_SetReferenceNew(::IceInternal::Incoming& inS, const ::Ice
     SeqNewPos iceP_stars;
     istr->read(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetReferenceNew(iceP_stars, current);
+    iifres ret = this->SetReferenceNew(iceP_stars, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8159,7 +8159,7 @@ lbto::IIFServer::_iceD_SetReference2(::IceInternal::Incoming& inS, const ::Ice::
     SeqPos2 iceP_stars;
     istr->read(iceP_stars);
     inS.endReadParams();
-    result ret = this->SetReference2(iceP_stars, current);
+    iifres ret = this->SetReference2(iceP_stars, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8173,7 +8173,7 @@ lbto::IIFServer::_iceD_ClearReference(::IceInternal::Incoming& inS, const ::Ice:
 {
     _iceCheckMode(::Ice::Normal, current.mode);
     inS.readEmptyParams();
-    result ret = this->ClearReference(current);
+    iifres ret = this->ClearReference(current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8192,7 +8192,7 @@ lbto::IIFServer::_iceD_GetKFPCoordinates(::IceInternal::Incoming& inS, const ::I
     istr->read(iceP_stars);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->GetKFPCoordinates(iceP_stars, iceP_side, current);
+    iifres ret = this->GetKFPCoordinates(iceP_stars, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8211,7 +8211,7 @@ lbto::IIFServer::_iceD_GetKFPCoordinatesNew(::IceInternal::Incoming& inS, const 
     istr->read(iceP_stars);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->GetKFPCoordinatesNew(iceP_stars, iceP_side, current);
+    iifres ret = this->GetKFPCoordinatesNew(iceP_stars, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8230,7 +8230,7 @@ lbto::IIFServer::_iceD_GetKFPCoordinates2(::IceInternal::Incoming& inS, const ::
     istr->read(iceP_stars);
     istr->read(iceP_side);
     inS.endReadParams();
-    result ret = this->GetKFPCoordinates2(iceP_stars, iceP_side, current);
+    iifres ret = this->GetKFPCoordinates2(iceP_stars, iceP_side, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();
@@ -8259,7 +8259,7 @@ lbto::IIFServer::_iceD_NSQuery(::IceInternal::Incoming& inS, const ::Ice::Curren
     istr->read(iceP_interval);
     istr->read(iceP_fileName);
     inS.endReadParams();
-    result ret = this->NSQuery(iceP_targenName, iceP_startDate, iceP_startTime, iceP_endDate, iceP_endTime, iceP_interval, iceP_fileName, current);
+    iifres ret = this->NSQuery(iceP_targenName, iceP_startDate, iceP_startTime, iceP_endDate, iceP_endTime, iceP_interval, iceP_fileName, current);
     ::Ice::OutputStream* ostr = inS.startWriteParams();
     ostr->write(ret);
     inS.endWriteParams();

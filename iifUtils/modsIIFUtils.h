@@ -40,7 +40,7 @@ using namespace lbto;
 // Communicator and pointer to ZeroICE and IIF functions
 
 extern Ice::CommunicatorPtr communicator; // Ice communicator
-extern lbto::result res; // result object
+extern lbto::iifres res; // result object
 extern lbto::IIFServerPrx iif;
 extern lbto::FactoryPrx factory;
 

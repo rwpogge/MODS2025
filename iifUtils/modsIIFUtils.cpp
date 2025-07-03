@@ -5,7 +5,7 @@
 
 // Save the result messages coming from TCS in iifmsgs[]
 
-void showResults(const lbto::result _res, const string _cmd)
+void showResults(const lbto::iifres _res, const string _cmd)
 {
   unsigned int i;
   iifcount=0;
