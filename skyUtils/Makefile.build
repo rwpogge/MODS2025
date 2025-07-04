@@ -1,0 +1,40 @@
+#
+# Makefile for libskyutils - celestial utilities library
+#
+# Build the package using the "build" script not with make.
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge@astronomy.ohio-state.edu
+# Last Modified 2007 July 25 
+#
+# Versions:
+#   v1.0 - 2007 Jul 25 - first version as a library [rwp/osu]
+#   v1.1 - 2025 Jul 03 - AlmaLinux 9 port and integrate in mods/utilities and mods/ulib [rwp/osu]
+
+ROOTDIR     = /home/dts/mods
+VERSION     = SkyUtils v1.1.0
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+
+CFLAGS      = -w -c
+VFLAGS      = -DSKY_VERSION='"$(VERSION)"' -DSKY_COMPDATE='"$(COMPDATE)"' \
+              -DSKY_COMPTIME='"$(COMPTIME)"'
+
+OBJS        = skyutils.o sexstr.o
+
+.c.o:       skyutils.h 
+	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
+
+all:        libskyutils.a 
+
+libskyutils.a:  $(OBJS) 
+	    /bin/rm -f  libskyutils.a
+	    $(AR) cr libskyutils.a $(OBJS)
+	    ranlib libskyutils.a
+	    \cp libskyutils.a $(ROOTDIR)/ulib/
+	    \cp skyutils.h $(ROOTDIR)/include/
+	    /bin/rm *.o	    
+
+clean:
+	    /bin/rm -f libskyutils.a *.o
+
