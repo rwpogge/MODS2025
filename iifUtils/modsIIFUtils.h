@@ -66,6 +66,7 @@ typedef struct lbtData {
   double parAngle;     //!< Parallactic angle if rotMode=POSITION, offset if rotMode=PARALLACTIC in radians
   double posAngle;     //!< Celestial position angle in radians
   double rotAngle;     //!< Instrument Rotator angle in radians
+  double airmass;      //!< Telescope-reported airmass
   // AGw Stage and Guide Star PCS Coordinates (engineering)
   double guiRA;        //!< Guide object RA in radians
   double guiDec;       //!< Guide object Dec in radians
@@ -87,6 +88,8 @@ typedef struct lbtData {
   float m1RotY;        //!< Primary Mirror RY rotation in arcsec
   float m1RotZ;        //!< Primary Mirror RZ rotation in arcsec
   float m1CTemp;       //!< Primary Mirror Temperature in degrees Celsius
+  float m1CTemp2;      //!< Primary Mirror Temperature 2 in degrees Celsius
+  float m1GTemp;       //!< Primary Mirror Glass Temperature in degrees Celsius
   float m1ATemp;       //!< Primary Mirror Ambient Air Temperature in degrees Celsius
   float m2PosX;        //!< Secondary Mirror X position in mm
   float m2PosY;        //!< Secondary Mirror Y position in mm
@@ -116,6 +119,15 @@ typedef struct lbtData {
   float ttemp308;      //!< Right Middle Wind Brace Air Temperature
   float ttemp309;      //!< Left Middle Wind Brace Steel Temperature
   float ttemp310;      //!< Left Middle Wind Brace Air Temperature
+  float ttemp401;      //!< Right primary swing arm steel temperature 1
+  float ttemp402;      //!< Right primary swing arm steel temperature 2
+  float ttemp403;      //!< Left primary swing arm steel temperature 1
+  float ttemp404;      //!< Left primary swing arm steel temperature 2
+  float ttemp405;      //!< Right secondary swing arm steel temperature 1
+  float ttemp406;      //!< Right secondary swing arm steel temperature 2
+  float ttemp407;      //!< Left secondary swing arm steel temperature 1
+  float ttemp408;      //!< Left secondary swing arm steel temperature 2
+
   // LBT Weather Station data
   int lbtLink;         //!< Is the LBT weather station link active?
   float lbtPres;       //!< Air pressure at the LBT in hPa

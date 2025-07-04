@@ -926,300 +926,184 @@ mods_GetTCSData(lbtData_t &lbt, char *side)
   for (int i=0;i<numNames;i++) {
     // printf("  %s=%s\n",ddName[i],iifmsgs[i+1]);
 
-    if (strcasecmp(ddName[i],"pcs.pointingStatus.time_UT.UTString")==0 ||
-	strcasecmp(ddName[i],"UTC")==0)
+    if (strcasecmp(ddName[i],"UTC")==0)
       lbt.telUTC = (string)iifmsgs[i+1];
-    else if (strcasecmp(ddName[i],"pcs.pointingStatus.time_SD.SDString")==0 ||
-	     strcasecmp(ddName[i],"LST")==0)
+    else if (strcasecmp(ddName[i],"LST")==0)
       lbt.telLST = (string)iifmsgs[i+1];
 
     // Mount Control System (MCS) Azimuth, Elevation, and Rotator Encoder data
     // (note: rotator[5] = Direct Gregorian)
 
-    else if (strcasecmp(ddName[i],"mcs.azDrive.position")==0 ||
-	     strcasecmp(ddName[i],"AZPosition")==0)
+    else if (strcasecmp(ddName[i],"AZPosition")==0)
       lbt.telAz = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"mcs.elDrive.position")==0 ||
-	     strcasecmp(ddName[i],"ELPosition")==0)
+    else if (strcasecmp(ddName[i],"ELPosition")==0)
       lbt.telEl = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"mcs.rotatorSide[0].rotators[5].actualPositionAsec")==0 ||
-	     strcasecmp(ddName[i],"mcs.rotatorSide[1].rotators[5].actualPositionAsec")==0 ||
-	     strcasecmp(ddName[i],"L_DGRPosition")==0 ||
-	     strcasecmp(ddName[i],"R_DGRPosition")==0)
+    else if (strcasecmp(ddName[i],"L_DGRPosition")==0 || strcasecmp(ddName[i],"R_DGRPosition")==0)
       lbt.telRot = atof(iifmsgs[i+1]);
 
     // LBT Telescope Temperature Sensor Web data
 
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan201")==0 ||
-	     strcasecmp(ddName[i],"Temp201")==0)
+    else if (strcasecmp(ddName[i],"Temp201")==0)
       lbt.ttemp201 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan202")==0 ||
-	     strcasecmp(ddName[i],"Temp202")==0)
+    else if (strcasecmp(ddName[i],"Temp202")==0)
       lbt.ttemp202 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan203")==0 ||
-	     strcasecmp(ddName[i],"Temp203")==0)
+    else if (strcasecmp(ddName[i],"Temp203")==0)
       lbt.ttemp203 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan204")==0 ||
-	     strcasecmp(ddName[i],"Temp204")==0)
+    else if (strcasecmp(ddName[i],"Temp204")==0)
       lbt.ttemp204 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan205")==0 ||
-	     strcasecmp(ddName[i],"Temp205")==0)
+    else if (strcasecmp(ddName[i],"Temp205")==0)
       lbt.ttemp205 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan206")==0 ||
-	     strcasecmp(ddName[i],"Temp206")==0)
+    else if (strcasecmp(ddName[i],"Temp206")==0)
       lbt.ttemp206 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan207")==0 ||
-	     strcasecmp(ddName[i],"Temp207")==0)
+    else if (strcasecmp(ddName[i],"Temp207")==0)
       lbt.ttemp207 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan208")==0 ||
-	     strcasecmp(ddName[i],"Temp208")==0)
+    else if (strcasecmp(ddName[i],"Temp208")==0)
       lbt.ttemp208 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan209")==0 ||
-	     strcasecmp(ddName[i],"Temp209")==0)
+    else if (strcasecmp(ddName[i],"Temp209")==0)
       lbt.ttemp209 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan210")==0 ||
-	     strcasecmp(ddName[i],"Temp210")==0)
+    else if (strcasecmp(ddName[i],"Temp210")==0)
       lbt.ttemp210 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan301")==0 ||
-	     strcasecmp(ddName[i],"Temp301")==0)
+    else if (strcasecmp(ddName[i],"Temp301")==0)
       lbt.ttemp301 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan302")==0 ||
-	     strcasecmp(ddName[i],"Temp302")==0)
+    else if (strcasecmp(ddName[i],"Temp302")==0)
       lbt.ttemp302 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan303")==0 ||
-	     strcasecmp(ddName[i],"Temp303")==0)
+    else if (strcasecmp(ddName[i],"Temp303")==0)
       lbt.ttemp303 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan304")==0 ||
-	     strcasecmp(ddName[i],"Temp304")==0)
+    else if (strcasecmp(ddName[i],"Temp304")==0)
       lbt.ttemp304 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan305")==0 ||
-	     strcasecmp(ddName[i],"Temp305")==0)
+    else if (strcasecmp(ddName[i],"Temp305")==0)
       lbt.ttemp305 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan306")==0 ||
-	     strcasecmp(ddName[i],"Temp306")==0)
+    else if (strcasecmp(ddName[i],"Temp306")==0)
       lbt.ttemp306 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan307")==0 ||
-	     strcasecmp(ddName[i],"Temp307")==0)
+    else if (strcasecmp(ddName[i],"Temp307")==0)
       lbt.ttemp307 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan308")==0 ||
-	     strcasecmp(ddName[i],"Temp308")==0)
+    else if (strcasecmp(ddName[i],"Temp308")==0)
       lbt.ttemp308 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan309")==0 ||
-	     strcasecmp(ddName[i],"Temp309")==0)
+    else if (strcasecmp(ddName[i],"Temp309")==0)
       lbt.ttemp309 = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"ecs.instrCool.tempChan310")==0 ||
-	     strcasecmp(ddName[i],"Temp310")==0)
+    else if (strcasecmp(ddName[i],"Temp310")==0)
       lbt.ttemp310 = atof(iifmsgs[i+1]);
+    else if (strcasecmp(ddName[i],"Temp401")==0)
+      lbt.ttemp401 = atof(iifmsgs[i+1]);
+    else if (strcasecmp(ddName[i],"Temp402")==0)
+      lbt.ttemp402 = atof(iifmsgs[i+1]);
+    else if (strcasecmp(ddName[i],"Temp403")==0)
+      lbt.ttemp403 = atof(iifmsgs[i+1]);
+    else if (strcasecmp(ddName[i],"Temp404")==0)
+      lbt.ttemp404 = atof(iifmsgs[i+1]);
+    else if (strcasecmp(ddName[i],"Temp405")==0)
+      lbt.ttemp405 = atof(iifmsgs[i+1]);
+    else if (strcasecmp(ddName[i],"Temp406")==0)
+      lbt.ttemp406 = atof(iifmsgs[i+1]);
+    else if (strcasecmp(ddName[i],"Temp407")==0)
+      lbt.ttemp407 = atof(iifmsgs[i+1]);
+    else if (strcasecmp(ddName[i],"Temp408")==0)
+      lbt.ttemp408 = atof(iifmsgs[i+1]);
 
     // LBT Weather Station data
 
-    else if (strcasecmp(ddName[i],"env.weather.lbt.alive")==0 ||
-	     strcasecmp(ddName[i],"LBTWeatherAlive")==0)
+    else if (strcasecmp(ddName[i],"LBTWeatherAlive")==0)
       lbt.lbtLink = atoi(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"env.weather.lbt.pressure")==0 ||
-	     strcasecmp(ddName[i],"LBTPressure")==0)
+    else if (strcasecmp(ddName[i],"LBTPressure")==0)
       lbt.lbtPres = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"env.weather.lbt.temperature")==0 ||
-	     strcasecmp(ddName[i],"LBTTemp")==0)
+    else if (strcasecmp(ddName[i],"LBTTemp")==0)
       lbt.lbtTemp = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"env.weather.lbt.humidity")==0 ||
-	     strcasecmp(ddName[i],"LBTHumidity")==0)
+    else if (strcasecmp(ddName[i],"LBTHumidity")==0)
       lbt.lbtHum = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"env.weather.lbt.dewPoint")==0 ||
-	     strcasecmp(ddName[i],"LBTDewPoint")==0)
+    else if (strcasecmp(ddName[i],"LBTDewPoint")==0)
       lbt.lbtDwpt = atof(iifmsgs[i+1]);
 
     // Instrument Authorization Status
 
-    else if (strcasecmp(ddName[i],"iif.side[0].authorizedInstrument")==0 ||
-	     strcasecmp(ddName[i],"iif.side[1].authorizedInstrument")==0 ||
-	     strcasecmp(ddName[i],"L_Instrument")==0 ||
-	     strcasecmp(ddName[i],"R_Instrument")==0)
+    else if (strcasecmp(ddName[i],"L_Instrument")==0 || strcasecmp(ddName[i],"R_Instrument")==0)
 	lbt.authInst = (string)iifmsgs[i+1];
 
     // Pointing Control System (PCS) data
 
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.rotatorMode")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.rotatorMode")==0 ||
-	     strcasecmp(ddName[i],"L_RotMode")==0 || 
-	     strcasecmp(ddName[i],"R_RotMode")==0) 
+    else if (strcasecmp(ddName[i],"L_RotMode")==0 || strcasecmp(ddName[i],"R_RotMode")==0) 
 	lbt.rotMode = (string)iifmsgs[i+1];
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.rotatorAngle")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.rotatorAngle")==0 ||
-	     strcasecmp(ddName[i],"L_RotAngle")==0 || 
-	     strcasecmp(ddName[i],"R_RotAngle")==0)
+    else if (strcasecmp(ddName[i],"L_RotAngle")==0 || strcasecmp(ddName[i],"R_RotAngle")==0)
       lbt.rotAngle = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.positionAngle")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.positionAngle")==0 ||
-	     strcasecmp(ddName[i],"L_PosAngle")==0 || 
-	     strcasecmp(ddName[i],"R_PosAngle")==0)
+    else if (strcasecmp(ddName[i],"L_PosAngle")==0 || strcasecmp(ddName[i],"R_PosAngle")==0)
       lbt.posAngle = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.pointingStatus.achieved.parallacticAngle")==0 ||
-	     strcasecmp(ddName[i],"ParAngle")==0)
-      lbt.parAngle = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.rotator.rotCenter_RA.Radians")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.rotator.rotCenter_RA.Radians")==0 ||
-	     strcasecmp(ddName[i],"L_RotCenterRA")==0 || 
-	     strcasecmp(ddName[i],"R_RotCenterRA")==0)
+    else if (strcasecmp(ddName[i],"ParAngle")==0)
+      lbt.parAngle = atof(iifmsgs[i+2]);
+    else if (strcasecmp(ddName[i],"AirMass")==0)
+      lbt.airmass = atof(iifmsgs[i+2]);
+    else if (strcasecmp(ddName[i],"L_RotCenterRA")==0 || strcasecmp(ddName[i],"R_RotCenterRA")==0)
       lbt.telRA = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.achieved.achieved_RA.Radians")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.achieved.achieved_RA.Radians")==0 ||
-	     strcasecmp(ddName[i],"L_AchievedRA")==0 || 
-	     strcasecmp(ddName[i],"R_AchievedRA")==0)
+    else if (strcasecmp(ddName[i],"L_AchievedRA")==0 || strcasecmp(ddName[i],"R_AchievedRA")==0)
       lbt.telRA = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.rotator.rotCenter_DEC.Radians")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.rotator.rotCenter_DEC.Radians")==0 ||
-	     strcasecmp(ddName[i],"L_RotCenterDEC")==0 || 
-	     strcasecmp(ddName[i],"R_RotCenterDEC")==0)
+    else if (strcasecmp(ddName[i],"L_RotCenterDEC")==0 || strcasecmp(ddName[i],"R_RotCenterDEC")==0)
       lbt.telDec = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.achieved.achieved_DEC.Radians")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.achieved.achieved_DEC.Radians")==0 ||
-	     strcasecmp(ddName[i],"L_AchievedDEC")==0 || 
-	     strcasecmp(ddName[i],"R_AchievedDEC")==0)
+    else if (strcasecmp(ddName[i],"L_AchievedDEC")==0 || strcasecmp(ddName[i],"R_AchievedDEC")==0)
       lbt.telDec = atof(iifmsgs[i+1]);
 
     // GCS Guide Star Data (mostly engineering)
 
-    else if (strcasecmp(ddName[i],"gcs.side[0].GuideCam.GS_RA")==0 ||
-	     strcasecmp(ddName[i],"gcs.side[1].GuideCam.GS_RA")==0 ||
-	     strcasecmp(ddName[i],"L_GuideRA")==0 || 
-	     strcasecmp(ddName[i],"R_GuideRA")==0)
+    else if (strcasecmp(ddName[i],"L_GuideRA")==0 || strcasecmp(ddName[i],"R_GuideRA")==0)
       lbt.guiRA = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"gcs.side[0].GuideCam.GS_DEC")==0 ||
-	     strcasecmp(ddName[i],"gcs.side[1].GuideCam.GS_DEC")==0 ||
-	     strcasecmp(ddName[i],"L_GuideDEC")==0 || 
-	     strcasecmp(ddName[i],"R_GuideDEC")==0)
+    else if (strcasecmp(ddName[i],"L_GuideDEC")==0 || strcasecmp(ddName[i],"R_GuideDEC")==0)
       lbt.guiDec = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"gcs.side[0].AGW.SFPrequested_X")==0 ||
-	     strcasecmp(ddName[i],"gcs.side[1].AGW.SFPrequested_X")==0 ||
-	     strcasecmp(ddName[i],"L_AGWKFPReqX")==0 || 
-	     strcasecmp(ddName[i],"R_AGWKFPReqX")==0)
+    else if (strcasecmp(ddName[i],"L_AGWKFPReqX")==0 || strcasecmp(ddName[i],"R_AGWKFPReqX")==0)
       lbt.reqPCSX = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"gcs.side[0].AGW.SFPrequested_Y")==0 ||
-	     strcasecmp(ddName[i],"gcs.side[1].AGW.SFPrequested_Y")==0 ||
-	     strcasecmp(ddName[i],"L_AGWKFPReqY")==0 || 
-	     strcasecmp(ddName[i],"R_AGWKFPReqY")==0)
+    else if (strcasecmp(ddName[i],"L_AGWKFPReqY")==0 || strcasecmp(ddName[i],"R_AGWKFPReqY")==0)
       lbt.reqPCSY = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"gcs.side[0].AGW.SFPachieved_X")==0 ||
-	     strcasecmp(ddName[i],"gcs.side[1].AGW.SFPachieved_X")==0 ||
-	     strcasecmp(ddName[i],"L_AGWKFPPosX")==0 || 
-	     strcasecmp(ddName[i],"R_AGWKFPPosX")==0)
+    else if (strcasecmp(ddName[i],"L_AGWKFPPosX")==0 || strcasecmp(ddName[i],"R_AGWKFPPosX")==0)
       lbt.actPCSX = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"gcs.side[0].AGW.SFPachieved_Y")==0 ||
-	     strcasecmp(ddName[i],"gcs.side[1].AGW.SFPachieved_Y")==0 ||
-	     strcasecmp(ddName[i],"L_AGWKFPPosY")==0 || 
-	     strcasecmp(ddName[i],"R_AGWKFPPosY")==0)
+    else if (strcasecmp(ddName[i],"L_AGWKFPPosY")==0 || strcasecmp(ddName[i],"R_AGWKFPPosY")==0)
       lbt.actPCSY = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.guider.predicted_X")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.guider.predicted_X")==0 ||
-	     strcasecmp(ddName[i],"L_GSXPredicted")==0 || 
-	     strcasecmp(ddName[i],"R_GSXPredicted")==0)
+    else if (strcasecmp(ddName[i],"L_GSXPredicted")==0 || strcasecmp(ddName[i],"R_GSXPredicted")==0)
       lbt.gsPredX = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.guider.predicted_Y")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.guider.predicted_Y")==0 ||
-	     strcasecmp(ddName[i],"L_GSYPredicted")==0 || 
-	     strcasecmp(ddName[i],"R_GSYPredicted")==0)
+    else if (strcasecmp(ddName[i],"L_GSYPredicted")==0 || strcasecmp(ddName[i],"R_GSYPredicted")==0)
       lbt.gsPredY = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.guider.measured_X")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.guider.measured_X")==0 ||
-	     strcasecmp(ddName[i],"L_GSXMeasured")==0 || 
-	     strcasecmp(ddName[i],"R_GSXMeasured")==0)
+    else if (strcasecmp(ddName[i],"L_GSXMeasured")==0 || strcasecmp(ddName[i],"R_GSXMeasured")==0)
       lbt.gsMeasX = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.guider.measured_Y")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.guider.measured_Y")==0 ||
-	     strcasecmp(ddName[i],"L_GSYMeasured")==0 || 
-	     strcasecmp(ddName[i],"R_GSYMeasured")==0)
+    else if (strcasecmp(ddName[i],"L_GSYMeasured")==0 || strcasecmp(ddName[i],"R_GSYMeasured")==0)
       lbt.gsMeasY = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.guider.delta_X")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.guider.delta_X")==0 ||
-	     strcasecmp(ddName[i],"L_GSCumXPredmMeas")==0 || 
-	     strcasecmp(ddName[i],"R_GSCumXPredmMeas")==0)
+    else if (strcasecmp(ddName[i],"L_GSCumXPredmMeas")==0 || strcasecmp(ddName[i],"R_GSCumXPredmMeas")==0)
       lbt.gsDeltaX = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pcs.side[0].pointingStatus.guider.delta_Y")==0 ||
-	     strcasecmp(ddName[i],"pcs.side[1].pointingStatus.guider.delta_Y")==0 ||
-	     strcasecmp(ddName[i],"L_GSCumYPredmMeas")==0 || 
-	     strcasecmp(ddName[i],"R_GSCumYPredmMeas")==0)
+    else if (strcasecmp(ddName[i],"L_GSCumYPredmMeas")==0 || strcasecmp(ddName[i],"R_GSCumYPredmMeas")==0)
       lbt.gsDeltaY = atof(iifmsgs[i+1]);
 
     // Primary Mirror Data
 
-    else if (strcasecmp(ddName[i],"psf.side[0].primaryMirror.collimation.collimation[0]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].primaryMirror.collimation.collimation[0]")==0 ||
-	     strcasecmp(ddName[i],"L_M1CollX")==0 || 
-	     strcasecmp(ddName[i],"R_M1CollX")==0)
+    else if (strcasecmp(ddName[i],"L_M1CollX")==0 || strcasecmp(ddName[i],"R_M1CollX")==0)
       lbt.m1PosX = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].primaryMirror.collimation.collimation[1]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].primaryMirror.collimation.collimation[1]")==0 ||
-	     strcasecmp(ddName[i],"L_M1CollY")==0 || 
-	     strcasecmp(ddName[i],"R_M1CollY")==0)
+    else if (strcasecmp(ddName[i],"L_M1CollY")==0 || strcasecmp(ddName[i],"R_M1CollY")==0)
       lbt.m1PosY = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].primaryMirror.collimation.collimation[2]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].primaryMirror.collimation.collimation[2]")==0 ||
-	     strcasecmp(ddName[i],"L_M1CollZ")==0 || 
-	     strcasecmp(ddName[i],"R_M1CollZ")==0)
+    else if (strcasecmp(ddName[i],"L_M1CollZ")==0 || strcasecmp(ddName[i],"R_M1CollZ")==0)
       lbt.m1PosZ = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].primaryMirror.collimation.collimation[3]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].primaryMirror.collimation.collimation[3]")==0 ||
-	     strcasecmp(ddName[i],"L_M1CollRx")==0 || 
-	     strcasecmp(ddName[i],"R_M1CollRx")==0)
+    else if (strcasecmp(ddName[i],"L_M1CollRx")==0 || strcasecmp(ddName[i],"R_M1CollRx")==0)
       lbt.m1RotX = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].primaryMirror.collimation.collimation[4]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].primaryMirror.collimation.collimation[4]")==0 ||
-	     strcasecmp(ddName[i],"L_M1CollRy")==0 || 
-	     strcasecmp(ddName[i],"R_M1CollRy")==0)
+    else if (strcasecmp(ddName[i],"L_M1CollRy")==0 || strcasecmp(ddName[i],"R_M1CollRy")==0)
       lbt.m1RotY = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].primaryMirror.collimation.collimation[5]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].primaryMirror.collimation.collimation[5]")==0 ||
-	     strcasecmp(ddName[i],"L_M1CollRz")==0 || 
-	     strcasecmp(ddName[i],"R_M1CollRz")==0)
+    else if (strcasecmp(ddName[i],"L_M1CollRz")==0 || strcasecmp(ddName[i],"R_M1CollRz")==0)
       lbt.m1RotZ = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].primaryMirror.collimation.temperature")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].primaryMirror.collimation.temperature")==0 ||
-	     strcasecmp(ddName[i],"L_M1CollTemp")==0 || 
-	     strcasecmp(ddName[i],"R_M1CollTemp")==0)
+    else if (strcasecmp(ddName[i],"L_M1CollTemp")==0 || strcasecmp(ddName[i],"R_M1CollTemp")==0)
       lbt.m1CTemp = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"pmc.side[0].thermalRpt.ambientThermAvg")==0 ||
-	     strcasecmp(ddName[i],"pmc.side[1].thermalRpt.ambientThermAvg")==0 ||
-	     strcasecmp(ddName[i],"L_M1AirTemp")==0 || 
-	     strcasecmp(ddName[i],"R_M1AirTemp")==0)
+    else if (strcasecmp(ddName[i],"L_M1CollTemp2")==0 || strcasecmp(ddName[i],"R_M1CollTemp2")==0)
+      lbt.m1CTemp2 = atof(iifmsgs[i+1]);
+    else if (strcasecmp(ddName[i],"L_M1AirTemp")==0 || strcasecmp(ddName[i],"R_M1AirTemp")==0)
       lbt.m1ATemp = atof(iifmsgs[i+1]);
+    else if (strcasecmp(ddName[i],"L_M1GlassTemp")==0 || strcasecmp(ddName[i],"R_M1GlassTemp")==0)
+      lbt.m1GTemp = atof(iifmsgs[i+1]);
 
     // Secondary Mirror Data
 
-    else if (strcasecmp(ddName[i],"psf.side[0].secondaryMirror.collimation.collimation[0]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].secondaryMirror.collimation.collimation[0]")==0 ||
-	     strcasecmp(ddName[i],"L_M2CollX")==0 || 
-	     strcasecmp(ddName[i],"R_M2CollX")==0)
+    else if (strcasecmp(ddName[i],"L_M2CollX")==0 || strcasecmp(ddName[i],"R_M2CollX")==0)
       lbt.m2PosX = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].secondaryMirror.collimation.collimation[1]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].secondaryMirror.collimation.collimation[1]")==0 ||
-	     strcasecmp(ddName[i],"L_M2CollY")==0 || 
-	     strcasecmp(ddName[i],"R_M2CollY")==0)
+    else if (strcasecmp(ddName[i],"L_M2CollY")==0 || strcasecmp(ddName[i],"R_M2CollY")==0)
       lbt.m2PosY = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].secondaryMirror.collimation.collimation[2]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].secondaryMirror.collimation.collimation[2]")==0 ||
-	     strcasecmp(ddName[i],"L_M2CollZ")==0 || 
-	     strcasecmp(ddName[i],"R_M2CollZ")==0)
+    else if (strcasecmp(ddName[i],"L_M2CollZ")==0 || strcasecmp(ddName[i],"R_M2CollZ")==0)
       lbt.m2PosZ = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].secondaryMirror.collimation.collimation[3]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].secondaryMirror.collimation.collimation[3]")==0 ||
-	     strcasecmp(ddName[i],"L_M2CollRx")==0 || 
-	     strcasecmp(ddName[i],"R_M2CollRx")==0)
+    else if (strcasecmp(ddName[i],"L_M2CollRx")==0 || strcasecmp(ddName[i],"R_M2CollRx")==0)
       lbt.m2RotX = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].secondaryMirror.collimation.collimation[4]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].secondaryMirror.collimation.collimation[4]")==0 ||
-	     strcasecmp(ddName[i],"L_M2CollRy")==0 || 
-	     strcasecmp(ddName[i],"R_M2CollRy")==0)
+    else if (strcasecmp(ddName[i],"L_M2CollRy")==0 || strcasecmp(ddName[i],"R_M2CollRy")==0)
       lbt.m2RotY = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].secondaryMirror.collimation.collimation[5]")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].secondaryMirror.collimation.collimation[5]")==0 ||
-	     strcasecmp(ddName[i],"L_M2CollRz")==0 || 
-	     strcasecmp(ddName[i],"R_M2CollRz")==0)
+    else if (strcasecmp(ddName[i],"L_M2CollRz")==0 || strcasecmp(ddName[i],"R_M2CollRz")==0)
       lbt.m2RotZ = atof(iifmsgs[i+1]);
-    else if (strcasecmp(ddName[i],"psf.side[0].secondaryMirror.collimation.temperature")==0 ||
-	     strcasecmp(ddName[i],"psf.side[1].secondaryMirror.collimation.temperature")==0 ||
-	     strcasecmp(ddName[i],"L_M2CollTemp")==0 || 
-	     strcasecmp(ddName[i],"R_M2CollTemp")==0)
+    else if (strcasecmp(ddName[i],"L_M2CollTemp")==0 || strcasecmp(ddName[i],"R_M2CollTemp")==0)
       lbt.m2CTemp = atof(iifmsgs[i+1]);
 
   }
