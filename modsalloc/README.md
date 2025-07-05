@@ -29,7 +29,7 @@ deprecated across Linux systems.
 
 Logged in as root (or sudo):
 <pre>
-   cp /home/dts/mods/modsalloc/modsalloc.service /usr/local/lib/systemd/system
+   cp /home/dts/mods/modsalloc/modsalloc.service /usr/local/lib/systemd/system/
 </pre>
 enable for boot-time execution:
 <pre>
@@ -46,7 +46,7 @@ Then on reboot the modsalloc service is started automatically
 
 Logged in as root:
 <pre>
-   systemctl status modsalloc --no-pager
+% systemctl status modsalloc --no-pager
 
 ○ modsalloc.service - Runs the MODS data-taking system shared memory allocator (modsalloc)
      Loaded: loaded (/usr/local/lib/systemd/system/modsalloc.service; bad; preset: disabled)
@@ -69,7 +69,7 @@ Jun 24 12:30:44 localhost systemd[1]: modsalloc.service: Deactivated successfull
 
 Logged in as an unprivileged (non-sudo) user like dts or mods:
 <pre>
-   systemctl status modsalloc --no-pager
+% systemctl status modsalloc --no-pager
 
 ○ modsalloc.service - Runs the MODS data-taking system shared memory allocator (modsalloc)
      Loaded: loaded (/usr/local/lib/systemd/system/modsalloc.service; bad; preset: disabled)
