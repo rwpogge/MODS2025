@@ -29,4 +29,22 @@ Friday, February 23rd, 2024
     - dashboard/modschannel.cpp.
     
 ## Version 2.0 bino
+
 The version used when this repository was started.
+
+## Version 1.25.x
+2013 Aug 25
+
+ * Many modifications from MODS1 in the field and MODS2 from during lab acceptance testing.  
+ * Added sticky, pop-up (modeless dialog) alerts via the monitor/envpanel widget.  These alerts indicate when temperatures or pressures go outside operating limits.  They also note when conditions return to normal.  Alerts also include sensing breaker trips and loss of contact with the CCD sequencers.
+ * Added "sticky" logging of command errors and warnings to the instrument dashboard (dashboard/dashboard.cpp) by adding a secondinstance of a CommLog widget.  This is to ensure that errors and warnings are not lost during high-traffic periods (e.g., during CCD readout or instrument config changes).
+ * Many (*many*) minor tweaks and corrections to clean up annoyances from MODS1 that would doubly annoy with MODS1+2.
+
+## Version 1.16.x
+2011 Aug 11
+ * Large number of modifications and additions derived from MODS1 on-sky commissioning activities.
+   * Put in additional safeties for IEB/IUB power controls
+   * Env monitoring for the IE now handled by the modsenv agent rather than bothering the IE
+   * Many small tweaks, patches, and bug fixes have been applied.
+ * Dashboard control panel reworked to make some functions monitor instead of active controls to prevent careless observers from badly misconfiguring the instrument (instconfig is now high level)
+ * Changes to status to ensure correct filenames pending the September 2011 science verification run and IC code v6.0 implementation.
