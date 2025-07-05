@@ -2,7 +2,15 @@
 
 Library of basic astronomical calculations used by the MODS LBT Telescope Control System (TCS) interface
 agent (`lbttcs`) and other MODS data-taking system apps that need time and celestial coordinate
-calculations.
+calculations.  Creates `libskyutils.a` and moves it into the MODS `ulib` library folder.
+
+## Files
+ * `skyutils.c` - collection of sky calculation functions from various sources
+ * `sexstr.c` - decimal to sexigesimal converter
+ * `skyutils.h` - header file for use by apps using `libskyutils`
+ * `build` - build scripts (wrapper for make)
+ * `Makefile` - makefile is a wrapper for build
+ * `Makefile.build` - makefile for the library with the various dependencies
 
 ### Functions in `skyutils.c`:
  * `CalToMJD()` - convert UT calendar date to modified Julian date
