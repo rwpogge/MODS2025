@@ -3,5 +3,7 @@
 
 setenv CDATE `date +'%Y-%b-%d'`
 setenv CTIME `date +'%T'`
-make -f Makefile.build $1 "COMPDATE=$CDATE" "COMPTIME=$CTIME"
+make -f Makefile.build clean
+make -f Makefile.build "COMPDATE=$CDATE" "COMPTIME=$CTIME"
+#/bin/rm *.o
 exit
