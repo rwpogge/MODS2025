@@ -48,3 +48,40 @@ The version used when this repository was started.
    * Many small tweaks, patches, and bug fixes have been applied.
  * Dashboard control panel reworked to make some functions monitor instead of active controls to prevent careless observers from badly misconfiguring the instrument (instconfig is now high level)
  * Changes to status to ensure correct filenames pending the September 2011 science verification run and IC code v6.0 implementation.
+
+## Version 1.0 
+2010 Feb 10
+ * First 1.0 release following the successful MODS1 Laboratory Acceptance Review in Columbus in January 2010. Version incorporated numerous changes from the lab testing version at OSU, and was locked down to be used again when MODS1 is re-integrated in the mountain instrument lab during summer 2010.
+ * Added labeled sexagesimal entry widget AngleEntry.cpp, based on specs for the TCS interface that became available after Lab Acceptance review.
+
+## Version 0.9
+2009 December 30
+ * Last release after lab testing of MODS1 at OSU over the holidays. This is the release we will use for the Laboratory Acceptance Review in January. It was crunch time for producing the lab acceptance testing report, so changes were not adequately documented, mostly reactive bug fixes and no real changes in overall code architecture.
+
+## Versions 0.5 - 0.9
+April through December 2009
+
+ * new versions with each installation of an instrument group to the instrument and subsequent testing - numbers advanced roughly 1-2 month intervals
+ * adding interaction with the CCD controllers for the red and blue channels (blue and red IC DOS computers)
+ * added "psychological" progress bars for exposure countdown and readout, the latter tracking status messages from the IC programs. Use exposure start status message to start the countdown timer, stop a couple of seconds before end of countdown to account for comm lags, so countdown progress bar freezes for ~1-3-seconds then is zeroed when the IC says readout had started.  Most observers did not notice the slight discrepancy.
+   
+## Version 0.4
+2009 Mar 1
+ * Added the loadIDTable() method to read mechanism IDs from files in indexedmechanisms.cpp
+
+## Version 0.3
+2009 Feb 16 and 20
+ * changed the GUI color scheme for better visibility in the select entry widget in the linearmechanism container class
+ * add idsChanged() signal/slit and setIDList() method for handling mechanisms with named positions (filter wheels etc.) in indexedmechanisms.cpp
+ * added distinction between data "ready" and data "committed" states in the numberentry widget
+
+## Version 0.2
+2008 May 26
+ * Huge overhaul in the data entry widgets (doubleentry.cpp, intentry.cpp, selectentry.cpp, etc.)
+ * Changes in textdisplay.cpp color manipulation using QPallet for greater consistency with Qt best practices
+
+## Version 0.1
+2008 Feb 25
+ * First numbered version, still learning how to build the GUI structure, basic ISIS interaction, and logging.  Learning Qt as I go...
+
+
