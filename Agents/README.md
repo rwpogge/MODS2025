@@ -2,7 +2,7 @@
 
 This folder contains versions of the MODS data-taking system agents ported to AlmaLinux 9
 for the MODS2025 update.  These are working files that will later be integrated into a proper
-"flight" repository, first at OSU, then on the LBTO GitHub respository.
+"re-commissioning" repository at OSU then migrate to the LBTO GitHub as final "flight" repository.
 
 ## Contents
 
