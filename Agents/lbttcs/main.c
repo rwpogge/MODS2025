@@ -1,8 +1,9 @@
 /*!
   \mainpage lbttcs - Interactive LBT TCS Interface Client
 
-  \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
-  \date 2009 July 13
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
+  \date 2009 July 13 - first version
+  \date 2025 July 5 - v3.1
 
   \section Usage
 
@@ -15,7 +16,16 @@
 
   \section Introduction
 
-  ...
+  lbttcs is an ISIS client application that interfaces MODS data-taking 
+  system apps with the LBT Telescope Control System.
+
+  The LBT TCS uses ZeroC Ice for interprocess communication via their IIF 
+  (Instrument InterFace) facility. IIF is a subsystem of the TCS system.
+
+  lbttcs depends on two custom libraries: iifUtils/, which is the MODS
+  IIF interface code and is the only part of the MODS data-taking system
+  directly exposed to the IIF and ZeroC Ice, and skyUtils/ which is a
+  suite of functions for astronomical time and coordinate conversions.
 
   \section Commands
 
@@ -54,6 +64,9 @@
 2010 Sept - some changes for new TCS builds and DD entry issues [rwp/osu]
 2010 Nov - new header entries from the DD, numerous bug fixes [rwp/osu]
 2010 Dec - overhauled offsets, added useCLI to enable background operation [rwp/osu]
+
+2025 July - AlmaLinux 9 and ZeroC Ice v3.7 port [rwp/osu]
+
 </pre>
 
 */
