@@ -7,7 +7,10 @@
 #
 # This files uses the new DD name aliases for the full qualified DD names.
 # 
-# Updated: 2011 May 6 [rwp/osu]
+# Latest DD names should be on the LBTO GitHub
+#     https://github.com/LBTO/ in tcs/iif/configuration/IIF/DDNames
+# 
+# Updated: 2025 July 3 [rwp/osu]
 #
 # Telescope Pointing Information
 #
@@ -16,8 +19,7 @@
 UTC
 LST
 ParAngle
-#
-# These are side-dependent
+AirMass
 #
 L_AchievedRA
 L_AchievedDEC
@@ -31,11 +33,11 @@ AZPosition
 ELPosition
 L_DGRPosition
 #
-# Authorized Instrument ID
+# Authorized Left (SX) Instrument ID
 #
 L_Instrument
 #
-# Primary Mirror Information
+# Left (SX) Primary Mirror Information
 #
 L_M1CollX
 L_M1CollY
@@ -44,9 +46,11 @@ L_M1CollRx
 L_M1CollRy
 L_M1CollRz
 L_M1CollTemp
+L_M1CollTemp2
 L_M1AirTemp
+L_M1GlassTemp
 #    
-# Secondary Mirror Information
+# Left (SX) Secondary Mirror Information
 #
 L_M2CollX
 L_M2CollY
@@ -78,8 +82,21 @@ Temp307
 Temp308
 Temp309
 Temp310
+Temp401
+Temp402
+Temp403
+Temp404
+Temp405
+Temp406
+Temp407
+Temp408
+#
+# Observing chamber sensors
+#
+ChamberTemp
+ChamberDewPoint
 #    
-# LBT Weather Information
+# LBT Weather Information (subset)
 #
 LBTWeatherAlive
 LBTPressure
@@ -87,7 +104,7 @@ LBTTemp
 LBTHumidity
 LBTDewPoint
 #
-# Guide/Collimation System (GCS) Engineering Parameters
+# Left side (SX) Guide/Collimation System (GCS) Engineering Parameters
 #
 L_GuideRA
 L_GuideDEC

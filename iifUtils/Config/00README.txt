@@ -1,5 +1,7 @@
 LBT MODS IIF Configuration Files
-Updated: 2014 July 1 [rwp/osu]
+Original: 2014 July 1 [rwp/osu]
+
+Updated: 2025 July 5 [rwp/osu]
 
 These files are used by the lbttcs agent and the IIF ICE utilities to
 communicate with the LBT TCS, and list of parameters to retrieve
@@ -11,9 +13,7 @@ configuration file.
 
 For a complete current list of public Data Dictionary entries available, see
 
-   http://wiki.lbto.org/pub/Software/TCSsoftware
-
-and retrieve the most recent "IIF Public Data Dictionary Variable List"
+   https://github.com/LBTO/ in tcs/iif/configuration/IIF/DDNames
 
 
 lbttcs Agent Runtime Configuration File:
@@ -26,16 +26,16 @@ IIF client Configuration Files:
   in the lbttcs.ini file
 
     lbtIIF.client  -- live LBT client config for an active instrument
-    lbtSim.client  -- LBT telescope simulator (lab or LBT)
-
+    tcsSim.client  -- LBTO telescope simulator (obtain from LBTO)
+     
 LBT Data Dictionary Tables:
 
   These are selected by setting the Side parameter in the lbttcs.ini file
   to either "left" or "right"
 
-    iifDD.left  -- DD variable for Left Direct Gregorian (MODS1)
-    iifDD.right -- DD variables for Right Direct Gregorian (MODS2)
+    iifDD.left  -- DD variable for Left (SX) Direct Gregorian focal station (MODS1)
+    iifDD.right -- DD variables for Right (DX) Direct Gregorian focal station (MODS2)
 
 ------------------------------
 R. Pogge, OSU Astronomy Dept.
-pogge@astronomy.ohio-state.edu
+pogge.1@osu.edu

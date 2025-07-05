@@ -2,9 +2,9 @@
 # The client reads this property to create the reference to the
 # "Dirt" object in the server.
 #
-# This is the live LBT IIF on Mt. Graham
+# This is for the OSU Lab simulator system in Columbus
 #
-Factory.Proxy=Factory:tcp -p 10000 -h iif #-t timeout(milliseconds)
+Factory.Proxy=Factory:tcp -p 10000 -h mods3 #-t timeout(milliseconds)
 
 #
 # Default proxy name, instrument ID, and focal station
