@@ -42,13 +42,25 @@ The version used when this repository was started.
 
 ## Version 1.16.x
 2011 Aug 11
- * Large number of modifications and additions derived from MODS1 on-sky commissioning activities.
+ * Large number of modifications and additions derived from MODS1 on-sky commissioning activities, first release after summer shutdown activities.
    * Put in additional safeties for IEB/IUB power controls
    * Env monitoring for the IE now handled by the modsenv agent rather than bothering the IE
    * Many small tweaks, patches, and bug fixes have been applied.
  * Dashboard control panel reworked to make some functions monitor instead of active controls to prevent careless observers from badly misconfiguring the instrument (instconfig is now high level)
  * Changes to status to ensure correct filenames pending the September 2011 science verification run and IC code v6.0 implementation.
 
+## Version 1.5 through 1.15
+2010 Nov to 2011 June
+ * Many versions during on-sky/on-telescope commissioning.  Mostly reactive so was not keeping detailed releases.  Revisions and updates were coming at a pace of 2 per observing run (one before the start, one after the run was complete, occasionally mid-run if something important).
+   
+## Version 1.3
+2010 Oct 15
+ * Version used during first-light with MODS1, now read/write operations with the live LBT TCS, changes drive by changes in the lbttcs agent which is the only program directly facing the LBT TCS.
+
+## Version 1.1
+2010 Aug 30
+ * First version of the GUI used for MODS1 post-installation on the telescope, reacting to development of the LBT TCS and data dictionary, but only in readonly mode.
+   
 ## Version 1.0 
 2010 Feb 10
  * First 1.0 release following the successful MODS1 Laboratory Acceptance Review in Columbus in January 2010. Version incorporated numerous changes from the lab testing version at OSU, and was locked down to be used again when MODS1 is re-integrated in the mountain instrument lab during summer 2010.
