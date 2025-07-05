@@ -47,8 +47,9 @@ code instead of the initial testing versions using our `iifres` hack.
 
 The .ice files are compiled using the slice2cpp program installed along
 with the ZeroC Ice code:
- > slice2cpp Factory.ice
- > slice2cpp IIFServer.ice
-
+<pre>
+ slice2cpp Factory.ice
+ slice2cpp IIFServer.ice
+</pre>
 will generate `Factory.cpp/.h` and `IIFServer.ccp/.h` files that must be copied into the `iifUtils` main directory before
 compiling the `libiifutils` library.
