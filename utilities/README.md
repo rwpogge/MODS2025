@@ -1,9 +1,11 @@
 # MODS Utility Libraries
 
-**Updated: 2025 June 19 [rwp/osu]**
+**Updated: 2025 July 5 [rwp/osu]**
 
-Various libraries we use in common across core MODS codes, plus
-some Retired code staged for eventual deletion.
+Various libraries we use in common across core MODS data-taking system codes.
+
+This is work in progress while the MODS2025 AlmaLinux 9 port is proceeding.  Expect frequent changes 
+until we gather all these various bits together into the flight repository...
 
 ## Libraries
 
