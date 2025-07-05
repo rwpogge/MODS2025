@@ -1,0 +1,11 @@
+#!/bin/csh
+#
+
+setenv CDATE `date +'%Y-%b-%d'`
+setenv CTIME `date +'%T'`
+#
+# compile with time and date of compile
+make -f Makefile.build "COMPDATE=$CDATE" "COMPTIME=$CTIME" $1
+mv -f *.o ../obj
+exit
+# Thank you
