@@ -1,0 +1,78 @@
+#
+# Makefile for libagwutils (AGW) API library
+#
+# Build the package using the "build" script not with make.
+#
+# OSU Astronomy Dept. Computer Staff
+# staff@astronomy.ohio-state.edu
+# Last Modified 2005 May 05
+#
+# Versions:
+#   v1.0 - 2005 May 05 - first version of the general library [osu/isl]
+#
+#  Note that the backslash character has been used at the end of each line
+#  to indicate continuation.
+#
+# 2025 June 19 - AlmaLinux 9 port [rwp/osu]
+#
+# Simulator on=1, off=0
+#
+SIM = 0
+#
+ROOTDIR     = ..
+ifeq ($(SIM),0)
+ROOTDIR     = /home/dts/mods
+endif
+
+VERSION     = AGWUtils v1.3
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+ISISDIR     = /home/dts/ISIS
+
+INCS        = -I$(ROOTDIR)/include -I$(ISISDIR)/lib
+
+OBJLIB      = 
+
+VFLAGS      = -DTTY_VERSION='"$(VERSION)"' -DTTY_COMPDATE='"$(COMPDATE)"' \
+              -DTTY_COMPTIME='"$(COMPTIME)"' -DSIMULATOR=$(SIM)
+
+CFLAGS 	=  -w -D_REENTRANT -pthread -c -DLINUX
+
+OBJS        =  	../obj/agwapi.o MODSAgwTC.o \
+	 initTrans.o AGWtoSFP.o SFPtoAGW.o  CCDtoAGW.o CCDtoSFP.o \
+	mods_getxy.o mods_home.o mods_setxy.o mods_getfocus.o \
+	mods_setfocus.o mods_getfilter.o mods_setfilter.o mods_getstatus.o \
+	mods_geterrormsg.o startGetErrors.o mods_getposition.o \
+	mods_setposition.o agwcu.o mods_init.o agwinit.o \
+	drift.o driftvec.o reset.o \
+	center.o mods_timefuncts.o calib.o mods_abort.o
+
+.c.o:        
+	    $(CC) $(INCS) $(CFLAGS) $(VFLAGS) $*.c
+
+all:        libagwutils.so libagwutils.a 
+
+libagwutils.so: $(OBJS) $(OBJLIB)
+		$(LD) -r -o libagwutils.so $(OBJS) $(OBJLIB)
+		\cp libagwutils.so ../lib
+		\mv libagwutils.so ../obj
+
+libagwutils.a:  $(OBJS) $(OBJLIB)
+	    	$(AR) cr libagwutils.a  $(OBJS) $(OBJLIB)
+	    	ranlib libagwutils.a
+	    	\mv libagwutils.a ../lib
+
+ifeq ($(SIM),0)
+	\cp ../lib/libagwutils.a $(ROOTDIR)/ulib/
+	\cp ../obj/libagwutils.so $(ROOTDIR)/ulib/
+	\cp ../obj/libagwutils.so $(ROOTDIR)/obj/
+	\cp ../obj/agwapi.o $(ROOTDIR)/obj/
+endif
+	/bin/rm -f *.o
+
+clean:
+	    /bin/rm -f libagwutils.a *.o
+install:
+#	    \cp libagwutils.a /usr/local/lib/libagwutils.a
+#	    \cp libagwutils.so /usr/local/lib/libagwutils.so
+
