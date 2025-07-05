@@ -7,5 +7,5 @@ for the MODS2025 update.  These are working files that will later be integrated 
 ## Contents
 
  * `lbttcs` - LBT Telescope Control Interface agent.  Built on ZeroC Ice v3.7 and LBT TCS Build 2025X
- * `modsenv` - MODS environmental sensor logger. Uses hdf5 for LBT-compatible telemetry logs (work in progress)
+ * `modsEnv` - MODS environmental sensor logger. Uses hdf5 for LBT-compatible telemetry logs (work in progress)
 
