@@ -1,0 +1,42 @@
+lbttcs Agent Exit Status Codes:
+Updated: 2012 Sept 16 [rwp/osu]
+
+Normal:
+    0 = Execution terminated normally
+
+Internal Errors:
+  1x = Program runtime error:
+       10 = Command-line syntax error
+       11 = Could not load the runtime configuration file
+
+  2x = ISIS client/server fault:
+       20 = ISIS server connection initialization failed
+       21 = ISIS client socket initialization failed
+
+  3x = IIF/ICE interface fault:
+       30 = ICE communications initialization failed
+
+Relevant System Exit Codes (see /usr/include/bits/signum.h):
+
+  134 = program exited after receiving the SIGABRT (abort) signal
+  137 = program exited after receiving the SIGKILL (terminate immediately) signal.
+  143 = program exited after receiving the SIGTERM (terminate) signal.
+
+The SIGABRT signal is emitted when the Ice::ConnectionRefusedException is raised. 
+If the IIF is aborted while the lbttcs is still running, the next TCS query will 
+raise this exception and the lbttcs agent will exit with status 134 (128+SIGABRT).  
+Similarly, if the lbttcs is started before the IIF is available, the first query
+will raise this exception and then exit with code 134.
+
+If the lbttcs agent is terminated by kill or killall (e.g., by "mods1 stop lbttcs"), 
+exit status will be 143 (128+SIGTERM).
+
+SIGKILL should be rare, and cannot be trapped.
+
+Note: exit() emits 128+<signum> when termination is caused by receipt of
+      a signal.
+
+------------------------------
+R. Pogge, OSU Astronomy Dept.
+pogge@astronomy.ohio-state.edu
+
