@@ -9,4 +9,4 @@ Do not make any modifications of these programs, they are here for reference not
 ## Utility Programs
 
  * modsEnv - MODS environmental sensor logger agent
- * lbttcs - LBT/MODS telescope interface agent
+
