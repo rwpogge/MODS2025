@@ -3,6 +3,11 @@ Original Build: 2009 June 15
 
 Last Build: 2025 July 5
 
+## Version 3.1.0: 2025 June
+ * AlmaLinux 9 port and updates for the MODS2025 Archon CCD controller upgrade started
+ * System built on AlmaLinux 9, a few minor changes.
+ * Major cleanup of the code base, retiring unused code and removing from the main code tree.  Structure being prepared for revision control using GitHub.
+
 ## Version 3.0.5: [2016-01-24]
  * race condition in cmd_slitmask().  Added a 100ms sleep between the select and position query, like in cmd_mselect(), to fix [rwp]
 
