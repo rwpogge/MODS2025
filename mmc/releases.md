@@ -48,64 +48,48 @@ Last Build: 2025 July 5
  * Corrected typo from NOCONN to NOCOMM
  * Corrected an error in commands.c when inserting a mask. It was giving message "Inserting mask 0" which is incorrect. It should give mask that was selected. "Inserting Mask 5" for example. 
 
-## Version 
+## Version 2.5.0-1: [02-01-10] code fix and patch
+ * Fixed GRATING reset/initialize problem.
+ * Reworked threads, and removed a non-closing FD condition.
+ * Major removal of shutdown(FD) and replaced with a close(FD).
 
-## Version 
+## Version 2.4.3: [01-11-10] patch
+ * Fixed the istatus VFLAT reporting format error.
 
+## Version 2.4.2: [01-06-10] patch
+ * Added patches for the AGWFILT busy.
+ * Changed cIMCS information(status) and added commands GAIN, AVERAGE, QCSAMP, QCMIN, OPEN, CLOSE
+ * AGw mechanisms move in parallel.
 
+## Version 2.4.1: [12-31-09] patch
+ * AGw would not respond to commands ( bug fixed )
+ * Added patches for the AGW STEP parameter and range limits.
+ * STEP range limits for xCOLFOC, xCOLTTFy. 
+ * Increased backlash velocity in PLC code from VI=0.5 to VI=2.0.
 
+## Version 2.4.0: [12-22-09] code fix
+ * None beta code. Saved as running system.
 
-mmc_1.0.0: [6-15-2009] BETA code
-        * Initial mods system.
+## Version 2.3.1: [12-18-09] patch
+* VFLAT Old FLAT3, with a parameter(power 1..11).
+* QTH1 and QTH2 Old FLAT1 and FLAT2 name change. Mentioned in previous version, but never included as a patch.
+* Removing any and all useless code and/or comments. (clean)
+* Added the code for checking both limits CW and CCW for agwServer
 
-mmc_2.1.0: [09-10-09] code fix
-        * UTIL system with all it's associate tasks.
-        * STARTUP and all associate tasks.
+## Version 2.3.0: [11-01-09] code fix
+ * Shared memory modified for the new IMCS (data received from HEB). rimcs.cpp and bimcs.cpp reworked to accept the new shared memory addresses.
+ * redIMCS.cpp and blueIMCS.cpp are new tasks to talk to the HEB.
+ * ABORT ALL Added for emergency stops.
+ * LLB WAGO address changes (515 to 517) 515 is now the VFLAT power parameter, and 517 is the switch for Lamps and Lasers ON/OFF. No WAGO address change on vislaser or irlaser power.
+ * VFLAT Old FLAT3, with a parameter(power 1..11).
+ * QTH1 and QTH2 Old FLAT1 and FLAT2 name change.
 
-mmc_2.2.0: code fix
-        * First non-beta version. [10-01-09]
+## Version 2.2.0: code fix
+ * First non-beta version. [10-01-09]
 
-mmc_2.3.0: [11-01-09] code fix
-        * Shared memory modified for the new IMCS (data received from HEB).
-          rimcs.cpp and bimcs.cpp reworked to accept the new shared memory 
-          addresses.
-        * redIMCS.cpp and blueIMCS.cpp are new tasks to talk to the HEB.
-        * ABORT ALL Added for emergency stops.
-        * LLB WAGO address changes (515 to 517) 515 is now the VFLAT power 
-          parameter, and 517 is the switch for Lamps and Lasers ON/OFF.
-          No WAGO address change on vislaser or irlaser power.
-        * VFLAT Old FLAT3, with a parameter(power 1..11).
-        * QTH1 and QTH2 Old FLAT1 and FLAT2 name change.
+## Version 2.1.0: [09-10-09] code fix
+ * UTIL system with all it's associate tasks.
+ * STARTUP and all associate tasks.
 
-mmc_2.3.1: [12-18-09] patch
-        * VFLAT Old FLAT3, with a parameter(power 1..11).
-        * QTH1 and QTH2 Old FLAT1 and FLAT2 name change.
-          mention in previous version, but never included as a patch.
-        * Removing any and all useless code and/or comments. (clean)
-        * Added the code for checking both limits CW and CCW for agwServer
-
-mmc_2.4.0: [12-22-09] code fix
-        * None beta code. Saved as running system.
-
-mmc_2.4.1: [12-31-09] patch
-        * AGw would not respond to commands ( bug fixed )
-        * Added patches for the AGW STEP parameter and range limits.
-        * STEP range limits for xCOLFOC, xCOLTTFy. 
-        * Increased backlash velocity in PLC code from VI=0.5 to VI=2.0.
-mmc_2.4.2: [01-06-10] patch
-        * Added patches for the AGWFILT busy.
-        * Changed cIMCS information(status) and added commands GAIN,AVERAGE,
-          QCSAMP,QCMIN,OPEN,CLOSE
-        * AGw mechanisms move in parallel.
-mmc_2.4.3: [01-11-10] patch
-        * Fixed the istatus VFLAT reporting format error.
-mmc_2.5.0-1: [02-01-10] code fix and patch
-        * Fixed GRATING reset/initialize problem.
-        * Reworked threads, and removed a non-closing FD condition.
-        * Major removal of shutdown(FD) and replaced with a close(FD).
-
-
-
-
-
-
+## Version 1.0.0: [6-15-2009] BETA code
+ * Initial mmc system for MODS1 lab integration and testing.
