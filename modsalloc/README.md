@@ -20,7 +20,7 @@ Compile in place as follows as user "dts":
 This puts a copy of the modsalloc executable in /home/dts/mods/bin
 
 
-## Install System Service
+## Install the service
 
 We install modsalloc as a system service executed automatically at
 boot-time using systemd.  This is the modern way to do this. The
@@ -29,16 +29,16 @@ deprecated across Linux systems.
 
 Logged in as root (or sudo):
 <pre>
-   cp /home/dts/mods/modsalloc/modsalloc.service /usr/local/lib/systemd/system/
+% cp /home/dts/mods/modsalloc/modsalloc.service /usr/local/lib/systemd/system/
 </pre>
 enable for boot-time execution:
 <pre>
-   systemctl enable /usr/local/lib/systemd/system/modsalloc.service
+% systemctl enable /usr/local/lib/systemd/system/modsalloc.service
 </pre>
 
 this reports
 <pre>
-  Created symlink /etc/systemd/system/multi-user.target.wants/modsalloc.service → /usr/local/lib/systemd/system/modsalloc.service.
+Created symlink /etc/systemd/system/multi-user.target.wants/modsalloc.service → /usr/local/lib/systemd/system/modsalloc.service.
 </pre>
 Then on reboot the modsalloc service is started automatically
 
