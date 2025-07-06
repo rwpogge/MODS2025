@@ -1,6 +1,14 @@
 # MODS2025 Release Notes
 Last Release: 2024 Aug 14
 
+## Version 1.2.0 - 2025 June
+ * Start of AlmaLinux 9 port in earnest
+ * Porting MODS agw and mmc (IE) server codes
+ * Porting MODS IIF/TCS codes
+ * Re-writing IMCS codes to use WAGO-based quad cell readout electronics in the Archon Head Electronics Boxes
+ * Replacing proprietary fieldtalk libraries for modbus/tcp interaction with WAGO with open-source libmodbus
+ * Major overhaul of code trees and preparing to migrate into GitHub for future revision control and handover to LBTO
+
 ## Version 1.1.2
 Wednesday, August 14th, 2024
 
