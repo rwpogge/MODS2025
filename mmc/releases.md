@@ -25,7 +25,28 @@ Last Build: 2025 July 5
 ## Version 3.0.1: [2010-10-20]
  * Synch of code from LBT after the MODS1 September AGw commissioning run.  Changes mostly transparent [rwp]
 
-## Version 
+## Version 3.0.0: [04-01-10]
+**Major code revision with a number of patch and code changes**
+ * Fixed thread leak. Major change in thread_clients.
+ * AGWFOC changed to AGWFS
+ * GPFOCUS reply message has been changed from:
+   <pre>
+   DONE: GPFOCUS AGWFOCUS=0.000
+     to
+   DONE: GPFOCUS AGWFOCUS=0.000 AGWFS=0.000 AGWFS0=38.500 AGWYS=0.000
+   </pre>
+ * BARCODE block of code is commented out so inserting mask was not sticking out. isisStatus code for reporting this has been moved outside of BARCODE block.
+ * mmcLOGGER rework for timestamp logging.
+ * All Temperature sensors except for HEB's have names:
+   * IEB_R: IEBTEMPR, IEBGRT_R, TAIRTOP, TAIRBOT
+   * IEB_B: IEBTEMPB, IEBGRT_B, TCOLLTOP, TCOLLBOT Have been added to all calling verbs including the ISTATUS verb and the mlc.c function
+   * IUB: GSPRES, GSTEMP, GRPRES, GRTEMP, IUBTAIR, AMBTEMP, AGHSTEMPand they have been added to all calling verbs and the ISTATUS module in the commands.c function.
+ * The ESTATUS verb has been added the RESET module in the commands.c function.
+ * Rick Pogge made some changes to commands.c at LBT which were copied to OSU mods1 and mods4 computers
+ * Added xxxxINFO=string to ISTATUS [R|B] query command.
+ * Change mlcRecover.cpp and params.h to redirect path for tables to /home/mods/Config/MODS1/*.tab
+ * Corrected typo from NOCONN to NOCOMM
+ * Corrected an error in commands.c when inserting a mask. It was giving message "Inserting mask 0" which is incorrect. It should give mask that was selected. "Inserting Mask 5" for example. 
 
 ## Version 
 
@@ -83,36 +104,7 @@ mmc_2.5.0-1: [02-01-10] code fix and patch
         * Reworked threads, and removed a non-closing FD condition.
         * Major removal of shutdown(FD) and replaced with a close(FD).
 
-mmc_3.0.0: [04-01-10] code revision with a number of patch and code changes
-        * Fixed thread leak. Major change in thread_clients.
-        * AGWFOC changed to AGWFS
-        * GPFOCUS reply message has been changed from:
-          DONE: GPFOCUS AGWFOCUS=0.000
-          to:
-          DONE: GPFOCUS AGWFOCUS=0.000 AGWFS=0.000 AGWFS0=38.500 AGWYS=0.000
-        * BARCODE block of code is commented out so Inserting mask was 
-          not bleeding out. isisStatus code for reporting this has been
-          moved outside of BARCODE block.
-        * mmcLOGGER rework for timestamp logging.
-        * All Temperature sensors except for HEB's have names:
-          IEB_R: IEBTEMPR, IEBGRT_R, TAIRTOP, TAIRBOT
-          IEB_B: IEBTEMPB, IEBGRT_B, TCOLLTOP, TCOLLBOT
-          Have been added to all calling verbs including the ISTATUS verb 
-          and the mlc.c function
-          IUB: GSPRES, GSTEMP, GRPRES, GRTEMP, IUBTAIR, AMBTEMP, AGHSTEMP
-          and they have been added to all calling verbs and the ISTATUS
-          module in the commands.c function.
-        * The ESTATUS verb has been added the RESET module in the commands.c
-          function.
-        * Rick Pogge made some changes to commands.c at LBT which were copied
-          to OSU mods1 and mods4
-        * Added xxxxINFO=string to ISTATUS [R|B] query command.
-        * Change mlcRecover.cpp and params.h to redirect path for tables.
-          /home/mods/Config/MODS1/*.tab
-        * Corrected typo from NOCONN to NOCOMM
-        * Corrected an error in commands.c when inserting a mask. It was giving
-          message "Inserting mask 0" which is incorrect. It should give mask
-          that was selected. "Inserting Mask 5" for example. 
+
 
 
 
