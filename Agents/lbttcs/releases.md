@@ -15,10 +15,16 @@ Last Build: 2025 July 5
  * Binocular telescope control implemented starting with LBT IIF TCS Build 2015B.
  * Major revisions, including the new bc (binocular control) command for binocular presets
  * Will test live with MODS1 and MODS2 after summer shutdown
+ * Corresponds to the last major build of `iifUtils`
+
+While LUCI2 and MODS2 were on the telescope in late 2013 and early 2014, respectively, LBTO was not yet ready to operate in true binocular mode.  We commissioned
+both LUCI2 and MODS2 and one-eyed instruments, being unable to co-point or guide both sides of the telescope until 2015.  Development of a truly binocular
+version of iifUtils and lbttcs began in July 2014.
 
 ## Version 2.11 [2013 Nov 16]
  * recompiled due to change in OffsetPointing() behavior
  * yet more undocumented changes in IIF behavior with recent TCS builds.  [rwp/osu]
+ * Last revision to the flight lbttcs before installation of MODS2 in spring 2014.
 
 ## Verision 2.10 [2013 Sept 23]
  * recompile with changes to iifUtils library to satisfy a new requirement for no-value for the filter type and color type in SetStars() [rwp/osu]
