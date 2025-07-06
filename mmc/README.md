@@ -8,19 +8,15 @@ Ported to AlmaLinux 9.x in 2025 for the MODS2025 CCD controller and system upgra
 
 ## Overview
 
-This is the MODS mechanism control (mmc) server.  This code must be run
-on a properly configured MODS linux server that has the `modsalloc`
+This is the MODS mechanism control (mmc) server, aka the "IE" host for MODS.  This code must be run on a properly configured MODS linux server that has the `modsalloc`
 shared memory facility installed.
 
-The requirement is one and only one MODS linux server per MODS
-instance (i.e., one each for MODS1 and MODS2). A hot spare
-machine may be used if care is taken.
+The requirement is one and only one mmcService running per MODS instance (i.e., one each for MODS1 and MODS2).
 
-The `mmcService` program will identify on an ISIS network as
-a node named 'm1.ie' or 'm2.ie' for MODS1 or MODS2, respectively.
-`mmcService runs on PORT 10435. If you must run with a port other 10435, 
-change the PORT define in modscomm.h file in the include directory, and
-recompile all codes that use this interface.
+The `mmcService` program will identify on an ISIS network as a node named 'm1.ie' or 'm2.ie' for MODS1 or MODS2, respectively. `mmcService runs on PORT 10435. If you must run with a port other 10435,  change the PORT define in modscomm.h file in the include directory, and recompile all codes that use this interface.
+
+The use of UDP port bindings will usually prevent users from running a second instance trying to bind the same port on the same machine.  However, if hot spare machines
+are live on the same network, care should be taken to make sure you cannot run a conflicting mmcService instance on another machine.  
 
 ## Code
 
