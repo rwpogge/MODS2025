@@ -14,8 +14,8 @@ IMSC agents and TclTk scripts that run the IMCS tools like the
 
 Compile in place as follows as user "dts":
 <pre>
-   cd /home/dts/mods/modsalloc
-   ./build
+% cd /home/dts/mods/modsalloc
+% ./build
 </pre>
 This puts a copy of the modsalloc executable in /home/dts/mods/bin
 
