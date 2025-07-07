@@ -10,5 +10,5 @@ for the MODS2025 update.  These are working files that will later be integrated 
  * `modsEnv` - MODS environmental sensor logger. Uses hdf5 for LBT-compatible telemetry logs (work in progress)
  * `modsHEB` - MODS Archon Head Electronics Box (HEB) agent - coming soon
  * `modsCCD` - MODS Archon "IC" agent - coming soon
- * `dataMan` - MODS data manager (?)
+ * `dataMan` - MODS data manager - coming later
 
