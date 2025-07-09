@@ -4,7 +4,7 @@
 #
 # This is the live LBT IIF on Mt. Graham
 #
-Factory.Proxy=Factory:tcp -p 10000 -h iif #-t timeout(milliseconds)
+Factory.Proxy=Factory:tcp -p 10000 -h iif.mountain.lbto.org #-t timeout(milliseconds)
 
 #
 # Default proxy name, instrument ID, and focal station
