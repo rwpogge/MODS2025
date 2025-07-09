@@ -127,7 +127,7 @@ mods_OpenIceComm(char *propsRoot, int argc, char *argv[])
 char
 *mods_error()
 {
-  char errMsg[1024];
+  static char errMsg[1024];
   if (iifcount > 0) {
     strcpy(errMsg,iifmsgs[0]);
     for (int i=1;i<iifcount;i++)
