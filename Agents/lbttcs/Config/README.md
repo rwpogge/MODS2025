@@ -2,7 +2,7 @@
 
 **Original: 2014 July 1 [rwp/osu]**
 
-**Updated: 2025 July 5 [rwp/osu]**
+**Updated: 2025 July 9 [rwp/osu]**
 
 These files are used by the lbttcs agent and the IIF ICE utilities to
 communicate with the LBT TCS, and list of parameters to retrieve
