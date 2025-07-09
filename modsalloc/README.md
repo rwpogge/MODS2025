@@ -80,8 +80,16 @@ type
 <pre>
 % vueinfo ipmap
 </pre>
-If the shared memory segment is active, you'll see the IP address map for the data-taking system elements (or a lot of blanks if the system hasn't been run
-since the last reboot.  If shared memory is not initialized, you'll get the error message:
+If the shared memory segment is active, you'll see the IP address map for the data-taking system elements, or a lot of blanks if the system hasn't been run
+since the last reboot for example:
+<pre>
+% vueinfo ipmap
+IEB0 [ML1],  ,  BUSY[0],  HOST[0])
+IEB0 [ML2],  ,  BUSY[0],  HOST[0])
+IEB0 [ML3],  ,  BUSY[0],  HOST[0])
+...
+</pre>
+However, if shared memory is not initialized, you'll get the error message:
 <pre>
 shm_att: translating key failed: No such file or directory
 </pre>
