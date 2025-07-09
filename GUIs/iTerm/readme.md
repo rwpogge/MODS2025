@@ -10,8 +10,9 @@ It connects to the local isis server with UDP sockets and handles command and re
 
 ## Build Instructions
 Run the following commands from the iTerm directory.
-1) `qmake -o Makefile`
-2) `make`
+1) `conda deactivate` - to avoid conflicts with the anaconda3 qmake
+2) `qmake -o Makefile`
+3) `make`
 
 ## Usage Instructions
 Run the executable with the following optional command line arguments.
