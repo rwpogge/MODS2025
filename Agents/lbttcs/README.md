@@ -16,6 +16,15 @@ ZeroC slice files needed for the interface are for TCS "Build 2025X" on the LBTO
 files, and process using `slice2cpp`.  These are in `iifUtils` which is the MODS-specific wrappers for
 the LBTO IIFServer calls.
 
+## Runtime Configuration Files
+
+The `lbttcs` agent requires two (2) runtime configuration files:
+ * `lbttcs.ini` - agent runtime configuration file
+ * `lbtIIF.client` - IIF client configuration info
+Both of these are assumed to live in a protected configuration space, like `/home/dts/Config/IIF`
+that can't be changed without being logged in as the privileged data-taking system (dts) user
+(or root).  
+
 ## Update Notes
 
 ### LBTO slice files
