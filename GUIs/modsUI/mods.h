@@ -11,8 +11,8 @@
 
 // Runtime files and paths
 
-#define MODS_BASE_PATH    "/home/dts/MODS2025"              //!< Runtime base path
-#define MODS_INI_FILE     "/home/dts/Config/modsUI.ini"     //!< default MODS ini file
+#define MODS_BASE_PATH    "/home/dts/"     //!< Runtime base path
+#define MODS_INI_FILE     "modsUI.ini"     //!< default MODS ini file in MODS_BASE_PATH
 
 // MODS dual-instrument array-indexes (convenience parameters)
 
