@@ -4,21 +4,20 @@
 
 **Updated: 2025 July 9 [rwp/osu]**
 
-These files are used by the lbttcs agent and the IIF ICE utilities to
-communicate with the LBT TCS, and list of parameters to retrieve
-telescope and observatory information from the LBT Data Dictionary.
+These files are used by the lbttcs agent and the IIF ICE utilities to communicate with the LBT TCS, and list of parameters to retrieve telescope and observatory information from the LBT Data Dictionary.
 
-These need to be copied into the relevant ~mods/Config/IIF/ folder,
-and setup as either MODS1 or MODS2 as needed in the lbttcs.ini runtime
+These need to be copied into the relevant /home/lbt/Config/IIF/ folder, and setup as either MODS1 or MODS2 as needed in the lbttcs.ini runtime
 configuration file.
 
-For a complete current list of public Data Dictionary entries available, see
-https://github.com/LBTO/ in tcs/iif/configuration/IIF/DDNames
+For a complete current list of public Data Dictionary entries available, see https://github.com/LBTO/ in tcs/iif/configuration/IIF/DDNames
 
 ## Config directory
 
-For a "flight" MODS data-taking system, the `lbttcs` and related data-taking
-system agents will look for runtime configuration files is `/home/mods/Config/IIF`
+For a "flight" MODS data-taking system, the `lbttcs` and related data-taking system agents will look for runtime configuration files in
+the `/home/mods/Config/IIF` folder.  Each of the two configuration file types has `_MODS1` and `_MODS2` variants.
+
+To install the configuration files, copy the MODS1 or MODS2 variant as needed into `lbttcs.ini` and `lbtIIF.client` (or make symbolic links).
+Always avoid editing the files if possible.
 
 ### lbttcs Agent Runtime Configuration Files:
 
@@ -26,8 +25,6 @@ system agents will look for runtime configuration files is `/home/mods/Config/II
    * `lbttcs_MODS1.ini` - MODS1 installed at SX direct gregorian
    * `lbttcs_MODS2.ini` - MODS2 installed at DX direct gregorianf
   
-When setting up MODS1 or MODS2, copy the appropriate lbttcs_MODSn.ini file to lbttcs.ini (or make a symlink).
-
 ### IIF client Configuration Files:
 
 These are selected by setting the `PropFile` parameter (without .client) in the `lbttcs.ini` file
