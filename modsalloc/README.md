@@ -40,11 +40,11 @@ this reports
 <pre>
 Created symlink /etc/systemd/system/multi-user.target.wants/modsalloc.service → /usr/lib/systemd/system/modsalloc.service.
 </pre>
-Then on reboot the modsalloc service is started automatically.  The first time out (before the first reboot), type
+Then on reboot the modsalloc service is started automatically. Before the first reboot, you need to start the service:
 <pre>
 % sudo systemctl restart modsalloc
 </pre>
-To start the first time
+the first time.  See [Testing](#Testing) to verify it is working
 
 ### Post-installation checks
 
@@ -81,4 +81,7 @@ type
 % vueinfo ipmap
 </pre>
 If the shared memory segment is active, you'll see the IP address map for the data-taking system elements (or a lot of blanks if the system hasn't been run
-since the last reboot.  If shared memory is not initialized, you'll get an error message.
+since the last reboot.  If shared memory is not initialized, you'll get the error message:
+<pre>
+shm_att: translating key failed: No such file or directory
+</pre>
