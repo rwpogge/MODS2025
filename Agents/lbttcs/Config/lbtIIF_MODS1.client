@@ -1,15 +1,13 @@
 #
-# The client reads this property to create the reference to 
-# IIF Factory class.
+# The client reads this property to create the reference to the
+# "Dirt" object in the server.
 #
-# This is for the TCS simulator running at OSU.
+# This is the live LBT IIF on Mt. Graham
 #
-Factory.Proxy=Factory:tcp -p 10000 -h 192.168.139.30 #-t timeout(milliseconds)
+Factory.Proxy=Factory:tcp -p 10000 -h iif.mountain.lbto.org #-t timeout(milliseconds)
 
 #
-# Default proxy name, instrument ID (is always MODS), and focal station
-#
-# This is for MODS1 on DG left
+# Default proxy name, instrument ID, and focal station
 #
 MODS.ProxyName=MODS1
 MODS.InstrumentID=MODS
@@ -21,15 +19,15 @@ MODS.FocalStation=directGregorian left
 #Ice.Warn.Connections=1
 
 #
-# We want a faster ACM for this client. Deprecated Ice v3.7
+# We want a faster ACM for this client.
 #
-#Ice.ACM.Client=10
+Ice.ACM.Client=10
 
 #
 # Multi-threading support
 #
 Ice.ThreadPool.Client.Size=5
-Ice.ThreadPool.Client.SizeWarn=7
+Ice.ThreadPool.Client.SizeWarn=5
 Ice.ThreadPool.Client.SizeMax=10
 
 #
