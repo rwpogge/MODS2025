@@ -79,7 +79,8 @@ Client::Client( const QString &host, const QString &port )
   socket = new QTcpSocket();
   connect( socket, SIGNAL(connected()), SLOT(socketConnected()) );
   connect( socket, SIGNAL(readyRead()), SLOT(socketReadyRead()) );
-  connect( socket, SIGNAL(error(QAbstractSocket::SocketError)),
+  // error() now errorOccurred() in Qt6 [rwp/osu]
+  connect( socket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
 	   this, SLOT(socketErr(QAbstractSocket::SocketError)));
 
   // Connect to microLynx controller
