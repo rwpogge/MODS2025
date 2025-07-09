@@ -24,8 +24,8 @@
 
 #define DEFAULT_MYID      "TC"  //!< default client ISIS node name
 #define DEFAULT_MYPORT    10801 //!< default client socket port   
-#define DEFAULT_RCFILE    (char*)"/home/mods/Config/IIF/lbttcs.ini" //!< default client runtime config file
-#define DEFAULT_LOGFILE   (char*)"/home/mods/Logs/lbttcs.log" //!< default client runtime log file (unimplemented)
+#define DEFAULT_RCFILE    (char*)"/home/dts/Config/IIF/lbttcs.ini" //!< default client runtime config file
+#define DEFAULT_LOGFILE   (char*)"/home/dts/Logs/lbttcs.log" //!< default client runtime log file (unimplemented)
 
 // Default ISIS server information (see loadconfig.c if used)
 
