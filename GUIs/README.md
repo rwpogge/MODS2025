@@ -8,8 +8,9 @@ Current Version: 3.0.0-archon (2025 July)
 
 `modsUI` is the primary user interface for the MODS spectrograph. It is written in C++ with the Qt6 GUI framework.
 
-This is the instrument dashboard GUI for each MODS.  The MODS observing scripts work
-through the GUI.  No GUI, no Observing (or only very painful, very inefficient observing).
+This is the instrument dashboard GUI for each MODS.  The MODS observing scripts work through the GUI.  
+
+No GUI, no Observing (or only very painful, very inefficient observing).
 
 Respect the MODS GUI.
 
