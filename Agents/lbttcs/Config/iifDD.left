@@ -1,82 +1,120 @@
 #
-# The tables below give the data dictionary entries corresponding to 
-# the entries in the lbtData struct. The index [side] is either 
-# 0=Left (SX) or 1=Right (DX). These are the DD names that would be 
-# passed into the SeqDD entry in the GetParameter() call.
+# The tables below give the data dictionary entries corresponding to
+# the entries in the lbtData struct.  Side-dependent entries are
+# prefixed with L_ (Left/SX) or R_ (Right/DX). These are the DD names
+# that would be passed into the SeqDD entry in the GetParameter()
+# call.
+#
+# This files uses the new DD name aliases for the full qualified DD names.
+# 
+# Latest DD names should be on the LBTO GitHub
+#     https://github.com/LBTO/ in tcs/iif/configuration/IIF/DDNames
+# 
+# Updated: 2025 July 3 [rwp/osu]
 #
 # Telescope Pointing Information
 #
-pcs.side[0].pointingStatus.achieved.achieved_RA.Radians
-pcs.side[0].pointingStatus.achieved.achieved_DEC.Radians
-pcs.pointingStatus.time_UT.UTString
-pcs.pointingStatus.time_SD.SDString
-pcs.side[0].pointingStatus.parallacticAngle
-pcs.side[0].pointingStatus.positionAngle
-pcs.side[0].pointingStatus.rotatorAngle
-pcs.side[0].pointingStatus.rotatorMode
+# These are side-independent
 #
-# GCS guide star information
+UTC
+LST
+ParAngle
+AirMass
 #
-gcs.side[0].GuideCam.GS_RA
-gcs.side[0].GuideCam.GS_DEC
+L_AchievedRA
+L_AchievedDEC
+L_PosAngle
+L_RotAngle
+L_RotMode
 #    
-# Azimuth/Altitude Encoders
-mcs.azDrive.position
-mcs.elDrive.position
+# Low-level Mount data (az/alt/rot Encoders)
 #
-# Authorized Instrument ID
-iif.side[0].authorizedInstrument
+AZPosition
+ELPosition
+L_DGRPosition
 #
-# Primary Mirror Information
-psf.side[0].primaryMirror.collimation.collimation[0]
-psf.side[0].primaryMirror.collimation.collimation[1]
-psf.side[0].primaryMirror.collimation.collimation[2]
-psf.side[0].primaryMirror.collimation.collimation[3]
-psf.side[0].primaryMirror.collimation.collimation[4]
-psf.side[0].primaryMirror.collimation.collimation[5]
-psf.side[0].primaryMirror.collimation.temperature
-#    
-# Secondary Mirror Information
-psf.side[0].secondaryMirror.collimation.collimation[0]
-psf.side[0].secondaryMirror.collimation.collimation[1]
-psf.side[0].secondaryMirror.collimation.collimation[2]
-psf.side[0].secondaryMirror.collimation.collimation[3]
-psf.side[0].secondaryMirror.collimation.collimation[4]
-psf.side[0].secondaryMirror.collimation.collimation[5]
-psf.side[0].secondaryMirror.collimation.temperature
+# Authorized Left (SX) Instrument ID
 #
-# Telescope Temperature Sensors
-ecs.instrCool.tempChan201
-ecs.instrCool.tempChan202
-ecs.instrCool.tempChan203
-ecs.instrCool.tempChan204
-ecs.instrCool.tempChan205
-ecs.instrCool.tempChan206
-ecs.instrCool.tempChan207
-ecs.instrCool.tempChan208
-ecs.instrCool.tempChan209
-ecs.instrCool.tempChan210
-ecs.instrCool.tempChan301
-ecs.instrCool.tempChan302
-ecs.instrCool.tempChan303
-ecs.instrCool.tempChan304
-ecs.instrCool.tempChan305
-ecs.instrCool.tempChan306
-ecs.instrCool.tempChan307
-ecs.instrCool.tempChan308
-ecs.instrCool.tempChan309
-ecs.instrCool.tempChan310
+L_Instrument
+#
+# Left (SX) Primary Mirror Information
+#
+L_M1CollX
+L_M1CollY
+L_M1CollZ
+L_M1CollRx
+L_M1CollRy
+L_M1CollRz
+L_M1CollTemp
+L_M1CollTemp2
+L_M1AirTemp
+L_M1GlassTemp
 #    
-# SMT Weather Information
-env.weather.smt.alive
-env.weather.smt.ambientPressure
-env.weather.smt.ambientTemperature
-env.weather.smt.humidity
-env.weather.smt.dewPoint
+# Left (SX) Secondary Mirror Information
+#
+L_M2CollX
+L_M2CollY
+L_M2CollZ
+L_M2CollRx
+L_M2CollRy
+L_M2CollRz
+L_M2CollTemp
+#
+# Telescope Structure and Air Temperature Sensors
+#
+Temp201
+Temp202
+Temp203
+Temp204
+Temp205
+Temp206
+Temp207
+Temp208
+Temp209
+Temp210
+Temp301
+Temp302
+Temp303
+Temp304
+Temp305
+Temp306
+Temp307
+Temp308
+Temp309
+Temp310
+Temp401
+Temp402
+Temp403
+Temp404
+Temp405
+Temp406
+Temp407
+Temp408
+#
+# Observing chamber sensors
+#
+ChamberTemp
+ChamberDewPoint
 #    
-# LBT Weather Information
-env.weather.lbt.alive
-env.weather.lbt.pressure
-env.weather.lbt.temperature
-env.weather.lbt.humidity
-env.weather.lbt.dewPoint
+# LBT Weather Information (subset)
+#
+LBTWeatherAlive
+LBTPressure
+LBTTemp
+LBTHumidity
+LBTDewPoint
+#
+# Left side (SX) Guide/Collimation System (GCS) Engineering Parameters
+#
+L_GuideRA
+L_GuideDEC
+L_AGWKFPReqX
+L_AGWKFPReqY
+L_AGWKFPPosX
+L_AGWKFPPosY
+L_GSXPredicted
+L_GSYPredicted
+L_GSXMeasured
+L_GSYMeasured
+L_GSCumXPredmMeas
+L_GSCumYPredmMeas
