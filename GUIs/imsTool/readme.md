@@ -1,7 +1,7 @@
 # imsTool - MicroLYNX motor controller tool
 Version: 1.3.0
 
-Author: Ray Gonzalez (ex-OSU Astronomy)
+Authors: Ray Gonzalez (ex-OSU Astronomy), R. Pogge, X. Carroll
 
 ## Overview
 imsTool is a Qt6 app that implements a basic interface GUI to communicate with an IMC MicroLYNX microstepping motorcontroller connected to a Comtrol TCP/IP serial port server on the network.
@@ -23,9 +23,10 @@ imsTool is how we update microcode on the MODS mechanism motor controllers after
 - timeMethods.h - secs, msecs, and usecs
 
 ## Build Instructions
-Run the following commands from the imsTool directory.
-1) `qmake -o Makefile`
-2) `make`
+Run the following commands from the imsTool directory:
+1) `conda deactivate` - to avoid conflicts with anaconda3 Qt stuff
+2) `qmake -o Makefile`
+3) `make`
 
 ## Usage Instructions
 Run the executable with the following optional command line arguments.
