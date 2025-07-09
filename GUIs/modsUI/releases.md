@@ -3,6 +3,11 @@ Original Build: 2009 Feb 24
 
 Last Build: 2024 Jul 8
 
+## Version 3.0.0
+2025 July 9
+
+* Start of development of the version for the Archon controller system for MODS.  New features need to be added and old features disabled, so advancing the major version number.
+
 ## Version 2.2.0
 Friday, July 8th, 2024
 
