@@ -291,7 +291,7 @@ void MainWindow::about()
   QMessageBox::about(this, tr("About the MODS Control Panel"),
   tr("MODS Control Panel version %1\n"
      "Author:\n"
-     "  R. Pogge (pogge@astronomy.ohio-state.edu)\n"
+     "  R. Pogge (pogge.1@osu.edu)\n"
      "  The Ohio State University, Dept. of Astronomy\n"
      "Version Date: %2\n"
      "Compiled with Qt%3").arg(MODS_REV_NUMBER).arg(MODS_REV_DATE).arg(QT_VERSION_STR));
