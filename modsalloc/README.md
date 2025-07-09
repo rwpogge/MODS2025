@@ -1,6 +1,6 @@
 # modsalloc - MODS shared memory sector
 
-**Updated: 2025 June 23 [rwp/osu]**
+**Updated: 2025 July 9 [rwp/osu]**
 
 ## Overview
 
