@@ -33,6 +33,6 @@ Current Version: 1.3.0
 with the MicroLYNX using the control language, or upload/download IMS command-language programs into the MicroLYNX non-volatile
 memory (NVM) registers.
 
-imsTool's most common use is to install microcode on a replacement for a MicroLYNX unit.
+imsTool's most common use is to install microcode on a replacement for a failed MicroLYNX unit.
 
 There are only 2 people in the world allowed to use imsTool.  You are likely not one of them.
