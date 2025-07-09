@@ -4,13 +4,15 @@ Version: 1.3.0
 Authors: Ray Gonzalez (ex-OSU Astronomy), R. Pogge, X. Carroll
 
 ## Overview
-imsTool is a Qt6 app that implements a basic interface GUI to communicate with an IMC MicroLYNX microstepping motorcontroller connected to a Comtrol TCP/IP serial port server on the network.
 
-imsTool is used to provide engineering-level access to an individual motor controller on a live system.  User can talk directly 
+`imsTool` is a Qt6 app that implements a basic interface GUI to communicate with an Intelligent Motion Systems MicroLYNX microstepping motorcontroller
+connected to a Comtrol TCP/IP serial port server in one of the MODS IEBs.
+
+`imsTool` provides engineering-level access to an individual MicroLYNX motor controller on a live system.  User can talk directly 
 with the MicroLYNX using the control language, or upload/download IMS command-language programs into the MicroLYNX non-volatile
 memory (NVM) registers.
 
-imsTool is how we update microcode on the MODS mechanism motor controllers after we swap out a failed MicroLYNX unit.
+imsTool's most common use is to install microcode on a replacement for a MicroLYNX unit.
 
 ## Code Overview
 - readme.md - This file
