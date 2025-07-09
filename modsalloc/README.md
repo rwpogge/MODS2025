@@ -72,3 +72,13 @@ Jul 09 11:38:05 mods2025 systemd[1]: modsalloc.service: Deactivated successfully
 </pre>
 The last line is correct, it does not stay running forever, it just needs to run once then deactivate to create th
 shared memory sector.
+
+### Testing
+
+The `vueinfo` program is used to interrogate the shared memory sector.  A quick test is to
+type
+<pre>
+% vueinfo ipmap
+</pre>
+If the shared memory segment is active, you'll see the IP address map for the data-taking system elements (or a lot of blanks if the system hasn't been run
+since the last reboot.  If shared memory is not initialized, you'll get an error message.
