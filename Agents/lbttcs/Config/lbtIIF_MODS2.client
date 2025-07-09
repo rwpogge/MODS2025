@@ -1,8 +1,5 @@
 #
-# The client reads this property to create the reference to the
-# "Dirt" object in the server.
-#
-# This is the live LBT IIF on Mt. Graham
+# IIF Client Configuration file for MODS2 at the LBT DX Direct Gregorian Focus
 #
 Factory.Proxy=Factory:tcp -p 10000 -h iif.mountain.lbto.org #-t timeout(milliseconds)
 
