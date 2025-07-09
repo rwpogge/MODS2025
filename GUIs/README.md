@@ -18,8 +18,8 @@ Respect the MODS GUI.
 
 Current Version: 2.2.0
 
-`iTerm` is a Qt6 GUI that implements a "terminal" style command-line interface (CLI) for engineering-level communicate with the MODS instrument control system 
-at the IMPv2 command protocol level (aka "bare metal").
+`iTerm` is a Qt6 GUI that implements a "terminal" style command-line interface (CLI) for engineering-level communication with the MODS 
+instrument control system at the "bare metal" IMPv2 command protocol level.
 
 It connects to the local ISIS server with UDP sockets and handles command and response traffic.
 
