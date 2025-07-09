@@ -22,12 +22,16 @@ system agents will look for runtime configuration files is `/home/mods/Config/II
 
 ### lbttcs Agent Runtime Configuration File
 
- * `lbttcs.ini` - runtime configuration file for the `lbttcs`.  Must be edited for MODS1 (left/SX side) or MODS2 (right/DX side)
+ * `lbttcs.ini` - runtime configuration file for the `lbttcs`. Two versions are provided for MODS1 and MODS2
+   * `lbttcs_MODS1.ini` - MODS1 installed at SX direct gregorian
+   * `lbttcs_MODS2.ini` - MODS2 installed at DX direct gregorian
 
 ### IIF client Configuration Files:
 
 These are selected by setting the `PropFile` parameter (without .client) in the `lbttcs.ini` file
- * `lbtIIF.client` - live LBT client config for an active instrument.  Check with LBTO personnel when editing
+ * `lbtIIF.client` - live LBT client config for an active instrument. Two versions:
+   * `lbtIIF_MODS1.client` - for MODS1 installed at SX direct gregorian
+   * `lbtIIF_MODS2.client` - for MODS2 installed at DX direct gregorian
  * `tcsSim.client` - LBTO telescope simulator (obtained from LBTO), for example running at OSU
      
 ### LBT Data Dictionary Tables:
