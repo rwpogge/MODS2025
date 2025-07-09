@@ -10,8 +10,9 @@ Longer description to follow.
 
 ## Build Instructions
 Run the following commands from the modsUI directory.
-1) `qmake -o Makefile`
-2) `make`
+1) `conda deactivate` (avoids anaconda3 qt5.x), we want qt6.6
+2) `qmake -o Makefile`
+3) `make`
 
 ## Usage Instructions
 Run the executable with the following optional command line arguments.
