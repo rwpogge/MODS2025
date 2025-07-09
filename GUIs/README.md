@@ -35,4 +35,4 @@ memory (NVM) registers.
 
 imsTool's most common use is to install microcode on a replacement for a failed MicroLYNX unit.
 
-There are only 2 people in the world allowed to use imsTool.  You are likely not one of them.
+There are only 2 people in the world allowed to use imsTool, and I am not sure who the other one is. It most likely isn't you.
