@@ -3,6 +3,12 @@ Original Build: 2009 Feb 24
 
 Last Build: 2024 Jul 8
 
+### modsUI version numbering
+
+ * Version 0.x - lab development version
+ * Version 1.x - MODS1 monocular version for commissioning and monocular science with MODS1
+ * 
+
 ## Version 3.0.0
 2025 July 9
 
