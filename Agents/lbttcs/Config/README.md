@@ -20,11 +20,13 @@ https://github.com/LBTO/ in tcs/iif/configuration/IIF/DDNames
 For a "flight" MODS data-taking system, the `lbttcs` and related data-taking
 system agents will look for runtime configuration files is `/home/mods/Config/IIF`
 
-### lbttcs Agent Runtime Configuration File
+### lbttcs Agent Runtime Configuration Files:
 
  * `lbttcs.ini` - runtime configuration file for the `lbttcs`. Two versions are provided for MODS1 and MODS2
    * `lbttcs_MODS1.ini` - MODS1 installed at SX direct gregorian
-   * `lbttcs_MODS2.ini` - MODS2 installed at DX direct gregorian
+   * `lbttcs_MODS2.ini` - MODS2 installed at DX direct gregorianf
+  
+When setting up MODS1 or MODS2, copy the appropriate lbttcs_MODSn.ini file to lbttcs.ini (or make a symlink).
 
 ### IIF client Configuration Files:
 
