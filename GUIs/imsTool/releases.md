@@ -4,7 +4,7 @@ Last Build: 2024 Jul 8
 ## Version 1.3.1 
 2025 July 9
 
-* Fixed message about <code>QObject::connect: No such signal QTcpSocket::error(QAbstractSocket::SocketError)</code> on running, problem is that with Qt6 the signal is now QTcpSocket::errorOccurred().  Changed, now not getting fault. [rwp/osu]
+* Fixed message about <code>QObject::connect: No such signal QTcpSocket::error(QAbstractSocket::SocketError)</code> on running, problem is that with Qt6 the <code>signal()</code> is now <code>QTcpSocket::errorOccurred()</code>.  Changed, now not getting fault. [rwp/osu]
 
 ## Version 1.3.0
 Monday, July 8th, 2024
