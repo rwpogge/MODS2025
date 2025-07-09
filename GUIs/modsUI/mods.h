@@ -6,8 +6,8 @@
 //
 
 #define MODS_SESSION_NAME "MODS1 Control Panel" //!< Window Name for banner
-#define MODS_REV_NUMBER   "v1.26.1-bino"       //!< MODS UI Revision number
-#define MODS_REV_DATE     "2015 Dec 31"        //!< Revision date (UTC)
+#define MODS_REV_NUMBER   "v2.0.0-bino"         //!< MODS UI Revision number
+#define MODS_REV_DATE     "2025 July 9"         //!< Revision date (UTC)
 
 // Runtime files and paths
 
