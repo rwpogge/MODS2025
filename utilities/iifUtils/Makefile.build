@@ -10,7 +10,7 @@
 #
 # Last Modification/Build: 2015 Aug 11 [rwp]
 #
-# Major update: 2025 Jul 3 - AlmaLinux 9 port [rwp/osu]
+# Major update: 2025 Jul 9 - AlmaLinux 9 port [rwp/osu]
 #
 ROOTDIR     = /home/dts/mods
 ISISDIR     = /home/dts/ISIS
@@ -26,7 +26,7 @@ OBJDIR      = ../obj
 
 # Here is where the default runtime client configuration files live
 
-CFGDIR      = /home/mods/Config/IIF
+CFGDIR      = /home/dts/Config/IIF
 
 INCS        = -I$(ISISDIR)/lib
 LIBS        = -L/lib64 -l/usr/include/Ice -l/usr/include/IceUtil
