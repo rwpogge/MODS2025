@@ -4,7 +4,7 @@ We restructured the configuration for azcam for MODS to segregate system configu
 streamline our configuration management (4 Archon controllers across 2 instruments in the same rack), and to make getting at raw science image
 transparent without exposing critical system configuration files.
 
-We use `system` as the root folder for all system-specific files
+We use `system/` as the root folder for all system-specific files
  * `archon/` for the Archon controller files (.acf and .ncf)
  * `logs/` for azcam server logs
  * `parameters/` for azcam server parameter files
