@@ -1,5 +1,9 @@
 # MODS AzCam Server
 
+Updated: 2025 July 11
+
+## Overview
+
 Our copy of Mike Lesser's `azcam` (https://github.com/mplesser/azcam) and `azcam-mods` (https://github.com/mplesser/azcam-mods).
 
 While we are leaving the core `azcam` code alone and `azcam-mods` is the focus of our development, we are   We are reserving the possiblity 
