@@ -2,7 +2,10 @@
 
 ## Purpose
 
-This repository contains the *azcam-mods* azcam environment.  It contains code and data files for the Large Binocular Telescope Observatory (LBTO) MODS camera system.
+This repository contains the *azcam-mods* azcam environment.  It contains code and data files for the Large Binocular Telescope Observatory (LBTO) 
+MODS camera system so we can operate the MODS science CCD detectors with STA Archon controllers.
+
+This is a development project for the MODS2025 upgrade.
 
 ## Installation
 
