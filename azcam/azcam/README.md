@@ -8,6 +8,17 @@ The *azcam* python package currently supports Astronomical Research Cameras, Inc
 
 AzCam is not appropriate for consumer-level cameras and is not intended to have a common API across all systems. It's primary design principle is to allow interfacing to a wide variety of custom instrumentation which is required to acquire and analyze scientific image data.
 
+## MODS2025 Project
+
+For the MODS2025 detector controller upgrade, we have made a working copy of the original azcam code from Mike Lesser's GitHub (https://github.com/mplesser)
+and are modifying the system for the MODS instruments. We are starting by trying to make no changes to the core `azcam` code, and focusing all our development
+on the `azcam-mods` code, with the hope that we do not have to disturb the core code, at least at the outset.
+
+MODS is being updated to use STA Archon controllers for the CCDs (replacing the now 20-year old OSU controllers which are reaching end of life), and 
+all computers are being updated to AlmaLinux 9.x servers, consolidating the data-taking system from 34U of rack space to 16U (including spares), and 
+modernizing integration with mountain telemetry systems among other changes. 
+
+
 ## Documentation
 
 See https://azcam.readthedocs.io.
@@ -18,9 +29,13 @@ See https://github.com/mplesser/azcam-console.git for a python package which sup
 
 ## Installation Example
 
+Example from Mike Lesser's GitHub version for reference:
+
 ```shell
 git clone https://github.com/mplesser/azcam
-git clone https://github.com/mplesser/azcam-console
-pip install -e azcam
-pip install -e azcam-console
+git clone https://github.com/mplesser/azcam-mods
+git clone https://github.com/mplesser/azcam-console [**optional**]
+python -m pip install -e ./azcam
+python -m pip install -e ./azcam-mods
+[python -m pip install -e ./azcam-console]
 ```
