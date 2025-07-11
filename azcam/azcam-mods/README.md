@@ -9,10 +9,9 @@ This repository contains the *azcam-mods* azcam environment.  It contains code a
 Download the code (usually into the *azcam* root folder such as `c:\azcam`) and install.
 
 ```shell
-cd /azcam
+cd /wherever/azcam
 git clone https://github.com/mplesser/azcam-mods
-cd azcam-mods
-pip install -e .
+python -m pip install -e ./azcam-mods
 ```
 
 ## Development Notes
