@@ -21,6 +21,15 @@ git clone https://github.com/mplesser/azcam-mods
 python -m pip install -e ./azcam-mods
 ```
 
+## Usage
+
+Launch in an ipython interactive shell for code debugging
+```shell
+ipython -i -m azcam_mods.server -- -mods1b
+```
+Otherwise, launch as a python program.
+
+
 ## Development Notes
 
 2025 Jul 8 - Starting work for the MODS Archon detector upgrade at LBTO in Summer 2025 [rwp/osu]
