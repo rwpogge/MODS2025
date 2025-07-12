@@ -11,10 +11,10 @@ Other programs can use shared memory as needed, for example the IMSC agents and 
 ## Compile
 
 Compile in place as follows as user "dts":
-<pre>
+'''shell>
 % cd /home/dts/mods/modsalloc
 % ./build
-</pre>
+'''
 This puts a copy of the modsalloc executable in /home/dts/mods/bin
 
 ## Install the service
