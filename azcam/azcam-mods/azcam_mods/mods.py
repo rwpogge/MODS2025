@@ -1,26 +1,33 @@
-"""
-Contains the MODS class for azcam.
+'''
+Defines the MODS class for azcam
 
-Updated: 2025 July 11 [rwp/osu]
+Original by Mike Lesser
+
+Updated: 2025 July 12 [rwp/osu]
 
 Additions:
     expose() takes wait boolean, default False (no-wait)
     shopen(): open the shutter
     shclose(): close the shutter
-    binning() -> ccdbin()
-    setexp() -> set_expTime()
-    camstat() -> ccdTemps()
-    readout_abort() -> abortReadout()
+    set/get_exptime(): set/get the exposure time
+    ccdTemps(): read the CCD detector and dewar temperature
+    abortReadout(): abort readout
     pctRead(): return percentage of CCD readout (inverse of pixels_remaining)
-    roiOff(): restore full-frame unbinned readout
-    set_fileroot(): set file rootname (w/o path, number, or extension)
-    get_fileroot(): get the file rootname
-    get_filename(): get the next file to be written (alias: get_nextfile())
+    set/get_roi(): set/get the CCD readout region of interest and binning factor
+    set/get_ccdbin(): set CCD binning in x and y
+    reset_roi() restore full-frame unbinned readout (alias: roi_off())
+    reset_ccdbin() restore 1x1 binning, leave ROI unchanged
+    set/get_filename(): set/get the next file to be written
+    get_nextfile(): get the name of the next file to be written (alias for get_filename)
     get_lastfile(): get the name of the last file written
     set_path() and get_path(): data path, set_ checks for validity and access
     set_expnum() and get_expnum(): set/get number of next image to be written
+    set/get_keyword(): set/get a header keyword, ensure proper sytnax
+    set/get_imageInfo(): set/get IMAGETYP and OBJECT for the next image
     obsDate(): return the observing date CCYYMMDD noon-to-noon local time
-"""
+    modsFilename(): split a filename string into dataPath, rootName, and expNum
+    
+'''
 
 import datetime
 import os
@@ -31,52 +38,124 @@ import azcam
 
 
 class MODS(object):
-    """
+    '''
     Class definition of LBT MODS.
     
     These methods are called remotely through the command server with syntax such as:
-    mods.expose 1.0 "zero" "some image title".
+     * mods.expose 1.0 "object" "some image title"
     
     Many additions over the basic methods provided by Mike Lesser's original
     draft version to provide features for the MODS spectrographs at LBT
     without having to hack the main azcam module.
     
-    Updated: 2025 July 10 [rwp/osu]
-    """
+    R. Pogge, OSU Astronomy Dept.
+    pogge.1@osu.edu
+    '''
 
     def __init__(self):
-        """
-        Creates mods tool.
-        """
+        '''
+        Instantiate a mods tool object
 
+        Returns
+        -------
+        None.
+
+        '''
+
+        # register "mods" as an azcam tool
+        
         azcam.db.mods = self
         azcam.db.tools["mods"] = self
         azcam.db.cli["mods"] = self
 
+        # Internal definitions we need.  OK to expose these as public data
+        
+        self.modsID = azcam.db.systemname
+        
+        # Image types used by MODS and expected by the LBTO data archive and 
+        # data reduction pipelines.
+        
+        self.image_types = ['object','bias','flat','dark','comp','zero']
+        
+        # shutter_dict tells the azcam exposure tool if the shutter should
+        # be open (1) or closed (0) for each allowed image_type:
+        
+        self.shutter_dict = {'object':1,
+                             'bias':0,
+                             'flat':1,
+                             'dark':0,
+                             'comp':1,
+                             'zero':0
+                             }
+        
+        # Overload the azcam allowed image types and shutter data in
+        # the exposure tool
+        
+        azcam.db.tools["exposure"].image_types = self.image_types
+        azcam.db.tools["exposure"].shutter_dict = self.shutter_dict
+        
+        # anything else?
+        
         return
+    
 
     def initialize(self):
-        """
-        Initialize AzCam system.
-        """
+        '''
+        Initialize the AzCam system
+
+        Returns
+        -------
+        None.
+
+        '''
 
         azcam.db.tools["exposure"].reset()
 
+        # overload the azcam allowed image types and shutter data
+        
+        azcam.db.tools["exposure"].image_types = self.image_types
+        azcam.db.tools["exposure"].shutter_dict = self.shutter_dict
+        
+
         return
+
 
     def reset(self):
-        """
-        Reset the exposure
-        """
+        '''
+        Reset the azcam server
+
+        Returns
+        -------
+        None.
+
+        '''
 
         azcam.db.tools["exposure"].reset()
 
+        # overload the azcam allowed image types and shutter data
+        
+        azcam.db.tools["exposure"].image_types = self.image_types
+        azcam.db.tools["exposure"].shutter_dict = self.shutter_dict
+        
         return
 
+
     def set_par(self, parameter, value):
-        """
+        '''
         Set a server parameter
-        """
+
+        Parameters
+        ----------
+        parameter : string
+            name of the parameter to set.
+        value : either float, int, or string
+            value of parameter to set
+
+        Returns
+        -------
+        None.
+
+        '''
 
         if parameter == "remote_imageserver_host":
             azcam.db.tools["exposure"].sendimage.remote_imageserver_host = value
@@ -134,7 +213,7 @@ class MODS(object):
             mods.set_roi -1 -1 100 500 -1 -1
         leaves ROI columns the same, sets rows to 100:500, binning unchanged
         
-        See also: ccdbin()
+        See also: set_ccdbin()
         
         '''
 
@@ -144,73 +223,201 @@ class MODS(object):
 
         return
     
-
-    def roiOff(self):
+    
+    def get_roi(self):
         '''
-        Turn "Off" region of interest readout and binning, restoring
-        full-frame unbinned operation.
-        
+        Get the current CCD readout region of interest (ROI) and binning factors
+
         Returns
         -------
-        str
-            return status, "OK" if ok
-        
-        '''
+        list: ints
+            6 parameters: [startCol, endCol, startRow, endRow, colBin, rowBin]
             
+        See also: set_roi(), reset_roi(), get_ccdbin()
+        '''    
+    
+        return azcam.db.tools["exposure"].get_roi()
+        
+    
+    def reset_roi(self):
+        '''
+        Resets the CCD ROI and binning to full-frame unbinned readout.
+
+        Returns
+        -------
+        None.
+
+        '''
         azcam.db.tools["exposure"].roi_reset()
         azcam.db.tools["exposure"].set_roi(-1,-1,-1,-1,1,1)
 
         return "OK"
 
+    # roi_off is an alias for reset_roi()
+    
+    roi_off = reset_roi
 
-    def set_expTime(self, et: float = 1.0) -> str:
-        """
-        Set camera exposure time in seconds.
-        """
 
-        azcam.db.tools["exposure"].set_exposuretime(et)
+    def set_ccdbin(self, colbin=1, rowbin=1):
+        '''
+        Set the on-chip binning factors
+
+        Parameters
+        ----------
+        colbin : int, optional
+            columns (x) binning factor. The default is 1.
+        rowbin : int, optional
+            rows (y) binning factor. The default is 1.
+
+        Returns
+        -------
+        None.
+
+        See also: get_ccdbin(), reset_ccdbin(), get_roi(), reset_roi()
+        '''
+       
+        azcam.db.tools["exposure"].set_roi(-1, -1, -1, -1, colbin, rowbin)
+        
+        return
+
+    
+    def get_ccdbin(self):
+        '''
+        Get the on-chip binning factors
+
+        Returns
+        -------
+        list: int
+            the on-chip binning factors: [colbin,rowbin]
+            
+        See also: set_ccdbin(), reset_ccdbin(), reset_roi(), get_roi()
+        '''
+       
+        roi = azcam.db.tools["exposure"].get_roi()
+
+        return roi[4:]
+
+    
+    def reset_ccdbin(self):
+        '''
+        Reset binning to 1x1, leaving ROI as-is
+
+        Returns
+        -------
+        None.
+
+        '''
+        
+        azcam.db.tools["exposure"].set_roi(-1, -1, -1, -1, 1, 1)
+        
+        return
+        
+
+    def set_exptime(self, expTime=1.0):
+        '''
+        Set the camera exposure time in seconds
+
+        Parameters
+        ----------
+        expTime : float, optional
+            camera exposure time in seconds. The default is 1.0 seconds
+
+        Returns
+        -------
+        str
+            OK if no errors.
+
+        '''
+
+        if expTime < 0.0:
+            return "ERROR: set_expTime() expTime must be >= 0.0 seconds"
+        
+        azcam.db.tools["exposure"].set_exposuretime(expTime)
 
         return "OK"
 
+
+    def get_exptime(self):
+        '''
+        Get the current camera exposure time in seconds
+
+        Returns
+        -------
+        exposure time in seconds
+
+        '''
+        return azcam.db.tools["exposure"].get_exposuretime()
+        
 
     def expose(self, 
                exposure_time: float = -1, 
                image_type: str = "", 
                image_title: str = "", 
                wait: bool = False) -> typing.Optional[str]:
-        """
-        Make a complete exposure.
+        '''
+        Take a complete exposure
 
-        :param exposure_time: the exposure time in seconds
-        :param image_type: str type of exposure ('zero', 'object', 'flat', ...)
-        :param image_title: str image title, usually surrounded by double quotes
-        :param wait: bool wait for exposure complete (default: False)
+        Parameters
+        ----------
+        exposure_time : float, optional
+            Exposure time in seconds. The default is -1 (use current exptime).
+        image_type : str, optional
+            Image type, determines shutter open or closed. The default is "".
+        image_title : str, optional
+            Image title (in OBJECT keyword). The default is "".
+        wait : bool, optional
+            If True block until exposure complete, False is return immediately and
+            allow the server/client to poll for exposure status. The default is False.
+
+        Returns
+        -------
+        reply : string
+            response string from the expose()/expose1() methods.
+
+
+        AzCam expose() is a blocking method that waits until exposure
+        is done or errors, while expose1() is a non-blocking method
+        that returns immediately.
         
-        """
+        expose1() is the default and preferred method for most exposures.
+        
+        '''
 
         if wait:
-            reply = azcam.db.tools["exposure"].expose(
-                exposure_time, image_type, image_title
-                )           
-
+            reply = azcam.db.tools["exposure"].expose(exposure_time,
+                                                      image_type, 
+                                                      image_title
+                                                      )
         else:
-            reply = azcam.db.tools["exposure"].expose1(
-                exposure_time, image_type, image_title
-                )
-
+            reply = azcam.db.tools["exposure"].expose1(exposure_time,
+                                                       image_type, 
+                                                       image_title
+                                                       )
         return reply
     
 
     def timeleft(self) -> float:
-        """
-        Return remaining exposure time (in seconds).
-        """
+        '''
+        Return the remaining time in an exposure in seconds.
+
+        Returns
+        -------
+        timeLeft: int
+            Time remaining on the current exposure in seconds to millisecond
+            precision
+
+        If no exposure is running, it returns 0
+        
+        Used to poll exposure countdown progress when expose() is
+        called with wait=False
+        
+        '''
 
         reply = azcam.db.tools["exposure"].get_exposuretime_remaining()
 
-        etr = "%.3f" % reply
+        timeLeft = f"{reply:.3f}"
 
-        return etr
+        return timeLeft
 
 
     def ccdTemps(self) -> list:
@@ -223,40 +430,46 @@ class MODS(object):
         list
             floats: CCD and Dewar temperatures in decimal celsius.
 
+        Temperatures are read to the nearest 0.1C
+        
         '''
 
         reply = azcam.db.tools["tempcon"].get_temperatures()
 
-        ccdtemp = "%.2f" % reply[0]
-        dewtemp = "%.2f" % reply[1]
+        ccdtemp = "%.1f" % reply[0]
+        dewtemp = "%.1f" % reply[1]
 
         return ["OK", ccdtemp, dewtemp]
     
 
-    def ccdbin(self, colbin=1, rowbin=1):
-        """
-        Set on-ship binning
-        
-        Was binning()
-        """
-
-        azcam.db.tools["exposure"].set_roi(-1, -1, -1, -1, colbin, rowbin)
-
-        return
-
-    
     def geterror(self):
-        """
-        Return and clear current error status.
-        """
+        '''
+        Return and clear the current error status
+
+        Returns
+        -------
+        list
+            DESCRIPTION.
+
+        '''
 
         return ["OK", ""]
 
 
     def flush(self, cycles=1):
-        """
-        Flush sensor "cycles" times.
-        """
+        '''
+        Flush (erase) the CCD detector
+
+        Parameters
+        ----------
+        cycles : int, optional
+            Number of flush cycles to execute. The default is 1.
+
+        Returns
+        -------
+        None.
+
+        '''
 
         azcam.db.tools["exposure"].flush(cycles)
 
@@ -264,9 +477,14 @@ class MODS(object):
 
 
     def abort(self):
-        """
-        abort exposure
-        """
+        '''
+        Abort an exposure in progress
+
+        Returns
+        -------
+        None.
+
+        '''
 
         try:
             azcam.db.tools["exposure"].abort()
@@ -277,9 +495,14 @@ class MODS(object):
 
 
     def abortReadout(self):
-        """
-        abort readout
-        """
+        '''
+        Abort a detector readout in progress
+
+        Returns
+        -------
+        None.
+
+        '''
 
         try:
             azcam.db.tools["controller"].readout_abort()
@@ -289,10 +512,18 @@ class MODS(object):
         return
 
 
-    def pixels_remaining(self):
-        """
-        Pixels remaining till readout finished.
-        """
+    def pixelsLeft(self):
+        '''
+        Report the number of pixels remaining to be readout
+
+        Returns
+        -------
+        reply : int
+            Number of pixels remaining to be readout.  Will return 0 if
+            no readout is in progress/complete.
+
+        See also: pctRead()
+        '''
 
         reply = azcam.db.tools["controller"].get_pixels_remaining()
 
@@ -305,9 +536,12 @@ class MODS(object):
 
         Returns
         -------
-        None.
+        pctLeft : float
+            percentage of the CCD readout, range 0..100%
 
+        See also pixelsLeft()
         '''
+        
         numPix = azcam.db.tools["exposure"].image.focalplane.numpix_image
         fracLeft = azcam.db.tools["controller"].get_pixels_remaining()/numPix
         
@@ -320,12 +554,15 @@ class MODS(object):
         
         Returns
         -------
-        None.
+        Archon controller response or error message if exception.
 
         '''
         
-        reply = azcam.db.tools["controller"].archon_command("TRIGOUTINVERT=1")
-        
+        try:
+            reply = azcam.db.tools["controller"].archon_command("TRIGOUTINVERT=1")
+        except Exception as e:
+            reply = f"ERROR: shopen() - {e}"
+            
         return reply
     
 
@@ -335,65 +572,56 @@ class MODS(object):
         
         Returns
         -------
-        None.
+        Archon controller response or error message if exception.
 
         '''
         
-        reply = azcam.db.tools["controller"].archon_command("TRIGOUTINVERT=0")
-        
+        try:
+            reply = azcam.db.tools["controller"].archon_command("TRIGOUTINVERT=0")
+        except Exception as e:
+            reply = f"ERROR: shclose() - {e}"
+            
         return reply
-
-    
-    def set_fileroot(self,filestr):
-        '''
-        Set the root filename for MODS files.  Should end in a "."
-        but we make sure it does if omitted.  Make sure it does not
-        include a sequence number or path spec or .fits, those are all
-        set elsewhere.
         
+
+    def set_filename(self,fileStr=None):
+        '''
+        Set the filename and exposure number
+
         Parameters
         ----------
-        filestr : string
+        fileStr : string
+            A filename string to be processed
 
         Returns
         -------
-        string: "OK" or not
+        None.
         
-        See also: set_path(), set_expnum()
+        Uses modsFilename() to deconstruct into the components needed
+        by the azcam server.
+        
+        If filename is None or blank, it builds a default name from
+        the instrument ID and observing date string generated by obsDate()
+        and sets the sequence number to 1.
+        
+        See also: set_path(), set_fileroot(), set_expnum()
 
         '''
-    
-        if len(filestr) == 0:
-            modsID = azcam.db.systemname
-            azcam.db.tools["exposure"].root = f"{modsID.lower()}.{self.obsDate()}."
-            
-        if not filestr.endswith("."):
-            azcam.db.tools["exposure"].root = f"{filestr}."
+
+        if fileStr is not None and len(fileStr) > 0:
+            dataPath,rootName,expNum = self.modsFilename(fileStr)
         else:
-            azcam.db.tools["exposure"].root = filestr
+            # build the default name based on obsDate (CCYYMMDD at local noon)
+            rootName = f"{self.modsID}.{self.obsDate()}."
+            expNum = 1
             
-        # set the file sequence number to 1, can be reset later using
-        # set_expnum()
-        
-        azcam.db.tools["exposure"].sequence_number = 1
+        if not rootName.endswith('.'): rootName += '.'
+
+        azcam.db.tools["exposure"].root = rootName
+        azcam.db.tools["exposure"].sequence_number = expNum
             
         return "OK"
-
-
-    def get_fileroot(self):
-        '''
-        Get the rootname for image files
-
-        Returns
-        -------
-        fileRoot: file rootname
-        
-        Rootname does not include data folder path, sequence number, or
-        .fits extension
-
-        '''
-        return azcam.db.tools["exposure"].root
-    
+       
     
     def get_filename(self):
         '''
@@ -407,11 +635,12 @@ class MODS(object):
         '''
         return azcam.db.tools["exposure"].get_filename()
     
-    # alias for get_nextfile is get_filename
+    # get_nextfile() and nextfile() are aliases for get_filname()
     
     get_nextfile = get_filename
-
-
+    nextfile = get_filename
+        
+    
     def get_lastfile(self):
         '''
         Retreive the name of the last file written
@@ -426,6 +655,10 @@ class MODS(object):
 
         return azcam.db.tools["exposure"].last_filename
     
+    # lastfile() is an alias for get_lastfile()
+    
+    lastfile = get_lastfile
+
 
     def set_expnum(self,expnum):
         '''
@@ -445,7 +678,7 @@ class MODS(object):
         '''
         
         if expnum < 1 or expnum > 9999:
-            return "ERROR: expnum must be 1..9999"
+            return "ERROR: set_expnum() expnum must be 1..9999"
         
         azcam.db.tools["exposure"].sequence_number = expnum
         
@@ -486,9 +719,9 @@ class MODS(object):
                 else:
                     azcam.db.tools["exposure"].folder = f"{dataPath}/"
             else:
-                return f"ERROR: {dataPath} is not writable"
+                return f"ERROR: set_path() directory {dataPath} exists but is not writable"
         else:
-            return f"ERROR: {dataPath} not found"
+            return f"ERROR: set_path() directory {dataPath} was not found"
         
         return "OK"
 
@@ -505,7 +738,223 @@ class MODS(object):
         '''
         return azcam.db.tools["exposure"].folder
 
+
+    def set_keyword(self,fitsKey,value,comment=None):
+        '''
+        Set a FITS header keywrd
+
+        Parameters
+        ----------
+        fitsKey : string
+            FITS header keyword, must be 8 chars or less.
+        value : 
+            value of the keyword, float, int, or str
+        comment : string, optional
+            comment. The default is None.de
+
+        Returns
+        -------
+        None.
+
+        If fitsKey is more than 8 characters long, it will truncate
+        it to the first 8 characters.
+        '''
+        
+        newKey = f"{fitsKey.upper():.08s}".strip()
+        dataType = type(value).__name__
+        if comment is not None and len(comment)==0:
+            comment = None
+        
+        azcam.db.tools["exposure"].header.set_keyword(newKey,value,comment,dataType)
+        
+        return
+    
+    
+    def get_keyword(self,fitsKey):
+        '''
+        Get a keyword from the loaded FITS header template
+
+        Parameters
+        ----------
+        fitsKey : string
+            FITS header keyword to retrieve.
+
+        Returns
+        -------
+        Value of the FITS header keyword value or error message if not
+
+        '''
+        try:
+            val,comment,ktype = azcam.db.tools["exposure"].header.get_keyword(fitsKey.upper())
+            return val
+        except:
+            return "ERROR: get_keyword() header keyword {fitsKey} not found"
+        
+        
+    def set_imageInfo(self,imgType=None,imgTitle=None):
+        '''
+        Set the image type and title for the next exposure
+
+        Parameters
+        ----------
+        imgType : string
+            Image type, one of {object,bias,dark,flat,comp,zero}
+        imgTitle : string
+            Title for the image FITS header OBJECT dard
+
+        Returns
+        -------
+        list: strings
+            OK or an error message.
             
+        Description
+        -----------
+        Sets the image type and title for the next exposure. imgType is
+        stored in the IMAGETYP keyword in the FITS header, and setting
+        this also sets the shutter state (open/light or closed/dark) for
+        the next exposure.  Only allowed types can be given.
+        
+        imgTitle is the image title stored in the OBJECT keyword in the FITS
+        header.
+        
+        If imgType is None or "", it retains the current image type
+        If imgTitle is None, it retains the current image title
+        If imgTitle is "", it clears the image title
+        
+        '''
+        
+        # if imgType is not given, don't change it, but maybe change title
+        # because imgType must take one of certain allowed values, we force
+        # lower case and validate against self.image_types for the class
+        
+        if imgType is not None and len(imgType) > 0:
+            if imgType.lower() in self.image_types:
+                azcam.db.tools["exposure"].set_image_type(imgType.lower())
+                self.set_keyword("IMAGETYP",imgType.upper())
+            else:
+                return f"ERROR: Unrecognized image type {imgType} must be one of {str(self.image_types)}"
+
+        # if imgTitle is not given, don't change it.  We might have changed imgType
+
+        if imgTitle is None:
+            return
+        
+        # imgTitle="" means "clear the image title".  Set None in the exposure
+        # tool, as "" just retains the current title.
+        
+        if len(imgTitle) == 0:
+            azcam.db.tools["exposure"].set_image_title(None)
+            self.set_keyword("OBJECT","")
+        else:
+            azcam.db.tools["exposure"].set_image_title(imgTitle)
+            
+        return
+        
+    
+    def get_imageInfo(self):
+        '''
+        Get the image type and image title for the next image
+
+        Returns
+        -------
+        imgType : string
+            Image type, one of {object,bias,dark,flat,comp,zero}.
+        imgTitle : string
+            Title for the image (OBJECT keyword in the FITS header)
+
+        '''
+        
+        imgType = azcam.db.tools["exposure"].get_image_type()
+        imgTitle = azcam.db.tools["exposure"].get_image_title()
+        
+        return imgType.upper(), imgTitle
+        
+            
+    def modsFilename(self,fileStr=None):
+        '''
+        Break a filename string down into the components of
+        a well-formed MODS-style filename:
+            
+            /dataPath/rootName.expNum:%04d.fits
+            
+        dataPath = full path to a writeable data directory folder
+        rootName = rootname (e.g. mods1b.20251011 or m1bTest) without sequence number or extension
+        expNum = sequence number, 0..9999
+        
+        If argument is None or blank, returns the current file components 
+        stored on the azcam server.
+        
+        We ignore any .fits extension included in the filename
+
+        Parameters
+        ----------
+        fileStr : string
+            Filename string to decompose into primary components
+
+        Returns
+        -------
+        dataPath: string
+            Path to the data directory folder
+        rootName: string
+            File rootname (no sequence number of .fits extension)
+        expNum: int
+            Image sequence number (or 1 if none given)
+
+        '''
+        
+        # if blank or None, respond with current components
+        
+        if fileStr is None or len(fileStr)==0:
+            dataPath = azcam.db.tools["exposure"].folder
+            rootName = azcam.db.tools["exposure"].root
+            expNum = azcam.db.tools["exposure"].sequence_number
+            return [dataPath, rootName, expNum]
+        
+        # Split into path and basename
+        
+        dataPath, baseName = os.path.split(fileStr)
+        if len(dataPath) == 0:
+            dataPath = dataPath = azcam.db.tools["exposure"].folder
+        
+        # split basename on .
+        
+        fileBits = baseName.split('.')
+        numBits = len(fileBits)
+        
+        # if no . anywhere in baseMame, return default parts
+        
+        if numBits == 1:
+            rootName = baseName
+            expNum = 1
+
+        # if more than one part, look at last part.  Is it "fits"?
+        
+        else:
+            if fileBits[-1] == "fits":
+                if numBits == 2:
+                    # fileStr is rootName.fits without number, set expNum=1
+                    rootName = fileBits[0]
+                    expNum = 1
+                else:
+                    # is penultimate bit a number?
+                    try:
+                        expNum = int(fileBits[-2])
+                        rootName = '.'.join(fileBits[:-2])
+                    except:
+                        rootName = '.'.join(fileBits[:-1])
+                        expNum = 1
+            else:
+                # is last bit a number?
+                try:
+                    expNum = int(fileBits[-1])
+                    rootName = '.'.join(fileBits[:-1])
+                except:
+                    rootName = '.'.join(fileBits[:-1])
+                    expNum = 1
+            
+        return dataPath, rootName, expNum
+                
+
     def obsDate(self):
         '''
         Return the observing date string
