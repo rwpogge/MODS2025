@@ -1,8 +1,7 @@
 #
-# a stupid simple TCP client to talk to the azcam server on port 2402
+# A stupid simple TCP client to talk to the azcam server on port 2402
 #
-# this is for testing client/server interaction with the azcam-mods
-# development
+# This is for testing client/server interaction for azcam-mods development
 #
 # Use: ipython -i azClient.py
 #
