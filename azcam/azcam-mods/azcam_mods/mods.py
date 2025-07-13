@@ -313,7 +313,7 @@ class MODS(object):
         return
         
 
-    def set_exptime(self, expTime=1.0):
+    def set_exptime(self, expTime: float) -> str:
         '''
         Set the camera exposure time in seconds
 
@@ -329,10 +329,14 @@ class MODS(object):
 
         '''
 
-        if expTime < 0.0:
-            return "ERROR: set_expTime() expTime must be >= 0.0 seconds"
-        
-        azcam.db.tools["exposure"].set_exposuretime(expTime)
+        et = float(expTime)
+        if et < 0.0:
+            return "ERROR: set_expTime() expTime={expTime} invalid, must be >= 0.0 seconds"
+
+        try:        
+            azcam.db.tools["exposure"].set_exposuretime(et)
+        except Exception as e:
+            return f"ERROR: set_exptime() - {e}"
 
         return "OK"
 
@@ -551,10 +555,14 @@ class MODS(object):
     def shopen(self):
         '''
         Open the MODS camera shutter
-        
+
         Returns
         -------
-        Archon controller response or error message if exception.
+        reply : string
+            Archon controller reply or an error message.
+            
+        The shutter stays open until shclose() is sent or the Archon
+        controller is reset.
 
         '''
         
@@ -660,7 +668,7 @@ class MODS(object):
     lastfile = get_lastfile
 
 
-    def set_expnum(self,expnum):
+    def set_expnum(self,expnum: int=1) -> str :
         '''
         Set the exposure sequence number for the next image.
         
@@ -677,10 +685,11 @@ class MODS(object):
 
         '''
         
-        if expnum < 1 or expnum > 9999:
-            return "ERROR: set_expnum() expnum must be 1..9999"
+        exn = int(expnum)
+        if exn < 1 or exn > 9999:
+            return f"ERROR: set_expnum() expnum={expnum} invalid, must be 1..9999"
         
-        azcam.db.tools["exposure"].sequence_number = expnum
+        azcam.db.tools["exposure"].sequence_number = exn
         
         return "OK"
     
@@ -788,7 +797,7 @@ class MODS(object):
             val,comment,ktype = azcam.db.tools["exposure"].header.get_keyword(fitsKey.upper())
             return val
         except:
-            return "ERROR: get_keyword() header keyword {fitsKey} not found"
+            return f"ERROR: get_keyword() header keyword {fitsKey} not found"
         
         
     def set_imageInfo(self,imgType=None,imgTitle=None):
@@ -867,7 +876,7 @@ class MODS(object):
         imgType = azcam.db.tools["exposure"].get_image_type()
         imgTitle = azcam.db.tools["exposure"].get_image_title()
         
-        return imgType.upper(), imgTitle
+        return f"{imgType.upper()}={imgTitle}"
         
             
     def modsFilename(self,fileStr=None):
