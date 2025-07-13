@@ -32,6 +32,9 @@ class AzClient(object):
         self.repStr = ''
 
     def startClient(self):
+        if self.sock is not None:
+            self.sock.close()
+
         try:
             self.sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         except Exception as exp:
@@ -87,5 +90,7 @@ class AzClient(object):
 # main
 
 az = AzClient()
+az.startClient()
 
+cmd = az.cmd # convenience alias
 
