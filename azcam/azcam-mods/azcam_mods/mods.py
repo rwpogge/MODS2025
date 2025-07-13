@@ -3,7 +3,7 @@ Defines the MODS class for azcam
 
 Original by Mike Lesser
 
-Updated: 2025 July 12 [rwp/osu]
+Updated: 2025 July 13 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -32,6 +32,7 @@ Additions:
 
 import datetime
 import os
+import re
 
 import typing
 
@@ -442,6 +443,11 @@ class MODS(object):
         See also: expwait()        
         '''
 
+        # strip extraneous quotes from image_title
+        
+        if len(image_title) > 0:
+            image_title = re.sub("[\"\']","",image_title)
+
         try:
             reply = azcam.db.tools["exposure"].expose1(exposure_time,
                                                        image_type,
@@ -482,6 +488,9 @@ class MODS(object):
 
         See also: exppse()        
         '''
+
+        if len(image_title) > 0:
+            image_title = re.sub("[\"\']","",image_title)
 
         try:
             reply = azcam.db.tools["exposure"].expose(exposure_time,
@@ -892,6 +901,11 @@ class MODS(object):
         if comment is not None and len(comment)==0:
             comment = None
         
+        # strip extraneous quotes that might come in from a client string
+        
+        if dataType == 'str':
+            value = re.sub("[\"\']","",value)
+            
         azcam.db.tools["exposure"].header.set_keyword(newKey,value,comment,dataType)
         
         return
@@ -966,6 +980,10 @@ class MODS(object):
 
         if imgTitle is None:
             return
+
+        # strip extraneous quotes that might be in imgTitle
+        
+        imgTitle = re.sub("[\"\']","",imgTitle)
         
         # imgTitle="" means "clear the image title".  Set None in the exposure
         # tool, as "" just retains the current title.
