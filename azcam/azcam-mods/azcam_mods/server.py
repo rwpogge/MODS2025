@@ -69,6 +69,7 @@ def setup():
         i = sys.argv.index("-mods1r")
         option = "MODS1R"
         modsID = option
+        lbtSide = "left"
     except ValueError:
         pass
 
@@ -76,6 +77,7 @@ def setup():
         i = sys.argv.index("-mods1b")
         option = "MODS1B"
         modsID = option
+        lbtSide = "left"
     except ValueError:
         pass
 
@@ -83,6 +85,7 @@ def setup():
         i = sys.argv.index("-mods2r")
         option = "MODS2R"
         modsID = option
+        lbtSide = "right"
     except ValueError:
         pass
 
@@ -90,13 +93,15 @@ def setup():
         i = sys.argv.index("-mods2b")
         option = "MODS2B"
         modsID = option
+        lbtSide = "right"
     except ValueError:
         pass
 
     try:
-        i = sys.argv.index("-testdewar")
-        option = "testdewar"
-        modsID = "modsTD"
+        i = sys.argv.index("-test")
+        option = "test"
+        modsID = "mods"
+        lbtSide = "left"
     except ValueError:
         pass
 
@@ -150,8 +155,9 @@ def setup():
                     "MODS2B": "MODS2B",
                     "MODS test dewar": "testdewar",
                     }
+
     if option == "menu":
-        print("MODS Startup Menu\n")
+        print("MODS azcam server startup menu:\n")
         option = azcam.utils.show_menu(menu_options)
 
     # parameters, templates, etc. live in azcam.db.systemfolder in our version
@@ -182,7 +188,7 @@ def setup():
         azcam.db.servermode = "archon"
         cmdport = 2402
 
-    # testdewar files live in Test
+    # testdewar files live in test
     
     elif "test" in option:
         parfile = os.path.join(azcam.db.systemfolder,
@@ -203,14 +209,15 @@ def setup():
     else:
         raise azcam.exceptions.AzcamError("bad system configuration")
 
-    # logging - in <azcamRoot>/system/logs/server.log for all configuraitions
+    # logging - in <azcamRoot>/system/logs/server.log for all configurations
     
     logfile = os.path.join(azcamRoot,
                            "system/logs", 
                            "server.log"
                            )
     azcam.db.logger.start_logging(logfile=logfile)
-    azcam.log(f"MODS mode: {option}")
+    azcam.log(f"MODS Channel: {modsID}")
+    azcam.log(f"LBT Side: {lbtSide}")
 
     # controller based on systemfolder
     
@@ -297,6 +304,11 @@ def setup():
 
     mods = MODS()
 
+    # let the MODS azcam tool know our ID and side
+    
+    mods.modsID = modsID
+    mods.lbtSide = lbtSide
+    
     # load the header template
     
     if len(template) > 0 and os.path.exists(template):
@@ -307,6 +319,7 @@ def setup():
     azcam.db.parameters.read_parfile(parfile)
     azcam.db.parameters.update_pars()
 
+    
     # command server
 
     cmdserver = CommandServer()

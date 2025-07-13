@@ -6,7 +6,8 @@ Original by Mike Lesser
 Updated: 2025 July 12 [rwp/osu]
 
 Additions:
-    expose() takes wait boolean, default False (no-wait)
+    expose(): take an exposure (async)
+    expwait(): take an exposure and wait until done (blocking)
     shopen(): open the shutter
     shclose(): close the shutter
     set/get_exptime(): set/get the exposure time
@@ -182,6 +183,39 @@ class MODS(object):
             azcam.db.tools["exposure"].sendimage.remote_imageserver_port = int(value)
         else:
             azcam.db.parameters.set_par(parameter, value)
+
+        return
+
+
+    def geterror(self):
+        '''
+        Return and clear the current error status
+
+        Returns
+        -------
+        list
+
+        '''
+
+        return ["OK", ""]
+
+
+    def flush(self, cycles=1):
+        '''
+        Flush (erase) the CCD detector
+
+        Parameters
+        ----------
+        cycles : int, optional
+            Number of flush cycles to execute. The default is 1.
+
+        Returns
+        -------
+        None
+
+        '''
+
+        azcam.db.tools["exposure"].flush(cycles)
 
         return
 
@@ -378,8 +412,7 @@ class MODS(object):
     def expose(self, 
                exposure_time: float = -1, 
                image_type: str = "", 
-               image_title: str = "", 
-               wait: bool = False) -> typing.Optional[str]:
+               image_title: str = "") -> typing.Optional[str]:
         '''
         Take a complete exposure
 
@@ -391,9 +424,6 @@ class MODS(object):
             Image type, determines shutter open or closed. The default is "".
         image_title : str, optional
             Image title (in OBJECT keyword). The default is "".
-        wait : bool, optional
-            If True block until exposure complete, False is return immediately and
-            allow the server/client to poll for exposure status. The default is False.
 
         Returns
         -------
@@ -402,31 +432,105 @@ class MODS(object):
 
         Description
         -----------
-        AzCam `expose()` is a blocking method that waits until exposure
-        is done or errors.
-        
         AzCam `expose1()` is a non-blocking method that returns immediately
         and breaks off a thread to execute the exposure in the background.
         Clients can poll the azcam server to monitor exposure and readout
         progress using the timeLeft() and pixelsLeft() methods.
         
         expose1() is the default and preferred method for most exposures.
-        
+
+        See also: expwait()        
         '''
 
-        if wait:
-            reply = azcam.db.tools["exposure"].expose(exposure_time,
-                                                      image_type, 
-                                                      image_title
-                                                      )
-        else:
+        try:
             reply = azcam.db.tools["exposure"].expose1(exposure_time,
-                                                       image_type, 
+                                                       image_type,
                                                        image_title
                                                        )
-        return reply
+            return reply
+        except Exception as e:                                                       
+            return f"ERROR: expose() - {e}"
+    
+    
+    def expwait(self, 
+               exposure_time: float = -1, 
+               image_type: str = "", 
+               image_title: str = "") -> typing.Optional[str]:
+        '''
+        Take a complete exposure and wait for completion
+
+        Parameters
+        ----------
+        exposure_time : float, optional
+            Exposure time in seconds. The default is -1 (use current exptime).
+        image_type : str, optional
+            Image type, determines shutter open or closed. The default is "".
+        image_title : str, optional
+            Image title (in OBJECT keyword). The default is "".
+
+        Returns
+        -------
+        reply : string
+            response string from the expose()/expose1() methods.
+
+        Description
+        -----------
+        AzCam `expose()` is a blocking method that does not return
+        until the exposure is complete or an error.
+        
+        This is not the preferred method, see expose()
+
+        See also: exppse()        
+        '''
+
+        try:
+            reply = azcam.db.tools["exposure"].expose(exposure_time,
+                                                      image_type,
+                                                      image_title
+                                                      )
+            return reply
+        except Exception as e:                                                       
+            return f"ERROR: expwait() - {e}"
     
 
+    def expstatus(self):
+        '''
+        Query the current exposure status
+
+        Returns
+        -------
+        reply: str
+            string with the numerical exposure flag and its meaning
+
+        Description
+        -----------
+
+        Poll the server for the current exposure status, returning
+        numerical code (0..13) and a status string.
+            
+        The current exposre flag in code is in `azcam.db.tools["exposure"].exposure_flag`
+        and the dictionary of string translations is `azcam.db.exposureflags`.
+        
+        Examples:
+           * '0 NONE'
+           * '8 SETUP'
+           * '1 EXPOSING'
+           * '7 READOUT'
+           * '9 WRITING'
+
+        See also: timeleft(), pixelsLeft()
+        '''
+        
+        expFlag = azcam.db.tools["exposure"].exposure_flag
+
+        # translate the integer code into a meaningful string
+        
+        efd = azcam.db.exposureflags
+        statStr = list(filter(lambda key: efd[key]==expFlag,efd))[0]
+        
+        return f"{expFlag} {statStr}"
+
+    
     def timeleft(self) -> float:
         '''
         Poll the remaining exposure time in seconds.
@@ -451,61 +555,6 @@ class MODS(object):
         timeLeft = f"{reply:.3f}"
 
         return timeLeft
-
-
-    def ccdTemps(self) -> list:
-        '''
-        Query the CCD and dewar temperature sensors through the
-        Archon controller.
-
-        Returns
-        -------
-        list of floats: 
-            CCD and Dewar temperatures in decimal celsius.
-
-        Temperatures are read to the nearest 0.1C
-        
-        '''
-
-        reply = azcam.db.tools["tempcon"].get_temperatures()
-
-        ccdtemp = "%.1f" % reply[0]
-        dewtemp = "%.1f" % reply[1]
-
-        return ["OK", ccdtemp, dewtemp]
-    
-
-    def geterror(self):
-        '''
-        Return and clear the current error status
-
-        Returns
-        -------
-        list
-
-        '''
-
-        return ["OK", ""]
-
-
-    def flush(self, cycles=1):
-        '''
-        Flush (erase) the CCD detector
-
-        Parameters
-        ----------
-        cycles : int, optional
-            Number of flush cycles to execute. The default is 1.
-
-        Returns
-        -------
-        None
-
-        '''
-
-        azcam.db.tools["exposure"].flush(cycles)
-
-        return
 
 
     def abort(self):
@@ -582,6 +631,28 @@ class MODS(object):
         
         return 100*(1.0-fracLeft)
 
+
+    def ccdTemps(self) -> list:
+        '''
+        Query the CCD and dewar temperature sensors through the
+        Archon controller.
+
+        Returns
+        -------
+        list of floats: 
+            CCD and Dewar temperatures in decimal celsius.
+
+        Temperatures are read to the nearest 0.1C
+        
+        '''
+
+        reply = azcam.db.tools["tempcon"].get_temperatures()
+
+        ccdtemp = "%.1f" % reply[0]
+        dewtemp = "%.1f" % reply[1]
+
+        return ["OK", ccdtemp, dewtemp]
+    
 
     def shopen(self):
         '''
@@ -919,12 +990,15 @@ class MODS(object):
         imgTitle : string
             Title for the image (OBJECT keyword in the FITS header)
 
+        if imgTitle is empty, returns "None".
         '''
         
         imgType = azcam.db.tools["exposure"].get_image_type()
         imgTitle = azcam.db.tools["exposure"].get_image_title()
-        
-        return f"{imgType.upper()}={imgTitle}"
+        if len(imgTitle) == 0:
+            return f"{imgType.upper()} None"
+        else:
+            return f"{imgType.upper()} {imgTitle}"
         
             
     def modsFilename(self,fileStr=None):
@@ -1037,12 +1111,26 @@ class MODS(object):
         contiguous filenames that do not change at local or UT midnight.
           
         For example, the observing date for the night starting at sunset
-        on 2024 Dec 17 and ending at sunrise on 2024 Dec 18 is `20241217`.
-
-        We use this for filenames for data and logs for MODS data taking.
+        on 2025 July 13 and ending at sunrise on 2025 July 14 is `20250714`.
+        
+        We use this in the filenames of raw data and logs for MODS.
         '''
 
         if float(datetime.datetime.now().strftime("%H")) < 12.0:  # before noon
             return (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
         else:
             return datetime.date.today().strftime("%Y%m%d")
+
+
+    # modest test function, as in "wtf does _this_ do?"
+
+    def wtf(self,cmdStr: str,wait: bool=False) -> str:
+        try:
+            if wait:
+                return f"wtf {cmdStr} wait"
+            else:
+                return f"wtf {cmdStr} nowait"
+        except Exception as e:
+            return f"ERROR: wtf - {e}"
+        
+    
