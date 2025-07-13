@@ -48,6 +48,21 @@ class MODS(object):
     draft version to provide features for the MODS spectrographs at LBT
     without having to hack the main azcam module.
     
+    Methods
+    -------
+    list of methods...
+        
+    Data Members
+    ------------
+    modsID (str):
+        MODS channel being operated, e.g., MODS1R (MODS1 red channel CCD)
+    lbtSide (str):
+        Side of the LBT with this MODS instrument (left or right)
+    image_types (list): 
+        list of allowed image types (object, bias, dark, etc.)
+    shutter_dict (dict): 
+        dictionary of shutter states (1=open/light, 0=closed/dark) corresponding to image_types
+    
     R. Pogge, OSU Astronomy Dept.
     pogge.1@osu.edu
     '''
@@ -68,17 +83,21 @@ class MODS(object):
         azcam.db.tools["mods"] = self
         azcam.db.cli["mods"] = self
 
-        # Internal definitions we need.  OK to expose these as public data
+        # MODS parameters we need to expose via azcam.db.tools["mods"]
+        
+        # MODS instrument channel and LBT telescope side
         
         self.modsID = azcam.db.systemname
+        self.lbtSide = "unknown"
         
-        # Image types used by MODS and expected by the LBTO data archive and 
-        # data reduction pipelines.
+        # MODS allowed image_types.  These are stored in the FITS headers
+        # as the IMAGETYP keyword values expected by the LBTO data archive
+        # and data reduction pipelines.
         
         self.image_types = ['object','bias','flat','dark','comp','zero']
         
-        # shutter_dict tells the azcam exposure tool if the shutter should
-        # be open (1) or closed (0) for each allowed image_type:
+        # The MODS shutter_dict tells the azcam exposure tool if the shutter 
+        # should be open (1) or closed (0) for each allowed MODS IMAGETYP:
         
         self.shutter_dict = {'object':1,
                              'bias':0,
@@ -89,7 +108,7 @@ class MODS(object):
                              }
         
         # Overload the azcam allowed image types and shutter data in
-        # the exposure tool
+        # the exposure tool with the MODS definitions
         
         azcam.db.tools["exposure"].image_types = self.image_types
         azcam.db.tools["exposure"].shutter_dict = self.shutter_dict
@@ -176,8 +195,7 @@ class MODS(object):
                 row_bin=-1,
                 roi_num=0):
         '''
-        Set the CCD region of interest to (ROI) to readout
-        and binning
+        Set the CCD readout region of interest (ROI) and binning factors
 
         Parameters
         ----------
@@ -190,9 +208,9 @@ class MODS(object):
         last_row : int, optional
             last row to readout. The default is -1.
         col_bin : int, optional
-            binning factor in columns. The default is -1.
+            on-chip binning factor in columns (x). The default is -1.
         row_bin : int, optional
-            binning factor in rows. The default is -1.
+            on-chip binning factor in rows (y). The default is -1.
         roi_num : int, optional
             ROI number. The default is 0, the only value at present
             
@@ -203,7 +221,8 @@ class MODS(object):
 
         Description
         -----------
-        Sets the CCD region of interest for readout and binning.
+        Sets the CCD readout region of interest (ROI) and on-chip binning
+        factors.
         
         -1 for any parameter means "do not change"
         
@@ -241,7 +260,7 @@ class MODS(object):
     
     def reset_roi(self):
         '''
-        Resets the CCD ROI and binning to full-frame unbinned readout.
+        Reset the CCD ROI and on-chip binning to full-frame, unbinned readout.
 
         Returns
         -------
@@ -300,11 +319,13 @@ class MODS(object):
     
     def reset_ccdbin(self):
         '''
-        Reset binning to 1x1, leaving ROI as-is
+        Reset on-chip binning to 1x1, leaving ROI unchanged
 
         Returns
         -------
         None.
+        
+        See also: reset_roi() to reset ROI and on-chip binning
 
         '''
         
@@ -324,8 +345,9 @@ class MODS(object):
 
         Returns
         -------
-        str
-            OK if no errors.
+        reply : str
+            OK if no errors, error if out of range, and exception if
+            the Archon controller is unreachable or not configured.
 
         '''
 
@@ -347,7 +369,7 @@ class MODS(object):
 
         Returns
         -------
-        exposure time in seconds
+            float: exposure time in seconds
 
         '''
         return azcam.db.tools["exposure"].get_exposuretime()
@@ -378,10 +400,15 @@ class MODS(object):
         reply : string
             response string from the expose()/expose1() methods.
 
-
-        AzCam expose() is a blocking method that waits until exposure
-        is done or errors, while expose1() is a non-blocking method
-        that returns immediately.
+        Description
+        -----------
+        AzCam `expose()` is a blocking method that waits until exposure
+        is done or errors.
+        
+        AzCam `expose1()` is a non-blocking method that returns immediately
+        and breaks off a thread to execute the exposure in the background.
+        Clients can poll the azcam server to monitor exposure and readout
+        progress using the timeLeft() and pixelsLeft() methods.
         
         expose1() is the default and preferred method for most exposures.
         
@@ -402,7 +429,7 @@ class MODS(object):
 
     def timeleft(self) -> float:
         '''
-        Return the remaining time in an exposure in seconds.
+        Poll the remaining exposure time in seconds.
 
         Returns
         -------
@@ -411,7 +438,9 @@ class MODS(object):
             precision
 
         If no exposure is running, it returns 0
-        
+
+        Description
+        -----------        
         Used to poll exposure countdown progress when expose() is
         called with wait=False
         
@@ -431,8 +460,8 @@ class MODS(object):
 
         Returns
         -------
-        list
-            floats: CCD and Dewar temperatures in decimal celsius.
+        list of floats: 
+            CCD and Dewar temperatures in decimal celsius.
 
         Temperatures are read to the nearest 0.1C
         
@@ -453,7 +482,6 @@ class MODS(object):
         Returns
         -------
         list
-            DESCRIPTION.
 
         '''
 
@@ -471,7 +499,7 @@ class MODS(object):
 
         Returns
         -------
-        None.
+        None
 
         '''
 
@@ -486,7 +514,7 @@ class MODS(object):
 
         Returns
         -------
-        None.
+        None
 
         '''
 
@@ -504,7 +532,7 @@ class MODS(object):
 
         Returns
         -------
-        None.
+        None
 
         '''
 
@@ -518,13 +546,14 @@ class MODS(object):
 
     def pixelsLeft(self):
         '''
-        Report the number of pixels remaining to be readout
+        Poll the controller for the number of pixels remaining to be readout
 
         Returns
         -------
         reply : int
-            Number of pixels remaining to be readout.  Will return 0 if
-            no readout is in progress/complete.
+            Number of pixels remaining to be readout.
+            
+        Will return 0 if no readout is in progress/complete.
 
         See also: pctRead()
         '''
@@ -543,6 +572,8 @@ class MODS(object):
         pctLeft : float
             percentage of the CCD readout, range 0..100%
 
+        Will return 100% is readout is complete.
+        
         See also pixelsLeft()
         '''
         
@@ -582,6 +613,7 @@ class MODS(object):
         -------
         Archon controller response or error message if exception.
 
+        See also: shopen()
         '''
         
         try:
@@ -605,6 +637,8 @@ class MODS(object):
         -------
         None.
         
+        Description
+        -----------
         Uses modsFilename() to deconstruct into the components needed
         by the azcam server.
         
@@ -613,7 +647,6 @@ class MODS(object):
         and sets the sequence number to 1.
         
         See also: set_path(), set_fileroot(), set_expnum()
-
         '''
 
         if fileStr is not None and len(fileStr) > 0:
@@ -651,13 +684,15 @@ class MODS(object):
     
     def get_lastfile(self):
         '''
-        Retreive the name of the last file written
+        Retreive the name of the last file written during the
+        current azcam server session.
 
         Returns
         -------
         lastfile: string
-            name of the last file written.  Will be blank if the server
-            was restarted.
+            name of the last file written.
+            
+        `lastfile` will be blank ("") if the server was restarted.
 
         '''
 
@@ -670,9 +705,9 @@ class MODS(object):
 
     def set_expnum(self,expnum: int=1) -> str :
         '''
-        Set the exposure sequence number for the next image.
+        Set the exposure sequence number for the next image to be written.
         
-        Must be 1..9999
+        `expnum` must be 1..9999 as expected by the LBTO data archive.
 
         Parameters
         ----------
@@ -696,7 +731,7 @@ class MODS(object):
     
     def get_expnum(self):
         '''
-        Get the images sequence number of the next image
+        Get the images sequence number of the next image to be written
 
         Returns
         -------
@@ -719,6 +754,18 @@ class MODS(object):
         Returns
         -------
         string: "OK" or error message
+        
+        Description
+        -----------
+        Sets the full path to the local system folder where the azcam
+        server will write raw FITS images.
+        
+        This function validates `dataPath` to ensure that:
+            * the path exists on the system running the azcam server
+            * the path is writeable by the user that started azcam
+        before changing the path on the azcam server.
+        
+        See also: get_path(), get_filename(), set_filename()
         '''
 
         if os.path.exists(dataPath):
@@ -737,7 +784,7 @@ class MODS(object):
 
     def get_path(self):
         '''
-        Get the image file path
+        Get the file path for where raw FITS files will be written.
 
         Returns
         -------
@@ -757,9 +804,9 @@ class MODS(object):
         fitsKey : string
             FITS header keyword, must be 8 chars or less.
         value : 
-            value of the keyword, float, int, or str
+            value of the keyword (float, int, or str)
         comment : string, optional
-            comment. The default is None.de
+            comment. The default is None
 
         Returns
         -------
@@ -781,7 +828,7 @@ class MODS(object):
     
     def get_keyword(self,fitsKey):
         '''
-        Get a keyword from the loaded FITS header template
+        Get a keyword from the current FITS header template
 
         Parameters
         ----------
@@ -818,12 +865,13 @@ class MODS(object):
             
         Description
         -----------
-        Sets the image type and title for the next exposure. imgType is
-        stored in the IMAGETYP keyword in the FITS header, and setting
+        Sets the image type and title for the next exposure.
+        
+        imgType is recorded in the IMAGETYP keyword in the FITS header, and setting
         this also sets the shutter state (open/light or closed/dark) for
         the next exposure.  Only allowed types can be given.
         
-        imgTitle is the image title stored in the OBJECT keyword in the FITS
+        imgTitle is the image title recorded in the OBJECT keyword in the FITS
         header.
         
         If imgType is None or "", it retains the current image type
@@ -881,20 +929,8 @@ class MODS(object):
             
     def modsFilename(self,fileStr=None):
         '''
-        Break a filename string down into the components of
-        a well-formed MODS-style filename:
-            
-            /dataPath/rootName.expNum:%04d.fits
-            
-        dataPath = full path to a writeable data directory folder
-        rootName = rootname (e.g. mods1b.20251011 or m1bTest) without sequence number or extension
-        expNum = sequence number, 0..9999
+        Break a filename string down into the components
         
-        If argument is None or blank, returns the current file components 
-        stored on the azcam server.
-        
-        We ignore any .fits extension included in the filename
-
         Parameters
         ----------
         fileStr : string
@@ -909,6 +945,27 @@ class MODS(object):
         expNum: int
             Image sequence number (or 1 if none given)
 
+        Description
+        -----------
+        A well-formed MODS-style filename looks like
+            
+            /dataPath/rootName.expNum:%04d.fits
+            
+        where:
+            * dataPath = full path to a writeable data directory folder
+            * rootName = rootname (e.g. mods1b.20251011 or m1bTest) without sequence number or extension
+            * expNum = sequence number, 0..9999
+        
+        If the `fileStr` argument is None or blank, it returns the current file 
+        components of the next file to be written by the azcam server.
+        
+        We ignore any .fits extension included in the filename
+
+        This is a utility function that helps us avoid making malformed
+        MODS filenames that will cause problems for the observatory systems
+        and LBT data archive later.
+        
+        See also: set_filename(), set_expnum(), set_path()
         '''
         
         # if blank or None, respond with current components
@@ -976,11 +1033,13 @@ class MODS(object):
         -----------        
         Returns the observing date in CCYYMMDD format.  We define the
         an "observing date" as running from noon to noon local time.
+        This ensures that all data taken for a given night have 
+        contiguous filenames that do not change at local or UT midnight.
           
         For example, the observing date for the night starting at sunset
-        on 2024 Dec 17 and ending at sunrise on 2024 Dec 18 is 20241217
+        on 2024 Dec 17 and ending at sunrise on 2024 Dec 18 is `20241217`.
 
-        We use this for filenames for data and logs.
+        We use this for filenames for data and logs for MODS data taking.
         '''
 
         if float(datetime.datetime.now().strftime("%H")) < 12.0:  # before noon
