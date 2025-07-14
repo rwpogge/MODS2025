@@ -19,5 +19,16 @@ MODS instrument has its own set of parameters.  `<modsID>` = (MODS1B/R,MODS2B/R)
 
 ## Templates
 
-Header and other templates used by the azcam server.  The header template is the
-static header structure for each `<modsID>` system.
+Header and other templates used by the azcam server.  The FITS header template is the
+static header structure for each `<modsID>` system.  The azcam server will add various
+other parameters as it will, and populate the headers with dates, times, and specific
+data like actual exposure time, total dark time, etc.
+ * `header_<modsID>.txt` - FITS header template for `<modsID>`
+
+## Archon Control Files
+
+The archon controller use `.acf` or `.ncf` files for the detailed detector readout
+configuration. There may be many test or alternative files in this folder, but
+the `<modsID>.ncf` file will be considered the "flight" configuration.  Use
+symbolic links or judicious copying (careful!) to enable an alternative or test
+configuration
