@@ -15,6 +15,7 @@ Each MODS instance has its own directory:
  * `MODS1R` - MODS1 Red Channel
  * `MODS2B` - MODS2 Blue Channel
  * `MODS2R` - MODS2 Red Channel
+
 In addition, there is a separate entry for the MODS lab test dewar
  * `test` - MODS lab test dewar
 
