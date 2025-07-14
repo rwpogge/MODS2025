@@ -90,7 +90,10 @@ class MODS(object):
         # MODS instrument channel and LBT telescope side
         
         self.modsID = azcam.db.systemname
-        self.lbtSide = "unknown"
+        try:
+            self.lbtSide = azcam.db.parameters.get_par("side","lbttcs")
+        except:
+            self.lbtSide = "unknown"
         
         # MODS allowed image_types.  These are stored in the FITS headers
         # as the IMAGETYP keyword values expected by the LBTO data archive

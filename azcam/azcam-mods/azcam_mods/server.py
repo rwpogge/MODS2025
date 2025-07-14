@@ -265,16 +265,6 @@ def setup():
         exposure.send_image = 1
         exposure.sendimage.set_remote_imageserver(remote_host, 6543, "azcam")
 
-    # instrument
-
-    instrument = Instrument()
-
-    # telescope
-
-    telescope = Telescope()
-
-    # system header template
-
     try:
         system = System("MODS", template)
         system.set_keyword("DETNAME", option, "Detector name")
@@ -298,14 +288,14 @@ def setup():
     
     azcam.db.tools["exposure"].auto_title = 0
     
-    
     # default filename root pattern is the instrument ID lower case
     # and the current observing date, e.g., mods1b.20251007.  mind the .
     
     azcam.db.tools["exposure"].root = f"{modsID.lower()}.{obsDate()}."
     azcam.db.tools["exposure"].folder = datafolder
     
-    # display
+    # image display system if any
+    
     # display = Ds9Display()
 
     display = Display()
@@ -316,21 +306,34 @@ def setup():
 
     mods = MODS()
 
-    # let the MODS azcam tool know our ID and side
-    
-    mods.modsID = modsID
-    mods.lbtSide = lbtSide
-    
     # load the header template
     
     if len(template) > 0 and os.path.exists(template):
         azcam.db.tools["exposure"].header.read_file(template)
         
-    # parameter file
+    # read the server parameter file.  For MODS this could
+    # contain TCS interface (IIF) info
 
     azcam.db.parameters.read_parfile(parfile)
     azcam.db.parameters.update_pars()
+    
+    # let the MODS azcam tool know our MODS ID and which side of the
+    # telescope it is on
 
+    mods.modsID = modsID
+    
+    try:
+        mods.lbtSide = azcam.db.parameters.get_par("side","lbttcs")
+    except:
+        mods.lbtSide = lbtSide
+    
+    # direct instrument methods (if any)
+    
+    instrument = Instrument()
+
+    # direct telescope methods (if any)
+
+    telescope = Telescope()
     
     # command server
 
