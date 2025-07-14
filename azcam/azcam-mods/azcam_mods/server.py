@@ -3,7 +3,7 @@ Setup method for LBTO MODS azcamserver
 Usage example:
   python -i -m azcam_mods.server -- -mods1r
   
-  Updated: 2025 July 9 [rwp/osu]
+  Updated: 2025 July 14 [rwp/osu]
   
 """
 
@@ -100,7 +100,7 @@ def setup():
     try:
         i = sys.argv.index("-test")
         option = "test"
-        modsID = "mods"
+        modsID = "Test"
         lbtSide = "left"
     except ValueError:
         pass
@@ -139,6 +139,17 @@ def setup():
     # read/write by unprivileged users, but systemfolder contains
     # critical configuration files unprivileged users must not be
     # able to change
+    #
+    # System Folders:
+    #  <azcamRoot>/system/<option>/parameters/
+    #     server_<option>.ini (also console_<option>.ini if we use it)
+    #     
+    #  <azcamRoot>/system/<option>/templates/
+    #     header_<option>.txt
+    #
+    #  <azcamRoot>/system/<option>/archon/
+    #     <option>.acf or <option>.ncf
+    #
     
     azcam.db.systemfolder = os.path.join(azcamRoot,"system",option)
     azcam.db.systemfolder = azcam.utils.fix_path(azcam.db.systemfolder)
@@ -153,7 +164,7 @@ def setup():
                     "MODS1B": "MODS1B",
                     "MODS2R": "MODS2R",
                     "MODS2B": "MODS2B",
-                    "MODS test dewar": "testdewar",
+                    "MODS test dewar": "test",
                     }
 
     if option == "menu":
@@ -168,21 +179,22 @@ def setup():
         
         parfile = os.path.join(azcam.db.systemfolder,
                                "parameters", 
-                               f"{option}_pars.ini"
+                               f"server_{option}.ini"
                                )
         
         # FITS header template files are <modsID>_hdr.txt in system/<modsID>/templates/
         
         template = os.path.join(azcam.db.systemfolder, 
                                 "templates", 
-                                f"{option}_hdr.txt"
+                                f"header_{option}.txt"
                                 )
         
-        # timing files are <modsID>.acf in system/<modsID>/archon/
+        # "flight" archon configuration (aka "timing") files are 
+        # named <modsID>.acf or .ncf in system/<modsID>/archon/
         
-        timingfile = os.path.join(azcam.db.datafolder,
+        timingfile = os.path.join(azcam.db.systemfolder,
                                   "archon",
-                                  f"{option}.acf",
+                                  f"{option}.ncf",
                                   )
         
         azcam.db.servermode = "archon"
@@ -193,21 +205,21 @@ def setup():
     elif "test" in option:
         parfile = os.path.join(azcam.db.systemfolder,
                                "parameters",
-                               "parameters_server_mods.ini"
+                               "server_mods.ini"
                                )
         template = os.path.join(azcam.db.systemfolder,
                                 "templates",
-                                "fits_template_mods.txt" 
+                                "header_mods.txt" 
                                 )
         timingfile = os.path.join(azcam.db.systemfolder,
                                   "archon",
-                                  "mods_1.acf",
+                                  "mods_test.ncf",
                                   )
         azcam.db.servermode = "MODS"
         cmdport = 2402
 
     else:
-        raise azcam.exceptions.AzcamError("bad system configuration")
+        raise azcam.exceptions.AzcamError(f"Unknown system configuration '{option}'")
 
     # logging - in <azcamRoot>/system/logs/server.log for all configurations
     
