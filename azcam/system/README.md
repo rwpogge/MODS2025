@@ -5,8 +5,19 @@ streamline our configuration management (4 Archon controllers across 2 instrumen
 transparent without exposing critical system configuration files.
 
 We use `system/` as the root folder for all system-specific files
- * `archon/` for the Archon controller files (.acf and .ncf)
- * `logs/` for azcam server logs
  * `parameters/` for azcam server parameter files
  * `templates/` for FITS header template and IIF data dictionary files
+ * `archon/` for the Archon controller files (.acf and .ncf)
+ * `logs/` for azcam server logs
 
+## Parameters
+
+Parameter initialization files for the azcam server and console apps. Each
+MODS instrument has its own set of parameters.  `<modsID>` = (MODS1B/R,MODS2B/R):
+ * `server_<modsID>.ini` - azcam server parameters for `<modsID>`
+ * `console_<modsID>.ini` - azcam console parameters for `<modsID>`
+
+## Templates
+
+Header and other templates used by the azcam server.  The header template is the
+static header structure for each `<modsID>` system.
