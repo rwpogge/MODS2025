@@ -10,6 +10,14 @@ We use `system/` as the root folder for all system-specific files
  * `archon/` for the Archon controller files (.acf and .ncf)
  * `logs/` for azcam server logs
 
+Each MODS instance has its own directory:
+ * `MODS1B` - MODS1 Blue Channel
+ * `MODS1R` - MODS1 Red Channel
+ * `MODS2B` - MODS2 Blue Channel
+ * `MODS2R` - MODS2 Red Channel
+In addition, there is a separate entry for the MODS lab test dewar
+ * `test` - MODS lab test dewar
+
 ## Parameters
 
 Parameter initialization files for the azcam server and console apps. Each
