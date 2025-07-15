@@ -15,6 +15,7 @@ This is a running list during development of things we need
 
 ```shell
 dnf -y install tk tcsh emacs doxygen
+dnf -y install readline readline-devel
 dnf -y install libmodbus libmodbus-devel
 dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
 dnf -y install libice3.7-c++ libice-c++-devel python3-ice
