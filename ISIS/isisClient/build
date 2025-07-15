@@ -8,6 +8,5 @@ CDATE=`date +'%Y-%b-%d'`
 CTIME=`date +'%T'`
 make clean
 make "COMPDATE=$CDATE" "COMPTIME=$CTIME"
-/bin/rm *.o
 
 exit

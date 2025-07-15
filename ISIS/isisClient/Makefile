@@ -36,6 +36,9 @@ libisis.a:  $(OBJS)
 	    /bin/rm -f  libisis.a
 	    $(AR) cr libisis.a $(OBJS)
 	    ranlib libisis.a
+	    /bin/cp -f libisis.a ../lib/
+	    /bin/cp -f isisclient.h ../lib
+	    /bin/rm -f *.o
 
 clean:
 	    /bin/rm -f libisis.a *.o
