@@ -20,7 +20,7 @@ dnf -y install libmodbus libmodbus-devel
 dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
 dnf -y install libice3.7-c++ libice-c++-devel python3-ice
 ...
-dnf -y install dnstools  (nice, but not required)
+dnf -y install dnstools wget (nice, but not required)
 ...
 ```
 ## Collaborators
