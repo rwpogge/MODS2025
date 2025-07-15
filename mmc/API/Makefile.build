@@ -17,7 +17,7 @@ CC	= g++ -D_REENTRANT -pthread
 
 FLAGS   = -c -g
 
-ISLAPI_LIB = mmcapi.o
+MMCAPI_LIB = mmcapi.o
 
 API_DIR = .
 API_SRC = 	islAppNameToAppNumb.c	\
@@ -43,8 +43,8 @@ CFILES =  $(UTILS_DIR)/*.c $(API_DIR)/*.c $(APP_DIR)/*.c
 
 # Loadables Application code from API doc.
 
-$(ISLAPI_LIB): $(API_OBJ)
-	$(LD) -r -o $(ISLAPI_LIB) $(API_OBJ) 
+$(MMCAPI_LIB): $(API_OBJ)
+	$(LD) -r -o $(MMCAPI_LIB) $(API_OBJ) 
 
 $(API_OBJ):
 	$(CC) $(INCS) $(FLAGS) $(DEFS) $(API_DIR)/$(@:.o=.c)
