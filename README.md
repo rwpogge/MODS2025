@@ -11,7 +11,8 @@ Proceed at your own risk**
 
 ## Package dependence
 
-This is a running list during development of things we need
+This is a running list during development phase as we discover what is missing from the 
+AlmaLinux 9.x systems we're setting up.
 
 ```shell
 dnf -y install tk tcsh emacs doxygen
