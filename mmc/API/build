@@ -10,6 +10,7 @@ make -f Makefile.build clean
 # compile with time and date of compile
 make -f Makefile.build "COMPDATE=$CDATE" "COMPTIME=$CTIME"
 
-\mv *.o ../obj
-\cp ../obj/* /home/dts/mods/obj/.
+\mv *.o ../obj/
+\cp ../obj/* /home/dts/mods/obj/
+
 exit
