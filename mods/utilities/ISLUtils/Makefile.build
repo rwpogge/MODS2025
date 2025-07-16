@@ -1,0 +1,65 @@
+#
+# Makefile for libislutils (ISL) API library
+#
+# Build the package using the "build" script not with make.
+#
+# OSU Dept. of Astronomy Computer Staff
+# staff@astronomy.ohio-state.edu
+# Last Modified 2005 May 05
+#
+# Versions:
+#   v1.0 - 2005 May 05 - first version of the general library [osu/isl]
+# set environment variable NO_FTOK_ISL non-empty if ftok() is not available
+# if you use csh/tcsh add this to your .login file:
+#   setenv NO_FTOK_ISL TRUE
+# and log-out and back in
+#
+#ifdef NO_FTOK_ISL
+#CFLAGS :=  -DNO_FTOK_ISL -w -c
+#endif
+#
+#  Note that the backslash character has been used at the end of each line
+#  to indicate continuation.
+#
+# V1.1 - port to AlmaLinux 9.5 and ISO C++ compilers [rwp/osu - 2025 Jun 18]
+#
+ROOTDIR     = /home/dts/mods
+VERSION     = ISLUtils v1.1
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+INCDIR      = -I$(ROOTDIR)/include
+LIBDIR      = -L$(ROOTDIR)/ulib
+ISLOBJ_LIB  = islutils.o
+
+VFLAGS      = -DTTY_VERSION='"$(VERSION)"' -DTTY_COMPDATE='"$(COMPDATE)"' \
+              -DTTY_COMPTIME='"$(COMPTIME)"'
+CFLAGS 	=  -w -c -DLINUX
+
+ISLSRC    =  	cls_util.o sem_util.o shm_util.o go_util.o setup_ids.o \
+	       	semid_util.o brk_util.o nsem_util.o rte_alarm.o rte_cmpt.o \
+	       	rte_sleep.o rte_time.o rte_prior.o rte_lock.o rte_fixt.o \
+		skd_util.o sig_ignore.o rte_secs.o rte_rawt.o rte_ticks.o \
+		rte_sett.o pname.o str_util.o iadt.o echoe.o arg_util.o \
+		commtrol.o smcmech.o islcmd.o \
+		islsmc.o getComm.o setComm.o StrToUpper.o rmcrlf.o \
+		islSysTask.o display_it.o intToString.c \
+		smcbusy.o smcrelease.o mechBusy.o isisbusy.o getSensor.o
+
+OBJS =  $(LIBS) $(ISLSRC:.c=.o)
+
+.c.o:       
+	$(CC) $(INCDIR) $(CFLAGS) $(VFLAGS) $*.c
+
+all:   libislutils.a 
+
+libislutils.a:  $(OBJS) 
+	/bin/rm -f  libislutils.a
+	$(AR) cr libislutils.a $(OBJS) 
+	ranlib libislutils.a
+	\cp libislutils.a $(ROOTDIR)/ulib/
+	$(LD) -r -o $(ISLOBJ_LIB) $(OBJS)
+	\cp $(ISLOBJ_LIB) $(ROOTDIR)/obj/
+
+clean:
+	/bin/rm -f libislutils.a *.o	
+

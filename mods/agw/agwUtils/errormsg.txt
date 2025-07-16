@@ -1,0 +1,26 @@
+/** \file errormsg.txt
+ * \brief Header file for Agents. In this file, the different error 
+ * messages are declared.
+ */
+001 Unrecognized argument(s)",
+002 Unrecognized axis",
+003 AGW Locked",
+004 function requires an arguments or cannot execute command",
+005 RESET failed on attempt to read config file",
+006 CALIB is only available to remote hosts as  executive override command",
+007 Cannot LOCK, AGW Lock already held by another host",
+008 Cannot UNLOCK, Command LOCK held by another host",
+010 Invalid Y command, must be 0..200.0",
+018 Invalid pickoff mirror Y position, must be 0.0 .. 180.50",
+020 Invalid X, must be 0 .. 180.0",
+023 Invalid pickoff mirror X position, must be -90.0 .. 90.0",
+025 Invalid Filter, must be 1..4",
+030 Invalid Focus, must be 0...30",
+040 No Drift Vector set, cannot initiate drift",
+041 Cannot change drift rates while drift is enabled",
+042 Invalid X-axis drift rate, must be +/-0..10000 um/sec",
+043 Invalid Y-axis drift rate, must be +/-0..10000 um/sec",
+044 No Drift Vector set, cannot initiate drift",
+100 Critical Errors",
+101 setfocus would move the Y stage past its lower limit.",
+201 Calibration Tower is in the beam",

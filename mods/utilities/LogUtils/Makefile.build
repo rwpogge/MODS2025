@@ -1,0 +1,39 @@
+#
+# Makefile for liblogutils API library
+#
+# Build the package using the "build" script not with make.
+#
+# OSU Astronomy Dept.
+# New 2005 May 04
+#
+# Versions:
+#   v1.0 - 2005 May 04 - first version of the general library [osu]
+#   v1.1 - 2025 Jun 18 - port for AlmaLinux 9 [rwp/osu]
+#
+
+ROOTDIR     = /home/dts/mods
+VERSION     = LogUtils v1.1
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+INCDIR      = -I$(ROOTDIR)/include
+LIBDIR      = -L$(ROOTDIR)/ulib
+
+CFLAGS      = -w -c
+VFLAGS      = -DTTY_VERSION='"$(VERSION)"' -DTTY_COMPDATE='"$(COMPDATE)"' \
+              -DTTY_COMPTIME='"$(COMPTIME)"'
+
+OBJS        = logisl.o err_report.o
+
+.c.o:       
+	    $(CC) $(INCDIR) $(CFLAGS) $(VFLAGS) $*.c
+
+all:        liblogutils.a 
+
+liblogutils.a:  $(OBJS) 
+	    /bin/rm -f  liblogutils.a
+	    $(AR) cr liblogutils.a $(OBJS)
+	    ranlib liblogutils.a
+	    \cp liblogutils.a $(ROOTDIR)/ulib/
+clean:
+	    /bin/rm -f liblogutils.a *.o
+

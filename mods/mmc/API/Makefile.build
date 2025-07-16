@@ -1,0 +1,66 @@
+# Makefile for ISIS TCP API
+# Linux Version
+# 
+# 2025 Jun 20 - AlmaLinux 9 port [rwp/osu]
+#
+ROOTDIR = /home/dts/mods
+DEFS	= -DLINUX
+INCDIR  = $(ROOTDIR)/include
+INCS    = -I$(INCDIR)
+LIBS  	= 
+
+LD	= ld
+CC	= g++ -D_REENTRANT -pthread
+
+#LIBS        = -L$(ISLLIB)/isis.a -L$(ISLLIB) -lislutils -linstrutils \
+#	-lisisutils -lsiutils -llogutils -lpthread
+
+FLAGS   = -c -g
+
+MMCAPI_LIB = mmcapi.o
+
+API_DIR = .
+API_SRC = 	islAppNameToAppNumb.c	\
+		islWaitContact.c        \
+		islCnameToComp.c	\
+		islMakeContact.c	\
+		islSendEOF.c		\
+		islAPIInit.c		\
+		readln.c	
+
+API_OBJ = $(API_SRC:.c=.o) 
+
+APP_OBJ =  $(LIBS) $(APP_SRC:.c=.o)
+APP_EXE = $(API_OBJ) install
+
+CFILES =  $(UTILS_DIR)/*.c $(API_DIR)/*.c $(APP_DIR)/*.c
+
+#app: $(APP_EXE)
+
+# Application
+#$(APP_OBJ):
+#	$(CC) -c $(INCLUDE) $(FLAGS) $(DEFS) $(APP_DIR)/$(@:.o=.c) 
+
+# Loadables Application code from API doc.
+
+$(MMCAPI_LIB): $(API_OBJ)
+	$(LD) -r -o $(MMCAPI_LIB) $(API_OBJ) 
+
+$(API_OBJ):
+	$(CC) $(INCS) $(FLAGS) $(DEFS) $(API_DIR)/$(@:.o=.c)
+
+clean:
+	\rm -rf $(ROOTDIR)/obj/*.o ./core
+
+install: 	
+#	\cp *.o $(ROOTDIR)/obj
+#	\mv *.o ../obj
+
+# API Dependancies
+islAppameToAppNumb.o: $(API_DIR)/islAppnameToAppnumb.c $(INCDIR)/islapi.h
+islWaitContact.o: $(API_DIR)/islWaitContact.c $(INCDIR)/islapi.h
+islCNameToComp.o: $(API_DIR)/islCnameToComp.c $(INCDIR)/islapi.h
+islMakeContact.o: $(API_DIR)/islMakeContact.c $(INCDIR)/islapi.h
+islSendEOF.o: $(API_DIR)/islSendEOF.c $(INCDIR)/islapi.h
+readln.o: $(API_DIR)/readln.c $(INCDIR)/islapi.h
+

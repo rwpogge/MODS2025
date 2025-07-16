@@ -1,8 +1,0 @@
-/.vscode/
-/obj/
-/moc/
-
-imsTool
-Makefile
-qrc_*
-.qmake.stash

@@ -1,0 +1,23 @@
+################################################################################
+# modsalloc.service
+#
+# This service unit is for the MODS data-taking system shared memory allocation
+# (modsalloc)
+#
+# R. Pogge, OSU Astronomy
+# pogge.1@osu.edu
+# 2025 June 23
+#
+################################################################################
+# This program should be placed in /usr/local/lib/systemd/system/.
+# Create a symlink to it from the /etc/systemd/system directory.
+################################################################################
+
+[Unit]
+Description=Runs the MODS data-taking system shared memory allocator (modsalloc)
+
+[Service]
+ExecStart=/home/dts/mods/bin/modsalloc.sh
+
+[Install]
+WantedBy=multi-user.target

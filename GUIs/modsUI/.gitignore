@@ -1,8 +1,0 @@
-/.vscode/
-/obj/
-/moc/
-
-modsUI
-Makefile
-qrc_*
-.qmake.stash
