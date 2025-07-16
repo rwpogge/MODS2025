@@ -19,64 +19,11 @@ Proceed at your own risk**
   * `Sandbox` - place to put test codes and other bits we are using
   * `Config` - MODS instance runtime configuration files released for observing operations
 
-## Build order
+## Installation
 
-### ISIS client and server
-```shell
-cd ~/ISIS/isisClient
-./build
-cd ../isisServer
-./build
-cp isis isisd ~/bin/
-```
+See the INSTALL.md file in this repository. 
 
-### MODS agw and mmc Servers
-```shell
-cd ~/mods
-chmod +x build */build */*/build
-./build
-```
-Remember to follow the instructions for implementing the 
-shared memory sector (`modsalloc` README)
-
-### MODS Agents
-```shell
-cd ~/mods/Agents
-chmod +x */build
-cd lbttcs
-./build
-cp lbttcs ~/bin/
-cd ../modsEnv
-../
-```
-### MODS GUIs
-```shell
-cd ~/mods/GUIs
-conda deactivate
-conda deactivate (twice!)
-qmake --version -> verify v6.6.x
-cd iTerm
-qmake -o Makefile
-make clean
-make
-cp iterm ~/bin/
-cd ../imsTool
-qmake -o Makefile
-make clean
-make
-[No copy to ~/bin/!]
-cd ../modsUI
-qmake -o Makefile
-make clean
-make
-cp modsUI ~/bin/
-```
-Note we do not install the imsTool GUI in a public-facing directory as this is for engineering use only.
-
-
-
-
-## Package dependence
+## Package dependencies
 
 This is a running list during development phase as we discover what is missing from the 
 AlmaLinux 9.x systems we're setting up.
@@ -92,7 +39,6 @@ dnf -y install dnstools wget (nice, but not required)
 ...
 Also need the local LBTO versions of hdf5 and lbto-libtelemetry, build from local rpms
 ```
-
 
 ## Authors and Collaborators
 
