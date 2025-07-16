@@ -13,12 +13,12 @@ Proceed at your own risk**
 
 ## Contents
 
-  * `ISIS` - ISIS message-passing server and client code
   * `mods` - MODS instrument control and data-acquisition system
+  * `ISIS` - ISIS message-passing server and client
   * `azcam` - AzCam server for the MODS Archon CCD controllers
   * `Sandbox` - place to put test codes and other bits we are using
-  * `IonGauge` - sandbox for the vacuum ion gauge control
-
+  * `Config` - MODS instance runtime configuration files released for observing operations
+    
 ## Package dependence
 
 This is a running list during development phase as we discover what is missing from the 
