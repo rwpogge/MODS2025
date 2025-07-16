@@ -18,6 +18,7 @@ Proceed at your own risk**
   * `azcam` - AzCam server for the MODS Archon CCD controllers
   * `Sandbox` - place to put test codes and other bits we are using
   * `Config` - MODS instance runtime configuration files released for observing operations
+  * `Scripts` - Startup and status scripts (coming soon...)
 
 ## Installation
 
