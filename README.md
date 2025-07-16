@@ -9,6 +9,14 @@ MODS2025 Project to update MODS1+2 CCD and instrument control systems at the LBT
 **This our very messy working repository, not the final flight code repository that will be built later.  
 Proceed at your own risk**
 
+## Contents
+
+  * `ISIS` - ISIS message-passing server and client code
+  * `mods` - MODS instrument control and data-acquisition system
+  * `azcam` - AzCam server for the MODS Archon CCD controllers
+  * `Sandbox` - place to put test codes and other bits we are using
+  * `IonGauge` - sandbox for the vacuum ion gauge control
+
 ## Package dependence
 
 This is a running list during development phase as we discover what is missing from the 
