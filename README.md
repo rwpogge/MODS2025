@@ -1,5 +1,7 @@
 # MODS2025
-Version 1.1.2
+Version 1.2.0
+
+Last Update: 2025 July 16 [rwp/osu]
 
 Lead: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
@@ -32,6 +34,9 @@ dnf -y install libice3.7-c++ libice-c++-devel python3-ice
 dnf -y install dnstools wget (nice, but not required)
 ...
 ```
-## Collaborators
+## Authors and Collaborators
+
+- Rick Pogge (OSU Astronomy) pogge.1@osu.edu
 - Jerry Mason (OSU Astronomy) mason.8@osu.edu
-- Xander Carroll
+- Xander Carroll (OSU Astronomy) carroll.892@osu.edu
+- ...
