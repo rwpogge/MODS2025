@@ -27,8 +27,8 @@ header.
 Use the `template.plc` to start with and maybe look at one that is in use as an example.)
 
 Now that you have sucessfully copied the template.plc to a name of your choice. Start writting code.
-PLC Programs usally start with: Start at address >= 100:
-```shell
+PLC Programs usally start at address >= 100:
+<pre>
 PGM 100
 LBL XXX
 .
@@ -37,17 +37,17 @@ code
 .
 END
 PGM  
-```
+</pre>
 For ERRORS use a '?' with the PRINT statement.
-```shell
+<pre>
 PRINT "? Something is in ERROR"
 PRINT "? Not in position POSITION=",pos
-```
+</pre>
 
 ### What commands are acceptable by this controller?
 
 #### MicroLYXN-7 Commands
-```shell
+<pre>
 ACCL=n		Peak acceleration value, mm/sec2
 ACLT=n		Acceleration type
 DCLT=n		Deceleration type
@@ -118,17 +118,17 @@ ECHO=n		Specifies whether commands will be echoed back over
 		n=1 Half duplex, n=2 Only respond to PRINT and LIST commands
 PRMT		Specifies the character to be used as a prompt character
 PARTY		Enables / disables PARTY mode for multi drop applications
-```
+</pre>
 
 ### What format are commands in?
 
 For PLC's:
 
 These commands will apply to all mechanisms.
-```shell
+<pre>
 initial - initialize mechanism position and set CW/CCW.
 home    - move mechanism to position 0.000. Position 0.000 is dependent 
           on the mechanisms the mechanism data sheet (MDS).
 relbrk  - release brake (if brake are being used )
 setbrk  - set brake.
-```
+</pre>
