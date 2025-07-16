@@ -18,6 +18,7 @@ Proceed at your own risk**
   * `azcam` - AzCam server for the MODS Archon CCD controllers
   * `Sandbox` - place to put test codes and other bits we are using
   * `Config` - MODS instance runtime configuration files released for observing operations
+  * `Scripts` - Startup and status scripts (coming soon...)
 
 ## Installation
 
@@ -45,4 +46,7 @@ Also need the local LBTO versions of hdf5 and lbto-libtelemetry, build from loca
 - Rick Pogge (OSU Astronomy) pogge.1@osu.edu
 - Jerry Mason (OSU Astronomy) mason.8@osu.edu
 - Xander Carroll (OSU Astronomy) carroll.892@osu.edu
+- Mike Lesser (UA)
+- Matthieu Bec (LBTO) mbec@lbto.org
+- Glenn Eychaner (LBTO) geychaner@lbto.org
 - ...
