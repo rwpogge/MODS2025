@@ -1,0 +1,120 @@
+#
+# The tables below give the data dictionary entries corresponding to
+# the entries in the lbtData struct.  Side-dependent entries are
+# prefixed with R_ (Left/SX) or R_ (Right/DX). These are the DD names
+# that would be passed into the SeqDD entry in the GetParameter()
+# call.
+#
+# This files uses the new DD name aliases for the full qualified DD names.
+# 
+# Latest DD names should be on the LBTO GitHub
+#     https://github.com/LBTO/ in tcs/iif/configuration/IIF/DDNames
+# 
+# Updated: 2025 July 3 [rwp/osu]
+#
+# Telescope Pointing Information
+#
+# These are side-independent
+#
+UTC
+LST
+ParAngle
+AirMass
+#
+R_AchievedRA
+R_AchievedDEC
+R_PosAngle
+R_RotAngle
+R_RotMode
+#    
+# Low-level Mount data (az/alt/rot Encoders)
+#
+AZPosition
+ELPosition
+R_DGRPosition
+#
+# Authorized Right (DX) Instrument ID
+#
+R_Instrument
+#
+# Right (DX) Primary Mirror Information
+#
+R_M1CollX
+R_M1CollY
+R_M1CollZ
+R_M1CollRx
+R_M1CollRy
+R_M1CollRz
+R_M1CollTemp
+R_M1CollTemp2
+R_M1AirTemp
+R_M1GlassTemp
+#    
+# Right (DX) Secondary Mirror Information
+#
+R_M2CollX
+R_M2CollY
+R_M2CollZ
+R_M2CollRx
+R_M2CollRy
+R_M2CollRz
+R_M2CollTemp
+#
+# Telescope Structure and Air Temperature Sensors
+#
+Temp201
+Temp202
+Temp203
+Temp204
+Temp205
+Temp206
+Temp207
+Temp208
+Temp209
+Temp210
+Temp301
+Temp302
+Temp303
+Temp304
+Temp305
+Temp306
+Temp307
+Temp308
+Temp309
+Temp310
+Temp401
+Temp402
+Temp403
+Temp404
+Temp405
+Temp406
+Temp407
+Temp408
+#
+# Observing chamber sensors
+#
+ChamberTemp
+ChamberDewPoint
+#    
+# LBT Weather Information (subset)
+#
+LBTWeatherAlive
+LBTPressure
+LBTTemp
+LBTHumidity
+LBTDewPoint
+#
+# Right side (DX) Guide/Collimation System (GCS) Engineering Parameters
+#
+R_GuideRA
+R_GuideDEC
+R_AGWKFPReqX
+R_AGWKFPReqY
+R_AGWKFPPosX
+R_AGWKFPPosY
+R_GSXPredicted
+R_GSYPredicted
+R_GSXMeasured
+R_GSYMeasured
+R_GSCumXPredmMeas
+R_GSCumYPredmMeas
