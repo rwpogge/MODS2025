@@ -49,6 +49,7 @@
   \date 2012 Feb - major bug in OBSMODE that zeroed IMCS laser power fixed [rwp]
 
   \date 2025 Jun 20 - AlmaLinux 9 port [rwp/osu]
+  \date 2025 Jul 16 - changed HEB power status/on/off logic for new WAGO HEB [rwp/osu]
 
 */
 #include <iostream>
@@ -1895,31 +1896,27 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       return CMD_OK;
     }
 
-    /* ************** */
-    // get Power bits
-    /* ************** */
+    // get power relay states
+
     allUtilPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,513,(short *)1,1);
     if(allUtilPower<0) {
       sprintf(reply,"%s %s", who_selected,"UTIL=OFF");
       return CMD_OK;
     }
 
-    /* **************** */
-    // get Breaker bits
-    /* **************** */
+    // get circuit breaker states
+
     allUtilBreaker = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,11,(short *)1,1);
 
-    /* ************************ */
-    // get temps, and pressures
-    /* ************************ */
+    // get temperatures and pressures
+
     ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,1,pressureTemps,10);
 
     if(!strcasecmp(argbuf,"STATUS") || strlen(args)<=0) {
 
       if(allUtilPower>=0) {
-	/* *********** */
  	// Check Power
-	/* *********** */
+
 	iebRedPower    = allUtilPower & 1;
 	iebBluePower   = allUtilPower & 2;
 	hebRedPower    = allUtilPower & 4;
@@ -1930,9 +1927,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	agwGuidePower  = allUtilPower & 128;
 	lampLaserPower = allUtilPower & 256;
 
-	/* ************** */
 	// Check Breakers
-	/* ************** */
+
 	iebRedBreaker    = allUtilBreaker & 1;
 	iebBlueBreaker   = allUtilBreaker & 2;
 	hebRedBreaker    = allUtilBreaker & 4;
@@ -1959,6 +1955,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	// the IUB patch panel).  That is why the IEB and LLB tests
 	// are false=ON, whereas the others are true=ON for the power.
 
+	// IEB power relays are normally closed, so test for ON is !=
+	
 	if (iebRedPower != 1)
 	  if (iebRedBreaker == 1)
 	    sprintf(reply,"%s IEB_R=ON IEB_R_BRK=OK",reply);
@@ -1975,15 +1973,36 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	else
 	  sprintf(reply,"%s IEB_B=OFF IEB_B_BRK=UNKNOWN",reply);
 
-	if (hebRedPower == 4)
+	//
+	// Pre-2025 HEB power normally open so test for ON is ==
+	// 
+	//if (hebRedPower == 4)
+	//  if (hebRedBreaker == 4)
+	//    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=OK",reply);
+	//  else
+	//    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=FAULT",reply);
+	//else
+	//  sprintf(reply,"%s HEB_R=OFF HEB_R_BRK=UNKNOWN",reply);
+        //
+	//if (hebBluePower == 16)
+	//  if (hebBlueBreaker == 8)
+	//    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=OK",reply);
+	//  else
+	//    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=FAULT",reply);
+	//else
+	//  sprintf(reply,"%s HEB_B=OFF HEB_B_BRK=UNKNOWN",reply);
+
+	// Post-2025 WAGO HEB power normally closed so test for ON is != 
+	
+	if (hebRedPower != 4)
 	  if (hebRedBreaker == 4)
 	    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=OK",reply);
 	  else
 	    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=FAULT",reply);
 	else
 	  sprintf(reply,"%s HEB_R=OFF HEB_R_BRK=UNKNOWN",reply);
-
-	if (hebBluePower == 16)
+        
+	if (hebBluePower != 16)
 	  if (hebBlueBreaker == 8)
 	    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=OK",reply);
 	  else
@@ -1991,6 +2010,9 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	else
 	  sprintf(reply,"%s HEB_B=OFF HEB_B_BRK=UNKNOWN",reply);
 
+	// AGw WFS and Guide Camera power relays are normally open
+	// so test for power ON is ==
+	
 	if (agwWFSPower == 64)
 	  if (agwWFSBreaker == 16)
 	    sprintf(reply,"%s WFS=ON WFS_BRK=OK",reply);
@@ -2007,6 +2029,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	else
 	  sprintf(reply,"%s AGC=OFF AGC_BRK=UNKNOWN",reply);
 
+	// LLB power relay is normally closed so test for ON is !=
+	
 	if (lampLaserPower != 256)
 	  if (lampLaserBreaker == 64) 
 	    sprintf(reply,"%s LLB=ON LLB_BRK=OK",reply);
@@ -2015,45 +2039,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	else
 	  sprintf(reply,"%s LLB=OFF LLB_BRK=UNKNOWN",reply);
 
-
-	/*
-	 * Old code that the above replaces: The sprintf() statement
-	 * below would not trap breaker trips (it can never set
-	 * xxx_BRK=FAULT).  [rwp/osu - 2011 Oct 27]
-	 *
-
-	sprintf(reply,"%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s",
-		who_selected,
-		(iebRedPower!=1 ? "IEB_R=ON" : "IEB_R=OFF"),
-		((iebRedPower!=1 && iebRedBreaker==1) ?
-		 "IEB_R_BRK=OK" : "IEB_R_BRK=UNKNOWN"),
-		 
-		(iebBluePower!=2 ? "IEB_B=ON" : "IEB_B=OFF"),
-		((iebBluePower!=2 && iebBlueBreaker==2) ?
-		 "IEB_B_BRK=OK" : "IEB_B_BRK=UNKNOWN"),
-		
-		(hebRedPower==4 ? "HEB_R=ON" : "HEB_R=OFF"),
-		((hebRedPower==4 && hebRedBreaker==4) ? 
-		 "HEB_R_BRK=OK" : "HEB_R_BRK=UNKNOWN"),
-		
-		(hebBluePower==16 ? "HEB_B=ON" : "HEB_B=OFF"),
-		((hebBluePower==16 && hebBlueBreaker==8) ? 
-		 "HEB_B_BRK=OK" : "HEB_B_BRK=UNKNOWN"),
-
-		(lampLaserPower!=256 ? "LLB=ON" : "LLB=OFF"),
-		((lampLaserPower!=256 && lampLaserBreaker==64) ? 
-		 "LLB_BRK=OK" : "LLB_BRK=UNKNOWN"),
-		
-		(agwWFSPower==64 ? "WFS=ON" : "WFS=OFF"),
-		((agwWFSPower==64 && agwWFSBreaker==16) ? 
-		 "WFS_BRK=OK" : "WFS_BRK=UNKNOWN"),
-		
-		(agwGuidePower==128 ? "AGC=ON" : "AGC=OFF"),
-		((agwGuidePower==128 && agwGuideBreaker==32) ? 
-		 "AGC_BRK=OK" : "AGC_BRK=UNKNOWN"));
-
-	*/
-
+	// Glycol supply and return pressures and temperatures
+	
 	glycolSupplyPressure = (float)pressureTemps[0]/327.64;
 	(glycolSupplyPressure>=850.0 ? 
 	 sprintf(reply,"%s GSPRES=NOCOMM",reply) : 
@@ -2073,8 +2060,13 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	(glycolReturnTemperature>=850.0 ? 
 	 sprintf(reply,"%s GRTEMP=NOCOMM",reply) : 
 	 sprintf(reply,"%s GRTEMP=%0.1f",reply,glycolReturnTemperature));
+
+	shm_addr->MODS.glycolSupplyPressure = glycolSupplyPressure;
+	shm_addr->MODS.glycolSupplyTemperature = glycolSupplyTemperature;
+	shm_addr->MODS.glycolReturnPressure = glycolReturnPressure;
+	shm_addr->MODS.glycolReturnTemperature = glycolReturnTemperature;
 	
-	// Note: order of the IUB in-box sensors has changed 2010 June 15 [rwp/osu]
+	// Utility box temperature sensors 
 
 	utilBoxAirTemperature = (float)pressureTemps[7]/10.0;
 	(utilBoxAirTemperature>=850.0 ?
@@ -2090,6 +2082,9 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	(agwHeatSinkTemperature>=850.0 ? 
 	 sprintf(reply,"%s AGHSTEMP=NOCOMM",reply) : 
 	 sprintf(reply,"%s AGHSTEMP=%0.1f",reply,agwHeatSinkTemperature));
+
+	shm_addr->MODS.utilBoxAirTemperature = utilBoxAirTemperature;
+	shm_addr->MODS.outsideAirTemperature = outsideAirTemperature;
 	
       }
     } else if(!strcasecmp(argbuf,"GLYCOL")) {
@@ -2113,7 +2108,12 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	(glycolReturnTemperature>=850.0 ? 
 	 sprintf(reply,"%s GRTEMP=NOCOMM",reply) : 
 	 sprintf(reply,"%s GRTEMP=%0.1f",reply,glycolReturnTemperature));
-	
+
+	shm_addr->MODS.glycolSupplyPressure = glycolSupplyPressure;
+	shm_addr->MODS.glycolSupplyTemperature = glycolSupplyTemperature;
+	shm_addr->MODS.glycolReturnPressure = glycolReturnPressure;
+	shm_addr->MODS.glycolReturnTemperature = glycolReturnTemperature;
+
       return CMD_OK;
 
     } else if(!strcasecmp(argbuf,"TEMP")) {
@@ -2144,7 +2144,12 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	(agwHeatSinkTemperature>=850.0 ? 
 	 sprintf(reply,"%s AGHSTEMP=NOCOMM",reply) : 
 	 sprintf(reply,"%s AGHSTEMP=%0.1f",reply,agwHeatSinkTemperature));
-	
+
+	shm_addr->MODS.glycolSupplyTemperature = glycolSupplyTemperature;
+	shm_addr->MODS.glycolReturnTemperature = glycolReturnTemperature;
+	shm_addr->MODS.utilBoxAirTemperature = utilBoxAirTemperature;
+	shm_addr->MODS.outsideAirTemperature = outsideAirTemperature;
+
       return CMD_OK;
 
     } else if(!strcasecmp(argbuf,"ALL")) {
@@ -2201,47 +2206,38 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       }
       return CMD_OK;
 
+      // HEB power control logic changed with the 2025 update:
+      //   * no longer using a hold-in/drop-out circuit with current-sensing relay
+      //   * HEB boxes are Power ON at startup non OFF, so power relays normally CLOSED
+      //   * Power ON state is now datum != state (allUtilPower&int), not ==
+      
     } else if(!strcasecmp(argbuf,"HEB_R")) {
       GetArg(args,2,argbuf);
-
       hebRedPower = allUtilPower&4;
       hebRedEnable = allUtilPower&8;
       hebRedBreaker = allUtilBreaker&4;
+      
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
-	if (hebRedPower == 4)
+	if (hebRedPower != 4)
 	  if (hebRedBreaker == 4)
 	    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=OK",who_selected);
 	  else
 	    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=FAULT",who_selected);
 	else
 	  sprintf(reply,"%s HEB_R=OFF HEB_R_BRK=UNKNOWN",who_selected);
-	/*
-	 * Old code that did not sense breaker trip faults [rwp/osu - 2011 Oct 27]
-	sprintf(reply,"%s %s %s", who_selected,
-		(hebRedPower==4 ? "HEB_R=ON" : "HEB_R=OFF"),
-		((hebRedPower==4 && hebRedBreaker==4) ? 
-		 "HEB_R_BRK=OK" : "HEB_R_BRK=UNKNOWN"));
-	*/
 
       } else if(!strcasecmp(argbuf,"ON")) {
-	if(hebRedPower==0) {
-	  devOnOff[0]=(short )(allUtilPower^12);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
-
-	  sleep(2); // wait 2 seconds before turning bit 4 off.
-	  
+	if(hebRedPower==1) {
 	  devOnOff[0]=(short )(allUtilPower^4);
 	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
-
 	}
 	MilliSleep(200);
 	KeyCommand("util heb_r", dummy);
 	sprintf(reply,"%s",&dummy[6]); 
 
       } else if(!strcasecmp(argbuf,"OFF")) {
-
-	if(hebRedPower==4) {
-	  devOnOff[0]=(short )(allUtilPower^4);
+	if(hebRedPower==0) {
+	  devOnOff[0]=(short )(allUtilPower|4);
 	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
 	}
 	MilliSleep(200);
@@ -2257,45 +2253,30 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
     } else if(!strcasecmp(argbuf,"HEB_B")) {
       GetArg(args,2,argbuf);
-
       hebBluePower = allUtilPower&16;
       hebBlueEnable = allUtilPower&32;
       hebBlueBreaker = allUtilBreaker&8;
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
-	if (hebBluePower == 16)
+	if (hebBluePower != 16)
 	  if (hebBlueBreaker == 8)
 	    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=OK",who_selected);
 	  else
 	    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=FAULT",who_selected);
 	else
 	  sprintf(reply,"%s HEB_B=OFF HEB_B_BRK=UNKNOWN",who_selected);
-	/*
-	 * Old code that did not sense breaker trip faults [rwp/osu - 2011 Oct 27]
-	sprintf(reply,"%s %s %s", who_selected,
-		(hebBluePower==16 ? "HEB_B=ON" : "HEB_B=OFF"),
-		((hebBluePower==16 && hebBlueBreaker==8) ? 
-		 "HEB_B_BRK=OK" : "HEB_B_BRK=UNKNOWN"));
-	*/
+
       } else if(!strcasecmp(argbuf,"ON")) {
-
-	if(hebBluePower==0) {
-	  devOnOff[0]=(short )(allUtilPower^48);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
-
-	  sleep(2); // wait 2 seconds before turning bit 4 off.
-	  
+	if(hebBluePower==1) {
 	  devOnOff[0]=(short )(allUtilPower^16);
 	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
-	  
 	}
 	MilliSleep(200);
 	KeyCommand("util heb_b", dummy);
 	sprintf(reply,"%s",&dummy[6]); 
 
       } else if(!strcasecmp(argbuf,"OFF")) {
-
-	if(hebBluePower==16) {
-	  devOnOff[0]=(short )(allUtilPower^16);
+	if(hebBluePower==0) {
+	  devOnOff[0]=(short )(allUtilPower|16);
 	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
 	}
 	MilliSleep(200);
@@ -2309,6 +2290,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       
       return CMD_OK;
 
+      // IEBs are normally closed power relay (power on with instrument main)
+      
     } else if(!strcasecmp(argbuf,"IEB_R")) {
       GetArg(args,2,argbuf);
 
@@ -2323,13 +2306,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	    sprintf(reply,"%s IEB_R=ON IEB_R_BRK=FAULT",who_selected);
 	else
 	  sprintf(reply,"%s IEB_R=OFF IEB_R_BRK=UNKNOWN",who_selected);
-	/*
-	 * Old code that did not sense breaker trip faults [rwp/osu - 2011 Oct 27]
-	sprintf(reply,"%s %s %s", who_selected,
-		(iebRedPower!=1 ? "IEB_R=ON" : "IEB_R=OFF"),
-		((iebRedPower!=1 && iebRedBreaker==1) ?
-		 "IEB_R_BRK=OK" : "IEB_R_BRK=UNKNOWN"));
-	*/
+
       } else if(!strcasecmp(argbuf,"ON")) {
 
 	if(iebRedPower==1) {
@@ -2360,7 +2337,6 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     } else if(!strcasecmp(argbuf,"IEB_B")) {
       GetArg(args,2,argbuf);
 
-
       iebBluePower = allUtilPower&2;
       iebBlueBreaker = allUtilBreaker&2;
 
@@ -2372,13 +2348,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	    sprintf(reply,"%s IEB_B=ON IEB_B_BRK=FAULT",who_selected);
 	else
 	  sprintf(reply,"%s IEB_B=OFF IEB_B_BRK=UNKNOWN",who_selected);
-	/*
-	 * Old code that did not sense breaker trip faults [rwp/osu - 2011 Oct 27]
-	sprintf(reply,"%s %s %s", who_selected,
-		(iebBluePower!=2 ? "IEB_B=ON" : "IEB_B=OFF"),
-		((iebBluePower!=2 && iebBlueBreaker==2) ?
-		 "IEB_B_BRK=OK" : "IEB_B_BRK=UNKNOWN"));
-	*/
+
       } else if(!strcasecmp(argbuf,"ON")) {
 
 	if(iebBluePower==2) {
@@ -2406,6 +2376,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
       return CMD_OK;
 
+      // AGw WFS ARC controller power relay is normally OPEN, power OFF at instrument mains ON
+      
     } else if(!strcasecmp(argbuf,"WFS")) {
       GetArg(args,2,argbuf);
 
@@ -2419,13 +2391,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	    sprintf(reply,"%s WFS=ON WFS_BRK=FAULT",who_selected);
 	else
 	  sprintf(reply,"%s WFS=OFF WFS_BRK=UNKNOWN",who_selected);
-	/*
-	 * Old code that did not sense breaker trip faults [rwp/osu - 2011 Oct 27]
-	sprintf(reply,"%s %s %s", who_selected,
-		(agwWFSPower==64 ? "WFS=ON" : "WFS=OFF"),
-		((agwWFSPower==64 && agwWFSBreaker==16) ? 
-		 "WFS_BRK=OK" : "WFS_BRK=UNKNOWN"));
-	*/
+
       } else if(!strcasecmp(argbuf,"OFF")) {
 
 	if(agwWFSPower==64) {
@@ -2453,6 +2419,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
       return CMD_OK;
 
+      // AGw Acquisition/Guide Camera ARC controller power relay is normally OPEN
+      
     } else if(!strcasecmp(argbuf,"AGC")) {
       GetArg(args,2,argbuf);
 
@@ -2466,13 +2434,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	    sprintf(reply,"%s AGC=ON AGC_BRK=FAULT",who_selected);
 	else
 	  sprintf(reply,"%s AGC=OFF AGC_BRK=UNKNOWN",who_selected);
-	/*
-	 * Old code that did not sense breaker trip faults [rwp/osu - 2011 Oct 27]
-	sprintf(reply,"%s %s %s", who_selected,
-		(agwGuidePower==128 ? "AGC=ON" : "AGC=OFF"),
-		((agwGuidePower==128 && agwGuideBreaker==32) ? 
-		 "AGC_BRK=OK" : "AGC_BRK=UNKNOWN"));
-	*/
+
       } else if(!strcasecmp(argbuf,"OFF")) {
 
 	if(agwGuidePower==128) {
@@ -2493,6 +2455,9 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	KeyCommand("util agc", dummy);
 	sprintf(reply,"%s",&dummy[6]); 
       }
+
+      // Change power state of both AGw unit WFS and AGC
+      
     } else if(!strcasecmp(argbuf,"AGW")) {
 
 	agwGuidePower = allUtilPower&128;
@@ -2504,13 +2469,6 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	    sprintf(reply,"%s AGC=ON AGC_BRK=FAULT",who_selected);
 	else
 	  sprintf(reply,"%s AGC=OFF AGC_BRK=UNKNOWN",who_selected);
-	/*
-	 * Old code that did not sense breaker trip faults [rwp/osu - 2011 Oct 27]
-	sprintf(reply,"%s %s %s", who_selected,
-		(agwGuidePower==128 ? "AGC=ON" : "AGC=OFF"),
-		((agwGuidePower==128 && agwGuideBreaker==32) ? 
-		 "AGC_BRK=OK" : "AGC_BRK=UNKNOWN"));
-	*/
 
 	agwWFSPower = allUtilPower&64;
 	agwWFSBreaker = allUtilBreaker&16;
@@ -2522,13 +2480,6 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	    sprintf(reply,"%s WFS=ON WFS_BRK=FAULT",reply);
 	else
 	  sprintf(reply,"%s WFS=OFF WFS_BRK=UNKNOWN",reply);
-	/*
-	 * Old code that did not sense breaker trip faults [rwp/osu - 2011 Oct 27]
-	sprintf(reply,"%s %s %s",reply,
-		(agwWFSPower==64 ? "WFS=ON" : "WFS=OFF"),
-		((agwWFSPower==64 && agwWFSBreaker==16) ? 
-		 "WFS_BRK=OK" : "WFS_BRK=UNKNOWN"));
-	*/
 
 	if((agwGuidePower==0 && agwGuideBreaker==0) &&
 	   (agwWFSPower==0 && agwWFSBreaker==0)) 
@@ -2542,7 +2493,9 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	sprintf(reply,"%s %d",reply, agwstatus);
 
 	return CMD_OK;
-    
+
+	// Lamp/Laser Box power relay is normally CLOSED (power ON with instrument mains)
+	
     } else if(!strcasecmp(argbuf,"LLB")) {
       GetArg(args,2,argbuf);
 
@@ -2556,15 +2509,6 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	    sprintf(reply,"%s LLB=ON LLB_BRK=FAULT",who_selected);
 	else
 	  sprintf(reply,"%s LLB=OFF LLB_BRK=UNKNOWN",who_selected);
-	/*
-	 * This logic gives false power indication in addition to not trapping
-	 * breaker trip faults [rwp/osu - 2011 Oct 27]
-	 *
-	sprintf(reply,"%s %s %s", who_selected,
-		(lampLaserBreaker==64 ? "LLB=ON" : "LLB=OFF"),
-		((lampLaserBreaker==64 && lampLaserPower!=256) ? 
-		"LLB_BRK=OK" : "LLB_BRK=UNKNOWN"));
-	*/
 
       } else if(!strcasecmp(argbuf,"ON")) {
 
@@ -2575,7 +2519,6 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	MilliSleep(200);
 	KeyCommand("util llb", dummy);
 	sprintf(reply,"%s",&dummy[6]); 
-	//sprintf(reply,"%s LLB=ON",who_selected); 
 
       } else if(!strcasecmp(argbuf,"OFF")) {
 
@@ -2586,7 +2529,6 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	MilliSleep(200);
 	KeyCommand("util llb", dummy);
 	sprintf(reply,"%s",&dummy[6]); 
-	//sprintf(reply,"%s LLB=OFF",who_selected); 
 
       } else {
 	sprintf(reply,"%s Invalid '%s', Usage UTIL LLB [on|off][status]",who_selected,argbuf); 
@@ -2600,11 +2542,12 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
     return CMD_OK;
 
+    // Lamp/Laser Box (LLB) Internal control functions
+    
   } else if(!strcasecmp(who_selected,"LLB")) { // Lamp Laser Box control
 
     if(!strcasecmp(argbuf,"RESET")) {
       shm_addr->MODS.lamps.lamplaser_all[0] = 0; // Turn off all lamps and lasers
-      //      ierr = wagoSetGet(1, shm_addr->MODS.WAGOIP[llbID], 1, 515, &shm_addr->MODS.lamps.lamplaser_all[0], 1);
       ierr = wagoSetGet(1, shm_addr->MODS.WAGOIP[llbID], 1, LLBONOFF, &shm_addr->MODS.lamps.lamplaser_all[0], 1);
 
       for(i=0;i<9;i++) shm_addr->MODS.lamps.lamp_state[i]=0;
