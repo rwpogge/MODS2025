@@ -8,16 +8,16 @@ files we must protect from tampering, so they are kept here
 in the code tree instead of the /home/mods/ support directory
 
 ## Files:
-```shell
+<pre>
    changeConfig   - This shell will configure to LBTO of OSU addresses
       Example: link mechanisms.ini to the instrument osu1.
-      prompt% sudo changeConfig <CR>
-      prompt% Change mechanisms.ini link to: osu1, osu2, lbt1, lbt2: osu1 <CR>
+      prompt% sudo changeConfig
+      prompt% Change mechanisms.ini link to: osu1, osu2, lbt1, lbt2: osu1
 
    mechanisms.ini - Link for MODS microlynx mechanism controller (mmc) agent
    mechanisms_MODS1.ini - MODS1 mechanism table
    mechanisms_MODS2.ini - MODS2 mechanism table
-```
+</pre>
 
 The MODS1/ and MODS2/ directories have the configuration files for
 each MODS instrument.
