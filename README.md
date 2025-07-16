@@ -90,6 +90,7 @@ dnf -y install libice3.7-c++ libice-c++-devel python3-ice
 ...
 dnf -y install dnstools wget (nice, but not required)
 ...
+Also need the local LBTO versions of hdf5 and lbto-libtelemetry, build from local rpms
 ```
 
 
