@@ -1,0 +1,13 @@
+* 'Motion Parameters
+MSEL= 10      '10 microsteps per step
+MUNIT=2000    'units to revs
+MAC=50        'accel current is 0.50 * 7
+MRC=30        'run current is 0.30 * 7
+MHC=0         'hold current is zero
+HCDT=500      'hold current delay msec (for overlap with brake engagement)
+
+*      'Motion Configuration
+ACCL=50          'acceleration rate in rev/sec^2
+DECL=Accl
+LDECL=500         'set decel after a limit is asserted
+VM=0.2

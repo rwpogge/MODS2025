@@ -1,0 +1,264 @@
+/*!
+  \mainpage agwfoc.plc - AGW Prime Focus PLC program
+
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2006 Jul 20
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system
+	 or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+	Small command set the key words are -
+	initial: Initialize AGW Prime Focus 
+	         (move to CW and set pos=0.000)
+	home: Send to position 0.000
+	stow: Send to oposite of home
+	stop: Stop all mechanism movement
+	subroutines:
+		relbrk: Release break
+		setbrk: Set break
+
+	All Motion Parameters are documented in the MicroLYNX Part III 
+	Software Reference.
+
+<pre>
+2006 Jul 20 - new application [rdg]
+2006 Nov 01 - added home,initial,stow,stop,relbrk,setbrk [rdg]
+2007 Dec 18 - home,initial,stow HOME=CCW, STOW=CW [rdg]
+2008 Aug 15 - added Power Failure (PWRFAIL) variables [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file agwfoc.plc
+  \brief Small command set for AGW Focus mechanisms
+*/
+/** END HEADER **/
+' START loading PLC
+' Motion Configuration
+MSEL= 10
+MUNIT=2000
+MAC = 50
+MRC=34
+MHC = 0
+HCDT = 500
+ACLT = 1
+ACCL=50		'acceleration rate in rev/sec^2
+DECL=ACCL	'acceleration rate = deceleration rate
+LDECL=500	'set decel after a limit is asserted
+'
+' Input & Output Configuration
+IOS 21 = 13,0,0	'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0	'NEGATIVE (CCW)limit, active low
+' Variable Declarations
+VAR VNORM=10.0   
+VM=VNORM	'5 rev/sec running speed
+VAR IOBITS	'IO bits 21 and 22 variable
+VAR VSEEK=0.5
+VAR IOBITS	'IO bits 21 and 22.
+VAR PWRFAIL=1   'Power Failures of any kind
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'	        'STARTUP MODE
+'		'PLC starts at address #100
+'
+PGM 100          'Starts at address 100
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		INITIAL(initializing) PROCEDURES
+' INITIALize mechanism
+'
+LBL INITIAL
+  PWRFAIL=0			'Reset Power Failure variable
+  BR BITERR, IO 21+IO 22=2 	'Check io bits 21 and 22 (both ON not allowed)
+'
+  VM=VNORM
+  SLEW -VNORM,0	'slew to to set position 0.000
+   HOLD 2	'suspend procedure until move is complete
+  POS=0.000	'set position to Zero (0.000) again with enough resolution
+  VM=VSEEK	'set the speed for sneeking up.
+  MOVA -0.5	'move to an absolute index of -0.500
+   HOLD 2	'suspend procedure until move is complete
+  SLEW -VSEEK,0	'finetune the home position (position 0.000)
+   HOLD 2	'suspend procedure until move is complete
+  VM=VNORM	'reset the speed to normal speed.
+  POS=0.000	'set position to Zero (0.000) again with enough resolution
+   DELAY 100
+BR END_IT	'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		HOME(0.0 position) PROCEDURE
+' HOME position is at the opposite end of STOW.  
+'
+LBL HOME
+  BR PWRERR, PWRFAIL=1          'Check for Power Failure or was turned off/on
+'
+  BR BITERR, IO 21+IO 22=2 	'Check io bits 21 and 22 (both ON not allowed)
+  BR SETPOS,IO 21=1		'Already in position
+'
+  VM=VNORM
+  MOVA 0.0	'slew to to set position 0.000
+   DELAY 100
+BR END_IT
+'
+' Already in position
+LBL SETPOS
+  POS=0.0
+BR END_IT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STOW(park) PROCEDURE
+' STOW position is at the opposite end of HOME.  
+'
+LBL STOW
+  BR PWRERR, PWRFAIL=1          'Check for Power Failure or was turned off/on
+'
+  BR BITERR, IO 21+IO 22=2 	'Check io bits 21 and 22 (both ON not allowed)
+'
+  VM=VNORM
+  SLEW VNORM,0	'slew to STOW position (opposite of HOME). 
+   HOLD 2	'suspend procedure until move is complete
+  VM=VSEEK	'set the speed for sneeking up.
+  MOVA POS+0.500 'move to a relative index of 0.500
+   HOLD 2	'suspend procedure until move is complete
+  SLEW VSEEK,0  'finetune the stow position
+   HOLD 2	'suspend procedure until move is complete
+  VM=VNORM	'reset the speed to normal speed.
+   DELAY 100
+BR END_IT	'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STOP(halt) PROCEDURE
+' STOP all motion and end this function
+'
+LBL STOP
+  SSTP 1 		'stop procedure
+BR END_IT	'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		RELeaseBReaK PROCEDURE
+' Subroutine to release the brake.
+'
+LBL RELBRK
+  IO 26=1
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		SETBReaK PROCEDURE
+' Subroutine to set the brake.
+'
+LBL SETBRK
+IO 26=0
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		BITERR(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+'
+LBL BITERR
+  PRINT "1 Bits 21(ON)=",IO 21," and 22(ON)=",IO 22," not allowed"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               PWRERR(power failure error) PROCEDURE
+' I'm indicating a power failure
+'
+LBL PWRERR
+  PRINT "1 AGWFOC power failure or turned off (reset), AGWFOC=PWRFLR"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_IT(exit) PROCEDURE
+' END of Main PLC code
+'
+LBL END_IT       'Exit
+END              'end the procedures
+PGM              'end of program in RAM 
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''' NEW PLC PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+'
+PGM 6000
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+  PRINT "0 agwfoc"
+BR END_PLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+  PRINT "0 ",POS
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKMVG PROCEDURE check moving status
+'
+LBL CHKMVG
+  PRINT "0 ",MVG
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+  PRINT "0 POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+  PRINT "0 codeV=0.1(12/18/07)",":HW",VER
+BR END_PLC      'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+  PRINT "0 ",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO30 PROCEDURE for bits 36 - 31
+' Check IO 30 bits
+'
+LBL IO30
+  PRINT "0 ",IO 36,IO 35,IO 34,IO 33,IO 32,IO 31
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20MASK PROCEDURE
+' Check the Select, Insert bit mask 24-21
+'
+LBL IO20MASK
+  VAR B21=IO 21*8 
+  VAR B22=IO 22*4 
+  VAR B23=IO 23*2 
+  VAR B24=IO 24
+  VAR BITMASK=B21+B22+B23+B24
+  PRINT "0 ",BITMASK
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC		
+END 
+PGM

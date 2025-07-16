@@ -1,0 +1,92 @@
+'ANDOR shows how to and/or inputs - in this case,
+'Inputs 21 & 22. For V1.1, they need 
+'to be converted to flags
+'
+'Last edited 9/5/99
+
+'******** Parameter Setup ********
+
+IOS 21 = 0,0,0  'Distance Bit0, low true
+IOS 22 = 0,0,0  'Distance Bit1, low true
+IOS 23 = 9,0,0  'Start input, low true
+
+FLG B0		'This flag stores Bit0
+FLG NB0 	'This flag stores NOT(Bit0)
+
+FLG B1  	'This flag stores Bit1
+FLG NB1 	'This flag stores NOT(Bit1)
+
+FLG AND0 	'This flag stores the result of
+	 	'NOT(Bit1) AND NOT(Bit0)
+
+FLG AND1 	'This flag stores the result of
+	 	'NOT(Bit1) AND Bit0
+
+FLG AND2 	'This flag stores the result of
+	 	'Bit1 AND NOT(Bit0)
+
+FLG AND3 	'This flag stores the result of
+	 	'Bit1 AND Bit0
+
+FLG OR0 	'This flag stores the result of
+		'NOT(Bit1) OR NOT(Bit0)
+
+FLG OR1 	'This flag stores the result of
+		'NOT(Bit1) OR Bit0
+
+FLG OR2 	'This flag stores the result of
+		'Bit1 AND NOT(Bit0)
+
+FLG OR3 	'This flag stores the result of
+		'Bit1 OR Bit0
+
+VAR BIT0 = 21 	'IO 21 is read into Bit0
+VAR BIT1 = 22 	'IO 22 is read into Bit1 
+    
+'******** Program ********
+
+PGM 1
+  LBL ANDOR
+
+'The next four lines read the IO states, write
+'them into flags, and write the negatives into
+'flags.
+
+    B0 = IO BIT0
+    NB0 = !B0
+    B1 = IO BIT1
+    NB1 = !B1
+
+'The next four lines perform logical AND.
+
+    AND0 = NB1 & NB0
+    AND1 = NB1 & B0 
+    AND2 = B1 & NB0
+    AND3 = B1 & B0
+
+'These next four lines print out the results of
+'the logical AND.
+
+    PRINT "/BIT1 & /BIT0 = ", AND0
+    PRINT "/BIT1 & BIT0 = ", AND1
+    PRINT "BIT1 & /BIT0 = ", AND2
+    PRINT "BIT1 & BIT0 = ", AND3
+    PRINT
+
+'The next four lines perform logical OR.
+
+    OR0 = NB1 | NB0
+    OR1 = NB1 |B0 
+    OR2 = B1 | NB0
+    OR3 = B1 | B0
+
+'These next four lines print out the results of
+'the logical OR.
+
+    PRINT "/BIT1 OR /BIT0 = ", OR0
+    PRINT "/BIT1 OR BIT0 = ", OR1
+    PRINT "BIT1 OR /BIT0 = ", OR2
+    PRINT "BIT1 OR BIT0 = ", OR3
+    
+    END
+ PGM

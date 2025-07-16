@@ -1,0 +1,198 @@
+*/*!
+*  \file standardParams.plc
+*  \brief MODS MicroLYNX Controller PLC Template Standard Parameters file
+* 
+*  This module contains the parameters template for all microLYNX mechanism.
+*
+*  These parameters will be loaded into the microLYNX controller 
+* along with other user commands by a task started by the islmgr.
+* 
+*  \arg This is a PLC with information necessary for all MODS mechanisms
+*  \arg User must modify it to suit the needs of their mechanism.
+*
+*  \author OSU/ISL Astronomy Staff. (islstaff@astronomy.ohio-state.edu)
+*  \date 2006 June 10
+**/
+****************************************
+**                                    **
+* *     Standard PLC Parameters      * *
+*  *       low level software       *  *
+*   *                              *   *
+*   *    Standard PLC Template     *   *
+*  *       Date: June  2006         *  *
+* *  Author: OSU/ISL Astronomy Staff * *
+**                                    **
+****************************************
+*23456789^123456789^123456789^123456789^123456789^123456789^123456789^123456789
+* asterisk '*' is a commented line and/or field (80 char/line).
+* vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+* single quote ' is a PLC MicroLYNX code comment.
+* Which will only be used if necessary!!!!!!! Please avoid if possible.
+* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+* For specifics on this mechanism read the /home2/isl/plc/*.spc files.
+* They will be in http://www.astronomy.ohio-state.edu/MODS/Docs 
+* when documents are stable and proven.
+*
+** Motor Controller Settings:
+* 10 usteps/fullstep = 2000 microsteps/rev
+MSEL= 10      
+*
+* (2000 usteps/rev) gives velocity and acceleration in rev/sec
+MUNIT=2000
+*
+* Acceleration Current
+MAC = -->> ? <<--
+*
+* Run Current
+MRC = -->> ? <<--
+*
+* Hold current is zero
+MHC = 0
+*
+* hold current delay msec (for overlap with brake engagement)
+HCDT = 500
+*
+** Motion Configuration:
+*
+* Linear acceleration (default)
+ACLT = 1
+*
+* Acceleration rate in rev/sec^2
+ACCL = --> ? <<--
+*
+* Deceleration rate in rev/sec^2
+DECL = ACCL
+*
+* Set decel after a limit is asserted
+LDECL = -->> ? <<--
+*
+* Be aware of overtravel when seeking limits, must not decelerate hard into 
+* limits.
+* Maximum Permitted Overtravel  ~0.5mm , ~0.020"
+*
+** Motion Controller I/O Connections
+*
+* POSITIVE (CW) (viewed from front of motor) limit,active low 
+IOS 21 = 13,0,0
+*
+* NEGATIVE (CCW)limit, active low
+IOS 22 = 14,0,0
+*
+* NOT USED FOR NOW
+*IOS 23 =
+*IOS 24 =
+*IOS 25 =
+*
+* brake bit.
+-->> IOS 26 = 0 <<--
+*
+*      Variable Declarations
+* Variable maybe used for converting the value given to revs.
+* Can be given by the islmgr or set here.
+VAR MMREV = -->> ? <<--
+*
+* Nominal operating velocity (revs/sec)
+VAR VNOM = -->> ? <<--
+VM = VNOM
+*
+* HOME seeking velocity
+VAR VSEEK = -->> ? <<--
+*
+* Nominal Best Mechanism (revs)
+* Absolute position Science Center (revs)
+VAR TARGET = -->> ? <<--
+*
+VAR BACKLASH = -->> 0.2? <<--
+*
+* Maximum mechanism travel in millimeter is revs/millimeters+10%
+VAR MAXMOV = -->> ? <<--
+*
+* PLC code version	 
+VAR CODEV = -->> 0.0 <<--
+*
+* Initialize at address 100
+* Remember that nothing here needs to change unless you add a
+* different task.
+* HOME procedure to establish position datum
+PGM 100
+LBL HOME
+*
+* Set the velocity to nominal value (rev/sec)
+VM = VNOM
+*
+* Move toward home. Home is mechanism dependent (CW or CCW).
+* Home is mechanism dependent (CW or CCW).
+* Could be MAXMOV or -MAXMOV depending on where HOME is.
+MOVR MAXMOV
+*
+* If the islmgr finds that the move is commplete and a limit was not reached
+* islmgr will take control of the this PLC and do the following.
+* 1.) Send an abort to the PLC.
+* 2.) Log the position, and HOME direction (CW or CCW). example:
+*     2006.174.14:54:57.21/pos,-180.5
+*     2006.174.14:54:57.21?ERROR ML -6005 DID NOT DETECT CW SWITCH
+*     2006.174.14:54:57.21?ERROR ML -2022 OUTPUT FAULT AT DIGITAL IO LINE 22
+* If islmgr detected switch failure PLC will abort, and will not continue.
+*
+* Suspend program execution until move completion
+HOLD 2          
+*
+* Log position at HOME switch assert point prior to resetting POS
+* This will be taken care of by a low level application in islmgr.
+*
+* Tentative setting of position datum
+POS = 0.0
+*
+* Set velocity to seek speed
+VM = VSEEK
+*
+* Moves away from HOME slowly to de-assert switch
+* Could be MAXMOV or -MAXMOV depending on where HOME is.
+MOVR -MAXMOV
+BR POLL
+*
+* Routine to poll for the HOME switch de-assert point
+* This mechanism makes its HOME at the CW switch
+LBL POLL
+BR SEEK, IO 22 = 0
+BR POLL
+*
+* HOME assert trip point slow seek
+LBL SEEK
+*
+* Stop what you are doing (SSTP) the motion only not the PLC.
+* Wait while logging de-assert position (DELAY) in millisecs.
+* Log de-assert position at this point. This will be taken care 
+* of by a low level application in islmgr.
+SSTP 0
+DELAY = 500
+*
+* Set velocity to seek speed
+VM = VSEEK
+*
+* Move toward HOME slowly, re-assert switch
+* MOVA could be +1 or -1
+MOVA 1
+*
+* Suspend program execution until move completion
+HOLD 2
+*
+* Set absolute position datum
+POS=0.0
+* 
+* branch to exit
+BR END_IT       
+*
+*
+* More code will be developed here 
+*               
+* Exit
+LBL END_IT
+*
+* Reset operating velocity (revs/sec)
+VM = VNOM
+************************************
+* End the procedures
+END
+* End of -->> who <<-- PLC program in RAM 
+PGM

@@ -1,0 +1,9 @@
+#
+# MODS2 Dichroic Beam Selector Drum
+# 2014-04-02T11:46:16
+# R. Pogge, OSU Astronomy Dept
+#
+#Pos  Name   dFoc   Info
+  1   Red       0   Red-Only Ag Folding Flat Mirror Nr2
+  2   Dual    200   CSIRO 575nm Dichroic Nr2
+  3   Blue      0   Blue-Only Bypass Position

@@ -1,0 +1,154 @@
+/*!
+  \mainpage bshutter.plc - Blue Shutter PLC program
+
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2007 Feb 02
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system.
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+
+ The following application program generates motion in the MicroLYNX 
+ by following an external pulse source. The code checks the value of an 
+ IO and updates whether they want the following to be fine or coarse. 
+ The program also includes limit switches that only allow for motion in 
+ one direction when the limit has been reached.
+
+ Notes:
+
+   1. Module in ML15
+   2. Pulse Generator - signal from HE
+   3. Digital Inputs in IO Lines 21, 22
+     (these need to be turned off at the microlynx module)
+
+ All Motion Parameters are documented in the MicroLYNX Part III 
+ Software Reference.
+
+<pre>
+2007 Feb 02 - new application [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file bshutter.plc
+  \brief Listens to an external Pulse from the HE for the MODS Blue Shutter
+*/
+/** END HEADER **/
+' Start here with ladder code
+' MODS Shutter Control Program
+'Blue & Red have different Limit Switch Configurations
+'Blue & Red have different Signs on all Relative Moves 
+'(OPEN,CLOSE, HOME subroutines)
+
+' General MicroLynxx Parameters
+Msel=10      '10 usteps/fullstep = 2000 microsteps/rev
+Munit=2000    '(2000 usteps/rev) gives velocity and acceleration in rev/sec
+'
+' Configure Motor current Settings
+Mac=65		'Acceleration Current
+Mrc=54		'Run Current
+Mhc=0		'hold current is zero
+Hcdt=0		'hold current delay msec, 
+		'NO delay to allow detent quick response
+'
+' Motion Configuration
+Aclt=1		'linear acceleration (default)
+Accl=20		'acceleration rate in rev/sec^2
+Decl=Accl	'deceleration rate in rev/sec^2
+Ldecl=500	'set decel after a limit is asserted
+' Motion Controller I/O Connections
+' Execute a IP ALL and SAVE to restore factory defaults
+' when changing from Blue to Red
+'
+'Blue Shutter Limit Configuration
+'Ios 21 = 13,0,0	'RED SHUTTER, POSITIVE (CW)
+			'limit,active low, shutter closed
+'Ios 22 = 14,0,0	'READ SHUTTER, NEGATIVE (CCW)
+			'limit, active low
+'
+'Blue Shutter Limit Configuration
+Ios 21 = 14,0,0		'BLUE SHUTTER, NEGATIVE (CCW)
+			'limit, active low
+Ios 22 = 13,0,0		'BLUE SHUTTER, POSITIVE (CW)
+			'limit,active low, shutter closed
+'
+'Individual Blade Status Input Configuration (Ble & Red Shutters)
+Ios 31 = 0,0,0		'Blade #1 Closed
+Ios 32 = 0,0,0		'Blade #2 Closed
+Ios 33 = 0,0,0		'Blade #1 Open
+Ios 34 = 0,0,0		'Blade #2 Open
+Ios 35 = 0,0,1		'Shutter Trigger Input
+'
+' Variable Declarations and Calculations
+VAR VNORM	'Nominal operating velocity (revs/sec)
+VNORM=5.0
+VAR VSEEK	'HOME seeking velocity
+VSEEK=0.5
+VAR NOMMOV	'Nominal Number of Steps to Open or Close Blue or Red Shutter
+NOMMOV = 1.25	'1.25 revs (250 motor fullsteps) to cycle shutter
+VAR BOUNCE	'Time delay in msec to debounce microswitches
+BOUNCE = 25
+VAR TRIGGER	'Shutter external trigger, IO 35
+VAR CL		'Check for closed state
+VAR OP		'Check for open state
+VAR BETW	'Check for both blades between open and closed
+VAR ERROR2=0
+'
+VAR SALONE=0	'Standalone
+VAR COUNT=-1	'Cycle count
+VAR T_DELAY=500	'Cycle delay
+VAR PWRFAIL=0	'Power Failures of any kind
+VAR TASKVUE=-1	'Look at information or errors
+		'CERROR=1, WHO=2, IO20=3, IO30=4
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               'STARTUP MODE
+' PLC starts at address #10
+Pgm 10
+LBL startup
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'	REMOTE:	Controlled by the Head Electronics Box(HEB)
+' 		This is started at startup of the microlynx
+'		module as a background task.
+
+LBL TST_PGM 	‘Name the program TST_PGM
+ MUNIT = 200 	‘Set MUNIT so that 200 units = 1 Revolution
+ IOS 21 = 0,1 	‘Set I/O line 21 to a user defined output
+ POS = 0 	‘Set the position to 0
+ RUN BACK 	‘Run the background program labeled BACK
+LBL LOOP 	‘Define Sub Loop
+ MOVA 200 	‘Index to Absolute Position 200
+ HOLD 2 	‘Suspend Prog. execution until move completes
+ DELAY 2000 	‘Delay 2 seconds
+ MOVA 0 	‘Index to Absolute Position 0
+ HOLD 2 	‘Suspend Prog. execution until move completes
+ DELAY 2000 	‘Delay 2 seconds
+ BR LOOP 	‘Unconditional Branch to Sub LOOP
+END
+PGM
+'
+'The Background Program:
+PGM 200
+LBL BACK 	‘Define background task BACK
+IO 21 = 0 	‘Set I/O 21 to 0
+LBL FULL 	‘Declare subroutine FULL
+BR FULL, POS = 200 ‘Loop to sub FULL until POS = 200
+IO 21 = 1 	‘Set I/O 21 to 1
+DELAY 4 	‘Delay Prog. execution 4 msec
+LBL ZERO 	‘Declare subroutine ZERO
+BR ZERO, POS = 0 ‘Loop to sub ZERO until POS = 0
+IO 21 = 0 	‘Clear I/O 21
+DELAY 2 	‘Delay Prog. execution 4 msec
+BR BACK 	‘Unconditional branch to BACK
+END
+PGM

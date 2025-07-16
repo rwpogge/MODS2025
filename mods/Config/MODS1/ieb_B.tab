@@ -1,0 +1,31 @@
+#
+# MODS1 Blue-Side Instrument Electronics Box (IEB) Configuration
+#
+# 2009-05-22T14:43:54 [rwp/osu]
+#
+
+# Temperature Sensors
+
+Temp 1 IEB Inside Air
+Temp 2 IEB Glycol Return
+Temp 3 MODS Truss Top
+Temp 4 MODS Truss Bottom
+
+# MicroLYNX Controller Assignments
+
+MLC  1  CALIB
+MLC  2  AGWY
+MLC  3  AGWX
+MLC  4  AGWFOC
+MLC  5  AGWFILT
+MLC  6  BCOLTTFA 
+MLC  7  BCOLTTFB
+MLC  8  BCOLTTFC
+MLC  9  BGRATING
+MLC 10  BGRTILT1
+MLC 11  BGRTILT2
+MLC 12  BFILTER
+MLC 13  BCAMFOC
+MLC 14  none
+MLC 15  BSHUTTER
+MLC 16  none

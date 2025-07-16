@@ -1,0 +1,27 @@
+#
+# MODS CCD Region-of-Interest (ROI) Readout Modes
+# 2011-08-11 [rwp/osu]
+#
+# Format: ModeName xmin xmax ymin ymax
+#
+# Names must not contain any spaces, convention is XKxYK in unbinned
+# pixels, where 1K=1024, 2K=2048, etc.  We use the same ROI modes
+# for both channels, hence why there are not separate red and blue
+# versions of this file.  However, 3K is 3088, the full active
+# height of the e2v CCD231-68 CCDs (16 more than 3072).
+#
+# A valid ROI must be divisible by 2, 4, 8, and 16 to be valid for
+# binning, and symmetrical about the center columns.  The coordinates
+# must be specified in unbinned pixels.  Note that the full-frame
+# readout is handled by a special command and need not be included.
+#
+# MODS e2v CCD231-68 Full Frame: x=1..8288 y=1..3088
+#
+#3Kx3K    2609 5680    9 3080  # Direct Imaging, true 3Kx3K
+3Kx3K    2601 5688    1 3088  # Direct Imaging 3088x3088 full height
+2Kx2K    3121 5168  521 2568  # 2Kx2K Centered
+1Kx1K    3633 4656 1033 2056  # 1Kx1K Centered
+4Kx3K    2097 6192    1 3088  # Prism MOS Spectra: 4096x3088
+1Kx3K    3633 4656    1 3088  # 1Kx3K Vertical: 1024x3088
+#4Kx3K    2097 6192    9 3080  # Prism MOS Spectra, true 4096x3072
+512x512  3889 4400 1289 1800  # 512x512 Centered

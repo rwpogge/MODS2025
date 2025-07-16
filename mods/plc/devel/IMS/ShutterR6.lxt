@@ -1,0 +1,132 @@
+ ' MODS Shutter Control Program
+'Blue & Red have different Limit Switch Configurations
+'Blue & Red have different Signs on all Relative Moves (OPEN,CLOSE, HOME subroutines)
+' Initialize at address 100
+Pgm 100
+'
+' General MicroLynxx Parameters
+Msel= 10      '10 usteps/fullstep = 2000 microsteps/rev
+Munit=2000    '(2000 usteps/rev) gives velocity and acceleration in rev/sec
+' Configure Motor current Settings
+Mac=40        'Acceleration Current
+Mrc=40        'Run Current
+Mhc=0         'hold current is zero
+Hcdt=0        'hold current delay msec, NO delay to allow detent quick response
+'
+' Motion Configuration
+Aclt=1             'linear acceleration (default)
+Accl=25            'acceleration rate in rev/sec^2
+Decl=Accl          'deceleration rate in rev/sec^2
+Ldecl=200          'set decel after a limit is asserted
+' Motion Controller I/O Connections
+'Execute a IP ALL and SAVE to restore factory defaults
+'when changing from Blue to Red
+'
+'Red Shutter Limit Configuration
+'Ios 21 = 13,0,0    'RED SHUTTER,POSITIVE (CW)limit,active low, shutter closed
+'Ios 22 = 14,0,0    'RED SHUTTER,NEGATIVE (CCW)limit, active low, shutter open
+'
+'Blue Shutter Limit Configuration
+Ios 21 = 14,0,0    'BLUE SHUTTER, NEGATIVE (CCW)limit, active low
+Ios 22 = 13,0,0    'BLUE SHUTTER, POSITIVE (CW)limit,active low, shutter closed
+'
+'Individual Blade Status Input Configuration (Ble & Red Shutters)
+Ios 31 = 0,0,0     'Blade #1 Closed
+Ios 32 = 0,0,0     'Blade #2 Closed
+Ios 33 = 0,0,0     'Blade #1 Open
+Ios 34 = 0,0,0     'Blade #2 Open
+Ios 35 = 0,0,1     'Shutter Trigger Input
+'
+' Variable Declarations and Calculations
+VAR VNOM        'Nominal operating velocity (revs/sec)
+VNOM=5
+VAR VSEEK       'HOME seeking velocity
+VSEEK=0.5
+VAR NOMMOV      'Nominal Number of Steps to Open or Close Blue or Red Shutter
+NOMMOV = 1.25	  '1.25 revs (250 motor fullsteps) to cycle shutter
+VAR BOUNCE      'Time delay in msec to debounce microswitches
+BOUNCE = 25
+VAR TRIGGER     'Shutter external trigger, IO 35
+VAR CL          'Check for closed state
+VAR OP          'Check for open state
+VAR BETW        'Check for both blades between open and closed
+'
+'
+' Shutter Input Polling Routine
+LBL REMOTE
+PRINT "Polling"
+'Determine shutter state
+CL = Io 31 + Io 32	'Check for closed shutter
+OP = Io 33 + Io 34	'Check for open shutter
+BETW = Io 31 + Io 32 + Io 33 + Io 34  'Test for shutter between Open and Closed
+CALL HOME, BETW<>2   'Shutter neither opened nor closed, attempt to HOME
+TRIGGER = Io 35
+CALL OPEN,  TRIGGER + CL = 2	'execute OPEN subroutine when shutter trigger is low (request OPEN) and shutter is closed
+CALL CLOSE, TRIGGER + OP = 3	'execute CLOSE subroutine when shutter trigger is high (request CLOSE) and shutter is open
+BR REMOTE
+END
+'
+'
+LBL OPEN	'Beginning of Shutter OPEN subroutine
+PRINT "you're in OPEN"
+CL = Io 31 + Io 32 	'Confirm that both shutter blades are closed
+BR DIAGNOSE, CL<>2
+Vm = VNOM	      'Set velocity to normal
+'MOVR -NOMMOV	  'RED shutter relative move to open shutter blades
+MOVR NOMMOV	  'BLUE shutter relative move to open shutter blades
+HOLD 2          'suspend program execution until move completion
+DELAY BOUNCE         'microswitch de-bounce pause
+OP = Io 33 + Io 34	 'Confirm that both shutter blades are open
+BR DIAGNOSE, OP<>2
+RET	'return to main program
+'
+'
+LBL CLOSE	'Beginning of Shutter CLOSE subroutine
+PRINT "you're in CLOSE"
+OP = Io 33 + Io 34  	'Confirm that both shutter blades are open
+BR DIAGNOSE,  OP<>2
+Vm = VNOM	      'Set velocity to normal
+'MOVR NOMMOV	    'RED shutter relative move to close shutter blades
+MOVR -NOMMOV	  'BLUE shutter relative move to close shutter blades
+HOLD 2          'suspend program execution until move completion
+DELAY BOUNCE          'microswitch de-bounce pause
+CL = Io 31 + Io 32	  'Confirm that both shutter blades are closed
+BR DIAGNOSE, CL<>2
+RET	'return to main program
+'
+'
+LBL HOME        'HOME subroutine to put shutter in closed condition from any start
+PRINT "you're in HOME"
+BR DIAGNOSE, BETW<>0     'Branch to diagnostics if ALL switches are between positions
+Vm=VSEEK        'set the velocity to seeking value (rev/sec)
+'MOVR NOMMOV	    'RED shutter relative move to close shutter blades
+MOVR -NOMMOV	  'BLUE shutter relative move to close shutter blades
+HOLD 2          'suspend program execution until move completion
+DELAY 100       'delay for detent drop-in and microswitch de-bounce
+CL = Io 31 + Io 32	  'Confirm that both shutter blades are closed
+BR DIAGNOSE, CL<>2
+PRINT "HOMING Routine Complete, shutter closed"
+RET	'return to main program	'
+'
+LBL DIAGNOSE
+PRINT "Program Terminated due to Blade State Error"
+PRINT "Run diagnostics to determine all four blade states"
+'
+END              'end the procedures
+Pgm              'end of program in RAM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

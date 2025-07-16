@@ -1,0 +1,30 @@
+Pgm 200 
+ 
+LBL INIT 
+PRINT "MODS ISL System" 
+PRINT "OSU Columbus, OH, 43210" 
+PRINT "www.astronomy.ohio-state.edu" 
+PRINT Ver, "SER = ", Ser 
+SET Ios 21=13,0,0 
+SET Ios 22=14,0,0 
+SET Ios 26=0 
+SET Mac=50 
+SET Mrc=34 
+SET Mhc=0 
+SET Msel=10 
+SET Munit=2000 
+SET Accl=50 
+SET Decl=Accl 
+SET Ldecl=500
+SET Aclt=1 
+SET Dclt=1 
+SET Hcdt=0 
+SET Vm=10 
+SET Blsh=1.500 
+SET Ble=1 
+SET Blm=1 
+BR DONE 
+LBL DONE 
+PRINT ">"; 
+END 
+Pgm 

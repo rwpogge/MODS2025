@@ -1,0 +1,9 @@
+#
+# MODS1 AGW Stage Filter Table
+# 2009-10-20T09:36:58 [rwp/osu]
+#
+#Pos ID           Unique Indentifier
+  1  Clear      # 50mm dia x 5mm FuSi clear imaging flat
+  2  F525LP     # 50mm dia x 5mm 525nm long-pass yellow filter
+  3  B_bessel   # 50mm dia x 5mm Bessel B filter (Optec)
+  4  ND1.0      # 50mm dia x 5mm Neutral Density 1.0 filter

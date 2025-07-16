@@ -1,0 +1,102 @@
+'MODS Camera Focus Endurancmrc=10e and Cold Testing
+' Initialize program at address 100
+Pgm 100
+Msel= 10      '10 usteps/fullstep = 2000 microsteps/rev
+Munit=2000    '(2000 usteps/rev) gives velocity and acceleration in rev/sec
+Mac=50        'Acceleration Current
+Mrc=34        'Run Current
+Mhc=0         'hold current is zero
+Hcdt=500      'hold current delay msec (for overlap with brake engagement)
+'
+'  Motion Configuration:
+'
+Aclt=1          'linear acceleration (default)
+Accl=10         'acceleration rate in rev/sec^2
+Decl=Accl       'deceleration rate in rev/sec^2
+Ldecl=500       'set decel after a limit is asserted
+'
+'  Motion Controller I/O Connections
+'
+Ios 21 = 13,0,0    'POSITIVE (CW) limit,active low (viewed from front of motor)
+Ios 22 = 14,0,0    'NEGATIVE (CCW)limit, active low
+'IOS 23 = 'not used
+'IOS 24 = 'not used
+'IOS 25 = 'not used
+'IOS 26 = 'not used, no brake
+'
+'  Variable Declarations (up to 8 alphanumeric)
+VAR VNOM        'Nominal operating velocity (revs/sec)
+VNOM=5
+VAR VSEEK       'HOME seeking velocity
+VSEEK=0.5
+VAR NOMFOC      'Absolute position of best focus (revs)
+NOMFOC = 6.0    'Nominal Best Focus (revs)
+VAR MAXMOV      'Maximum mechanism travel
+MAXMOV =210     'Maximum mechanism travel
+VAR BACKLASH	'Backlash compensation magnitude
+BACKLASH=0.5
+'
+'User Input of Number of Test Cycles
+VAR LOOPCNT=1
+VAR FOCUS=0
+PRINT "Enter Number of Test Cycles"
+INPUT LOOPCNT,0
+'
+'Endurance testing loop
+VAR Cycle=0	  'initialize loop counter
+LBL ENDURE	  'start of endurance test routine
+CALL HOME   	  'calls HOME subroutine
+LBL FOCSEQ
+FOCUS=FOCUS+10 	  'increments desired focus position (revs)
+Vm=VNOM           'set the velocity to nominal value (rev/sec)
+MOVA -FOCUS       'move to an absolute focus position
+HOLD 2            'suspend program execution until position completion
+Vm=VSEEK	  'set velocity to seek speed for backlash compensation
+MOVR -BACKLASH	  'relative move for backlash compensation at low speed
+HOLD 2		
+MOVR +BACKLASH	  'rela tive move for backlash compensation at low speed
+'always approach target from same direction as final homing
+HOLD 2
+PRINT "Focus = " Pos    'print present focus position
+DELAY=2000		'delay execution prior to next focus increment
+BR FOCSEQ, FOCUS<MAXMOV
+FOCUS=0           'Resets Focus magnitude upon exiting loop
+'
+INC CYCLE	' increments loop counter
+PRINT "Completed Focus Cycles = " CYCLE
+DELAY = 5000	'delay execution prior to next focus cycle
+BR ENDURE, CYCLE<LOOPCNT
+CALL HOME         'calls HOME subroutine
+END
+'
+LBL HOME        'HOME procedure to establish position datum
+Vm=VNOM         'set the velocity to nominal value (rev/sec)
+MOVR MAXMOV     'move toward home
+HOLD 2          'suspend program execution until move completion
+Pos=0           'tentative datum position setting
+Vm=VSEEK        'set velocity to seek speed
+MOVR -MAXMOV    'moves away from HOME to de-assert switch
+'Routine to poll for the HOME switch de-assert point
+LBL POLL
+BR SEEK, Io 21 = 0	'exit polling routine when HOME switch goes low
+BR POLL
+LBL SEEK        'HOME assert trip point slow seek
+SSTP            'Stops move which de-asserted HOME switch
+DELAY 1000
+PRINT "De-Assert = " Pos
+MOVA 1          'move toward HOME switch slowly, re-assert switch
+HOLD 2          'suspend program execution until move completion
+Pos=0.0         'set absolute position datum
+PRINT "HOMING Routine Complete"
+DELAY 1000
+RET             'returns to main program
+'
+END              'end the procedures
+Pgm              'end of program in RAM
+
+
+
+
+
+
+

@@ -1,0 +1,147 @@
+#!/usr/bin/wish
+# vue_modsqc source for the Tk toolkit
+# Basic font for button, menus and labels
+# Product of OSU/ISL Astronomy Dept.
+# to be incorporated into ISL software
+#
+# Blue IMCS QC data readout tool (part of imcsTools)
+# see also: bimcsGUI, redQC
+#
+# Updated: 2025 Jun 24 - AlmaLinux 9 port [rwp/osu]
+#
+#-------------------------------------------------------
+
+  # Window manager configurations
+  set ICONDIR /home/dts/mods/TclTK/images
+  set LIBDIR /home/dts/mods/TclTK/lib
+
+  #set bfont {-*-arial-medium-r-*-sans-24-*-*-*-*-*-*-*}
+  set bfont {-*-arial-medium-r-*-sans-48-*-*-*-*-*-*-*}
+
+  global tkVersion
+
+  wm positionfrom . user
+  wm sizefrom . ""
+  wm maxsize . 1152 900  
+  wm iconbitmap . @$ICONDIR/vlb.icon
+  wm iconposition . 1200 0
+  wm iconname . {qc}
+#  wm geometry . +5+25
+  wm title . { MODS Quad-Cells }
+
+    global result1 result2 result3 result4
+# Decide on font size.
+#  if {$argc<=0} {
+#      set ibfont [open "|/bin/sh -c \"cat $LIBDIR/my_font; :\""]
+#      set bfont [gets $ibfont]
+#      catch {close $ibfont}
+#  } else {
+#      set bfont [lindex $argv 0]
+#  }  
+
+# Top frame is a menubar
+# there is more magic that you can do with this
+# build widget .m
+frame .m \
+	-bg {blue} \
+	-borderwidth {5} \
+	-relief {groove} 
+
+frame .m1 \
+	-bg {blue} \
+	-borderwidth {5} \
+	-relief {groove} 
+
+frame .m2 \
+	-bg {blue} \
+	-borderwidth {5} \
+	-relief {groove} 
+
+frame .m3 \
+	-bg {blue} \
+	-borderwidth {5} \
+	-relief {groove} 
+
+frame .m4 \
+	-bg {blue} \
+	-borderwidth {5} \
+	-relief {groove} 
+
+frame .m6 \
+	-bg {blue} \
+	-borderwidth {5} \
+	-relief {groove} 
+
+proc flash { w option value1 value2 interval count} {
+    for {set i 0} {$i < $count} {incr i} {
+	$w config $option $value1
+	update idletasks
+	after $interval
+	$w config $option $value1
+	update idletasks
+	after $interval
+    }
+}
+
+#flash . -bg black black 10 5	
+
+button .m.q -text "Exit BLUE_IMCS" -relief {raise} -font $bfont -background blue -fg white -command exit 
+
+label .m1.label1 -text "QCell 1" -font $bfont -bg blue -fg white
+label .m1.result1 -width 8 -relief sunken -font $bfont -textvariable result1
+label .m2.label2 -text "QCell 2" -font $bfont -bg blue -fg white
+label .m2.result2 -width 8 -relief sunken -font $bfont -textvariable result2
+label .m3.label3 -text "QCell 3" -font $bfont -bg blue -fg white
+label .m3.result3 -width 8 -relief sunken -font $bfont -textvariable result3
+label .m4.label4 -text "QCell 4" -font $bfont -bg blue -fg white
+label .m4.result4 -width 8 -relief sunken -font $bfont -textvariable result4
+label .m6.label9 -text "SUM" -font $bfont -bg blue -fg white
+label .m6.result9 -width 8 -relief sunken -font $bfont -textvariable result9
+
+    set result1 [exec vueinfo qcell1]
+    set result2 [exec vueinfo qcell2]
+    set result3 [exec vueinfo qcell3]
+    set result4 [exec vueinfo qcell4]
+
+label .m1.result5 -width 8 -relief sunken -fg black -font $bfont -textvariable result5
+label .m2.result6 -width 8 -relief sunken -fg black -font $bfont -textvariable result6
+label .m3.result7 -width 8 -relief sunken -fg black -font $bfont -textvariable result7
+label .m4.result8 -width 8 -relief sunken -fg black -font $bfont -textvariable result8
+label .m6.result10 -width 8 -relief sunken -fg black -font $bfont -textvariable result10
+
+    set result5 [exec vueinfo hebqc1]
+    set result6 [exec vueinfo hebqc2]
+    set result7 [exec vueinfo hebqc3]
+    set result8 [exec vueinfo hebqc4]
+
+    pack .m .m.q -side top -fill x -expand 0
+    pack .m1
+    pack .m1.label1 .m1.result1 .m1.result5 -side left
+    pack .m2
+    pack .m2.label2 .m2.result2 .m2.result6 -side left
+    pack .m3
+    pack .m3.label3 .m3.result3 .m3.result7 -side left
+    pack .m4
+    pack .m4.label4 .m4.result4 .m4.result8 -side left
+    pack .m6
+    pack .m6.label9 .m6.result9 .m6.result10 -side left
+
+proc qcells { } {
+    global result1 result2 result3 result4 result5 result6 result7 result8
+    global result9 result10
+
+    set result1 [exec vueinfo qcell1]
+    set result2 [exec vueinfo qcell2]
+    set result3 [exec vueinfo qcell3]
+    set result4 [exec vueinfo qcell4]
+    set result9 [expr [exec vueinfo qcell1]+[expr [exec vueinfo qcell2]]+[expr [exec vueinfo qcell3]]+[expr [exec vueinfo qcell4]]]
+
+    set result5 [exec vueinfo hebqc1]
+    set result6 [exec vueinfo hebqc2]
+    set result7 [exec vueinfo hebqc3]
+    set result8 [exec vueinfo hebqc4]
+    set result10 [expr [exec vueinfo hebqc1]+[expr [exec vueinfo hebqc2]]+[expr [exec vueinfo hebqc3]]+[expr [exec vueinfo hebqc4]]]
+
+    after 500 qcells
+}
+after 10 qcells

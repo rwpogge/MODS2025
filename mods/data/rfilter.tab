@@ -1,0 +1,13 @@
+#
+# MODS1 Red Camera Filter Wheel Table - Loaded at LBT
+# 2010-06-15T20:43:40 [rwp/osu]
+#
+#Pos ID            Unique Indentifier
+  1  Clear       # MODS BK7 Clear 128x86x6mm Nr1
+  2  r_sdss      # Barr SDSS r 86x86mm
+  3  Open        # Position Empty
+  4  i_sdss      # Barr SDSS i 86x86mm
+  5  GG495       # JML GG495 128x86x6mm Nr1
+  6  z_sdss      # Barr SDSS z 86x86mm
+  7  ND1.5       # ND1.5 128x86x6mm Nr130605
+  8  Open        # Position Empty

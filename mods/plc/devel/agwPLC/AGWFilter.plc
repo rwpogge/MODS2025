@@ -1,0 +1,179 @@
+* Date: 20 March 2006
+* Author: OSU/ISL Astronomy Staff
+*****************************************
+** AGW Filter Wheel low level software **
+**     AGW Filter Wheel Placement      **
+*****************************************
+* 'Motion Parameters
+MSEL= 10      '10 microsteps per step
+MUNIT=2000    'units to revs
+MAC=50        'accel current is 0.50 * 7
+MRC=30        'run current is 0.30 * 7
+MHC=0         'hold current is zero
+HCDT=500      'hold current delay msec (for overlap with brake engagement)
+*
+*      'Input & Output Configuration
+IOS 21 = 13,0,0    'POSITIVE (CW) limit,active low
+IOS 22 = 14,0,0    'NEGATIVE (CCW)limit, active low
+IOS 26 = 0,1,0	   'line 26 is general output for brake control
+IOS 30 = 0,0,0	   'position code bits in group 30, active low
+*
+*      'Motion Configuration
+ACCL=50          'acceleration rate in rev/sec^2
+DECL=Accl
+LDECL=500         'set decel after a limit is asserted
+*
+*      'Variable Declarations
+VAR INCR = 1.8	  'revs between mask positions is 18mm
+VAR MASKNUM       'Mask Position Number
+VAR ABSPOS        'Absolute position for mask magazine
+VAR TARGNUM       'Desired Mask Position Number
+VAR TARGMOV       'Absolute position of target mask number
+VAR POSERR
+VAR CYCLE = 0
+VAR MAGADDR = 0
+*
+* program starts at address 100
+PGM 100
+LBL HOME         'HOME procedure: 
+VM=5             'change the velocity to 5.0 rev/sec running speed
+MOVA -62,1       'move to an absolute index of -61.1
+HOLD 0           'suspend procedure until position change is complete
+VM=1             'change the velocity to 2.0 rev/sec running speed
+MOVA -70         'move to an absolute index of -70
+HOLD 2           'suspend procedure until move is complete
+PRINT "HOME Position = " POS 'show me the position
+VM=5
+BR END_IT         'branch to exit
+*         
+LBL FINDPOS       'find a comfortable position 
+* releases brake
+IO 26=1
+* slews toward CW limit, will find "Position Valid"
+SLEW 3
+LBL SENSE1
+*branches to FOUND routine if the "Position Valid" is true
+BR FOUND, Io 36 = 1     
+BR SENSE1
+LBL FOUND
+* soft stop, continue execution
+SSTP 0
+* call and execute centering algorithm
+CALL CENTER
+*
+* applies brake
+IO 26=0
+* subtract 32 to get correction
+MASKNUM = IO 30 - 32    
+*
+* defines true absolute coordinate system based 
+* on mask number & centering
+ABSPOS = MASKNUM * INCR    
+POS = ABSPOS
+* DEBUG - PRINT "Absolute Position = " Pos
+DELAY 1000
+* I found my initial position
+* Now leave the driving to the rest of the procedures
+BR END_IT
+*
+* Get the correct Mask by getting to the correct target 
+LBL MASK
+*
+* There are just so many mask number
+CALL INVALID MASKNUM>24  
+* position cassett to target         
+TARGNUM = MASKNUM        
+* absolute position of target
+TARGMOV = TARGNUM*INCR       
+* DEBUG - PRINT "Target Position = "  TARGMOV
+* releases brake and lets get the correct mask 
+* according to target position
+IO 26=1
+* increase velocity for move to target mask position
+* don't take all day
+VM=5
+* absolute move to target mask number                         
+MOVA TARGMOV                
+HOLD 2
+* find the center of the target
+* call and execute centering algorithm
+CALL CENTER
+*
+* ooohh nelly - hold on now and apply the brake
+IO 26=0
+* give me a second while I think about this move               
+DELAY 1000
+POSERR= TARGMOV - CEN
+* DEBUG - 
+* PRINT "Targeting Error = " POSERR
+* MASKNUM = Io 30 - 32       'subtract 32 to get correct mask #
+PRINT "mask#", MASKNUM, " in position"
+* PRINT "You may resume to science position"
+BR END_IT
+*
+* INVALID MASK
+LBL INVALID
+MASKNUM = TARGNUM
+* PRINT "INVALID MASK NUMBER Try again. Mask are 0-24"
+* PRINT "Remembering that 12 is just the brace"
+BR END_IT
+*
+LBL CENTER
+*	Centering Routine
+*	Declare Variables in Routine
+VAR POSEDGE         'position edge of low to high position valid sensor
+VAR NEGEDGE         'negative edge of low to high position valid sensor
+VAR SUM             'intermediate sum
+VAR CEN             'Center of position valid sensor trip points
+*
+SLEW 0.5
+LBL PL
+* searches for high/low transition of position valid sensor
+BR PLUS, Io 36 = 0  
+BR PL
+LBL PLUS
+* give a soft stop a stop what you are doing kind of stop
+* and continue execution
+SSTP 0
+POSEDGE = Pos
+* DEBUG - 
+* PRINT "POSEDGE =" POSEDGE
+*	
+SLEW -0.5
+LBL NG
+* must reassert position valid bit
+BR NG1, Io 36 = 1    
+BR NG
+*
+* searches high/low transition of position valid sensor
+LBL NG1
+BR NEG, Io 36 = 0    
+BR NG1
+*
+LBL NEG
+* give a soft stop a stop what you are doing kind of stop
+* and continue execution
+SSTP 0
+NEGEDGE = POS
+* PRINT "NEGEDGE =" NEGEDGE
+*
+SUM = POSEDGE + NEGEDGE
+CEN = SUM/2
+VM=0.5
+* moves to center of position valid sensor trip points
+MOVA CEN
+HOLD 2
+PRINT "Centering Routine Reached Position = " POS
+* termination and return
+RET
+* end it now
+BR END_IT        'branch to exit
+LBL STOP         'Stop procedure
+SSTP 1           'stop
+PRINT "Motion has STOPPED! at Position = " POS
+BR END_IT        'branch to exit
+LBL END_IT       'Exit
+END              'end the procedures
+PGM              'end of program in RAM 
+
+

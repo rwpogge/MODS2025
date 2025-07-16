@@ -1,0 +1,68 @@
+Following an External Pulse Using MicroLYNX
+
+
+
+'********** Parameter Setup Section ************* 
+
+VAR counts 	'User Variable called "counts" 
+VAR count2 	'User Variable called "count2"
+
+Mhc=25 		'Motor hold current (current reduction) 
+Mrc=40 		'Motor run current 
+Mac=40 		'Motor acceleration current 
+Msel=10 	'Motor resolution selection (coarse, 1000steps/rev) 
+
+Ios 15=5,0,0,0,1,1 	'Pulse (Encoder type) input 
+Ios 16=6,0,0,0,1,1 	'Pulse (Encoder type) input 
+
+Ios 21= 0,0,0 	'NEGATIVE LIMIT (general purpose, input, active low) 
+Ios 22= 0,0,0 	'POSITIVE LIMIT (general purpose, input, active low) 
+Ios 23= 0,0,0 	'Fine resolution input (general purpose, input, active low) 
+
+Has = .9999999 	'Half axis scaling 1:1 
+
+'************ Start Program ****************** 
+
+Pgm 1 		'Toggle into Programming Mode at address 1 
+LBL STARTUP 	'Pre-defined label to start on power-up 
+
+Hae=1 		'enable half axis mode (following) 
+
+LBL main 	'User label called main 
+BR coarse, Io 23=1 	'Check state of coarse/fine select input 
+Has=.5 		'Set half axis scaling to 0.5:1 
+Msel=256 	'High resolution (fine, 51200 steps/rev) 
+BR cw 		'Branch to LBL cw 
+
+LBL coarse 	'User label called course 
+Has=.9999999 	'Reset half axis scaling to 1:1 
+Msel=16 	'Low resolution (coarse, 1000 steps/rev) 
+
+LBL cw 		'User label called cw 
+BR ccw, Io 21=0 	'Branch to ccw if IO 21 is inactive 
+Hae=0 		'Turn off half axis mode 
+
+LBL cw1 	'User label called cw1 
+counts=Ctr3 	'Set variable counts = Ctr3 
+DELAY 50 	'Wait 50 msec 
+count2=Ctr3 	'Set user variable count2=Ctr3 
+BR cw1, counts<=Ctr3 	'Loop while control encoder is going the 
+wrong way 
+Hae=1 		'Enable half axis mode 
+
+LBL ccw 	'User label called ccw 
+BR main, Io 22=0 	'Branch to LBL main if IO 22 is inactive 
+Hae=0 		'Turn off half axis mode 
+LBL ccw1 	'User label called ccw1 
+counts=Ctr3 	'Set variable counts = Ctr3 
+DELAY 50 	'Wait 50 msec 
+count2=Ctr3 	'Set variable count2 = Ctr3 
+BR ccw1, counts>=Ctr3 	'Loop while control encoder is going 
+			'the wrong way 
+Hae=1 		'Enable half axis mode 
+
+BR main 	'Unconditional Branch back to LBL main 
+
+END 		'End Program 
+
+Pgm 		'Toggle out of Programming Mode 

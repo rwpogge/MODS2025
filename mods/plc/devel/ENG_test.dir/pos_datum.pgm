@@ -1,0 +1,40 @@
+# MicroLYNX source code
+pgm 200
+LBL HOME
+# Initial SCIENCE seek
+mova 70,0
+hold 2
+movr -0.5
+hold 2
+vm=.2
+movr 1
+hold 2
+pos=0
+print "Position Datum = ", pos
+BR ENDIT
+LBL STOW
+vm=5
+mova -62,1
+hold 0
+vm=1
+mova -70
+hold 2
+print "STOWED Position = ", pos
+BR ENDIT
+LBL S_POS
+vm=5
+mova -2,1
+hold 0
+vm=1
+mova 1
+hold 2
+movr -0.5
+hold 2
+vm=.2
+movr 1
+hold 2
+print "SCIENCE Position = ", pos
+BR ENDIT
+LBL ENDIT
+end
+pgm

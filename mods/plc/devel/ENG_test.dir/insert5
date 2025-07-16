@@ -1,0 +1,49 @@
+
+  105   Munit=2000
+  111   Mac=25
+  116   Mrc=25
+  121   Mhc=10
+  126         'configuration inputs
+  126   Ios 21 = 13,0,0
+  139   Ios 22 = 14,0,0
+  152         'move config
+  152   Accl=100
+  157   Decl=Accl
+  161   Vm=2
+  166   Pos=0
+  171   MOVA 10,0
+  177   HOLD 2   'suspend program
+  180   MOVA -10,0
+  187   HOLD 2
+  190   MOVA 0,0
+  196   HOLD 2
+  199   END
+  200   Pgm
+>
+>
+>
+>
+>
+>
+>
+>
+>exec 100,1
+
+  100   SET      MSEL  =  10
+  105   SET      MUNIT  =  2000
+  111   SET      MAC  =  25
+  116   SET      MRC  =  25
+  121   SET      MHC  =  10
+  126   SET      IOS 21  =  13 , 0 , 0
+  139   SET      IOS 22  =  14 , 0 , 0
+  152   SET      ACCL  =  100
+  157   SET      DECL  =  ACCL
+  161   SET      VM  =  2
+  166   SET      POS  =  0
+  171   MOVA     10 , 0
+  177   HOLD     2
+  180   MOVA      -  10 , 0
+  187   HOLD     2
+  190   MOVA     0 , 0
+  196   HOLD     2
+  199   END

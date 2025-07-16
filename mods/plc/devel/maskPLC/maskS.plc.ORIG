@@ -1,0 +1,627 @@
+/*!
+  \mainpage maskS.plc - Mask Select PLC program
+
+  \author Staff, OSU Dept of Astronomy (rgonzale@astronomy.ohio-state.edu)
+
+  \date 2005 Jul 20
+  
+  \section Usage 
+  
+  Usage: Multi-level command set used with ISL system
+	 or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+
+	Small command set the key words are -
+	mask: Moves magazine to specified MASKNUM location (OLD)
+	initial: Initialize the mask select magazine
+	home: Send magazine position to Mask #1
+	loadbot: Load the top 12 masks (1 - 12) 
+	stow: Send magazine position to Mask #24
+	loadtop: Load the bottom 12 masks (14 - 25)
+	next: Move from present position to next mask
+	prev: Move from present position to previous mask 
+	stop: Stop all mechanism movement
+	relbrk: Release break
+	setbrk: Set break
+	maskr: Moves magazine to specified MASKNUM location (NEW)
+
+	All Motion Parameters are documented in the MicroLYNX Part III 
+	Software Reference.
+    
+<pre>
+2005 Jul 20 - new application [to/rdg]
+2006 Nov 01 - added home,initial,stow,next,prev,stop,relbrk,setbrk [rdg]
+2006 Nov 01 - added loadbot, loadtop [rdg]
+2008 Apr 08 - added maskr - *not* dependent on initialization being done [rdg]
+2008 Apr 08 - added invalidr,gteq13,undogt tasks for maskr proceedure [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+
+/*!
+  \file maskS.plc
+  \brief Small command set for Mask Select mechanism
+*/
+/** END HEADER **/
+'Start here with PLC code
+MSEL=10
+MUNIT=2000
+MAC=60
+MRC=42
+MHC=0
+HCDT=500
+'
+'Input & Output Configuration
+IOS 21=13,0,0	'+ (CW) limit,active low
+IOS 22=14,0,0	'- (CCW)limit, active low
+IOS 26=18,1,0	'line 26 is general output for brake control
+IOS 30=0,0,0	'position code bits in group 30, active low
+'
+'Motion Configuration
+ACCL=50		'acceleration rate in rev/sec^2
+DECL=ACCL
+LDECL=500
+'
+'Variable Declarations
+VAR INCR=1.8	'revs between mask positions is 18mm
+VAR MASKNUM	'Mask Position Number
+VAR ABSPOS	'Absolute position for mask magazine
+VAR TARGNUM	'Desired Mask Position Number
+VAR TARGCUR	'Current magazine position
+VAR MASKCUR=0	'Current Mask number
+VAR TARGMOV	'Absolute position of target mask number
+VAR POSERR
+VAR VNORM=5.0
+VM=VNORM
+VAR VSEEK=0.5
+'VAR BACKLASH = -->> 0.2? <<--
+VAR IOBITS	'IO bits 21 and 22.
+VAR STEPCNT=62.100 'User units
+VAR STEPCNT1=70.000 'User units
+VAR TTIME=22000  'Timer 22 secs
+VAR TTIME2=4000  'Timer 4 secs
+VAR IOBITS      'Bits checker
+VAR ENGBIT=0    'Bits checker
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'	        'STARTUP MODE
+' PLC starts at address #100
+'
+PGM 100
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		INITIAL(initializing) and HOME PROCEDURES
+' HOME and INITIAL are identical
+'
+LBL INITIAL
+LBL HOME	'home the magazine to mask #1
+LBL LOADBOT	'home the magazine to load the bottom 12 masks
+  IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+  BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+  BR I36ERR, IO 36=0  'IP bit 36 must be on to continue
+'
+  TP1=STEPCNT,SCNT1		'Configure with user unit count
+  TPE1=1			'Enable user unit count
+'
+  TP2=STEPCNT1,SCNT2		'Configure with user units for ERROR
+  TPE2=1			'Enable user units
+'
+  TI1=21,TRIPPED		'Trip on IO 21
+  TIE1=1			'Enable Trip wire
+'
+  TT1=TTIME,TIMER1		'Configure to trip in TTIME milliseconds
+  TTE1=1			'Enable timeout
+'
+  SLEW -VNORM,0			'Slew to Stow Position
+  HOLD 2
+  'MOVA 1.0			'Move away from limit
+  'HOLD 2
+  SLEW -VSEEK,0			'Sneak up on Stow Position
+  HOLD 2			'suspend procedure until move is complete
+
+'  VM=VNORM
+'  MOVA -62.100	'move to an absolute index of -62.1
+'  HOLD 0	'suspend procedure until position change is complete
+'  VM=VSEEK	'change the velocity to 0.5 rev/sec running speed
+'  MOVA -70.000	'move to an absolute index of -70
+'  HOLD 2	'suspend procedure until move is complete
+  BR FINDPOS	'Find SWbitmask to HWbitmask match
+BR END_IT	'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		NEXT mask procedure
+'
+LBL NEXT
+  IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+  BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+  BR I36ERR, IO 36=0  'IP bit 36 must be on to continue
+'
+  TP1=STEPCNT,SCNT1       'Configure with step count
+  TPE1=1          'Enable step count
+'
+  TT1=TTIME,TIMER1        'Configure to trip in TTIME milliseconds
+  TTE1=1          'Enable timeout
+'
+  VM=VSEEK+1.5	'set the speed for sneeking up
+  MOVA POS+INCR	'move on to the next mask
+  HOLD 2	'suspend procedure until move is complete
+  BR FINDPOS	'Find SWbitmask to HWbitmask match
+BR END_IT	'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		PREVIOUS mask procedure
+'
+LBL PREV
+  IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+  BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+  BR I36ERR, IO 36=0  'IP bit 36 must be on to continue
+'
+  TP1=STEPCNT,SCNT1       'Configure with step count
+  TPE1=1          'Enable step count
+'
+  TT1=TTIME,TIMER1        'Configure to trip in TTIME milliseconds
+  TTE1=1          'Enable timeout
+' 
+  VM=VSEEK+1.5	'set the speed for sneeking up
+  MOVA POS-INCR	'move on to the next mask
+  HOLD 2	'suspend procedure until move is complete
+  BR FINDPOS
+BR END_IT	'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STOW PROCEDURE and LOADTOP of magazine
+'
+LBL STOW
+LBL LOADTOP	'home the magazine to load the bottom 12 masks
+  IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+  BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+  BR I36ERR, IO 36=0  'IP bit 36 must be on to continue
+'
+  TP1=STEPCNT,SCNT1		'Configure with user unit count
+  TPE1=1			'Enable user unit count
+'
+  TP2=STEPCNT1,SCNT2		'Configure with user units for ERROR
+  TPE2=1			'Enable user units
+'
+  TI1=21,TRIPPED		'Trip on IO 21
+  TIE1=1			'Enable Trip wire
+'
+  TT1=TTIME,TIMER1		'Configure to trip in TTIME milliseconds
+  TTE1=1			'Enable timeout
+'
+  SLEW VNORM,0		'Slew to Stow Position'
+  'MOVA 24*INCR		'move to an absolute index of -1.8 (mask 24)
+  HOLD 2		'suspend procedure until position change is complete
+  SLEW VSEEK,0		'Sneak up on CCW Position'
+  HOLD 2		'suspend procedure until position change is complete
+  BR FINDPOS
+BR END_IT         'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		LOST POSition PROCEDURE
+'
+LBL LOSTPOS  'find a comfortable position 
+  IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+  BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+'slews toward CW limit, will find "Position Valid"
+  BR FINDPOS
+  SLEW 3
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                  FINDIT PROCEDURE
+'
+LBL FINDIT
+'branches to Lost AND Found routine if the "Position Valid" is true
+  BR LANDF, IO 36 = 1     
+  BR FINDIT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                  FOUND PROCEDURE
+'
+LBL LANDF
+  SSTP 0	'soft stop, continue execution
+  CALL CENTER	'call and execute centering algorithm
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		FIND POSition PROCEDURE
+'
+LBL FINDPOS  'find a comfortable position 
+  IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+  BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+'slews toward CW limit, will find "Position Valid"
+  SLEW 3
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                  SENSE1 PROCEDURE
+'
+LBL SENSE1
+'branches to FOUND routine if the "Position Valid" is true
+  BR FOUND, IO 36 = 1     
+BR SENSE1
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                  FOUND PROCEDURE
+'
+LBL FOUND
+'soft stop, continue execution
+  SSTP 0
+'call and execute centering algorithm
+  CALL CENTER
+'
+'CALL SETBRK 	   'set break
+'subtract 32 to get correction
+  MASKNUM = IO 30 - 32    
+'defines true absolute coordinate system based 
+'on mask number & centering
+  ABSPOS = MASKNUM * INCR    
+  POS = ABSPOS
+  DELAY 1000
+'I found my initial position
+'Now leave the driving to the rest of the procedures
+  VM=VNORM
+BR END_IT
+'
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                 MASK PROCEDURE (semi-obsolete)
+'
+LBL MASK
+  IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+  BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+'There are just so many mask number
+  CALL INVALID MASKNUM>24  
+'position cassett to target         
+  TARGNUM = MASKNUM        
+'absolute position of target
+  TARGMOV = TARGNUM*INCR       
+'releases brake and lets get the correct mask 
+'according to target position
+  VM=VNORM 	'increase to normal speed
+'
+  MOVA TARGMOV                
+  HOLD 2
+  CALL CENTER	'center the mask
+  DELAY 1000
+  POSERR= TARGMOV - CEN	'For debugging
+BR END_IT
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                    MASKR  PROCEDURE (new)
+'
+LBL MASKR
+  IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+  BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+  BR I36ERR, IO 36=0  'IP bit 36 must be on to continue
+  BR SKIPCHK, MASKCUR=0
+  BR MASKERR, IO 30<>MASKCUR  'Mask must match previous known position
+'
+  TP1=-STEPCNT,SCNT1    	'Configure with user units
+  TPE1=1                	'Enable user units
+'
+  TT1=TTIME,TIMER1      	'Configure to trip in TTIME milliseconds
+  TTE1=1                	'Enable timeout
+'
+LBL SKIPCHK
+'There are 24 mask number(1-24)
+'There are 25 magazine locations
+'magazine location 13 is a brace
+  CALL LOSTPOS, IO 30=0
+  CALL GTEQ13, MASKNUM>=13
+'
+' PRINT "Moving from location: ",TARGCUR, " to ",MASKNUM
+  BR INVALIDR, MASKNUM<1  
+  BR INVALIDR, MASKNUM>25  
+
+'position magazine on target  
+  TARGCUR = IO 30-31
+  MASKCUR = MASKNUM+31
+
+'relative position of target
+  TARGNUM = MASKNUM+31-IO 30
+  TARGMOV = TARGNUM*INCR
+'
+  BR TSAME, IO 30=MASKCUR
+'
+'releases brake and move relative to IO 30 bitmask position
+'CALL RELBRK	'release break 
+'
+  VM=VNORM 	'increase to normal speed
+
+  STEPCNT=TARGMOV 'User units
+
+  MOVR TARGMOV    'relative move
+  HOLD 2		'wait till move is complete
+  CALL CENTER	'center the mask
+'CALL SETBRK	'set break
+  DELAY 1000
+  CALL UNDOGT, MASKNUM>=13
+  POSERR= TARGMOV - CEN	'For debugging
+  PRINT MASKCUR," Selected"
+BR END_IT
+'
+LBL TSAME
+  PRINT "Cassette already at requested location: ",MASKNUM
+BR END_IT
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                    INVALIDR and INVALID mask PROCEDURE
+'
+LBL INVALIDR
+  PRINT "Cassette location ",MASKNUM," *NOT* allowed"
+BR END_IT
+'
+LBL INVALID
+'
+  MASKNUM = TARGNUM
+BR END_IT
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                    CENTERing PROCEDURE
+'
+LBL CENTER
+  VAR POSEDGE         'position edge of low to high position valid sensor
+  VAR NEGEDGE         'negative edge of low to high position valid sensor
+  VAR SUM             'intermediate sum
+  VAR CEN             'Center of position valid sensor trip points
+'
+  SLEW 0.5
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                  PL(transition search) PROCEDURE
+'
+LBL PL
+'searches for high/low transition of position valid sensor
+  BR PLUS, IO 36 = 0  
+  BR PL
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                  PositiveLUS(fine tune it) PROCEDURE
+'
+LBL PLUS
+'give a soft stop a stop what you are doing kind of stop
+'and continue execution
+  SSTP 0
+  POSEDGE = POS
+  SLEW -0.5
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                  NeGative(fine tune) PROCEDURE
+'
+LBL NG
+'must reassert position valid bit
+  BR NG1, IO 36 = 1    
+  BR NG
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                  NeGative1(transition search) PROCEDURE
+'
+LBL NG1
+'
+  BR NEG, IO 36 = 0    
+  BR NG1
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                  NEGative(transition search) PROCEDURE
+'
+LBL NEG
+'stop and continue execution
+  SSTP 0
+  NEGEDGE = POS
+'
+  SUM = POSEDGE + NEGEDGE
+  CEN = SUM/2
+  VM=VSEEK
+'moves to center of position valid sensor trip points
+  MOVA CEN
+  HOLD 2
+RET
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                GTEQ13 masknumber>=13 increment PROCEDURE
+'
+LBL GTEQ13
+  INC MASKNUM
+RET
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                UNDOGT masknumber>=13 decrement PROCEDURE
+'
+LBL UNDOGT
+  DEC MASKNUM
+RET
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                STOP PROCEDURE
+'
+LBL STOP
+  SSTP 1
+  IO 26=0		'set brake
+BR END_IT	'branch to exit
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                RELease BRaKe PROCEDURE
+'
+LBL RELBRK
+  IO 26=1         'release brake
+RET
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                SET BRaKe PROCEDURE
+'
+LBL SETBRK
+  IO 26=0         'set brake
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		BITERR(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+'
+LBL BITERR
+  PRINT "Bits 21(ON)=",IO 21," and 22(ON)=",IO 22," not allowed"
+'reset iobits
+  IOBITS=0
+BR END_IT
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		I36ERR(io error) PROCEDURE
+' I36ERR bit 36 is the position bit
+'
+LBL I36ERR
+  PRINT "Check connection IP bit36(OFF)=",IO 36
+BR END_IT
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		MASKERR(mask error) PROCEDURE
+' MASKERR current cassette location must match previously
+' known position
+'
+LBL MASKERR
+  PRINT TARGCUR," Does not match previously know position, check connections"
+BR END_IT
+  
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TIMER1 PROCEDURE
+' Timed out. We cannot go on forever.
+LBL TIMER1      'Turn off at user input revolutions
+  PRINT "Mask Select(Cassette) Timout: ",TTIME
+BR END_IT
+'  
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               SetpCouNT1 PROCEDURE
+' Close or Open not reached
+'
+LBL SCNT1       'user units
+  SSTP 0
+  'PRINT "Mask Select(Cassette) position not reached: ",STEPCNT
+END_IT
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               StepCouNT2 PROCEDURE
+' User Unit count exceeded
+'
+LBL SCNT2               'user units
+  SSTP 0
+'  POS_SAVE=POS          'save position in case we need it
+'  POS=0.000             'reset position to Zero (0.000).
+  PRINT "Mask Insert user unit count of ",STEPCNT1," exceeded"
+RET
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TRIPPED(io error) PROCEDURE
+' TRIPPED on a CW or CCW bit. 21 or 22 repectively
+' o If Mask Select completed return to caller
+' o If it was tripped early
+'       o evaluate where we stopped
+'       o give an error message 
+'	o stop PLC
+'
+LBL TRIPPED
+  POS_SAVE=POS
+  TEMPPOS=ABS POS_SAVE		'Get the absolute value for motor
+  TEMPSTEP=ABS STEPCNT	        'Get the absolute value for user units
+  BR TRIPERR, TEMPPOS<TEMPSTEP  'Compare, see if it was early
+  RET
+LBL TRIPERR
+'
+  PRINT "Bits: b24,b23,b22 or b21, tripped early or cable problem",IO 20
+BR END_IT
+'
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_IT(exit) PROCEDURE
+' EXIT the PLC routine
+'
+LBL END_IT       'Exit
+  SSTP 1
+END              'end the procedures
+PGM              'end of program
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''' NEW PLC PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+'
+PGM 6000
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+  PRINT "maskS"
+BR END_PLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+  PRINT POS
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKMVG PROCEDURE check moving status
+'
+LBL CHKMVG
+  PRINT MVG
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+  PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+  PRINT "codeV=0.1(5/12/06)",":HW",VER
+BR END_PLC      'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+  PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO30 PROCEDURE for bits 36 - 31
+' Check IO 30 bits
+'
+LBL IO30
+  PRINT IO 36,IO 35,IO 34,IO 33,IO 32,IO 31
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                MASK PROCEDURE for bits 36 - 31
+'
+LBL I30MASK
+  PRINT IO 36,IO 35,IO 34,IO 33,IO 32,IO 31
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                MASK PROCEDURE for bits 26 - 21
+'
+LBL I20MASK
+  PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC		
+END 
+PGM

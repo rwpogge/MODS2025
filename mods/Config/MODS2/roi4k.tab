@@ -1,0 +1,11 @@
+#
+# MODS CCD Region-of-Interest (ROI) Readout Modes
+# 2009-05-28T18:38:10 [rwp/osu]
+#
+# Format: Name  ROI ON llx urx lly ury
+#
+# Name must not contain any spaces, convention is XxY in K pixels
+# ROI must be divisible by 2, 4, and 8 to be valid for binning
+#
+2Kx2K     ROI ON 1017 3048 1017 3048
+1Kx1K     ROI ON 1525 2540 1525 2540

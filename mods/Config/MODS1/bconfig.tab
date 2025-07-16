@@ -1,0 +1,95 @@
+#
+# MODS1 Blue Channel Preset Configurations
+# 2012-09-24 [rwp/osu]
+# 2013-09-04 [opk/lbto] averages of 3 back-to-back sets of TTF positions 
+# 2014-08-30 [opk/lbto] 2 back-to-back sets of TTF positions taken, 
+#            maximum deviation 5 microns, adopting values from the first set.
+# 2015-09-07 [opk/lbto] averages of 3 back-to-back sets of TTF positions 
+# 2015-10-28 [opk/lbto] 2017B startup from summer shutdown
+# 2018-02-21: Edit Blue-Only Grating focus from 3330 to 3150, O. Kuhn (LBTO)
+# 2018-02-23:      and update TTF zeropoints for this mode. O. Kuhn (LBTO) 
+# 2018-09-12: Measured 2018B post summer shutdown [opk/lbto]
+# 2019-01-25: Measuring after re-mounting MODS1 following the PEPSIPOL run [opk/lbto]
+# 2019-05-21 [JP/lbto] reran imcsTTFs after remount post PEPSIPOL run
+# 2019-09-03 [OPK/lbto] reran imcsTTFs after remount post summer shutdown
+# 2020-12-23 [OPK/lbto] reran imcsTTFs after remount post PEPSI-POL run
+# 2021-05-28 [OPK/lbto] Measured imcsTTFs after remount post PEPSI-POL run
+# 2021-09-16 [OPK/lbto] Adjusted dual blue grating focus 3330 -> 3390
+# 2021-11-27 [OPK/lbto] Adjusted dual blue grating focus 3390 -> 3410
+# 2022-01-23 [OPK/lbto] Measured imcsTTFs after remount post PEPSI-POL run
+# 2022-09-22 [OPK/lbto] Measured imcsTTFs after remount post SSD
+# 2022-12-08 [OPK/lbto] Measured imcsTTFs after remount post PEPSI-POL run
+# 2022-12-15 [OPK/lbto] Checked focus near center of detector: updated Im 3020->2960 DIm 3220->3235
+# 2022-12-17 [OPK/lbto] Measured imcsTTFs after focus adjustments 
+# 2023-09-02 [OPK/lbto] Measured imcsTTFs after remount post SSD
+# Measured 2023-09-03 JP/OK Updated Dual imaging from 3235 -> 3205
+# Measured 2023-09-03 JP Updated Direct Imaging 2960 to 2930
+# Measured 2023-12-08 [opk/lbto] post-install; updated table 2024-01-08 OPK
+# Measured 2024-01-10 [opk/lbto] updated dual im focus +30 mic (3205->3235)
+# Measured 2024-01-12 [opk/lbto] updated dual gr focus +30 mic (3410->3430)
+# Measured 2024-01-12 [opk/lbto] updated blue gr focus +60 mic (3150->3210)
+# Measured 2024-01-25 [opk/lbto] updated blue im focus +30 mic (2930->2960)
+# Repeated IMCSTTF measurements after focus changes 2024-02-02 [opk/lbto]
+# Measured 2024-08-24 [opk/lbto] after instrument remounted. 
+# 2024-09-03 [opk/lbto] changed Dimg focus to 3265 based on 2024-09-02 focus run.
+# Measured 2024-10-23 [opk/lbto] after instrument remounted. 
+# 2024-12-02 changed dual im focus by -20 (3265 -> 3245)[opk/lbto] 
+# 2024-12-05 remeasured IMCS TTFs after large red im focus change [opk/lbto]
+#
+# This configuration is for MODS1 on the LBT Left Direct Gregorian
+# Rotator, measured at El=60deg, rotAngle=207 (PA=0 at meridian)
+#
+# Format: 
+#  name grating filter cfoc ttfA ttfB ttfC ccdroi xbin ybin xover yover speed
+#
+# where:
+#  grating  = grating name (Flat, G400L, etc.)
+#  filter   = filter name or "Any" to keep filter unchanged
+#  camfoc   = camera focus in microns
+#  ttfa,b,c = nominal collimator TTF actuator position
+#  roi      = CCD readout region of interest or "Full" for full-frame
+#  xbin     = CCD x-axis (disp) binning factor [one of 1,2,4,8]
+#  ybin     = CCD y-axis (slit) binning factor [one of 1,2,4,8]
+#  speed    = CCD readout speed: fast or slow
+#
+# Configuration names must not contain spaces, and are ideally 8
+# characters or less.  The names Imaging, Grating, Prism, and Acquire
+# are RESERVED names for special preset modes implemented as buttons
+# on the MODS dashboard for the blue channel.  All presets, however,
+# (including the 4 reserved names) are available at the command line
+# or via scripts using the "BLUE CONFIG configName" command.
+#
+# The grating, filter, and ROI selections for a configuration may be
+# either the numbered device position (for filter and grating) or a
+# name.  If a name, it must be exactly as it appears in the respective
+# device table (bgrating.tab, bfilter.tab, and ccdroi.tab).  If "Any"
+# appears as a grating, filter, or ROI name it means to leave that
+# setup unchanged when setting the mode.  Full-frame CCD readout is
+# specified with the word "Full".
+#
+# The collimator TTF actuator positions are defined for each of the
+# various modes, measured after finalizing the alignment of the
+# dispersers.  For the grating modes, the TTF positions are for the
+# primary grating position as listed in the corresponding bgrtiltN.tab
+# file.  Acquire mode should have the same TTFs as Imaging mode.
+#
+# Custom configuration entries should come *AFTER* the 4 reserved
+# configurations.  If you comment out a reserved configuration you
+# effectively disable the correspondng GUI button
+#
+# name grating filter cfoc ttfA ttfB ttfC ccdroi xbin ybin xover yover speed
+#
+#
+# Direct-Mode Presets
+#
+Imaging  Flat    Any    2960 17089 17837 20175 3Kx3K  1 1 0 0 Slow
+Grating  G400L   Clear  3210 16765 18124 20120 Full   1 1 0 0 Slow
+Prism    P450L   Clear  3180 16785 17920 20398 4Kx3K  1 1 0 0 Slow
+Acquire  Flat    g_sdss 2960 17127 17834 20140 3Kx3K  2 2 0 0 Fast
+#
+# Dual-Mode Presets
+#
+DImaging Flat    Any    3245 17252 17756 20093 3Kx3K  1 1 0 0 Slow
+DGrating G400L   Clear  3440 16877 18017 20006 Full   1 1 0 0 Slow
+DPrism   P450L   Clear  3380 16939 17849 20315 4Kx3K  1 1 0 0 Slow
+DAcquire Flat    g_sdss 3235 17284 17754 20063 3Kx3K  2 2 0 0 Fast

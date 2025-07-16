@@ -1,0 +1,31 @@
+#
+# MODS2 Red-Side Instrument Electronics Box (IEB) Configuration
+#
+# 2013-04-20 [rwp/osu]
+#
+
+# Temperature Sensors
+
+Temp 1 Inside Air Temp
+Temp 2 Glycol Return Temp
+Temp 3 Top Air Temp
+Temp 4 Bot Air Temp
+
+# MicroLYNX Controller Assignments
+
+MLC  1  HATCH
+MLC  2  DICHROIC
+MLC  3  RCOLTTFA
+MLC  4  RCOLTTFB
+MLC  5  RCOLTTFC
+MLC  6  RGRATING 
+MLC  7  RGRTILT1
+MLC  8  RGRTILT2
+MLC  9  RFILTER
+MLC 10  RCAMFOC
+MLC 11  none
+MLC 12  MINSERT
+MLC 13  MSELECT
+MLC 14  none
+MLC 15  RSHUTTER
+MLC 16  none

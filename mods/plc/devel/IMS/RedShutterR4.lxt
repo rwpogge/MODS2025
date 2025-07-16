@@ -1,0 +1,180 @@
+
+
+
+'MODS Red Shutter Testing and Endurance
+' Initialize at address 100
+Pgm 100
+'
+' General MicroLynxx Parameters
+Msel= 10      '10 usteps/fullstep = 2000 microsteps/rev
+Munit=2000    '(2000 usteps/rev) gives velocity and acceleration in rev/sec
+' Configure Motor current Settings
+Mac=40       'Acceleration Current
+Mrc=40        'Run Current
+Mhc=0         'hold current is zero
+Hcdt=0        'hold current delay msec
+'
+' Motion Configuration
+Aclt=1          'linear acceleration (default)
+Accl=25          'acceleration rate in rev/sec^2
+Decl=Accl       'deceleration rate in rev/sec^2
+Ldecl=200       'set decel after a limit is asserted
+' Motion Controller I/O Connections'
+Ios 21 = 13,0,0    'POSITIVE (CW)limit,active low, shutter closed
+Ios 31 = 0,0,0     'Blade #1 Closed
+Ios 32 = 0,0,0     'Blade #2 Closed
+Ios 22 = 14,0,0    'NEGATIVE (CCW)limit, active low
+Ios 33 = 0,0,0     'Blade #1 Open
+Ios 34 = 0,0,0     'Blade #2 Open
+Ios 35 = 0,0,1     'Shutter Input
+'Iof 30,7          'tried 2.323 ms digtal filter, no help for sw bounce
+                   'DP 09JAN2007
+		
+' Variable Declarations and Calculations
+VAR VNOM        'Nominal operating velocity (revs/sec)
+VNOM=5
+VAR VSEEK       'HOME seeking velocity
+VSEEK=0.25
+VAR NOMMOV      'Nominal Number of Steps to Open or Close Blue or Red Shutter
+NOMMOV = 1.23	'revs (250 motor fullsteps) to cycle shutter
+VAR EXPTIM		'Desired Exposure Time
+VAR TRTIM		  'Transition Time of Shutter based on velocity and acceleration
+VAR TA        'Acceleration time
+TA = VNOM/Accl
+VAR TB        'Second term in expression for tranisition time
+TB = NOMMOV/VNOM
+TRTIM = TA+TB
+TRTIM=TRTIM*1000   'Convert to milliseconds
+PRINT "Transition Time = " TRTIM
+VAR DELTIM    'Delay time with shutter open to produce correct exposure time
+VAR SHUT_ST   'Shutter State 0=Closed, 1=Open
+VAR REQ       'Used because I can't use 2 conditions on the CALL
+VAR DUNNO
+
+'
+'Endurance Testing Program
+'User Input of Number of Cycles
+'VAR LOOPCNT
+'PRINT "Enter Number of Test Cycles"
+'INPUT LOOPCNT,0
+'PRINT "Enter Exposure Time (seconds)"
+'INPUT EXPTIM,0
+'EXPTIM = EXPTIM*1000  'Convert to milliseconds
+
+'Endurance testing loop
+'VAR COUNT = 0	'initialize loop counter
+'CALL HOME	'execute HOME subroutine
+'LBL EXPOSE	'main program for endurance testing
+'CALL OPEN	'execute OPEN subroutine
+'DELTIM = EXPTIM-TRTIM  	'Compute shutter open delay time to produce correct exposure time
+'DELAY=DELTIM
+'CALL CLOSE	'execute CLOSE subroutine
+'DELAY=5000	'delay (milliseconds) execution prior to next exposure
+'INC COUNT	' increments loop counter
+'PRINT "LOOP COUNTER = " COUNT
+'BR EXPOSE, COUNT<LOOPCNT
+'PRINT "Endurance Test Completed"
+
+'Shutter Input polling routinte   -DP, 17NOV2006
+
+CALL HOME	'execute HOME subroutine
+
+LBL REMOTE
+DUNNO = Io 35
+REQ = DUNNO + SHUT_ST
+CALL OPEN, REQ =0	'execute OPEN subroutine when shutter input is low (REQUEST OPEN) AND SHUTTER IS CLOSED
+CALL CLOSE, REQ =2	'execute CLOSE subroutine when shutter input is high (request close) and shutter is open
+BR REMOTE
+
+END
+'
+'
+LBL OPEN	'Beginning of Shutter OPEN subroutine
+'Check that shutter is closed before opening
+
+PRINT ""
+PRINT "you're in OPEN"
+PRINT "IO 35=",Io 35
+PRINT "shut_st=", shut_st
+PRINT "DUNNO = ", DUNNO
+PRINT "REQ = ", REQ
+BR SCREWED,  Io 31<>1
+PRINT "Blade#1 is Closed"
+BR SCREWED,  Io 32<>1
+PRINT "Blade#2 is Closed"
+PRINT "Open the shutter"
+Vm = VNOM	'Set velocity to normal
+MOVR -NOMMOV	'Make a relative move to open shutter blades
+HOLD 2          'suspend program execution until move completion
+DELAY 25        'Delay prior to state check, de-bounces switches
+'Check that both shutter blades are open
+BR SCREWED,  Io 33<>1
+PRINT "Blade#1 is Open"
+BR SCREWED,  Io 34<>1
+PRINT "Blade#2 is Open"
+PRINT "Shutter Open"
+SHUT_ST = 1	'set shutter state var to open
+RET	'return to main program
+'
+'
+LBL CLOSE	'Beginning of Shutter CLOSE subroutine
+' Check that shutter is open before closing
+PRINT ""
+PRINT "you're in CLOSE"
+PRINT "IO 35=",Io 35
+PRINT "shut_st=", shut_st
+PRINT "DUNNO = ", DUNNO
+PRINT "REQ = ", REQ
+BR SCREWED,  Io 33<>1
+PRINT "Blade#1 is Open"
+BR SCREWED,  Io 34<>1
+PRINT "Blade#2 is Open"
+PRINT "close the shutter"
+Vm = VNOM	'Set velocity to normal
+MOVR NOMMOV	'Make a relative move to close shutter blades
+HOLD 2          'suspend program execution until move completion
+DELAY 25        'Delay prior to state check, de-bounces switches
+'Confirm that both shutter blades are closed
+PRINT "check blade 1 is closed"
+BR SCREWED,  Io 31<>1
+PRINT "Blade#1 is Closed"
+PRINT "check blade 2 is closed"
+BR SCREWED,  Io 32<>1
+PRINT "Blade#2 is Closed"
+PRINT "Shutter Closed"
+SHUT_ST = 0	'set shutter state var to closed
+RET	'return to main program
+'
+'
+LBL HOME        'HOME subroutine to put shutter in closed condition from any start
+Vm=VSEEK        'set the velocity to seeking value (rev/sec)
+MOVR NOMMOV     'move toward positive limit (shutter closed)
+HOLD 2          'suspend program execution until move completion
+'Confirm that both shutter blades are closed
+DELAY 100        'Delay prior to state check, de-bounces switches
+BR SCREWED,  Io 31<>1
+PRINT "Blade#1 is Closed"
+BR SCREWED,  Io 32<>1
+PRINT "Blade#2 is Closed"
+PRINT "HOMING Routine Complete, shutter closed"
+SHUT_ST = 0	'set shutter state var to closed
+RET	'return to main program	'
+'
+LBL SCREWED
+PRINT "Program Terminated due to Blade Error"
+'
+END              'end the procedures
+Pgm              'end of program in RAM
+
+
+
+
+
+
+
+
+
+
+
+
+

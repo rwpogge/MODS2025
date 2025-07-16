@@ -1,0 +1,20 @@
+# MicroLYNX source code
+# Default motion parameters for all motors.
+VAR INCR=1.800
+msel=10
+munit=2000
+mac=50
+mrc=30
+mhc=0
+hcdt=100
+# Input/Output configuration.
+ios 21=13,0,0
+ios 22=14,0,0
+ios 26=0,1,0
+ios 30=0,0,0
+# Motor configuration.
+accl=50
+decl=accl
+ldecl=500
+VM=5.0
+# end

@@ -1,0 +1,14 @@
+#
+# MODS2 Red Camera Filter Wheel
+# 2014-03-04
+# R. Pogge, OSU Astronomy Dept
+#
+#Pos  Name   dFoc   Info
+  1   Clear     0   BK7 Clear 128x86x6mm Nr2
+  2   r_sdss   50   Asahi SDSS r 86x86mm
+  3   Empty     0   Position Empty
+  4   i_sdss    0   Asahi SDSS i 86x86mm
+  5   GG495     0   JML GG495 128x86x6mm Nr2
+  6   z_sdss    0   Asahi SDSS z 86x86mm
+  7   ND1.5     0   Omega ND1.5 128x86x6mm Nr133497
+  8   Empty     0   Position Empty

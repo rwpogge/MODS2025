@@ -1,0 +1,206 @@
+Pgm 100		'program starts at address 100
+
+	'Motion Parameters
+Drven=0		'Disables Motor
+Msel= 10	'10 microsteps per step
+Munit=2000	'units to revs
+Mac=70		'accl current is 0.70 x 7amps
+Mrc=70		'run current is 0.70 x 7amps
+Mhc=0		'Hold current is Zero
+Hcdt=2000	'Hold Current Delay msec
+
+	'Input & Output Configuration
+Ios 21 = 13,0,0	'CW Limit sensor (active low)
+Ios 22 = 14,0,0	'CCW Limit sensor (active low)
+Ios 26 = 0,1,0	'User Output for Brake Control
+
+	'Motion Configuration
+Aclt=1		'Linear Acceleration
+Accl=50		'Acceleration (Rev/sec^2)
+Decl=4		'Deceleration (Rev/sec^2)
+Ldecl=1000	'Limit Deceleration (Rev/sec^2)	
+
+	'Variable Declarations
+VAR VNOM	'Nominal operating velocity (rev/sec)
+VNOM=8
+VAR VSEEK 	'Home Seeking Velocity (rev/sec)
+VSEEK=2
+VAR DIST        'Distance between positions (revs) - Needs Fine Tuned
+VAR OVERTRVL    'Overtravel distance (revs)
+VAR MAXMOV	'Maximum mechanism travel (revs)
+DIST=66		'Distance between positions (revs)
+OVERTRVL=1.5	'Overtravel for limit activation (revs)
+MAXMOV=DIST+OVERTRVL	'Maximum travel
+VAR INITIAL	'Looks for user input to begin Initialization Mode
+VAR CALIB	'Looks for user input to begin Calibration Mode
+VAR SCIMODE	'Looks for user input to begin Science Mode
+VAR TIMER1	'Timer for Timeout routine
+VAR TIMERMAX	'Maximum Timer Count before Timeout Occurs
+TIMERMAX=90
+
+	'Initialize (Moves Calibration Tower to Storage/Science Position)
+Vm=VNOM
+PRINT "Press 9 to begin Initialization"
+LBL INIT
+INPUT INITIAL
+BR STORAGE, INITIAL=9		'Waits for User Input to begin Initialization
+PRINT "WRONG USER INPUT, PLEASE PRESS 9 to INITIALIZE"      'Re-Prompt Due to Invalid Input
+BR INIT
+
+LBL STORAGE		'Slews Calibration Tower to its Storage / Science Position
+Drven=1			'Enables Drive
+Io 26=1			'Disables Brake
+PRINT " "
+PRINT "PLEASE WAIT APPROX. 30 SECONDS FOR INTIALIZATION TO COMPLETE"
+PRINT " "
+SLEW 3			'Slews (rev/sec)
+TIMER1 = 1		'Sets inital Timer count to 1
+LBL TIMEOUT1		'Timeout Loop
+DELAY 250		'Adds short delay between Timeout Loop Cycles
+BR FAILED, TIMER1 > TIMERMAX	'If Timer exceeds max allowable counts an error is triggered
+BR CONTINUE, Io 21=1	'Program continues if Limit is reached prior to timeout
+INC TIMER1		'Increments the Timer Varaible		
+BR TIMEOUT1		'Closes Timeout Loop			
+
+LBL CONTINUE
+Io 26=0			'Enables Brake
+DELAY 1000		'Adds Delay to allow brake to activate prior to motor being turned off
+Drven = 0		'Turns motor off
+PRINT "SCIENCE MODE ACTIVATED"
+PRINT " "
+PRINT "TO ENABLE CALIBRATION MODE ENTER 1"
+
+LBL CALMODE		'Starts Calibration Mode
+INPUT CALIB		'User Input for Calibraton Mode
+BR CALMOVE, CALIB=1
+PRINT "WRONG USER INPUT, PLEASE PRESS 1 FOR CALIBRATION MODE"
+BR CALMODE
+
+LBL CALMOVE  		'Begins Move to Calibration Mode
+BR NOSCIPOS, Io 21<>1	'Verify that Calibration Tower is Leaving from a Valid Science Position
+Drven=1
+Io 26=1
+PRINT " "
+PRINT "MOVING TO CALIBRATION MODE, WAIT TIME APPROX. 10 SECONDS"
+PRINT " "
+MOVR -MAXMOV
+HOLD 2			'Waits for motion to stop before proceeding
+
+LBL CALHOME		'Calibration Homing Routine
+DELAY 250
+Pos=0			'Sets Position to Zero
+Vm=VSEEK
+MOVR=MAXMOV
+
+LBL POLL		'Looks for edge of limit trip zone
+BR SEEK, Io 21=0
+BR POLL
+
+LBL SEEK		'Homing Seek
+SSTP			'Soft Stop for motion
+DELAY 1000
+PRINT "DE-ASSERT = " Pos
+MOVA -1
+HOLD 2
+Pos=0.0
+Io 26=0
+Vm=VNOM
+PRINT "CALIBRATION SYSTEM HOMING COMPLETE"
+DELAY 1000
+Drven = 0
+
+LBL CALACTIV
+BR LIMERCCW, Io 22<>1	'Checks for End of Travel Limit Assertion
+PRINT "CALIBRATION MODE ACTIVATED"
+PRINT " "
+PRINT "TO ENABLE SCIENCE MODE ENTER 2"
+
+LBL SCICHK		'Waits for User Input prior to moving to Science Mode
+INPUT SCIMODE
+BR SCIENCE, SCIMODE=2
+PRINT "WRONG USER INPUT, PLEASE PRESS 2 FOR SCIENCE MODE"
+BR SCICHK
+
+LBL SCIENCE		'Begins Science Mode
+BR NOCALPOS, Io 22<>1
+Drven=1
+Io 26=1
+PRINT " "
+PRINT "MOVING TO SCIENCE MODE, WAIT TIME APPROX. 10 SECONDS"
+PRINT " "
+MOVR MAXMOV
+HOLD 2
+Io 26=0
+DELAY 1000
+Drven = 0
+
+LBL SCIACTIV
+BR LIMERCW, Io 21<>1	'Checks for End of Travel Limit Assertion
+PRINT "SCIENCE MODE ACTIVATED"
+PRINT " "
+PRINT "TO ENABLE CALIBRATION MODE ENTER 1"
+
+BR CALMODE
+
+LBL LIMERCW		'CW Limit Error Recovery
+PRINT "ERROR....SCIENCE MODE LIMIT NOT DETECTED"
+PRINT " "
+PRINT "MOVING BACK TO CALIBRATION MODE"
+PRINT " "
+DELAY 1000
+LBL CALRCVR
+Drven=1
+Io 26=1
+SLEW -3
+TIMER1 = 1
+LBL TIMEOUT2
+DELAY 250
+BR FAILED, TIMER1 > TIMERMAX
+BR CALHOME, Io 22=1
+INC TIMER1
+BR TIMEOUT2
+
+LBL LIMERCCW		'CCW Limit Error Recovery
+PRINT "ERROR....CALIBRATION MODE LIMIT NOT DETECTED"
+PRINT " "
+PRINT "MOVING BACK TO SCIENCE MODE"
+PRINT " "
+DELAY 1000
+LBL SCIRCVR
+Drven=1
+Io 26=1
+SLEW 3
+TIMER1 = 1
+LBL TIMEOUT3
+DELAY 250
+BR FAILED, TIMER1 > TIMERMAX
+BR SCIACTIV, Io 21=1
+INC TIMER1
+BR TIMEOUT3
+
+LBL NOSCIPOS		'Out of Science Position Error Recovery
+PRINT "NO SCIENCE POSITION DETECTED"
+PRINT " "
+PRINT "TRYING TO RECOVER SCIENCE POSITION"
+PRINT " "
+BR SCIRCVR
+
+LBL NOCALPOS		'Out of Calibration Position Error Recovery
+PRINT "NO CALIBRATION POSITION DETECTED"
+PRINT " "
+PRINT "TRYING TO RECOVER CALIBRATION POSITION"
+PRINT " "
+BR CALRCVR
+
+LBL FAILED		'Timeout Failure Message
+PRINT "FAILED....TIMEOUT OCCURRED"
+BR ENDIT
+
+LBL ENDIT		'End Program Execution
+PRINT "PROGRAM SHUTTING DOWN"
+SSTP
+Io 26=0
+Drven=0
+SSTP 1
+Pgm
+

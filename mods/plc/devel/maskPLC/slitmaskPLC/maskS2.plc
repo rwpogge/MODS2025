@@ -1,0 +1,317 @@
+/*!
+  \mainpage maskS.plc - Mask Select PLC program
+
+  \author Staff, OSU Dept of Astronomy rgonzale@astronomy.ohio-state.edu
+
+  \date 2005 Jul 20
+  
+  \section Usage 
+  
+  Usage: Multi-level command set used with ISL system
+	 or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+
+	Small command set the key words are -
+	initial: Initialize the mask select magazine
+	home: Send magazine position to Mask #1
+	loadbot: Load the top 12 masks (1 - 12) 
+	stow: Send magazine position to Mask #24
+	loadtop: Load the bottom 12 masks (14 - 25)
+	next: Move from present position to next mask
+	prev: Move from present position to previous mask 
+	stop: Stop all mechanism movement
+	relbrk: Release break
+	setbrk: Set break
+
+	All Motion Parameters are documented in the MicroLYNX Part III 
+	Software Reference.
+    
+<pre>
+2005 Jul 20 - new application [rdg/to]
+2006 Nov 01 - added home,initial,stow,next,prev,stop,relbrk,setbrk [rdg]
+2006 Nov 01 - added loadbot, loadtop [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+
+/*!
+  \file maskS.plc
+  \brief Small command set for Mask Select mechanism
+*/
+/** END COMMENT **/
+* Start here with PLC code
+MSEL=10
+MUNIT=2000
+MAC=60
+MRC=42
+MHC=0
+HCDT=500
+*	Input & Output Configuration
+IOS 21=13,0,0	'+ (CW) limit,active low
+IOS 22=14,0,0	'- (CCW)limit, active low
+*IOS 23=0,0,0	'STOWED position interlock (set by Insert).
+*IOS 24=18,1,1	'MASK Select drive is busy (sent to Insert).
+IOS 26=0,1,0	'line 26 is general output for brake control
+IOS 30=0,0,0	'position code bits in group 30, active low
+*	Motion Configuration
+ACCL=50		'acceleration rate in rev/sec^2
+DECL=ACCL
+LDECL=500
+*	Variable Declarations
+VAR INCR=1.8	'revs between mask positions is 18mm
+VAR MASKNUM	'Mask Position Number
+VAR ABSPOS	'Absolute position for mask magazine
+VAR TARGNUM	'Desired Mask Position Number
+VAR TARGMOV	'Absolute position of target mask number
+VAR POSERR
+VAR VNORM=5.0
+VM=VNORM
+VAR VSEEK=0.5
+*VAR BACKLASH = -->> 0.2? <<--
+* Code version
+VAR CODEV=0.0
+*
+* Program starts at address 100
+PGM 100
+LBL INITIAL	'Initialize procedure 
+LBL HOME	'home the magazine to mask #1
+LBL LOADBOT	'home the magazine to load the bottom 12 masks
+VM=VNORM
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+* releases brake
+IO 26=1
+MOVA -62.100	'move to an absolute index of -62.1
+HOLD 0		'suspend procedure until position change is complete
+VM=VSEEK	'change the velocity to 0.5 rev/sec running speed
+MOVA -70.000	'move to an absolute index of -70
+HOLD 2		'suspend procedure until move is complete
+BR FINDPOS
+BR END_IT         'branch to exit
+*
+*
+LBL NEXT         'NEXT MASK
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+VM=VSEEK+1.5	'set the speed for sneeking up
+* releases brake
+IO 26=1
+MOVA POS+INCR	'move on to the next mask
+HOLD 2		'suspend procedure until move is complete
+BR FINDPOS
+BR END_IT	'branch to exit
+*
+LBL PREV         'PREVIOUS MASK
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+VM=VSEEK+1.5	'set the speed for sneeking up
+* releases brake
+IO 26=1
+MOVA POS-INCR	'move on to the next mask
+HOLD 2		'suspend procedure until move is complete
+BR FINDPOS
+BR END_IT	'branch to exit
+*
+LBL STOW	'Stow the magazine mask #24
+LBL LOADTOP	'home the magazine to load the bottom 12 masks
+VM=VNORM
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+* releases brake
+IO 26=1
+MOVA 24*INCR	'move to an absolute index of -1.8 (mask 24)
+HOLD 0		'suspend procedure until position change is complete
+VM=VSEEK	'change the velocity to 0.5 rev/sec running speed
+BR FINDPOS
+BR END_IT         'branch to exit
+*
+*         
+LBL FINDPOS       'find a comfortable position 
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+* releases brake
+*IO 26=1
+* slews toward CW limit, will find "Position Valid"
+SLEW 3
+LBL SENSE1
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+*branches to FOUND routine if the "Position Valid" is true
+BR FOUND, Io 36 = 1     
+BR SENSE1
+LBL FOUND
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+* soft stop, continue execution
+SSTP 0
+* call and execute centering algorithm
+CALL CENTER
+*
+* applies brake
+IO 26=0
+* subtract 32 to get correction
+MASKNUM = IO 30 - 32    
+*
+* defines true absolute coordinate system based 
+* on mask number & centering
+ABSPOS = MASKNUM * INCR    
+POS = ABSPOS
+DELAY 1000
+* I found my initial position
+* Now leave the driving to the rest of the procedures
+VM=VNORM
+BR END_IT
+*
+* Get the correct Mask by getting to the correct target 
+LBL MASK
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+*
+* There are just so many mask number
+CALL INVALID MASKNUM>24  
+* position cassett to target         
+TARGNUM = MASKNUM        
+* absolute position of target
+TARGMOV = TARGNUM*INCR       
+* releases brake and lets get the correct mask 
+* according to target position
+IO 26=1
+* increase velocity for move to target mask position
+* don't take all day
+VM=VNORM
+* absolute move to target mask number                         
+MOVA TARGMOV                
+HOLD 2
+* find the center of the target
+* call and execute centering algorithm
+CALL CENTER
+*
+* ooohh nelly - hold on now and apply the brake
+IO 26=0
+* give me a second while I think about this move               
+DELAY 1000
+POSERR= TARGMOV - CEN
+BR END_IT
+*
+* INVALID MASK
+LBL INVALID
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+MASKNUM = TARGNUM
+BR END_IT
+*
+LBL CENTER
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+*	Centering Routine
+*	Declare Variables in Routine
+VAR POSEDGE         'position edge of low to high position valid sensor
+VAR NEGEDGE         'negative edge of low to high position valid sensor
+VAR SUM             'intermediate sum
+VAR CEN             'Center of position valid sensor trip points
+*
+SLEW 0.5
+LBL PL
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+* searches for high/low transition of position valid sensor
+BR PLUS, Io 36 = 0  
+BR PL
+LBL PLUS
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+* give a soft stop a stop what you are doing kind of stop
+* and continue execution
+SSTP 0
+POSEDGE = Pos
+*	
+SLEW -0.5
+LBL NG
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+* must reassert position valid bit
+BR NG1, Io 36 = 1    
+BR NG
+*
+* searches high/low transition of position valid sensor
+LBL NG1
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+BR NEG, Io 36 = 0    
+BR NG1
+*
+LBL NEG
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+* stop and continue execution
+SSTP 0
+NEGEDGE = POS
+*
+SUM = POSEDGE + NEGEDGE
+CEN = SUM/2
+VM=VSEEK
+* moves to center of position valid sensor trip points
+MOVA CEN
+HOLD 2
+RET
+* end it now
+BR END_IT        'branch to exit
+*
+*			STOP PROCEDURE
+*
+LBL STOP	'Stop procedure
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+SSTP 1 		'stop
+* set brake
+IO 26=0
+BR END_IT	'branch to exit
+*
+*			RELEASE BREAK PROCEDURE
+*
+LBL RELBRK	'Stop procedure
+* if bit 23 is set, prohibit magazine movement.
+*BR END_IT,IO 23=1
+*
+* set brake
+IO 26=1
+BR END_IT	'branch to exit
+*
+*			SET BREAK PROCEDURE
+*
+LBL SETBRK	'Stop procedure
+* if bit 23 is set, prohibit magazine movement.
+* BR END_IT,IO 23=1
+*
+* set brake
+IO 26=0
+BR END_IT	'branch to exit
+*
+* Here is where all procedures end up.
+*
+LBL END_IT       'Exit
+END              'end the procedures
+PGM              'end of program in RAM 

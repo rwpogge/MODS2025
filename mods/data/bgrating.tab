@@ -1,0 +1,9 @@
+#
+# MODS1 Blue Grating Table
+# 2009-06-01T13:15:30 [rwp/osu]
+#
+#Pos ID            Unique Indentifier
+  1  Flat        # Al Imaging Flat Nr1
+  2  G400L       # RGL MR162-2-7-1 400l/mm Grating
+  3  P450L       # FuSi+Al Double-Pass Prism Nr1
+  4  *None*      # Position Empty

@@ -1,0 +1,1594 @@
+#!/usr/bin/wish -f
+# MMS source for the Tk toolkit
+# Basic font for button, menus and labels
+# Product of OSU/ISL (2005)
+# ISL User/Engineering Support Interface
+# Window manager configurations
+
+# Use a small font for help all the time.
+
+  set ICONDIR /home2/isl/TclTK/images
+  set ISLDIR /home2/isl
+  set QTDIR  /home2/isl/Qt
+  set BINDIR /home2/isl/bin
+  set LIBDIR /home2/isl/TclTK/lib
+  set LIBBUT /home2/isl/TclTK/MODSButtons
+  set LIBDEF /home2/isl/TclTK/def_lib
+  set LOGDIR /home2/log
+
+  global tkVersion
+
+  set vieX [winfo screenwidth .]
+  set vieY [winfo screenheight .]  
+
+#position window full screen from top left corner.
+  if {$vieX <= 1024 || $vieY <= 768} {
+      set size 0  ;# Multipication factor to change size
+      set fontsize 7
+  } else {
+      set size 0    ;# Multipication factor to change size
+      set fontsize 14
+  }
+
+#wm overrideredirect . 1
+wm title . {OSU/ISL MODS Management System (MMS/MESI)}
+wm geometry . +0+0
+
+canvas .c -width [expr 108*$size] \
+	  -height [expr 90*$size]
+
+global inpipe stopscroll islrun newfile_filename
+global command changeTime
+global internal1 internal2 internal3 internal4 internal5 internal6 internal7
+global internal8 internala8 internalb8 internalc8 internald8 internal9
+global val01 val02 val03 val04 val05 val06 val07 val08 val09
+global txt01 txt02 txt03 txt04 txt05 txt06 txt07 txt08 txt09 .mlc  MMS
+
+# Decide on font size.
+if {$argv=="D"} {
+    exec $LIBDEF/ims &; exit
+} elseif {$argv=="F"} {
+    set bfont [exec $LIBDIR/vue_sysfonts {}]
+    set fontsize $bfont
+    set ibfont [open $LIBDIR/my_font w+]
+    puts $ibfont $bfont
+    catch {close $ibfont}
+} else { 
+    set ibfont [open "|/bin/sh -c \"cat $LIBDIR/my_font; :\""]
+    set bfont [gets $ibfont]
+#    set newfile_filename [lindex $argv 1]
+    set fontsize $bfont
+    catch {close $ibfont}
+}
+# --- Set fonts name ----------------------------------------------------------
+#
+ set bfont -*-helvetica-Medium-R-Normal--*-120-*-*-*-*-*-*
+
+  set infile " ";
+  # Use an associative array to store keys and commands
+  set cmd(MUI) "$LIBBUT/mui"
+  set cmd(Calculator) "$LIBDIR/vue_islcalq $fontsize"
+#  set cmd(ISL) "xterm -geom 60x10+0+0 -sb -sl 1000 -e $BINDIR/isl"
+  set cmd(ICS_Console) "xterm -name ICSIN -sb -fn 10x20 -geometry 80x10+0-100 -j -e $BINDIR/icsin $ISLDIR/Config/ics.ini &"
+  set cmd(Send_mail) "$LIBDIR/vue_islmail $fontsize"
+#  set cmd(logpl) "$BINDIR/logpl -log $infile"      
+  set cmd(logpl) "$BINDIR/logpl &"      
+  set cmd(xterm) "xterm -bg black -fg white -sb -cr yellow -geometry +10+120 -fn 10x20"
+  set cmd(COPY_FILES) "$LIBDIR/vue_islfcp &"
+
+  # File storage
+  set xislfile "~/.xislcmds"
+  set global_startmode 0            ;# 0=Interactive mode; 1=Command-line mode
+  #set current_filename [lindex $argv 0]
+  set current_filename ""           ;# The selected log file
+  set current_DefaultDir "/home2/log"  ;# Default directory for ISL log files
+  set stopscroll 0
+  set islrun "not"
+# Set the log file to default.log to start out with.
+    
+  set newfile_filename "default.log" 
+
+  set changeTime 0;
+# Results
+  set val01 [exec vueinfo timeu]
+  set val03 [exec vueinfo agwval1]
+  set val04 [exec vueinfo agwval2]
+  set val05 [exec vueinfo agwval3]
+  set val06 [exec vueinfo agwval4]
+  set val09 $newfile_filename
+
+# Top frame is a menubar
+# there is more magic that you can do with this
+# build widget .m
+frame  .m -width 21c -height 10c -relief flat -bg red4
+
+#// Defines all the internal frames
+pack .m -side top -fill both -expand 1
+
+frame  .internal1 -width 28c -height 3c -relief flat -bg red4
+frame  .internal2 -width 21c -height 3c -relief flat -bg red4
+#frame  .internal3 -width 21c -height 3c -relief flat -bg red4
+#frame  .internal11 -width 21c -height 3c -relief flat -bg red4
+#frame  .internal12 -width 21c -height 3c -relief flat -bg red4
+#frame  .internal13 -width 21c -height 3c -relief flat -bg red4
+#frame  .internal33 -width 21c -height 7m -relief flat -bg red4
+
+
+pack .c -in .internal1
+pack .c -in .internal2
+#pack .c -in .internal3
+#pack .c -in .internal11
+#pack .c -in .internal12
+#pack .c -in .internal13
+#pack .c -in .internal33
+
+pack .internal1 .internal2 -in .m -side top -fill both -expand 1
+pack propagate .m 1
+
+# ==========================================================================
+#
+#           COOK UP THE BUTTONS AND PACK THEM SECTION
+#
+# ==========================================================================
+# two buttons in the menu giving dropdown menus
+image create photo osuvue -file "$ICONDIR/osu_logo2.gif"
+label .image -image osuvue -bg brown -width 55 -height 50
+
+menubutton .mlc -text "SA Controllers" -activebackground red -menu .mlc.menu -background red4 -fg white
+
+menubutton .cmd -text "Execute" -background red4 -activebackground red -menu .cmd.menu -fg white 
+
+button .isl -text "LOGS" -background red4 -activebackground red -fg white -command { set newfile_filename [exec vueinfo logfile]; exec $LIBDIR/vue_isllog $fontsize $LOGDIR/$newfile_filename &}
+
+button .islo -text "Files" -background red4 -fg white -activebackground red -command {exec $BINDIR/Meditor &}
+
+button .q -text "Exit" -background red -activebackground red -fg white -command { 
+    if { [exec vueinfo chksem] == "isis already running" } {
+	set choice [tk_messageBox -type yesno -default no \
+			-message "Are you sure you want to quit the ISL Manager this way?\n\nIt would be better to use the \[Stop MMS] button then Exit." -icon question];
+	if {[regexp "yes" $choice] == 1} { GetOut }
+    } else {
+	set choice [tk_messageBox -type yesno -default no \
+			-message "Are you sure you want to kill the MESI window?"\
+			-icon question];
+	if {[regexp "yes" $choice] == 1} { exit }
+    }
+}
+
+menubutton .help -bitmap @$ICONDIR/info.icon -menu .help.menu -menu .help.menu -background red4 -fg white -activebackground red
+
+entry .cmdentry
+
+#button .mdemo -text "MODS Widgets" -background blue -activebackground red -fg white -command { global chgc2;
+button .val01 -textvariable val01 -background red4 -fg white -relief flat \
+-command { global changeTime;
+    if { $changeTime == 0 } { 
+	set changeTime 1 
+    } else { 
+	set changeTime 0 
+    }
+}
+
+# Put the focus into the box
+bind .cmdentry <Return> {Execute}
+
+# ==========================================================================
+#
+#                         DISPLAY SECTION
+#
+# ==========================================================================
+proc displayWin { } {
+    global val01 val02 val03 val04 val05 val06 val07 val08 val09
+    global txt01 txt02 txt03 txt04 txt05 txt06 txt07 txt08 txt09
+    global bfont m c chgc chgc2 chgc3 ICONDIR
+    global internal1 internal2 internal3 internal4 internal5 internal6 
+    global internal7 internal8 internala8 internalb8 internalc8 internald8 
+
+set chgc2 0
+set chgc3 0
+
+button .mdemo -text "MODS Widgets" -background blue -activebackground red -fg white -command { global chgc2;
+	if { $chgc2 ==  1 } {
+         .mdemo configure -text "MODS Widgets" -background blue;
+	 mods_demos
+     } else {
+         .mdemo configure -text "Hide Widgets" -background red;
+	 mods_demos
+     }
+}
+
+# Bit for Hiding
+set chgc 0
+
+button .mlcinfo -bitmap @$ICONDIR/info.icon -background blue -fg white -activebackground red -command { exec vueinfo help modsctl.___ &}
+
+button .qc1 -text "MODS Controllers" -background blue  -activebackground red -fg white -command { global chgc;
+	if { $chgc ==  1 } {
+         .qc1 configure -text "MODS Controllers" -background blue;
+	 agwwin
+     } else {
+         .qc1 configure -text "Hide Controllers" -background red;
+	 agwwin
+     }
+}
+
+button .qc3 -text "IMCS Pixelator" -background red4 -activebackground red -fg white -command { exec $LIBDIR/imcspixelator.tcl &;};
+button .qcagw -text "AGW Pixelator" -background red4 -activebackground red -fg white -command { exec $LIBDIR/agwpixelator.tcl &;};
+
+button .qc4 -text "CCD/IMAGE Tools" -background blue  -activebackground red -fg white -command { global chgc;
+	if { $chgc3 ==  1 } {
+         .qc4 configure -text "CCD/IMAGE Tools" -background blue;
+	 mods_imagetool
+     } else {
+         .qc4 configure -text "Hide CCD/IMAGE Tools" -background red;
+	 mods_imagetool
+     }
+}
+
+button .ccdinfo -bitmap @$ICONDIR/info.icon -background blue -fg white -activebackground red -command { exec vueinfo help ccd.___ &}
+
+button .demoinfo -bitmap @$ICONDIR/info.icon -background blue -fg white -activebackground red -command { exec vueinfo help demos.___ &}
+
+pack .image .val01 .mdemo .demoinfo .qc1 .mlcinfo .qc4 .ccdinfo .q -in .internal1 -side left -fill both -expand 1
+
+}
+# Setup menus window on top of monitor window
+displayWin
+
+# Just the Time
+proc displayTimer {} {
+    global val01 bfont changeTime
+
+    if { $changeTime == 0 } { 
+	set val01 [exec vueinfo timeu] 
+    } else { 
+	set val01 [exec vueinfo timel]
+    }
+
+    after 1000 displayTimer
+}
+displayTimer
+
+# Display positions
+proc displayPOS {} {
+    global val03 val04 val05 val06
+    set val03 [exec vueinfo agwval1]
+    set val04 [exec vueinfo agwval2]
+    set val05 [exec vueinfo agwval3]
+    set val06 [exec vueinfo agwval4]
+    after 5000 displayPOS
+}
+displayPOS
+
+# ==========================================================================
+#
+#           COOK UP THE ITEMS UNDER THE BUTTONS SECTION
+#
+# ==========================================================================
+#
+#menu .dsp.menu -background blue -fg white
+#.dsp.menu add command -label General -command {DSPit monit2}
+#.dsp.menu add command -label Time -command {DSPit monit1}
+#.dsp.menu add command -label Weather -command {exec $LIBDIR/vue_islwx $fontsize &}
+
+menu .mlc.menu -background blue -fg white
+
+.mlc.menu add command -label Controller\#1 -command { exec xterm -bg linen -fg black -sb -fn 10x20 -geometry 80x24+0+0 -e "$BINDIR/mlx 1" &}
+
+
+.mlc.menu add command -label Controller\#2 -command { exec xterm -bg linen -fg black -sb -fn 10x20 -geometry 80x24+0+0 -e "$BINDIR/mlx 2" &}
+
+
+.mlc.menu add command -label Controller\#3 -command { exec xterm -bg linen -fg black -sb -fn 10x20 -geometry 80x24+0+0 -e "$BINDIR/mlx 3" &}
+
+.mlc.menu add command -label Controller\#4 -command { exec xterm -bg linen -fg black -sb -fn 10x20 -geometry 80x24+0+0 -e "$BINDIR/mlx 4" &}
+
+
+.mlc.menu add command -label Controller\#5 -command { exec xterm -bg linen -fg black -sb -fn 10x20 -geometry 80x24+0+0 -e "$BINDIR/mlx 5" &}
+
+
+.mlc.menu add command -label Controller\#6 -command { exec xterm -bg linen -fg black -sb -fn 10x20 -geometry 80x24+0+0 -e "$BINDIR/mlx 6" &}
+
+
+.mlc.menu add command -label Controller\#7 -command { exec xterm -bg linen -fg black -sb -fn 10x20 -geometry 80x24+0+0 -e "$BINDIR/mlx 7" &}
+
+
+.mlc.menu add command -label Controller\#8 -command { exec xterm -bg linen -fg black -sb -fn 10x20 -geometry 80x24+0+0 -e "$BINDIR/mlx 8" &}
+
+# Help menu
+menu .help.menu -background blue -fg white
+.help.menu add command -label "Logo" -command {exec $LIBDIR/M_LOGO &};
+.help.menu add command -label "About mesi" -command {exec vueinfo help mms.___}
+.help.menu add command -label "File" -command {exec vueinfo help mmsFile.___}
+.help.menu add command -label "Execute" -command {exec vueinfo help mmsExecute.___}
+.help.menu add command -label "SA Controllers" -command {exec vueinfo help mmsControllers.___}
+.help.menu add command -label "Menus" -command {exec vueinfo help mmsMenus.___}
+.help.menu add command -label "Aliases & Commands" -command {exec vueinfo help mmsUsing.___};
+ 
+# Command menu
+menu .cmd.menu -background blue -fg white
+.cmd.menu add command -label Add -command AddCmd
+.cmd.menu add command -label Load -command LoadFile
+.cmd.menu add command -label Save -command SaveFile
+.cmd.menu add separator
+
+# ==========================================================================
+#
+#           COOK UP PROCEDURES SECTION
+#
+# ==========================================================================
+proc forAllMatches { w pattern script} {
+    scan [$w index end] %d numLines
+    for {set i 1} {$i < $numLines} {incr i} {
+	$w mark set last $i.0
+	while { [regexp -indices $pattern \
+		     [$w get last "last lineend"] indices]} {
+	    $w mark set first \
+		"last + [lindex $indices 0] chars"
+	    $w mark set last "last + 1 chars \
+			+ [lindex $indices 1] chars"
+	    uplevel $script
+	}
+    }
+}
+# --------------------------------------------------------------------------
+# setup display area( text and scrollbar) to monitor MESI 
+# --------------------------------------------------------------------------
+#
+set textFont -*-helvetica-normal-R-Normal--*-160-*-*-*-*-*-*
+
+#text .t -height 24 -width 60 -yscrollc {.sb set} -font $textFont -bg white
+text .t -height 10 -width 70 -yscrollc {.sb set} -bg white
+scrollbar .sb -command {.t yview}
+
+.t tag configure errtag -foreground black -background red4
+
+pack .sb -in .internal2 -side left -fill both
+pack .t -in .internal2 -side left -fill both -expand 1
+
+# AGW Module for MODS UI
+# Basic fonts for button, libraries, and menus? and labels?
+# Product of OSU/ISL (2006)
+# ISL Engineer/Astronomer/Astrophysics Support Interface
+
+proc agwwin { } {
+# ==========================================================================
+#
+#                         DISPLAY SECTION
+#
+# ==========================================================================
+    global bfont m c chgc
+    global val03 val04 val05 val06 
+
+    if { $chgc == 1 } {
+	# Destroy the Single Controller Widget World.
+	#
+	# destroy IMCS Red widgets
+	destroy .imcswinlab; destroy .ttfAentry; destroy .ttfBlab;
+	destroy .ttfBentry; destroy .ttfClab; destroy .ttfCentry; destroy .gT1lab;
+#	destroy .gT1entry; destroy .gT2lab; destroy .gT2entry; destroy .gT3lab;
+#	destroy .gT3entry; destroy .gSlab; destroy .gSentry; 
+	destroy .gT1entry; destroy .gT2lab; destroy .gT2entry;
+	destroy .gSlab; destroy .gSentry; 
+	
+	# destroy IMCS Blue widgets
+	destroy .bimcswinlab;  destroy .bttfAentry; destroy .bttfBlab; 
+	destroy .bttfBentry; destroy .bttfClab;  destroy .bttfCentry;
+	destroy .bgT1lab; destroy .bgT1entry;  destroy .bgT2lab; 
+#	destroy .bgT2entry;  destroy .bgT3lab; destroy .bgT3entry;
+	destroy .bgT2entry;
+	destroy .bgSlab; destroy .bgSentry; 
+
+	# destroy AGW widgets
+	destroy .agwinlab; destroy .xlab; destroy .xentry; destroy .ylab;
+	destroy .yentry; destroy .focuslab; destroy .focusentry; 
+	destroy .filterlab; destroy .filterentry;
+	# and SlitMask widgets
+	destroy .smwinlab; destroy .smIlab; destroy .smIentry;
+#destroy .blank1Lab; destroy .smwinlab; destroy .smIlab; destroy .smIentry;
+	destroy .smSlab; destroy .smSentry;
+
+	# destroy and the rest of the widgets
+	destroy .blank2Lab; destroy .b2entry; 
+	destroy .blank3Lab; destroy .b3entry;
+	destroy .blank4Lab; destroy .b4entry; 
+	destroy .blank5Lab; destroy .b5entry;
+	destroy .blank4Lab; destroy .b4entry;
+	destroy .blank5Lab; destroy .b5entry; 
+	destroy .blank6Lab; destroy .b6entry;
+	destroy .blank7Lab; destroy .b7entry;
+	destroy .blank8Lab; destroy .b8entry; 
+	destroy .blank9Lab; destroy .b9entry;
+	destroy .blank10Lab; destroy .b10entry;
+	
+	destroy .internal4;
+	destroy .internal5;
+	destroy .internal6;
+	destroy .internal7;
+	destroy .internal8;
+	destroy .internala8;
+	destroy .internalb8;
+	destroy .internalc8;
+	destroy .internald8;
+	set chgc 0;
+
+    } else {
+	frame  .internal4 -width 21c -height 3c -relief flat -bg red4
+	frame  .internal5 -width 21c -height 3c -relief flat -bg red4
+	frame  .internal6 -width 21c -height 3c -relief flat -bg red4
+	frame  .internal7 -width 21c -height 3c -relief flat -bg red4
+	frame  .internal8 -width 21c -height 3c -relief flat -bg red4
+	frame  .internala8 -width 21c -height 3c -relief flat -bg red4
+	frame  .internalb8 -width 21c -height 3c -relief flat -bg red4
+	frame  .internalc8 -width 21c -height 3c -relief flat -bg red4
+	frame  .internald8 -width 21c -height 3c -relief flat -bg red4
+
+	pack .c -in .internal4
+	pack .c -in .internal5
+	pack .c -in .internal6
+	pack .c -in .internal7
+	pack .c -in .internal8
+	pack .c -in .internala8
+	pack .c -in .internalb8
+	pack .c -in .internalc8
+	pack .c -in .internald8
+
+	pack .internal4 .internal5 .internal6 .internal7 \
+	    .internal8 .internala8 .internalb8 .internalc8 .internald8 \
+	    -in .m -side top -fill both -expand 0
+
+	# Start building the input windows.....
+	label .blank2Lab -bg grey -fg black -relief flat -text "Dichroic"
+history::for entry .b2entry -bg white -fg black -textvar b2val -width 10 
+	
+	label .blank3Lab -bg grey -fg black -relief flat -text "Calib"
+history::for entry .b3entry -bg white -fg black -textvar b3val -width 10
+	
+	label .blank4Lab -bg grey -fg black -relief flat -text "DarkSlide"
+history::for entry .b4entry -bg white -fg black -textvar b4val -width 10
+
+	
+	pack .blank4Lab .b4entry .blank3Lab .b3entry .blank2Lab .b2entry \
+	    -in .internal4 -side left -fill both -expand 0
+
+	label .agwinlab -background grey -fg black -text "AGW" 
+	label .xlab -background grey -fg black -text "X" 
+history::for entry .xentry -bg white -fg black -textvar xval -width 10
+	label .ylab -background grey -fg black -text "Y" 
+history::for entry .yentry -bg white -fg black -textvar yval -width 10
+	
+	label .focuslab -background grey -fg black -text "FOCUS "
+history::for entry .focusentry -bg white -fg black -textvar focusval -width 10
+	label .filterlab -background grey -fg black -text "FILTER "
+history::for entry .filterentry -bg white -fg black -textvar filterval -width 10
+
+	bind .b2entry <Return> { global b2val;
+#	    puts "$b2val"
+	    exec vueinfo islcmd1 $b2val; set b2val "";
+	}
+	bind .b3entry <Return> { global b3val;
+#	    puts "$b3val"
+	    exec vueinfo islcmd2 $b3val; set b3val "";
+	}
+	bind .b4entry <Return> { global b4val;
+#	    puts "$b4val"
+	    exec vueinfo islcmd9 $b4val; set b4val "";
+	}
+	bind .yentry <Return> { global yval;
+#	    puts "$yval"
+	    exec vueinfo islcmd5 $yval; set $yval "";
+	}
+	bind .xentry <Return> { global xval;
+#	    puts "$xval"
+	    exec vueinfo islcmd6 $xval; set xval ""
+	}
+	bind .focusentry <Return> { global focusval;
+#	    puts "$focusval"
+	    exec vueinfo islcmd7 $focusval; set focusval ""
+	}
+	bind .filterentry <Return> { global filterval;
+#	    puts "$filterval"
+	    exec vueinfo islcmd8 $filterval; set filterval ""
+	}
+	
+	pack .agwinlab .xlab .xentry .ylab .yentry \
+	    .focuslab .focusentry .filterlab .filterentry -in .internal5 -side left -fill both -expand 0
+	
+	# Do the SlitMask 
+	label .smwinlab -bg grey -fg black -text "Mask " 
+	label .smIlab -bg grey -fg black -text "Insert" 
+history::for entry .smIentry -bg white -fg black -textvar smival -width 10
+	label .smSlab -bg grey -fg black -text "Select" 
+history::for entry .smSentry -bg white -fg black -textvar smsval -width 10
+
+#label .blank1Lab -bg red4 -relief flat -text "       "
+	
+	bind .smIentry <Return> { global smival;
+#	    puts "$smival"
+	    exec vueinfo islcmd3 $smival; set smival "";
+	}
+	bind .smSentry <Return> { global smsval;
+#	    puts "$smsval"
+	    exec vueinfo islcmd4 $smsval;  set smsval "";
+	}
+	pack .smwinlab .smIlab .smIentry .smSlab .smSentry \
+	    -in .internal6 -side left -fill both -expand 0
+
+	# Do the Red IMCS	
+	label .imcswinlab -background red -fg white -text " IMCS A" 
+history::for entry .ttfAentry -bg white -fg black -textvar raval -width 10
+
+	label .ttfBlab -bg red -fg white -text " B " 
+history::for entry .ttfBentry -bg white -fg black -textvar rbval -width 10
+
+	label .ttfClab -bg red -fg white -text " C " 
+history::for entry .ttfCentry -bg white -fg black -textvar rcval -width 10
+
+	label .gT1lab -background red -fg white -text "Grating Tilts 1" 
+history::for entry .gT1entry -bg white -fg black -textvar ri1val -width 10
+
+	label .gT2lab -background red -fg white -text " 2 " 
+history::for entry .gT2entry -bg white -fg black -textvar ri2val -width 10
+
+#	label .gT3lab -background red -fg white -text " 3 " 
+#history::for entry .gT3entry -bg white -fg black -textvar ri3val -width 10
+
+	label .gSlab -background red -fg white -text " S " 
+history::for entry .gSentry -bg white -fg black -textvar risval -width 10
+	
+	bind .ttfAentry <Return> { global raval;
+#	    puts "$raval"
+	    exec vueinfo islcmd19 $raval; set raval ""
+	}
+	bind .ttfBentry <Return> { global rbval;
+#	    puts "$rbval"
+	    exec vueinfo islcmd20 $rbval; set rbval ""
+	}
+	bind .ttfCentry <Return> { global rcval;
+#	    puts "$rcval"
+	    exec vueinfo islcmd21 $rcval; set rcval ""
+	}
+	bind .gT1entry <Return> { global ri1val;
+#	    puts "$ri1val"
+	    exec vueinfo islcmd22 $ri1val; set ri1val ""
+	}
+	bind .gT2entry <Return> { global ri2val;
+#	    puts "$ri2val"
+	    exec vueinfo islcmd23 $ri2val; set ri2val ""
+	}
+#	bind .gT3entry <Return> { global ri3val;
+#	    puts "$ri3val"
+#	    exec vueinfo islcmd24 $ri3val; set ri3val ""
+#	}
+	bind .gSentry <Return> { global risval;
+#	    puts "$risval"
+	    exec vueinfo islcmd24 $risval; set risval ""
+	}
+	
+	pack .imcswinlab .ttfAentry .ttfBlab .ttfBentry \
+	    .ttfClab .ttfCentry -in .internal7 -side left -fill both -expand 0
+	pack .gT1lab .gT1entry .gT2lab .gT2entry \
+	    .gSlab .gSentry -in .internal8 -side left -fill both -expand 0
+#pack .gT1lab .gT1entry .gT2lab .gT2entry .gT3lab
+# .gT3entry .gSlab .gSentry -in .internal8 -side left -fill both -expand 0
+
+	label .blank5Lab -bg red -fg white -relief flat -text "Shutter"
+history::for entry .b5entry -bg white -fg black -textvar b5val -width 10
+	
+	label .blank7Lab -bg red -fg white -relief flat -text "FocusCam"
+history::for entry .b7entry -bg white -fg black -textvar b7val -width 10
+	
+	label .blank9Lab -bg red -fg white -relief flat -text "FWheelCam"
+history::for entry .b9entry -bg white -fg black -textvar b9val -width 10
+
+	bind .b5entry <Return> { global b5val;
+#	    puts "$b5val"
+	    exec vueinfo islcmd25 $b5val; set b5val "";
+	}
+	bind .b7entry <Return> { global b7val;
+#	    puts "$b7val"
+	    exec vueinfo islcmd26 $b7val; set b7val "";
+	}
+	bind .b9entry <Return> { global b9val;
+#	    puts "$b9val"
+	    exec vueinfo islcmd27 $b9val; set b9val "";
+	}
+	
+	pack  .blank5Lab .b5entry .blank9Lab .b9entry .blank7Lab .b7entry \
+	    -in .internala8 -side left -fill both -expand 0
+	
+	# Do the Blue IMCS
+	label .bimcswinlab -background blue -fg white -text " IMCS A" 
+history::for entry .bttfAentry -bg white -fg black -textvar baval -width 10
+
+	label .bttfBlab -background blue -fg white -text " B " 
+history::for entry .bttfBentry -bg white -fg black -textvar bbval -width 10
+
+	label .bttfClab -background blue -fg white -text " C " 
+history::for entry .bttfCentry -bg white -fg black -textvar bcval -width 10
+
+	label .bgT1lab -background blue -fg white -text "Grating Tilts 1" 
+history::for entry .bgT1entry -bg white -fg black -textvar bi1val -width 10
+
+	label .bgT2lab -background blue -fg white -text " 2 " 
+history::for entry .bgT2entry -bg white -fg black -textvar bi2val -width 10
+
+#	label .bgT3lab -background blue -fg white -text " 3 " 
+#history::for entry .bgT3entry -bg white -fg black -textvar bi3val -width 10
+
+	label .bgSlab -background blue -fg white -text " S " 
+history::for entry .bgSentry -bg white -fg black -textvar bisval -width 10
+	
+	bind .bttfAentry <Return> { global baval;
+#	    puts "$baval"
+	    exec vueinfo islcmd10 $baval; set baval "";
+	}
+	bind .bttfBentry <Return> { global bbval;
+#	    puts "$bbval"
+	    exec vueinfo islcmd11 $bbval; set bbval "";
+	}
+	bind .bttfCentry <Return> { global bcval;
+#	    puts "$bcval"
+	    exec vueinfo islcmd12 $bcval; set bcval "";
+	}
+	bind .bgT1entry <Return> { global bi1val;
+#	    puts "$bi1val"
+	    exec vueinfo islcmd13 $bi1val; set bi1val "";
+	}
+	bind .bgT2entry <Return> { global bi2val;
+#	    puts "$bi2val"
+	    exec vueinfo islcmd14 $bi2val; set bi2val "";
+	}
+#	bind .bgT3entry <Return> { global bi3val;
+#	    puts "$bi3val"
+#	    exec vueinfo islcmd15 $bi3val; set bi3val "";
+#	}
+	bind .bgSentry <Return> { global bisval;
+#	    puts "$bisval"
+	    exec vueinfo islcmd16 $bisval; set bisval "";
+	}
+	
+	pack .bimcswinlab .bttfAentry .bttfBlab .bttfBentry \
+	    .bttfClab .bttfCentry -in .internalb8 -side left \
+	    -fill both -expand 0
+#	pack .bgT1lab .bgT1entry .bgT2lab .bgT2entry .bgT3lab
+#	    .bgT3entry .bgSlab .bgSentry -in .internalc8 -side left
+#	    -fill both -expand 0
+	pack .bgT1lab .bgT1entry .bgT2lab .bgT2entry \
+	    .bgSlab .bgSentry -in .internalc8 -side left \
+	    -fill both -expand 0
+	
+	
+	label .blank6Lab -bg blue -fg white -relief flat -text "Shutter"
+history::for entry .b6entry -bg white -fg black -textvar b6val -width 10
+	
+	label .blank8Lab -bg blue -fg white -relief flat -text "FocusCam"
+history::for entry .b8entry -bg white -fg black -textvar b8val -width 10
+	
+	label .blank10Lab -bg blue -fg white -relief flat -text "FWheelCam"
+history::for entry .b10entry -bg white -fg black -textvar b10val -width 10
+
+	bind .b6entry <Return> { global b6val;
+#	    puts "$b6val"
+	    exec vueinfo islcmd16 $b6val; set b6val "";
+	}
+	bind .b10entry <Return> { global b10val;
+#	    puts "$b10val"
+	    exec vueinfo islcmd17 $b10val; set b10val "";
+	}
+	bind .b8entry <Return> { global b8val;
+#	    puts "$b8val"
+	    exec vueinfo islcmd18 $b8val; set b8val "";
+	}
+	
+	pack  .blank6Lab .b6entry .blank10Lab .b10entry .blank8Lab .b8entry \
+	    -in .internald8 -side left -fill both -expand 0
+
+
+	set chgc 1;
+    }
+}
+
+# --------------------------------------
+# Update display area with line of text
+# --------------------------------------
+#
+proc line {text} {
+    global newfile_filename val02 val03 val04 val05 val06 val07 val08
+    global stopscroll bfont val09
+
+    set val02 $newfile_filename
+    set val09 [exec vueinfo logfile]
+    set newfile_filename $val09
+
+    puts "lineL: >>$newfile_filename"
+
+    if {[regexp "ERROR" $text] == 1} {
+	.t insert end $text\n; 
+	.t see end; 
+	.t yview end
+	forAllMatches .t "ERROR" {
+	    .t tag add big first last
+	}
+	.t tag configure big -background Red \
+	    -foreground white -borderwidth 2 \
+	    -relief sunken
+    } else {
+	.t insert end $text\n; 
+	.t see end; 
+	.t yview end
+    }
+#    update idletasks
+}
+
+# -----------------------------------------------
+# Monitor fd (inpipe) and feed into display area
+# -----------------------------------------------
+#
+proc logOutput {inpipe cmd} {
+    global newfile_filename pids
+
+    puts "logOutput: >>$newfile_filename"
+
+     if {[eof $inpipe]} {
+	line "end of <$cmd>, or file may not exist in /home2/log.\nSelect a valid log file by clicking on Log button."
+	catch {close $inpipe}
+    } else {
+	set new [exec vueinfo logfile] 
+	if {[string compare $new $newfile_filename] != 0} {
+	    set newfile_filename [lindex $new 0]
+	    AnotherLog
+	}
+	line [gets $inpipe]
+    }
+    .t2 delete 1.0 end
+    .t2 insert end "You are now viewing $newfile_filename"
+    update idletasks
+}
+
+# -------------------
+# Setup fd monitoring 
+# -------------------
+#
+proc execAndLog {cmd} {
+    global newfile_filename inpipe pids
+
+    set inpipe [open "|/bin/sh -c \"$cmd &1; :\""]
+    set pids [pid $inpipe]
+    fileevent $inpipe readable [list logOutput $inpipe $cmd]
+ }
+
+# -------------------
+# Close fd monitoring 
+# -------------------
+#
+proc execAndLogClose {} {
+    global newfile_filename pids
+    incr pids 1
+    catch {exec kill $pids}
+#    exec kill $pids
+#    exec vue &
+    exit
+}
+
+# -------------------
+# -- mainline this was to test the loop ---
+# -------------------
+#
+set newfile_filename [exec vueinfo logfile] 
+#execAndLog "tail -f -n 28 /home2/log/$newfile_filename"
+# -----------------------------------------
+# setup a display monitor on a growing file
+# -----------------------------------------
+#
+proc AnotherLog { } {
+    global inpipe newfile_filename pids
+ #   incr pids 1
+#    catch {exec kill $pids}
+ #    exec kill $pids
+    execAndLog "tail -f -n 24 /home2/log/$newfile_filename"
+}
+
+# ------------------------------------------
+#text: read a ISL log file into a text widget
+# ------------------------------------------
+#
+proc loadFile file {
+    global newfile_filename
+
+    puts "loadFile: >> $newfile_filename"
+
+    .t delete 1.0 end
+    set f [open $file r]
+    while { ![eof $f] } {
+	if {[regexp "ERROR" $f] == 1} {
+	    .m2.t3 insert end [read $f 1000]
+	    .m2.t3 see end; 
+	    .m2.t3 yview end
+	} else {
+	    .t insert end [read $f 1000]
+	    .t see end; 
+	    .t yview end
+	}
+    }
+
+# Mark error messages.
+forAllMatches .m2.t3 "ERROR" {
+   .m2.t3 tag add big first last
+}
+.m2.t3 tag configure big -background Red -foreground white -borderwidth 2 \
+	-relief sunken
+    close $f
+    .t2 delete 1.0 end
+    .t2 insert end "You are now viewing $newfile_filename"
+}
+
+# ==========================================================================
+#
+#          CONTINUE COOKING PROCEDURES SECTION
+#
+# ==========================================================================
+#
+proc open_html {file} {
+    global tcl_platform
+
+    switch $tcl_platform(platform) {
+	unix { 
+	    set cmd "exec netscape -remote \"openFile($file)\""
+	    if {[catch $cmd] !=0} {
+		exec netscape &
+		while {[catch $cmd] !=0} {
+		    after 500
+		}
+	    }
+	}
+	window {
+	    set cmd [list exec netscape $file &]
+	    if {[catch $cmd] !=0} {
+		set prog [tk_getOpenFile -title "Where is Netscape?"]
+		if {$prog != " "} {
+		    exec $prog $file &
+		}
+	    }
+	}
+    }
+}
+
+# ---------------------
+# MESI System Displays
+# ---------------------
+#
+proc DSPit dspname {
+    if {$dspname == "monit1"} {
+	exec xterm -geom 38x1+0+0 -bg linen -fg black -sb \
+		-sl 1000 -e /home2/isl/bin/$dspname &
+    }
+    if {$dspname=="monit2"} {
+	exec xterm -geom 90x10+100+0 -bg linen -fg black \
+		-sb -sl 1000 -e /home2/isl/bin/$dspname &
+    }
+    if {$dspname=="errchk"} {
+	exec xterm -geom 90x10+90+0 -bg linen -fg black \
+		-sb -sl 1000 -e /home2/isl/bin/$dspname &
+    }
+}
+
+# ---------------------------------------------------------------
+# Routine to load the Command Menu dynamically from the cmd array
+# each menu entry will call the procedure ExFromMenu with an
+# argument of the command name
+# ---------------------------------------------------------------
+#
+proc LoadCmdMenu {} {
+        global cmd bfont
+
+        foreach name [lsort [array names cmd]] {
+                set c "ExFromMenu $name"
+	    .cmd.menu add command -label $name -command $c
+        }
+}
+
+# -------------------------------------
+# Load the command menu at startup time
+# -------------------------------------
+#
+LoadCmdMenu
+
+# -------------------------------------------------------
+# That's all the top level windows
+# Now we have a bunch of actions to do things
+#
+# The execute routine. Called when Return is typed in the
+# main entry window and also from the Command Menu
+# -------------------------------------------------------
+#
+proc Execute {} {
+        global cmd
+        
+        set str [.cmdentry get]
+        set str "[MinMatch $str]"
+        if { $str == "" } {
+                return
+        }
+        set val $cmd($str)
+        if { $val == "" } {
+                return
+        }
+        
+        switch $val {
+        quit    {       exit    }
+        default {
+                       .cmdentry delete 0 end
+                        eval exec $val &
+                }
+        }
+}
+
+# ----------------------------
+# Minimum length matching code
+# ----------------------------
+#
+proc MinMatch { str } {
+        global cmd
+        
+        set found ""
+        foreach name [lsort [array names cmd]] {
+                if { [string match $str* $name] } {
+                        if { $found != "" } {
+                                return ""
+                        } else {
+                                set found $name
+                        }
+                }
+        }
+        return $found
+}
+
+# -------------------------------------------------
+# Called from the Command menu to execute a command
+# -------------------------------------------------
+#
+proc ExFromMenu {name} {
+
+        .cmdentry delete 0 end
+        .cmdentry insert end $name
+        Execute
+}
+
+# ----------------------------------------------------------
+# Load the cmd array from a file
+# currently this is called .xislcmds in the current directory
+# You should change this
+# ----------------------------------------------------------
+#
+proc LoadFile {} {
+        global cmd xislfile
+
+        if { [file exists $xislfile] } {
+                set f [open $xislfile r]
+                while { [gets $f line] >= 0 } {
+                        set line [split $line ":"]
+                        set new [lindex $line 0]
+                        set cmd($new) [join [lrange $line 1 end] ":"]
+                }
+                close $f
+        }
+#        .cmd.menu delete 2 last
+        .cmd.menu delete 4 last
+        LoadCmdMenu
+
+}
+
+# ----------------------------------
+#       Executed as we start working
+# ----------------------------------
+#
+LoadFile
+
+# --------------------------
+# The converse - save a file
+# --------------------------
+#
+proc SaveFile {} {
+        global cmd xislfile
+
+        set f [open $xislfile w]
+        foreach name [lsort [array names cmd]] {
+                puts $f "$name:$cmd($name)"
+        }
+        close $f
+}
+
+# ---------------------------------------------
+# Called from the Add entry in the command menu
+# creates a pop-up window
+# ---------------------------------------------
+#
+proc AddCmd {} {
+        global cmd bfont
+    
+        # on error kill this
+        catch {destroy .pop}
+        # make a toplevel item
+        toplevel .pop -bg linen
+
+        # add a title for the Window Manager to use
+        wm title .pop "Add Command"
+        
+        # the outer frame
+        frame .pop.f -bd 2
+        pack .pop.f -side top -fill both
+
+        # The frame is a title, and entry box, another title and another
+        # entry box
+        label .pop.f.lab1 -text "Command Name" 
+        entry .pop.f.e1 -relief sunken
+        label .pop.f.lab2 -text "Command"
+        entry .pop.f.e2 -relief sunken
+        pack .pop.f.lab1 .pop.f.e1 .pop.f.lab2 .pop.f.e2 -side top
+        # The bottom of the frame has two buttons, one to get rid of this
+        # diaglogue box, one to load the cmd vector
+        frame .pop.f.m -bd 2 -bg linen
+        pack .pop.f.m -fill x -expand 1 -side top
+
+        button .pop.f.m.d -text "Dismiss" -command PopDown
+        button .pop.f.m.l -text "Load" -command LoadIt
+        pack .pop.f.m.d .pop.f.m.l -side left -expand 1 -fill x
+
+        # we set the focus to the top box, when we type return in that
+        # the cursor goes to the second nox
+        bind .pop.f.e1 <Return> {focus .pop.f.e2}
+        # a return here means load the command array
+        bind .pop.f.e2 <Return> {LoadIt}
+
+        # now get the geometry right.
+        # this is somewhat magic, but the idea is to remove it from
+        # the screen, work out where to place it and then make it
+        # visible again
+        wm withdraw .pop
+#        update idletasks
+        set xy [split [wm geom .] "+x"]
+        set x [lindex $xy 2]
+        set y [lindex $xy 3]
+        set x [expr $x + 10 ]
+        set y [expr $y + 10 ]
+        wm geom .pop "+$x+$y"
+        wm deiconify .pop
+
+        # save the old focus
+        set oldFocus [focus]
+        # stop the main window taking events, nothing can happen there until
+        # we leave from this window
+        grab .pop
+        # set the focus
+        focus .pop.f.e1
+        # wait until this top level window dies
+        tkwait window .pop
+        # when that happens reset the focus     
+        focus $oldFocus
+        # load the Command menu and resume
+        LoadCmdMenu
+	# reload so as not the see two listings 
+	LoadFile
+}
+
+# ---------------------------------------------------
+# Called from the Dismiss button, just kill the popup
+# ---------------------------------------------------
+#
+proc PopDown {} {
+        destroy .pop
+}
+
+# ------------------------------------------------------------
+# Load the cmd vector from the contents of the two entry boxes
+# and kill the popup
+# ------------------------------------------------------------
+#
+proc LoadIt {} {
+        global cmd
+
+        set c [.pop.f.e1 get]
+        set v [.pop.f.e2 get]
+        if { $c != "" && $v != "" } {
+                set cmd($c) $v
+        }
+        PopDown
+}
+
+# -----------------------------------------------------------------------------
+# This is a standard bit of code, modified to use my font
+# dialog.tcl --
+#
+# This file defines the procedure tk_dialog, which creates a dialog
+# box containing a bitmap, a message, and one or more buttons.
+#
+# $Header: /user6/ouster/wish/library/RCS/dialog.tcl,v 1.4 93/08/16 16:59:52 ouster Exp $ SPRITE (Berkeley)
+#
+# Copyright (c) 1992-1993 The Regents of the University of California.
+# All.vpeople.rights reserved.
+#
+# Permission is hereby granted, without written agreement and without
+# license or royalty fees, to use, copy, modify, and distribute this
+# software and its documentation for any purpose, provided that the
+# above cop.vpeople.right notice and the following two paragraphs appear in
+# all copies of this software.
+#
+# IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR
+# DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+# OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE UNIVERSITY OF
+# CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+# ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATION TO
+# PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+#
+
+#
+# tk_dialog:
+#
+# This procedure displays a dialog box, waits for a button in the dialog
+# to be invoked, then returns the index of the selected button.
+#
+# Arguments:
+# w -           Window to use for dialog top-level.
+# title -       Title to display in dialog's decorative frame.
+# text -        Message to display in dialog.
+# bitmap -      Bitmap to display in dialog (empty string means none).
+# default -     Index of button that is to display the default ring
+#               (-1 means none).
+# args -        One or more strings to display in buttons across the
+#               bottom of the dialog box.
+# ---------------------------------------------------------------------------
+#
+proc tk_dialog {w title text bitmap default args} {
+    global tk_priv bfont
+
+    # 1. Create the top-level window and divide it into top
+    # and bottom parts.
+    set ICONDIR /home2/isl/TclTK/images
+
+    catch {destroy $w}
+    toplevel $w -class Dialog
+    wm title $w $title
+    wm iconbitmap $w @$ICONDIR/islIcon.xbm
+    wm iconname $w {MESI}
+    frame $w.top -relief raised -bd 1 -bg navy
+    pack $w.top -side top -fill both -expand 1
+    frame $w.bot -relief raised -bd 1 -bg navy
+    pack $w.bot -side bottom -fill both -expand 1
+
+    # 2. Fill the top part with bitmap and message.
+
+    message $w.msg -width 8i -text $text
+    pack $w.msg -in $w.top -side right -expand 1 -fill both -padx 5m -pady 5m
+    if {$bitmap != ""} {
+        label $w.bitmap -bitmap $bitmap
+        pack $w.bitmap -in $w.top -side left -padx 5m -pady 5m  -expand 1
+    }
+
+    # 3. Create a row of buttons at the bottom of the dialog.
+
+    set i 0
+    foreach but $args {
+        button $w.button$i -text $but -command "set tk_priv(button) $i"
+        if {$i == $default} {
+            frame $w.default -relief sunken -bd 1 -bg linen
+            raise $w.button$i $w.default
+            pack $w.default -in $w.bot -side left -expand 1 -padx 3m -pady 2m
+            pack $w.button$i -in $w.default -padx 2m -pady 2m \
+                    -ipadx 2m -ipady 1m
+            bind $w <Return> "$w.button$i flash; set tk_priv(button) $i"
+        } else {
+            pack $w.button$i -in $w.bot -side left -expand 1 \
+                    -padx 3m -pady 3m -ipadx 2m -ipady 1m
+        }
+        incr i
+    }
+
+    # 4. Withdraw the window, then update all the geometry information
+    # so we know how big it wants to be, then center the window in the
+    # display and de-iconify it.
+
+    wm withdraw $w
+#    update idletasks
+    set x [expr [winfo screenwidth $w]/2 - [winfo reqwidth $w]/2 \
+            - [winfo vrootx [winfo parent $w]]]
+    set y [expr [winfo screenheight $w]/2 - [winfo reqheight $w]/2 \
+            - [winfo vrooty [winfo parent $w]]]
+    wm geom $w +$x+$y
+    wm deiconify $w
+
+    # 5. Set a grab and claim the focus too.
+
+#    set oldFocus [focus]
+#    grab $w
+#    focus $w
+
+    # 6. Wait for the user to respond, then restore the focus and
+    # return the index of the selected button.
+
+    tkwait variable tk_priv(button)
+    destroy $w
+#    focus $oldFocus
+    return $tk_priv(button)
+}
+
+# ==========================================================================
+#
+#                         FILESELECTION SECTION
+#
+# ==========================================================================
+#
+proc fileselection_dialog {} {
+ 
+ global global_startmode current_DefaultDir newfile_filename current_filename
+
+ set con 1
+ set types {
+  {{Log Files} {*.log} }
+  {{All Files} {*} }
+ }
+
+ set current_filename [tk_getOpenFile -title "Open new log file" -filetypes $types -initialdir $current_DefaultDir]
+ set newfile_filename $current_filename
+
+ if {$newfile_filename != ""} {
+     .t delete 1.0 end
+      set $newfile_filename [lrange $current_filename 10 end]
+     .t2 delete 1.0 end
+     .t2 insert end "You are now viewing $newfile_filename"
+      AnotherLog 
+ }
+}
+# run the Integrated ISL System and log the IO to my window and the errors 
+# from stderr.
+
+# Create a frame for buttons and entry.
+frame .top -borderwidth 0 -bg red4
+frame .topprev -borderwidth 0 -bg red4
+frame .topnext -borderwidth 0 -bg red4
+
+pack .top -side top -fill both -expand 0
+pack .topprev -side top -fill both -expand 0
+pack .topnext -side top -fill both -expand 0
+
+# Create the command buttons.
+button .top.quit -text NO 
+set but [button .top.run -text "Run MMS"  -activebackground red -command ISL ] 
+pack .top.run -side left -fill both
+
+# Log IO from STDERR
+# Run the program and arrange to read its input
+proc ISL {} {
+    global command input log but .top.run newfile_filename val09
+
+    set val09 [exec vueinfo logfile]
+    set newfile_filename $val09
+
+    if [catch {open "|$command |& cat" } input] {
+	.t insert end $input\n
+    } else {
+	fileevent $input readable Log
+	.t insert end $command\n
+	$but config -fg red -text "Stop MMS" -command	{ exec killall icsin; Stop}
+    }
+    mldata
+}
+
+# Read and log output from the program
+proc Log {} {
+    global input log newfile_filename but lskd val09
+
+    if [eof $input] {
+	Stop
+    } else {
+	gets $input line
+	if {[regexp "ERROR" $line] == 1} {
+	    .t insert end $line\n
+	    .t see end
+	    forAllMatches .t "ERROR" {
+		.t tag add big first last
+	    }
+	    .t tag configure big -background Red \
+		-foreground white -borderwidth 2 \
+		-relief sunken
+	} else {
+	    .t insert end $line\n
+	    .t see end
+	}
+    }
+}
+
+# Stop the program and fix up the button
+proc Stop {} {
+    global input but .top.run
+
+    catch {close $input}
+    $but config -text "Run MMS" -command ISL 
+}
+
+# Exit the program and kill everybody.
+proc GetOut {} {
+    global input but line w sid cid
+
+# by killing ICSIN you basically are asking ISL to terminate or 
+# killing everyone it has started......
+    catch {exec killall icsin }
+
+#    catch {exec killall islmgr }
+    catch {destroy $w}
+    exit;
+}
+
+proc mods_demos { } {
+# ISL Engineer/Astronomer/Astrophysics Support Interface
+# ==========================================================================
+#
+#                         Demo DISPLAY SECTION
+#
+# ==========================================================================
+    global bfont chgc2
+    global inscmd insparam insval selcmd selparam selval maskval looponoff msk;
+
+    if { $chgc2 == 1 } {
+	destroy .monitdemo
+	destroy .smdemo
+	destroy .agwdemo
+	destroy .dsdemo
+	destroy .mcpdemo
+	destroy .alldemo
+	destroy .internal11 
+#	destroy .internal12 
+#	destroy .internal13
+#	destroy .internal14
+
+	set chgc2 0
+    } else {
+	frame  .internal11 -width 21c -height 3c -relief flat -bg red4
+#	frame  .internal12 -width 21c -height 3c -relief flat -bg red4
+#	frame  .internal13 -width 21c -height 3c -relief flat -bg red4
+#	frame  .internal14 -width 21c -height 3c -relief flat -bg red4
+
+	pack .c -in .internal11;
+#	pack .c -in .internal12;
+#	pack .c -in .internal13;
+#	pack .c -in .internal14;
+	
+	pack .internal11 -in .m -side top -fill both -expand 0
+
+#	button .monitdemo -text "MONITOR" -background CadetBlue \
+#	    -fg white -command {exec $LIBBUT/monitor.b &}
+
+#	pack .monitdemo -in .internal11  -side left -fill both -expand 0
+
+	button .smdemo -text "SlitMask" -background CadetBlue \
+	    -fg white -command {exec $LIBBUT/sm.b &}
+
+	pack .smdemo -in .internal11  -side left -fill both -expand 0
+
+	button .agwdemo -text "AGW" -background CadetBlue \
+	    -fg white -command {exec $LIBBUT/agw.b &}
+
+	pack .agwdemo -in .internal11  -side left -fill both -expand 0
+
+	button .dsdemo -text "Darkslide" -background CadetBlue \
+	    -fg white -command {exec $LIBBUT/darkslide.b &}
+
+	pack .dsdemo -in .internal11  -side left -fill both -expand 0
+
+	button .mcpdemo -text "Mech. Positions" -background CadetBlue \
+	    -fg white -command {exec $LIBBUT/mechcp.b &}
+
+	pack .mcpdemo -in .internal11  -side left -fill both -expand 0
+
+	button .alldemo -text "ALL" -background navy \
+	    -fg white -bg CadetBlue -command {exec $LIBBUT/darkslide.b &; 
+		exec $LIBBUT/calib.b &;
+		exec $LIBBUT/agw.b &;
+		exec $LIBBUT/sm.b &;
+		exec $LIBBUT/mechcp.b &;
+		exec $LIBBUT/monitor.b &;
+	    }
+
+	pack .alldemo -in .internal11  -side left -fill both -expand 0
+
+	set chgc2 1
+    }
+}
+
+proc mods_imagetool { } {
+# ISL Engineer/Astronomer/Astrophysics Support Interface
+# ==========================================================================
+#
+#                         Demo DISPLAY SECTION
+#
+# ==========================================================================
+    global bfont chgc3 MMS
+    global inscmd insparam insval selcmd selparam selval maskval looponoff msk;
+
+    if { $chgc3 == 1 } {
+	destroy .ds09
+	destroy .internal10 
+	#	destroy .internal11 
+#	destroy .internal12 
+#	destroy .internal13
+#	destroy .internal14
+
+	set chgc3 0
+    } else {
+	frame  .internal10 -width 21c -height 3c -relief flat -bg red4
+#	frame  .internal11 -width 21c -height 3c -relief flat -bg red4
+#	frame  .internal12 -width 21c -height 3c -relief flat -bg red4
+#	frame  .internal13 -width 21c -height 3c -relief flat -bg red4
+#	frame  .internal14 -width 21c -height 3c -relief flat -bg red4
+
+	pack .c -in .internal10;
+#	pack .c -in .internal11;
+#	pack .c -in .internal12;
+#	pack .c -in .internal13;
+#	pack .c -in .internal14;
+
+#	pack .internal10 .internal11 .internal12 .internal13 \
+#	    .internal14 -in .m -side top -fill both -expand 1
+	pack .internal10 -in .m -side top -fill both -expand 0
+
+	button .ds09 -text "DS9" -backgroun navy \
+	    -fg white -command {exec ds9 &}
+
+	pack .ds09 -in .internal10  -side top -expand 0
+
+	set chgc3 1
+    }
+}
+
+# INPUT for Command Line, AGW, and SlitMask
+namespace eval history {
+    proc add? {w} {
+	variable $w
+	variable n$w
+	upvar 0 $w hist
+	set s [set ::[$w cget -textvariable]]
+	if {$s == ""} return
+	if [string compare $s [lindex $hist end]] {
+	    lappend hist $s
+	    set n$w [llength $hist]
+	}
+    }
+    proc move {w where} {
+	variable $w
+	variable n$w
+	upvar 0 $w hist
+	incr n$w $where
+	if {[set n$w]<0} {set n$w 0}
+	if {[set n$w]>=[llength $hist]+1} {
+	    set n$w [llength $hist]
+	}
+	set ::[$w cget -textvar] [lindex $hist [set n$w]]
+    }
+    proc for {type name args} {
+	switch -- $type {
+	    entry {
+		uplevel $type $name $args
+		bind $name <Up> {history::move %W -1}
+		bind $name <Down> {history::move %W 1}
+		bind $name <Next> {history::move %W 99999}
+		bind $name <Return> {history::add? %W}
+		variable $name {}
+		variable n$name 0
+	    }
+	    default {error "usage: history::for entry <w> <args>"}
+	}
+    }
+ }
+
+button .cmdinfo -bitmap @$ICONDIR/info.icon -background blue -fg white -activebackground red -command { exec vueinfo help icsinfo.___ &}
+
+button .agwinfo -bitmap @$ICONDIR/info.icon -background blue -fg white -activebackground red -command { exec vueinfo help agw.___ &}
+
+button .sminfo -bitmap @$ICONDIR/info.icon -background blue -fg white -activebackground red -command { exec vueinfo help slitmask.___ &}
+
+
+history::for entry .cmder -bg white -fg black -textvar commandval -width 65 
+history::for entry .agwcmder -bg white -fg black -textvar agwcmdval -width 18
+history::for entry .smcmder -bg white -fg black -textvar smcmdval -width 3
+history::for entry .calcmder -bg white -fg black -textvar calcmdval -width 3
+history::for entry .dscmder -bg white -fg black -textvar dscmdval -width 3
+
+# Make up
+label .cmderlab -bg grey -text "CMD\'Line:" 
+label .agwcmderlab -bg grey -text "CMD\'AGW:"
+label .smcmderlab -bg grey -text "CMD\'MASK:"
+
+set chcal 0;
+set chds 0;
+
+button .calinout -text "Calibration Tower OUT" -background blue -activebackground red -fg white -command { global chcal;
+	if { $chcal ==  1 } {
+         .calinout configure -text "Calibration Tower OUT" -background blue;
+	    # exec vueinfo islcmd2 "exec home";
+	    set chcal 0
+     } else {
+         .calinout configure -text "Calibration Tower IN " -background red;
+	    # exec vueinfo islcmd2 "exec stow";
+	    set chcal 1
+     }
+}
+
+button .dsoc -text "Darkslide CLOSED" -background blue -activebackground red -fg white -command { global chds;
+	if { $chds ==  1 } {
+         .dsoc configure -text "Darkslide CLOSED" -background blue;
+	    exec vueinfo islcmd1 "exec stow";
+	    set chds 0
+     } else {
+         .dsoc configure -text "Darkslide OPENED" -background red;
+	    exec vueinfo islcmd1 "exec home";
+	    set chds 1
+     }
+}
+pack .cmderlab .cmdinfo .cmder -in .top -side left -fill both -expand 0
+#pack .agwcmderlab .agwinfo .agwcmder -in .top -side left -fill both
+pack .smcmderlab .sminfo .smcmder -in .topnext -side left -fill both -expand 0
+pack .calinout -in .topnext -side left -fill both -expand 0
+pack .dsoc -in .topnext -side left -fill both -expand 0
+
+#pack .help .cmd .mlc .isl .islo .qc3 .qcagw -side left -fill both -expand 1
+pack .help .cmd .mlc .isl .islo .qc3 -side left -fill both -expand 1
+
+# commands
+bind .cmder <Return> {+ exec vueinfo agwcmd $commandval; string tolower $commandval; set commandval ""}
+bind .cmder <Escape> {+ exec vueinfo agwcmd "SSTP 1"; string tolower $commandval; set commandval ""}
+bind .agwcmder <Return> {+ exec vueinfo agwcmd agw=$agwcmdval; string tolower $agwcmdval; set agwcmdval ""}
+bind .smcmder <Return> {+ exec slitmask $smcmdval &; string tolower $smcmdval; set smcmdval ""}
+
+focus .cmder
+
+# monitor
+label .result1 -justify right -relief sunken -textvariable result1
+label .result2 -justify right -relief sunken -textvariable result2
+label .result4 -justify right -relief sunken -textvariable result4
+
+set result1 [exec vueinfo MPOS]
+set result2 [exec vueinfo posr]
+set result4 [exec vueinfo posa]
+
+# Monitor has been made into its own widgets that can be 
+# started from the MODS Widgets button.
+# 
+#pack .result1 -in .t -side right
+#pack .result2 -in .top -side left -padx 5
+#pack .result4 -in .top -side left
+
+proc mldata { } {
+    global result1 result2 result3 result4 result5
+
+    set result1 [exec vueinfo MPOSA]
+    set result1 [exec vueinfo MPOSB]
+    set result1 [exec vueinfo MPOSR]
+    set result2 [exec vueinfo posr]
+    set result4 [exec vueinfo posa]
+
+#    after 5000 mldata
+
+}
+
+# monitor
+#after 10 mldata
+########################################################
+#### Start ISL!!!!!
+########################################################
+#set command "isl"
+set command "isis"
+if { [exec vueinfo chksem] == "isl already running" } { 
+    .t insert end "ISIS Manager already running\n"; 
+    .t see end; 
+    .t yview end
+    exec $LIBBUT/monitor.b &;
+    exit;
+
+} else {
+    set MMS 0
+    ISL
+}

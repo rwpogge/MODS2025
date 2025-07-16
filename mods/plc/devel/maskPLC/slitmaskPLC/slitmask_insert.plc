@@ -1,0 +1,253 @@
+*/*!
+*  \file slitmask_insert.plc
+*  \brief MODS Standard and Unique Parameters PLC for AGW X axis
+*
+*  This module contains the parameters from stardardParams.plc template
+*  along with unique parameters specific for this mechanism.
+*
+*  These parameters will be loaded into the microLYNX controller
+*  by a task started by the islmgr.
+*
+*  \arg This is a PLC with AGW X axis information.
+*
+*  \author OSU/ISL Astronomy Staff. (islstaff@astronomy.ohio-state.edu)
+*  \date 2006 June 10
+**/
+*************************************
+** SlitMask System low level software
+** SLIT MASK INSERT
+** Date: July 2005
+** Author: OSU/ISL Astronomy Staff
+*************************************
+*23456789^123456789^123456789^123456789^123456789^123456789^123456789^123456789* asterisk '*' is a commented line and/or field (80 char/line).
+* vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+* single quote ' is a PLC MicroLYNX code comment.
+* Which will only be used if necessary!!!!!!! Please avoid if possible.
+* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+* For specifics on this mechanism read the /home2/isl/plc/agwxy.spc file or
+* they will be in http://www.astronomy.ohio-state.edu/MODS/Docs
+* when document is stable and proven.
+*
+** Motor Controller Settings:
+* 10 usteps/fullstep = 2000 microsteps/rev
+MSEL= 10
+*
+* (2000 usteps/rev) gives velocity and acceleration in rev/sec
+MUNIT=2000
+*
+* Acceleration Current = 50% = 3.5amps peak
+MAC = 50
+* Run Current = 1.7amps RMS*1.4 = 2.4amps peak (2.4/7 = 34%)
+MRC=30
+*
+* Hold current is zero
+MHC = 0
+*
+* hold current delay msec (for overlap with brake engagement)
+HCDT = 500
+*
+** Motion Configuration:
+*
+* Linear acceleration (default)
+ACLT = 1
+* Acceleration rate in rev/sec^2
+ACCL = 50
+* Deceleration rate in rev/sec^2
+DECL = ACCL
+* Set deceleration after a limit is asserted
+LDECL = 500
+*
+* Be aware of overtravel when seeking limits, must not decelerate hard into
+* limits.
+* Maximum Permitted Overtravel  ~0.5mm , ~0.020"
+*
+** Motion Controller I/O Connections
+*
+* POSITIVE (CW) (viewed from front of motor) limit,active low
+IOS 21 = 13,0,0
+*
+* NEGATIVE (CCW)limit, active low
+IOS 22 = 14,0,0
+*
+* NOT USED FOR NOW
+*IOS 23 =
+*IOS 24 =
+*IOS 25 =
+*
+* brake bit.
+IOS 26 = 0
+*
+*      Variable Declarations
+* Variable maybe used for converting the value given to revs.
+* Can be given by the islmgr or set here.
+VAR MMREV = 2*0.5
+*
+* Nominal operating velocity (revs/sec)
+VAR VNOM = 10.0
+* And make sure that the velocity is initialized to correct revs/sec.
+VM = VNOM
+*
+* HOME seeking velocity
+VAR VSEEK = 0.5
+*
+* Nominal Best Mechanism (revs)
+* Absolute position Science Center (revs)
+VAR TARGET = -92.0/MMREV
+*
+*VAR BACKLASH = -->> 0.2? <<--
+*
+* Maximum mechanism travel in millimeter is revs/millimeters+10%
+VAR MAXMOV = 180.0/MMREV*1.10
+*
+* PLC code version
+VAR CODEV = 0.0
+*
+* Initialize at address 100
+* Remember that nothing here needs to change unless you add a
+* different task.
+* HOME procedure to establish position datum
+PGM 100
+LBL HOME
+*
+* Set the velocity to nominal value (rev/sec)
+VM = VNOM
+*
+* Move toward home. Home is mechanism dependent (CW or CCW).
+* Home is mechanism dependent (CW or CCW). For AGW X (HOME = CW)
+MOVR MAXMOV
+*
+* If the islmgr finds that the move is commplete and a limit was not reached
+* islmgr will take control of the this PLC and do the following.
+* 1.) Send an abort to the PLC.
+* 2.) Log the position, and HOME direction (CW or CCW). example:
+*     2006.174.14:54:57.21/pos,-180.5
+*     2006.174.14:54:57.21?ERROR ML -6005 DID NOT DETECT CW SWITCH
+*     2006.174.14:54:57.21?ERROR ML -2022 OUTPUT FAULT AT DIGITAL IO LINE 22
+* If islmgr detected switch failure PLC will abort, and will not continue.
+*
+* Suspend program execution until move completion
+HOLD 2
+*
+* Log position at HOME switch assert point prior to resetting POS
+* This will be taken care of by a low level application in islmgr.
+*
+* Tentative setting of position datum
+POS = 0.0
+*
+* Set velocity to seek speed
+VM = VSEEK
+*
+* Moves away from HOME slowly to de-assert switch
+MOVR -MAXMOV
+*
+* Routine to poll for the HOME switch de-assert point
+* This mechanism makes its HOME at the CW switch
+LBL POLL
+BR SEEK, IO 22 = 0
+BR POLL
+*
+* HOME assert trip point slow seek
+LBL SEEK
+*
+* Stop what you are doing (SSTP) the motion only not the PLC.
+* Wait while logging de-assert position (DELAY) in millisecs.
+* Log de-assert position at this point. This will be taken care
+* of by a low level application in islmgr.
+SSTP 0
+DELAY = 500
+*
+* Set velocity to seek speed
+VM = VSEEK
+*
+* Move toward HOME slowly, re-assert switch
+MOVA 1
+*
+* Suspend program execution until move completion
+HOLD 2
+*
+* Set absolute position datum
+POS=0.0
+*
+* branch to exit
+BR END_IT
+*
+*
+* More code will be developed here
+*
+* Exit
+LBL END_IT
+
+MRC=30        'run current is 0.30 * 7
+*
+*      'Input & Output Configuration
+IOS 21 = 13,0,0    'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0    'NEGATIVE (CCW)limit, active low
+IOS 23=0,0,0       'SCIENCE position occupied sensor
+IOS 24=0,0,0       'STOWED position occupied sensor
+IOS 25=0,0,0       'NOT USED
+IOS 26=18,1,0      'Brake relay coil (internal pull-up switch opened)
+*                  'Output defaults to NO, Brake wired to NO contacts on relay
+*                  'Brake is applied with power off and default state of
+*                  'drive output
+*
+*      'Motion Configuration
+ACCL=50          'acceleration rate in rev/sec^2
+DECL=ACCL        'acceleration rate = deceleration rate
+LDECL=500        'set decel after a limit is asserted
+VM=5             '5 rev/sec running speed
+*
+*      'Variable Declarations
+VAR INCR = 1.8	  'revs between mask positions is 18mm
+* MicroLYNX source code
+PGM 100          'Starts at address 100
+LBL POSDATUM     'POSITION DATUM procedure:
+*
+* Initial SCIENCE seek
+VM=5             '5 rev/sec running speed
+MOVA 70,0        'move to some distance and decelerate
+HOLD 2           'suspend procedure until move is complete
+MOVR -0.5        'relative index to -0.5 position
+HOLD 2           'suspend procedure until move is complete
+VM=1.5             'reduce velocity to 1 rev/sec running speed
+MOVR 1           'relative index to 1 position
+HOLD 2           'suspend procedure until move is complete
+POS=0            'MARK position as 0th position
+PRINT "Position Datum = " POS 'prove that position is 0.00
+BR ENDIT         'branch to exit
+*
+LBL STOW         'STOW procedure: 
+VM=5             'change the velocity to 5.0 rev/sec running speed
+MOVA -62,1       'move to an absolute index of -61.1
+HOLD 0           'suspend procedure until position change is complete
+VM=1.5             'change the velocity to 2.0 rev/sec running speed
+MOVA -70         'move to an absolute index of -70
+HOLD 2           'suspend procedure until move is complete
+PRINT "STOWED Position = " POS 'show me the position
+VM=5             '5 rev/sec running speed
+BR ENDIT         'branch to exit
+*
+LBL SPOS         'Science Position procedure: 
+VM=5             'set the velocity to 5.0 rev/sec running speed
+MOVA -2,1        'move to an absolute index of -2.1
+HOLD 0           'suspend procedure until position change is complete
+* Now take it slow we want to get as close as possible
+VM=1             'reduce the velocity to 1.0 rev/sec running speed
+MOVA 1           'move to an absolute index of 1
+HOLD 2           'suspend procedure until move is complete
+MOVR -0.5        'move to relative index of -0.5
+HOLD 2           'suspend procedure until move is complete
+VM=1.5           'reduce the velocity to 1 rev/sec running speed
+MOVR 1           'move to relative index of 1
+HOLD 2           'suspend procedure until move is complete
+VM=5             '5 rev/sec running speed
+PRINT "SCIENCE Position = " POS 'are we there?
+BR ENDIT         'branch to exit
+LBL STOP         'Stop procedure
+VM=2             '2 rev/sec running speed
+SSTP 1           'stop
+PRINT "Motion has STOPPED! at Position = " POS
+VM=5             '5 rev/sec running speed
+BR ENDIT         'branch to exit
+LBL ENDIT        'EXIT
+END              'end the procedures
+PGM              'end of program in RAM 

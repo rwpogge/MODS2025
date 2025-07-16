@@ -1,0 +1,113 @@
+****************************************
+**           Camera Focus             **
+* *       low level software         * *
+*  *                                *  *
+*   *           CAMFOCR1  PLC           *   *
+*  *       Date: June  2006        *  *
+* *  Author: OSU/ISL Astronomy Staff * *
+**                                    **
+****************************************
+* asterisk '*' is a commented line and/or field.
+* single quote ' is a PLC MicroLYNX code comment.
+** Drive Motor:
+* 
+* Motor type = Size 23 step motor, 200 steps per revolution, single-ended shaft
+* Part #KML061F05  Superior Electric
+* Rated Current = 2.7 amps/phase, parallel (RMS)
+* Rated Holding Torque = 170 in*oz
+* Rated Torque at Operating Speed = 35 in*oz @ 70 volts
+*
+** Motor Controller Specifications:
+*
+* Manufacturer & Model = IMS MicroLYNX 7 (#MX-CS100-701)
+* Rated Current = 5 amps RMS/phase, 7 amps peak/phase
+* Rated Voltage = 24 to 75 VDC
+* Daughterboards = None
+*
+** Motor Controller Settings:
+*
+MSEL= 10      '10 usteps/fullstep = 2000 microsteps/rev
+MUNIT=2000    '(2000 usteps/rev) gives velocity and acceleration in rev/sec
+MAC=54        'Acceleration Current
+MRC=54        'Run Current
+MHC=0         'hold current is zero
+HCDT=500      'hold current delay msec (for overlap with brake engagement)
+*
+** Motion Configuration:
+*
+ACLT=1           'linear acceleration (default)
+ACCL=5          'acceleration rate in rev/sec^2
+DECL=ACCL        'deceleration rate in rev/sec^2
+LDECL=5        'set decel after a limit is asserted
+* Overtravel at limit = ScrewPitch * VM^2/(2*LDECL) = * 0.05mm (pitch=0.5mm and 
+* VM=1 rev/sec, LDECL=500 rev/sec^2)
+* Be aware of overtravel when seeking limits, must not decelerate hard into 
+* limits.
+* Maximum Permitted Overtravel  ~0.5mm , ~0.020"
+* VM=1.0		'travel speed
+* VM=0.5 is the travel speed for asserting limits on AGW Focus
+*
+** Motion Controller I/O Connections
+* Vpull = not used
+* GND = 24 volts
+*
+IOS 21 = 13,0,0    'POSITIVE (CW) limit,active low (viewed from front of motor)
+IOS 22 = 14,0,0    'NEGATIVE (CCW)limit, active low
+*IOS 23 = 'not used
+*IOS 24 = 'not used
+*IOS 25 = 'not used
+*IOS 26 = 'not used
+*IOS 30 =  'not used
+*
+*      Variable Declarations
+VAR NOMFOC        'Absolute position of best focus (revs)
+VAR CODEV         'PLC code version
+*
+NOMFOC = 4.0      'Nominal Best Focus
+MAXMOV = 11.0     'Maximum mechanism travel
+*
+* Initialize at address 100
+PGM 100
+LBL INITIAL	'Initialize procedure
+VM=1.0		'set the velocity to nominal value (rev/sec)
+MOVR 11.0	'move toward home
+HOLD 2          'suspend program execution until move completion
+MOVR 2.0	'move 1mm away from HOME, de-assert switch
+HOLD 2          'suspend program execution until position completion
+VM= 0.5		'move toward HOME slowly, re-assert switch
+HOLD 2		'suspend program execution until position completion
+POS=0.0		'set absolute position datum
+VM=1.0		'set the velocity to nominal value (rev/sec)
+BR END_IT       'branch to exit
+*
+LBL HOME	'HOME procedure
+VM=1.0		
+* releases brake
+IO 26=1
+MOVA 0.0        'move to an absolute index of 0.0
+HOLD 2          'suspend program execution until position completion
+DELAY 100       'wait for 100 millisec's before applying brake
+* applies brake
+IO 26=0
+BR END_IT       'branch to exit
+*
+LBL CENTER      'Science Center position 
+* releases brake
+IO 26=1
+* Science Center position is defined by SCENTR
+MOVA SCENTR     'absolute move to SCENTR 
+HOLD 2          'suspend program execution until position completion
+*
+DELAY 100       'wait for 100 millisec's before applying brake
+* applies brake
+IO 26=0
+*
+BR END_IT         'branch to exit
+LBL END_IT       'Exit
+*
+* More code will be developed here.
+*         Maybe?
+*               
+************************************
+END              'end the procedures
+PGM              'end of program in RAM 

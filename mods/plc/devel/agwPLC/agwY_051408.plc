@@ -1,0 +1,292 @@
+/*!
+  \mainpage agwY.plc - AGW Y PLC program
+
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2006 Jul 20
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system
+	 or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+	Small command set the key words are -
+	initial: Initialize AGW Y (move to CW or CCW and set pos=0.000)
+	home: Send to position 0.000
+	stow: Send to oposite of home.
+	stop: Stop all mechanism movement
+	subroutines:
+		relbrk: Release break
+		setbrk: Set break
+
+	All Motion Parameters are documented in the MicroLYNX Part III 
+	Software Reference.
+
+<pre>
+2005 Jul 20 - new application [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file agwY.plc
+  \brief Small command set for AGW Y mechanisms
+*/
+/** END HEADER **/
+* START loading PLC
+'Motion Configuration
+MSEL=10
+MUNIT=2000
+MAC=50
+MRC=34
+MHC=0
+HCDT=500
+ACLT=1
+ACCL=50		'acceleration rate in rev/sec^2
+DECL=ACCL	'acceleration rate = deceleration rate
+LDECL=500	'set decel after a limit is asserted
+'
+' Input & Output Configuration
+IOS 21=13,0,0	'POSITIVE (CW) limit,active low,
+IOS 22=14,0,0	'NEGATIVE (CCW)limit, active low
+IOS 23=0,0,0	'SCIENCE position occupied sensor
+'IOS 26=0,1,0	'Brake relay coil (internal pull-up switch opened)
+IOS 26=18,1,0	'Brake relay coil (internal pull-up switch opened)
+		'Output defaults to NO, Brake wired to NO contacts on relay
+		'Brake is applied with power off and default state of
+		'drive output
+' Variable Declarations
+' VAR INCR=1.8	'revs between mask positions is 18mm
+VAR VNORM=10.0   
+VM=VNORM	'5 rev/sec running speed
+VAR VSEEK=0.9
+VAR IOBITS      'IO bits 21 and 22.
+'VAR BACKLASH = -->> 0.2? <<--
+VAR YPOS 	'Y Stage position value
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'	        STARTUP MODE
+' PLC starts at address #100
+'
+PGM 100          'Starts at address 100
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		INITIAL(initializing) and HOME PROCEDURES
+' HOME and INITIAL are identical
+'
+LBL INITIAL
+IOBITS=IO 21+IO 22  'Get io bits 21 and 22 information
+BR BITERR, IOBITS=2 'Check io bits 21 and 22 (both ON not allowed)
+'call relbrk
+VM=VNORM
+SLEW VNORM,0	'slew to to set position 0.000
+HOLD 2		'suspend procedure until move is complete
+POS=0.000	'set position to Zero (0.000) again with enough resolution
+VM=VSEEK	'set the speed for sneeking up.
+MOVA -0.5	'move to an absolute index of -0.500
+HOLD 2		'suspend procedure until move is complete
+SLEW VSEEK,0	'finetune the home position (position 0.000)
+HOLD 2		'suspend procedure until move is complete
+VM=VNORM	'reset the speed to normal speed.
+POS=0.000	'set position to Zero (0.000) again with enough resolution
+DELAY 100
+'call setbrk
+BR END_IT         'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		HOME(0.0 position) PROCEDURE
+' HOME position is at the opposite end of HOME.  
+'
+LBL HOME
+IOBITS=IO 21+IO 22  'Get io bits 21 and 22 information
+BR BITERR, IOBITS=2 'Check io bits 21 and 22 (both ON not allowed)
+BR SETPOS,IO 21=1
+'call relbrk
+VM=VNORM
+MOVA 0.0	'slew to to set position 0.000
+DELAY 100
+BR END_IT
+' Already in position
+LBL SETPOS
+POS=0.0
+DELAY 100
+'call setbrk
+BR END_IT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STOW(park) PROCEDURE
+' STOW position is at the opposite end of HOME.  
+'
+LBL STOW
+IOBITS=IO 21+IO 22  'Get io bits 21 and 22 information
+BR BITERR, IOBITS=2 'Check io bits 21 and 22 (both ON not allowed)
+'call relbrk
+VM=VNORM
+SLEW -VNORM,0	'slew to STOW position (opposite of HOME). 
+HOLD 2		'suspend procedure until move is complete
+VM=VSEEK	'set the speed for sneeking up.
+MOVA POS+0.500	'move to a relative index of 0.500
+HOLD 2		'suspend procedure until move is complete
+SLEW -VSEEK,0   'finetune the stow position
+HOLD 2		'suspend procedure until move is complete
+VM=VNORM	'reset the speed to normal speed.
+DELAY 100
+'call setbrk
+BR END_IT	'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		MOVETARG PROCEDURE
+' MOVE Y Stage
+'
+LBL MOVETARG
+'call relbrk
+MOVA YPOS
+'HOLD 2
+'call setbrk
+BR END_IT	'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STOP(halt) PROCEDURE
+' STOP all motion and end this function
+'
+LBL STOP
+SSTP 1 		'stop procedure
+DELAY 500
+BR END_IT	'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		RELeaseBRaKe PROCEDURE
+' Subroutine to release the brake.
+'
+LBL RELBRK
+IO 26=1
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		SETBRaKe PROCEDURE
+' Subroutine to set the brake.
+'
+LBL SETBRK
+IO 26=0
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                BITERR(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+'
+LBL BITERR
+PRINT "Bits 21(ON)=",IO 21," and 22(ON)=",IO 22," not allowed"
+'reset iobits
+IOBITS=0
+DELAY 100
+BR END_IT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_IT(exit) PROCEDURE
+' EXIT the PLC routine
+'
+LBL END_IT       'Exit
+DELAY 100
+END              'end the procedures
+PGM              'end of program in RAM 
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''' NEW PLC PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+'
+PGM 6000
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+PRINT "agwy"
+DELAY 100
+BR END_PLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+PRINT POS
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKMVG PROCEDURE check moving status
+'
+LBL CHKMVG
+PRINT MVG
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+PRINT "codeV=0.1(5/12/06)",":HW",VER
+DELAY 100
+BR END_PLC      'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO30 PROCEDURE for bits 36 - 31
+' Check IO 30 bits
+'
+LBL IO30
+PRINT IO 36,IO 35,IO 34,IO 33,IO 32,IO 31
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		UserIO20 PROCEDURE
+' Subroutine to set IOS 20 for USER release of brake.
+'
+LBL UIO20
+PRINT "Change IO 20 back by typing HWIO20
+IOS 26=0,1,0	'Brake relay coil (internal pull-up switch opened)
+BR END_PLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		HardWareIO20 PROCEDURE
+' Subroutine to reset IOS 20 normal by the hardware release of brake.
+'
+LBL HWIO20
+IOS 26=18,1,0	'Brake relay coil (internal pull-up switch opened)
+		'Output defaults to NO, Brake wired to NO contacts on relay
+		'Brake is applied with power off and default state of
+		'drive output
+BR END_IT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC		
+DELAY 100
+END 
+PGM
+
+

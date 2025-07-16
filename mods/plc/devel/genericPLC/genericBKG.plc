@@ -1,0 +1,168 @@
+/*!
+  \mainpage Generic.plc - Generic PLC program
+
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2007 Feb 02
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system.
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+	Small command set the key words are -
+	initial: Initialize Generic (move to CW or CCW and set 
+					     pos=0.000)
+	home: Send open to position 0.000
+	stow: Send close position oposite of home.
+	stop: Stop all mechanism movement
+	relbrk: Release break
+	setbrk: Set break
+
+	All Motion Parameters are documented in the MicroLYNX Part III 
+	Software Reference.
+
+<pre>
+2007 Feb 02 - new application [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file Generic.plc
+  \brief Small command set for a mechanisms
+*/
+/** END HEADER **/
+' Start here with PLC code
+' Motion Configuration
+MSEL= 10
+MUNIT=2000
+MAC = 50
+MRC=34
+MHC = 0
+HCDT = 500
+ACLT = 1
+ACCL=50		'acceleration rate in rev/sec^2
+DECL=ACCL	'acceleration rate = deceleration rate
+LDECL=500	'set decel after a limit is asserted
+
+' Input & Output Configuration
+IOS 21 = 13,0,0	'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0	'NEGATIVE (CCW)limit, active low
+IOS 26=0	'Brake relay coil (internal pull-up switch opened)
+		'Output defaults to NO, Brake wired to NO contacts on relay
+		'Brake is applied with power off and default state of
+		'drive output
+' Variable Declarations
+VAR VNORM=10.0   
+VM=VNORM	'5 rev/sec running speed
+VAR VSEEK=0.5
+'VAR BACKLASH = -->> 0.2? <<--
+VAR CODEV=-1.0	'version of this PLC code
+VAR LPLC=0
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               'STARTUP MODE
+'               'PLC starts at address #100
+'
+PGM 100
+LBL LOOPPLC
+ DELAY 1000
+' input the command
+ INPUT LPLC,1
+ CALL INITIAL, LPLC=1
+ CALL HOME, LPLC=1
+ CALL STOW, LPLC=2
+ CALL STOP, LPLC=20
+ CALL RELBRK, LPLC=21
+ CALL SETBRK, LPLC=22
+ CALL PRI, LPLC=23
+ CALL END_IT, LPLC=33
+BR LOOPPLC, LPLC=0
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               INITIAL(initializing) and HOME PROCEDURES
+' INITIALize mechanism
+'
+LBL INITIAL
+LBL HOME
+LBL LOOP1
+ DELAY 1000
+ PRINT "HERE AT INITIALIZE: " POS
+ BR STOP, LPLC=20
+ BR LOOP1
+ LPLC=0
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               PRInt PROCEDURE
+' Print position
+'
+LBL PRI
+ PRINT "MicroLynx Version: ",VER," ",SER," Here at position: ", POS
+ LPLC=0
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               STOW(park) PROCEDURE
+' STOW position is at the opposite end of HOME.
+'
+LBL STOW
+ LBL LOOP2
+  DELAY 1000
+  PRINT "HERE AT STOW: " POS
+  BR STOP, LPLC=20
+ BR LOOP2
+ LPLC=0
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' 		STOP PROCEDURE
+' Halt the sub-task but not the task
+LBL STOP
+ SSTP 0		'stop procedure
+ PRINT "Program halt and gone to beginning",
+ LPLC=0
+BR LOOPPLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			RELeaseBRaKe PROCEDURE
+' Release the mechanism brake
+LBL RELBRK
+ IO 26=1
+ PRINT "HERE AT RELBRK: ", POS
+ LPLC=0
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			SETBReaK PROCEDURE
+' Set the mechanism brake
+LBL SETBRK
+ IO 26=0
+ PRINT "HERE AT SETBRK: ", POS
+ LPLC=0
+RET 
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			CHecKER Monitor movement
+' Check for mechanism movement
+LBL CHKER
+ PRINT "HERE AT CHKER: ", POS
+ BR CHKER, MVG=1 	'monitor movement
+ CALL STOP, LPLC=20 	'monitor movement
+ LPLC=0
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			END_IT(exit) PROCEDURE
+' Exit the Task
+LBL END_IT	'Exit
+ LPLC=0
+ PRINT "Task has stopped. Task must be started again"
+END		'end the procedures
+PGM		'end of program in RAM 

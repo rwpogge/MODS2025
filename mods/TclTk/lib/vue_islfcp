@@ -1,0 +1,37 @@
+#!/usr/bin/wish
+
+set IMGPATH /home/dts/mods/TclTK/images
+set BINPATH /home/dts/mods/TclTK/bin
+
+set bfont {-*-arial-medium-r-*-sans-18-*-*-*-*-*-*-*}
+
+#wm overrideredirect . 1
+wm resizable . 0 0
+wm geometry . -0+0
+
+frame .internal1 \
+        -bg {red4} \
+        -borderwidth {1} \
+        -relief {sunken} 
+
+image create photo osuvue -file "$IMGPATH/osu_logo2.gif"
+
+# Default PC.
+set who "Baggins"
+
+label .sendLog -text "Who's PC" -background red4 -fg white
+entry .whoEnt -textvariable who -font $bfont -relief flat -bg white -width 20
+bind .whoEnt <Return> $who
+
+#button .osu -text "Send to who's PC"
+button .osu -text "PC" \
+-relief {raise} -background red4 -fg white \
+    -command { exec xterm -e smbclient "\\\\$who\\SharedDocs" &}
+button .q -text "Exit" \
+-relief {raise} -background red -fg white -command exit 
+label .image -image osuvue -bg red4 -width 50 -height 50
+
+pack .internal1 -side left
+pack .image -in .internal1 -side left  -padx 10 -expand 0
+pack .q .osu .whoEnt -in .internal1 -side left -expand 0
+

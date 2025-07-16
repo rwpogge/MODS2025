@@ -1,0 +1,321 @@
+/*!
+  \mainpage maskI.plc - Mask Insert PLC program
+
+  \author Staff, OSU Astronomy Dept. (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2005 Jul 20
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system
+	 or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+    	Small command set the key words are -
+	initial: Initialize the Mask Insert to position 0.000
+	home: Send mask to Science Position 0.000
+	stow: Stow the mask into the magazine chamber
+	offset: move mask Insert to a relative position
+	stop: Stop all mechanism movement
+	relbrk: Release break
+	setbrk: Set break
+
+	All Motion Parameters are documented in the MicroLYNX Part III 
+	Software Reference.
+
+<pre>
+2005 Jul 20 - new application [rdg/to]
+2006 Nov 01 - added home,initial,stow,offset,set,stop,relbrk,setbrk [rdg]
+2008 Apr 09 - fixed offset [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file maskI.plc
+  \brief Small command set for Mask Insert mechanism
+*/
+/** END HEADER **/
+'Start here with PLC code
+'Motion Configuration
+MSEL= 10
+MUNIT=2000
+MAC = 60
+MRC=42
+MHC = 0
+HCDT = 500
+ACLT = 1
+ACCL=50         'acceleration rate in rev/sec^2
+DECL=ACCL       'acceleration rate = deceleration rate
+LDECL=500       'set decel after a limit is asserted
+'
+'Input & Output Configuration
+IOS 21 = 13,0,0 'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0 'NEGATIVE (CCW)limit, active low
+IOS 23=0,0,0    'SCIENCE position occupied sensor
+IOS 24=0,0,0    'STOWED position occupied sensor
+'IOS 25=0,0,0    'NOT USED
+IOS 26=18,1,0   'Brake relay coil (internal pull-up switch opened)
+                'Output defaults to NO, Brake wired to NO contacts
+                'on relay Brake is applied with power off and 
+                'default state of drive output
+'Variable Declarations
+VAR VNORM=5.0
+VM=VNORM        '5 rev/sec running speed
+VAR HPOS        'position for higher level task.
+VAR TIMECNT     'time counter.
+VAR VALO        'Relative move value for the Insert mechanism
+VAR VSEEK=0.5
+'VAR BACKLASH = -->> 0.2? <<--
+VAR IOBITS	'IO bits 21 and 22.
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'	        STARTUP MODE
+' PLC starts at address #100
+'
+PGM 100
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		INITIAL(initializing) and HOME PROCEDURES
+' HOME and INITIAL are identical
+'
+LBL INITIAL
+LBL HOME
+IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+BR END_IT, IO 24=1 'Magazine Chamber Occupied
+TIMECNT=0
+SLEW VNORM,0    'slew to set position 0.000
+'
+DELAY 200
+CALL CHK_IT, MVG=TRUE
+POS=0.000       'set position to Zero (0.000) again with 
+                'enough resolution
+VM=VSEEK	'set the speed for sneeking up.
+MOVA -0.5	'move to an absolute index of -0.500
+HOLD 2		'suspend procedure until move is complete
+SLEW VSEEK,0	'finetune the home position (position 0.000)
+DELAY 200
+'
+TIMECNT=0
+CALL CHK_IT, MVG=TRUE
+'HOLD 2		'suspend procedure until move is complete
+VM=VNORM	'reset the speed to normal speed.
+POS=0.000	'set position to Zero (0.000) again with 
+                'enough resolution
+BR END_IT       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                        STOW(park) PROCEDURE
+' stow cassette
+'
+LBL STOW
+IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+TIMECNT=0
+BR JUMP1, IO 23=1 'Science Position Occupied
+BR JUMP1, IO 24=0 'Science Position Occupied
+VM=VNORM	'reset the speed to normal speed.
+BR END_IT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			OFFSET PROCEDURE
+' send mask carriage to an offset position
+'
+LBL OFFSET
+IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+TIMECNT=0
+VM=VNORM	    'reset the speed to normal speed.
+MOVR VALO
+BR END_IT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       JUMP1 PROCEDURE
+' move mask to magazine chamber
+'
+LBL JUMP1
+IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+BR JUMPO, IO 24=1 'Magazine Location Occupied
+SLEW -VNORM,0   'slew to STOW position (opposite of INITIAL)
+'
+DELAY 200
+CALL CHK_IT, MVG=TRUE
+'VM=VNORM	'reset the speed to normal speed.
+'BR INITIAL, TIMECNT<15  '15 secs.
+'TIMECNT=0
+VM=VSEEK	'set the speed for sneeking up.
+MOVA POS+0.500	'move to a relative index of 0.500
+HOLD 2		'suspend procedure until move is complete
+SLEW -VSEEK,0   'finetune the stow position
+HOLD 2		'suspend procedure until move is complete
+VM=VNORM	'reset the speed to normal speed.
+BR END_IT	'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       JUMPOccupied PROCEDURE
+' lets us know if the magazine location is occupied
+'
+LBL JUMPO
+PRINT "Magazine Chamber Occupied! check sensor/cable/mask\g" 
+VM=VNORM	'reset the speed to normal speed.
+BR END_IT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       RELeaseBRaKe PROCEDURE
+' release the brake
+'
+LBL RELBRK
+IO 26=1
+VM=VNORM	'reset the speed to normal speed.
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       SETBRaKe PROCEDURE
+' set the brake
+'
+LBL SETBRK
+IO 26=0
+VM=VNORM	'reset the speed to normal speed.
+RET 
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       PRIMEP PROCEDURE
+' are we there yet?
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL PRIMEP
+print "already initialize or in Science Position
+RET 
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       CHecK_IT PROCEDURE
+' check the time and moving bit
+'
+LBL CHK_IT
+DELAY 1000       'Give it time to arrive and settle
+INC TIMECNT
+BR STOP, TIMECNT>20  '20 secs.
+BR CHK_IT, MVG=TRUE
+VM=VNORM	'reset the speed to normal speed.
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       STOP(halt) PROCEDURE
+' STOP the PLC task
+'
+LBL STOP
+SSTP 1 		'stop procedure
+DELAY 500
+VM=VNORM	'reset the speed to normal speed.
+BR END_IT	'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		BITERR(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+'
+LBL BITERR
+PRINT "Bits 21(ON)=",IO 21," and 22(ON)=",IO 22," not allowed"
+'reset iobits
+IOBITS=0
+VM=VNORM	'reset the speed to normal speed.
+BR END_IT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		BITERR2(io 21 error) PROCEDURE
+' BITERR2 bit 21 is on
+'
+LBL BITERR2
+PRINT "Bits 21(ON)=",IO 21," CW limit try going the other direction "
+VM=VNORM	'reset the speed to normal speed.
+BR END_IT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_IT(exit) PROCEDURE
+' EXIT the PLC routine
+'
+LBL END_IT       'Exit
+VM=VNORM	'reset the speed to normal speed.
+END              'end the procedures
+PGM              'end of program in RAM 
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''' NEW PLC PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+'
+PGM 6000
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+PRINT "maskI"
+VM=VNORM	'reset the speed to normal speed.
+BR END_PLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                MASK PROCEDURE for bits 26 - 21
+'
+LBL I20BITS
+PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+PRINT POS
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKMVG PROCEDURE check moving status
+'
+LBL CHKMVG
+PRINT MVG
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+PRINT "codeV=0.1(12/18/07)",":HW",VER
+BR END_PLC      'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO30 PROCEDURE for bits 36 - 31
+' Check IO 30 bits
+'
+LBL IO30
+PRINT IO 36,IO 35,IO 34,IO 33,IO 32,IO 31
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ENDIT PROCEDURE
+'End of the line
+'
+LBL END_PLC		
+VM=VNORM	'reset the speed to normal speed.
+END 'END of ISL PLC code
+PGM

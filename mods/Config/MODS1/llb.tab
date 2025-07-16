@@ -1,0 +1,14 @@
+#
+# MODS1 Calibration Lamp/Laser Control Box (LLB) Configuration
+#
+# Last Update: 2010 Sept 19 [rwp/osu]
+#
+
+# IR Laser Preset Power [mW]
+
+IRPRESET 1.0
+
+# Visible Laser Preset Power [mW]
+
+VISPRESET 0.5
+

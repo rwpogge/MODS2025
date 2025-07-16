@@ -1,0 +1,101 @@
+#
+# MODS1 Red Channel Preset Configurations
+# 2012-09-24 [rwp/osu]
+# 2013-09-04 [opk/lbto] averages of 3 back-to-back sets of TTF positions
+# 2014-08-30 [opk/lbto] 2 back-to-back sets of TTF positions taken, 
+#            maximum deviation 5 microns, adopting values from the first set.
+# 2015-09-07 [opk/lbto] median of 3 back-to-back sets of TTF positions
+# Measured: 2016 Oct 8 post-installation of recoated red collimator
+#           R. Pogge [OSU]
+# 2016-10-08 [rwp/osu] post-recoating of red collimator mirror
+# 2017-10-28 [opk/lbto] 2017B startup from summer shutdown
+# Updated:  2017 Nov 21 updated red dual imaging focus from 1200 to 1160 mic [opk/lbto]
+# 2018-09-12 [opk/lbto] 2018B startup from summer shutdown
+# 2019-01-25 remeasured IMCS TTFs after MODS1 was re-mounted following the PEPSIPOL run [opk/lbto]
+# 2019-05-21 [JP/lbto] reran imcsTTFs after remount post PEPSIPOL run
+# 2019-05-21 [JP/lbto] reran imcsTTFs after remount post PEPSIPOL run
+# 2019-09-03 [OPK/lbto] reran imcsTTFs after remount post summer shutdown
+# 2020-10-20 [OPK/lbto] updated mods1r dual grating focus from 1650 to 1600 mic
+# 2020-10-20 [OPK/lbto] updated mods1r red grating focus from 1650 to 1620 mic
+# 2020-12-23 [OPK/lbto] reran imcsTTFs after remount post PEPSIPOL run 
+# 2021-05-28 [OPK/lbto] Measured imcsTTFs after remount post PEPSIPOL run 
+# 2021-09-16 [OPK/lbto] Adjusted focus for redgrating (1620->1650)
+# 2022-01-23 [OPK/lbto] reran imcsTTFs after remount post PEPSIPOL run 
+# 2022-09-22 [OPK/lbto] reran imcsTTFs after remount post SSD
+# 2022-12-08 [OPK/lbto] reran imcsTTFs after remount post PEPSI-POL run
+# 2022-12-15 [OPK/lbto] Checked focus near center of detector: updated Im 1200->1265 DIm 1160->1210
+# 2022-12-17 [OPK/lbto] reran imcsTTFs after focus adjustments 
+# 2023-09-02 [OPK/lbto] reran imcsTTFs after remount post SSD 
+# 2023-09-03 JP/OK updated the Dual Imaging from 1210 -> 1145
+# 2023-09-03 JP/OK updated direct Imaging from 1295 to 1220
+# 2023-12-08 [opk/lbto] measured; updated on 2024-01-08 
+# 2024-01-10 [opk/lbto] updated dual im focus +120 mic (1145->1265) 
+# 2024-01-12 [opk/lbto] updated red im focus +120 mic (1220->1350)
+# 2024-01-12 [opk/lbto] updated red dual gr focus +30 mic (1600->1630) 
+# 2024-01-12 [opk/lbto] updated red dir gr focus +30 mic (1650->1680) 
+# 2024-02-02 [opk/lbto] remeasured TTF ZPs after focus changes 
+# 2024-08-24 [opk/lbto] remeasured TTF ZPs after instrument remounting
+# 2024-09-02 [opk/lbto] changed DImg focus to 1235 based on measurements made on 2024-09-02. 
+# 2024-10-23 [opk/lbto] remeasured TTF ZPs after instrument remounting
+# 2024-12-02 [opk/lbto] changed red im focus by -100 mic (1350->1250)
+# 2024-12-02 [opk/lbto] changed red gr focus by -20 mic (1680->1660)
+# 2024-12-02 [opk/lbto] changed dual im focus by -20 mic (1235->1215)
+# 2024-12-05 [opk/lbto] remeasured TTF ZPs after large red im focus change
+#
+# Config for MODS1 with LBT oriented at El=60deg, rotAngle=207
+# (PA=0 on the meridian) on the Left Direct Gregorian rotator
+#
+# Format: 
+#  name grating filter cfoc ttfA ttfB ttfC ccdroi xbin ybin xover yover speed
+#
+# where:
+#  grating  = grating name (Flat, G670L, etc.)
+#  filter   = filter name or "Any" to keep filter unchanged
+#  camfoc   = camera focus in microns
+#  ttfa,b,c = nominal collimator TTF actuator position
+#  roi      = CCD readout region of interest or "Full" for full-frame
+#  xbin     = CCD x-axis (disp) binning factor [one of 1,2,4,8]
+#  ybin     = CCD y-axis (slit) binning factor [one of 1,2,4,8]
+#  speed    = CCD readout speed: fast or slow
+#
+# Configuration names must not contain spaces, and are ideally 8
+# characters or less.  The names Imaging, Grating, Prism, and Acquire
+# are RESERVED names for special preset modes implemented as buttons
+# on the MODS dashboard for the blue channel.  All presets, however,
+# (including the 4 reserved names) are available at the command line
+# or via scripts using the "RED CONFIG configName" command.
+#
+# The grating, filter, and ROI selections for a configuration may be
+# either the numbered device position (for filter and grating) or a
+# name.  If a name, it must be exactly as it appears in the respective
+# device table (rgrating.tab, rfilter.tab, and ccdroi.tab).  If "Any"
+# appears as a grating, filter, or ROI name it means to leave that
+# setup unchanged when setting the mode.  Full-frame CCD readout is
+# specified with the word "Full".
+#
+# The collimator TTF actuator positions are defined for each of the
+# various modes, measured after finalizing the alignment of the
+# dispersers.  For the grating modes, the TTF positions are for the
+# primary grating position as listed in the corresponding rgrtiltN.tab
+# file.  Acquire mode should have the same TTFs as Imaging mode.
+#
+# Custom configuration entries should come *AFTER* the 4 reserved
+# configurations.  If you comment out a reserved configuration you
+# effectively disable the correspondng GUI button
+#
+# name grating filter cfoc ttfA ttfB ttfC ccdroi xbin ybin xover yover speed
+#
+#
+# Direct-Mode Presets
+#
+Imaging  Flat    Any    1250 16189 14697 12520 3Kx3K  1 1 0 0 Slow
+Grating  G670L   GG495  1660 16241 14735 12435 Full   1 1 0 0 Slow
+Prism    P700L   GG495  1550 16175 14763 12480 4Kx3K  1 1 0 0 Slow
+Acquire  Flat    r_sdss 1265 16177 14709 12521 3Kx3K  2 2 0 0 Fast
+#
+# Dual-Mode Presets
+#
+DImaging Flat    Any    1215 16136 14725 12540 3Kx3K  1 1 0 0 Slow
+DGrating G670L   Clear  1630 16182 14757 12463 Full   1 1 0 0 Slow
+DPrism   P700L   GG495  1550 15783 14464 12169 4Kx3K  1 1 0 0 Slow
+DAcquire Flat    r_sdss 1210 16135 14732 12534 3Kx3K  2 2 0 0 Fast

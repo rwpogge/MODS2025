@@ -1,0 +1,151 @@
+/*!
+  \mainpage maskI.plc - Mask Insert PLC program
+
+  \author Staff, OSU Astronomy Dept. (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2005 Jul 20
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system
+	 or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+    	Small command set the key words are -
+	initial: Initialize the Mask Insert to position 0.000
+	home: Send magazine position to Science Position 0.000
+	stow: Stow the mask
+	offset: move mask Insert to a relative position
+	set: move mask Insert to an absolute position
+	stop: Stop all mechanism movement
+	relbrk: Release break
+	setbrk: Set break
+
+	All Motion Parameters are documented in the MicroLYNX Part III 
+	Software Reference.
+
+<pre>
+2005 Jul 20 - new application [rdg/to]
+2006 Nov 01 - added home,initial,stow,offset,set,stop,relbrk,setbrk [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file maskI.plc
+  \brief Small command set for Mask Insert mechanism
+*/
+/** END COMMENT **/
+* Start here with PLC code
+*	'Motion Configuration
+MSEL= 10
+MUNIT=2000
+MAC = 60
+MRC=42
+MHC = 0
+HCDT = 500
+ACLT = 1
+ACCL=50		'acceleration rate in rev/sec^2
+DECL=ACCL	'acceleration rate = deceleration rate
+LDECL=500	'set decel after a limit is asserted
+* Input & Output Configuration
+IOS 21 = 13,0,0	'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0	'NEGATIVE (CCW)limit, active low
+IOS 23=0,0,0	'SCIENCE position occupied sensor
+IOS 24=0,0,0	'STOWED position occupied sensor
+IOS 25=0,0,0	'NOT USED
+IOS 26=18,1,0	'Brake relay coil (internal pull-up switch opened)
+*		'Output defaults to NO, Brake wired to NO contacts on relay
+*		'Brake is applied with power off and default state of
+*		'drive output
+* Variable Declarations
+VAR INCR = 1.8	'revs between mask positions is 18mm
+VAR VNORM = 5.0   
+VM = VNORM	'5 rev/sec running speed
+VAR VSEEK = 0.5
+*VAR BACKLASH = -->> 0.2? <<--
+VAR CODEV = 0.0
+
+* MicroLYNX source code
+PGM 100          'Starts at address 100
+LBL INITIAL
+*LBL POSDATUM     'POSITION DATUM procedure:
+*
+* Initial SCIENCE seek, what is known to be the HOME position.
+SLEW VNORM,0	'slew to to set position 0.000
+HOLD 2		'suspend procedure until move is complete
+POS=0.000	'set position to Zero (0.000) again with enough resolution
+VM=VSEEK	'set the speed for sneeking up.
+MOVA -0.5	'move to an absolute index of -0.500
+HOLD 2		'suspend procedure until move is complete
+SLEW VSEEK,0	'finetune the home position (position 0.000)
+HOLD 2		'suspend procedure until move is complete
+VM=VNORM	'reset the speed to normal speed.
+POS=0.000	'set position to Zero (0.000) again with enough resolution
+BR END_IT         'branch to exit
+*
+LBL STOW         'STOW procedure: 
+SLEW -VNORM,0	'slew to STOW position (opposite of HOME). 
+HOLD 2		'suspend procedure until move is complete
+VM=VSEEK	'set the speed for sneeking up.
+MOVA POS+0.500	'move to a relative index of 0.500
+HOLD 2		'suspend procedure until move is complete
+SLEW -VSEEK,0   'finetune the stow position
+HOLD 2		'suspend procedure until move is complete
+VM=VNORM	'reset the speed to normal speed.
+BR END_IT	'branch to exit
+*
+LBL HOME	'Science Position procedure: 
+*LBL POSDATUM   'O'brien Label 'POSITION DATUM procedure:
+*
+* Initial SCIENCE seek, what is known to be the HOME position.
+MOVA -0.5	'move to an absolute index of -0.5
+HOLD 2 		'suspend procedure until position change is complete
+VM=VSEEK	'set the speed for sneeking up.
+MOVA 0.000	'move to an absolute index of 0.000
+HOLD 2		'suspend procedure until move is complete
+VM=VNORM
+BR END_IT	'branch to exit
+*
+*
+*			STOP PROCEDURE
+*
+LBL STOP	'Stop procedure
+* if bit 23 is set, prohibit magazine movement.
+BR END_IT,IO 23=1
+*
+SSTP 1 		'stop
+* set brake
+IO 26=0
+BR END_IT	'branch to exit
+*
+*			RELEASE BREAK PROCEDURE
+*
+LBL RELBRK	'Stop procedure
+* if bit 23 is set, prohibit magazine movement.
+*BR END_IT,IO 23=1
+*
+* set brake
+IO 26=1
+BR END_IT	'branch to exit
+*
+*			SET BREAK PROCEDURE
+*
+LBL SETBRK	'Stop procedure
+* if bit 23 is set, prohibit magazine movement.
+* BR END_IT,IO 23=1
+*
+* set brake
+IO 26=0
+BR END_IT	'branch to exit
+*
+* Here is where all procedures end up.
+*
+LBL END_IT       'Exit
+END              'end the procedures
+PGM              'end of program in RAM 

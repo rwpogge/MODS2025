@@ -1,0 +1,21 @@
+/** END HEADER **/
+'Start the timer with command - run timer.
+VAR NHr=0       'Number of Hours
+VAR THr=0       'Tick Hours
+VAR TMin=0      'Tick Minutes
+VAR TSec=0      'Tick Seconds
+VAR TMilli=0    'Tick Seconds
+VAR TRate=1000.0 'Clock Rate 1000 millisec.
+'
+' Start the timer with command - run timer.
+' Code for Timer
+PGM 6000
+LBL MTIMER
+DELAY TRate
+INC TSec
+BR MTIMER
+'
+'END Stop with command - sspt 1,timer
+END
+PGM
+

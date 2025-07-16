@@ -1,0 +1,74 @@
+'******** Parameter Setup ********
+
+
+MUNIT  =  51200  'One inch per rev @ 1/256 microstepping
+VI  =  0.500     'Base speed 1/2" per rev
+ACCL = 50
+DECL = 50
+
+IOS 21 = 9,0,0	'IO 21 is Start Input
+IOS 22 = 10,0,0	'IO 22 is Stop Input
+IOS 23 = 0,0,0	'IO 23 is Material Sensor
+IOS 16 = 0,0,1  'Differential IO point configured as registration
+		'sensor input.
+IOF 10 = 0	'Give IO Group 10 highest speed response - 100ns
+IOS 31 = 0,1,0	'Cutter output:  GP, output, low true
+
+
+VAR Speed
+VAR Feedlth
+VAR Matsens = 23
+VAR Cutter = 31
+VAR TargetCt	 'Number of parts to make
+VAR Count = 0    'Running total
+
+'******** Program ********
+
+PGM     1
+LBL  REGISTER
+   IT1  =  16 , MARK   'Configure registration sensor 
+		       'input trip routine
+
+
+LBL Enterspd
+   PRINT "Enter feed speed (in/sec) ";
+   INPUT Speed
+
+
+LBL Getdist
+   PRINT "Enter feed distance (in) ";
+   INPUT Feedlth
+ 
+
+LBL Getcount
+   PRINT "Enter Batch Count ";
+   INPUT Targetct
+
+
+LBL  CRUISE
+   BR Webdone, !IO Matsens  'Go to end if out of material
+   ITE1 = 1		    'Enable input trip routine
+   SLEW Speed		    'Accelerate web up to speed.
+LBL  IDLER
+   BR IDLER, MVG	'Wait for trip routine to complete
+						'execution 
+ 
+   BR CRUISE, Count < Targetct	'Execute as long as this condition
+				'is true
+   PRINT "Batch Completed"
+   PRINT "Parts Made ", Count
+
+LBL Webdone
+   END       
+
+  LBL  MARK
+   MOVR Feedlth  
+   HOLD 2  
+   IO Cutter = 1	'Turn on cutter output
+   DELAY 250		'for 1/4 sec
+   IO Cutter = 0	'Turn off cutter  
+   INC Count		'Increment Count by 1.
+   PRINT "Parts Made ", Count 
+  RET
+
+PGM

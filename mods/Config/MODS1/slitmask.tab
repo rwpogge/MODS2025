@@ -1,0 +1,29 @@
+#Pos Name          Info
+#
+ 1  DarkMask      Blank Mask for a Dark Block
+ 2  SieveMask     Pinhole Imaging Sieve Nr3
+ 3  Imaging       Empty Frame for Imaging Stop
+ 4  LS5x60x0.3    0.3 arcsec Segmented Long Slit
+ 5  LS5x60x0.6    0.6 arcsec Segmented Long Slit
+ 6  LS5x60x0.8    0.8 arcsec Segmented Long Slit
+ 7  LS5x60x1.0    1.0 arcsec Segmented Long Slit
+ 8  LS5x60x1.2    1.2 arcsec Segmented Long Slit
+ 9  LS60x5        5 arcsec Spectrophotometry Wide Slit
+10  PinholeSlit   Pinhole Slit
+11  PointingMask  Pointing Mask 40arcsec FoV
+12  LS5x60x2.4    2.4 arcsec Segmented Long Slit
+#
+#  INAF Apr 26-May 4 UT
+#
+13 PointingMask108  Pointing Mask 108arcsec FoV
+14 Empty            Do Not Use
+15 ID512849         mods.44.rlgc2
+16 ID533851         mods.28.Koposov1
+17 ID513804         mods.45.pmw2
+18 ID514449         mods.46.munoz1
+19 Empty            Do Not Use
+20 ID530540         mods.15.EELGs155
+21 Empty            Position Empty
+22 ID555234         mods.16.Mazzolar
+23 ID560129         mods.17.Mazzolar
+24 ID560557         mods.18.Mazzolar

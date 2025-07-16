@@ -1,0 +1,190 @@
+/*!
+  \mainpage bcolttfa.plc - BLUE IMCS Tip mechanism PLC program
+
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2005 Nov 03
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system
+	 or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+	Small command set the key words are -
+	initial: Initialize IMCS TTFA (move to CW and set pos=0.000)
+	   home: HOME IMCS TTFA (move to CW and set pos=0.000)
+	   fpos: fine tune the mechanism
+	    who: whoami
+	   poll: get position and bits status
+	  codev: get plc and code version
+
+	All Motion Parameters are documented in the MicroLYNX Part III 
+	Software Reference.
+
+<pre>
+2005 Nov 03 - new application [to/rdg]
+2007 Jun 18 - who,poll,codev [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file bcolttfa.plc
+  \brief Small command set for BLUE IMCS Tip mechanisms
+*/
+/** END HEADER **/
+* START loading PLC
+'Motion Parameters
+MSEL= 10      '10 microsteps per step
+MUNIT=2000    'units to revs
+MAC=20        'accel current is 0.20 * 7
+MRC=20        'run current is 0.20 * 7
+MHC=0         'hold current is zero
+'
+'      'Input & Output Configuration
+IOS 21 = 13,0,0    'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0    'NEGATIVE (CCW)limit, active low
+IOS 23=0,0,0       'NOT USED
+IOS 24=0,0,0       'NOT USED
+IOS 25=0,0,0       'NOT USED
+IOS 26=0,0,0       'NOT USED
+'
+'      'Motion Configuration
+ACCL=50          'acceleration rate in rev/sec^2
+DECL=ACCL        'acceleration rate = deceleration rate
+LDECL=500        'set decel after a limit is asserted
+VM=15            '15 rev/sec running speed
+VAR IOBITS	'IO bits 21 and 22.
+' IEB Power detection
+VAR PWRFAIL=1   'Power Failures of any kind
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	        'STARTUP MODE
+		'PLC starts at address #100
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+PGM 100          'Starts at address 100
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'INITIAL(initializing) and HOME PROCEDURES
+' INITIALize mechanism
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+			'Initialization
+LBL INITIAL
+IOBITS=IO 21+IO 22  'Get io bits 21 and 22
+BR BITERR, IOBITS=2 'Check io bits 21 and 22 ( both ON not allowed)
+PWRFAIL=0
+VM=15            'set velocity to 15 rev/sec running speed
+MOVA 700,0       'move to some distance and decelerate
+HOLD 2           'suspend procedure until move is complete
+MOVR -0.5        'relative index to 0.5 position
+HOLD 2           'suspend procedure until move is complete
+VM=1             'reduce velocity to 1 rev/sec running speed
+MOVR 1           'relative index to -1 position
+HOLD 2           'suspend procedure until move is complete
+POS=0            'MARK position as 0th position
+VM=15            'reset the velocity to 15.0 rev/sec running speed
+BR END_IT         'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'FPOS(fine tune) PROCEDURE
+' Fine tune mechanism
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL FPOS         'Focus travel Position procedure: 
+'
+ BR BITERR, IO 21+IO 22=2 'Check io bits 21 and 22 (both ON not allowed)
+ BR PWRERR, PWRFAIL=1	'Check for Power Failure or was turned off/on
+ VM=15            'set the velocity to 15.0 rev/sec running speed
+ MOVA -2,         'move to an absolute index of 2.1
+ HOLD 0           'suspend procedure until position change is complete
+' Now take it slow we want to get as close as possible
+ VM=1             'reduce the velocity to 1.0 rev/sec running speed
+ MOVA 1           'move to an absolute index of 1
+ HOLD 2           'suspend procedure until move is complete
+ MOVR -0.5        'move to relative index of -0.5
+ HOLD 2           'suspend procedure until move is complete
+ VM=1             'reduce the velocity to 1 rev/sec running speed
+ MOVR 1           'move to relative index of 1
+ HOLD 2           'suspend procedure until move is complete
+ VM=15            'reset the velocity to 15.0 rev/sec running speed
+' Relative Focus Position
+BR END_IT         'branch to exit
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'STOP(halt) PROCEDURE
+' STOP all motion and end this function
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL STOP
+SSTP 1 		'stop procedure
+DELAY 500
+BR END_IT	'branch to exit
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'BITERR(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL BITERR
+ PRINT "? FAULT Select Sensor Fault, both limits asserted"
+BR END_IT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               PWRERR(power failure error) PROCEDURE
+' I'm indicating a power failure
+LBL PWRERR
+  PRINT "? PWRFLR power failure or turned off (reset)"
+BR END_IT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'END_IT(exit) PROCEDURE
+' EXIT the PLC routine
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL END_IT       'Exit
+END              'end the procedures
+PGM              'end of program in RAM 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+			'ISL PLC
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+PGM 6000
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'WHO AM I PROCEDURE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL WHO
+PRINT "bcolttfa"
+BR END_PLC
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'MASK PROCEDURE for bits 26 - 21
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL MASK
+PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'CHKPOS PROCEDURE check position
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL CHKPOS
+PRINT POS
+BR END_PLC       'branch to exit
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'CHKMVG PROCEDURE check moving status
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL CHKMVG
+PRINT MVG
+BR END_PLC       'branch to exit
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'POLL THE CONTROLLER PROCEDURE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL POLL
+PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'CODE VERSION PROCEDURE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL CODEV
+PRINT "codeV=0.1(5/12/06)",":HW",VER
+BR END_PLC      'branch to exit
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'ENDIT PROCEDURE
+'End of the line
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL END_PLC		
+END 'END of ISL PLC code
+PGM

@@ -1,0 +1,47 @@
+Munit = 51200 'user units defined as revs
+Vm = 30 'max velocity in revs per second
+Vi = Vm/50 'init. velocity
+Accl = 100 'acceleration
+Decl = Accl 'deceleration equals acceleration
+Mhc=Mrc 'motor hold current=run current 
+
+Ios 21 = 0,1,1,0,0,0 'output definition for LED or relay
+Ios 17 = 0,0,1,1,0,0 'high speed input defined
+Ios 26= 0,1,0,0,0,0 'general purpose output
+'***************************
+
+VAR Label = 1 'variable called Label set to a value of 1
+VAR Speed = 5
+'******** Program ********
+Pgm 1 'start of program
+LBL STARTUP 'label used for executing on power up
+Ti1 = 17, Mark 'set input trip to go to label called Mark
+Tt1=2000,Cease,26 'timer trip goes to routine called cease and turns on LED 26
+Tte1=1 'enable the timer trip
+
+LBL Go
+Pos = 0 'sets position equal to zero
+SLEW Speed 'slew at the value of Speed
+Vm = Speed 'sets Vm to the value of Speed
+HOLD 1 'hold until max vel is reached
+Tie1 = 1 'enables input trip
+LBL Idle1 'just a label
+BR Idle1, Mvg 'branch to idle1 if motor is moving
+
+Io 21 = 1 ' sets output true
+DELAY 1000 'delay 1 second
+Io 21 = 0 ' sets output off
+BR startup 'branch to the label startup
+END
+
+LBL Mark
+MOVA Poscap + label 'move absolute to position captured on trip plus 1
+HOLD 2 'hold prog execution till move completes
+Tte1=0 'timer trip event enabled
+RET 'return to subsequent line from where trip occurred
+
+LBL Cease
+SSTP,1 'stop motion and ends program
+HOLD 2
+END 
+Pgm 'end of program space

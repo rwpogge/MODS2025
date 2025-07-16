@@ -1,0 +1,125 @@
+' The MicroLYNX is a versatile motion controller capable of controlling
+'multiple axes sequentially, not to mention other modes of operation like
+'following and ratio which we are not going to cover here. 
+' So, what does the word "sequentially" mean? What applications would we use it
+'for? How does it work?
+'
+' Let's first clarify the word "sequential". To do this I turn to the trusted 
+'but much forgotten Webster's Dictionary. The entry under "sequential" 
+'states "a number of connected events done in order". This applies to the
+'MicroLYNX as wellfirst one axis will move, then the other. It is important to 
+'note that the individual axes DO NOT have to have the identical velocity
+'profiles. This is left up to the discretion of the programmer and what the 
+'system requirements are.
+'
+' A typical sequential application would be if the user wants to fill a waffle 
+'grid with a dispensing head by first going to each position on the X axis, 
+'then moving one row on the Y axis, and again going to each position on the X 
+'axis. This type of application happens all the time where the customer needs 
+'two axes of motion but does not need the complexity of a high-end, expensive 
+'Controller. Note that the MicroLYNX was not intended for circular or linear 
+'interpolation, nor are these applications recommended.
+
+' To describe how the MicroLYNX controls multiple axes sequentially, I want to 
+'first give a quick description of how the system is configured. Let's go back 
+'to the above example to describe a known system. The X axis will be driven by 
+'the on-board driver of the MicroLYNX. The Y axis will be driven by a High 
+'Speed expansion module on the MicroLYNX with Step/Direction outputs to an 
+'external driver, let's say an IM483. Remember, the controller on-board of the 
+'MicroLYNX will control the motion of both axes. The MicroLYNX has up to three 
+'different clock pairs available: clock one sending step/direction to the 
+'on-board driver, and in this application, clock two sending step/direction 
+'out the High Speed expansion module to the external driver. 
+'(The third clock is not used here.) Using the IOS command the MicroLYNX 
+'allows the programmer to easily enable or disable whichever clock pair they 
+'want. So, while the system is indexing to each position on the X axis, only 
+'clock one is enabled. When the system reaches the end of this row and needs 
+'to move the Y axis over, you simply disable the X axis and enable the Y axis. 
+'Once the dispensing head moves one row over, the Y axis is disabled and the X 
+'axis is enabled allowing the next row to be filled.
+
+' It really is quite simple to enable/disable the desired axes. The following 
+'examples demonstrate how a programmer would sequentially home multiple axes 
+'using the MicroLYNX.
+'
+'Note: Setup assumes user is using clock pairs one and two.
+'*** Setup ***
+
+IOS 11 = 1,1,1,0,2,0 	'set direction for axis one 
+IOS 12 = 2,1,1,0,2,0 	'set step for axis one 
+IOS 13 = 3,1,1,0,2,0 	'set direction for axis two 
+IOS 14 = 4,1,1,0,2,0 	'set step for axis two 
+IOS 21 = 0,0,0,0,0,0 	'set I/O 21 for home input, axis one 
+IOS 25 = 0,0,0,0,0,0 	'set I/O 25 for home input, axis two 
+
+
+'*** Main program *** 
+
+PGM 10 			'enter program at address 10 
+LBL test 			'define user label 
+CALL home1 		'call subroutine, home1 
+CALL home2 		'call subroutine, home2 
+PRINT "Homing complete" 	'print to serial port 
+END 			'end of main program 
+
+
+'*** Axis one Home subroutine *** 
+
+LBL home1 		'define user label 
+IOS 12 = 2 		'enable clock for axis one 
+IOS 14 = 0 		'disable clock for axis two 
+FIOS -8000,+3000,21 	'find home input, I/O 21 
+HOLD 2 			'hold program until Home routine is complete 
+RET 			'return to main program 
+
+
+'*** Axis two Home subroutine *** 
+
+LBL home2 		'define user label 
+IOS 12 = 0 		'disable clock for axis one 
+IOS 14 = 4 		'enable clock for axis two 
+FIOS -8000,+3000,25 	'find home input 
+HOLD 2 			'hold program until Home routine is complete 
+RET 			'return to main program 
+
+PGM 			'exit program mode 
+
+
+'Note: Setup assumes user is using clock pairs one and two.
+'*** Setup *** 
+
+IOS 11 = 1,1,1,0,2,0 	'set direction for axis one 
+IOS 12 = 2,1,1,0,2,0 	'set step for axis one 
+IOS 13 = 3,1,1,0,2,0 	'set direction for axis two 
+IOS 14 = 4,1,1,0,2,0 	'set step for axis two 
+
+
+'*** Main program *** 
+
+PGM 10 			'enter program at address 10 
+LBL test 			'define user label 
+CALL move1 		'call subroutine, move1 
+CALL move2 		'call subroutine, move2 
+PRINT "Moved both axis" 	'print to serial port 
+END  			'end of main program 
+
+
+'*** This subroutine moves axis 1 *** 
+
+LBL move1  	'define user label 
+IOS 12 = 2  	'enable clock for axis one 
+IOS 14 = 0  	'disable clock for axis two 
+MOVR 50000  	'move 50000 munits 
+HOLD 2  		'hold program until move is complete 
+RET  		'return to main program 
+
+
+'*** This subroutine moves axis 2 *** 
+
+LBL move2 	'define user label 
+IOS 12 = 0 	'disable clock for axis one 
+IOS 14 = 4  	'enable clock for axis two 
+MOVR 50000  	'move 50000 munits 
+HOLD 2  		'hold program until move is complete 
+RET  		'return to main program 
+PGM  		'exit program mode 

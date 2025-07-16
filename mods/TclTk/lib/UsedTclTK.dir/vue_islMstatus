@@ -1,0 +1,67 @@
+#!/usr/bin/wish
+# vue_modsqc source for the Tk toolkit
+# Basic font for button, menus and labels
+# Product of OSU/ISL Astronomy Dept.
+# to be incorporated into ISL software
+
+  # Window manager configurations
+  set ICONDIR /home2/isl/TclTK/images
+  set LIBDIR /home2/isl/TclTK/lib
+
+  global tkVersion
+
+  wm positionfrom . user
+  wm sizefrom . ""
+  wm maxsize . 1152 900  
+#  wm iconbitmap . @$ICONDIR/vlb.icon
+  wm iconposition . 1200 0
+  wm iconname . {qc}
+#  wm geometry . +5+25
+  wm title . { MODS-1 IP and TTF(x) Status}
+
+    global result1
+# Decide on font size.
+  if {$argc<=0} {
+      set ibfont [open "|/bin/sh -c \"cat $LIBDIR/my_font; :\""]
+      set bfont [gets $ibfont]
+      catch {close $ibfont}
+  } else {
+      set bfont [lindex $argv 0]
+  }  
+
+# Top frame is a menubar
+# there is more magic that you can do with this
+# build widget .m
+frame .m \
+	-bg {blue} \
+	-borderwidth {5} \
+	-relief {groove} 
+
+proc flash { w option value1 value2 interval count} {
+    for {set i 0} {$i < $count} {incr i} {
+	$w config $option $value1
+	update idletasks
+	after $interval
+	$w config $option $value1
+	update idletasks
+	after $interval
+    }
+}
+
+#flash . -bg black black 10 5	
+button .m.q -text "Exit" -relief {raise} -font $bfont -background red -fg white -command exit 
+label .label1 -text "Motors ML1-ML30" -font $bfont -bg blue -fg white
+label .result1 -width 72 -height 20 -relief sunken -font $bfont -textvariable result1
+
+    set result1 [exec vueinfo islcommon]
+    pack .m .m.q -side top -fill x -expand 0
+    pack .label1 .result1 -fill x 
+
+proc mldata { } {
+    global result1
+
+    set result1 [exec vueinfo islcommon]
+
+    after 5000 mldata
+}
+after 1000 mldata

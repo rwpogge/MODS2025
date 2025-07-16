@@ -1,0 +1,485 @@
+/*!
+  \file bshutter.plc
+  \brief BLUE Shutter PLC program - Listens to external Pulse from the HE for the MODS Blue Shutter - Version 1.0 replaced with new Version 2.0(June 20, 2011)
+
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2007 Feb 02
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system.
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+<pre>
+  The following PLC app commands the shutter to open or close by following
+ an checking an external pulse source sent by the Head Electronics.
+ The program also includes limit switches that only allow for motion in 
+ one direction when the limit has been reached.
+
+ Notes:
+
+   1. Module in ML15
+   2. Pulse Generator - signal from HE
+   3. Digital Inputs in IO Lines 21, 22
+     (these need to be turned off at the microlynx module)
+   
+ All Motion Parameters are documented in the MicroLYNX Part III 
+ Software Reference.
+
+2007 Feb 02 - new application [rdg]
+2008 Dec 29 - Replaced with Tom O'briens OPEN,CLOSE,HOME code[rdg]
+2008 Jan 05 - Added Tom O'briens REMOTE code with a few minor changes[rdg]
+2007 Jan 07 - Made minor adjustments to all code[rdg]
+2007 Jan 08 - Removed test branched[rdg]
+2011 Jun 20 - Removed REMOTE background procedure and rewritten as a
+	      top-down procedure. [tpo]
+	"   - ROPEN and RCLOSE were included for the HOST computer. [tpo]
+	"   - Removed SHUTTER procedure. [tpo]
+	"   - Introduced a checking of the IOS30 for error checking. [tpo] 
+</pre>
+
+*/
+/** END HEADER **/
+'This is the BSHUTTER
+'Code for MicroLynx controller starts here
+'Blue & Red have different Limit Switch Configurations
+'Blue & Red have different Signs on all Relative Moves
+'(OPEN,CLOSE,HOME,BLADSTAT subroutines for REMOTE task)
+'(SHUTTER,WHO are ISL subroutines)
+' General MicroLynx Parameters
+Msel=10		'10 usteps/fullstep = 2000 microsteps/rev
+Munit=2000	'(2000 usteps/rev) gives velocity and acceleration in rev/sec
+'
+' Configure Motor current Settings
+Mac=65		'Acceleration Current
+Mrc=54		'Run Current
+Mhc=0		'hold current is zero
+Hcdt=0		'hold current delay msec,
+		'NO delay to allow detent quick response
+'
+'Motion Configuration
+Aclt=1		'linear acceleration (default)
+Accl=20		'acceleration rate in rev/sec^2
+Decl=Accl	'deceleration rate in rev/sec^2
+Ldecl=500	'set decel after a limit is asserted
+'
+'Motion Controller I/O Connections
+'Execute a IP ALL and SAVE to restore factory defaults
+'when changing from Blue to Red
+'
+'Red Shutter Limit Configuration
+'Ios 21 = 13,0,0	'RED SHUTTER, POSITIVE
+			'limit,active low, shutter closed
+'Ios 22 = 14,0,0	'RED SHUTTER, NEGATIVE (CCW)
+			'limit, active low
+'
+'Blue Shutter Limit Configuration
+Ios 21 = 14,0,0		'BLUE SHUTTER, NEGATIVE (CCW)
+			'limit, active low
+Ios 22 = 13,0,0		'BLUE SHUTTER, POSITIVE (CW)
+			'limit,active low, shutter closed
+'
+'Individual Blade Status Input Configuration (Ble & Red Shutters)
+Ios 31 = 0,0,0		'Blade #1 Closed, Configured Low is TRUE
+Ios 32 = 0,0,0		'Blade #2 Closed, Configured Low is TRUE
+Ios 33 = 0,0,0		'Blade #1 Open, Configured Low is TRUE
+Ios 34 = 0,0,0		'Blade #2 Open, Configured Low is TRUE
+Ios 35 = 0,0,1		'Shutter Command Input, Configured High is TRUE
+'
+' Variable Declarations and Calculations
+VAR VNORM		'Nominal operating velocity (revs/sec)
+VNORM=5.0
+VAR VSEEK		'HOME seeking velocity
+VSEEK=0.3
+VAR NOMMOV		'Nominal Number of Steps to Open or Close Blue and Red Shutter
+NOMMOV = 1.25		'1.25 revs (250 motor fullsteps) to cycle shutter
+VAR BOUNCE		'Time delay in msec for detent and microswitches to debounce
+BOUNCE = 100
+VAR CL			'Check for closed state
+VAR OP			'Check for open state
+VAR RSTATE		'set to Remote state  0=local state
+RSTATE=1		'sets to remote state
+VAR PWRFAIL=0		'Power Failures of any kind
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			STARTUP MODE
+' PLC starts at address #10
+Pgm 10
+LBL startup		'Secial reserved Label to start program on Power-Up
+LBL STARTIT		'Label to start main program from Host
+ RSTATE=1
+BR REMOTE
+'
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' COMMAND provided from the Head Electronics Box(HEB) IO 35
+'
+LBL REMOTE
+'
+ BR REMOTE, Io 30=19 	'Both Blades CLOSED, Command is CLOSED 
+			'no action needed
+ BR REMOTE, Io 30=12 	'Both Blades OPEN, Command is OPEN 
+			'no action needed
+ BR ROPEN, Io 30=3 	'Both Blades CLOSED, Command is OPEN
+			'Opening action needed
+ BR RCLOSE, Io 30=28	'Both Blades OPEN, Command is CLOSED
+			' Closing action needed
+'
+BR BLADSTAT		'Shutter is in an invalid state 
+			'Evaluation of status is needed
+'
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			Remote OPEN PROCEDURE
+'
+LBL ROPEN		'Beginning of Shutter OPEN subroutine
+'
+'BR REMOTERR, RSTATE=0	'Illegal REMOTE call
+'
+ Vm=VNORM		'Set velocity to normal
+ 'MOVR -NOMMOV		'RED shutter relative move to open shutter blades
+ MOVR NOMMOV		'BLUE shutter relative move to open shutter blades
+ HOLD 2			'suspend program execution until move completion
+ DELAY BOUNCE		'microswitch de-bounce pause
+'
+'Confirm that both shutter blades are open and Command is OPEN - IO30=12
+ BR REMOTE, Io 30=12	'return to main program
+
+'OR Shutter Command could have changed during blade motion time
+'Check for both shutter blades are open and Command is CLOSE -  IO30=28
+ BR REMOTE, Io 30=28	'return to main program
+'
+BR BLADSTAT		'otherwise branch to Blade Status
+'
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			REMOTERR PROCEDURE
+'
+LBL REMOTERR
+ PRINT "Illegal REMOTE call, in LOCAL mode"
+BR END_IT		'ends program if in local mode
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			Remote CLOSE PROCEDURE
+'
+LBL RCLOSE		'Beginning of Shutter CLOSE subroutine
+'
+'BR REMOTERR, RSTATE=0	'Illegal REMOTE call
+'
+ Vm=VNORM		'Set velocity to normal
+ 'MOVR NOMMOV		'RED shutter relative move to close shutter blades
+ MOVR -NOMMOV		'BLUE shutter relative move to close shutter blades
+ HOLD 2			'suspend program execution until move completion
+ DELAY BOUNCE		'microswitch de-bounce pause
+'
+'Confirm that both shutter blades are closed and Command is CLOSE - IO30=19
+ BR REMOTE, Io 30=19	'return to main program
+
+'OR Shutter Command could have changed during blade motion time
+'Check for both shutter blades are Closed and Command is OPEN - IO30=3
+ BR REMOTE, Io 30=3	'return to main program
+'
+BR BLADSTAT		'otherwise branch to Blade Status
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' START OF LOCAL ACTION Procedures
+'
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			Local OPEN PROCEDURE
+'
+LBL OPEN		'Beginning of Shutter OPEN subroutine
+'
+BR LOCALERR, RSTATE=1	'Illegal LOCAL call
+'
+' Must check blade status inside this routine
+' because it is called directly by the HOST in local mode
+'
+ CL=Io 31+Io 32		'Check if both shutter blades are closed
+BR BLADSTAT, CL<>2	'otherwise branch to Blade Status
+'
+ Vm=VNORM		'Set velocity to normal
+ 'MOVR -NOMMOV		'RED shutter relative move to open shutter blades
+ MOVR NOMMOV		'BLUE shutter relative move to open shutter blades
+ HOLD 2			'suspend program execution until move completion
+ DELAY BOUNCE		'microswitch de-bounce pause
+'
+BR BLADSTAT		'branch to Blade Status
+'
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			LOCALERR PROCEDURE
+'
+LBL LOCALERR
+ PRINT "Illegal LOCAL call, in REMOTE mode"
+BR END_IT		'ends program if in REMOTE mode
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			Local CLOSE PROCEDURE
+'
+LBL CLOSE		'Beginning of Shutter CLOSE subroutine
+'
+BR LOCALERR, RSTATE=1	'Illegal LOCAL call
+'
+' Must check blade status inside this routine
+' because it is called directly by the HOST in local mode
+'
+ OP=Io 33+Io 34		'Check if both shutter blades are open
+BR BLADSTAT, OP<>2	'otherwise branch to Blade Status
+'
+ Vm=VNORM		'Set velocity to normal
+ 'MOVR NOMMOV		'RED shutter relative move to close shutter blades
+ MOVR -NOMMOV		'BLUE shutter relative move to close shutter blades
+ HOLD 2			'suspend program execution until move completion
+ DELAY BOUNCE		'microswitch de-bounce pause
+'
+BR BLADSTAT		'branch to Blade Status
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			HOME PROCEDURE (local mode only)
+'	
+LBL HOME		'HOME subroutine to put shutter
+			'into closed condition from any start
+'
+BR LOCALERR, RSTATE=1	'Illegal LOCAL call
+'
+ Vm=VSEEK		'set the velocity to seeking value (rev/sec)
+ 'MOVR NOMMOV		'RED shutter relative move to close shutter blades
+ MOVR -NOMMOV		'BLUE shutter relative move to close shutter blades
+ HOLD 2			'suspend program execution until move completion
+ DELAY BOUNCE		'delay for detent drop-in and microswitch de-bounce
+'
+BR BLADSTAT		'branch to Blade Status
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			BLADSTAT PROCEDURE
+' Blade Status
+'			
+' Evaluate all 32*2 possible Input States of Shutter IO in sequence
+' This routine always exits program, it never returns to main program
+' ERR3, ERR12, ERR19, ERR28 are the exception, then return to main.
+'
+LBL BLADSTAT
+'
+BR ERR0, Io 30=0
+BR ERR1, Io 30=1
+BR ERR2, Io 30=2
+BR ERR3, Io 30=3
+BR ERR4, Io 30=4
+BR ERR5, Io 30=5
+BR ERR6, Io 30=6
+BR ERR7, Io 30=7
+BR ERR8, Io 30=8
+BR ERR9, Io 30=9
+BR ERR10, Io 30=10
+BR ERR11, Io 30=11
+BR OPEN12, Io 30=12
+BR ERR13, Io 30=13
+BR ERR14, Io 30=14
+BR ERR15, Io 30=15
+BR ERR16, Io 30=16
+BR ERR17, Io 30=17
+BR ERR18, Io 30=18
+BR CLOSE19, Io 30=19
+BR ERR20, Io 30=20
+BR ERR21, Io 30=21
+BR ERR22, Io 30=22
+BR ERR23, Io 30=23
+BR ERR24, Io 30=24
+BR ERR25, Io 30=25
+BR ERR26, Io 30=26
+BR ERR27, Io 30=27
+BR ERR28, Io 30=28
+BR ERR29, Io 30=29
+BR ERR30, Io 30=30
+BR ERR31, Io 30=31
+'
+BR ERR32, Io 30>31	'Error if IO36 is TRUE
+
+'
+ PRINT "Shutter State not detected, END Program"
+BR END_IT	'ends program
+'
+'Each of the 32*2 possible input states generates a message
+'All states result in termination of program execution
+'
+LBL ERR0
+ PRINT "ERR0, Blade1 AJAR, BLADE2 AJAR, COMMAND is OPEN, "
+ PRINT "Would you like to attempt a Shutter Reset? "
+ PRINT "Execute HOME in local mode "
+BR END_IT
+'
+LBL ERR1
+ PRINT "ERR1, Blade1 CLOSED, Blade2 AJAR, COMMAND is OPEN"
+BR END_IT
+'
+LBL ERR2
+ PRINT "ERR2, Blade1 AJAR, Blade2 CLOSED, COMMAND is OPEN"
+BR END_IT
+'
+LBL ERR3
+ PRINT "CLOSED Both Blades CLOSED, Command is OPEN, Valid Shutter State"
+ DELAY 100
+ BR END_IT, RSTATE=0
+BR STARTIT
+'
+LBL ERR4
+ PRINT "ERR4, Blade1 OPEN, Blade2 AJAR, COMMAND is OPEN"
+BR END_IT
+'
+LBL ERR5
+ PRINT "ERR5, Blade1 OPEN & CLOSED, Blade2 AJAR, COMMANDisOPEN"
+BR END_IT
+'
+LBL ERR6
+ PRINT "ERR6, Blade1 OPEN, Blade2 CLOSED, COMMAND is OPEN"
+BR END_IT
+'
+LBL ERR7
+ PRINT "ERR7, Blade1 OPEN & CLOSED, Blade2 CLOSED, COMMAND is OPEN"
+BR END_IT
+'
+LBL ERR8
+ PRINT "ERR8, Blade1 AJAR, Blade2 OPEN, COMMAND is OPEN"
+BR END_IT
+'
+LBL ERR9
+ PRINT "ERR9, Blade1 CLOSED, Blade2 OPEN, COMMAND is OPEN"
+BR END_IT
+'
+LBL ERR10
+ PRINT "ERR10, Blade1 AJAR, Blade2 OPEN & CLOSED, COMMAND is OPEN"
+BR END_IT
+'
+LBL ERR11
+ PRINT "ERR11, Blade1 CLOSED, Blade2 OPEN & CLOSED, COMMAND is OPEN"
+BR END_IT
+'
+LBL OPEN12
+ PRINT "OPEN"
+ DELAY 100
+ BR END_IT, RSTATE=0
+BR STARTIT
+'
+LBL ERR13
+ PRINT "ERR13, Blade1 OPEN & CLOSED, Blade2 OPEN, COMMAND is OPEN"
+BR END_IT
+'
+LBL ERR14
+ PRINT "ERR14, Blade1 OPEN, Blade2 OPEN & CLOSED, COMMAND is OPEN"
+BR END_IT
+'
+LBL ERR15
+ PRINT "ERR15, Blade1 OPEN & CLOSED, Blade2 OPEN & CLOSED, COMMAND is OPEN"
+BR END_IT
+'
+LBL ERR16
+ PRINT "ERR16, Blade1 AJAR,  Blade2 AJAR,  COMMAND is CLOSED"
+ PRINT "Would you like to attempt a Shutter Reset? "
+ PRINT "Execute HOME in local mode "
+BR END_IT
+'
+LBL ERR17
+ PRINT "ERR17, Blade1 CLOSED, Blade2 AJAR, COMMAND is CLOSED"
+BR END_IT
+'
+LBL ERR18
+ PRINT "ERR18, Blade1 AJAR, Blade2 CLOSED, COMMAND is CLOSED"
+BR END_IT
+'
+LBL CLOSE19
+ PRINT "CLOSED"
+ DELAY 100
+ BR END_IT, RSTATE=0
+BR STARTIT
+'
+LBL ERR20
+ PRINT "ERR20, Blade1 OPEN, Blade2 AJAR, COMMAND is CLOSED"
+BR END_IT
+'
+LBL ERR21
+ PRINT "ERR21, Blade1 OPEN & CLOSED, Blade2 AJAR, COMMAND is CLOSED"
+BR END_IT
+'
+LBL ERR22
+ PRINT "ERR22, Blade1 OPEN, Blade2 CLOSED, COMMAND is CLOSED"
+BR END_IT
+'
+LBL ERR23
+ PRINT "ERR23, Blade1 OPEN & CLOSED, Blade2 CLOSED, COMMAND is CLOSED"
+BR END_IT
+'
+LBL ERR24
+ PRINT "ERR24, Blade1 AJAR, Blade2 OPEN, COMMAND is CLOSED"
+BR END_IT
+'
+LBL ERR25
+ PRINT "ERR25, Blade1 CLOSED, Blade2 OPEN, COMMAND is CLOSED"
+BR END_IT
+'
+LBL ERR26
+ PRINT "ERR26, Blade1 AJAR, Blade2 OPEN & CLOSED, COMMAND is CLOSED"
+BR END_IT
+'
+LBL ERR27
+ PRINT "ERR27, Blade1 CLOSED, Blade2 OPEN & CLOSED, COMMAND is CLOSED"
+BR END_IT
+'
+LBL ERR28
+ PRINT "OPEN Both Blades OPEN, Command is CLOSED, Valid Shutter State"
+ DELAY 100
+ BR END_IT, RSTATE=0
+BR STARTIT
+'
+LBL ERR29
+ PRINT "ERR29, Blade1 OPEN & CLOSED, Blade2 OPEN, COMMAND is CLOSED"
+BR END_IT
+'
+LBL ERR30
+ PRINT "ERR30, Blade1 OPEN,  Blade2 OPEN & CLOSED,  COMMAND is CLOSED"
+BR END_IT
+'
+LBL ERR31
+ PRINT "ERR31,Blade1 OPEN & CLOSED,Blade2 OPEN & CLOSED,COMMAND is CLOSED"
+BR END_IT
+'
+'
+LBL ERR32
+ PRINT "ERR32, Unused IO36 is TRUE   Troubleshooting required"
+BR END_IT	'ends program
+'
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               END_IT(exit) PROCEDURE
+' END of Main PLC Ladder Logic Code
+'
+LBL END_IT
+ SSTP 0
+ 'PRINT " Ending Program with END_IT"
+END		'end the procedures
+Pgm		'end of program STARTIT in RAM
+'
+'''''''''''''''''''' ISL PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC PROCEDURES
+'
+Pgm 6000
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+' What name has been assigned to this mechanism
+'
+LBL WHO
+  PRINT "bshutter"
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+  PRINT "codeV=2.0(06/20/11)",":HW",VER
+BR END_PLC      'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC
+END		'end the procedures
+Pgm		'end of program in RAM

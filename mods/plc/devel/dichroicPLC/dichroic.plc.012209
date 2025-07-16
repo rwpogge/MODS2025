@@ -1,0 +1,429 @@
+/*!
+  \mainpage dichroic.plc - dichroic PLC program
+ 
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+  
+  \date 2007 Feb 02
+   
+  \section Usage
+   
+  Usage: Multi-level command set used with ISL system.
+   
+  Where: \c MODS instrument
+   
+  \section Introduction
+
+	The MODS Dichroic Select mechanism is a 3 position rotary mechanism
+	that selects which channel of MODS is being used. The 3 configurations
+	of MODS are: blue channel only, red channel only, and combined blue
+	and red channel.
+	The mechanism is a 3 position indexed rotary device which can be 
+	driven to any position in any direction (CW or CCW). When the 
+	Dichroic Select Drum reaches its selected destination the drive 
+	current is turned off and the Dichroic Select Drum is held in place 
+	by a spring loaded detent roller. The position of the Dichroic Select 
+	Drum is identified by means of a "Position Valid" bit which is 
+	TRUE when the wheel is in a detented position and "Binary Code" bits 
+	which indicate the Dichroic Select Drum position with a binary number. 
+	The "Position Valid" bit and "Binary Code" bits are produced by 
+	inductive proximity sensors activated by slots in the Dichroic Select 
+	drive gear face.
+
+	Small command set the key words are -
+		initial: Initialize dichroic
+		  begin: Start looking for dichroic position
+		  codev: Get microlynx version
+		    who: Who am I
+		inctest: Life Cycle test (NOTE2)
+
+	NOTE: One(1) user unit = 200 steps = 1 revolution = 1 turn
+	NOTE2: To run a test set CYCTOTAL=n then EXEC INCTEST
+	NOTE3: PRINT statment has a number with a space example:
+		PRINT "0 ",Value or PRINT "0 string"
+		0=OK, 1=ERROR, 2=FATAL 3=WARNING
+
+	All other motion parameters are documented:
+	(MicroLYNX Part III Software Reference)
+
+ All Motion Parameters are documented in the MicroLYNX Part III
+ Software Reference.
+
+ Specification Sheet:  
+ file://Dichroic_Data_Sheet.pdf                                                                             
+<pre>
+2007 Sept 02 - new application[mad]
+2007 Sept 30 - Added procedure and subroutine headers[rdg]
+2008 Jan 14 - added error number(NOTE3) on PRINT statments and
+	      commented others for MODS Ops[rdg]
+2008 Jan 15 - added minor changes to code for MODS Ops software[rdg]
+2008 Jan 15 - added timers[rdg]
+2008 Jan 21 - tested bits, timers, changed VARs Hcdt,Accl,Decl,Vm[rdg/mad]
+</pre>
+                                                                               
+\todo
+                                                                          
+<ul>
+</ul>
+*/
+/*!
+  \file dichroic.plc
+  \brief Small command set for dichroic mechanism
+*/
+/** END HEADER **/
+'Motion Parameters
+Drven=0       'Disable Motor Until User Inputs New Target
+Msel= 10      '10 microsteps per step
+Munit=2000    'units to revs
+Mac=60        'accel current is 0.60 * 7
+Mrc=35        'run current is 0.35 * 7
+Mhc=0         'hold current is zero
+Hcdt=450      'hold current delay msec	
+'
+'Input & Output Configuration
+Ios 21 = 0,0,1     'LSB, Active Low
+Ios 22 = 0,0,1	   'MSB, Active Low
+Ios 24 = 0,0,1	   'In Position, Active Low
+'
+'Motion Configuration
+Accl=3          'Acceleration rate in rev/sec^2
+Decl=3 		'Deceleration rate in rev/sec^2
+Vm=9		'Move Velocity in rev/sec
+'
+'Variable Declarations
+VAR CYCTOTAL=0	'REQUESTED # OF LIFE CYCLE LOOPS BY USER
+VAR CYCCOUNT=0	'COUNTER FOR LIFE CYCLE LOOPS
+VAR MOVEINC=0	'COUNTER FOR INCREMENTAL MOVES
+VAR NUMPOS=3	'Number of Positions in the Dichroic Select
+VAR MAXPOS=NUMPOS-1	'Highest Position Value that can be requested
+VAR DIST = 5.125	'Motor revs between Dichroic Select positions
+VAR TARGNUM	'Target Dichroic Position Number
+VAR TARGMOV	'Target Move Requirement
+VAR A = Io 21	'One's	
+VAR B = Io 22 * 2	'Two's
+VAR A1 = Io 21		'One's (Read after move complete)	
+VAR B1 = Io 22 * 2	'Two's (Read after move complete)
+VAR DICHNUM = A + B	'The Current Dichroic Position as Determined 
+			'by the Code Bit Arithmetic
+VAR NEWPOS = A1 + B1	'The New Dichroic Position as Determined 
+			'by the Code Bit Arithmetic
+VAR PWRFAIL=1   'IEB Power check(Power Failures of any kind)
+VAR TTIME=12000	'Timeout at 12 seconds from limit to limit at
+		'normal (VNORM) speed
+VAR T_RESET=40000 'Timeout at 40 seconds for power resets at
+		  'slow (VSLOW) speed
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Pgm 100		'program starts at address 100
+'
+'		INITIAL PROCEDURE
+'INITIALize the controller to it's defaults
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL INITIAL
+ PWRFAIL=0	'Reset Power Failure variable
+CALL GET_ID
+ BR NOPOS, Io 24 = 0	'Check for In Position Condition
+ DELAY 100
+ POS=DIST*DICHNUM
+ PRINT "0 ",DICHNUM," Initialized"
+ TARGNUM=DICHNUM	'Default target position
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		BEGIN PROCEDURE
+'Act on the target number selected
+LBL BEGIN
+ BR PWRERR, PWRFAIL=1	'Check for Power Failure or was turned off/on
+ BR NOPOS, Io 24 = 0	'Check for In Position Condition
+'
+'Check Current Dichroic Position
+ NUMPOS = 4
+ MAXPOS = NUMPOS-1	
+ CALL GET_ID
+ TARGMOV = TARGNUM - DICHNUM	'Determines the difference
+'
+'Check User Input for Valid Entry
+BR VALPOS, TARGNUM>MAXPOS	'Target must be less than MAXPOS
+BR VALPOS, TARGNUM<1		'Target must be greater or equal than 1
+BR NOMOVE, TARGNUM=DICHNUM	'IF Target is the same
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		MOVEDISK PROCEDURE
+'Start moving the target
+LBL MOVEDISK
+'
+ TT1=TTIME,TIME_ERR	'Configure to trip in TTIME milliseconds
+ TTE1=1			'Enable timeout
+'
+ Drven=1	'Enables to Drive		
+ MOVEINC=0	'sets Incremental Move Counter to Zero
+BR POSMOVE, TARGNUM>DICHNUM	'Used for Positive Direction Motion
+BR NOMOVE, TARGNUM=DICHNUM	'Used when no move is required
+BR NEGMOVE, TARGNUM<DICHNUM	'Used for Negative Direction Motion
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		'POSMOVE PROCEDURE
+'Positive Motion Loop
+LBL POSMOVE
+'
+ MOVR=DIST	'CW Move 1 Increment
+ HOLD 2
+ INC MOVEINC	'Increments Counter Variable
+ BR CONFIRM, MOVEINC=TARGMOV	'Confirm target position
+ DELAY 1000	'Adds delay in program execution in milliseconds
+BR POSMOVE	'Closes Loop
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		NEGMOVE PROCEDURE
+' Negative Motion Loop
+LBL NEGMOVE
+'
+ MOVR=-DIST	'CCW Move 1 Dichroic Increment
+ HOLD 2
+ DEC MOVEINC	'Decrements Counter Variable
+ BR CONFIRM, MOVEINC=TARGMOV	'Confirm target position
+ DELAY 1000	'Adds delay in program execution in milliseconds
+BR NEGMOVE	'Closes Loop
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		CONFIRM PROCEDURE
+' Re-Reads Code Bits in order to Confirm Position
+LBL CONFIRM
+ DELAY 1000	'delay allows detent to settle prior to reading status
+CALL G_NEWPOS
+'
+'Confirms that New Position matches Target once motion stops
+BR GOT_IT, NEWPOS=TARGNUM
+'
+'New Position Doesn't Match Target
+ PRINT "1 ",TARGNUM," Requested differs from sensor position:", NEWPOS
+BR END_IT
+'
+' Relate the position to the host
+LBL GOT_IT
+ PRINT "0 ",NEWPOS
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		NOPOS PROCEDURE
+' Recover from an Out of Position Error
+'
+LBL NOPOS
+'
+ TT1=T_RESET,FAILED	'Configure to trip in T_RESET milliseconds
+ TTE1=1			'Enable timeout
+'
+ Drven=1		'Enables the Drive
+BR TIMEOUT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		TIMEOUT PROCEDURE
+' Loop that can be used as a timer for error recovery
+'
+LBL TIMEOUT  
+ SLEW 0.25		'Slews at slow speed during the TIMEOUT loop
+ BR STOP_IT, IO 24=1	'Stop slewing when In Position Bit becomes active
+BR TIMEOUT		'Closes Timeout Loop
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STOP_IT PROCEDURE
+' Stop and return target position
+'
+LBL STOP_IT
+ SSTP 0
+CALL GET_ID
+ PRINT "0 ",DICHNUM," Successful back from recovery mode"
+ SSTP 1
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		FAILED PROCEDURE
+' Recovery Timeout Message Followed by End of Program
+'
+LBL FAILED
+ SSTP 0
+ CALL GET_ID
+ BR DICHT, IO 24=0
+  PRINT "2 FAILED (timed out) failed recovery In Position=TRUE"
+  SSTP 1
+BR END_IT
+'
+LBL DICHT
+  PRINT "2 FAILED (timed out) failed recovery In Position=FALSE (bad sensor)"
+  SSTP 1
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		VALPOS PROCEDURE
+' Invalid Position Message Followed by End of Program
+'
+LBL VALPOS
+ PRINT "1 INVALID Requested position was not valid"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		NOMOVE PROCEDURE
+' Alerts User that they've selected a target that's already in use
+'
+LBL NOMOVE
+ PRINT "0 ",DICHNUM," already in requested position"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               PWRERR(power failure error) PROCEDURE
+' I'm indicating a power failure
+'
+LBL PWRERR
+  PRINT "1 PWRFLR power failure or turned off (reset)"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TIME_ERR PROCEDURE
+' Timed out. We cannot go on forever.
+'
+LBL TIME_ERR
+  PRINT "1 UNKNOWN request timed out"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		GET_ID Subroutine
+' Get the dichroic position
+LBL GET_ID
+ A = Io 21
+ B = Io 22 * 2
+ DICHNUM = A + B
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		G_NEWPOS Subroutine
+' Get the new dichroic position
+LBL G_NEWPOS
+ A1 = Io 21
+ B1 = Io 22 * 2
+ NEWPOS = A1 + B1
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_IT PROCEDURE
+' End of the line
+'
+LBL END_IT
+ SSTP 1  'Stops Program Execution
+ BR ZEROREVS, DICHNUM<>3
+ POS=0.0
+LBL ZEROREVS
+END 'END of PLC code
+Pgm
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		TEST PLC PROCEDURES
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+PGM 4000
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		INCTEST PROCEDURE
+' INCREMENTAL MOTION CYCLE TEST ROUTINE
+LBL INCTEST
+ DELAY 250
+ BR NOPOS, Io 24 = 0	'Looks for In Position Bit before starting test
+ Drven=1
+CALL GET_ID		'CHECKS POSITION PRIOR TO STARTING LIFE CYCLE TEST
+ PRINT "BEGIN INCREMENTAL MOTION LIFE CYCLE TEST AT POSITION #",DICHNUM
+ PRINT "CURRENT POSITION # " DICHNUM
+ PRINT "ATTEMPTING TO MOVE TO POSITION #3 TO BEGIN TEST"
+ TARGNUM=3  		'Always moves to Position 2 to Start Test
+ TARGMOV=TARGNUM-DICHNUM
+ MOVR DIST*TARGMOV
+ HOLD 2
+ DELAY 2000  		'Allows Detent to Settle
+ CALL GET_ID
+ PRINT "TEST CYCLES=",CYCTOTAL," STARTING POSITION #" DICHNUM
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		INCSTART PROCEDURE
+' Incremental Motion Cycle Test Loop
+LBL INCSTART
+ MOVEINC=0
+ INC CYCCOUNT
+ BR FINALCHK, CYCCOUNT > CYCTOTAL
+ PRINT "STARTING LIFECYCLE LOOP # " CYCCOUNT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		NEGTEST PROCEDURE
+' Negative Direction Test Loop
+LBL NEGTEST
+ MOVR=-DIST
+ HOLD 2
+ DELAY 500
+ INC MOVEINC
+ BR NEGTEST, MOVEINC<2	'Loops for 2 Cycles
+MOVEINC=0		'Resets Counter Variable
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		POSTEST PROCEDURE
+' Positive Direction Test Loop
+'
+LBL POSTEST
+ MOVR=DIST
+ HOLD 2
+ DELAY 500
+ INC MOVEINC
+ BR POSTEST, MOVEINC<2	'Loops for 2 Cycles
+ MOVEINC=0		'Resets Counter Variable
+BR INCSTART
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		FINALCHK PROCEDURE
+' Checks IO and Gives Life Cycle Test Results
+'
+LBL FINALCHK
+ DELAY 1000
+CALL G_NEWPOS
+ PRINT "THE LIFE CYCLE TEST IS DONE"
+ PRINT "THE TEST STARTED AT POSITION # " DICHNUM
+ PRINT "THE TEST ENDED AT POSITION # " NEWPOS
+ BR BADTEST, DICHNUM<>NEWPOS
+ PRINT "THE TEST WAS SUCCESSFUL"
+ CYCTOTAL=0   'Reset Count
+ CYCCOUNT=0   'Reset Count
+BR END_TEST
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		BADTEST PROCEDURE
+' Error Message for Failed Life Cycle Test
+'
+LBL BADTEST
+ PRINT "THE START POSITION, DOES NOT MATCH THE FINISH POSITION:",DICHNUM
+ PRINT "THIS INDICATES A STALL OCCURRED DURING THE TEST"
+BR END_TEST
+'
+LBL END_TEST
+END 'END of test code
+Pgm
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+PGM 6000
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+LBL WHO
+PRINT "0 dichroic"
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+LBL POLL
+PRINT "0 POS=",POS," : BITS21-26=",IO 21,IO 22,IO 23,IO 24,IO 25,IO 26
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+LBL CODEV
+PRINT "0 codeV=0.1(09/12/07)",":HW",VER
+BR END_PLC      'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+LBL END_PLC		
+END 
+PGM
+

@@ -1,0 +1,121 @@
+Pgm 100         'program starts at address 100
+
+      'Motion Parameters
+Msel= 10      '10 microsteps per step
+Munit=2000    'units to revs
+Mac=50        'accel current is 0.50 * 7
+Mrc=30        'run current is 0.30 * 7
+Mhc=0         'hold current is zero
+Hcdt=500      'hold current delay msec (for overlap with brake engagement)
+
+      'Input & Output Configuration
+Ios 21 = 13,0,0    'POSITIVE (CW) limit,active low
+Ios 22 = 14,0,0    'NEGATIVE (CCW)limit, active low
+Ios 26 = 0,1,0	   'line 26 is general output for brake control
+Ios 30 = 0,0,0	   'position code bits in group 30, active low
+
+      'Motion Configuration
+Accl=50          'acceleration rate in rev/sec^2
+Decl=Accl
+Ldecl=500         'set decel after a limit is asserted
+
+      "Variable Declarations
+VAR INCR = 1.8	  'revs between mask positions is 18mm
+VAR MASKNUM       'Mask Position Number
+VAR ABSPOS        'Absolute position for mask magazine
+VAR TARGNUM       'Desired Mask Position Number
+VAR TARGMOV       'Absolute position of target mask number
+VAR POSERR
+VAR CYCLE = 0
+
+      'Initial Position Seek
+Io 26=1               'releases brake
+SLEW 3                'slews toward CW limit, will find "Position Valid"
+LBL SENSE1
+BR FOUND, Io 36 = 1     'branches to FOUND routine if the "Position Valid" is true
+BR SENSE1
+LBL FOUND
+SSTP 0		              'soft stop, continue execution
+PRINT "Found Position Valid TRUE"
+CALL CENTER            'call and execute centering routine
+
+Io 26=0               'applies brake
+MASKNUM = Io 30 - 32    'subtract 32 to get correct mask #
+PRINT "Mask # = "  MASKNUM
+ABSPOS = MASKNUM * INCR    ' defines true absolute coordinate system based on mask number & centering
+Pos = ABSPOS
+PRINT "Absolute Position = " Pos
+DELAY 1000
+
+	'Automatic Indexing Exercise	
+LBL INDEX
+TARGNUM = MASKNUM + 1        'increments mask position by 1
+CALL RESET TARGNUM>24           'limits max mask number
+
+TARGMOV = TARGNUM*INCR       'absolute position of target mask
+PRINT "Target Position = "  TARGMOV
+Io 26=1                      'releases brake
+Vm=5                         'velocity for move to target mask position
+MOVA TARGMOV                'absolute move to target mask number
+HOLD 2
+CALL CENTER                   'call and execute centering routine
+
+Io 26=0               'applies brake
+DELAY 1000
+POSERR= TARGMOV - CEN
+PRINT "Targeting Error = " POSERR
+MASKNUM = Io 30 - 32       'subtract 32 to get correct mask #
+PRINT "Target Found, Mask # = "  MASKNUM
+BR INDEX
+
+LBL RESET
+TARGNUM = 0
+CYCLE = CYCLE + 1
+PRINT "CYCLE COUNT = " CYCLE
+RET
+
+LBL CENTER
+	'Centering Routine
+	'Declare Variables in Routine
+VAR POSEDGE         'position edge of low to high position valid sensor
+VAR NEGEDGE         'negative edge of low to high position valid sensor
+VAR SUM             'intermediate sum
+VAR CEN             'Center of position valid sensor trip points
+
+SLEW 0.5
+LBL PL
+BR PLUS, Io 36 = 0    'searches for high to low transition of position valid sensor
+BR PL
+LBL PLUS
+SSTP 0		        'soft stop, continue execution
+POSEDGE = Pos
+PRINT "POSEDGE =" POSEDGE
+	
+SLEW -0.5
+LBL NG
+BR NG1, Io 36 = 1          'must reassert position valid bit
+BR NG
+
+LBL NG1
+BR NEG, Io 36 = 0         'searches for high to low transition of position valid sensor
+BR NG1
+
+LBL NEG
+SSTP 0		        'soft stop, continue execution
+NEGEDGE = Pos
+PRINT "NEGEDGE =" NEGEDGE
+
+SUM = POSEDGE + NEGEDGE
+CEN = SUM/2
+Vm=0.5
+MOVA CEN          'moves to center of position valid sensor trip points
+HOLD 2
+PRINT "Centering Routine Reached Position = " Pos
+RET                    'termination of CENTER subroutine
+END
+Pgm
+
+
+
+
+

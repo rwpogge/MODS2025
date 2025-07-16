@@ -1,0 +1,176 @@
+#!/usr/bin/wish
+
+set ICONDIR /home/dts/mods/TclTK/images
+set ISLDIR /home/dts/mods
+set QTDIR  /home/dts/mods/Qt
+set BINDIR /home/dts/mods/bin
+set LIBDIR /home/dts/mods/TclTK/lib
+set LIBBUT /home/dts/mods/TclTK/MODSButtons
+set LIBDEF /home/dts/mods/TclTK/def_lib
+set LOGDIR /home/dts/log
+
+# ISL Engineer/Astronomer/Astrophysics Support Interface
+# ==========================================================================
+#
+#                         Demo DISPLAY SECTION
+
+# ==========================================================================
+    global Fonts fc fcoff bcolor bfont chgc2
+    global inscmd insparam insval selcmd selparam selval maskval looponoff msk;
+
+set vieX [winfo screenwidth .]
+set vieY [winfo screenheight .]
+
+# puts " X = $vieX , Y = $vieY "
+#position window full screen from top left corner.
+  if {$vieX <= 1024 || $vieY <= 768} {
+      set size 0  ;# Multipication factor to change size
+  } else {
+      set size 0   ;# Multipication factor to change size
+  }
+
+wm overrideredirect . 0
+#wm resizable . 0 0
+#wm geometry . +[expr ([winfo screenwidth .]+700)/2]+[expr ([winfo screenheight .]-1050)/2]
+wm geometry . +0+0
+
+
+set fc grey85
+set fcoff Darkgrey
+set osucolor red4
+set bcolor RoyalBlue3
+
+array set Fonts {
+    main   {Sans 12 bold}
+    bold   {Helvetica 12 bold}
+    title  {Helvetica 18}
+    title2 {Helvetica 18}
+    status {Helvetica 10}
+    vars   {Helvetica 14}
+    bvars  {Helvetica 14 bold}
+    ariel  {Ariel 12 }
+    abold  {Ariel 12 bold}
+    tbold  {century 12}
+}
+
+global internal11 internal11a internal11b
+
+menu .menuBar -bg $osucolor -fg white -activebackground $fc -relief raised -bd 2 -tearoff 0
+.menuBar add cascade -menu .menuBar.file -label File -underline 0
+.menuBar add command -label IEC-ML -command {exec $LIBBUT/iec.b &}
+#.menuBar add cascade -menu .menuBar.mlc -label 4X-ML -underline 0
+#.menuBar add cascade -menu .menuBar.cmd -label Execute -underline 0
+#.menuBar add cascade -menu .menuBar.mods -label Widgets -underline 0
+.menuBar add command -label LinuxIMS -command {exec $BINDIR/IMS &}
+.menuBar add command -label MAP -command {exec $LIBBUT/ccmap.b &}
+#.menuBar add command -label ErrorMsg -command { exec $ISLDIR/shells/errsh &}
+#.menuBar add command -label "Clock" -command { displayTimer }
+#.menuBar add cascade -menu .menuBar.help -bitmap @$ICONDIR/info.icon -underline 0
+
+menu .menuBar.file -tearoff 0
+# On the Mac use the specia .apple menu for the about item
+if {[tk windowingsystem] eq "classic" || [tk windowingsystem] eq "aqua"} {
+    .menuBar add cascade -menu .menuBar.apple
+    menu .menuBar.apple -tearoff 0
+    .menuBar.apple add command -label "About..." -command "aboutBox"
+} else {
+    .menuBar.file add command -label "About..." -command "aboutBox" \
+	-underline 0 -accelerator "<F1>"
+    .menuBar.file add sep
+}
+
+.menuBar.file add command -label "Exit" -command { exit }
+
+. configure -menu .menuBar
+
+bind . <F1> aboutBox
+
+frame .statusBar
+label .statusBar.lab -text "   " -relief sunken -bd 1 \
+	-font $Fonts(tbold) -bg gray -fg black -anchor w
+label .statusBar.foo -width 8 -relief sunken -bd 1 \
+	-font $Fonts(tbold) -bg gray -fg black -anchor w
+pack .statusBar.lab -side left -padx 2 -expand yes -fill both
+pack .statusBar.foo -side left -padx 2
+pack .statusBar -side bottom -fill x -pady 2
+
+frame  .m -width 21c -height 10c -relief flat -bg $fc
+
+# Defines all the internal frames
+pack .m -side top -fill both -expand 1
+
+canvas .c -width [expr 108*$size] -height [expr 90*$size]
+
+	frame  .internal11 -width 21c -height 3c -relief flat -bg $fc
+
+	pack .c -in .internal11;
+	
+	pack .internal11 -in .m -side top -fill both -expand 0
+
+	frame  .internal11a -width 21c -height 3c -relief flat -bg $fc
+
+	pack .c -in .internal11a;
+	
+	pack .internal11a -in .m -side top -fill both -expand 0
+
+	button .smdemo -text "SlitMask" -background red4 -fg white -command { 
+	    exec $LIBBUT/sm.b &;
+#	    source $LIBBUT/sm.b.test;
+	}
+
+
+	pack .smdemo -in .internal11  -side left -fill both -expand 0
+
+	button .agwdemo -text "AGW" -background red4 \
+	    -fg white -command {exec $LIBBUT/agw.b &}
+
+	pack .agwdemo -in .internal11  -side left -fill both -expand 0
+
+	button .dsdemo -text "Hatch" -background red4 \
+	    -fg white -command {exec $LIBBUT/darkslide.b &}
+
+	pack .dsdemo -in .internal11  -side left -fill both -expand 0
+
+	button .fwdemo -text "filterWheel" -background red4 \
+	    -fg white -command {exec $LIBBUT/filterwheel.b &}
+
+	pack .fwdemo -in .internal11  -side left -fill both -expand 0
+
+	button .caldemo -text "calibration" -background red4 \
+	    -fg white -command {exec $LIBBUT/calib.b &}
+
+	pack .caldemo -in .internal11  -side left -fill both -expand 0
+
+	button .gratdemo -text "Grating" -background red4 \
+	    -fg white -command {exec $LIBBUT/grating.b &}
+
+	pack .gratdemo -in .internal11 -side left -fill both -expand 0
+
+	button .dichdemo -text "Dichroic" -background red4 \
+	    -fg white -command {exec $LIBBUT/dichroic.b &}
+
+	pack .dichdemo -in .internal11 -side left -fill both -expand 0
+
+	button .mcpdemo -text "Mech. Positions" -background red4 \
+	    -fg white -command {exec $LIBBUT/mechcp.b &}
+
+	pack .mcpdemo -in .internal11a -side left -fill both -expand 0
+
+	button .rimcs -text "Red IMCS pixelator" -background red4 \
+	    -fg white -command {exec $LIBDIR/rimcsGUI &}
+
+	pack .rimcs -in .internal11a -side left -fill both -expand 0
+
+	button .bimcs -text "Blue IMCS pixelator" -background red4 \
+	    -fg white -command {exec $LIBDIR/bimcsGUI &}
+
+	pack .bimcs -in .internal11a -side left -fill both -expand 0
+
+	button .alldemo -text "ALL" -background red4 \
+	    -fg white -bg CadetBlue -command {exec $LIBBUT/darkslide.b &; 
+		exec $LIBBUT/calib.b &;
+		exec $LIBBUT/agw.b &;
+		exec $LIBBUT/sm.b &;
+		exec $LIBBUT/filterwheel.b &;
+		exec $LIBBUT/mechcp.b &;
+	    }

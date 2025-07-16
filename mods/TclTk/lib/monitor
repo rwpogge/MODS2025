@@ -1,0 +1,57 @@
+#!/usr/bin/wish -f 
+#
+# setup display area( text and scrollbar) and Quit Button 
+
+global imcs_logfile cmd
+
+text   .t -yscrollc {.sb set}
+scrollbar .sb -command {.t yview}
+button .q -text Abort -command {exit}
+
+pack .sb -side right -fill y
+pack .q -side bottom
+pack .t -side left -fill both -expand 1
+
+# Decide on font size.
+  if {$argc<=0} {
+      set cmd "tail -f -n 24 /home/dts/Log/imcs_default.log"
+  } else {
+      set imcs_logfile [lindex $argv 0]
+      set cmd "tail -f -n 24 /home/dts/Log/$imcs_logfile"
+  }
+
+# Update display area with line of text
+proc line {text} {
+
+    .t insert end $text\n; 
+    .t see end; 
+    .t yview end
+    update idletask
+}
+
+# Monitor fd (inpipe) and feed into display area
+proc logOutput {inpipe cmd} {
+  if {[eof $inpipe]} {
+    close $inpipe
+    line "end of <$cmd>."
+  } else {
+    line [gets $inpipe]
+  }
+}
+
+# Setup fd monitoring 
+#proc execAndLog {$cmd} {
+proc execAndLog { } {
+    global cmd
+    line "Start of <$cmd>."
+    set inpipe [open "|/bin/sh -c \"$cmd &1; :\""]
+    fileevent $inpipe readable [list logOutput $inpipe $cmd]
+}
+
+# -- mainline ---
+#execAndLog {ls -C /tmp}
+# setup a display monitor on a growing file
+#execAndLog { tail -f -n 24 /home/dts/Log/imcs_default.log }
+#execAndLog { tail -f -n 24 /home/dts/Log/$imcs_logfile }
+execAndLog
+

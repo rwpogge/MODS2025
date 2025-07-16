@@ -1,0 +1,138 @@
+/*!
+  \mainpage DarkSlide.plc - DarkSlide PLC program
+
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2007 Feb 02
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system
+	 or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+	Small command set the key words are -
+	initial: Initialize DarkSlide (move to CW or CCW and set 
+					     pos=0.000)
+	home: Send open to position 0.000
+	stow: Send close position oposite of home.
+	stop: Stop all mechanism movement
+	relbrk: Release break
+	setbrk: Set break
+
+	All Motion Parameters are documented in the MicroLYNX Part III 
+	Software Reference.
+
+<pre>
+2007 Feb 02 - new application [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file darkslide.plc
+  \brief Small command set for darkslide mechanisms
+*/
+/** END HEADER **/
+* Start here with PLC code
+*	'Motion Configuration
+MSEL= 10
+MUNIT=2000
+MAC = 50
+MRC=40
+MHC = 0
+HCDT = 500
+ACLT = 1
+ACCL=50		'acceleration rate in rev/sec^2
+DECL=ACCL	'acceleration rate = deceleration rate
+LDECL=500	'set decel after a limit is asserted
+* Input & Output Configuration
+IOS 21 = 13,0,0	'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0	'NEGATIVE (CCW)limit, active low
+*IOS 26=0	'Brake relay coil (internal pull-up switch opened)
+*		'Output defaults to NO, Brake wired to NO contacts on relay
+*		'Brake is applied with power off and default state of
+*		'drive output
+* Variable Declarations
+VAR VNORM=0.75   
+VM=VNORM	'1 rev/sec running speed
+VAR VSEEK=0.09
+*VAR BACKLASH = -->> 0.2? <<--
+VAR WHO="darkslide"	'version of this PLC code
+VAR CODEV="latest"	'version of this PLC code
+
+* MicroLYNX source code
+PGM 100          'Starts at address 100
+*
+*			INITIAL(initializing) PROCEDURE
+LBL INITIAL
+LBL HOME
+PRINT "Opening IO=",IO 21,IO 22," POS=" POS
+BR IOFAIL, IO 21=1
+DELAY 100
+SLEW VNORM,0	'slew to to set position 0.000
+HOLD 2		'suspend procedure until move is complete
+POS=0.000	'set position to Zero (0.000) again with enough resolution
+DELAY 100
+VM=VSEEK	'set the speed for sneeking up.
+MOVA -0.05	'move to an absolute index of -0.05
+HOLD 2		'suspend procedure until move is complete
+SLEW VSEEK,0	'finetune the home position (position 0.000)
+HOLD 2		'suspend procedure until move is complete
+BR CHKIO
+VM=VNORM	'reset the speed to normal speed.
+POS=0.000	'set position to Zero (0.000) again with enough resolution
+BR END_IT         'branch to exit
+*
+*			STOW(park) PROCEDURE
+LBL STOW
+PRINT "Closing IO=",IO 21,IO 22," POS=" POS
+br IOFAIL, IO 22=1
+DELAY 100
+BR CHKIIO
+SLEW -VNORM,0	'slew to STOW position (opposite of HOME). 
+HOLD 2		'suspend procedure until move is complete
+BR CHKIO
+*VM=VSEEK	'set the speed for sneeking up.
+*MOVA POS+0.01	'move to a relative index of 0.05
+HOLD 2		'suspend procedure until move is complete
+*SLEW -VSEEK,0   'finetune the stow position
+*HOLD 2		'suspend procedure until move is complete
+VM=VNORM	'reset the speed to normal speed.
+BR END_IT	'branch to exit
+*
+*			STOP(halt) PROCEDURE
+LBL STOP
+SSTP 1 		'stop procedure
+BR END_IT	'branch to exit
+*
+*			RELeaseBReaK PROCEDURE
+LBL RELBRK
+IO 26=1
+RET
+*
+*			IO has failed or already there PROCEDURE
+LBL IOFAIL
+PRINT "Already in position ", POS," IO=",IO 21,IO 22
+RET
+*
+*			SETBReaK PROCEDURE
+LBL SETBRK
+IO 26=0
+RET 
+*
+*			CHKIO PROCEDURE Check IO bits again when done
+LBL CHKIO
+PRINT "DONE! IO=",IO 21,IO 22," position=" POS
+RET 
+*
+*			END_IT(exit) PROCEDURE
+LBL END_IT       'Exit
+VM=VNORM	'reset the speed to normal speed.
+END              'end the procedures
+PGM              'end of program in RAM 

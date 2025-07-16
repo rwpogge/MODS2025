@@ -1,0 +1,33 @@
+#
+# MODS2 Red Low-Res Grating (G670L) Preset Tilt Table
+# 2014-03-04 [rwp/osu]
+#
+# Format: name grtilt dA dB dC # comment
+#
+# Grating preset names must not contain any spaces and should be
+# either the central wavelength in Angstroms or a given name (e.g.,
+# Zero).  Settings are determined by the orders of the IMCS
+# holographic bypass gratings.  
+#
+# dA dB and dC are the collimator TTF actuator offsets from the
+# nominal grating mode TTF settings listed in the rconfig.ini file.
+# Usually the primary grating tilt setting is the reference value, and
+# has d(A,B,C)=(0,0,0).  These are the offsets needed to roughly
+# center the IMCS laser spot for that order on the quad cell, removing
+# a residual rotation between the science and bypass gratings.
+#
+# The first entry must be the PRIMARY setting, so that it appears
+# first in the pull-down menu of preset grating tilts.  The nominal 
+# zeroth order position should be the last item in the list.
+#
+# MODS2 G670L 250l/mm 1st-order grating MR122-5-3-6
+#
+#   2013 May 27 - est'd zeroth order and working 1st order tilts
+#   2013 Jul 04 - primary 1st order set using IMCS scan
+#   2014 Mar 04 - measured in the LBT mountain lab (re-integration)
+#
+# name  tilt   dA  dB  dC  # notes
+#
+7580A   19755   0   0   0  # Primary Setting
+Primary 19755   0   0   0  # Primary Setting
+Zeroth    186   0   0   0  # Science Grating 0th Order

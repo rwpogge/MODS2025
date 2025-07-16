@@ -1,0 +1,74 @@
+#
+# MODS2 Blue Channel Preset Configurations
+# 2017-11-18 [rwp/osu]
+#
+# This configuration is for MODS2 on the LBT Right Direct Gregorian Focus
+# Measured in the LBT Instrument Lab, PA=0, horizon-pointing
+#
+# Format: 
+#  name grating filter cfoc ttfA ttfB ttfC ccdroi xbin ybin xover yover speed
+#
+# where:
+#  grating  = grating name (Flat, G400L, etc.)
+#  filter   = filter name or "Any" to keep filter unchanged
+#  camfoc   = camera focus in microns
+#  ttfa,b,c = nominal collimator TTF actuator position
+#  roi      = CCD readout region of interest or "Full" for full-frame
+#  xbin     = CCD x-axis (disp) binning factor [one of 1,2,4,8]
+#  ybin     = CCD y-axis (slit) binning factor [one of 1,2,4,8]
+#  speed    = CCD readout speed: fast or slow
+#
+# Configuration names must not contain spaces, and are ideally 8
+# characters or less.  The names Imaging, Grating, Prism, and Acquire
+# are RESERVED names for special preset modes implemented as buttons
+# on the MODS dashboard for the blue channel.  All presets, however,
+# (including the 4 reserved names) are available at the command line
+# or via scripts using the "BLUE CONFIG configName" command.
+#
+# The grating, filter, and ROI selections for a configuration may be
+# either the numbered device position (for filter and grating) or a
+# name.  If a name, it must be exactly as it appears in the respective
+# device table (bgrating.tab, bfilter.tab, and ccdroi.tab).  If "Any"
+# appears as a grating, filter, or ROI name it means to leave that
+# setup unchanged when setting the mode.  Full-frame CCD readout is
+# specified with the word "Full".
+#
+# The collimator TTF actuator positions are defined for each of the
+# various modes, measured after finalizing the alignment of the
+# dispersers.  For the grating modes, the TTF positions are for the
+# primary grating position as listed in the corresponding bgrtiltN.tab
+# file.  Acquire mode should have the same TTFs as Imaging mode.
+#
+# Custom configuration entries should come *AFTER* the 4 reserved
+# configurations.  If you comment out a reserved configuration you
+# effectively disable the corresponding GUI button
+#
+# name grating filter cfoc ttfA ttfB ttfC ccdroi xbin ybin xover yover speed
+#
+# Measured: 2017 Nov 18 - post IMCS laser launch block realignment
+#           R. Pogge [OSU]
+# Updated:  2017 Nov 21 - dual imaging focus changed from 1200 mic to 1225 mic
+#           O. Kuhn  [LBTO]
+# Measured: 2018 Jan 10 - ran imcsTTFs.pro O. Kuhn [LBTO]
+# Measured: 2018 Apr 16 - updated blue-only imaging focus 1088->940 [LBTO]
+# Measured: 2018 Sep 09 - post-shutdown startup 2018B [LBTO]
+# Measured: 2018 Sep 13 - updated direct grating & imaging based on focus runs [opk/LBTO]
+# Measured IMCS TTFs: 2019 Jan 25 - after remounting MODS2 following the PEPSIPOL run [opk/LBTO
+# Adjusted DImaging focus from 1225->1255 on 2019 Feb 18 [opk/LBTO]
+# Adjusted DImaging focus back to 1225 (1255->1225) on 2019 Apr 21 [opk/LBTO]
+# 2019-05-21 [JP/lbto] reran imcsTTFs after remount post PEPSIPOL run
+# 2019-09-03 [OPK/lbto] reran imcsTTFs after remount post summer shutdown
+#          
+# Direct-Mode Presets
+#
+Imaging  Flat    Any    985 26393 19710 27212 3Kx3K  1 1 0 0 Slow
+Grating  G400L   Clear  1245 26376 19598 27343 Full   1 1 0 0 Slow
+Prism    P450L   Clear  1138 26279 19562 27217 4Kx3K  1 1 0 0 Slow
+Acquire  Flat    g_sdss 940 26393 19710 27212 3Kx3K  1 1 0 0 Slow
+#
+# Dual-Mode Presets
+#
+DImaging Flat    Any    1225 26557 19634 27126 3Kx3K  1 1 0 0 Slow
+DGrating G400L   Clear  1525 26467 19420 27171 Full   1 1 0 0 Slow
+DPrism   P450L   Clear  1450 26455 19474 27127 4Kx3K  1 1 0 0 Slow
+DAcquire Flat    g_sdss 1225 26557 19634 27126 3Kx3K  1 1 0 0 Slow

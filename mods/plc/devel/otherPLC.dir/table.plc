@@ -1,0 +1,95 @@
+/** END HEADER **/
+VAR Num            	  'declare variables
+VAR C
+VAR step
+VAR Factor
+VAR dist
+
+'***********************************
+dist = 30       	  'set dist to 30 revs after ACLTBL is generated
+                          'set dist = 50 in the terminal
+                          'mode and start the program at "begin2" below
+                          'repeat with dist = 60
+'***********************************
+  
+Munit = 51200    	  '51200 steps per rev
+Vm = 5                    'Max Vel set to 5 RPS
+Accl = 1                  'set accel to 1 P/S/S
+Decl = 1                  'set decel to 1 R/S/S
+
+Pgm 100                   'enter the program mode at line 1
+LBL begin          	  'begin label
+Num = 1                   'set Num to 1
+step = 0           	  'set step to 0
+factor = 0      	  'set factor to zero factor is a fractional 
+		             'number that is the average of all the
+                             'points generated in the table
+
+C = 1/127          	  '0.007874015 constant increment for each
+			     'table entry
+Aclt = 0           	  'Accel type user defined
+Dclt = 0     		  'Decel type user defined
+Ldclt = 0         	  'Limit Decel user defined
+
+'******************************************
+LBL loop1 
+Acltbl Num = step         'each time through the loop sets the 
+			      'appropriate table value
+                          'sets ACLTBL 0 through 127
+factor = factor + step    'sum all the table values 
+			      'DON'T PRINT "Num = ",Num, 
+			      '"step = ",step
+Num = Num + 1             'increment the table target
+step = step + C           'increase the step value by C
+BR loop1, Num < 128    	  'stay in this loop until num is 128
+'************************************************
+
+Acltbl Num = step         'set the ACLTBL 128 value DON'T PRINT 
+			     '"Num = ",Num, " step = ",step
+factor = factor + step    'sum all the table values
+num = num +1              'increment the table target this new 
+			     'target allows a second 1.0 value
+                             'to be placed in the table one is 
+			     'at location 128 and the other is 129 
+'************************************************
+
+LBL loop2
+Acltbl Num = step         'each time through the loop sets the 
+		             'appropriate table value
+                             'sets ACLTBL 129 through 256
+factor = factor + step    'sum all the table values DON'T PRINT 
+			     '"Num = ",Num, " step = ",step
+Num = Num + 1             'increment the table target
+step = step - C           'decrease the step value by C
+BR loop2, Num < 256       'stay in this loop until num is 256
+'************************************************
+
+Acltbl Num = step         'set the ACLTBL 256 value DON'T PRINT 
+			     '"Num = ",Num, " step = ",step
+'************************************************
+
+Acltbl 0 = factor/256     'caculate the average value and store it 
+			     'in the scale factor location zero
+
+                       	  'DON'T PRINT Acltbl Num
+                          'DON'T DELAY 10000 'wait 10 seconds to allow 
+			    'print to complete
+
+LBL begin2                'once the ACLTBL is generated you can 
+			     'start the program here to generate
+                             'velocity information
+MOVR dist                 'can set dist to diferent values and 
+			     'see results
+LBL loop3
+PRINT Vel                 'print present velocity
+DELAY 50                  'slow down print cycle prevents the print 
+			      'buffer from overflowing
+BR loop3, Mvg = 1         'branch to loop3 and print velocity while 
+			      'motor is still moving
+PRINT Vel 
+DELAY 1000                'delay 1 sec to allow print to complete
+
+
+
+END                       'end program
+Pgm                       'exit program mode

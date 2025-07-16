@@ -1,0 +1,137 @@
+/*!
+  \mainpage <name>.plc - <name> PLC program
+
+  \author Staff, OSU Dept. of Astronomy (<name>@astronomy.ohio-state.edu)
+ 
+  \date YYYY MMM DD
+  
+  \section Usage
+  
+  Usage: Multi-level command set
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+    
+<pre>
+<DATE> - new application [initials]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+
+/*!
+  \file template.plc
+  \brief Template header file for all PLC code.
+*/
+
+/** END HEADER **/  // This statement must be here. DO NOT remove
+* Start here with PLC code
+'Motion Configuration
+'
+' Input & Output Configuration
+'
+'Variable Declarations
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	        'STARTUP MODE
+		'PLC starts at address #100
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+PGM 100         'Starts at address 100
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'INITIAL(initializing) and HOME PROCEDURES
+' HOME and INITIAL are identical
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	        'Initialization
+LBL INITIAL
+'
+' Your code for initializing you mechanism goes here
+'
+BR END_IT
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+' YOUR CODE GOES IN HERE
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'END_IT(exit) PROCEDURE
+' EXIT the PLC routine
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL END_IT       'Exit
+END              'end the procedures
+PGM              'end of users plc program
+
+'''''''''''''''''''' GENERAL ISL PLC PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+'
+PGM 6000
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+PRINT "name"
+DELAY 100
+BR END_PLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+PRINT POS
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKMVG PROCEDURE check moving status
+'
+LBL CHKMVG
+PRINT MVG
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+PRINT "codeV=0.1(MM/DD/YY)",":HW",VER
+DELAY 100
+BR END_PLC      'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO30 PROCEDURE for bits 36 - 31
+' Check IO 30 bits
+'
+LBL IO30
+PRINT IO 36,IO 35,IO 34,IO 33,IO 32,IO 31
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC		
+DELAY 100
+END 
+PGM

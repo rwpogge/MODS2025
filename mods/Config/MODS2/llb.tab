@@ -1,0 +1,15 @@
+#
+# MODS2 Calibration Lamp/Laser Control Box (LLB) Configuration
+#
+# Started: 2013 Apr 20 [rwp/osu]
+#
+
+# IR Laser Preset Power [mW] - set 2014 Oct 30 [rwp/osu]
+# Tweaked 2015 Nov 21 [rwp/osu]
+
+IRPRESET 1.0
+
+# Visible Laser Preset Power [mW] - set 2013 July 2 [rwp/osu]
+
+VISPRESET 1.0
+

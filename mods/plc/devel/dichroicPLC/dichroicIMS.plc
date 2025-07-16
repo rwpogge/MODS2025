@@ -1,0 +1,394 @@
+/*!
+  \mainpage dichroic.plc - dichroic PLC program
+ 
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+  
+  \date 2007 Feb 02
+   
+  \section Usage
+   
+  Usage: Multi-level command set used with ISL system.
+   
+  Where: \c MODS instrument
+   
+  \section Introduction
+ Small command set the key words.
+ 
+ All Motion Parameters are documented in the MicroLYNX Part III
+ Software Reference.
+                                                                               
+<pre>
+2007 Feb 02 - new application [rdg]
+</pre>
+                                                                               
+\todo
+                                                                          
+<ul>
+</ul>
+*/
+/*!
+  \file dichroic.plc
+  \brief Small command set for a mechanisms
+*/
+/** END HEADER **/
+'Motion Parameters
+Drven=0       'Disable Motor Until User Inputs New Target
+Msel= 10      '10 microsteps per step
+Munit=2000    'units to revs
+Mac=60        'accel current is 0.60 * 7
+Mrc=35        'run current is 0.35 * 7
+Mhc=0         'hold current is zero
+Hcdt=0        'hold current delay msec	
+      'Input & Output Configuration
+Ios 21 = 0,0,1     'LSB, Active Low
+Ios 22 = 0,0,1	   'MSB, Active Low
+Ios 24 = 0,0,1	   'In Position, Active Low
+      'Motion Configuration
+Accl=10         'Acceleration rate in rev/sec^2
+Decl=10		'Deceleration rate in rev/sec^2
+Vm=2		'Move Velocity in rev/sec
+      'Variable Declarations
+VAR LIFETEST		'ENTERS INCREMENTAL MOTION TEST CYCLE WHEN SET TO 66
+VAR CYCTOTAL		'REQUESTED # OF LIFE CYCLE LOOPS BY USER
+VAR CYCCOUNT=0		'COUNTER FOR LIFE CYCLE LOOPS
+VAR MOVEINC=0		'COUNTER FOR INCREMENTAL MOVES
+VAR NUMPOS=3		'Number of Positions in the Dichroic Select
+VAR MAXPOS=NUMPOS-1	'Highest Position Value that can be requested
+VAR DIST = 5.125	'Motor revs between Dichroic Select positions
+VAR TARGNUM		'Target Dichroic Position Number
+VAR TARGMOV		'Target Move Requirement
+VAR A = Io 21		'One's	
+VAR B = Io 22 * 2	'Two's
+VAR A1 = Io 21		'One's (Read after move complete)	
+VAR B1 = Io 22 * 2	'Two's (Read after move complete)
+VAR DICHNUM = A + B	'The Current Dichroic Position as Determined 
+			'by the Code Bit Arithmetic
+VAR NEWPOS = A1 + B1	'The New Dichroic Position as Determined 
+			'by the Code Bit Arithmetic
+VAR error1 = 0		'Incremented Counter Variable used for Timeout Loop
+VAR RECOV99		'When = 99 Re-Initialization is attempted
+'Prints with 3 places before decimal,0 places after decimal,no padding
+'Pfmt=3,0,2		
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	        'STARTUP MODE
+		'PLC starts at address #100
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Pgm 100		'program starts at address 100
+'PRINT " "
+'PRINT "ENTER 66 FOR Incremental Motion Life Cycle Test Mode"
+'PRINT "ENTER 44 FOR Normal Operation Mode"
+'INPUT LIFETEST		  'Looks for User Input for Mode Variable
+'BR INCTEST, LIFETEST = 66 'Branches to Life Cycle Testing if equal to 66
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'BEGIN PROCEDURE
+'Act on the target number selected
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+			'Initialization
+LBL INITIAL
+DICHNUM=1
+LBL BEGIN
+'Check for In Position Condition, If False Branch to No Position Error
+BR NOPOS, Io 24 = 0 
+'PRINT " "
+'PRINT "The Dichroic Select is in a VALID POSITION"
+	'Check Current Dichroic Position
+NUMPOS = 4
+MAXPOS = NUMPOS-1	
+A = Io 21
+B = Io 22 * 2
+DICHNUM = A + B
+'PRINT " "
+'PRINT "Current Dichroic # in Use = ",DICHNUM
+'PRINT " "
+        'User Request for New Dichroic Position
+'PRINT "Please Select Next Dichroic Position When Ready (1-3)"
+'PRINT " "
+'INPUT TARGNUM
+'
+'Determines the difference between the Target & Current Position
+TARGMOV = TARGNUM - DICHNUM
+'
+        'Check User Input for Valid Entry
+'Target must be less than MAXPOS, Otherwise Branch to VALPOS
+BR VALPOS, TARGNUM>MAXPOS
+'
+'Target must be greater or equal than 1, Otherwise Branch to VALPOS
+BR VALPOS, TARGNUM<1
+'
+'IF Target is the same as the Current Position, Branch to NOMOVE
+BR NOMOVE, TARGNUM=DICHNUM
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'MOVEDISK PROCEDURE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL MOVEDISK
+Drven=1  'Enables to Drive		
+MOVEINC=0  'sets Incremental Move Counter to Zero
+BR POSMOVE, TARGNUM>DICHNUM  'Used for Positive Direction Motion
+BR NOMOVE, TARGNUM=DICHNUM   'Used when no move is required
+BR NEGMOVE, TARGNUM<DICHNUM  'Used for Negative Direction Motion
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'POSMOVE PROCEDURE
+'Positive Motion Loop
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL POSMOVE
+'print "POSMOVE: moveinc=",moveinc,",targmov=",targmov
+MOVR=DIST  'CW Move 1 Increment
+'LBL CONTPOS 'Rays comment: this nulls the HOLD 2 so not needed.
+HOLD 2
+'DELAY 500  'Adds delay in program execution in milliseconds
+INC MOVEINC  'Increments Counter Variable
+'DELAY 1000  'Adds delay in program execution in milliseconds
+'print "POSMOVE: moveinc=",moveinc,",targmov=",targmov
+'Branches when Move Counter equals Move Requirement
+BR CONFIRM, MOVEINC=TARGMOV
+DELAY 500  'Adds delay in program execution in milliseconds
+BR POSMOVE 'Closes Loop
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'NEGMOVE PROCEDURE
+'Negative Motion Loop
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL NEGMOVE
+'print "NEGMOVE: moveinc=",moveinc,",targmov=",targmov
+MOVR=-DIST			'CCW Move 1 Dichroic Increment
+'LBL CONTNEG  'Rays comment: this nulls the HOLD 2 so not needed.
+HOLD 2
+'DELAY 500  'Adds delay in program execution in milliseconds
+DEC MOVEINC  'Decrements Counter Variable
+'DELAY 1000  'Adds delay in program execution in milliseconds
+'print "NEGMOVE: moveinc=",moveinc,",targmov=",targmov
+BR CONFIRM, MOVEINC=TARGMOV 'Branches when Move Counter equals Move Requirement
+DELAY 500  'Adds delay in program execution in milliseconds
+BR NEGMOVE  'Closes Loop
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'CONFIRM PROCEDURE
+'Re-Reads Code Bits in order to Confirm Position
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL CONFIRM
+HOLD 2
+'Adds delay that allows detent to settle prior to reading IO status
+DELAY 500
+A1 = Io 21
+B1 = Io 22 * 2
+NEWPOS = A1 + B1
+'Confirms that New Position matches Target once motion stops
+'
+'PRINT "CONFIRM: newpos=", NEWPOS, ",moveinc=",MOVEINC,",targmov=",TARGMOV
+'
+'BR BEGIN, NEWPOS=TARGNUM
+BR END_IT, NEWPOS=TARGNUM
+'PRINT " "
+'New Position Doesn't Match Target
+PRINT "WRONG POSITION?, SENSORS INDICATE POSITION #" NEWPOS
+'PRINT " "
+'Optional Re-Initialize
+PRINT "ENTER 99 TO TRY TO RE-INITIALIZE, ENTER 55 TO QUIT"
+'PRINT " "
+'INPUT RECOV99  'Checks for User Input
+'Branch to beginning if Re-Initialization (99) is entered by user
+'BR BEGIN, RECOV99 = 99  
+'If any number other than 99 is entered by user the program branches to END_IT
+BR END_IT
+'BR BEGIN
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'NOPOS PROCEDURE
+'Recover from an Out of Position Error
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL NOPOS
+Drven=1  'Enables the Drive		
+'PRINT " " 				
+PRINT "ERROR: DICHROIC SELECT NOT IN A VALID POSITION, WAIT FOR RECOVERY"
+'PRINT " "
+SLEW 0.25  'Slews while waiting for In Position Bit to be activated
+ERROR1=0
+BR TIMEOUT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'TIMEOUT PROCEDURE
+'Loop that can be used as a timer for error recovery
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL TIMEOUT  
+DELAY 250		'Delay time in milliseconds
+BR STOP_IT, Io 24 =1	'Looks for In Position Bit to be activated
+INC error1		'Increments counter variable
+'Sets the maximum number of cycles before timeout error occurs
+BR FAILED,error1>160
+BR timeout		'Closes Timeout Loop
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'STOP_IT PROCEDURE
+'Soft Stop: Option 0 stops motion only, program continues to execute
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL STOP_IT
+SSTP 0
+BR INCTEST, LIFETEST=66 'Used for Life Cycle Test Only
+'BR BEGIN
+BR END_IT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'FAILED PROCEDURE
+'Recovery Timeout Message Followed by End of Program
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL FAILED
+'PRINT " "
+PRINT "RECOVERY FAILED"
+'PRINT " "
+BR END_IT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'VALPOS PROCEDURE
+'Invalid Position Message Followed by End of Program
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL VALPOS
+'PRINT " "
+PRINT "INVALID POSITION REQUESTED"
+'PRINT " "
+'BR BEGIN
+BR END_IT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'NOMOVE PROCEDURE
+'Alerts User that they've selected a target that's already in use
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL NOMOVE
+'PRINT " "
+PRINT "YOU ARE ALREADY USING #" DICHNUM
+'PRINT " "
+'BR BEGIN
+BR END_IT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'INCTEST PROCEDURE
+'INCREMENTAL MOTION CYCLE TEST ROUTINE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL INCTEST
+LIFETEST=99
+DELAY 250
+BR NOPOS, Io 24 = 0  'Looks for In Position Bit before starting test
+Drven=1
+'A = Io 21
+'B = Io 22 * 2
+'DICHNUM = A + B 'CHECKS POSITION PRIOR TO STARTING LIFE CYCLE TEST
+'PRINT " "
+'PRINT "BEGIN INCREMENTAL MOTION LIFE CYCLE TEST AT POSITION #",DICHNUM
+'PRINT " "
+'PRINT "CURRENT POSITION # " DICHNUM
+'PRINT " "
+'PRINT "ATTEMPTING TO MOVE TO POSITION #3 TO BEGIN TEST"
+'PRINT " "
+TARGNUM=3  'Always moves to Position 2 to Start Test
+TARGMOV=TARGNUM-DICHNUM
+MOVR DIST*TARGMOV
+HOLD 2
+DELAY 2000  'Allows Detent to Settle
+A = Io 21
+B = Io 22 * 2
+DICHNUM = A + B
+PRINT "TEST STARTING AT POSITION #" DICHNUM
+'PRINT " "
+'PRINT "HOW MANY COMPLETE LIFECYCLE LOOPS TO DO?"
+'INPUT CYCTOTAL
+CYCTOTAL=5
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'INCSTART PROCEDURE
+'Incremental Motion Cycle Test Loop
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL INCSTART
+MOVEINC=0
+INC CYCCOUNT
+BR FINALCHK, CYCCOUNT > CYCTOTAL
+'PRINT " "
+PRINT "STARTING LIFECYCLE LOOP # " CYCCOUNT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'NEGTEST PROCEDURE
+'Negative Direction Test Loop
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL NEGTEST
+MOVR=-DIST
+HOLD 2
+DELAY 500
+INC MOVEINC
+BR NEGTEST, MOVEINC<2	'Loops for 2 Cycles
+MOVEINC=0		'Resets Counter Variable
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'POSTEST PROCEDURE
+'Positive Direction Test Loop
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL POSTEST
+MOVR=DIST
+HOLD 2
+DELAY 500
+INC MOVEINC
+BR POSTEST, MOVEINC<2	'Loops for 2 Cycles
+MOVEINC=0		'Resets Counter Variable
+BR INCSTART
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'FINALCHK PROCEDURE
+'Checks IO and Gives Life Cycle Test Results
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL FINALCHK
+DELAY 1000
+A1 = Io 21
+B1 = Io 22 * 2
+NEWPOS = A1 + B1
+PRINT "THE LIFE CYCLE TEST IS DONE"
+'PRINT " "
+PRINT "THE TEST STARTED AT POSITION # " DICHNUM
+'PRINT " "
+PRINT "THE TEST ENDED AT POSITION # " NEWPOS
+'PRINT " "
+BR BADTEST, DICHNUM<>NEWPOS
+PRINT "THE TEST WAS SUCCESSFUL"
+LIFETEST=44  'Reset lifetest
+CYCCOUNT=0   'Reset Count
+BR END_IT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'BADTEST PROCEDURE
+'Error Message for Failed Life Cycle Test
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL BADTEST
+'PRINT " "
+PRINT "THE START POSITION DOES NOT MATCH THE FINISH POSITION"
+PRINT "THIS INDICATES A STALL OCCURRED DURING THE TEST"
+BR END_IT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'END_IT PROCEDURE
+'End of the line
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL END_IT
+BR NOTONE, DICHNUM<>1
+POS=0.0
+LBL NOTONE
+A = Io 21
+B = Io 22 * 2
+DICHNUM = A + B
+PRINT " Current Dichroic # in Use = ",DICHNUM
+'PRINT "END PROGRAM"
+'PRINT " "
+SSTP 1  'Stops the Motion and the Program Execution
+END 'END of PLC code
+Pgm
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+			'ISL PLC
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+PGM 6000
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'WHO AM I PROCEDURE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL WHO
+PRINT "dichroic"
+BR END_PLC
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'POLL THE CONTROLLER PROCEDURE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL POLL
+PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'CODE VERSION PROCEDURE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL CODEV
+PRINT "codeV=0.1(09/12/07)",":HW",VER
+BR END_PLC      'branch to exit
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'ENDIT PROCEDURE
+'End of the line
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL END_PLC		
+END 'END of ISL PLC code
+PGM

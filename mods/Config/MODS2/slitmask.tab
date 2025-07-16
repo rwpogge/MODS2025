@@ -1,0 +1,29 @@
+#Pos Name          Info
+#
+ 1  DarkMask      Blank Mask for a Dark Block
+ 2  SieveMask     Pinhole Imaging Sieve Nr3
+ 3  Imaging       Empty Frame for Imaging Stop
+ 4  LS5x60x0.3    0.3 arcsec Segmented Long Slit
+ 5  LS5x60x0.6    0.6 arcsec Segmented Long Slit
+ 6  LS5x60x0.8    0.8 arcsec Segmented Long Slit
+ 7  LS5x60x1.0    1.0 arcsec Segmented Long Slit
+ 8  LS5x60x1.2    1.2 arcsec Segmented Long Slit
+ 9  LS60x5        5 arcsec Spectrophotometry Wide Slit
+10  PinholeSlit   Pinhole Slit
+11  PointingMask  Pointing Mask 40arcsec FoV
+12  LS5x60x2.4    2.4 arcsec Segmented Long Slit
+#
+#  LBTO ECD 31-06 Aug 2024 UT, avoid slot 24 (bent chute)
+#
+13 ID531956      mods.3.g20d25ep2
+14 Empty         Do Not Use
+15 ID531713      mods.2.g00d25ep
+16 Empty         Position Empty
+17 ID532732      mods.4.g04d25ep
+18 ID515404      mods.37.r06d80ep
+19 Empty         Do Not Use
+20 Empty         Position Empty
+21 Empty         Position Empty
+22 Empty         Position Empty
+23 Empty         Position Empty
+24 Empty         Position Empty

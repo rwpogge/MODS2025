@@ -1,0 +1,438 @@
+/*!
+  \mainpage maskI.plc - Mask Insert PLC program
+
+  \author Staff, OSU Astronomy Dept. (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2005 Jul 20
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system
+	 or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+    	Small command set the key words are -
+		initial: Initialize the Mask Insert to position 0.000
+		   home: Send mask to Science Position 0.000
+		   stow: Stow the mask into the cassette slot
+		 offset: move mask Insert to a relative position
+		   stop: Stop all mechanism movement
+		 relbrk: Release break
+		 setbrk: Set break
+
+	NOTE: One(1) user unit = 200 steps
+
+	All Motion Parameters are documented in the MicroLYNX Part III 
+	Software Reference.
+
+<pre>
+2005 Jul 20 - new application [rdg/to]
+2006 Nov 01 - added home,initial,stow,offset,stop,relbrk,setbrk [rdg]
+2008 Apr 09 - fixed offset [rdg]
+2008 Jun 19 - added timer, user unit counter, and trip wire [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file maskI.plc
+  \brief Small command set for Mask Insert mechanism
+*/
+/** END HEADER **/
+'Start here with PLC Ladder Logic Code
+'Motion Configuration
+MSEL= 10
+MUNIT=2000
+MAC = 60
+MRC=42
+MHC = 0
+HCDT = 500
+ACLT = 1
+ACCL=50         'acceleration rate in rev/sec^2
+DECL=ACCL       'acceleration rate = deceleration rate
+LDECL=500       'set decel after a limit is asserted
+'
+'Input & Output Configuration
+IOS 21 = 13,0,0 'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0 'NEGATIVE (CCW)limit, active low
+IOS 23=0,0,0    'SCIENCE position occupied sensor
+IOS 24=0,0,0    'STOWED position occupied sensor
+'IOS 25=0,0,0    'NOT USED
+IOS 26=18,1,0   'Brake relay coil (internal pull-up switch opened)
+                'Output defaults to NO, Brake wired to NO contacts
+                'on relay Brake is applied with power off and 
+                'default state of drive output
+
+'Variable Declarations
+VAR VNORM=5.0
+VM=VNORM        '5 rev/sec running speed
+VAR VALO=32.500 'Relative move value for the Insert mechanism
+VAR VSEEK=1.0
+VAR STEPCNT=64.500 	'User units stop and sneak up on limit
+VAR STEPCNT1=80.000 	'User units stop 
+VAR TTIME=22000  	'Timer 22 secs
+POS=0.000           	'Zero(0) the position for counting user units
+
+VAR POS_SAVE
+VAR TEMPPOS
+VAR TEMPSTEP
+'VAR TRIPWIRE=0
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'	        STARTUP MODE
+' PLC Ladder Logic starts at address #100
+'
+PGM 100
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		INITIAL(initializing) PROCEDURES
+' INITIAL in the stow position
+' o If INITIALize in Cassette Direction
+'
+LBL INITIAL
+'
+  BR ERR2122, IO 21+IO 22=2	'Check io b21 and b22 [high:on:1] not allowed
+  BR ERR2324, IO 23+IO 24=2	'Check io b23 and b24 [high:on:1] not allowed
+'
+  SLEW -VNORM,0			'Slew to Stow Position
+  HOLD 2
+  MOVA 1.0			'Move away from limit
+  HOLD 2
+  SLEW -VSEEK,0			'Sneak up on Stow Position
+  HOLD 2			'suspend procedure until move is complete
+  POS_SAVE=POS			'save position in case we need it
+  POS=0.000			'set position to Zero (0.000)
+  STEPCNT=64.500		'Reset User units
+BR END_IT       		'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		HOME (Science Position) PROCEDURES
+' HOME (Science Position)
+' o If HOME or in Science Position, stop let user know
+' o If CW(b21), and CCW(b22) are high:on:1 give error
+' o If CW(b23), and CCW(b24) are high:on:1 give error
+' o Make sure Cassette available b24 and b22 are high:on:1
+'   before attempting a Science Position.
+' o If Cassette available b24 and b22 are high:on:1 and
+'   Science Position(b23) and CW(b21) are low:off:0
+'	o Attemp a Stow command
+'		o If sucessful continue to Science Position
+'		o If unsucessful stop and give error
+' o When completed, stop give message
+'
+LBL HOME
+'
+  BR ERR2122, IO 21+IO 22=2	'Check io b21 and b22 [high:on:1] not allowed
+  BR ERR2324, IO 23+IO 24=2	'Check io b23 and b24 [high:on:1] not allowed
+'
+  BR INERR, IO 24+IO 22=1	'Cassette slot *NOT* empty
+  BR PRIMEP, IO 23+IO 21<>0	'Are we in Science Position?
+'
+  TP1=STEPCNT,SCNT1		'Configure with user unit count
+  TPE1=1			'Enable user unit count
+'
+  TP2=STEPCNT1,SCNT2		'Configure with user units for ERROR
+  TPE2=1			'Enable user units
+'
+  TI1=21,TRIPPED		'Trip on IO 21
+  TIE1=1			'Enable Trip wire
+'
+  TT1=TTIME,TIMER1		'Configure to trip in TTIME milliseconds
+  TTE1=1			'Enable timeout
+'
+  SLEW VNORM,0			'Slew to Science Position
+  HOLD 2
+  SLEW VSEEK,0			'Sneak up on Science Position
+  HOLD 2			'suspend procedure until move is complete
+  POS_SAVE=POS			'save position in case we need it
+  POS=0.000			'set position to Zero (0.000)
+  STEPCNT=64.500		'Reset User units
+BR END_IT       		'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                        STOW(park) PROCEDURE
+' o If in Stow Position, stop let user know
+' o If CW(b21), and CCW(b22) are high:on:1 give error
+' o If CW(b23), and CCW(b24) are high:on:1 give error
+' o Make sure Cassette available b24 and b22 are high:on:1
+'   before attempting a Science Position.
+' o If Cassette available b24 and b22 are low:off:0 and
+'   Science Position b23 and b21 are low:off:1
+'	o Attemp a Stow command
+'		o If sucessful continue to Science Position
+'		o If unsucessful stop and give error
+' o When completed, stop give message
+'
+LBL STOW
+'
+  BR ERR2122, IO 21+IO 22=2	'Check io b21 and b22 ( both ON not allowed)
+  BR ERR2324, IO 23+IO 24=2	'Check io b23 and b24 ( both ON not allowed)
+'
+  BR INPOS, IO 23+IO 21=1	'Check Science Position with mask before moving
+  BR STOWERR, IO 24+IO 22<>0	'Check Cassette Slot is not Occupied
+'
+  TP1=-STEPCNT,SCNT1    	'Configure with user units
+  TPE1=1                	'Enable user units
+'
+  TP2=-STEPCNT1,SCNT2    	'Configure with user units for ERROR
+  TPE2=1                	'Enable user units
+'
+  TI1=22,TRIPPED        	'Trip on IO 22
+  TIE1=1                	'Enable Trip wire
+'
+  TT1=TTIME,TIMER1      	'Configure to trip in TTIME milliseconds
+  TTE1=1                	'Enable timeout
+'
+  SLEW -VNORM,0			'slew to STOW position (opposite of INITIAL)
+  HOLD 2
+  SLEW -VSEEK,0			'Sneak up on the Stow Position limit
+  HOLD 2
+  VM=VNORM			'reset the speed to normal speed.
+  POS_SAVE=POS			'save position in case we need it
+  POS=0.000			'reset position to Zero (0.000)
+  STEPCNT=64.5			'Reset User units
+BR END_IT			'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'			OFFSET PROCEDURE
+' send mask carriage to an offset position
+'
+LBL OFFSET
+  BR ERR2122, IO 21+IO 22=2	'Check io b21 and b22 ( both ON not allowed)
+  BR OFFERR, IO 21+IO 23<>2	'Check for stow
+'
+  VM=VNORM			'reset the speed to normal speed.
+  MOVR -VALO
+  HOLD 2
+  POS_SAVE=POS			'save position in case we need it
+  POS=0.000			'reset position to Zero (0.000)
+  STEPCNT=32.000		'Adjust the user unit counter
+  TEMPPOS=0.000			'Reset User units
+  TEMPSTEP=32.000		'Reset User units
+  PRINT "Offset from Science Position"
+BR END_IT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       RELeaseBRaKe PROCEDURE
+' release the brake
+'
+LBL RELBRK
+  IO 26=1
+RET
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       SETBRaKe PROCEDURE
+' set the brake
+'
+LBL SETBRK
+  IO 26=0
+RET 
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       PRIMEP PROCEDURE
+' are we there yet?
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL PRIMEP
+  PRINT "Already in Science Position:b21[",IO 21,"],b23[",IO 23,"]"
+  STEPCNT=64.500
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       INPOS PROCEDURE
+' are we there yet?
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL INPOS
+  PRINT "In Science Position *WITHOUT* mask:b21[",IO 21,"],b23[",IO 23,"]"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                       STOP(halt) PROCEDURE
+' STOP the PLC task
+'
+LBL STOP
+  SSTP 1
+BR END_IT		'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ERR2122(io error) PROCEDURE
+' ERR2122 Both b21 and b22 "ON" not allowed.
+'
+LBL ERR2122
+  PRINT "Bits 21(ON)=",IO 21," and 22(ON)=",IO 22," not allowed"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ERR2324(io error) PROCEDURE
+' ERR2324 Both b23 and b24 "ON" not allowed.
+'
+LBL ERR2324
+  PRINT "Bits 23(ON)=",IO 23," and 24(ON)=",IO 24," not allowed"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		INERR(io error) PROCEDURE
+' INERR Both b22 high:on:1 and b24 low:off:0 indicates no mask
+'
+LBL INERR
+  PRINT "Bits 22,24=",IO 22,IO 24," *NO* Mask in Cassette Slot"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STOWERR(io error) PROCEDURE
+' STOWERR b22 and b24 high:on:1 already at stow position
+'
+LBL STOWERR
+  PRINT "Already at Stow Position:b22[",IO 22,"],b24[",IO 24,"]"
+  STEPCNT=64.500
+BR END_IT
+'  
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TIMER1 PROCEDURE
+' Timed out. We cannot go on forever.
+LBL TIMER1      'Turn off at user input revolutions
+  PRINT "Mask Insert(Carrier) Timout: ",TTIME," millisecs"
+  SSTP 0
+BR END_IT
+'  
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               SetpCouNT1 PROCEDURE
+' Close or Open sneak reached
+'
+LBL SCNT1       'user units
+  SSTP 0        'Stop all functions
+RET
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TRIPPED(io error) PROCEDURE
+' TRIPPED on a CW or CCW bit. 21 or 22 repectively
+' o If Mask Insert completed return to caller
+' o If it was tripped early
+'       o evaluate where we stopped
+'       o give an error message 
+'	o stop PLC
+'
+LBL TRIPPED
+  POS_SAVE=POS
+  TEMPPOS=ABS POS_SAVE		'Get the absolute value for motor
+  TEMPSTEP=ABS STEPCNT          'Get the absolute value for user units
+  BR TRIPERR, TEMPPOS<TEMPSTEP  'Compare, see if it was early
+  RET
+LBL TRIPERR
+'
+  PRINT "pos=",TEMPPOS,"<, TEMPSTEP=",TEMPSTEP
+  PRINT "Bits: b21,b22,b23 or b24, I/O tripped early or cable problem"
+'  TRIPWIRE=1
+'  POS=0.000             	'reset position to Zero (0.000)
+BR END_IT
+'
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TripWIRE(io error) PROCEDURE
+' A limit switch has been tripped early
+'	o Re-initialize stow or home
+LBL TWIRE
+
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               StepCouNT2 PROCEDURE
+' User Unit count exceeded
+'
+LBL SCNT2               'user units
+  SSTP 0
+  POS_SAVE=POS          'save position in case we need it
+  POS=0.000             'reset position to Zero (0.000).
+  PRINT "Mask Insert user unit count of ",STEPCNT1," exceeded"
+RET
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               OFFsetERRor PROCEDURE
+' Offset enble check
+'
+LBL OFFERR
+  SSTP 0
+  PRINT "Offset *ONLY* allowed from Science Position"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_IT(exit) PROCEDURE
+' EXIT the PLC LL routine
+'
+LBL END_IT	'Exit
+  SSTP 1        'Stop program and controller Ladder Logic
+END		'end the procedures
+PGM		'end of program in RAM 
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''' NEW PLC PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+'
+PGM 6000
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+  PRINT "maskI"
+BR END_PLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                MASK PROCEDURE for bits 26 - 21
+'
+LBL I20BITS
+  PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+  PRINT POS
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKMVG PROCEDURE check moving status
+'
+LBL CHKMVG
+  PRINT MVG
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+  PRINT "POS_SAVE=",POS_SAVE," : b26-b21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+  PRINT "codeV=0.1(12/18/07)",":HW",VER
+BR END_PLC      'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+  PRINT "26:25:24:23:22:21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO30 PROCEDURE for bits 36 - 31
+' Check IO 30 bits
+'
+LBL IO30
+  PRINT "36:35:34:33:32:31=",IO 36,IO 35,IO 34,IO 33,IO 32,IO 31
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ENDIT PROCEDURE
+'End of the line
+'
+LBL END_PLC		
+END 'END of ISL PLC code
+PGM

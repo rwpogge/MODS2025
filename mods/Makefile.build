@@ -1,0 +1,62 @@
+#
+VERSION = 2
+SUBLEVEL = 0
+PATCHLEVEL = 0
+ISL_VERSION = $(VERSION).$(SUBLEVEL).$(PATCHLEVEL)
+export VERSION SUBLEVEL PATCHLEVEL ISL_VERSION
+#
+# retired: LIB_DIR = ISIS FCS utilities poclb agw_1.2.0 mmc_3.0.2
+#
+LIB_DIR = utilities agw_1.3 mmc_3.1
+#TCS
+#
+# retired: SNTools, fcs
+#
+EXEC_DIR = modsalloc TclTk
+#
+#
+all:	libs execs
+#
+dist:
+	rm -rf /tmp/mods-$(ISL_VERSION).tgz /tmp/isldist-exclude
+	cd /; find /home2/mods-$(ISL_VERSION) -name 'core'     -print >  /tmp/isldist-exclude
+	cd /; find /home2/mods-$(ISL_VERSION) -name '#*#'      -print >> /tmp/isldist-exclude
+	cd /; find /home2/mods-$(ISL_VERSION) -name '*~'       -print >> /tmp/isldist-exclude
+	cd /; find /home2/mods-$(ISL_VERSION) -name '.*~'      -print >> /tmp/isldist-exclude
+	cd /; find /home2/mods-$(ISL_VERSION) -name '*.[oas]'  -print >> /tmp/isldist-exclude
+	cd /; find /home2/mods-$(ISL_VERSION) -name 'y.tab.h'  -print >> /tmp/isldist-exclude
+	cd /; find /home2/mods-$(ISL_VERSION)/bin -mindepth 1 -name '*' -print >> /tmp/isldist-exclude
+	cd /; tar -czf /tmp/mods-$(ISL_VERSION).tgz -X /tmp/isldist-exclude /home2/mods-$(ISL_VERSION)
+	chmod a+rw /tmp/mods-$(ISL_VERSION).tgz
+#
+clean:
+	rm -f `find . -name 'core' -print`
+	rm -f `find . -name '#*#' -print`
+	rm -f `find . -name '*~' -print`
+	rm -f `find . -name '.*~' -print`
+	rm -f `find . -name '.#*' -print`
+#
+JunkPile:
+	rm -fr */JunkPile/*
+#
+rmexe:
+	rm -fr bin/*
+	rm -fr ulib/*
+	rm -fr agw_1.0.0/bin/*
+	rm -fr mmc_1.0.0/bin/*
+#
+rmdoto:
+#	rm -f `find . -name '*.[oas]' -print`
+	find . -name '*.[oas]' -exec rm {} \;
+#
+libs:
+	for dir in $(LIB_DIR); do\
+		make --no-print-directory -C $$dir ;\
+	done
+#
+execs:
+	for dir in $(EXEC_DIR); do \
+		make --no-print-directory -C $$dir; \
+	done
+install:
+	sh Misc/modsinstall

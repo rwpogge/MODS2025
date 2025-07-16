@@ -1,0 +1,442 @@
+/*!
+  \mainpage hatch.plc - hatch PLC program
+
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2007 Feb 02
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with MODS and ISL systems
+	 or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+	Small command set the key words are -
+		initial: Initialize Hatch
+		   open: Send open to position 0.000
+		  close: Send close position oposite of home.
+		   stop: Stop all mechanism movement
+		 relbrk: Release break
+		 setbrk: Set break
+
+	NOTE: One(1) user unit = 200 steps
+
+	All other motion parameters are documented:
+	(MicroLYNX Part III Software Reference)
+
+<pre>
+2007 Feb 02 - new application [rdg]
+2008 June 20 - Added Timer, Unit Counter, and Trip wire [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file hatch.plc
+  \brief Small command set for hatch mechanism
+*/
+/** END HEADER **/
+' Start here with PLC Ladder Logic Code
+' Motion Configuration
+MSEL=10
+MUNIT=2000
+MAC=50
+MRC=40
+MHC=0
+HCDT=500
+ACLT=1
+ACCL=50		'acceleration rate in rev/sec^2
+DECL=ACCL	'acceleration rate = deceleration rate
+LDECL=500	'set decel after a limit is asserted
+'
+' Input & Output Configuration
+IOS 21=13,0,0	'POSITIVE (CW) limit,active low,
+IOS 22=14,0,0	'NEGATIVE (CCW)limit, active low
+IOS 26=0	'Brake relay coil (internal pull-up switch opened)
+		'Output defaults to NO, Brake wired to NO contacts on relay
+		'Brake is applied with power off and default state of
+		'drive output
+' Variable Declarations
+VAR VNORM=0.75   
+VM=VNORM	'1 rev/sec running speed
+VAR VSEEK=0.09
+'VAR BACKLASH = -->> 0.2? <<--
+VAR OCCHK		'Check for already Opened and Closed
+VAR POS_SAVE		'Save position 
+VAR STEPCNT1=4.00	'4 user units(revs)
+VAR STEPCNT=3.00	'3 user units(revs)
+VAR TTIME=6000		'Timer 5 secs
+VAR IOBITS		'Bits checker
+POS=0			'Zero(0) the position for counting user units
+			'We will always set the position to zero(0)
+			'Since we do not have encoders
+			'We will rely on unit count, timer and trip wire
+VAR TEMPPOS		'Temporary position saves
+VAR TEMPSTEP		'Temporary unit count saves
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               'STARTUP MODE
+' PLC starts at address #100
+'
+PGM 100		'Starts at address 100
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               INITIAL(initializing) - HOME PROCEDURES
+' INITIALize mechanism
+'
+LBL INITIAL
+  VM=VNORM		'Set for normal speed
+  OCCHK=0		'Set Open=0 Close=1 variable
+  BR IOFAIL, IO 21=1	'Check io bits 21 for starting position
+  IOBITS=IO 21+IO 22	'Get io bits 21 and 22 information
+  BR BITERR, IOBITS=2	'Check io bits 21 and 22 (both HIGH not allow)
+'
+  TP1=STEPCNT,SCNT1	'Configure with user units
+  TPE1=1		'Enable user units
+'
+  TP2=STEPCNT1,SCNT2	'Configure with user units
+  TPE2=1		'Enable user units
+' 
+  TI1=21,TRIPPED	'Trip on IO 21
+  TIE1=1		'Enable Trip wire
+'
+  TT1=TTIME,TIMER1	'Configure to trip in TTIME milliseconds
+  TTE1=1		'Enable timeout
+'
+  SLEW VNORM,0		'slew to initialized state
+  HOLD 2		'suspend procedure until move is complete
+  SLEW VSEEK,0		'sneak-up on the limit
+  HOLD 2		'suspend procedure until move is complete
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.000		'reset position to Zero (0.000).
+BR END_IT		'branch to exit
+'
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               OPEN(or home) PROCEDURE
+' o If opened, stop let user know
+' o If CW(b21), and CCW(b22) are high:on:1 give error
+' o Make sure hatch is closed before opening
+'	o If not completely closed, try closing
+'	o If unsucessful closing, stop and give error
+' o If unsucessful opening, stop and give error message
+'
+LBL OPEN
+  VM=VNORM
+  BR IOFAIL, IO 21=1	'Check io bits 21 for starting position
+  IOBITS=IO 21+IO 22	'Get io bits 21 and 22 information
+  BR BITERR, IOBITS=2	'Check io bits 21 and 22 (both ON not allow)
+''''
+' If the hatch is ajar make sure it is opened before closing
+'
+BR HEREO, OCCHK=1	'Are we ajar in the close position?
+  SLEW VSEEK,0		'slew to re-open position 
+  HOLD 2
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.00
+  BR IOFAIL, IO 21=1	'Check io bits 21 already there
+BR END_IT
+'
+LBL HEREO
+  BR CONTO, IO 22=1	'Check io bits 22 - is it really closed?
+'
+  SLEW -VSEEK,0		'slew to re-open position 
+  HOLD 2		'suspend procedure until move is complete
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.00
+'
+  BR CONTO, IO 22=1	'Check io bit 22 for close again!
+BR AJARERR		'If it fails again give an indication
+'
+LBL CONTO
+'
+  TP1=STEPCNT,SCNT1	'Configure with user units
+  TPE1=1		'Enable user units
+'
+  TP2=STEPCNT1,SCNT2	'Configure with user units for ERROR
+  TPE2=1		'Enable user units
+' 
+  TI1=21,TRIPPED	'Trip on IO 21
+  TIE1=1		'Enable Trip wire
+'
+  TT1=TTIME,TIMER1	'Configure to trip in TTIME milliseconds
+  TTE1=1		'Enable timeout
+'
+  OCCHK=0
+  SLEW VNORM,0		'slew to to set position 0.000
+  HOLD 2		'suspend procedure until move is complete
+  SLEW VSEEK,0		'sneak-up on the limit
+  HOLD 2		'suspend procedure until move is complete
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.000		'reset position to Zero (0.000).
+BR END_IT       	'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               CLOSE(close) PROCEDURE
+' o If closed, stop let user know
+' o If CW(b21), and CCW(b22) are high:on:1 give error
+' o Make sure hatch is opened before closing
+'	o If not completely opened, try opening
+'	o If unsucessful opening, stop and give error
+' o If unsucessful closing, stop and give error message
+'
+LBL CLOSE
+  VM=VNORM
+  BR IOFAIL, IO 22=1	'Check io bits 22 for starting position
+  IOBITS=IO 21+IO 22	'Get io bits 21 and 22 information
+  BR BITERR, IOBITS=2	'Check io bits 21 and 22 (both HIGH not allow)
+''''
+' If the hatch is ajar make sure it is opened before closing
+'
+BR HEREC, OCCHK=0	'Are we ajar in the open position?
+  SLEW -VSEEK,0		'slew to re-close position 
+  HOLD 2
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.00
+  BR IOFAIL, IO 21=1	'Check io bits 21 for starting position
+BR END_IT
+'
+LBL HEREC
+  BR CONTC, IO 21=1	'Check io bits 21 - is it really open?
+'
+  SLEW VSEEK,0		'slew to re-open position 
+  HOLD 2		'suspend procedure until move is complete
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.00
+'
+  BR CONTC, IO 21=1	'Check io bit 21 for open again!
+BR AJARERR		'If it fails again give an indication
+'
+LBL CONTC
+'
+  TP1=-STEPCNT,SCNT1	'Configure with user units
+  TPE1=1		'Enable user units
+'
+  TP2=-STEPCNT1,SCNT2	'Configure with user units for ERROR
+  TPE2=1		'Enable user units
+'
+  TI1=22,TRIPPED	'Trip on IO 22
+  TIE1=1		'Enable Trip wire
+'
+  TT1=TTIME,TIMER1	'Configure to trip in TTIME milliseconds
+  TTE1=1		'Enable timeout
+'
+  OCCHK=1
+  SLEW -VNORM,0		'slew to CLOSE position
+  HOLD 2		'suspend procedure until move is complete
+  SLEW -VSEEK,0		'sneak-up on limit
+  HOLD 2		'suspend procedure until move is complete
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.000		'reset position to Zero (0.000).
+BR END_IT		'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Subroutines to end Ladder Logic
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STOP(halt) PROCEDURE
+'
+LBL STOP
+  SSTP 0
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.000		'reset position to Zero (0.000).
+BR END_IT		'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               BITERRor(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+'
+LBL BITERR
+  SSTP 0
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.000		'reset position to Zero (0.000).
+  PRINT "Both bits (",IO 21,IO 22,IOBITS"), high or low *NOT* allowed"
+'reset iobits
+  IOBITS=0
+  DELAY 100
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               STALLERRor(io error) PROCEDURE
+' STALLERR Hatch jammed
+'
+LBL STALLERR
+  PRINT "Hatch is Jammed."
+  STALL=0
+  SSTP 0 
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               AJARERRor(io error) PROCEDURE
+' AJARERR Check for the hatch being opened or closed before
+' proceeding
+'
+LBL AJARERR
+  SSTP 0
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.000		'reset position to Zero (0.000).
+  PRINT "Hatch is ajar. It must be stuck. Try again"
+  DELAY 100
+BR END_IT
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TRIPPED(io error) PROCEDURE
+' TRIPPED on a CW or CCW bit. 21 or 22 repectively
+' o If hatch completed return to caller
+' o If hatch was tripped early
+'	o Stop operation (open or close)
+'	o End and give an error message 
+'
+LBL TRIPPED
+  POS_SAVE=POS		  	'save position in case we need it
+  TEMPPOS=ABS CTR1/MUNIT	'Get the absolute value for motor
+  TEMPSTEP=ABS STEPCNT		'Get the absolute value for user units
+  BR TRIPERR, TEMPPOS<TEMPSTEP	'Compare, see if it was early
+  RET
+LBL TRIPERR
+  PRINT "CW,CCW I/O tripped early or CW/CCW cable problem: ",IO 21,IO 22
+  SSTP 0
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TIMER1 PROCEDURE
+' Timed out. We cannot go on forever.
+'
+LBL TIMER1
+  PRINT "Hatch Timout: ",TTIME," millisecs"
+  SSTP 0
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Return Subroutines
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		SETBRaKe PROCEDURE
+' Set brake
+LBL SETBRK
+  IO 26=0
+RET 
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               RELeaseBRaKe PROCEDURE
+' release the brake.
+'
+LBL RELBRK
+  IO 26=1
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               IOFAIL PROCEDURE
+' IO has failed or already there PROCEDURE
+'
+LBL IOFAIL
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.000		'reset position to Zero (0.000).
+  PRINT "Already in position IO=",IO 21,IO 22
+  DELAY 100
+RET
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               StepCouNT2 PROCEDURE
+' User Unit count exceeded
+'
+LBL SCNT2		'user units
+  SSTP 0
+  POS_SAVE=POS  	'save position in case we need it
+  POS=0.000		'reset position to Zero (0.000).
+  PRINT "Hatch user unit count of ",STEPCNT1," exceeded"
+  DELAY 100
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               StepCouNT1 PROCEDURE
+' Close or Open not reached
+'
+LBL SCNT1		'user units
+  SSTP 0
+RET
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               END_IT(exit) PROCEDURE
+' END of Main PLC Ladder Logic Code
+'
+LBL END_IT       'Exit
+  SSTP 1
+END              'end the procedures
+PGM              'end of program in RAM
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''' ISL PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC Ladder Logic PROCEDURES
+'
+PGM 6000
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+PRINT "hatch"
+DELAY 100
+BR END_PLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+PRINT POS
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKMVG PROCEDURE check moving status
+'
+LBL CHKMVG
+PRINT MVG
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+PRINT "code ver = 0.1(latest)"
+DELAY 100
+BR END_PLC      'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO30 PROCEDURE for bits 36 - 31
+' Check IO 30 bits
+'
+LBL IO30
+PRINT IO 36,IO 35,IO 34,IO 33,IO 32,IO 31
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC		
+DELAY 100
+END 
+PGM

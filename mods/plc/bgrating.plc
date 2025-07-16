@@ -1,0 +1,427 @@
+/*!
+  \mainpage bgrating.plc - bgrating PLC program
+ 
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+  
+  \date 2007 Feb 02
+   
+  \section Usage
+   
+  Usage: Multi-level command set used with ISL system
+         or Window IMS system
+   
+  Where: \c MODS instrument
+   
+  \section Introduction
+        Small command set of key words are -
+	Any item with a LBL is a keyword
+		
+        All Motion Parameters are documented in the MicroLYNX Part III
+        Software Reference.
+
+<pre>
+2007 Apr 04 - new application [mad]
+2007 Jul 19 - Added the header and modified application extensively [rdg]
+2008 Aug 15 - Added Power Failure variables (PWRFAIL) [rdg]
+2009 Feb 23 - Added reduce speed to 0.15 when entering detent.
+2009 Feb 23 - ACCL,DECL,VM parameter change[mad/rdg]
+              old=15,20,3 to new=0.5,0.5,0.4
+2009 Mar 02 - VM parameter change[rdg/mad/rwp]
+              old=0.4 to new=0.5
+</pre>
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file bgrating.plc
+  \brief Small command set for BLUE grating select mechanisms
+*/
+/** END HEADER **/
+' START loading PLC code
+' Motion Parameters
+Drven=0		'Disable Motor Until User Inputs New Target Grating
+'
+'Input & Output Configuration
+Ios 21 = 13,0,0	'CW Limit, Active Low
+Ios 22 = 14,0,0	'CCW Limit, Active Low
+Ios 23 = 0,0,0	'LSB, Active Low
+Ios 24 = 0,0,0	'MSB, Active Low
+Ios 25 = 0,0,0	'In Position, Active Low
+'
+'Motion Configuration
+VM=0.5		'Move Velocity in rev/sec
+'
+'Variable Declarations
+VAR LIFETEST		'ENTERS INCREMENTAL MOTION TEST CYCLE WHEN SET TO 66
+VAR CYCTOTAL		'REQUESTED # OF LIFE CYCLE LOOPS BY USER
+VAR CYCCOUNT=0		'COUNTER FOR LIFE CYCLE LOOPS
+VAR MOVEINC=0		'COUNTER FOR INCREMENTAL MOVES
+VAR NUMPOS=4		'Number of Positions in the Grating Select
+VAR MAXPOS=NUMPOS-1 	'Highest Position Value that can be requested
+VAR GQUERY
+'
+VAR DIST = 6.7		'Motor revs between Grating Select positions
+VAR TARGNUM		'Target Grating Number
+VAR TARGMOV		'Target Grating Move Requirement
+VAR A = Io 23		'One's	
+VAR B = Io 24 * 2	'Two's
+VAR A1 = Io 23		'One's (Read after move complete)	
+VAR B1 = Io 24 * 2	'Two's (Read after move complete)
+VAR GRATNUM = A + B	'The Current Grating Position as Determined 
+			'by the Code Bit Arithmetic
+VAR NEWPOS = A1 + B1	'The New Grating Position as Determineed by the 
+			'Code Bit Arithmetic (Re-Reads VAR A,B,C after move 
+			'to target)
+VAR POS_STR=0
+VAR POS_END=0
+VAR error1=0		'Incremented Counter Variable used for Timeout Loop
+VAR PWRFAIL=1		'Power Failure variable
+'Pfmt=3,0,2          	'Prints to screen with 3 places before decimal, 
+                     	'0 places after decimal, and no padding
+'
+VAR STEPCNT=6.0 	'User units stop and sneak up on limit
+VAR VNORM=0.5		'0.4 rev/sec running speed
+VAR VSLOW=0.15		'0.2 rev/sec running speed
+TP1=STEPCNT,SCNT1	'Configure with user units
+TPE1=1                'Enable user units
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STARTUP MODE
+' PLC Ladder code starts at address #100
+'
+PGM 100         'Starts at address 100
+'
+'''''''''''''''''''''''''''''''''''''''''''''''
+'		BEGIN PROCEDURE
+' Act on the target number selected
+'
+LBL INITIAL
+'
+ PWRFAIL=0
+ Msel= 10	'10 microsteps per step
+ Munit=2000	'units to revs
+ Mac=60		'accel current is 0.60 * 7
+ Mrc=35		'run current is 0.35 * 7
+ Mhc=0		'hold current is zero
+ Hcdt=0		'hold current delay msec
+ Limstp=0	'Allows program execution to continue when limit encountered
+' 
+ Accl=0.5	'Acceleration rate in rev/sec^2
+ Decl=0.5	'Deceleration rate in rev/sec^2
+ Ldecl=125	'Limit Deceleration in rev/sec^2
+'
+'
+ Drven=1		'Enables to Drive		
+'Check for In Position Condition 
+ BR NOPOS, Io 25=0	'If False Branch to No Position Error
+'
+BR END_IT
+'
+LBL BEGIN
+'
+  BR PWRERR, PWRFAIL=1
+  VM=VNORM      	'Normal Speed
+'
+'Check for In Position Condition 
+  BR NOPOS, Io 25=0	'If False Branch to No Position Error
+'
+'Check Current Grating Position
+  NUMPOS=4
+  MAXPOS=NUMPOS-1	
+  A=Io 23
+  B=Io 24 * 2
+  GRATNUM=A + B
+'
+'Grating Postion & the Current Grating Position
+  TARGMOV = TARGNUM - GRATNUM  'Determines the difference
+'
+' Check User Input for Valid Entry
+  BR END_IT, TARGNUM>MAXPOS	'Target Grating must be <MAXPOS,VALPOS if not
+  BR END_IT, TARGNUM<0		'Target Grating must be >0, VALPOS if not
+  BR END_IT, TARGNUM=GRATNUM	'If Target=Current, NOMOVE if not
+'
+''''''''''''''''''''''''''''''''''''''''''''''''
+'		MOVEDISK PROCEDURE
+' Move the Grating turrent to requested position
+'
+LBL MOVEDISK
+  Drven=1		'Enables to Drive		
+  MOVEINC=0		'sets Incremental Move Counter to Zero
+'
+ BR POSMOVE, TARGNUM>GRATNUM	'Used for Positive Direction Motion
+ BR END_IT, TARGNUM=GRATNUM	'Used when no move is required
+ BR NEGMOVE, TARGNUM<GRATNUM	'Used for Negative Direction Motion
+''''''''''''''''''''''''''''''''''''''''''''''''
+'		POSMOVE PROCEDURE
+' Positive Motion Loop
+'
+LBL POSMOVE
+  TP1=STEPCNT,SCNT1	'Configure with user units
+  TPE1=1                'Enable user units
+  MOVR=DIST		'CW Move 1 Grating Increment
+BR POSLIMIT		'Starts Positive Limit Monitoring Loop
+'
+LBL CONTPOS		'Continues motion loop once previous 
+			'motion/limit check ends
+  INC MOVEINC  		'Increments Counter Variable
+  BR CONFIRM, MOVEINC=TARGMOV	'Branches when Move Counter equals 
+				'Move Requirement
+  DELAY 1000		'Adds delay in program execution in milliseconds
+BR POSMOVE		'Closes Loop
+'
+''''''''''''''''''''''''''''''''''''''''''''''''
+'		POSLIMIT PROCEDURE
+' Positive Limit Loop (CW)
+'
+LBL POSLIMIT           
+  VM=VNORM      	'Seek position
+  BR PLIMRCVR, Io 21=1	'Branches to Positive Limit Recovery 
+			'if CW Limit is Activated
+  BR CONTPOS, Mvg=0	'Branches out of limit check loop when Motion stops
+BR POSLIMIT		'Closes Loop
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		NEGMOVE PROCEDURE
+' Negative Motion Loop
+'
+LBL NEGMOVE
+  TP1=-STEPCNT,SCNT1	'Configure with user units
+  TPE1=1                'Enable user units
+  MOVR=-DIST		'CCW Move 1 Grating Increment
+BR NEGLIMIT		'Starts Negative Limit Monitoring Loop
+'
+LBL CONTNEG		'Continues motion loop once previous 
+			'motion/limit check ends
+  DEC MOVEINC		'Decrements Counter Variable
+  BR CONFIRM, MOVEINC=TARGMOV	'Branches when Move Counter equals 
+				'Move Requirement
+  DELAY 1000		'Adds delay in program execution in milliseconds
+BR NEGMOVE		'Closes Loop
+'
+''''''''''''''''''''''''''''''''''''''''''''''''
+'		NEGLIMIT PROCEDURE
+' Negative Limit Loop (CCW)
+'
+LBL NEGLIMIT            
+  VM=VNORM      'Seek position
+  BR NLIMRCVR, Io 22=1	'Branches to Negative Limit Recovery 
+			'if CCW Limit is Activated
+  BR CONTNEG, Mvg=0	'Branches Out of limit check loop when Motion stops
+BR NEGLIMIT		'Closes Loop
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		CONFIRM PROCEDURE
+' Re-Reads Code Bits in order to Confirm Position
+'
+LBL CONFIRM
+'
+  A1 = Io 23
+  B1 = Io 24 * 2
+  NEWPOS = A1 + B1
+  VM=VNORM      'Normal Speed
+  BR END_IT, NEWPOS=TARGNUM	'Confirms that the New Grating Select Position 
+				'matches the Target Position once motion stops
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		PLIMRCVR PROCEDURE
+' Positive (CW) Limit Recovery
+'
+LBL PLIMRCVR
+  DELAY 1000	'Required pause at Limit prior to Recovery Slew
+  Drven=1	'Enables Drive
+  SLEW -VSLOW	'Slews away from limit (CW)
+BR TIMEOUT	'Branches to Timeout Monitor
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		NLIMRCVR PROCEDURE
+' Negative (CCW) Limit Recovery
+'
+LBL NLIMRCVR  
+  DELAY 1000	'Required pause at Limit prior to Recovery Slew
+  Drven=1	'Enables Drive
+  SLEW VSLOW	'Slews away from limit (CW)
+BR TIMEOUT	'Branches to Timeout Monitor
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		NOPOS PROCEDURE
+' Recover from an Out of Position Error
+'
+LBL NOPOS
+  Drven=1		'Enables the Drive		
+  SLEW VSLOW	'Slews away from limit (CW)
+BR TIMEOUT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               PWRERRor(Power Failure error) PROCEDURE
+' I'm indicating a power failure
+'
+LBL PWRERR
+  PRINT "? PWRFLR power failure,re-cycled or turned off (reset)"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		TIMEOUT PROCEDURE
+' Loop that can be used as a timer for error recovery
+'
+LBL TIMEOUT  
+  DELAY 250		'Delay time in milliseconds
+  BR CHNGDIR,error1>180	'Sets the maximum number of cycles before 
+			'trying a recovery slew in opposite direction
+  'BR END_IT, Io 25=1	'Looks for In Position Bit to be activated
+  BR DONE_IT, Io 25=1	'Looks for In Position Bit to be activated
+  BR PLIMRCVR, Io 21=1	'Branch to Positive Limit Recovery 
+			'If CW Limit is encountered during slew
+  INC error1		'Increments counter variable
+BR timeout		'Closes Timeout Loop
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		CHNGDIR PROCEDURE
+' Loop that can be used as a timer for error recovery 
+' (Used when Slew in CW direction fails)
+'
+LBL CHNGDIR            
+  SLEW -0.25		'Slews in CCW Direction
+  ERROR1=0
+  DELAY 250		'Delay time in milliseconds
+  BR FAILED,error1>180	'Sets the maximum number of cycles before 
+			'timeout error occurs
+  BR DONE_IT, Io 25=1	'Looks for In Position Bit to be activated
+  BR PLIMRCVR, Io 21=1
+  INC error1		'Increments counter variable
+BR CHNGDIR		'Closes Timeout Loop
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                BITERR(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+'
+LBL BITERR
+  PRINT "? FAULT Select Sensor Fault, both limits asserted"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                FAILED(Fail on max cycles) PROCEDURE
+' Timed out after 180 cycles
+'
+LBL FAILED
+  PRINT "? FAULT timed out after 180 recovery cycles"
+BR END_ITO 'The O is for timeout
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                DONE_IT(Finished) PROCEDURE
+' In position bit asserted
+'
+LBL DONE_IT
+ SSTP 0
+' Show new position
+ A1=Io 23
+ B1=Io 24 * 2
+ NEWPOS=A1 + B1 
+BR END_IT
+'  
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                GSELECT PROCEDURE
+' Query position
+'
+LBL GSELECT
+' Show new position
+ A1=Io 23
+ B1=Io 24 * 2
+ GQUERY=A1+B1
+ PRINT GQUERY
+BR END_ITO
+'  
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               SetpCouNT1 PROCEDURE
+' Close or Open sneak reached
+'
+LBL SCNT1       'user units
+  VM=VSLOW      'slow down to position
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_IT PROCEDURE
+' END of Ladder code
+'
+LBL END_IT
+ Drven=0	'Disable Motor Until User Inputs New Target Grating
+ PRINT NEWPOS
+ POS=0.0
+LBL END_ITO
+ Drven=0	'Disable Motor Until User Inputs New Target Grating
+ SSTP 1	'Stops the Motion and the Program Execution
+END
+Pgm		'End of Red Grating Select ladder code
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''' NEW PLC ProGraM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+'
+PGM 6000
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+  PRINT "bgrating"
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+  PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+  PRINT "codeV=0.1(06/12/07)",":HW",VER
+BR END_PLC      'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+  PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO30 PROCEDURE for bits 36 - 31
+' Check IO 30 bits
+'
+LBL IO30
+  PRINT IO 36,IO 35,IO 34,IO 33,IO 32,IO 31
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20MASK PROCEDURE
+' Check the Select, Insert bit mask 24-21
+'
+LBL IO20MASK
+  VAR B21=IO 21*8 
+  VAR B22=IO 22*4 
+  VAR B23=IO 23*2 
+  VAR B24=IO 24
+  VAR BITMASK=B21+B22+B23+B24
+  PRINT BITMASK
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC		
+END 
+PGM
+
+
+
+
+
+

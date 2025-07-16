@@ -1,0 +1,75 @@
+* Date: 20 July 2005
+* Author: OSU/ISL Astronomy Staff
+*  '*' = comment
+****************************************
+**         low level software         *
+* *                                  *
+*  *            HOME PLC            *
+* *                                  *
+**    Many Thanks to Tom O'Brien      *
+****************************************
+* Set all parameters. All MicroLYNX 
+* Controllers are the same.
+****************************************
+* 'Motion Parameters
+MSEL= 10      '10 microsteps per step
+MUNIT=2000    'units to revs
+MAC=20        'accel current is 0.50 * 7
+MRC=20        'run current is 0.30 * 7
+MHC=0         'hold current is zero
+HCDT=500      'hold current delay msec (for overlap with brake engagement)
+*
+*      'Input & Output Configuration
+IOS 21 = 13,0,0    'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0    'NEGATIVE (CCW)limit, active low
+IOS 23=0,0,0       'SCIENCE position occupied sensor
+IOS 24=0,0,0       'STOWED position occupied sensor
+IOS 25=0,0,0       'NOT USED
+IOS 26=18,1,0      'Brake relay coil (internal pull-up switch opened)
+*                  'Output defaults to NO, Brake wired to NO contacts on relay
+*                  'Brake is applied with power off and default state of
+*                  'drive output
+*
+*      'Motion Configuration
+ACCL=50          'acceleration rate in rev/sec^2
+DECL=ACCL        'acceleration rate = deceleration rate
+LDECL=500        'set decel after a limit is asserted
+VM=10             '5 rev/sec running speed
+*
+*      'Variable Declarations
+VAR INCR = 1.8	  'revs between mask positions is 18mm
+****************************************
+* Start with this HOME routine since
+* all MODS systems have to be home'd
+****************************************
+* MicroLYNX source code
+PGM 100          'Starts at address 100
+LBL HOME         'HOME procedure: 
+VM=10             'change the velocity to 5.0 rev/sec running speed
+MOVA 620,1       'move to an absolute index of -61.1
+HOLD 0           'suspend procedure until position change is complete
+VM=5             'change the velocity to 2.0 rev/sec running speed
+MOVA 700         'move to an absolute index of -70
+HOLD 2           'suspend procedure until move is complete
+PRINT "HOME Position = " POS  'show me the position
+POS 0
+PRINT "HOME Position = " POS  'show me the position again
+BR END_IT         'branch to exit
+*
+****************************************
+* Now you can add any other program 
+* you would like to use.
+****************************************
+*
+* Your MicroLYNX code here.
+*LBL TEST 'your program
+*
+*BR END_IT 'you must end all you functions this branch.
+****************************************
+* Do not remove this since this is the
+* way out of any program you might have
+* written.
+****************************************
+LBL END_IT        'EXIT
+END              'end the procedures
+PGM              'end of program in RAM 

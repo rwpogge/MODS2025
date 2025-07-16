@@ -1,0 +1,238 @@
+* Start of HMI Register declarations
+* register length = 2
+VAR L_Reg = 0
+* register length = 3
+VAR P_Reg = 0
+* register length = 3
+VAR CTR_REG = 0
+
+* Start of LYNX VAR/FLG declarations
+*
+* The following parameter settings are set up for the system configuration 
+* used to develop this project. These setting will depend upon the user 
+* system configuration and need not be entered verbatim.
+
+Munit=51200/1     '1 rev = 1"
+Mac=75            'Accl current = 75%     
+Mrc=50            'Run Current = 50%
+Accl=8            'Acceleration=8"/Sec^2
+Decl=Accl         'Deceleration=Acceleration
+Vm=15              'Max. Vel.= 15"/sec.
+
+***HMI Workshop Generated User VARS/FLGS***
+*
+FLG GT_LGNTH = False
+FLG GT_PCS = False
+FLG GT_VER = False
+FLG GT_MAKE = False
+FLG GT_WLCM = False
+
+******Start of LYNX Code (User Entry)*******
+*
+Pgm 100         'Start program at LYNX address 100
+LBL LX_CTRL     'Label the program "LX_CTRL"
+
+*****Welcome Screen Code Block*******
+* The following process will call up the Welcome screen and loop while 
+* waiting the press of the function key F4, which will SET the GT_LGNTH 
+* flag to 1.
+*  
+  LBL WelC                  'Declare process "WelC"
+    L_Reg=0                 'Initialize the Length register
+    P_Reg=0                 'Initialize the Pieces register
+    GT_WLCM=0               'Set the state of GT_WLCM flag to 0
+    CALL Welcome            'Call sub for the Welcome screen
+    LBL LoopWel             'Declare a loop labeled "LoopWel"
+    BR LoopWel, GT_LGNTH=0  'Branch to "LoopWel" while GT_LGNTH=0
+    
+******Piece Length Code Block********
+* The following process will call piece length input screen the length of 
+* the pieces will be entered into L_Reg and the program will loop awaiting 
+* the press of F4, which will set the GT_PCS flag bit to 1.
+*  
+  LBL Long              'Declare process "Long"
+    L_Reg=0             'Initialize the Length Register
+    P_Reg=0             'Initialize the Pieces Register
+    GT_LGNTH=0          'Set the state of GT_LGNTH flag to 0
+    CALL Length         'Call sub for the Length screen
+    CALL REG_0          'Call the register assigned to L_Reg
+    LBL LoopL           'Declare loop labeled "LoopL"
+    BR LoopL, L_Reg=0   'Loop to LoopL as long as P_reg=0
+    BR LoopL,GT_PCS=0   'Loop to LoopL while GT_PCS=0
+  
+*****Number of Pieces Code Block*******  
+*  
+* The following process will call # of pieces input screen the length of 
+* the pieces will be entered into P_Reg and the program will loop awaiting 
+* the press of F4, which will set the GT_VER flag bit to 1.
+*  
+  LBL PCS                'Declare process "PCS"
+    GT_PCS=0             'Set the state of GT_PCS flag to 0
+    CALL Pieces          'Call sub for the # of Pieces screen
+    CALL REG_1           'Call sub for register assigned to P_Reg
+    LBL LoopP            'Declare a loop labeled "LoopP"
+    BR LoopP, P_Reg=0    'Loop to LoopP while P_Reg=0
+    BR LoopP, GT_VER=0   'Loop to LoopP while GT_VER=0
+    
+*****Verification Screen Code Block******
+*  
+* This process will call up the verification screen which will display 
+* the values entered into the L_Reg and the P_Reg, and loop until either 
+* F1 or F4 is pressed, which will either execute the batch, or return to 
+* the piece length screen.
+*  
+  LBL Ver                  'Declare process "VER"
+   GT_VER=0                'Set the GT_VER flag state to 0
+   CALL Verify             'Call sub for the Verification screen
+   CALL REG_0              'Call sub assigned to L_Reg
+	 CALL REG_1        'Call sub assigned to P_Reg
+    LBL LoopDo             'Declare loop labeled "LoopDo"
+    BR Make_it, GT_MAKE=1  'Branch to Process Make_it, when (F1 Press)GT_MAKE=1
+    BR Long, GT_LGNTH=1    'Branch to process "Long" when (F4 Press) GT_LGNTH=1
+    BR LoopDo              'Loop to LoopDo while awaiting F key press
+    
+******Batch Processing Screen Code Block******
+*  
+* This process will run the batch the motor, will turn the number of 
+* revolutions specified by L_Reg, the number of times specified by P_Reg. 
+* CTR_REG will increment when each piece is completed. When the last piece 
+* is finished, the program will delay execution for 4 seconds before advancing
+* to the "Batch Completed" screen.
+*  
+  LBL Make_it          'Declare process "Make_it"
+    GT_MAKE=0          'Set GT_MAKE to state 0
+    CALL BatchPro      'Call sub for the "Batch Processing" screen
+      LBL Make_Pc      'Declare loop "Make_Pc"
+      MOVR L_Reg       'Index the axis relative the distance spcf'd in L_Reg
+      HOLD 2           'Suspend program execution until motion completes
+      DEC P_Reg        'Decrement the value of P_Reg
+      CALL REG_2       'Call sub assigned to CTR_REG (REG_2)
+      INC CTR_REG      'Increment the value of CTR_REG
+      CALL REG_2       'Call sub assigned to CTR_REG (Updates the HMI Register)
+      BR Make_Pc, P_Reg>0 'Loop to "Make_Pc" while P_Reg is greater than 0
+********
+      DELAY 4000   'Delay program execution 4 seconds
+      CTR_REG=0    'Initialize CTR_REG
+      CALL REG_2   'Call sub assigned to CTR_REG (Initializes the HMI register)
+      BR Finis     'Branch to process "Finis"
+      
+******Batch Processing Completed Code Block******   
+*   
+* This process will call up the "Batch Completed" screen, giving the user 
+* the option of running another batch, or returning to the "Welcome" screen.
+*   
+   LBL Finis              'Declare process "Finis"
+    CALL AllDone          'Call sub for "Batch Complete" screen
+      LBL LoopEnd          'Declare loop "LoopEnd"
+      BR WelC, GT_WLCM=1  'Cond. Branch to "Welcome" Screen if GT_WLCM=1 (F4 Press)
+      BR Long, GT_LGNTH=1 'Cond. branch to "Length" screen if GT_LGNTH=1 (F1 Press)
+      BR LoopEnd          'Loop to LoopEnd while awaiting F key press.
+      
+END      'END THE PROGRAM!              
+ 
+* The PGM instruction MUST be placed at the very end of this program, or 
+* underneath the subroutine declarations! 
+*
+****It is suggested that the following subroutines,****
+****should NOT be edited.                          ****
+  
+* Code to Fill Register: L_Reg
+LBL REG_0
+	* Set PFMT so that the value is 2 digits long,
+	* including minus sign, decimal point and fraction digits.
+	Pfmt = 2,0,2
+	PRINT2 "\e0v",L_Reg,"\b"
+  RET
+
+* Code to Test Register: L_Reg
+LBL MxMn_0
+	* reg value can't be >= 10^len.
+	BR FAIL_0, L_Reg >= 100
+	* reg value can't be <= -10^(len-1).
+	BR FAIL_0, L_Reg <= -10
+	* OK.
+  RET
+LBL FAIL_0
+	* reg value out of range, set HMI reg value to default.
+	L_Reg = 0
+	CALL REG_0
+LBL OK_0
+  RET
+
+* Code to Fill Register: P_Reg
+LBL REG_1
+	* Set PFMT so that the value is 3 digits long,
+	* including minus sign, decimal point and fraction digits.
+	Pfmt = 3,0,2
+	PRINT2 "\e1v",P_Reg,"\b"
+  RET
+
+* Code to Test Register: P_Reg
+LBL MxMn_1
+	* reg value can't be >= 10^len.
+	BR FAIL_1, P_Reg >= 1000
+	* reg value can't be <= -10^(len-1).
+	BR FAIL_1, P_Reg <= -100
+	* OK.
+  RET
+LBL FAIL_1
+	* reg value out of range, set HMI reg value to default.
+	P_Reg = 0
+	CALL REG_1
+LBL OK_1
+  RET
+
+* Code to Fill Register: CTR_REG
+LBL REG_2
+	* Set PFMT so that the value is 3 digits long,
+	* including minus sign, decimal point and fraction digits.
+	Pfmt = 3,0,2
+	PRINT2 "\e2v",CTR_REG,"\b"
+  RET
+
+* Code to Test Register: CTR_REG
+LBL MxMn_2
+	* reg value can't be >= 10^len.
+	BR FAIL_2, CTR_REG >= 1000
+	* reg value can't be <= -10^(len-1).
+	BR FAIL_2, CTR_REG <= -100
+	* OK.
+  RET
+LBL FAIL_2
+	* reg value out of range, set HMI reg value to default.
+	CTR_REG = 0
+	CALL REG_2
+LBL OK_2
+  RET
+
+* Code to Select Screen: Welcome
+LBL Welcome
+	PRINT2 "\e0G"
+  RET
+
+* Code to Select Screen: Length
+LBL Length
+	PRINT2 "\e81G"
+  RET
+
+* Code to Select Screen: Pieces
+LBL Pieces
+	PRINT2 "\e182G"
+  RET
+
+* Code to Select Screen: Verify
+LBL Verify
+	PRINT2 "\e269G"
+  RET
+
+* Code to Select Screen: BatchPro
+LBL BatchPro
+	PRINT2 "\e405G"
+  RET
+
+* Code to Select Screen: AllDone
+LBL AllDone
+	PRINT2 "\e499G"
+  RET
+
+Pgm     'exit program mode

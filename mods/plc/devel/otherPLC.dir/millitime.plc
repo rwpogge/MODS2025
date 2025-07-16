@@ -1,0 +1,16 @@
+/** END HEADER **/
+* Start the timer with command - run timer.
+VAR TRate=1000  'Clock Rate 60Hz
+VAR TSec=0   'Tick Milliseconds
+'
+'Start the timer with command - run millit.
+'Code for Millisecond Timer
+PGM 6000
+LBL MILLIT
+DELAY TRate
+inc TSec
+BR MILLIT
+' END Stop with command - sspt 1,timer
+END
+PGM
+
