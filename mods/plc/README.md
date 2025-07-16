@@ -108,7 +108,7 @@ VER		Read only variable that contains the present
 CP=n		Clears the program space
 EXEC n		Execute the program located at address n
 LIST n		List the program starting at address n
-<ESC>		Terminate all active operations and running programs
+ESC		Terminate all active operations and running programs
 Ctrl-C		Terminate all active operations and running programs, 
 		forces a partial reset
 BAUD=n		Sets the baud rate
