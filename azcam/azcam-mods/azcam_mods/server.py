@@ -243,7 +243,7 @@ def setup():
     # tempcon
     
     tempcon = TempConArchon(description="MODS Archon")
-    tempcon.temperature_ids = [0, 2]  # camtemp, dewtemp
+    tempcon.temperature_ids = [0, 2]  # camtemp, mnttemp
     tempcon.heaterx_board = "MOD1"
     tempcon.control_temperature = -95.0
     controller.heater_board_installed = 1
@@ -276,24 +276,6 @@ def setup():
     exposure.set_detpars(detector_mods)
     exposure.fileconverter.set_detector_config(detector_mods)
 
-    # filename rules for MODS (some override defaults), 1=True, 0=False
-    
-    azcam.db.tools["exposure"].test_image = 0
-    azcam.db.tools["exposure"].include_sequence_number = 1
-    azcam.db.tools["exposure"].auto_increment_sequence_number = 1
-    azcam.db.tools["exposure"].overwrite = 0 
-    azcam.db.tools["exposure"].autoname = 0
-    
-    # other defaults
-    
-    azcam.db.tools["exposure"].auto_title = 0
-    
-    # default filename root pattern is the instrument ID lower case
-    # and the current observing date, e.g., mods1b.20251007.  mind the .
-    
-    azcam.db.tools["exposure"].root = f"{modsID.lower()}.{obsDate()}."
-    azcam.db.tools["exposure"].folder = datafolder
-    
     # image display system if any
     
     # display = Ds9Display()
@@ -316,6 +298,24 @@ def setup():
 
     azcam.db.parameters.read_parfile(parfile)
     azcam.db.parameters.update_pars()
+    
+    # filename rules for MODS (some override parfile), 1=True, 0=False
+    
+    azcam.db.tools["exposure"].test_image = 0
+    azcam.db.tools["exposure"].include_sequence_number = 1
+    azcam.db.tools["exposure"].auto_increment_sequence_number = 1
+    azcam.db.tools["exposure"].overwrite = 0 
+    azcam.db.tools["exposure"].autoname = 0
+    
+    # other defaults
+    
+    azcam.db.tools["exposure"].auto_title = 0
+    
+    # default filename root pattern is the instrument ID lower case
+    # and the current observing date, e.g., mods1b.20251007.  mind the .
+    
+    azcam.db.tools["exposure"].root = f"{modsID.lower()}.{obsDate()}."
+    azcam.db.tools["exposure"].folder = datafolder
     
     # let the MODS azcam tool know our MODS ID and which side of the
     # telescope it is on
