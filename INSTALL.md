@@ -42,6 +42,12 @@ Code is installed logged in as user `dts` on the Linux server.
 cd ~/
 git clone https://github.com/rwpogge/MODS2025
 ```
+If you already have a MODS2025 repo, then
+```
+cd ~/MODS2025
+git pull
+```
+to update your local copy.
 
 ### Distribute the code
 
