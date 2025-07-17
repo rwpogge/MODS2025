@@ -95,7 +95,7 @@ cd ../modsEnv
 cd ~/mods/GUIs
 conda deactivate
 qmake --version 
-   -> if gives 5.x, do "conda deactivate" again
+   -> if it says 5.15.2 in /opt/Anaconda3/lib or similar, "conda deactivate" again
 qmake --version -> verify v6.6.x!
 cd iTerm
 qmake -o Makefile
