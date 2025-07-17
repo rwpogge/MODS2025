@@ -13,7 +13,9 @@ To add a command, you need to
 
 See commands.c for the full implementation details.
 
-2025 June 21 - AlmaLinux 9 port [rwp/osu]
+\date 2025 June 21 - AlmaLinux 9 port [rwp/osu]
+\date 2025 July 17 - Added WAGO HEB functions [rwp/osu]
+
 */
 
 // Common interactive client commands 
@@ -188,6 +190,7 @@ cmdtab[] = {   //!< global scope command table for this application
   {"calmode",  cmd_misc,     "calmode","Calibration mode"},
   {"obsmode",  cmd_misc,     "obsmode","Observing mode"},
   {"estatus",  cmd_misc,     "estatus ","Query instrument environmental sensor status"},
+  {"heb",      cmd_misc,     "heb","heb [status] [archon igpower [on|off]] [temps]"},
   {"?",        cmd_help,"",""}  // "" excludes from help
 };
 
@@ -207,5 +210,9 @@ int NumCommands = sizeof(cmdtab)/sizeof(struct Commands);  //!< number of comman
 
 float findPoly(float, float *, int);
 double dfindPoly(double, double *, int);
+
+// proper conversion of raw RTD to C for WAGO RTD modules
+
+float ptRTD2C(short);
 
 #endif // COMMANDS_H

@@ -189,17 +189,31 @@ typedef struct islcommon {
     char   LLB_msg[MAX_ML][80]; // Message holders for LLB
     float  UTIL_f[MAX_ML];      // UTIL Power Box float's deposit
 
-    // Utility box sensors
+    // Instrument Utility Box (IUB) sensors
     
-    float  glycolSupplyPressure;
-    float  glycolReturnPressure;
-    float  glycolSupplyTemperature;
-    float  glycolReturnTemperature;
-    float  utilBoxAirTemperature;
-    float  outsideAirTemperature;
+    float  glycolSupplyPressure;     // glycol supply pressure in psi-g
+    float  glycolReturnPressure;     // glycol return pressure  in psi-g
+    float  glycolSupplyTemperature;  // glycol supply temperature in C
+    float  glycolReturnTemperature;  // glycol return temperature in C
+    float  utilBoxAirTemperature;    // IUB inside box air temperature in C
+    float  outsideAirTemperature;    // IUB outside box air temperature in C
+    float  agwHeatSinkTemperature;   // AGW controller heat sink temperature in C
+    
     int    UTIL_i[MAX_ML];       //         "      int's deposit
     char   UTIL_msg[MAX_ML][80]; // Message holders for UTIL
 
+    // WAGO HEB temperatures (new in 2025)
+
+    float  redHEBTemperature;   // Red HEB inside box air temperature (C)
+    float  redDewarTemperature; // Red CCD dewar LN2 reservoir temperature (C)
+    float  redDewarPressure;    // Red CCD dewar vacuum pressure (torr)
+    
+    float  blueHEBTemperature;   // Blue HEB inside box air temperature (C)
+    float  blueDewarTemperature; // Blue CCD dewar LN2 reservoir temperature (C)
+    float  blueDewarPressure;    // Blue CCD dewar vacuum pressure (torr)
+
+    // IMCS lasers data structure
+    
     struct {
 
       // IMCS IR Laser
