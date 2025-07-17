@@ -5,7 +5,7 @@ CDATE=`date +'%Y-%b-%d'`
 CTIME=`date +'%T'`
 ISCFG=/home/dts/Config/isis.ini
 ISDCFG=/home/dts/Config/isisd.ini
-ISLOG=/home/data/Logs/ISIS/isis
+ISLOG=/home/Logs/ISIS/isis
 
 make -f Makefile.build clean
 make -f Makefile.build "COMPDATE=$CDATE" "COMPTIME=$CTIME" "CONFIG=$ISCFG" "LOGS=$ISLOG" "DCONFIG=$ISDCFG"
