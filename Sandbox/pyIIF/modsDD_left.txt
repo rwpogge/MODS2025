@@ -1,0 +1,89 @@
+# SX LBT DD keywords
+#
+# MODS header template entries for left (SX) direct gregorian
+#
+# Updated: 2025 July 11 [rwp/osu]
+#
+# format: ddName fitsKey dtype
+#
+# dtype: one of {int,float,str,bool}
+# float can take 2 tags:
+#    float-as = convert arcsec to degrees
+#   float-rad = convert radians to degrees
+#
+L_AchievedRAHMS      TELRA       str
+L_AchievedDECDMS     TELDEC      str
+L_PosAngle           POSANGLE    float-rad
+MountAchievedALTDMS  TELALT      str
+MountAchievedAZDMS   TELAZ       str
+ParAngle             PARANGLE    float
+L_RotAngle           ROTANGLE    float-rad
+L_RotMode            ROTMODE     str
+MountAchievedHAHMS   HA          str
+AirMass              AIRMASS     float
+# GCS and PCS Guide Probe and Guide Star Data
+L_AGWKFPReqX         GPREQ_X     float
+L_AGWKFPReqY         GPREQ_Y     float
+L_AGWKFPPosX         GPACT_X     float
+L_AGWKFPPosY         GPACT_Y     float
+L_GSXPredicted       GSPRED_X    float
+L_GSYPredicted       GSPRED_Y    float
+L_GSXMeasured        GSMEAS_X    float
+L_GSYMeasured        GSMEAS_Y    float
+L_GSCumXPredmMeas    GSDELTAX    float
+L_GSCumYPredmMeas    GSDELTAY    float
+# SX Primary and Secondary
+L_M1CollX         M1POSX         float
+L_M1CollY         M1POSY         float
+L_M1CollZ         M1POSZ         float
+L_M1CollRx        M1ROTX         float
+L_M1CollRy        M1ROTY         float
+L_M1CollRz        M1ROTZ         float
+L_M1CollTemp      M1CTEMP        float
+L_M1CollTemp2     M1CTEMP2       float
+L_M1AirTemp       M1GTEMP        float
+L_M1GlassTemp     M1ATEMP        float
+L_M2CollX         M2POSX         float
+L_M2CollY         M2POSY         float
+L_M2CollZ         M2POSZ         float
+L_M2CollRx        M2ROTX         float
+L_M2CollRy        M2ROTY         float
+L_M2CollRz        M2ROTZ         float
+L_M2CollTemp      M2CTEMP        float
+# Telescope temperature sensors 
+Temp201 TTEMP201  float
+Temp202 TTEMP202  float
+Temp203 TTEMP203  float
+Temp204 TTEMP204  float
+Temp205 TTEMP205  float
+Temp206 TTEMP206  float
+Temp207 TTEMP207  float
+Temp208 TTEMP208  float
+Temp209 TTEMP209  float
+Temp210 TTEMP210  float
+Temp301 TTEMP301  float
+Temp302 TTEMP302  float
+Temp303 TTEMP303  float
+Temp304 TTEMP304  float
+Temp305 TTEMP305  float
+Temp306 TTEMP306  float
+Temp307 TTEMP307  float
+Temp308 TTEMP308  float
+Temp309 TTEMP309  float
+Temp310 TTEMP310  float
+Temp401 TTEMP401  float
+Temp402 TTEMP402  float
+Temp403 TTEMP403  float
+Temp404 TTEMP404  float
+Temp405 TTEMP405  float
+Temp406 TTEMP406  float
+Temp407 TTEMP407  float
+Temp408 TTEMP408  float
+# LBT Weather Station Information
+LBTWeatherAlive LBTWLINK         bool
+LBTPressure     LBTPRES          float
+LBTTemp         LBTTEMP          float
+LBTHumidity     LBTHUM           float
+LBTDewPoint     LBTDWPT          float
+# Left direct gregorian rotator angle
+L_DGRPosition   LDGROT           float-as
