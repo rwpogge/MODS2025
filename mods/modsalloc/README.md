@@ -22,20 +22,27 @@ This puts a copy of the modsalloc executable in /home/dts/mods/bin
 We install modsalloc as a system service executed automatically at boot-time using systemd.  This is the modern way to do this. The
 original pre-2025 MODS system used rc.local which is now deprecated across Linux systems.
 
-Logged in as root (or sudo):
-```shell
+Because the LBTO mountain machines are configured to use SELinux in enforcing mode, we have to take extra installation steps.
+
+After the initial build, go to `/home/dts/mods/malloc` and copy these files to `/usr/local/bin` as root or sudo:
+```
+% sudo cp modsalloc /usr/local/bin/
+% sudo cp modsalloc.sh /usr/local/bin/
+% sudp chmod +x /usr/local/bin/modsalloc.sh
+```
+Then, logged in as root (or sudo):
+```
 % sudo cp modsalloc.service /usr/lib/systemd/system/
 ```
-enable for boot-time execution:
-
-```shell
+and enable for boot-time execution:
+```
 % sudo systemctl enable modsalloc
 Created symlink /etc/systemd/system/multi-user.target.wants/modsalloc.service → /usr/lib/systemd/system/modsalloc.service.
 ```
-Then on reboot the modsalloc service will be started automatically. 
+After the next reboot the `modsalloc` service will be started automatically. 
 
 Before the first reboot, you will need to start the service for the first time:
-```shell
+```
 % sudo systemctl restart modsalloc
 ```
 See [Testing](#Testing) to verify it is working.  After this it should start
@@ -44,26 +51,21 @@ automatically every time the system reboots.
 ### Post-installation checks
 
 Check to see if modsalloc started OK:
-```shell
-% systemctl status modsalloc --no-pager
-
+```
 ○ modsalloc.service - Runs the MODS data-taking system shared memory allocator (modsalloc)
-     Loaded: loaded (/usr/lib/systemd/system/modsalloc.service; enabled; preset: disabled)
-     Active: inactive (dead) since Wed 2025-07-09 11:38:05 EDT; 1h 11min ago
-   Duration: 5ms
-    Process: 218717 ExecStart=/home/dts/mods/bin/modsalloc.sh (code=exited, status=0/SUCCESS)
-   Main PID: 218717 (code=exited, status=0/SUCCESS)
-        CPU: 5ms
+     Loaded: loaded (/usr/lib/systemd/system/modsalloc.service; disabled; preset: disabled)
+     Active: inactive (dead)
 
-Jul 09 11:38:05 mods2025 systemd[1]: Started Runs the MODS data-taking system shared memory allocator (modsalloc).
-Jul 09 11:38:05 mods2025 modsalloc.sh[218718]: shm_get: id=16, size is 151552 bytes
-Jul 09 11:38:05 mods2025 modsalloc.sh[218718]: semid_get: key=-1 id=5
-Jul 09 11:38:05 mods2025 modsalloc.sh[218718]: semid_get: key=-1 id=5
-Jul 09 11:38:05 mods2025 modsalloc.sh[218718]: cls_get: id 0
-Jul 09 11:38:05 mods2025 modsalloc.sh[218718]: skd_get: id 0
-Jul 09 11:38:05 mods2025 modsalloc.sh[218718]: brk_get: id 0
-Jul 09 11:38:05 mods2025 modsalloc.sh[218718]: semid_get: key=-1 id=5
-Jul 09 11:38:05 mods2025 systemd[1]: modsalloc.service: Deactivated successfully.
+Jul 17 15:14:26 mods1blue systemd[1]: modsalloc.service: Failed with result 'exit-code'.
+Jul 17 15:14:39 mods1blue systemd[1]: Started Runs the MODS data-taking system shared memory allocator (modsalloc).
+Jul 17 15:14:39 mods1blue modsalloc.sh[1222496]: shm_get: id=2, size is 151552 bytes
+Jul 17 15:14:39 mods1blue modsalloc.sh[1222496]: semid_get: key=-1 id=0
+Jul 17 15:14:39 mods1blue modsalloc.sh[1222496]: semid_get: key=-1 id=0
+Jul 17 15:14:39 mods1blue modsalloc.sh[1222496]: cls_get: id 0
+Jul 17 15:14:39 mods1blue modsalloc.sh[1222496]: skd_get: id 0
+Jul 17 15:14:39 mods1blue modsalloc.sh[1222496]: brk_get: id 0
+Jul 17 15:14:39 mods1blue modsalloc.sh[1222496]: semid_get: key=-1 id=0
+Jul 17 15:14:39 mods1blue systemd[1]: modsalloc.service: Deactivated successfully.
 ```
 The last line is correct, it does not stay running forever, it just needs to run once then deactivate to create th
 shared memory sector.
