@@ -1,0 +1,35 @@
+#
+# Makefile for test programs
+#
+# 2025 Jun 24 - modification for AlmaLinux 9 port [rwp/osu]
+#
+ROOTDIR     = /home/dts/mods
+ISISDIR     = /home/dts/ISIS
+VERSION     = testMMC v1.0.1
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+
+# For /usr/local/bin installation remove comment and comment the next line.
+
+CFGFILE     = ./mechanisms.ini
+INCS        = -I$(ROOTDIR)/include -I$(ISISDIR)/lib
+
+CFLAGS      = -w -D_REENTRANT -pthread -c $(INCS) 
+VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
+              -DAPP_COMPTIME='"$(COMPTIME)"' -DAPP_CFGFILE='"$(CFGFILE)"'
+
+LIBS        = -L$(ISISDIR)/lib -L$(ROOTDIR)/ulib -lislutils -linstrutils -lisis -llogutils -lmmcutils -lagwutils -lmodbus -lisltimes -lpthread
+
+OBJS        = loadconfig.o 
+
+.c.o:	
+	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
+
+all:        loadShm 
+
+loadShm:    $(OBJS) loadShm.c
+	    $(CC) -o loadShm $(VFLAGS) loadShm.c loadconfig.o $(LIBS) $(INCS)
+	    \rm -f *.o
+
+clean:
+	    \rm -f *.o
