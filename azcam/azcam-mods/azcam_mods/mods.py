@@ -11,7 +11,7 @@ Additions:
     shopen(): open the shutter
     shclose(): close the shutter
     set/get_exptime(): set/get the exposure time
-    ccdTemps(): read the CCD detector and dewar temperature
+    ccdTemps(): read the CCD detector temperatures read by Archon
     abortReadout(): abort readout
     pctRead(): return percentage of CCD readout (inverse of pixels_remaining)
     set/get_roi(): set/get the CCD readout region of interest and binning factor
@@ -646,13 +646,16 @@ class MODS(object):
 
     def ccdTemps(self) -> list:
         '''
-        Query the CCD and dewar temperature sensors through the
-        Archon controller.
+        Query the CCD temperature sensors readout through the
+        Archon controller.  For MODS these are the detector
+        and detector mount temperatures used for heat control.
+        The dewar temperature and pressure are readout through
+        the MODS instrument control system.
 
         Returns
         -------
         list of floats: 
-            CCD and Dewar temperatures in decimal celsius.
+            CCD detector and mount temperatures in decimal celsius.
 
         Temperatures are read to the nearest 0.1C
         
@@ -660,10 +663,10 @@ class MODS(object):
 
         reply = azcam.db.tools["tempcon"].get_temperatures()
 
-        ccdtemp = "%.1f" % reply[0]
-        dewtemp = "%.1f" % reply[1]
+        ccdTemp = "%.1f" % reply[0]
+        mountTemp = "%.1f" % reply[1]
 
-        return ["OK", ccdtemp, dewtemp]
+        return ["OK", ccdTemp, mountTemp]
     
 
     def shopen(self):
