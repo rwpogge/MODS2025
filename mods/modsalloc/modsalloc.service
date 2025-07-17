@@ -6,18 +6,20 @@
 #
 # R. Pogge, OSU Astronomy
 # pogge.1@osu.edu
-# 2025 June 23
+# 2025 July 17
 #
 ################################################################################
-# This program should be placed in /usr/local/lib/systemd/system/.
-# Create a symlink to it from the /etc/systemd/system directory.
+# This program should be placed in /usr/lib/systemd/system/
+#
+# For SELinux running in enforcing mode, modsalloc.sh and modsalloc must
+# be in /usr/local/bin, copied using sudo
 ################################################################################
 
 [Unit]
 Description=Runs the MODS data-taking system shared memory allocator (modsalloc)
 
 [Service]
-ExecStart=/home/dts/mods/bin/modsalloc.sh
+ExecStart=/usr/local/bin/modsalloc.sh
 
 [Install]
 WantedBy=multi-user.target
