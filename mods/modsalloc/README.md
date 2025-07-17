@@ -11,7 +11,7 @@ Other programs can use shared memory as needed, for example the IMSC agents and 
 ## Compile
 
 Compile in place as follows as user "dts":
-```shell
+```
 % cd /home/dts/mods/modsalloc
 % ./build
 ```
@@ -28,7 +28,7 @@ After the initial build, go to `/home/dts/mods/malloc` and copy these files to `
 ```
 % sudo cp modsalloc /usr/local/bin/
 % sudo cp modsalloc.sh /usr/local/bin/
-% sudp chmod +x /usr/local/bin/modsalloc.sh
+% sudo chmod +x /usr/local/bin/modsalloc.sh
 ```
 Then, logged in as root (or sudo):
 ```
