@@ -94,8 +94,9 @@ cd ../modsEnv
 ```shell
 cd ~/mods/GUIs
 conda deactivate
-conda deactivate (twice!)
-qmake --version -> verify v6.6.x
+qmake --version 
+   -> if gives 5.x, do "conda deactivate" again
+qmake --version -> verify v6.6.x!
 cd iTerm
 qmake -o Makefile
 make clean
