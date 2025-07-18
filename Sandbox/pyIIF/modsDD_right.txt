@@ -1,6 +1,6 @@
 # SX LBT DD keywords
 #
-# MODS header template entries for left (SX) direct gregorian
+# MODS header template entries for rigth (DX) direct gregorian
 #
 # Updated: 2025 July 18 [rwp/osu]
 #
@@ -11,45 +11,45 @@
 #    float-as = convert arcsec to degrees
 #   float-rad = convert radians to degrees
 #
-L_AchievedRAHMS      TELRA       str
-L_AchievedDECDMS     TELDEC      str
-L_PosAngle           POSANGLE    float-rad
+R_AchievedRAHMS      TELRA       str
+R_AchievedDECDMS     TELDEC      str
+R_PosAngle           POSANGLE    float-rad
 MountAchievedALTDMS  TELALT      str
 MountAchievedAZDMS   TELAZ       str
 ParAngle             PARANGLE    float
-L_RotAngle           ROTANGLE    float-rad
-L_RotMode            ROTMODE     str
+R_RotAngle           ROTANGLE    float-rad
+R_RotMode            ROTMODE     str
 MountAchievedHAHMS   HA          str
 AirMass              AIRMASS     float
 # GCS and PCS Guide Probe and Guide Star Data
-L_AGWKFPReqX         GPREQ_X     float
-L_AGWKFPReqY         GPREQ_Y     float
-L_AGWKFPPosX         GPACT_X     float
-L_AGWKFPPosY         GPACT_Y     float
-L_GSXPredicted       GSPRED_X    float
-L_GSYPredicted       GSPRED_Y    float
-L_GSXMeasured        GSMEAS_X    float
-L_GSYMeasured        GSMEAS_Y    float
-L_GSCumXPredmMeas    GSDELTAX    float
-L_GSCumYPredmMeas    GSDELTAY    float
+R_AGWKFPReqX         GPREQ_X     float
+R_AGWKFPReqY         GPREQ_Y     float
+R_AGWKFPPosX         GPACT_X     float
+R_AGWKFPPosY         GPACT_Y     float
+R_GSXPredicted       GSPRED_X    float
+R_GSYPredicted       GSPRED_Y    float
+R_GSXMeasured        GSMEAS_X    float
+R_GSYMeasured        GSMEAS_Y    float
+R_GSCumXPredmMeas    GSDELTAX    float
+R_GSCumYPredmMeas    GSDELTAY    float
 # SX Primary and Secondary
-L_M1CollX         M1POSX         float
-L_M1CollY         M1POSY         float
-L_M1CollZ         M1POSZ         float
-L_M1CollRx        M1ROTX         float
-L_M1CollRy        M1ROTY         float
-L_M1CollRz        M1ROTZ         float
-L_M1CollTemp      M1CTEMP        float
-L_M1CollTemp2     M1CTEMP2       float
-L_M1AirTemp       M1GTEMP        float
-L_M1GlassTemp     M1ATEMP        float
-L_M2CollX         M2POSX         float
-L_M2CollY         M2POSY         float
-L_M2CollZ         M2POSZ         float
-L_M2CollRx        M2ROTX         float
-L_M2CollRy        M2ROTY         float
-L_M2CollRz        M2ROTZ         float
-L_M2CollTemp      M2CTEMP        float
+R_M1CollX         M1POSX         float
+R_M1CollY         M1POSY         float
+R_M1CollZ         M1POSZ         float
+R_M1CollRx        M1ROTX         float
+R_M1CollRy        M1ROTY         float
+R_M1CollRz        M1ROTZ         float
+R_M1CollTemp      M1CTEMP        float
+R_M1CollTemp2     M1CTEMP2       float
+R_M1AirTemp       M1GTEMP        float
+R_M1GlassTemp     M1ATEMP        float
+R_M2CollX         M2POSX         float
+R_M2CollY         M2POSY         float
+R_M2CollZ         M2POSZ         float
+R_M2CollRx        M2ROTX         float
+R_M2CollRy        M2ROTY         float
+R_M2CollRz        M2ROTZ         float
+R_M2CollTemp      M2CTEMP        float
 # Telescope temperature sensors 
 Temp201 TTEMP201  float
 Temp202 TTEMP202  float
@@ -86,4 +86,4 @@ LBTTemp         LBTTEMP          float
 LBTHumidity     LBTHUM           float
 LBTDewPoint     LBTDWPT          float
 # Left direct gregorian rotator angle
-L_DGRPosition   LDGROT           float-as
+R_DGRPosition   RDGROT           float-as
