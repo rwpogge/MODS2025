@@ -114,6 +114,9 @@ make clean
 make
 cp modsUI ~/bin/
 ```
+Remember to do `conda activate` to restore the anaconda environment. For LBT at this 
+writing `python --version` should report `Python 3.12.2`.
+
 Note we do not install the imsTool GUI in a public-facing directory as this is for engineering use only.
 
 
