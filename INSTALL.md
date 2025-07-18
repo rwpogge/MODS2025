@@ -93,10 +93,11 @@ cd ../modsEnv
 ### MODS GUIs
 ```shell
 cd ~/mods/GUIs
+qmake --version
+   -> if it says "Using Qt version 5.15.2 in /opt/Anaconda3/lib", type
 conda deactivate
 qmake --version 
-   -> if it says 5.15.2 in /opt/Anaconda3/lib or similar, "conda deactivate" again
-qmake --version -> verify v6.6.x!
+   -> it should say "Using Qt version 6.6.2 in /usr/lib64", proceed, otherwise "conda deactivate" again
 cd iTerm
 qmake -o Makefile
 make clean
