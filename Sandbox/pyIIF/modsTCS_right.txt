@@ -44,7 +44,7 @@ R_M1CollY            M1POSY      float      / Primary Mirror Y Position [mm]
 R_M1CollZ            M1POSZ      float      / Primary Mirror Z Position [mm]                    
 R_M1CollRx           M1ROTX      float      / Primary Mirror RX Rotation [arcsec]       
 R_M1CollRy           M1ROTY      float      / Primary Mirror RY Rotation [arcsec]       
-R_M1CollRz           M1ROTZ      float      / Primary Mirror RZ Rotation [arcsec]M      
+R_M1CollRz           M1ROTZ      float      / Primary Mirror RZ Rotation [arcsec]      
 R_M1CollTemp         M1CTEMP     float      / Primary Mirror Temperature [deg C]        
 R_M1CollTemp2        M1CTEMP2    float      / Primary Mirror Temperature 2 [deg C]      
 R_M1AirTemp          M1GTEMP     float      / Primary Mirror Glass Temperature [deg C]    
