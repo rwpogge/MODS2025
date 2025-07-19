@@ -14,7 +14,7 @@
 #
 R_AchievedRAHMS      TELRA       str        / DX Telescope Achieved RA [hms]                
 R_AchievedDECDMS     TELDEC      str        / DX Telescope Achieved DEC [dms]                                    
-R_PosAngle           POSANGLE    float-rad  / DX Instrument Celestial Position Angle [deg]     
+R_PosAngle           POSANGLE    float-rad  / DX Instrument Celestial PA [deg]     
 MountAchievedALTDMS  TELALT      str        / Telescope Altitude at start of obs [dms]      
 MountAchievedAZDMS   TELAZ       str        / Telescope Azimuth at start of obs [dms]       
 MountAchievedHAHMS   HA          str        / Telescope Hour Angle at start of obs [hms]
