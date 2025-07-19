@@ -1,0 +1,76 @@
+#
+# MODS1 Blue Instrument Configuration
+# DD entry to FITS header mapping
+#
+# Updated: 2025 July 19 [rwp/osu]
+#
+# format: ddName fitsKey dtype / comment
+#
+# dtype: one of {int,float,str}
+#
+# Instrument common focal plane configuration
+#
+# * = needs to be added to the Data Dictionary [proposed entry]
+#
+L_MODSHatch                HATCH     str        / Instrument Dark Hatch
+L_MODSCalibTower           CALIB     str        / Calibration Tower Position
+L_MODSAGWXPos*             AGWXS     float      / AGW Stage X actuator position [mm]
+L_MODSAGWYPos*             AGWYS     float      / AGW Stage Y actuator position [mm]
+L_MODSAGWFPos*             AGWFS     float      / AGW Stage Focus actuator position [mm]
+L_MODSAGWFilterName*       AGWFNAME  str        / AGW Guide Camera Filter Name
+L_MODSMaskSelected*        SLITMASK  int        / Slit Mask Cassette Position
+L_MODSMaskID               MASKNAME  str        / Slit Mask Name
+L_MODSMaskPosition*        MASKPOS   str        / Slit Mask Position
+L_MODSDichroicPosition*    DICHROIC  int        / Dichroic Turret Position
+L_MODSDichroicID*          DICHNAME  str        / Dichroic Beam Selector Name
+L_MODSInstConfig           INSTCFG   str        / Instrument Configuration
+#
+# Blue Channel configuration
+#
+L_MODSBlueCollFocus*       COLFOCUS  int        / Blue Collimator Focus (A+B+C) [microns]
+L_MODSBlueCollTTFA*        COLTTFA   int        / Blue Collimator TTF actuator A [microns]
+L_MODSBlueCollTTFB*        COLTTFB   int        / Blue Collimator TTF actuator B [microns]
+L_MODSBlueCollTTFC*        COLTTFC   int        / Blue Collimator TTF actuator C [microns]
+L_MODSBlueGratingPosition* GRATING   int        / Blue Grating Turret Position
+L_MODSBlueGrating          GRATNAME  str        / Blue Grating Turret Disperser Name
+L_MODSBlueCameraFocus*     CAMFOCUS  int        / Blue Camera Focus [microns]
+L_MODSBlueFilterPosition*  FILTER    int        / Blue Camera Filter Wheel Position
+L_MODSBlueFilter           FILTNAME  str        / Blue Camera Filter Name
+#
+# Calibration Lamps
+#
+L_MODSCalibLamps*       CALLAMPS  str        / Calibration Lamps 
+L_MODSVFLATIntensity*   VFLAT     float      / Variable Intensity Flat Lamp Intensity
+#
+# IMCS IR Laser
+#
+L_MODSIMCSLaser         IRLASER   str        / IMCS IR Laser Power state [on|off]
+L_MODSIMCSLaserBeam*    IRBEAM    str        / IMCS IR Laser Beam state [enabled|disabled]
+L_MODSIMCSLaserPower*   IRPOUT    float      / IMCS IR Laser Power [mW]
+L_MODSIMCSLaserTemp*    IRTEMP    float      / IMCS IR Laser Head Temperature [deg C]
+#
+# CCD Info we get from the instrument server (not in Archon)
+#
+L_MODSBlueDewPres       DEWPRES   float      / Blue CCD Dewar Pressure [torr]
+L_MODSBlueDewTemp       DEWTEMP   float      / Blue CCD Dewar Temperature [deg C]
+L_MODSBlueIGPower*      IGPOWER   str        / Blue Dewar Ionization Gauge DC Power
+L_MODSBlueArchonPower*  ARPOWER   str        / Blue Archon Controller AC Power [on|off]
+L_MODSBlueHEBTemp       HEBTEMP   float      / Blue Head Electronics Box inside air temperature [deg C]
+#
+# Environmental Sensor Data
+#
+L_MODSAmbientTemp       AMBTEMP   float      / IUB Ambient Air Temperature [deg C]
+L_MODSIUBTemp           IUBTAIR   float      / IUB Inside Air Temperature [deg C]
+L_MODSAGHeatSinkTemp    AGHSTEMP  float      / AGw Controller Heat Sink Temp [deg C]
+L_MODSGlycolSupplyPres  GSPRES    float      / Glycol Supply Pressure [psi-g]
+L_MODSGlycolSupplyTemp  GSTEMP    float      / Glycol Supply Temperature [deg C]
+L_MODSGlycolReturnPres  GRPRES    float      / Glycol Return Pressure [psi-g]
+L_MODSGlycolReturnTemp  GRTEMP    float      / Glycol Return Temperature [deg C]
+L_MODSBlueIEBTemp       IEBTEMPB  float      / Blue IEB Air Temperature [deg C]
+L_MODSBlueIEBGlycolTemp IEBGRT_B  float      / Blue IEB Glycol Return Temperature [deg C]
+L_MODSRedIEBTemp        IEBTEMPR  float      / Red IEB Air Temperature [deg C]
+L_MODSRedIEBGlycolTemp  IEBGRT_R  float      / Red IEB Glycol Return Temperature [deg C]
+L_MODSAirTempTop*       TAIRTOP   float      / Enclosure Inside Air Temp at Top [deg C]
+L_MODSAirTempBottom*    TAIRBOT   float      / Enclosure Inside Air Temp at Bottom [deg C]
+L_MODSCollTempTop*      TCOLLTOP  float      / Collimator Truss Tube Top Temp [deg C]
+L_MODSCollTempBottom*   TCOLLBOT  float      / Collimator Truss Tube Bottom Temp [deg C]
