@@ -6,7 +6,7 @@ new python-iif interface (https://github.com/LBTO/ptyhon-iif).
 
 ## Contents
 
- * `modsDD_left.txt` - data dictionary entry to FITS header mapping for MODS on SX (left) direct gregorian
- * `modsDD_right.txt` - data dictionary entry to FITS header mapping for MODS on DX (right) direct gregorian
+ * `modsTCS_left.txt` - data dictionary entry to FITS header mapping for MODS on SX (left) direct gregorian
+ * `modsTCS_right.txt` - data dictionary entry to FITS header mapping for MODS on DX (right) direct gregorian
  * `getIIF.py` - test program
 
