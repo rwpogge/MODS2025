@@ -313,6 +313,7 @@ typedef struct islcommon {
     int agwState;
 
     // IUB, LLB, and red/blue IEB, HEB, Archon, and IonGauge power states
+    // and the guide and wavefront sensor camera power states
 
     int utilState;
     int llbState;
@@ -324,6 +325,8 @@ typedef struct islcommon {
     int blueArchonState;
     int redIonGaugeState;
     int blueIonGaugeState;
+    int guideCamState;
+    int wfsCamState;
      
     // Calibration and Observing Mode, CALMODE = 1, OBSMODE = 0
 
