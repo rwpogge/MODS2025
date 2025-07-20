@@ -13521,7 +13521,7 @@ dfindPoly(double x, double *a, int n)
 //---------------------------------------------------------------------------
 
 float
-ptRTD2c(short rawData)
+ptRTD2C(short rawData)
 {
   float tempMax = 850.0; // max temperature reported
   float tempRes = 0.1;   // temperature resolution 0.1C
