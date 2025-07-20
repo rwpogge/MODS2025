@@ -41,7 +41,7 @@ typedef struct islcommon {
 
   struct {
 
-    // Instrument Electronix Boxes(IEB) for a MODS instance
+    // Instrument Electronics Boxes (IEB) for a MODS instance
 
     float  reqpos[MAX_ML];      // Requested Mechanism position
     float  pos[MAX_ML];         // Actual Mechanism position
@@ -164,11 +164,11 @@ typedef struct islcommon {
     char slitmaskName[25][80];  // mask name, index 0 = timestamp
     char slitmaskInfo[25][128]; // mask info, index 0 = timestamp
 
-    // Head Electronix Boxes(HEB) for a MODS instance
+    // Head Electronics Boxes (HEB) for a MODS instance
 
-    double heb_d[MAX_ML];         // Head Electronix Boxes double's deposit
-    float  heb_f[MAX_ML];         //          "            float's    "
-    int    heb_i[MAX_ML];         //          "            int's      "
+    double heb_d[MAX_ML];         // Head Electronics Boxes double's deposit
+    float  heb_f[MAX_ML];         //          "             float's    "
+    int    heb_i[MAX_ML];         //          "             int's      "
     char   heb_msg[MAX_ML][80];   // Message holders for HEBs
 
     // WAGO address defines for a MODS instance
