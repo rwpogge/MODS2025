@@ -103,8 +103,8 @@ typedef struct islcommon {
     int    redQC4;              // RED Quadcell 4 value from HEB.
     float  blueQC_Focus[3];     // BLUE Collimator Focus Values 
     float  redQC_Focus[3];      // RED Collimator Focus Values 
-    float  blueTemperature[4];  // Misc.. BLUE temperatures
-    float  redTemperature[4];   // Misc.. RED temperatures
+    float  blueTemperature[4];  // Blue IEB temperature sensors [BoxAir,GlycolReturn,CollTop,CollBottom]
+    float  redTemperature[4];   // Red IEB temperature sensors [BoxAir,GlycolReturn,AirTop,AirBottom]
     float  blueQC_Threshold[2]; // BLUE IMCS collimator sample threshold
     float  redQC_Threshold[2];  // RED IMCS collimator sample threshold
     int    blueIMCS_OnOff;      // BLUE IMCS unit on/off
