@@ -312,15 +312,19 @@ typedef struct islcommon {
 
     int agwState;
 
-    // Blue/red IEB, IUB, LLB, and blue/red HEB states
+    // IUB, LLB, and red/blue IEB, HEB, Archon, and IonGauge power states
 
+    int utilState;
+    int llbState;
     int blueIEBState;
     int redIEBState;
-    int utilState;
     int blueHEBState;
     int redHEBState;
-    int llbState;
-
+    int redArchonState;
+    int blueArchonState;
+    int redIonGaugeState;
+    int blueIonGaugeState;
+     
     // Calibration and Observing Mode, CALMODE = 1, OBSMODE = 0
 
     int instrMode;
