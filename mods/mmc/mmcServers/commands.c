@@ -130,12 +130,14 @@ char who_srcID[MAXPGMLINE];    // Generic input buffer
 
 #include "./mlc.c"         // local 'C' functions
 
-int  llbID;
-int  utilID;
-int  ieb1ID;
-int  ieb2ID;
-int  rhebID;
-int  bhebID;
+// WAGO IDs
+
+int  llbID;  // Lamp/Laser Box
+int  utilID; // Instrument Utility Box
+int  ieb1ID; // Red Instrument Electronics Box (ieb 1)
+int  ieb2ID; // Blue Instrument Electronics Box (ieb 2)
+int  rhebID; // Red Head Electronics Box
+int  bhebID; // Blue Head Electronics Box
 
 int ierr;                  // Error indicator
 int he_token=1;            // Head Electronic is ENABLED/DISABLED
@@ -678,7 +680,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
   float redDewarTemperature;
   float blueHEBTemperature;
   float blueDewarTemperature;
-  
+
   int agwfiltnum;
   int device;
   int device1;
@@ -1369,7 +1371,11 @@ cmd_ports(char *args, MsgType msgtype, char *reply)
 
   cmd_misc() is a place to put commands that don't fit anywhere else,
   or that are experimental before committing to their own cmd_xyz() function.
-  
+
+  calmode - put instrument in calibration mode (AGW out, calib tower in, hatch closed)
+ 
+  obsmode - put instrument in observing mode (calib tower out, AGW in, hatch open)
+
   util [status] [service1 service2... [on|off]] [all off] [glycol] [temp]
    serviceN - name(s) of switched AC power service [e.g.,IEB_B, LLB ...]
      status - report status
@@ -1382,10 +1388,6 @@ cmd_ports(char *args, MsgType msgtype, char *reply)
 
   heb [chan] [status] [archon igpower [on|off]] [temps]
   
-  calmode - put instrument in calibration mode (AGW out, calib tower in, hatch closed)
- 
-  obsmode - put instrument in observing mode (calib tower out, AGW in, hatch open)
-
   estatus - environmental sensor status summary
 
 */
@@ -1443,7 +1445,6 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
   char mmcMsg[PAGE_SIZE];
   char who_selected[24];
   char faultWord[8]="OK";
-  short pressureTemps[10];
   short devOnOff[1],devEnable[1];
   char cmd_instruction[PAGE_SIZE];
   char hebChan;
@@ -1452,7 +1453,23 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
   
   // Pressures, temperatures, etc.
 
+  // IEB temperature sensors
+
+  short iebTemps[4];  // 4 RTD channels in each box
+
+  float redIEBAirTemperature;       // Red IEB box air temperature
+  float redIEBReturnTemperature;    // Red IEB glycol return temperature
+  float TrussTopAirTemperature;     // Collimator Truss top air temperature
+  float TrussBottomAirTemperature;  // Collimator Truss bottom air temperature
+
+  float blueIEBAirTemperature;       // Blue IEB box air temperatue
+  float blueIEBReturnTemperature;    // Blue IEB glycol return temperature
+  float TrussTopTemperature;         // Collimator Truss top steel temperature
+  float TrussBottomTemperature;      // Collimator Truss bottom steel temperature
+  
   // Utility Box sensors
+
+  short pressureTemps[10];  // pressure and RTD sensors in IUB
   
   float glycolSupplyPressure;
   float glycolReturnPressure;
@@ -1462,19 +1479,17 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
   float outsideAirTemperature;
   float agwHeatSinkTemperature;
 
-  // HEB Sensors
+  // HEB Sensors - still need to add the dewar vacuum pressures sensors [2025-07-20 rwp]
   
   short hebTemps[2];
 
   float hebAirTemp;
   float dewarTemp;
-  
   float redHEBTemperature;
   float redDewarTemperature;
-  
   float blueHEBTemperature;
   float blueDewarTemperature;
-  
+ 
   // CALMODE and OBSMODE error and id checking 
 
   int calibID        = getMechanismID("calib", dummy);
@@ -1982,9 +1997,20 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
   // Other commands follow that need to communicate with WAGOs
   // Get their assignment IDs here
-  
-  llbID=getWagoID("llb",dummy); // Get Lamp/Laser Box (LLB) WAGO ID
 
+  ieb1ID = getWagoID("ieb1",dummy); // Red IEB WAGO ID (IEB1)
+  if(ieb1ID==-1) {
+    sprintf(reply,"%s %s",who_selected,dummy);
+    return CMD_ERR;
+  }
+
+  ieb2ID = getWagoID("ieb2",dummy); // Blue IEB WAGO ID (IEB2)
+  if(ieb2ID==-1) {
+    sprintf(reply,"%s %s",who_selected,dummy);
+    return CMD_ERR;
+  }
+
+  llbID=getWagoID("llb",dummy); // Get Lamp/Laser Box (LLB) WAGO ID
   if(llbID==-1) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
@@ -2027,8 +2053,61 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
   shm_addr->MODS.utilBoxAirTemperature = utilBoxAirTemperature;
   shm_addr->MODS.outsideAirTemperature = outsideAirTemperature;
   shm_addr->MODS.agwHeatSinkTemperature = agwHeatSinkTemperature;
+
+  // IEB temperatures, RTD module register base address is 5
+
+  // Red IEB (ieb1)
   
+  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb1ID],1,5,iebTemps,4);
+
+  redIEBAirTemperature = ptRTD2C(iebTemps[0]);
+  redIEBReturnTemperature = ptRTD2C(iebTemps[1]);
+  TrussTopAirTemperature = ptRTD2C(iebTemps[2]);
+  TrussBottomAirTemperature = ptRTD2C(iebTemps[4]);
+
+  shm_addr->MODS.redTemperature[0] = redIEBAirTemperature;
+  shm_addr->MODS.redTemperature[1] = redIEBReturnTemperature;
+  shm_addr->MODS.redTemperature[2] = TrussTopAirTemperature;
+  shm_addr->MODS.redTemperature[3] = TrussBottomAirTemperature;
+
+  // Blue IEB (ieb2)
+  
+  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb2ID],1,5,iebTemps,4);
+
+  blueIEBAirTemperature = ptRTD2C(iebTemps[0]);
+  blueIEBReturnTemperature = ptRTD2C(iebTemps[1]);
+  TrussTopTemperature = ptRTD2C(iebTemps[2]);
+  TrussBottomTemperature = ptRTD2C(iebTemps[4]);
+
+  shm_addr->MODS.blueTemperature[0] = blueIEBAirTemperature;
+  shm_addr->MODS.blueTemperature[1] = blueIEBReturnTemperature;
+  shm_addr->MODS.blueTemperature[2] = TrussTopTemperature;
+  shm_addr->MODS.blueTemperature[3] = TrussBottomTemperature;
+
+  // HEB temperatures, RTD module register base address is 5
+  
+  // Red HEB
+  
+  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[rhebID],1,5,hebTemps,2);
+  
+  redHEBTemperature = ptRTD2C(hebTemps[0]);
+  redDewarTemperature = ptRTD2C(hebTemps[1]);
+  shm_addr->MODS.redHEBTemperature = redHEBTemperature;
+  shm_addr->MODS.redDewarTemperature = redDewarTemperature;
+
+  // Blue HEB
+  
+  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[bhebID],1,5,hebTemps,2);
+    
+  blueHEBTemperature = ptRTD2C(hebTemps[0]);
+  blueDewarTemperature = ptRTD2C(hebTemps[1]);
+  shm_addr->MODS.blueHEBTemperature = blueHEBTemperature;
+  shm_addr->MODS.blueDewarTemperature = blueDewarTemperature;
+
+  //--------------------------------------------------------
+  //
   // UTIL Command - instrument utilities through the IUB
+  //
   
   if(!strcasecmp(who_selected,"UTIL")) { // Utility Box control
 
@@ -2037,186 +2116,220 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       return CMD_OK;
     }
 
-    // get power relay states
+    // Get the power relay states - if the IUB is off, everybody is off
+    // (or the IUB is disconnected from the network, so OFF == UNKNOWN)
 
     allUtilPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,513,(short *)1,1);
-    if(allUtilPower<0) {
+
+    if (allUtilPower<0) {
       sprintf(reply,"%s %s", who_selected,"UTIL=OFF");
+      shm_addr->MODS.utilState = 0;
+      shm_addr->MODS.llbState = 0;
+      shm_addr->MODS.redIEBState = 0;
+      shm_addr->MODS.blueIEBState = 0;
+      shm_addr->MODS.redHEBState = 0;
+      shm_addr->MODS.blueHEBState = 0;
+      shm_addr->MODS.redArchonState = 0;
+      shm_addr->MODS.blueArchonState = 0;
+      shm_addr->MODS.redIonGaugeState = 0;
+      shm_addr->MODS.blueIonGaugeState = 0;
       return CMD_OK;
     }
+    shm_addr->MODS.utilState = 1;
 
-    // get circuit breaker states
+    // Get circuit breaker states
 
     allUtilBreaker = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,11,(short *)1,1);
 
-    // process the specific UTIL request
-
-    if(!strcasecmp(argbuf,"STATUS") || strlen(args)<=0) {
-
-      if(allUtilPower>=0) {
- 	// Check Power
-
-	iebRedPower    = allUtilPower & 1;
-	iebBluePower   = allUtilPower & 2;
-	hebRedPower    = allUtilPower & 4;
-	hebRedEnable   = allUtilPower & 8;
-	hebBluePower   = allUtilPower & 16;
-	hebBlueEnable  = allUtilPower & 32;
-	agwWFSPower    = allUtilPower & 64;
-	agwGuidePower  = allUtilPower & 128;
-	lampLaserPower = allUtilPower & 256;
-
-	// Check Breakers
-
-	iebRedBreaker    = allUtilBreaker & 1;
-	iebBlueBreaker   = allUtilBreaker & 2;
-	hebRedBreaker    = allUtilBreaker & 4;
-	hebBlueBreaker   = allUtilBreaker & 8;
-	agwWFSBreaker    = allUtilBreaker & 16;
-	agwGuideBreaker  = allUtilBreaker & 32;
-	lampLaserBreaker = allUtilBreaker & 64;
-
-	/* ************************ */
-        // pseudo code for breakers
-	// if(!xyzPower(0on) &&  xyzBreaker(0on))  xyz_BRK=OK 
-	// if(xyzPower(1off) && !xyzBreaker(1on))  xyz_BRK=UNKNOWN
-	// if(xyzPower(1off) && !xyzBreaker(1off)) xyz_BRK=UNKNOWN (?)
-	// if(xyaPower(0on)  && !xyzBreaker(1off)) xyz_BRK=FAULT
-	/* ************************ */
-
-	sprintf(reply,"%s",who_selected);  // start building the reply
-
-	// Note that the power control relays for the IEBs and LLB are
-	// normally closed (immediate power up on application of main
-	// AC power), whereas the HEBs and AGw camera power control
-	// relays are normally open (these units must be explicitly
-	// powered up via the WAGO or the manual-override switches on
-	// the IUB patch panel).  That is why the IEB and LLB tests
-	// are false=ON, whereas the others are true=ON for the power.
-
-	// IEB power relays are normally closed, so test for ON is !=
+    // Power control relay states
 	
-	if (iebRedPower != 1)
-	  if (iebRedBreaker == 1)
-	    sprintf(reply,"%s IEB_R=ON IEB_R_BRK=OK",reply);
-	  else
-	    sprintf(reply,"%s IEB_R=ON IEB_R_BRK=FAULT",reply);
-	else
-	  sprintf(reply,"%s IEB_R=OFF IEB_R_BRK=UNKNOWN",reply);
+    iebRedPower    = allUtilPower & 1;
+    iebBluePower   = allUtilPower & 2;
+    hebRedPower    = allUtilPower & 4;
+    hebRedEnable   = allUtilPower & 8;
+    hebBluePower   = allUtilPower & 16;
+    hebBlueEnable  = allUtilPower & 32;
+    agwWFSPower    = allUtilPower & 64;
+    agwGuidePower  = allUtilPower & 128;
+    lampLaserPower = allUtilPower & 256;
 
-	if (iebBluePower != 2)
-	  if (iebBlueBreaker == 2)
-	    sprintf(reply,"%s IEB_B=ON IEB_B_BRK=OK",reply);
-	  else
-	    sprintf(reply,"%s IEB_B=ON IEB_B_BRK=FAULT",reply);
-	else
-	  sprintf(reply,"%s IEB_B=OFF IEB_B_BRK=UNKNOWN",reply);
+    // Circuit breaker states (current sense past break)
 
-	//
-	// Pre-2025 HEB power normally open so test for ON is ==
-	// 
-	//if (hebRedPower == 4)
-	//  if (hebRedBreaker == 4)
-	//    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=OK",reply);
-	//  else
-	//    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=FAULT",reply);
-	//else
-	//  sprintf(reply,"%s HEB_R=OFF HEB_R_BRK=UNKNOWN",reply);
-        //
-	//if (hebBluePower == 16)
-	//  if (hebBlueBreaker == 8)
-	//    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=OK",reply);
-	//  else
-	//    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=FAULT",reply);
-	//else
-	//  sprintf(reply,"%s HEB_B=OFF HEB_B_BRK=UNKNOWN",reply);
+    iebRedBreaker    = allUtilBreaker & 1;
+    iebBlueBreaker   = allUtilBreaker & 2;
+    hebRedBreaker    = allUtilBreaker & 4;
+    hebBlueBreaker   = allUtilBreaker & 8;
+    agwWFSBreaker    = allUtilBreaker & 16;
+    agwGuideBreaker  = allUtilBreaker & 32;
+    lampLaserBreaker = allUtilBreaker & 64;
 
-	// Post-2025 WAGO HEB power normally closed so test for ON is != 
+    // Process the specific UTIL request
+
+    if(!strcasecmp(argbuf,"STATUS") || strlen(args)<=0) {  // STATUS or no-arg is implicit status request
+
+      // Start building the reply
 	
-	if (hebRedPower != 4)
-	  if (hebRedBreaker == 4)
-	    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=OK",reply);
-	  else
-	    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=FAULT",reply);
-	else
-	  sprintf(reply,"%s HEB_R=OFF HEB_R_BRK=UNKNOWN",reply);
-        
-	if (hebBluePower != 16)
-	  if (hebBlueBreaker == 8)
-	    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=OK",reply);
-	  else
-	    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=FAULT",reply);
-	else
-	  sprintf(reply,"%s HEB_B=OFF HEB_B_BRK=UNKNOWN",reply);
+      sprintf(reply,"%s",who_selected);
 
-	// AGw WFS and Guide Camera power relays are normally open
-	// so test for power ON is ==
+      // Note that the power control relays for the IEBs and LLB are
+      // normally closed (immediate power up on application of main AC
+      // power), whereas the HEBs and AGw camera power control relays
+      // are normally open (these units must be explicitly powered up
+      // via the WAGO or the manual-override switches on the IUB patch
+      // panel).  That is why the IEB and LLB tests are false=ON,
+      // whereas the others are true=ON for the power.
+
+      // IEB power relays are normally closed, so test for ON is !=
 	
-	if (agwWFSPower == 64)
-	  if (agwWFSBreaker == 16)
-	    sprintf(reply,"%s WFS=ON WFS_BRK=OK",reply);
-	  else
-	    sprintf(reply,"%s WFS=ON WFS_BRK=FAULT",reply);
-	else
-	  sprintf(reply,"%s WFS=OFF WFS_BRK=UNKNOWN",reply);
-
-	if (agwGuidePower == 128)
-	  if (agwGuideBreaker == 32)
-	    sprintf(reply,"%s AGC=ON AGC_BRK=OK",reply);
-	  else
-	    sprintf(reply,"%s AGC=ON AGC_BRK=FAULT",reply);
-	else
-	  sprintf(reply,"%s AGC=OFF AGC_BRK=UNKNOWN",reply);
-
-	// LLB power relay is normally closed so test for ON is !=
-	
-	if (lampLaserPower != 256)
-	  if (lampLaserBreaker == 64) 
-	    sprintf(reply,"%s LLB=ON LLB_BRK=OK",reply);
-	  else
-	    sprintf(reply,"%s LLB=ON LLB_BRK=FAULT",reply);
-	else
-	  sprintf(reply,"%s LLB=OFF LLB_BRK=UNKNOWN",reply);
-
-	// Glycol supply and return pressures and temperatures
-	
-	(glycolSupplyPressure>=850.0 ? sprintf(reply,"%s GSPRES=NOCOMM",reply) : 
-	 sprintf(reply,"%s GSPRES=%0.1f",reply,glycolSupplyPressure));
-	
-	(glycolReturnPressure>=850.0 ? sprintf(reply,"%s GRPRES=NOCOMM",reply) : 
-	 sprintf(reply,"%s GRPRES=%0.1f",reply, glycolReturnPressure));
-
-	(glycolSupplyTemperature>=850.0 ? sprintf(reply,"%s GSTEMP=NOCOMM",reply) : 
-	 sprintf(reply,"%s GSTEMP=%0.1f",reply,glycolSupplyTemperature));
-
-	(glycolReturnTemperature>=850.0 ? sprintf(reply,"%s GRTEMP=NOCOMM",reply) : 
-	 sprintf(reply,"%s GRTEMP=%0.1f",reply,glycolReturnTemperature));
-
-	// Utility box temperature sensors 
-
-	(utilBoxAirTemperature>=850.0 ? sprintf(reply,"%s IUBTAIR=NOCOMM",reply) :
-	 sprintf(reply,"%s IUBTAIR=%0.1f",reply,utilBoxAirTemperature));
-	
-	(outsideAirTemperature>=850.0 ? sprintf(reply,"%s AMBTEMP=NOCOMM",reply) : 
-	 sprintf(reply,"%s AMBTEMP=%0.1f",reply,outsideAirTemperature));
-	
-	(agwHeatSinkTemperature>=850.0 ? sprintf(reply,"%s AGHSTEMP=NOCOMM",reply) : 
-	 sprintf(reply,"%s AGHSTEMP=%0.1f",reply,agwHeatSinkTemperature));
-
+      if (iebRedPower != 1) {
+	if (iebRedBreaker == 1) {
+	  sprintf(reply,"%s IEB_R=ON IEB_R_BRK=OK",reply);
+	  shm_addr->MODS.redIEBState = 1;
+	}
+	else {
+	  sprintf(reply,"%s IEB_R=ON IEB_R_BRK=FAULT",reply);
+	  shm_addr->MODS.redIEBState = -1;
+	}
       }
-    } else if(!strcasecmp(argbuf,"GLYCOL")) {
+      else {
+	sprintf(reply,"%s IEB_R=OFF IEB_R_BRK=UNKNOWN",reply);
+	shm_addr->MODS.redIEBState = 0;
+      }
 
-	(glycolSupplyPressure>=850.0 ?  sprintf(reply,"%s GSPRES=NOCOMM",who_selected) : 
-	 sprintf(reply,"%s GSPRES=%0.1f",who_selected,glycolSupplyPressure));
+      if (iebBluePower != 2) {
+	if (iebBlueBreaker == 2) {
+	  sprintf(reply,"%s IEB_B=ON IEB_B_BRK=OK",reply);
+	  shm_addr->MODS.blueIEBState = 1;
+	}
+	else {
+	  sprintf(reply,"%s IEB_B=ON IEB_B_BRK=FAULT",reply);
+	  shm_addr->MODS.blueIEBState = -1;
+	}
+      }
+      else {
+	sprintf(reply,"%s IEB_B=OFF IEB_B_BRK=UNKNOWN",reply);
+	shm_addr->MODS.blueIEBState = 0;
+      }
+      
+      // Post-2025 WAGO HEB power normally closed so test for ON is != 
 	
-	(glycolSupplyTemperature>=850.0 ? sprintf(reply,"%s GSTEMP=NOCOMM",reply) : 
-	 sprintf(reply,"%s GSTEMP=%0.1f",reply,glycolSupplyTemperature));
+      if (hebRedPower != 4) {
+	if (hebRedBreaker == 4) {
+	  sprintf(reply,"%s HEB_R=ON HEB_R_BRK=OK",reply);
+	  shm_addr->MODS.redHEBState = 1;
+	}
+	else {
+	  sprintf(reply,"%s HEB_R=ON HEB_R_BRK=FAULT",reply);
+	  shm_addr->MODS.redHEBState = -1;
+	}
+      }
+      else {
+	sprintf(reply,"%s HEB_R=OFF HEB_R_BRK=UNKNOWN",reply);
+	shm_addr->MODS.redHEBState = 0;
+      }
+      
+      if (hebBluePower != 16) {
+	if (hebBlueBreaker == 8) {
+	  sprintf(reply,"%s HEB_B=ON HEB_B_BRK=OK",reply);
+	  shm_addr->MODS.blueHEBState = 1;
+	}
+	else {
+	  sprintf(reply,"%s HEB_B=ON HEB_B_BRK=FAULT",reply);
+	  shm_addr->MODS.blueHEBState = -1;
+	}
+      }
+      else {
+	sprintf(reply,"%s HEB_B=OFF HEB_B_BRK=UNKNOWN",reply);
+	shm_addr->MODS.blueHEBState = 0;
+      }
+
+      // AGw WFS and Guide Camera power relays are normally open so test for power ON is ==
 	
-	(glycolReturnPressure>=850.0 ? sprintf(reply,"%s GRPRES=NOCOMM",reply) : 
-	 sprintf(reply,"%s GRPRES=%0.1f",reply, glycolReturnPressure));
+      if (agwWFSPower == 64) {
+	if (agwWFSBreaker == 16) {
+	  sprintf(reply,"%s WFS=ON WFS_BRK=OK",reply);
+	  shm_addr->MODS.wfsCamState = 1;
+	}
+	else {
+	  sprintf(reply,"%s WFS=ON WFS_BRK=FAULT",reply);
+	  shm_addr->MODS.wfsCamState = -1;
+	}
+      }
+      else {
+	sprintf(reply,"%s WFS=OFF WFS_BRK=UNKNOWN",reply);
+	shm_addr->MODS.wfsCamState = o;
+      }
+
+      if (agwGuidePower == 128) {
+	if (agwGuideBreaker == 32) {
+	  sprintf(reply,"%s AGC=ON AGC_BRK=OK",reply);
+	  shm_addr->MODS.guideCamState = 1;
+	}
+	else {
+	  sprintf(reply,"%s AGC=ON AGC_BRK=FAULT",reply);
+	  shm_addr->MODS.guideCamState = -1;
+	}
+      }
+      else {
+	sprintf(reply,"%s AGC=OFF AGC_BRK=UNKNOWN",reply);
+	  shm_addr->MODS.guideCamState = 0;
+      }
+
+      // LLB power relay is normally closed so test for ON is !=
 	
-	(glycolReturnTemperature>=850.0 ? sprintf(reply,"%s GRTEMP=NOCOMM",reply) : 
-	 sprintf(reply,"%s GRTEMP=%0.1f",reply,glycolReturnTemperature));
+      if (lampLaserPower != 256) {
+	if (lampLaserBreaker == 64) {
+	  sprintf(reply,"%s LLB=ON LLB_BRK=OK",reply);
+	  shm_addr->MODS.llbState = 1;
+	}
+	else {
+	  sprintf(reply,"%s LLB=ON LLB_BRK=FAULT",reply);
+	  shm_addr->MODS.llbState = -1;
+	}
+      }
+      else {
+	sprintf(reply,"%s LLB=OFF LLB_BRK=UNKNOWN",reply);
+	shm_addr->MODS.llbState = 0;
+      }
+      
+      // Glycol supply and return pressures and temperatures
+	
+      (glycolSupplyPressure>=850.0 ? sprintf(reply,"%s GSPRES=NOCOMM",reply) : 
+       sprintf(reply,"%s GSPRES=%0.1f",reply,glycolSupplyPressure));
+      
+      (glycolReturnPressure>=850.0 ? sprintf(reply,"%s GRPRES=NOCOMM",reply) : 
+       sprintf(reply,"%s GRPRES=%0.1f",reply, glycolReturnPressure));
+      
+      (glycolSupplyTemperature>=850.0 ? sprintf(reply,"%s GSTEMP=NOCOMM",reply) : 
+       sprintf(reply,"%s GSTEMP=%0.1f",reply,glycolSupplyTemperature));
+      
+      (glycolReturnTemperature>=850.0 ? sprintf(reply,"%s GRTEMP=NOCOMM",reply) : 
+       sprintf(reply,"%s GRTEMP=%0.1f",reply,glycolReturnTemperature));
+      
+      // Utility box temperature sensors 
+
+      (utilBoxAirTemperature>=850.0 ? sprintf(reply,"%s IUBTAIR=NOCOMM",reply) :
+       sprintf(reply,"%s IUBTAIR=%0.1f",reply,utilBoxAirTemperature));
+      
+      (outsideAirTemperature>=850.0 ? sprintf(reply,"%s AMBTEMP=NOCOMM",reply) : 
+       sprintf(reply,"%s AMBTEMP=%0.1f",reply,outsideAirTemperature));
+      
+      (agwHeatSinkTemperature>=850.0 ? sprintf(reply,"%s AGHSTEMP=NOCOMM",reply) : 
+       sprintf(reply,"%s AGHSTEMP=%0.1f",reply,agwHeatSinkTemperature));
+      
+    } else if(!strcasecmp(argbuf,"GLYCOL")) {
+      
+      (glycolSupplyPressure>=850.0 ?  sprintf(reply,"%s GSPRES=NOCOMM",who_selected) : 
+       sprintf(reply,"%s GSPRES=%0.1f",who_selected,glycolSupplyPressure));
+	
+      (glycolSupplyTemperature>=850.0 ? sprintf(reply,"%s GSTEMP=NOCOMM",reply) : 
+       sprintf(reply,"%s GSTEMP=%0.1f",reply,glycolSupplyTemperature));
+	
+      (glycolReturnPressure>=850.0 ? sprintf(reply,"%s GRPRES=NOCOMM",reply) : 
+       sprintf(reply,"%s GRPRES=%0.1f",reply, glycolReturnPressure));
+	
+      (glycolReturnTemperature>=850.0 ? sprintf(reply,"%s GRTEMP=NOCOMM",reply) : 
+       sprintf(reply,"%s GRTEMP=%0.1f",reply,glycolReturnTemperature));
 
       return CMD_OK;
 
@@ -2305,13 +2418,20 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       hebRedBreaker = allUtilBreaker&4;
       
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
-	if (hebRedPower != 4)
-	  if (hebRedBreaker == 4)
+	if (hebRedPower != 4) {
+	  if (hebRedBreaker == 4) {
 	    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=OK",who_selected);
-	  else
+	    shm_addr->MODS.redHEBState = 1;
+	  }
+	  else {
 	    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=FAULT",who_selected);
-	else
+	    shm_addr->MODS.redHEBState = -1;
+	  }
+	}
+	else {
 	  sprintf(reply,"%s HEB_R=OFF HEB_R_BRK=UNKNOWN",who_selected);
+	  shm_addr->MODS.redHEBState = 0;
+	}
 
       } else if(!strcasecmp(argbuf,"ON")) {
 	if(hebRedPower==1) {
@@ -2344,13 +2464,20 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       hebBlueEnable = allUtilPower&32;
       hebBlueBreaker = allUtilBreaker&8;
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
-	if (hebBluePower != 16)
-	  if (hebBlueBreaker == 8)
+	if (hebBluePower != 16) {
+	  if (hebBlueBreaker == 8) {
 	    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=OK",who_selected);
-	  else
+	    shm_addr->MODS.blueHEBState = 1;
+	  }
+	  else {
 	    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=FAULT",who_selected);
-	else
+	    shm_addr->MODS.blueHEBState = -1;
+	  }
+	}
+	else {
 	  sprintf(reply,"%s HEB_B=OFF HEB_B_BRK=UNKNOWN",who_selected);
+	  shm_addr->MODS.blueHEBState = 0;
+	}
 
       } else if(!strcasecmp(argbuf,"ON")) {
 	if(hebBluePower==1) {
@@ -2386,13 +2513,20 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       iebRedBreaker = allUtilBreaker&1;
 
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
-	if (iebRedPower != 1)
-	  if (iebRedBreaker == 1)
+	if (iebRedPower != 1) {
+	  if (iebRedBreaker == 1) {
 	    sprintf(reply,"%s IEB_R=ON IEB_R_BRK=OK",who_selected);
-	  else
+	    shm_addr->MODS.redIEBState = 1;
+	  }
+	  else {
 	    sprintf(reply,"%s IEB_R=ON IEB_R_BRK=FAULT",who_selected);
-	else
+	    shm_addr->MODS.redIEBState = -1;
+	  }
+	}
+	else {
 	  sprintf(reply,"%s IEB_R=OFF IEB_R_BRK=UNKNOWN",who_selected);
+	  shm_addr->MODS.redIEBState = 0;
+	}
 
       } else if(!strcasecmp(argbuf,"ON")) {
 
@@ -2428,13 +2562,20 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       iebBlueBreaker = allUtilBreaker&2;
 
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
-	if (iebBluePower != 2)
-	  if (iebBlueBreaker == 2)
+	if (iebBluePower != 2) {
+	  if (iebBlueBreaker == 2) {
 	    sprintf(reply,"%s IEB_B=ON IEB_B_BRK=OK",who_selected);
-	  else
+	    shm_addr->MODS.blueIEBState = 1;
+	  }
+	  else {
 	    sprintf(reply,"%s IEB_B=ON IEB_B_BRK=FAULT",who_selected);
-	else
+	    shm_addr->MODS.blueIEBState = -1;
+	  }
+	}
+	else {
 	  sprintf(reply,"%s IEB_B=OFF IEB_B_BRK=UNKNOWN",who_selected);
+	  shm_addr->MODS.blueIEBState = 0;
+	}
 
       } else if(!strcasecmp(argbuf,"ON")) {
 
@@ -2471,13 +2612,20 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       agwWFSPower = allUtilPower&64;
       agwWFSBreaker = allUtilBreaker&16;
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
-	if (agwWFSPower == 64)
-	  if (agwWFSBreaker == 16)
+	if (agwWFSPower == 64) {
+	  if (agwWFSBreaker == 16) {
 	    sprintf(reply,"%s WFS=ON WFS_BRK=OK",who_selected);
-	  else
+	    shm_addr->MODS.wfsCamState = 1;
+	  }
+	  else {
 	    sprintf(reply,"%s WFS=ON WFS_BRK=FAULT",who_selected);
-	else
+	    shm_addr->MODS.wfsCamState = -1;
+	  }
+	}
+	else {
 	  sprintf(reply,"%s WFS=OFF WFS_BRK=UNKNOWN",who_selected);
+	  shm_addr->MODS.wfsCamState = 0;
+	}
 
       } else if(!strcasecmp(argbuf,"OFF")) {
 
@@ -2514,13 +2662,20 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       agwGuidePower = allUtilPower&128;
       agwGuideBreaker = allUtilBreaker&32;
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
-	if (agwGuidePower == 128)
-	  if (agwGuideBreaker == 32)
+	if (agwGuidePower == 128) {
+	  if (agwGuideBreaker == 32) {
 	    sprintf(reply,"%s AGC=ON AGC_BRK=OK",who_selected);
-	  else
+	    shm_addr->MODS.guideCamState = 1;
+	  }
+	  else {
 	    sprintf(reply,"%s AGC=ON AGC_BRK=FAULT",who_selected);
-	else
+	    shm_addr->MODS.guideCamState = -1;
+	  }
+	}
+	else {
 	  sprintf(reply,"%s AGC=OFF AGC_BRK=UNKNOWN",who_selected);
+	  shm_addr->MODS.guideCamState = 0;
+	}
 
       } else if(!strcasecmp(argbuf,"OFF")) {
 
@@ -2549,24 +2704,38 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
 	agwGuidePower = allUtilPower&128;
 	agwGuideBreaker = allUtilBreaker&32;
-	if (agwGuidePower == 128)
-	  if (agwGuideBreaker == 32)
+	if (agwGuidePower == 128) {
+	  if (agwGuideBreaker == 32) {
 	    sprintf(reply,"%s AGC=ON AGC_BRK=OK",who_selected);
-	  else
+	    shm_addr->MODS.guideCamState = 1;
+	  }
+	  else {
 	    sprintf(reply,"%s AGC=ON AGC_BRK=FAULT",who_selected);
-	else
+	    shm_addr->MODS.guideCamState = -1;
+	  }
+	}
+	else {
 	  sprintf(reply,"%s AGC=OFF AGC_BRK=UNKNOWN",who_selected);
+	  shm_addr->MODS.guideCamState = 0;
+	}
 
 	agwWFSPower = allUtilPower&64;
 	agwWFSBreaker = allUtilBreaker&16;
 
-	if (agwWFSPower == 64)
-	  if (agwWFSBreaker == 16)
+	if (agwWFSPower == 64) {
+	  if (agwWFSBreaker == 16) {
 	    sprintf(reply,"%s WFS=ON WFS_BRK=OK",reply);
-	  else
+	    shm_addr->MODS.wfsCamState = 1;
+	  }
+	  else {
 	    sprintf(reply,"%s WFS=ON WFS_BRK=FAULT",reply);
-	else
+	    shm_addr->MODS.wfsCamState = -1;
+	  }
+	}
+	else {
 	  sprintf(reply,"%s WFS=OFF WFS_BRK=UNKNOWN",reply);
+	  shm_addr->MODS.wfsCamState = 0;
+	}
 
 	if((agwGuidePower==0 && agwGuideBreaker==0) &&
 	   (agwWFSPower==0 && agwWFSBreaker==0)) 
@@ -2589,13 +2758,20 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       lampLaserPower = allUtilPower&256;
       lampLaserBreaker = allUtilBreaker&64;
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
-	if (lampLaserPower != 256)
-	  if (lampLaserBreaker == 64) 
+	if (lampLaserPower != 256) {
+	  if (lampLaserBreaker == 64) {
 	    sprintf(reply,"%s LLB=ON LLB_BRK=OK",who_selected);
-	  else
+	    shm_addr->MODS.llbState = 1;
+	  }
+	  else {
 	    sprintf(reply,"%s LLB=ON LLB_BRK=FAULT",who_selected);
-	else
+	    shm_addr->MODS.llbState = -1;
+	  }
+	}
+	else {
 	  sprintf(reply,"%s LLB=OFF LLB_BRK=UNKNOWN",who_selected);
+	  shm_addr->MODS.llbState = 0;
+	}
 
       } else if(!strcasecmp(argbuf,"ON")) {
 
@@ -2629,7 +2805,10 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
     return CMD_OK;
 
-  // Lamp/Laser Box (LLB) Internal control functions
+    //----------------------------------------------------------------
+    //
+    // Lamp/Laser Box (LLB) Internal control functions
+    //
     
   } else if(!strcasecmp(who_selected,"LLB")) { // Lamp Laser Box control
 
@@ -2657,22 +2836,51 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     }
     return CMD_OK;
 
-  // startup, shutdown, sleep, wake, and safeconfig, abort, and reset retired - 2025 June [rwp/osu]
-  // now implemented as scripts instead of internally for greater flexibility
-
-  //
-  // ESTATUS - read environmental sensor status, multiple WAGOs
-  //
+    //------------------------------------------------------
+    //
+    // ESTATUS - read environmental sensor status, multiple WAGOs
+    //
     
   } else if(!strcasecmp(who_selected,"ESTATUS")) { // Environmental sensor status summary
 
-    // IEB box temperature sensors (red and blue)
+    // 
+    // Dirty way to do it... retired 2025 [rwp]
+    //
+    // KeyCommand("ieb r temp", dummy);
+    // sprintf(reply,"%s %s",who_selected,&dummy[11]);
+    // KeyCommand("ieb b temp", dummy);
+    // sprintf(reply,"%s %s",reply,&dummy[11]);
+
+    // start the reply
     
-    KeyCommand("ieb r temp", dummy);
-    sprintf(reply,"%s %s",who_selected,&dummy[11]);
-    KeyCommand("ieb b temp", dummy);
-    sprintf(reply,"%s %s",reply,&dummy[11]);
-    
+    sprintf(reply,"%s ",who_selected);  // start the reply
+
+    // IEB temperature sensors
+
+    (redIEBAirTemperature>=850.0 ? sprintf(reply,"%s IEBTEMPR=NOCOMM",reply) : 
+     sprintf(reply,"%s IEBTEMPR=%0.1f",reply,RedIEBAirTemperature));
+
+    (redIEBReturnTemperature>=850.0 ? sprintf(reply,"%s IEBGRT_R=NOCOMM",reply) : 
+     sprintf(reply,"%s IEBGRT_R=%0.1f",reply,RedIEBReturnTemperature));
+
+    (blueIEBAirTemperature>=850.0 ? sprintf(reply,"%s IEBTEMPB=NOCOMM",reply) : 
+     sprintf(reply,"%s IEBTEMPB=%0.1f",reply,BlueIEBAirTemperature));
+
+    (blueIEBReturnTemperature>=850.0 ? sprintf(reply,"%s IEBGRT_B=NOCOMM",reply) : 
+     sprintf(reply,"%s IEBGRT_B=%0.1f",reply,BlueIEBReturnTemperature));
+
+    (TrussTopAirTemperature>=850.0 ? sprintf(reply,"%s TAIRTOP=NOCOMM",reply) : 
+     sprintf(reply,"%s TAIRTOP=%0.1f",reply,TrussTopAirTemperature));
+
+    (TrussBottomAirTemperature>=850.0 ? sprintf(reply,"%s TAIRBOT=NOCOMM",reply) : 
+     sprintf(reply,"%s TAIRBOT=%0.1f",reply,TrussBottomAirTemperature));
+
+    (TrussTopTemperature>=850.0 ? sprintf(reply,"%s TCOLLTOP=NOCOMM",reply) : 
+     sprintf(reply,"%s TCOLLTOP=%0.1f",reply,TrussTopTemperature));
+
+    (TrussBottomTemperature>=850.0 ? sprintf(reply,"%s TCOLLBOT=NOCOMM",reply) : 
+     sprintf(reply,"%s TCOLLBOT=%0.1f",reply,TrussBottomTemperature));
+
     // Utility Box Temperatures and pressures (readout above)
 
     (glycolSupplyPressure>=850.0 ? sprintf(reply,"%s GSPRES=NOCOMM",reply) : 
@@ -2698,30 +2906,12 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
     // WAGO HEB temperature sensors are on WAGO register addr 5 (4-channel RTD)
 
-    // Red HEB
-  
-    ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[rhebID],1,5,hebTemps,2);
-  
-    redHEBTemperature = ptRTD2C(hebTemps[0]);
-    redDewarTemperature = ptRTD2C(hebTemps[1]);
-    shm_addr->MODS.redHEBTemperature = redHEBTemperature;
-    shm_addr->MODS.redDewarTemperature = redDewarTemperature;
-
     (redHEBTemperature>=850.0 ? sprintf(reply,"%s RHEBTEMP=NOCOMM",reply) : 
      sprintf(reply,"%s RHEBTEMP=%0.1f",reply,redHEBTemperature));
 
     (redDewarTemperature>=850.0 ? sprintf(reply,"%s RDEWTEMP=NOCOMM",reply) : 
      sprintf(reply,"%s RDEWTEMP=%0.1f",reply,redDewarTemperature));
 
-    // Blue HEB
-  
-    ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[bhebID],1,5,hebTemps,2);
-    
-    blueHEBTemperature = ptRTD2C(hebTemps[0]);
-    blueDewarTemperature = ptRTD2C(hebTemps[1]);
-    shm_addr->MODS.blueHEBTemperature = blueHEBTemperature;
-    shm_addr->MODS.blueDewarTemperature = blueDewarTemperature;
-    
     (blueHEBTemperature>=850.0 ? sprintf(reply,"%s BHEBTEMP=NOCOMM",reply) : 
      sprintf(reply,"%s BHEBTEMP=%0.1f",reply,blueHEBTemperature));
 
@@ -2753,6 +2943,16 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     allHEBPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,513,(short *)1,1);
     if (allHEBPower<0) {
       sprintf(reply,"%s HEB_%c=OFF", who_selected,hebChan);
+      if (hebChan == 'R') {
+	shm_addr->MODS.redHEBState = 0; // and all its power must similarly be off
+	shm_addr->MODS.redArchonState = 0;
+	shm_addr->MODS.redIonGauge = 0;
+      }
+      else {
+	shm_addr->MODS.blueHEBState = 0; // and all its power must similarly be off
+	shm_addr->MODS.blueArchonState = 0;
+	shm_addr->MODS.blueIonGauge = 0;
+      }
       return CMD_OK;
     }
 
@@ -2761,19 +2961,14 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     archonPower  = allHEBPower & 1;
     ionGaugePower = allHEBPower & 2;
 
-    // Read the RTDs
-
-    ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,5,hebTemps,2);
-
-    hebAirTemp = ptRTD2C(hebTemps[0]);
-    dewarTemp = ptRTD2C(hebTemps[1]);
+    // Temperatures (readout at the top of the command tree)
 
     if (hebChan == 'R') {
-      shm_addr->MODS.redHEBTemperature = hebAirTemp;
-      shm_addr->MODS.redDewarTemperature = dewarTemp;
+      hebAirTemp = redHEBTemperature;
+      dewarTemp = redDewarTemperature;
     } else {
-      shm_addr->MODS.blueHEBTemperature = hebAirTemp;
-      shm_addr->MODS.blueDewarTemperature = dewarTemp;
+      hebAirTemp = blueHEBTemperature;
+      dewarTemp = blueDewarTemperature;
     }
     
     // second argument tells us what to do.  If missing it is an implicit STATUS query
@@ -2792,18 +2987,38 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
       // Archon controller power relay is normally open (off at instrument mains on)
 
-      if (archonPower == 1)
+      if (archonPower == 1) {
 	sprintf(reply,"%s ARCHON_%c=ON",reply,hebChan);
-      else
+	if (hebChan == 'R')
+	  shm_addr->MODS.redArchonState = 1;
+	else
+	  shm_addr->MODS.blueArchonState = 1;
+      }
+      else {
 	sprintf(reply,"%s ARCHON_%c=OFF",reply,hebChan);
+	if (hebChan == 'R')
+	  shm_addr->MODS.redArchonState = 0;
+	else
+	  shm_addr->MODS.blueArchonState = 0;
+      }
 
       // Ion Gauge power relay is normally open
       
-      if (ionGaugePower == 2)
+      if (ionGaugePower == 2) {
 	sprintf(reply,"%s IGPOWER_%c=ON",reply,hebChan);
-      else
+	if (hebChan == 'R')
+	  shm_addr->MODS.redIonGaugeState = 1;
+	else
+	  shm_addr->MODS.blueIonGaugeState = 1;
+      }
+      else {
 	sprintf(reply,"%s IGPOWER_%c=OFF",reply,hebChan);
-
+	if (hebChan == 'R')
+	  shm_addr->MODS.redIonGaugeState = 0;
+	else
+	  shm_addr->MODS.blueIonGaugeState = 0;
+      }
+      
       (hebAirTemp>=850.0 ? sprintf(reply,"%s %sHEBTEMP=NOCOMM",reply,hebChan) : 
        sprintf(reply,"%s HEBTEMP_%c=%0.1f",reply,hebChan,hebAirTemp));
 
@@ -2843,11 +3058,20 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       archonPower  = allHEBPower & 1;
       ionGaugePower = allHEBPower & 2;
 
-      if (archonPower == 1)
+      if (archonPower == 1) {
 	sprintf(reply,"%s ARCHON_%c=ON",reply,hebChan);
-      else
+	if (hebChan == 'R')
+	  shm_addr->MODS.redArchonState = 1;
+	else
+	  shm_addr->MODS.blueArchonState = 1;
+      }
+      else {
 	sprintf(reply,"%s ARCHON_%c=OFF",reply,hebChan);
-      return CMD_OK;
+	if (hebChan == 'R')
+	  shm_addr->MODS.redArchonState = 0;
+	else
+	  shm_addr->MODS.blueArchonState = 0;
+      }
 
     } else if (!strcasecmp(argbuf,"IGPOWER")) {
       
@@ -2880,11 +3104,21 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       archonPower  = allHEBPower & 1;
       ionGaugePower = allHEBPower & 2;
 
-      if (ionGaugePower == 2)
+      if (ionGaugePower == 2) {
 	sprintf(reply,"%s IGPOWER_%c=ON",reply,hebChan);
-      else
+	if (hebChan == 'R')
+	  shm_addr->MODS.redIonGaugeState = 1;
+	else
+	  shm_addr->MODS.blueIonGaugeState = 1;
+      }
+      else {
 	sprintf(reply,"%s IGPOWER_%c=OFF",reply,hebChan);
-
+	if (hebChan == 'R')
+	  shm_addr->MODS.redIonGaugeState = 0;
+	else
+	  shm_addr->MODS.blueIonGaugeState = 0;
+      }
+      
       return CMD_OK;
 
     } else if (!strcasecmp(argbuf,"TEMP") || !strcasecmp(argbuf,"TEMPS")) {

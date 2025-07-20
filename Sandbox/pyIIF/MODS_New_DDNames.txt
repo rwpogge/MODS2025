@@ -9,6 +9,7 @@ on the LBT GitHub (iif/configuration/IIF/DDNames)
 Name                             Type    Units   Description
 
         [MODS data]
+S_MODSMODE                       string  ---     Instrument Mode (CALMODE or OBSMODE)
 S_MODSAGWXPos                    float   mm      AGW Stage X actuator position 
 S_MODSAGWYPos                    float   mm      AGW Stage Y actuator position 
 S_MODSAGWFPos                    float   mm      AGW Stage Focus actuator position 
@@ -17,21 +18,21 @@ S_MODSMaskSelected               int     ---     Slit Mask Cassette mask slot po
 S_MODSMaskPosition               string  ---     Slit Mask position relative to the MODS focal plane (In/Out)
 S_MODSDichroicPosition           int     ---     Dichroic Turret Position selected
 S_MODSDichroicName               string  ---     Dichroic Turret Optic Name (Dichroic/Red Fold/Open)
-S_MODSBlueCollTTFA               int     micron  Blue Collimator Mirror Tip/Tilt/Focus actuator A position
-S_MODSBlueCollTTFB               int     micron  Blue Collimator Mirror Tip/Tilt/Focus actuator B position
-S_MODSBlueCollTTFC               int     micron  Blue Collimator Mirror Tip/Tilt/Focus actuator C position
-S_MODSBlueCollFocus              int     micron  Blue Collimator Focus position (TTFA+TTFB+TTFC)
+S_MODSBlueCollTTFA               float   micron  Blue Collimator Mirror Tip/Tilt/Focus actuator A position
+S_MODSBlueCollTTFB               float   micron  Blue Collimator Mirror Tip/Tilt/Focus actuator B position
+S_MODSBlueCollTTFC               float   micron  Blue Collimator Mirror Tip/Tilt/Focus actuator C position
+S_MODSBlueCollFocus              float   micron  Blue Collimator Focus position (TTFA+TTFB+TTFC)
 S_MODSBlueGratingPosition        int     ---     Blue Grating Turret position (number 1..4)
-S_MODSBlueCameraFocus            int     micron  Blue Camera Focus [microns]
+S_MODSBlueCameraFocus            float   micron  Blue Camera Focus [microns]
 S_MODSBlueFilterPosition         int     ---     Blue Camera Filter Wheel position (number 1..8)
 S_MODSBlueVacuumGaugePower       string  ---     Blue Dewar Vacuum Ionization Gauge DC Power (on/off)
 S_MODSBlueArchonPower            string  ---     Blue Archon CCD Controller AC Power (on/off)
-S_MODSRedCollTTFA                int     micron  Red Collimator Mirror Tip/Tilt/Focus actuator A position
-S_MODSRedCollTTFB                int     micron  Red Collimator Mirror Tip/Tilt/Focus actuator B position
-S_MODSRedCollTTFC                int     micron  Red Collimator Mirror Tip/Tilt/Focus actuator C position
-S_MODSRedCollFocus               int     micron  Red Collimator Focus position (TTFA+TTFB+TTFC)
+S_MODSRedCollTTFA                float   micron  Red Collimator Mirror Tip/Tilt/Focus actuator A position
+S_MODSRedCollTTFB                float   micron  Red Collimator Mirror Tip/Tilt/Focus actuator B position
+S_MODSRedCollTTFC                float   micron  Red Collimator Mirror Tip/Tilt/Focus actuator C position
+S_MODSRedCollFocus               float   micron  Red Collimator Focus position (TTFA+TTFB+TTFC)
 S_MODSRedGratingPosition         int     ---     Red Grating Turret position (number 1..4)
-S_MODSRedCameraFocus             int     micron  Red Camera Focus [microns]
+S_MODSRedCameraFocus             float   micron  Red Camera Focus [microns]
 S_MODSRedFilterPosition          int     ---     Red Camera Filter Wheel position (number 1..8)
 S_MODSRedVacuumGaugePower        string  ---     Red Dewar Vacuum Ionization Gauge DC Power (on/off)
 S_MODSRedArchonPower             string  ---     Red Archon CCD Controller AC Power (on/off)
@@ -40,8 +41,7 @@ S_MODSVFLATIntensity             float   ---     Variable Intensity Flat Field L
 S_MODSIMCSLaserBeam              string  ---     IMCS IR Laser beam output state (enabled/disabled)
 S_MODSIMCSLaserPower             float   mW      IMCS IR Laser emitted beam power 
 S_MODSIMCSLaserTemp              float   C       IMCS IR Laser Head Temperature
-S_MODSAirTempTop                 float   C       Enclosure Inside Air Temp at Top
-S_MODSAirTempBottom              float   C       Enclosure Inside Air Temp at Bottom
-S_MODSCollTempTop                float   C       Collimator Mirror Truss Tube Top Temp
-S_MODSCollTempBottom             float   C       Collimator Mirror Truss Tube Bottom Temp
-
+S_MODSTopAirTemp                 float   C       Enclosure Inside Air Temp at Top
+S_MODSBottomAirTemp              float   C       Enclosure Inside Air Temp at Bottom
+S_MODSTrussTopTemp               float   C       Collimator Mirror Truss Tube Top Temp
+S_MODSTrussBottomTemp            float   C       Collimator Mirror Truss Tube Bottom Temp

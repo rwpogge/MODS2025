@@ -11,6 +11,7 @@ new python-iif interface (https://github.com/LBTO/ptyhon-iif).
  * `getIIF.py` - test program
  * `MODS1B_Inst.txt` - Draft file to map IIF MODS instrument data dictionary entries to FITS header keywords to put instrument info into MODS1B headers.
  * `MODS_New_DDNames.txt` - List of new DD entries needed to implement an instrument header "pull" into azcam using a mapping file like `MODS1B_Inst.txt`.
+ * `MODS1B_Inst_draft.xlsx` - Draft excel spreadsheet showing DD to MODS shared memory mapping
  
  ## Notes
  
