@@ -1,7 +1,7 @@
 # MODS2025
 Version 1.2.0
 
-Last Update: 2025 July 16 [rwp/osu]
+Last Update: 2025 July 20 [rwp/osu]
 
 Lead: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
@@ -16,7 +16,7 @@ Proceed at your own risk**
   * `mods` - MODS instrument control and data-acquisition system
   * `ISIS` - ISIS message-passing server and client
   * `azcam` - AzCam server for the MODS Archon CCD controllers
-  * `Sandbox` - place to put test codes and other bits we are using
+  * `Sandbox` - place to put test codes and other bits we are using, the action is in the subfolders
   * `Config` - MODS instance runtime configuration files released for observing operations
   * `Scripts` - Startup and status scripts (coming soon...)
 
