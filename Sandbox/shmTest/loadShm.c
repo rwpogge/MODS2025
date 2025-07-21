@@ -19,24 +19,18 @@ using namespace std;
 #include <sys/types.h>
 #include <time.h>
 
-#include "system_dep.h"     // OS dependent headers
-// #include "dpi.h"
-#include "MATHCNST.H"
-#include "instrutils.h"     // ISL Instrument header
-#include "isl_funcs.h"      // function defines for all isl
-#include "isl_types.h"      // general header file for all isl data structure definitions
-#include "params.h"         // general isl parameter header
-#include "islcommon.h"      // shared memory (Islcommon C data structure) layout
-#include "isl_shmaddr.h"    // declaration of pointer to islcommon
+// headers we need
+
+#include "instrutils.h"  // ISL Instrument header
+#include "islcommon.h"   // shared memory (Islcommon C data structure) layout
+#include "isl_shmaddr.h" // declaration of pointer to islcommon
+
+int LoadConfig(char *);
+void setup_ids();
+
+// uses isisclient mechanisms
+
 #include "isisclient.h"
-
-#include "agwcomm.h"     // AGW functions header file
-#include "modscontrol.h" // AGW functions header file
-#include "mmccontrol.h"  // MMC (IE) functions header file
-#include "mmc_client.h"  // loadconfig prototype
-
-// dummy client instance for this test
-
 isisclient_t client;
 
 int
