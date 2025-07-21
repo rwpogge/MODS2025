@@ -2257,7 +2257,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       }
       else {
 	sprintf(reply,"%s WFS=OFF WFS_BRK=UNKNOWN",reply);
-	shm_addr->MODS.wfsCamState = o;
+	shm_addr->MODS.wfsCamState = 0;
       }
 
       if (agwGuidePower == 128) {
@@ -2858,16 +2858,16 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     // IEB temperature sensors
 
     (redIEBAirTemperature>=850.0 ? sprintf(reply,"%s IEBTEMPR=NOCOMM",reply) : 
-     sprintf(reply,"%s IEBTEMPR=%0.1f",reply,RedIEBAirTemperature));
+     sprintf(reply,"%s IEBTEMPR=%0.1f",reply,redIEBAirTemperature));
 
     (redIEBReturnTemperature>=850.0 ? sprintf(reply,"%s IEBGRT_R=NOCOMM",reply) : 
-     sprintf(reply,"%s IEBGRT_R=%0.1f",reply,RedIEBReturnTemperature));
+     sprintf(reply,"%s IEBGRT_R=%0.1f",reply,redIEBReturnTemperature));
 
     (blueIEBAirTemperature>=850.0 ? sprintf(reply,"%s IEBTEMPB=NOCOMM",reply) : 
-     sprintf(reply,"%s IEBTEMPB=%0.1f",reply,BlueIEBAirTemperature));
+     sprintf(reply,"%s IEBTEMPB=%0.1f",reply,blueIEBAirTemperature));
 
     (blueIEBReturnTemperature>=850.0 ? sprintf(reply,"%s IEBGRT_B=NOCOMM",reply) : 
-     sprintf(reply,"%s IEBGRT_B=%0.1f",reply,BlueIEBReturnTemperature));
+     sprintf(reply,"%s IEBGRT_B=%0.1f",reply,blueIEBReturnTemperature));
 
     (TrussTopAirTemperature>=850.0 ? sprintf(reply,"%s TAIRTOP=NOCOMM",reply) : 
      sprintf(reply,"%s TAIRTOP=%0.1f",reply,TrussTopAirTemperature));
@@ -2946,12 +2946,12 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       if (hebChan == 'R') {
 	shm_addr->MODS.redHEBState = 0; // and all its power must similarly be off
 	shm_addr->MODS.redArchonState = 0;
-	shm_addr->MODS.redIonGauge = 0;
+	shm_addr->MODS.redIonGaugeState = 0;
       }
       else {
 	shm_addr->MODS.blueHEBState = 0; // and all its power must similarly be off
 	shm_addr->MODS.blueArchonState = 0;
-	shm_addr->MODS.blueIonGauge = 0;
+	shm_addr->MODS.blueIonGaugeState = 0;
       }
       return CMD_OK;
     }
