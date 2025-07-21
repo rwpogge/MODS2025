@@ -53,8 +53,18 @@ to update your local copy.
 
 Yes, this is sloppy, but this is also development mode.  We copy the code we need out of MODS2025/ into the
 public space.  Once we're past the development phases this will be a much cleaner build, until then...
+
+#### MODS instrument server (e.g., mods1, mods2):
 ```shell
 cp -r MODS2025/mods .
+cp -r MODS2025/ISIS .
+cp -r MODS2025/Config .
+```
+
+#### MODS azcam server (e.g., mods1b)
+
+```shell
+cp -r MODS2025/mods/Agents .
 cp -r MODS2025/ISIS .
 cp -r MODS2025/azcam .
 cp -r MODS2025/Config .
