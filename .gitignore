@@ -7,6 +7,21 @@
 *.o
 *.so
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+__pypackages__/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
 # Packages #
 ############
 # it's better to unpack these files and commit the raw source
