@@ -11,6 +11,8 @@ MODS2025 Project to update MODS1+2 CCD and instrument control systems at the LBT
 **This our very messy working repository, not the final flight code repository that will be built later.  
 Proceed at your own risk**
 
+However, it is taking on many of the structures of the real thing, so not totally sloppy.  Sort of.
+
 ## Contents
 
   * `mods` - MODS instrument control and data-acquisition system
