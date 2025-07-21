@@ -725,6 +725,24 @@ main(int argc, char *argv[])
     printf("  MMC=%d, ",ms->MODS.modsPorts[2]);
     printf("  OTHERS=%d\n",ms->MODS.modsPorts[3]);
 
+    // Power state variables
+  } else if (!strcasecmp(what,"POWER")) {
+    printf("Power States:\n");
+    printf("         IUB: %s\n", (ms->MODS.utilState) ? "On" : "Off");
+    printf("         LLB: %s\n", (ms->MODS.llbState) ? "On" : "Off");
+    printf("   Guide Cam: %s\n", (ms->MODS.guideCamState) ? "On" : "Off");
+    printf("     WFS Cam: %s\n", (ms->MODS.wfsCamState) ? "On" : "Off");
+    printf(" Blue Channel:\n");
+    printf("       IEB-B: %s\n", (ms->MODS.blueIEBState) ? "On" : "Off");
+    printf("       HEB-B: %s\n", (ms->MODS.blueHEBState) ? "On" : "Off");
+    printf("    Archon-B: %s\n", (ms->MODS.blueArchonState) ? "On" : "Off");
+    printf("  IonGauge-B: %s\n", (ms->MODS.blueIonGaugeState) ? "On" : "Off");
+    printf(" Red Channel:\n");
+    printf("       IEB-R: %s\n", (ms->MODS.redIEBState) ? "On" : "Off");
+    printf("       HEB-R: %s\n", (ms->MODS.redHEBState) ? "On" : "Off");
+    printf("    Archon-R: %s\n", (ms->MODS.redArchonState) ? "On" : "Off");
+    printf("  IonGauge-R: %s\n", (ms->MODS.redIonGaugeState) ? "On" : "Off");
+    
     // Common
   } else if(!strcasecmp(what,"ISLCOMMON")) {
     for (i=0;i<MAX_ML-1;i++) {
