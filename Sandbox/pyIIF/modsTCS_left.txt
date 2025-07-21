@@ -1,5 +1,5 @@
 #
-# MODS TCS info header template entries for MODS at left (SX) direct Gregorian
+# MODS TCS info header template entries for MODS1 at left (SX) direct Gregorian
 #
 # Updated: 2025 July 20 [rwp/osu]
 #
@@ -56,23 +56,23 @@ DDEntries:
   #
   # SX Primary and Secondary collimation state
   #
-  L_M1CollX:     ["M1POSX","float","Primary Mirror X Position [mm]"]
-  L_M1CollY:     ["M1POSY","float","Primary Mirror Y Position [mm]"]
-  L_M1CollZ:     ["M1POSZ","float","Primary Mirror Z Position [mm]"]
-  L_M1CollRx:    ["M1ROTX","float","Primary Mirror RX Rotation [arcsec]"]
-  L_M1CollRy:    ["M1ROTY","float","Primary Mirror RY Rotation [arcsec]"]
-  L_M1CollRz:    ["M1ROTZ","float","Primary Mirror RZ Rotation [arcsec]"]
-  L_M1CollTemp:  ["M1CTEMP","float","Primary Mirror Temperature [deg C]"] 
-  L_M1CollTemp2: ["M1CTEMP2","float","Primary Mirror Temperature 2 [deg C]"]
-  L_M1AirTemp:   ["M1GTEMP","float","Primary Mirror Glass Temperature [deg C]"]
-  L_M1GlassTemp: ["M1ATEMP","float","Primary Mirror Ambient Air Temp [deg C]"]
-  L_M2CollX:     ["M2POSX","float","Secondary Mirror X Position [mm]"]
-  L_M2CollY:     ["M2POSY","float","Secondary Mirror Y Position [mm]"]
-  L_M2CollZ:     ["M2POSZ","float","Secondary Mirror Z Position [mm]"]
-  L_M2CollRx:    ["M2ROTX","float","Secondary Mirror RX Rotation [arcsec]"]       
-  L_M2CollRy:    ["M2ROTY","float","Secondary Mirror RY Rotation [arcsec]"]     
-  L_M2CollRz:    ["M2ROTZ","float","Secondary Mirror RZ Rotation [arcsec]"]   
-  L_M2CollTemp:  ["M2CTEMP","float","Secondary Mirror Temperature [deg C]"]
+  L_M1CollX:     ["M1POSX","float","SX Primary X Position [mm]"]
+  L_M1CollY:     ["M1POSY","float","SX Primary Y Position [mm]"]
+  L_M1CollZ:     ["M1POSZ","float","SX Primary Z Position [mm]"]
+  L_M1CollRx:    ["M1ROTX","float","SX Primary RX Rotation [arcsec]"]
+  L_M1CollRy:    ["M1ROTY","float","SX Primary RY Rotation [arcsec]"]
+  L_M1CollRz:    ["M1ROTZ","float","SX Primary RZ Rotation [arcsec]"]
+  L_M1CollTemp:  ["M1CTEMP","float","SX Primary Temperature [deg C]"] 
+  L_M1CollTemp2: ["M1CTEMP2","float","SX Primary Temperature 2 [deg C]"]
+  L_M1AirTemp:   ["M1GTEMP","float","SX Primary Glass Temperature [deg C]"]
+  L_M1GlassTemp: ["M1ATEMP","float","SX Primary Ambient Air Temp [deg C]"]
+  L_M2CollX:     ["M2POSX","float","SX Secondary X Position [mm]"]
+  L_M2CollY:     ["M2POSY","float","SX Secondary Y Position [mm]"]
+  L_M2CollZ:     ["M2POSZ","float","SX Secondary Z Position [mm]"]
+  L_M2CollRx:    ["M2ROTX","float","SX Secondary RX Rotation [arcsec]"]       
+  L_M2CollRy:    ["M2ROTY","float","SX Secondary RY Rotation [arcsec]"]     
+  L_M2CollRz:    ["M2ROTZ","float","SX Secondary RZ Rotation [arcsec]"]   
+  L_M2CollTemp:  ["M2CTEMP","float","SX Secondary Temperature [deg C]"]
   #
   # Telescope temperature sensors
   #
