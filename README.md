@@ -43,7 +43,7 @@ dnf -y install dnstools wget (nice, but not required)
 Also need the local LBTO versions of hdf5 and lbto-libtelemetry, build from local rpms
 ```
 
-## Authors and Collaborators
+## Authors and Contributors
 
 - Rick Pogge (OSU Astronomy) pogge.1@osu.edu
 - Xander Carroll (OSU Astronomy) carroll.892@osu.edu
