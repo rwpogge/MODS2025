@@ -50,6 +50,7 @@
 
   \date 2025 Jun 20 - AlmaLinux 9 port [rwp/osu]
   \date 2025 Jul 16 - changed HEB power status/on/off logic for new WAGO HEB [rwp/osu]
+  \date 2025 Jul 20 - power state code updates and clean up shmem interaction [rwp/osu]
 
 */
 #include <iostream>
@@ -645,7 +646,7 @@ cmd_mstatus(char *args, MsgType msgtype, char *reply)
 
   The main purpose of ISTATUS is to report the positions of all instrument
   mechanisms(filter wheels, focus positions, etc.). These define the most
-  important instrument configuration parameters vis-Å‡-vis observing that
+  important instrument configuration parameters vis-¬Å√†-vis observing that
   must appear in each image FITS headers.
 
   ISTATUS returns only the most relevant subset of instrument power state
