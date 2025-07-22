@@ -12,9 +12,9 @@
 //// START of Site-Dependent Setup. ---------------------------------------
 
 // Default client application values (override/set in loadconfig.c)
-#define DEFAULT_MYID      "ENV"                     //!< default client ISIS node name
-#define DEFAULT_MYPORT    10901                     //!< default client socket port   
-#define DEFAULT_RCFILE    (char *)"./modsheb.ini"   //!< default client runtime config file
+#define DEFAULT_MYID      "ENV"                                   //!< default client ISIS node name
+#define DEFAULT_MYPORT    10901                                   //!< default client socket port   
+#define DEFAULT_RCFILE    (char *)"/home/dts/Config/modsheb.ini"  //!< default client runtime config file
 
 
 #define ENV_LOGS "/home/dts/Logs/Env/modsheb"       //!< Default enviromental log file path and rootname
@@ -51,7 +51,9 @@
 
 #include <telcollection.hxx>  // LBTO telemetry library
 #include <isisclient.h>       // ISISClient library
+
 #include "modbusutils.h"      // Utility functions for libmodbus
+#include "ionutils.h"         // Utility functions for the ion guage
 
 //// END of System Header Files. -------------------------------------------
 //// START of System Versioning. -------------------------------------------
@@ -102,7 +104,7 @@ const static struct{
 const int PROCESS_MAP_LEN = sizeof(PROCESS_MAP)/sizeof(PROCESS_MAP[0]);
 
 /*!
-  \brief The data that will be stored for each device.
+  \brief The data that will be stored for each device in a WAGO module.
 */
 typedef struct DeviceProfile{
     float data;                     // The most recently collected data for the device
@@ -118,7 +120,7 @@ typedef struct DeviceProfile{
 }device_t;
 
 /*!
-  \brief The data that will be stored for each module.
+  \brief The data that will be stored for each WAGO module.
 */
 typedef struct ModuleProfile{
     device_t* devices;        // An array of connected devices and their data
@@ -137,10 +139,16 @@ typedef struct envData {
   // WAGO Addresses
   char hebAddr[64];   //!< IP address of the HEB WAGO FieldBus controller
 
+  // ION Address
+  char ionAddr[64];   //!< IP address of the ion gauge
+
   // WAGO Modules
   int numModules;
   device_module_t* modules; //!< An array containing all connected modules
   uint16_t* rawWagoData;    //!< The most recently collected data from the WAGO.
+
+  // Ion Data
+  float ionData;            //!< The most recently collected data from the ion gauge.
 
   // Environmental monitoring parameters
   long  cadence;   //!< Monitor update cadence in seconds
@@ -160,6 +168,7 @@ typedef struct envData {
   char hdfRoot[MED_STR_SIZE];         //!< Full path/rootname of the HDF5 log directory
   char leapSecondsFile[MED_STR_SIZE]; //!< Full path/name of the leap-seconds.list
 
+  lbto::tel::float_measure::buf_proxy ionMeasure;       //!< The ion telemetry data
   std::shared_ptr<lbto::tel::collector> modsCollector;  //!< The telemetry collection interface
 
 } envdata_t;

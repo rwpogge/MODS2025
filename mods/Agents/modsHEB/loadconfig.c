@@ -442,6 +442,12 @@ int loadConfig(char *cfgfile){
 	      strcpy(env.hebAddr,argStr);
       }
 
+      // IONIP: IP address of the ion gauge
+      else if (strcasecmp(keyword,"IONIP")==0) {
+	      GetArg(inStr,2,argStr);
+	      strcpy(env.ionAddr,argStr);
+      }
+
       // DataLog: Full path and rootname of the environmental data log
       //    The agent will append the UTC CCYYMMDD date tag and .log extension
       //    to create the full qualified name /path/rootname.CCYYMMDD.log

@@ -40,7 +40,7 @@ VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
 LIBS        = $(INCLUDES) $(LIBRARIES) -L/usr/X11R6/lib -lX11 \
               -lisis -lmodbus -lreadline -lhistory -lncurses -ltelcollection
 
-HEADERS		= client.h commands.h modbusutils.h
+HEADERS		= client.h commands.h modbusutils.h ionutils.h
 
 # A list of all the .c files in the SRCDIR directory, and an altered list of those files with a .o extension in the BUILDDIR directory.
 

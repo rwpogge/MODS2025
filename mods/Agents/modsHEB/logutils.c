@@ -60,6 +60,14 @@ int initTelemetryData(envdata_t* envi){
       }
     }
 
+    //Adding the ion telemetry data.
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->ionMeasure,
+      lbto::tel::unit::torr(), 
+      lbto::tel::name("ionPressure"),
+      lbto::tel::description("")
+    ));
+
     //Adding this definition to the telemetry store.
     envi->modsCollector.reset(new lbto::tel::collector(modsDefiner.make_definition(), MAX_TELEMETRY_BUFFER_BYTES, false));
 
@@ -150,9 +158,11 @@ int initEnvLog(envdata_t *envi){
   }
 
   //Creating the enviornmental data header string.
-  memset(logStr,0,sizeof(logStr));                                                    // Clear the string.
-  stringLength += snprintf(logStr, sizeof(logStr), "# UTC Date/Time    ");            // Append the date header.
-  for(int i=0; i<envi->numModules; i++){
+  memset(logStr,0,sizeof(logStr));                                                         // Clear the string.
+  stringLength += snprintf(logStr, sizeof(logStr), "# UTC Date/Time    ");                 // Append the date header.
+  stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, " ion    ");  // Append the ion device.
+
+  for(int i=0; i<envi->numModules; i++){                                                   // Append the name of each device.
     for(int j=0; j<envi->modules[i].numDevices; j++){
       if(!envi->modules[i].devices[j].logEntry) continue;
       
@@ -199,10 +209,12 @@ int logEnvData(envdata_t *envi){
     if (initEnvLog(envi)<0) return -1;
 
   // Create the enviornmental data string.
-  memset(logStr, 0, sizeof(logStr));                                                  // Clear the string.
-  stringLength += snprintf(logStr, sizeof(logStr), "%s", envi->utcDate);              // Append the date.
-  for(int i=0; i<envi->numModules; i++){
-    for(int j=0; j<envi->modules[i].numDevices; j++){                             // Append each device reading.
+  memset(logStr, 0, sizeof(logStr));                                                                     // Clear the string.
+  stringLength += snprintf(logStr, sizeof(logStr), "%s", envi->utcDate);                                 // Append the date.
+  stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, " %-7.3f", envi->ionData);  // Append the ion device data.
+
+  for(int i=0; i<envi->numModules; i++){                                                                 // Append each device reading.
+    for(int j=0; j<envi->modules[i].numDevices; j++){
       if(!envi->modules[i].devices[j].logEntry) continue;
 
       // Print DO's as a simple On/Off
@@ -322,7 +334,10 @@ int logTelemetryData(envdata_t *envi){
     env.useHdf5 = 0;
   }
 
-  try{    
+  try{
+    //Storing the ion device data.
+    envi->ionMeasure.store(envi->ionData);
+
     //Storing data in the streams based on the module table.
     for(int i=0; i<envi->numModules; i++){
       for(int j=0; j<envi->modules[i].numDevices; j++){

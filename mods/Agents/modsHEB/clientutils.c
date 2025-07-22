@@ -39,6 +39,7 @@ void initEnvData(envdata_t *envi){
   envi->hdfInitalized = 0;
 
   strcpy(envi->hebAddr,"");
+  strcpy(envi->ionAddr,"");
 
   //Setting all of the strings to their default values.
   strcpy(envi->logRoot,ENV_LOGS);

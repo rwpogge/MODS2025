@@ -183,9 +183,13 @@ void freeAllDeviceData(envdata_t *envi){
   Gets device data (enviromental sensor data) for every module and loads the results into the enviromental data structure.
 */
 int getAllDeviceData(envdata_t *envi){
+  //Get all of the data from the WAGOs.
   for(int i=0; i<envi->numModules; i++){
     getDeviceModuleData(envi, i);
   }
+
+  //Get the device data from the ion.
+  envi->ionData = getIonPressure(envi->ionAddr, ION_PORT, 2);
 
   return 0;
 }
