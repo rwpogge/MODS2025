@@ -1,0 +1,353 @@
+/*!
+  \mainpage calibration.plc - Calibration Tower PLC program
+
+  \author Staff, OSU Astronomy Dept. (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2007 May 20
+  
+  \section Usage
+
+  Usage: Multi-level command set used with ISL system
+	 or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+    	Small command set the key words.
+
+	All Motion Parameters are documented in the MicroLYNX Part III 
+	Software Reference.
+
+<pre>
+2006 Nov 01 - new application [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file calibration.plc
+  \brief Small command set for calibration mechanism
+*/
+/** END HEADER **/
+* START loading PLC
+' Motion Parameters
+Drven=0		'Disables Motor
+Msel= 10	'10 microsteps per step
+Munit=2000	'units to revs
+Mac=70		'accl current is 0.70 x 7amps
+Mrc=70		'run current is 0.70 x 7amps
+Mhc=0		'Hold current is Zero
+Hcdt=2000	'Hold Current Delay msec
+
+	'Input & Output Configuration
+Ios 21 = 13,0,0	'CW Limit sensor (active low)
+Ios 22 = 14,0,0	'CCW Limit sensor (active low)
+Ios 26 = 0,1,0	'User Output for Brake Control
+
+	'Motion Configuration
+Aclt=1		'Linear Acceleration
+Accl=50		'Acceleration (Rev/sec^2)
+Decl=4		'Deceleration (Rev/sec^2)
+Ldecl=1000	'Limit Deceleration (Rev/sec^2)	
+
+	'Variable Declarations
+VAR VNOM	'Nominal operating velocity (rev/sec)
+VNOM=8
+VAR VSEEK 	'Home Seeking Velocity (rev/sec)
+VSEEK=2
+VAR DIST        'Distance between positions (revs) - Needs Fine Tuned
+VAR OVERTRVL    'Overtravel distance (revs)
+VAR MAXMOV	'Maximum mechanism travel (revs)
+DIST=66		'Distance between positions (revs)
+OVERTRVL=1.5	'Overtravel for limit activation (revs)
+MAXMOV=DIST+OVERTRVL	'Maximum travel
+VAR INITIAL	'Looks for user input to begin Initialization Mode
+VAR CALIB	'Looks for user input to begin Calibration Mode
+VAR SCIMODE	'Looks for user input to begin Science Mode
+VAR TIMER1	'Timer for Timeout routine
+VAR TIMERMAX	'Maximum Timer Count before Timeout Occurs
+TIMERMAX=90
+'Initialize (Moves Calibration Tower to Storage/Science Position)
+Vm=VNOM
+'PRINT "Press 9 to begin Initialization"
+'LBL INIT
+'INPUT INITIAL
+'BR STORAGE, INITIAL=9	'Waits for User Input to begin Initialization
+'Re-Prompt Due to Invalid Input
+'PRINT "WRONG USER INPUT, PLEASE PRESS 9 to INITIALIZE"
+'BR INIT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	        'STARTUP MODE
+		'PLC starts at address #100
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Pgm 100
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'STORAGE PROCEDURE
+'Slews Calibration Tower to its Storage / Science Position
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'Initialization
+LBL STORAGE
+Drven=1			'Enables Drive
+Io 26=1			'Disables Brake
+'PRINT " "
+'PRINT "PLEASE WAIT APPROX. 30 SECONDS FOR INTIALIZATION TO COMPLETE>"
+'PRINT " "
+SLEW 3			'Slews (rev/sec)
+TIMER1 = 1		'Sets inital Timer count to 1
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'TIMEOUT1 PROCEDURE
+'Timeout Loop
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL TIMEOUT1
+DELAY 250	'Adds short delay between Timeout Loop Cycles
+'
+'If Timer exceeds max allowable counts an error is triggered
+BR FAILED, TIMER1 > TIMERMAX
+'
+'Program continues if Limit is reached prior to timeout
+BR CONTINUE, Io 21=1
+INC TIMER1	'Increments the Timer Varaible		
+BR TIMEOUT1	'Closes Timeout Loop			
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'CONTINUE PROCEDURE
+'Continue if Limit is reached prior to timeout
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL CONTINUE
+Io 26=0		'Enables Brake
+'
+'Adds Delay to allow brake to activate prior to motor being turned off
+DELAY 1000
+Drven = 0		'Turns motor off
+PRINT "SCIENCE MODE ACTIVATED"
+'PRINT " "
+'PRINT "TO ENABLE CALIBRATION MODE ENTER 1"
+Pos=0.0           'Sets Position to Zero
+DELAY 500
+BR ENDIT 'added by RDG for ISL software.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'CALMODE PROCEDURE
+'Starts Calibration Mode
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL CALMODE
+'INPUT CALIB	'User Input for Calibraton Mode
+'BR CALMOVE, CALIB=1
+'PRINT "WRONG USER INPUT, PLEASE PRESS 1 FOR CALIBRATION MODE"
+'BR CALMODE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'CALMOVE PROCEDURE
+'Begins Move to Calibration Mode
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL CALMOVE
+'Verify that Calibration Tower is Leaving from a Valid Science Position
+BR NOSCIPOS, Io 21<>1
+Drven=1
+Io 26=1
+'PRINT " "
+'PRINT "MOVING TO CALIBRATION MODE, WAIT TIME APPROX. 10 SECONDS>"
+'PRINT " "
+MOVR -MAXMOV
+HOLD 2			'Waits for motion to stop before proceeding
+BR ENDCAL  'RDG added this for ISL system
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'CALHOME PROCEDURE
+'Calibration Homing Routine
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL CALHOME
+DELAY 250
+Pos=0           'Sets Position to Zero
+Vm=VSEEK
+MOVR=MAXMOV
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'POLLIT PROCEDURE
+'Looks for edge of limit trip zone
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL POLLIT
+BR SEEK, Io 21=0
+BR POLLIT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'SEEK PROCEDURE
+'Homing Seek
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL SEEK
+SSTP			'Soft Stop for motion
+DELAY 1000
+PRINT "DE-ASSERT = " Pos
+MOVA -1
+HOLD 2
+Pos=0.0
+Io 26=0
+Vm=VNOM
+PRINT "CALIBRATION SYSTEM HOMING COMPLETE"
+DELAY 1000
+Drven = 0
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'CALACTIV PROCEDURE
+'Checks for Active Tower in calibration direction
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL CALACTIV
+BR LIMERCCW, Io 22<>1	'Checks for End of Travel Limit Assertion
+PRINT "CALIBRATION MODE ACTIVATED"
+'PRINT " "
+'PRINT "TO ENABLE SCIENCE MODE ENTER 2"
+ENDCAL 'added by RDG for ISL software.
+'
+'LBL SCICHK		'Waits for User Input prior to moving to Science Mode
+'INPUT SCIMODE
+'BR SCIENCE, SCIMODE=2
+'PRINT "WRONG USER INPUT, PLEASE PRESS 2 FOR SCIENCE MODE"
+'BR SCICHK
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'SCIENCE PROCEDURE
+'Begins Science Mode
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL SCIENCE
+BR NOCALPOS, Io 22<>1
+Drven=1
+Io 26=1
+'PRINT " "
+PRINT "MOVING TO SCIENCE MODE, WAIT TIME APPROX. 10 SECONDS"
+'PRINT " "
+MOVR MAXMOV
+HOLD 2
+Io 26=0
+DELAY 1000
+Drven = 0
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'SCIACTIV PROCEDURE
+'Checks for Active Tower in science direction
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL SCIACTIV
+BR LIMERCW, Io 21<>1	'Checks for End of Travel Limit Assertion
+PRINT "SCIENCE MODE ACTIVATED"
+'PRINT " "
+'PRINT "TO ENABLE CALIBRATION MODE ENTER 1"
+'BR CALMODE
+BR ENDSCI 'added by RDG for ISL software.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'LIMERCW PROCEDURE
+'CW Limit Error Recovery
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL LIMERCW
+PRINT "ERROR....SCIENCE MODE LIMIT NOT DETECTED"
+PRINT " "
+PRINT "MOVING BACK TO CALIBRATION MODE"
+PRINT " "
+DELAY 1000
+LBL CALRCVR
+Drven=1
+Io 26=1
+SLEW -3
+TIMER1 = 1
+LBL TIMEOUT2
+DELAY 250
+BR FAILED, TIMER1 > TIMERMAX
+BR CALHOME, Io 22=1
+INC TIMER1
+BR TIMEOUT2
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'LIMERCCW PROCEDURE
+'CCW Limit Error Recovery
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL LIMERCCW
+'PRINT "ERROR....CALIBRATION MODE LIMIT NOT DETECTED"
+'PRINT " "
+PRINT "MOVING BACK TO SCIENCE MODE"
+'PRINT " "
+DELAY 1000
+LBL SCIRCVR
+Drven=1
+Io 26=1
+SLEW 3
+TIMER1 = 1
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'TIMEOUT3 PROCEDURE
+'Timeout Loop
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL TIMEOUT3
+DELAY 250
+BR FAILED, TIMER1 > TIMERMAX
+BR SCIACTIV, Io 21=1
+INC TIMER1
+BR TIMEOUT3
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'NOSCIPOS PROCEDURE
+'Out of Science Position Error Recovery
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL NOSCIPOS
+'PRINT "NO SCIENCE POSITION DETECTED"
+'PRINT " "
+PRINT "TRYING TO RECOVER SCIENCE POSITION"
+'PRINT " "
+BR SCIRCVR
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'NOCALPOS PROCEDURE
+'Out of Calibration Position Error Recovery
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL NOCALPOS
+'PRINT "NO CALIBRATION POSITION DETECTED"
+'PRINT " "
+PRINT "TRYING TO RECOVER CALIBRATION POSITION"
+'PRINT " "
+BR CALRCVR
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'FAILED PROCEDURE
+'Timeout Failure Message
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL FAILED
+PRINT "FAILED....TIMEOUT OCCURRED"
+BR ENDIT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'ENDCAL and ENDSCI PROCEDURE
+'End of the line
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL ENDCAL		'End Program Execution
+PRINT "CALIBRATION MODE ACTIVATED"
+BR ENDIT
+'
+LBL ENDSCI		'End Program Execution
+PRINT "SCIENCE MODE ACTIVATED"
+BR ENDIT
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'ENDIT PROCEDURE
+'End of the line
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL ENDIT
+'PRINT "PROGRAM SHUTTING DOWN"
+SSTP
+Io 26=0
+Drven=0
+SSTP 1
+Pgm
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+			'ISL PLC
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+PGM 6000
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'WHO AM I PROCEDURE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL WHO
+PRINT "calibration"
+BR END_PLC
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'POLL THE CONTROLLER PROCEDURE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL POLL
+PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                'CODE VERSION PROCEDURE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL CODEV
+PRINT "codeV=0.1(05/10/07)",":HW",VER
+BR END_PLC      'branch to exit
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'ENDIT PROCEDURE
+'End of the line
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL END_PLC		
+END 'END of ISL PLC code
+PGM

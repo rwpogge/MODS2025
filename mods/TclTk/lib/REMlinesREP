@@ -1,0 +1,11 @@
+#!/bin/sh
+# remove line from a file and make it something else
+for x
+do
+	echo "CONVERTING $x"
+# To modify another string in x files change s,modifyline,withline,
+	sed -f - $x>tmp.$x <<EOF-marker-with-no-quoted-chars-to-get-var-expansion
+	s,/home/dts/mods,/home/dts/mods,
+EOF-marker-with-no-quoted-chars-to-get-var-expansion
+	cp -f "tmp.$x" "$x"
+done

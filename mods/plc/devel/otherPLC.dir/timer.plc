@@ -1,0 +1,145 @@
+/*!
+  \mainpage Generic.plc - Generic PLC program
+
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2007 Feb 02
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system.
+  
+  Where: \c MODS instrument for LBT
+  
+  \section Introduction
+ Small command set the key words are -
+ initial: Initialize Generic (move to CW or CCW and set 
+          pos=0.000)
+ home: Send open to position 0.000
+ stow: Send close position oposite of home.
+ stop: Stop all mechanism movement
+ relbrk: Release break
+ setbrk: Set break on mechanism
+
+ All Motion Parameters are documented in the MicroLYNX Part III 
+ Software Reference.
+
+<pre>
+2007 Feb 02 - new application [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file Generic.plc
+  \brief Small command set for a mechanisms
+*/
+/** END HEADER **/
+* Start here with PLC code
+* 'Motion Configuration
+MSEL= 10
+MUNIT=2000
+MAC = 50
+MRC=34
+MHC = 0
+HCDT = 500
+ACLT = 1
+ACCL=50  'acceleration rate in rev/sec^2
+DECL=ACCL 'acceleration rate = deceleration rate
+LDECL=500 'set decel after a limit is asserted
+* Input & Output Configuration
+IOS 21 = 13,0,0 'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0 'NEGATIVE (CCW)limit, active low
+IOS 26=0 'Brake relay coil (internal pull-up switch opened)
+*  'Output defaults to NO, Brake wired to NO contacts on relay
+*  'Brake is applied with power off and default state of
+*  'drive output
+* Variable Declarations
+VAR FOO=0
+VAR VNORM=10.0   
+VM=VNORM '5 rev/sec running speed
+VAR VSEEK=0.5
+*VAR BACKLASH = 0.2
+VAR CODEV=-1.0 'version of this PLC code
+var cntr=0
+
+* MicroLYNX source code
+PGM 100          'Starts at address 100
+*
+*   INITIAL(initializing) PROCEDURE
+LBL INITIAL
+LBL HOME
+CALL RELBRK
+SLEW VNORM,0 'slew to to set position 0.000
+HOLD 2  'suspend procedure until move is complete
+POS=0.000 'set position to Zero (0.000) again with enough resolution
+VM=VSEEK 'set the speed for sneeking up.
+MOVA -0.5 'move to an absolute index of -0.500
+HOLD 2  'suspend procedure until move is complete
+SLEW VSEEK,0 'finetune the home position (position 0.000)
+HOLD 2  'suspend procedure until move is complete
+VM=VNORM 'reset the speed to normal speed.
+POS=0.000 'set position to Zero (0.000) again with enough resolution
+CALL SETBRK
+BR END_IT         'branch to exit
+*
+*   STOW(park) PROCEDURE
+LBL STOW
+CALL RELBRK
+SLEW -VNORM,0 'slew to STOW position (opposite of HOME). 
+HOLD 2  'suspend procedure until move is complete
+VM=VSEEK 'set the speed for sneeking up.
+MOVA POS+0.500 'move to a relative index of 0.500
+HOLD 2  'suspend procedure until move is complete
+SLEW -VSEEK,0   'finetune the stow position
+HOLD 2  'suspend procedure until move is complete
+VM=VNORM 'reset the speed to normal speed.
+BR END_IT 'branch to exit
+*
+*   HOME(Science Position) PROCEDURE
+*LBL HOME 
+*CALL RELBRK
+*MOVA -0.5 'move to an absolute index of -0.5
+*HOLD 2   'suspend procedure until position change is complete
+*VM=VSEEK 'set the speed for sneeking up.
+*MOVA 0.000 'move to an absolute index of 0.000
+*HOLD 2  'suspend procedure until move is complete
+*VM=VNORM
+*BR END_IT 'branch to exit
+*
+*   STOP(halt) PROCEDURE
+LBL STOP
+SSTP 1   'stop procedure
+DELAY 500
+BR END_IT 'branch to exit
+*
+*   RELeaseBReaK PROCEDURE
+LBL RELBRK
+IO 26=1
+RET
+*
+*   SETBReaK PROCEDURE
+LBL SETBRK
+IO 26=0
+RET 
+*
+*   TEST PROCEDURE
+LBL TSTGEN
+BR END_IT, FOO=1
+PRINT "HELLO I'M HERE: POSITION =  ", POS," and  ACCEL = ",ACCL
+PRINT "AND GENERIC.PLC IS FINE: POSITION = ", POS
+PRINT "Counter=", cntr
+inc cntr
+BR TSTGEN
+*
+*   END_IT(exit) PROCEDURE
+LBL END_IT       'Exit
+FOO=0
+CALL SETBRK
+END              'end the procedures
+PGM              'end of program in RAM 
+
+

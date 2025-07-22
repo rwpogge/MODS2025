@@ -1,0 +1,30 @@
+#
+# MODS1 Slit Mask Table
+# 2010-06-09 [rwp/osu]
+#
+#Pos ID            Unique Indentifier
+  1  Imaging     # Empty mask frame as imaging stop
+  2  SieveMask   # Pinhole Imaging Sieve
+  3  MOSTestMask # MOS Test Mask (wide and narrow slitlet pairs)
+  4  DarkMask    # Blank Mask
+  5  *None*      # Position Empty
+  6  *None*      # Position Empty
+  7  *None*      # Position Empty
+  8  *None*      # Position Empty
+  9  *None*      # Position Empty
+ 10  *None*      # Position Empty
+ 11  *None*      # Position Empty
+ 12  *None*      # Position Empty
+# --- Cassette Brace ---
+ 13  PinholeSlit # Position Empty
+ 14  LS5x60x0.3  # Position Empty
+ 15  LS5x60x0.6  # Position Empty
+ 16  *None*      # Position Empty
+ 17  *None*      # Position Empty
+ 18  *None*      # Position Empty
+ 19  *None*      # Position Empty
+ 20  *None*      # Position Empty
+ 21  *None*      # Position Empty
+ 22  *None*      # Position Empty
+ 23  *None*      # Position Empty
+ 24  *None*      # Position Empty

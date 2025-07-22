@@ -1,0 +1,58 @@
+'Grating Tilt - This program decodes I/Os 21 & 22 to 
+'determine move distance and makes the move.
+
+'************* Parameter Setup ************
+
+MUNIT = 51200
+VI = 0.5
+VM = 10
+ACCL = 20
+DECL = 20
+
+IOS 21 = 0,0,0  'Distance Bit0, low true
+IOS 22 = 0,0,0  'Distance Bit1, low true
+'IOS 23 = 9,0,0  'Start input, low true
+
+VAR DISTANCE
+VAR GRTILT = 1
+VAR STOPCODE
+
+'************* Program ************
+
+PGM 100
+  LBL GTILT1
+    SPOTCODE = IO 20 & 3	'This step masks the upper
+				'4 bits of IO 20.
+
+
+'Spotit distance is set in the routine depending on the
+'state of Inputs 21 & 22
+
+    BR Spot0, SPOTCODE = 0
+    BR Spot1, SPOTCODE = 1
+    BR Spot2, SPOTCODE = 2
+    BR Spot3, SPOTCODE = 3 
+
+    LBL Spotit
+      MOVR DISTANCE
+      HOLD 2 
+
+    END
+
+    LBL Spot0
+      DISTANCE = 1
+      BR Spotit
+
+    LBL Spot1
+      DISTANCE = 2
+      BR Spotit
+  
+    LBL Spot2
+      DISTANCE = 3
+      BR Spotit
+
+    LBL Spot3
+      DISTANCE = 4
+      BR Spotit
+
+    PGM

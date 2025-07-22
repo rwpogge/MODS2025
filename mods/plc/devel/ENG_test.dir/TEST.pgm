@@ -1,0 +1,48 @@
+# MicroLYNX source code with subroutine.
+pgm 100
+# Initial SCIENCE seek
+mova 70,0
+print "\rVelocity: ",VEL, "  Position: ",POS
+delay=1000
+movr -0.5
+print "\rVelocity: ",VEL, "  Position: ",POS
+delay=1000
+vm=.2
+movr 1
+hold 2
+print "\rVelocity: ",VEL, "  Position: ",POS
+pos=0
+print "Position Datum = " pos
+delay=1000
+# Insert/Retract Testing routine
+var cycle=0
+lbl insert
+cycle=cycle+1
+print "CYCLE # = " cycle
+vm=5
+mova -62,1
+delay=1000
+print "\rDelay 1000 Velocity: ",VEL, "  Position: ",POS
+vm -1
+mova -70
+print "Delay: STOWED Position = " pos
+delay 1000
+vm=5
+mova -2,1
+print "\rVelocity: ",VEL, "  Position: ",POS
+vm=1
+delay 1000
+print "\rDelayVelocity: ",VEL, "  Position: ",POS
+mova 1
+delay 1000
+print "\rDelayVelocity: ",VEL, "  Position: ",POS
+movr -0.5
+delay 1000
+print "\rDelayVelocity: ",VEL, "  Position: ",POS
+vm=.2
+movr 1
+print "SCIENCE Position = " pos
+delay=1000
+br insert
+end
+pgm

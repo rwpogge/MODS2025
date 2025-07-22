@@ -1,0 +1,37 @@
+#!/usr/bin/wish
+
+set IMGPATH /home/dts/mods/TclTK/images
+set BINPATH /home/dts/mods/TclTK/bin
+
+set bfont {-*-arial-medium-r-*-sans-18-*-*-*-*-*-*-*}
+
+#wm overrideredirect . 1
+wm resizable . 0 0
+wm geometry . -100+180
+
+frame .m \
+        -bg {navy} \
+        -borderwidth {1} \
+        -relief {sunken} 
+
+image create photo osuvue -file "$IMGPATH/osu_logo2.gif" 
+image create photo islvue -file "$IMGPATH/logo4_sm.gif"
+
+# Default PC.
+#set who ""
+
+label .m.sendLog -text "Who's PC desktop runs IMS" -background navy -fg white
+entry .m.whoEnt -textvariable who -font $bfont -relief flat -bg white -width 20
+bind .m.whoEnt <Return> { exec rdesktop $who &}
+
+button .m.q -text "Exit" \
+-relief {raise} -background red -fg white -command exit 
+
+#label .m.image -image osuvue -bg brown
+#label .m.image2 -image islvue -bg blue
+
+pack .m -side left
+#pack .m.image .m.image2 -fill both -side left
+pack .m.sendLog -side left
+pack .m.whoEnt .m.q -fill both -expand 1
+

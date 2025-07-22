@@ -1,0 +1,43 @@
+/** END HEADER **/
+'******** Parameter Setup ********
+
+MUNIT  =  51200  
+VI  =  0.500  
+ACCL = 20
+DECL = 50
+'IOS 31 = 0,1,0		'Output - general purpose, low true.
+
+
+'******** Program ********
+
+PGM     100
+
+LBL  Tilt
+'   TT1 = 1000, PSUB1  	'Configure 1st position trip at 1sec
+'   TT2 = 10000, PSUB2 	'Configure 2nd position trip at 10secs
+'   TTE1  =  1		'Enable both position trips
+'   TTE2 = 1 
+   BLE=1
+   BLM=1
+   BLSH=5
+   VM = 5 		'Initial max speed 10 rps
+   PRINT "Position=",pos
+   MOVA 10 	'Move out to 10.25 revs at 10 rps
+   HOLD     0
+   PRINT "Position=",pos
+'   MOVA 0		'return to origin
+   END
+
+ LBL PSUB1		'Turn on output at 5 revs
+ '  IO 31 = 1
+   sstp 0
+   PRINT "Position=",pos
+   RET
+
+ LBL PSUB2		'Turn off output at 10 revs
+'   IO 31 = 0
+   sstp 1
+   PRINT "Position=",pos
+   RET
+  
+   PGM

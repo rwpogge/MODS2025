@@ -1,0 +1,23 @@
+#
+# MODS1 Red Second Grating Tilt Presets (future expansion)
+# 2009-09-07 [rwp/osu]
+#
+# Format: name grtilt dA dB dC # comment
+#
+# Grating preset names must not contain any spaces and should be
+# either the central wavelength in Angstroms or a given name (e.g.,
+# Zero).  Settings are determined by the orders of the IMCS
+# holographic bypass gratings.
+#
+# dA dB and dC are the collimator TTF actuator offsets from the
+# nominal grating mode TTF settings listed in the rconfig.ini file.
+# Usually the primary grating tilt setting is the reference value, and
+# has d(A,B,C)=(0,0,0).  These are the offsets needed to roughly
+# center the IMCS laser spot for that order on the quad cell, removing
+# a residual rotation between the science and bypass gratings.
+#
+# The first entry must be the PRIMARY setting, so that it appears
+# first in the pull-down menu of preset grating tilts.
+#
+# name  tilt   dA  dB  dC  # notes
+#

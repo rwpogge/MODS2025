@@ -1,0 +1,61 @@
+#!/usr/bin/wish
+# vue_modsqc source for the Tk toolkit
+# Basic font for button, menus and labels
+# Product of OSU/ISL Astronomy Dept.
+# to be incorporated into ISL software
+# Initialize the application to its default state.
+#
+  # Window manager configurations
+  set ICONDIR /home2/isl/TclTK/images
+  set LIBDIR /home2/isl/TclTK/lib
+
+  global tkVersion
+
+  wm positionfrom . user
+  wm sizefrom . ""
+  wm maxsize . 1152 900  
+  wm iconbitmap . @$ICONDIR/vlb.icon
+  wm iconposition . 1200 0
+  wm iconname . {isl}
+  wm geometry . +5+25
+  wm title . { OSU/ISL MODS}
+
+    global result1 result2
+# Decide on font size.
+  if {$argc<=0} {
+      set ibfont [open "|/bin/sh -c \"cat $LIBDIR/my_font; :\""]
+      set bfont [gets $ibfont]
+      catch {close $ibfont}
+  } else {
+      set bfont [lindex $argv 0]
+  }  
+
+# Top frame is a menubar
+# there is more magic that you can do with this
+# build widget .m
+frame .m \
+	-bg {blue} \
+	-borderwidth {5} \
+	-relief {groove} 
+
+button .m.q -text "Exit" -relief {raise} -font $bfont -background red -fg white -command exit 
+label .m.label1 -text "Req. Position Curr. Position" -font $bfont -bg blue -fg white
+label .m.result1 -height 30 -relief sunken -font $bfont -textvariable result1
+label .m.result2 -height 30 -relief sunken -font $bfont -textvariable result2
+
+    set result1 [exec vueinfo RPOS]
+    set result2 [exec vueinfo MPOS]
+    pack .m .m.q -side top -fill x -expand 0
+    pack .m.label1 -fill x 
+    pack .m.result1 -side left 
+    pack .m.result2 -side left -fill x 
+
+proc mldata { } {
+    global result1 result2
+
+    set result1 [exec vueinfo RPOS]
+    set result2 [exec vueinfo MPOS]
+
+    after 2000 mldata
+}
+after 10 mldata

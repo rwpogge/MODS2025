@@ -1,0 +1,13 @@
+#
+# retired: MSUtils, WAGOUtils, IMPv2Utils, SiUtils, FCSUtils
+EXEC_DIR = ISLUtils INSTRUtils ISLTimes LogUtils skyUtils iifUtils
+#
+all:	execs
+#
+rmexe:
+	rm -fr bin/*
+#
+execs:
+	for dir in $(EXEC_DIR); do \
+		make --no-print-directory -C $$dir; \
+	done

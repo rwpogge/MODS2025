@@ -1,0 +1,45 @@
+#************* Parameter Setup ************ 
+MUNIT = 51200
+VI = 0.5
+VM = 10
+ACCL = 20
+DECL = 20 
+IOS 21 = 0,0,0  'Distance Bit0, low true 
+IOS 22 = 0,0,0  'Distance Bit1, low true 
+IOS 23 = 9,0,0  'Start input, low true 
+VAR DISTANCE 
+VAR MASK = 3 
+VAR INPCODE  
+#************* Program ************ 
+PGM 100 
+LBL READFEED 
+INPCODE = IO 20 & 3  'This step masks the upper 4 bits of IO 20. 
+#
+#'Feed distance is set in the routine depending on the  
+#'state of Inputs 21 & 22 
+#
+BR Dist0, INPCODE = 0 
+BR Dist1, INPCODE = 1 
+BR Dist2, INPCODE = 2 
+BR Dist3, INPCODE = 3 
+LBL Feed
+MOVR DISTANCE 
+HOLD 2 
+END 
+#
+LBL Dist0 
+DISTANCE = 1 
+BR Feed 
+LBL Dist1
+DISTANCE = 2 
+BR Feed 
+LBL Dist2
+DISTANCE = 3
+BR Feed
+LBL Dist3
+DISTANCE = 4
+BR Feed
+END
+PGM
+
+

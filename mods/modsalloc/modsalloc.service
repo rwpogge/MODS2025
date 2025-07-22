@@ -1,0 +1,25 @@
+################################################################################
+# modsalloc.service
+#
+# This service unit is for the MODS data-taking system shared memory allocation
+# (modsalloc)
+#
+# R. Pogge, OSU Astronomy
+# pogge.1@osu.edu
+# 2025 July 17
+#
+################################################################################
+# This program should be placed in /usr/lib/systemd/system/
+#
+# For SELinux running in enforcing mode, modsalloc.sh and modsalloc must
+# be in /usr/local/bin, copied using sudo
+################################################################################
+
+[Unit]
+Description=Runs the MODS data-taking system shared memory allocator (modsalloc)
+
+[Service]
+ExecStart=/usr/local/bin/modsalloc.sh
+
+[Install]
+WantedBy=multi-user.target

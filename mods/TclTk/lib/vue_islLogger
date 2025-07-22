@@ -1,0 +1,661 @@
+#!/usr/bin/wish
+# vue_islLogger source
+# Basic font for button, menus and labels
+# Product of OSU/ISL Astronomy Dept.
+
+# Window manager configurations
+# Use this size of fonts for the information icon, or help.
+
+  global tkVersion
+  wm positionfrom . user
+  wm sizefrom . ""
+  wm maxsize . 1152 900  
+  wm iconposition . 1200 0
+#  wm iconname . {isl/osu}
+  wm title . {ISL/OSU Files Chaser}
+  set w .
+
+array set Fonts {
+    main   {Sans 12 bold}
+    bold   {Helvetica 12 bold}
+    title  {Helvetica 18 bold}
+    status {Helvetica 10}
+    vars   {Helvetica 14}
+    ariel  {Ariel 12 }
+    abold  {Ariel 12 bold}
+    tbold  {century 12}
+}
+set fc grey85
+set fcoff Darkgrey
+set bcolor RoyalBlue3
+
+  $w config -cursor {top_left_arrow black white} -background $fc
+
+
+set tailgating " "
+set cmd(quit) quit
+set cmd(exit) quit
+set cmd(xterm) "xterm -bg black -fg white -sb -sl 1000"
+
+set global_startmode 0
+global newfile_filename current_filename current_DefaultDir chk1 chk2
+global inpipe cmd
+
+
+set argno 1
+set activeonoff 0
+set activestr 0
+set newfile_filename ""
+set current_filename ""               ;# The selected log file
+set current_DefaultDir ""           ;# Default directory
+
+if { $argc eq 0 } {
+    puts "You need to need to specify path and filename"
+    puts "example: vue_isllogX /path/filename"
+    exit;
+} else {
+    set newfile_filename [lindex $argv 0];
+    set current_filename $newfile_filename;
+}
+# Top frame is a menubar
+# there is more magic that you can do with this
+# build widget .m
+frame .m  -background $fc
+frame .m2 -relief sunken -bg black
+frame .m3 -relief sunken -bg black
+
+menu .menuBar -bg $fc -activebackground $bcolor -tearoff 0
+
+.menuBar add cascade -menu .menuBar.file -label File\ | -underline 0
+
+.menuBar add command -label Errors\ Only\ | -underline 0 \
+    -command {.t delete 1.0 end; DSPlogerr }
+
+.menuBar add command -label Full\ log\ | -underline 0 \
+    -command {.t delete 1.0 end; DSPlog }
+
+  
+.menuBar add command -label String\ Chaser\ | -underline 0 \
+    -command {stringChaser}
+
+.menuBar add command -label Log\ Directories\ | -underline 0 \
+    -command {fileselection_dialog}
+
+.menuBar add command -label Help\ | -underline 0 \
+    -command {Help logs}
+
+. configure -menu .menuBar
+ 
+bind . <F1> aboutBox
+
+menu .menuBar.file -tearoff 0
+
+.menuBar.file add command -label "About..." -command "aboutBox" \
+    -underline 0 -accelerator "<F1>"
+.menuBar.file add sep
+
+.menuBar.file add command -label "Exit" \
+    -command { exit; }
+
+pack .m -fill x;
+entry .m.ent;
+button .m.toggle -text "Toggle" -relief raise -fg brown -bg $fc \
+    -command {global .m.ent activestr;
+	if { "" == [ .m.ent get ] } { error "Chase a string not a NULL" }
+	if { $activestr == 1 } {
+	    set activestr 0;
+	    bind .m.toggle <Button-1> { DSPlog; DSPlogCmon };
+	    focus .m.ent
+	} else {
+	    set activestr 1;
+	    bind .m.toggle <Button-1> { DSPlog; DSPlogmon };
+	    focus .m.ent
+	}
+    }
+
+frame .statusBar
+label .statusBar.lab -text "Current logfile $newfile_filename" \
+    -relief sunken -bd 1 -font $Fonts(status)  \
+    -background white -fg black -anchor w
+label .statusBar.foo -width 8 -relief sunken -bd 1 \
+        -font $Fonts(status)  -background white -fg navy -anchor w
+pack .statusBar.lab -side left -padx 2 -expand yes -fill both
+pack .statusBar.foo -side left -padx 2
+pack .statusBar -side bottom -fill x -pady 2
+
+proc stringChaser { } {
+    global activestr cmd;
+    if { $activestr == 0 } {
+	pack .m.toggle -side left -fill x;
+	pack .m.ent -fill x;
+	set activestr 1
+	bind .m.ent <Return> { DSPlog; DSPlogmon };
+	focus .m.ent
+    } else {
+	set activestr 0;
+	bind .m.ent <Return> { DSPlog; DSPlogCmon };
+	focus .m.ent
+    }
+}
+
+proc forAllMatches { w pattern script} {
+    scan [$w index end] %d numLines
+    for {set i 1} {$i < $numLines} {incr i} {
+	$w mark set last $i.0
+	while { [regexp -indices $pattern \
+		[$w get last "last lineend"] indices]} {
+	    $w mark set first \
+			"last + [lindex $indices 0] chars"
+		$w mark set last "last + 1 chars \
+			+ [lindex $indices 1] chars"
+		uplevel $script
+	    }
+	}
+    }
+
+# setup display area( text and scrollbar) to list or monitor a files
+# 
+text .t -yscrollc {.sb set}  -bg white
+scrollbar .sb -bg $fc -command {.t yview}
+
+.t tag configure errtag -foreground black -background red
+
+pack .sb -side right -fill y
+pack .t -side top -fill both -expand 1
+
+button .m2.tlog -text "Tailgate *InActive*" -relief raise \
+    -background $fc -fg black \
+    -command { DSPlogger }
+label .m3.tlogS -text "key word(s) search" -relief solid -background black \
+-fg white
+
+set chk1 ""
+set chk2 ""
+
+entry .m3.chk1 -relief {sunken} -bg white -fg black
+entry .m3.chk2 -relief {sunken} -bg white -fg black
+bind .m3.chk1 <Return> { set chk1 [.m3.chk1 get] }
+bind .m3.chk2 <Return> { set chk2 [.m3.chk2 get] }
+
+pack .m2 -side left -expand 1
+pack .m2.tlog -in .m2 -side left -expand 1
+
+pack .m3 -side bottom -expand 1
+pack .m3.tlogS -in .m3 -side left -expand 1
+pack .m3.chk1 -in .m3 -side left -expand 1
+pack .m3.chk2 -in .m3 -side left -expand 1
+
+#text: read the file into the text widget
+proc loadcalling { file } {
+    global newfile_filename
+
+    .t delete end 1.0
+    set f [open $file r]
+    while { ![eof $f] } {
+        .t insert end [read $f 10240]
+        .t see end;
+        .t yview end
+    
+    # Mark error messages.
+    forAllMatches .t "ERROR" {
+        .t tag add big first last
+    }
+    .t tag configure big -background Red -foreground white -borderwidth 2 \
+            -font -Adobe-Helvetica-Medium-R-Normal--*-190-* \
+            -relief sunken
+    }
+    close $f
+
+}
+loadcalling $newfile_filename
+
+# Update display area with line of text
+proc line {text} {
+    .t insert end $text\n; 
+    .t see end; 
+    .t yview end
+    update idletask
+}
+
+# Setup fd monitoring 
+proc execAndLog {cmd} {
+    global inpipe
+    line "\nStart of <$cmd>."
+    set inpipe [open "|/bin/sh -c \"$cmd &1; :\""]
+    fileevent $inpipe readable [list logOutput $inpipe $cmd]
+}
+
+# Close fd monitoring 
+proc execAndLogClose { } {
+    global inpipe
+    catch { close $inpipe }
+}
+
+# Monitor fd (inpipe) and feed into display area
+proc logOutput {inpipe cmd} {
+    global chk1 chk2
+
+   .t delete end 1.0
+    if {[eof $inpipe]} {
+	close $inpipe
+	line "end of <$cmd>."
+    } else {
+	line [gets $inpipe]
+    }
+
+    # Mark error messages.
+    forAllMatches .t "ERROR" {
+	.t tag add big first last
+    }
+    .t tag configure big -background Red -foreground white -borderwidth 2 \
+	    -font -Adobe-Helvetica-Medium-R-Normal--*-190-* \
+	    -relief sunken
+
+    if { $chk1 ne "" } {
+    forAllMatches .t $chk1 {
+	.t tag add big first last
+    }
+    .t tag configure big -background Red -foreground white -borderwidth 2 \
+	    -font -Adobe-Helvetica-Medium-R-Normal--*-190-* \
+	    -relief sunken
+    }
+
+    if { $chk2 ne "" } {
+    forAllMatches .t $chk2 {
+	.t tag add big first last
+    }
+    .t tag configure big -background Red -foreground white -borderwidth 2 \
+	    -font -Adobe-Helvetica-Medium-R-Normal--*-190-* \
+	    -relief sunken
+    }
+}
+
+#text: read a log file into a text widget
+proc loadFile file {
+    global newfile_filename
+
+    #Change the status window before proceding
+    statuswin
+
+    .t delete end 1.0
+    set f [open $file r]
+    while { ![eof $f] } {
+	.t insert end [read $f 10000000]
+	.t see end; 
+	.t yview end
+    }
+
+    # Mark error messages.
+    forAllMatches .t "ERROR" {
+	.t tag add big first last
+    }
+    .t tag configure big -background Red -foreground white -borderwidth 2 \
+	    -font -Adobe-Helvetica-Medium-R-Normal--*-190-* \
+	    -relief sunken
+    close $f
+}
+
+# Display only errors at only errors.
+proc Onlyerror file {
+    .t delete end 1.0
+    set f [open $file r]
+    set pat "ERROR"
+    while { [gets $f line] >= 0} {
+	if [regexp $pat $line] {
+	    .t insert end $line\n
+	    .t see end; 
+	    .t yview end
+	}
+    }
+    # Mark error messages.
+    forAllMatches .t "ERROR" {
+	.t tag add big first last
+    }
+    .t tag configure big -background Red -foreground white -borderwidth 2 \
+	    -font -Adobe-Helvetica-Medium-R-Normal--*-190-* \
+	    -relief sunken
+    close $f
+}
+
+# Display string with 3 lines before and after.
+proc lookForString cmd {
+    global newfile_filename
+
+    .t delete 1.0 end
+    set f [open $newfile_filename r]
+    while { [gets $f line] >= 0} {
+        if [regexp $cmd $line] {
+            .t insert end $line\n
+            .t see end;
+            .t yview end
+        }
+
+    # Mark error messages.
+    forAllMatches .t "ERROR" {
+	.t tag add big first last
+    }
+    .t tag configure big -background Red -foreground white -borderwidth 2 \
+	    -font -Adobe-Helvetica-Medium-R-Normal--*-190-* \
+	    -relief sunken
+
+    }
+    close $f
+}
+
+# Display string with 3 lines before and after.
+proc lookForCString cmd {
+    global newfile_filename
+
+    .t delete end 1.0
+    set f [open $newfile_filename r]
+    while { ![eof $f] } {
+	.t insert end [read $f 10000000]
+	.t see end; 
+	.t yview end
+
+    # Mark error messages.
+    forAllMatches .t $cmd {
+	.t tag add big first last
+    }
+    .t tag configure big -background Red -foreground white -borderwidth 2 \
+	    -font -Adobe-Helvetica-Medium-R-Normal--*-190-* \
+	    -relief sunken
+    }
+    close $f
+}
+
+# Which monitor log file do you want ISIS to tail.
+proc DSPlogger {} {
+    global newfile_filename current_filename tailgating chk1 chk2
+    global inpipe activeonoff
+
+    if { $activeonoff == 0 } {
+	set tailgating "TailGating"
+	statuswin
+	execAndLog "tail -f -n 24 $current_filename"
+	set activeonoff 1
+    } else {
+	set tailgating " "
+	statuswin
+	execAndLogClose
+	set activeonoff 0
+    }
+}
+
+#
+# Which monitor log file do you want ISIS to search. 
+proc DSPlogmon {} {
+    global newfile_filename
+
+    set cmd [.m.ent get]
+    lookForString $cmd
+}
+
+#
+# Which monitor log file do you want ISIS to search. 
+proc DSPlogCmon {} {
+    global newfile_filename
+
+    set cmd [.m.ent get]
+    lookForCString $cmd
+}
+
+# Which log file do you want ISIS to Display.
+proc DSPlog {} {
+    global newfile_filename
+
+    loadFile $newfile_filename
+}
+# Which log file do you want ISIS to look for ERRORS.
+proc DSPlogerr {} {
+    global newfile_filename
+
+    Onlyerror $newfile_filename
+}
+
+
+
+#
+#       Help procedure
+#
+proc Help {sel} {
+        global cmd
+# long lines to allow msg to format things
+
+       set h(logs) {
+A log or any file can be examined by clicking on:
+        [log directory] button
+and select a file.
+
+The user can next use the:
+	   [Errors Only] or [Full log] buttons
+to examine the log. 
+
+Better yet the user can use the:
+	   [String Chaser] button
+to chase down every occurence of a word or string. 
+It comes with a:
+	   [Toggle] button
+so you can vue the whole file with the word
+or string highlighted in red or for vueing just the 
+number of times the word or string occured.
+
+        YOU CAN ALSO TAILGATE FILES
+At the bottom of the viewer you will find:
+	   [Tailgate *InActive*] button
+click on the button and it will monitor an active file
+that you selected with the:
+	   [log directory] button.
+
+Another nice feature is the:
+key word(s) search [    ][    ]
+next to the [Tailgate .. ] button.
+When you are monitoring(tailgating) a file you can use these
+entry windows to monitor a word or string you would like to 
+standout from the rest of the file being monitored.
+
+}
+      
+if { $sel == "commands" } {
+    set h(commands) {Key    Alias
+    }
+    foreach name [lsort [array names cmd]] {
+	set h(commands) \
+	    [format "%s\n%-7s\t%s" $h(commands) $name $cmd($name)]
+    }
+}
+tk_dialog .help "Information" $h($sel) {} -1 OK
+}
+#
+# This is a standard bit of code, modified to use my font
+# dialog.tcl --
+#
+# This file defines the procedure tk_dialog, which creates a dialog
+# box containing a bitmap, a message, and one or more buttons.
+#
+# $Header: /user6/ouster/wish/library/RCS/dialog.tcl,v 1.4 93/08/16 16:59:52 ouster Exp $ SPRITE (Berkeley)
+#
+# Copyright (c) 1992-1993 The Regents of the University of California.
+# All.vpeople.rights reserved.
+#
+# Permission is hereby granted, without written agreement and without
+# license or royalty fees, to use, copy, modify, and distribute this
+# software and its documentation for any purpose, provided that the
+# above cop.vpeople.right notice and the following two paragraphs appear in
+# all copies of this software.
+#
+# IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR
+# DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+# OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE UNIVERSITY OF
+# CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+# ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATION TO
+# PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+#
+
+#
+# tk_dialog:
+#
+# This procedure displays a dialog box, waits for a button in the dialog
+# to be invoked, then returns the index of the selected button.
+#
+# Arguments:
+# w -           Window to use for dialog top-level.
+# title -       Title to display in dialog's decorative frame.
+# text -        Message to display in dialog.
+# bitmap -      Bitmap to display in dialog (empty string means none).
+# default -     Index of button that is to display the default ring
+#               (-1 means none).
+# args -        One or more strings to display in buttons across the
+#               bottom of the dialog box.
+
+proc tk_dialog {w title text bitmap default args} {
+    global tk_priv Fonts fc bcolor
+
+    # 1. Create the top-level window and divide it into top
+    # and bottom parts.
+
+    catch {destroy $w}
+    toplevel $w -class Dialog
+    wm title $w $title
+    wm iconname $w {ISL/OSU}
+
+    frame $w.top -relief raised -bd 1 -bg $fc
+    pack $w.top -side top -fill both
+    frame $w.bot -relief raised -bd 1 -bg $fc
+    pack $w.bot -side bottom -fill both
+
+    # 2. Fill the top part with bitmap and message.
+
+    message $w.msg -width 8i -text $text -font $Fonts(vars) -bg white
+    pack $w.msg -in $w.top -side right -expand 1 -fill both -padx 5m -pady 5m
+    if {$bitmap != ""} {
+        label $w.bitmap -bitmap $bitmap
+        pack $w.bitmap -in $w.top -side left -padx 5m -pady 5m
+    }
+
+    # 3. Create a row of buttons at the bottom of the dialog.
+
+    set i 0
+    foreach but $args {
+        button $w.button$i -text $but -command "set tk_priv(button) $i"
+        if {$i == $default} {
+            frame $w.default -relief sunken -bd 1 -bg blue
+            raise $w.button$i $w.default
+            pack $w.default -in $w.bot -side left -expand 1 -padx 3m -pady 2m
+            pack $w.button$i -in $w.default -padx 2m -pady 2m \
+                    -ipadx 2m -ipady 1m
+            bind $w <Return> "$w.button$i flash; set tk_priv(button) $i"
+        } else {
+            pack $w.button$i -in $w.bot -side left -expand 1 \
+                    -padx 3m -pady 3m -ipadx 2m -ipady 1m 
+        }
+        incr i
+    }
+
+    # 4. Withdraw the window, then update all the geometry information
+    # so we know how big it wants to be, then center the window in the
+    # display and de-iconify it.
+
+    wm withdraw $w
+    update idletasks
+    set x [expr [winfo screenwidth $w]/2 - [winfo reqwidth $w]/2 \
+            - [winfo vrootx [winfo parent $w]]]
+    set y [expr [winfo screenheight $w]/2 - [winfo reqheight $w]/2 \
+            - [winfo vrooty [winfo parent $w]]]
+    wm geom $w +$x+$y
+    wm deiconify $w
+
+    # 5. Set a grab and claim the focus too.
+
+#    set oldFocus [focus]
+#    grab $w
+#    focus $w
+
+    # 6. Wait for the user to respond, then restore the focus and
+    # return the index of the selected button.
+
+    tkwait variable tk_priv(button)
+    destroy $w
+#    focus $oldFocus
+    return $tk_priv(button)
+}
+
+# ==========================================================================
+#
+#                         FILESELECTION SECTION
+#
+# ==========================================================================
+proc fileselection_dialog {} {
+ 
+ global global_startmode current_DefaultDir newfile_filename current_filename 
+ global tailgating
+
+ set types {
+  {{Log Files} {*.log} }
+  {{All Files} {*} }
+ }
+
+# set newfile_filename $current_filename
+ set newfile_filename [tk_getOpenFile  -title "Open new log file" -filetypes $types -initialdir $current_DefaultDir]
+
+ set current_filename $newfile_filename
+ set strl [string length $newfile_filename ]
+ 
+ set tailgating " "
+ statuswin
+ 
+ if {$newfile_filename != ""} {
+     .t delete 1.0 end
+     loadFile $newfile_filename
+ }
+
+}
+
+proc joindir { list sep } {
+    set s {}
+    set result {}
+    foreach x $list {
+	append result $s $x
+	puts "<<results: $result, arr: $s, each: $x, list: $list >>"
+	set s $sep
+    }
+    return $result
+}
+
+proc statuswin { } {
+    global Fonts current_filename newfile_filename tailgating fc
+    global bcolor fcoff
+
+    .statusBar.lab configure -text "Current logfile $current_filename" \
+        -font $Fonts(status) -anchor w
+    if { $tailgating == "TailGating" } {
+	.m2.tlog configure -text "Tailgate *Active*" -relief raise \
+	    -background $fc -fg red
+	.statusBar.foo configure -text $tailgating \
+	    -font $Fonts(status) -background red -fg white -anchor w
+    } else {
+	.m2.tlog configure -text "Tailgate *InActive*" -relief raise \
+	    -background $fc -fg black
+	.statusBar.foo configure -text $tailgating \
+	    -font $Fonts(status) -background white -fg black -anchor w
+    }
+    pack .statusBar.lab -side left -padx 2 -expand yes -fill both
+    pack .statusBar.foo -side left -padx 2
+    pack .statusBar -side bottom -fill x -pady 2
+}
+	
+proc aboutBox {} {
+    tk_messageBox -icon info -type ok -title "OSU/ISL File Chaser" -message \
+"ISL String Chaser
+
+Ohio State University\n(OSU)
+Imaging Sciences Lab.\n(ISL)Tool Set
+version 1.0 (June-2007)
+
+vue_islLogger\nTo search for a word or a string in a file.
+"
+}

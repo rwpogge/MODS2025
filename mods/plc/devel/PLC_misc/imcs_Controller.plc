@@ -1,0 +1,66 @@
+* Date: 03 November 2005
+* Author: OSU/ISL Astronomy Staff
+****************************************
+**     IMCS System low level software *
+* *                                  *
+*  *        IMCS motor control      *
+* *                                  *
+**    Many Thanks to Tom O'Brien      *
+****************************************
+* 'Motion Parameters
+MSEL= 10      '10 microsteps per step
+MUNIT=2000    'units to revs
+MAC=20        'accel current is 0.20 * 7
+MRC=20        'run current is 0.20 * 7
+MHC=0         'hold current is zero
+*
+*      'Input & Output Configuration
+IOS 21 = 13,0,0    'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0    'NEGATIVE (CCW)limit, active low
+IOS 23=0,0,0       'NOT USED
+IOS 24=0,0,0       'NOT USED
+IOS 25=0,0,0       'NOT USED
+IOS 26=0,0,0       'NOT USED
+*
+*      'Motion Configuration
+ACCL=50          'acceleration rate in rev/sec^2
+DECL=ACCL        'acceleration rate = deceleration rate
+LDECL=500        'set decel after a limit is asserted
+VM=15            '15 rev/sec running speed
+*
+* IMCS MicroLYNX source code
+* Initial IMCS pigeon
+PGM 100          'Starts at address 100
+LBL HOME         'POSITION DATUM procedure:
+VM=15            'set velocity to 15 rev/sec running speed
+MOVA 700,0       'move to some distance and decelerate
+HOLD 2           'suspend procedure until move is complete
+MOVR -0.5        'relative index to 0.5 position
+HOLD 2           'suspend procedure until move is complete
+VM=1             'reduce velocity to 1 rev/sec running speed
+MOVR 1           'relative index to -1 position
+HOLD 2           'suspend procedure until move is complete
+POS=0            'MARK position as 0th position
+VM=15            'reset the velocity to 15.0 rev/sec running speed
+* HOME Position
+BR ENDIT         'branch to exit
+*
+LBL FPOS         'Focus travel Position procedure: 
+VM=15            'set the velocity to 15.0 rev/sec running speed
+MOVA -2,         'move to an absolute index of 2.1
+HOLD 0           'suspend procedure until position change is complete
+* Now take it slow we want to get as close as possible
+VM=1             'reduce the velocity to 1.0 rev/sec running speed
+MOVA 1           'move to an absolute index of 1
+HOLD 2           'suspend procedure until move is complete
+MOVR -0.5        'move to relative index of -0.5
+HOLD 2           'suspend procedure until move is complete
+VM=1             'reduce the velocity to 1 rev/sec running speed
+MOVR 1           'move to relative index of 1
+HOLD 2           'suspend procedure until move is complete
+VM=15            'reset the velocity to 15.0 rev/sec running speed
+* Relative Focus Position
+BR ENDIT         'branch to exit
+LBL ENDIT        'EXIT
+END              'end the procedures
+PGM              'end of program in RAM 

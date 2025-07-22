@@ -1,0 +1,363 @@
+/*!
+  \mainpage gratingselect.plc - gratingselect PLC program
+ 
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+  
+  \date 2007 Feb 02
+   
+  \section Usage
+   
+  Usage: Multi-level command set used with ISL system
+         or Window IMS system
+   
+  Where: \c MODS instrument
+   
+  \section Introduction
+        Small command set of key words are -
+	Any item with a LBL is a keyword
+		
+        All Motion Parameters are documented in the MicroLYNX Part III
+        Software Reference.
+
+<pre>
+2007 April 04 - new application [mad]
+2007 July 19 - Added the header and modified application extensively [rdg]
+</pre>
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file darkslide.plc
+  \brief Small command set for darkslide mechanisms
+*/
+/** END HEADER **/
+     'Start here with PLC code
+    'Motion Parameters
+Drven=0    'Disable Motor Until User Inputs New Target Grating
+Msel= 10   '10 microsteps per step
+Munit=2000 'units to revs
+Mac=60     'accel current is 0.60 * 7
+Mrc=35     'run current is 0.35 * 7
+Mhc=0      'hold current is zero
+Hcdt=0     'hold current delay msec
+Limstp=0   'Allows program execution to continue when limit encountered
+
+    'Input & Output Configuration
+Ios 21 = 13,0,0 'CW Limit, Active Low
+Ios 22 = 14,0,0 'CCW Limit, Active Low
+Ios 23 = 0,0,0  'LSB, Active Low
+Ios 24 = 0,0,0  'MSB, Active Low
+Ios 25 = 0,0,0  'In Position, Active Low
+
+    'Motion Configuration
+Accl=15   'Acceleration rate in rev/sec^2
+Decl=20   'Deceleration rate in rev/sec^2
+Ldecl=125 'Limit Deceleration in rev/sec^2
+Vm=3      'Move Velocity in rev/sec
+
+    'Variable Declarations
+VAR LIFETEST	    'ENTERS INCREMENTAL MOTION TEST CYCLE WHEN SET TO 66
+VAR CYCTOTAL        'REQUESTED # OF LIFE CYCLE LOOPS BY USER
+VAR CYCCOUNT = 0    'COUNTER FOR LIFE CYCLE LOOPS
+VAR MOVEINC = 0     'COUNTER FOR INCREMENTAL MOVES
+VAR NUMPOS=4        'Number of Positions in the Grating Select		
+VAR MAXPOS=NUMPOS-1 'Highest Position Value that can be requested
+
+VAR DIST = 6.7       'Motor revs between Grating Select positions
+VAR TARGNUM          'Target Grating Number
+VAR TARGMOV          'Target Grating Move Requirement
+VAR A = Io 23        'One's	
+VAR B = Io 24 * 2    'Two's
+VAR A1 = Io 23       'One's (Read after move complete)	
+VAR B1 = Io 24 * 2   'Two's (Read after move complete)
+VAR GRATNUM = A + B  'The Current Grating Position as Determined 
+                     'by the Code Bit Arithmetic
+VAR NEWPOS = A1 + B1 'The New Grating Position as Determineed by the 
+                     'Code Bit Arithmetic (Re-Reads VAR A,B,C after move 
+                     'to target)
+VAR error1 = 0       'Incremented Counter Variable used for Timeout Loop
+VAR RECOV99          'When = 99 Re-Initialization is attempted
+
+'Pfmt=3,0,2          'Prints to screen with 3 places before decimal, 
+                     '0 places after decimal, and no padding
+
+      'STARTUP MODE
+Pgm 1000     'program starts at address 1000
+
+'PRINT " "
+'PRINT "ENTER 66 FOR Incremental Motion Life Cycle Test Mode"
+'PRINT "ENTER 44 FOR Normal Operation Mode"
+'INPUT LIFETEST  'Looks for User Input for Mode Variable
+'BR INCTEST, LIFETEST = 66 'Branches to Life Cycle Testing if equal to 66
+
+    'Initialization
+LBL BEGIN
+BR INCTEST, LIFETEST = 66 'Branches to Life Cycle Testing if equal to 66
+                          'Check for In Position Condition, If False Branch
+                          'to No Position Error
+BR NOPOS, Io 25 = 0 
+PRINT " "
+PRINT "The Grating Select is in a VALID POSITION"
+
+    'Check Current Grating Position
+NUMPOS = 4
+MAXPOS = NUMPOS-1	
+A = Io 23
+B = Io 24 * 2
+GRATNUM = A + B
+
+'PRINT " "
+PRINT "Current Grating # in Use = " GRATNUM
+'PRINT " "
+
+    'User Request for New Grating Position
+'PRINT "Please Select Next Grating Position When Ready (0-3)"
+'PRINT " "
+'INPUT TARGNUM
+TARGMOV = TARGNUM - GRATNUM  'Determines the difference between the Target 
+	                     'Grating Postion & the Current Grating Position
+
+    'Check User Input for Valid Entry
+BR VALPOS, TARGNUM>MAXPOS  'Target Grating must be less than MAXPOS, 
+                           'Otherwise Branch to VALPOS
+BR VALPOS, TARGNUM<0       'Target Grating must be greater than 0, 
+                           'Otherwise Branch to VALPOS
+BR NOMOVE, TARGNUM=GRATNUM 'IF Target Grating is the same as the Current 
+                           'Grating, Branch to NOMOVE
+
+LBL MOVEDISK
+Drven=1                     'Enables to Drive		
+MOVEINC=0                   'sets Incremental Move Counter to Zero
+BR POSMOVE, TARGNUM>GRATNUM 'Used for Positive Direction Motion
+BR NOMOVE, TARGNUM=GRATNUM  'Used when no move is required
+BR NEGMOVE, TARGNUM<GRATNUM 'Used for Negative Direction Motion
+
+LBL POSMOVE  'Positive Motion Loop
+MOVR=DIST    'CW Move 1 Grating Increment
+BR POSLIMIT  'Starts Positive Limit Monitoring Loop
+LBL CONTPOS  'Continues motion loop once previous motion/limit check ends
+DELAY 500    'Adds delay in program execution in milliseconds
+INC MOVEINC  'Increments Counter Variable
+BR CONFIRM, MOVEINC=TARGMOV 'Branches when Move Counter equals Move Requirement
+BR POSMOVE                  'Closes Loop
+
+LBL POSLIMIT           'Positive Limit Loop (CW)
+BR PLIMRCVR, Io 21 = 1 'Branches to Positive Limit Recovery 
+                       'if CW Limit is Activated
+BR CONTPOS, Mvg=0      'Branches out of limit check loop when Motion stops
+BR POSLIMIT            'Closes Loop
+
+LBL NEGMOVE      'Negative Motion Loop
+MOVR=-DIST       'CCW Move 1 Grating Increment
+BR NEGLIMIT      'Starts Negative Limit Monitoring Loop
+LBL CONTNEG      'Continues motion loop once previous motion/limit check ends
+DELAY 500        'Adds delay in program execution in milliseconds
+DEC MOVEINC      'Decrements Counter Variable
+BR CONFIRM, MOVEINC=TARGMOV 'Branches when Move Counter equals Move Requirement
+BR NEGMOVE       'Closes Loop
+
+LBL NEGLIMIT            'Negative Limit Loop (CCW)
+BR NLIMRCVR, Io 22 = 1  'Branches to Negative Limit Recovery 
+                        'if CCW Limit is Activated
+BR CONTNEG, Mvg=0       'Branches Out of limit check loop when Motion stops
+BR NEGLIMIT             'Closes Loop
+
+LBL CONFIRM             'Re-Reads Code Bits in order to Confirm Position
+DELAY 1000              'Adds delay that allows detent to settle prior 
+                        'to reading IO status
+A1 = Io 23
+B1 = Io 24 * 2
+NEWPOS = A1 + B1
+BR BEGIN, NEWPOS=TARGNUM 'Confirms that the New Grating Select Position 
+                         'matches the Target Position once motion stops
+'PRINT " "
+'If the New Position Doesn't Match the Target, PRINT WARNING MESSAGE
+PRINT "WRONG POSITION?, SENSORS INDICATE POSITION #" NEWPOS
+'PRINT " "
+'Optional Re-Initialize to correct Wrong Position
+PRINT "ENTER 99 TO TRY TO RE-INITIALIZE, ENTER 55 TO QUIT"
+'PRINT " "
+'INPUT RECOV99  'Checks for User Input
+BR BEGIN, RECOV99 = 99 'Branch to beginning 
+                       'if Re-Initialization (99) is entered by user
+'If any number other than 99 is entered by user the program branches 
+'to END_IT
+BR END_IT
+
+LBL PLIMRCVR  'Positive (CW) Limit Recovery
+DELAY 1000    'Required pause at Limit prior to Recovery Slew
+Drven=1       'Enables Drive
+PRINT "CW LIMIT TRIGGERED, ATTMEPTING TO RECOVER"
+SLEW -0.25    'Slews away from limit (CCW)
+BR TIMEOUT    'Branches to Timeout Monitor
+
+LBL NLIMRCVR  'Negative (CCW) Limit Recovery
+DELAY 1000    'Required pause at Limit prior to Recovery Slew
+Drven=1       'Enables Drive
+PRINT "CCW LIMIT TRIGGERED, ATTMEPTING TO RECOVER"
+SLEW 0.25     'Slews away from limit (CW)
+BR TIMEOUT    'Branches to Timeout Monitor
+	
+'Recover from an Out of Position Error
+LBL NOPOS
+Drven=1    'Enables the Drive		
+'PRINT " " 				
+PRINT "ERROR:  GRATING SELECT IS NOT IN A VALID POSITION"
+PRINT "PLEASE WAIT FOR RECOVERY"
+'PRINT " "
+SLEW 0.25  'Slews while waiting for In Position Bit to be activated
+BR TIMEOUT
+
+LBL TIMEOUT  'Loop that can be used as a timer for error recovery
+DELAY 250    'Delay time in milliseconds
+
+
+BR CHNGDIR,error1>180  'Sets the maximum number of cycles before 
+                       'trying a recovery slew in opposite direction
+BR STOP_IT, Io 25 =1   'Looks for In Position Bit to be activated
+BR PLIMRCVR, Io 21 = 1 'Branch to Positive Limit Recovery 
+                       'If CW Limit is encountered during slew
+INC error1             'Increments counter variable
+BR timeout             'Closes Timeout Loop
+
+LBL CHNGDIR            'Loop that can be used as a timer for error recovery 
+                       '(Used when Slew in CW direction fails)
+SLEW -0.25             'Slews in CCW Direction
+ERROR1=0
+DELAY 250              'Delay time in milliseconds
+BR FAILED,error1>180   'Sets the maximum number of cycles before 
+                       'timeout error occurs
+BR STOP_IT, Io 25 =1   'Looks for In Position Bit to be activated
+BR PLIMRCVR, Io 21 = 1
+INC error1             'Increments counter variable
+BR CHNGDIR             'Closes Timeout Loop
+
+LBL STOP_IT
+SSTP 0  'Soft Stop: Option 0 stops motion only, program continues to execute
+BR INCTEST, LIFETEST=66 'Used for Life Cycle Test Only
+'BR BEGIN
+BR END_IT
+
+LBL FAILED   'Recovery Timeout Message Followed by End of Program
+'PRINT " "
+PRINT "RECOVERY FAILED"
+'PRINT " "
+BR END_IT
+
+LBL VALPOS  'Invalid Position Message Followed by End of Program
+'PRINT " "
+PRINT "INVALID POSITION REQUESTED"
+'PRINT " "
+'BR BEGIN
+BR END_IT
+
+LBL NOMOVE 'Alerts User that they've selected a Grating that's already in use
+'PRINT " "
+PRINT "YOU ARE ALREADY USING GRATING #" GRATNUM
+'PRINT " "
+'BR BEGIN
+BR END_IT
+
+LBL INCTEST 'INCREMENTAL MOTION CYCLE TEST ROUTINE
+DELAY 250
+BR NOPOS, Io 25 = 0  'Looks for In Position Bit before starting test
+Drven=1
+Limstp=1  'Stops Life Cycle Test if Limit is Encountered during Test
+A = Io 23
+B = Io 24 * 2
+GRATNUM = A + B  'CHECKS POSITION PRIOR TO STARTING LIFE CYCLE TEST
+'PRINT " "
+PRINT "BEGIN INCREMENTAL MOTION LIFE CYCLE TEST"
+'PRINT " "
+PRINT "CURRENT POSITION # " GRATNUM
+'PRINT " "
+PRINT "ATTEMPTING TO MOVE TO POSITION #3 TO BEGIN TEST"
+'PRINT " "
+TARGNUM = 3  'Always moves to Position3 to Start Test
+TARGMOV = TARGNUM-GRATNUM
+MOVR DIST*TARGMOV
+HOLD 2
+DELAY 2000 'Allows Detent to Settle
+A = Io 23
+B = Io 24 * 2
+GRATNUM = A + B
+PRINT "TEST STARTING AT POSITION #" GRATNUM
+'PRINT " "
+PRINT "HOW MANY COMPLETE LIFECYCLE LOOPS TO DO?"
+'INPUT CYCTOTAL
+
+LBL INCSTART  'Incremental Motion Cycle Test Loop
+MOVEINC=0
+INC CYCCOUNT
+BR FINALCHK, CYCCOUNT > CYCTOTAL
+'PRINT " "
+PRINT "STARTING LIFECYCLE LOOP # " CYCCOUNT
+
+LBL NEGTEST 'Negative Direction Test Loop
+MOVR=-DIST
+HOLD 2
+DELAY 500
+INC MOVEINC
+BR NEGTEST, MOVEINC<3  'Loops for 3 Cycles
+MOVEINC=0  'Resets Counter Variable
+
+LBL POSTEST  'Positve Direction Test Loop
+MOVR=DIST
+HOLD 2
+DELAY 500
+INC MOVEINC
+BR POSTEST, MOVEINC<3  'Loops for 3 Cycles
+MOVEINC=0  'Resets Counter Variable
+
+BR INCSTART
+
+LBL FINALCHK  'Checks IO and Gives Life Cycle Test Results
+DELAY 1000
+A1 = Io 23
+B1 = Io 24 * 2
+NEWPOS = A1 + B1
+PRINT "THE LIFE CYCLE TEST IS DONE"
+'PRINT " "
+PRINT "THE TEST STARTED AT POSITION # " GRATNUM
+'PRINT " "
+PRINT "THE TEST ENDED AT POSITION # " NEWPOS
+'PRINT " "
+BR BADTEST, GRATNUM<>NEWPOS
+PRINT "THE TEST WAS SUCCESSFUL"
+BR END_IT
+
+LBL BADTEST  'Error Message for Failed Life Cycle Test
+'PRINT " "
+PRINT "THE START POSITION DOES NOT MATCH THE FINISH POSITION"
+PRINT "THIS INDICATES A STALL OCCURRED DURING THE TEST"
+BR END_IT
+
+                        'WHO AM I PROCEDURE
+LBL WHO
+PRINT "bGS"
+BR END_IT  'branch to exit
+
+                       'POLL THE CONTROLLER AM I PROCEDURE
+LBL POLL
+PRINT "POS=",POS," : IO BITS 21-22=",IO 21,IO 22,": 23-25=",IO 23,IO 24,IO 25
+BR END_IT  'branch to exit
+
+                       'CODE VERSION PROCEDURE
+LBL CODEV
+PRINT "code ver = 0.1(latest)"
+BR END_IT  'branch to exit!
+
+LBL END_IT		
+'PRINT " "
+'PRINT "END PROGRAM"
+'PRINT " "
+SSTP 1 			'Stops the Motion and the Program Execution
+END
+Pgm
+
+
+
+
+

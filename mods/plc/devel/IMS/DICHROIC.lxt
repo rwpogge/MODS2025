@@ -1,0 +1,208 @@
+      'Motion Parameters
+Drven=0       'Disable Motor Until User Inputs New Target
+Msel= 10      '10 microsteps per step
+Munit=2000    'units to revs
+Mac=60        'accel current is 0.60 * 7
+Mrc=35        'run current is 0.35 * 7
+Mhc=0         'hold current is zero
+Hcdt=0        'hold current delay msec	
+      'Input & Output Configuration
+Ios 21 = 0,0,1     'LSB, Active Low
+Ios 22 = 0,0,1	   'MSB, Active Low
+Ios 24 = 0,0,1	   'In Position, Active Low
+      'Motion Configuration
+Accl=10         'Acceleration rate in rev/sec^2
+Decl=10		'Deceleration rate in rev/sec^2
+Vm=2		'Move Velocity in rev/sec
+      'Variable Declarations
+VAR LIFETEST	          'ENTERS INCREMENTAL MOTION TEST CYCLE WHEN SET TO 66
+VAR CYCTOTAL              'REQUESTED # OF LIFE CYCLE LOOPS BY USER
+VAR CYCCOUNT = 0          'COUNTER FOR LIFE CYCLE LOOPS
+VAR MOVEINC = 0	          'COUNTER FOR INCREMENTAL MOVES
+VAR NUMPOS=3              'Number of Positions in the Dichroic Select		
+VAR MAXPOS=NUMPOS-1	  'Highest Position Value that can be requested		
+VAR DIST = 5.125         'Motor revs between Dichroic Select positions
+VAR TARGNUM	          'Target Dichroic Position Number
+VAR TARGMOV		  'Target Move Requirement
+VAR A = Io 21		  'One's	
+VAR B = Io 22 * 2	  'Two's
+VAR A1 = Io 21		  'One's (Read after move complete)	
+VAR B1 = Io 22 * 2	  'Two's (Read after move complete)
+VAR DICHNUM = A + B       'The Current Dichroic Position as Determined by the Code Bit Arithmetic
+VAR NEWPOS = A1 + B1      'The New Dichroic Position as Determineed by the Code Bit Arithmetic
+VAR error1 = 0		  'Incremented Counter Variable used for Timeout Loop
+VAR RECOV99		  'When = 99 Re-Initialization is attempted
+Pfmt=3,0,2  		  'Prints with 3 places before decimal,0 places after decimal,no padding
+Pgm 100       'program starts at address 100
+      'STARTUP MODE
+PRINT " "
+PRINT "ENTER 66 FOR Incremental Motion Life Cycle Test Mode"
+PRINT "ENTER 44 FOR Normal Operation Mode"
+INPUT LIFETEST		  'Looks for User Input for Mode Variable
+BR INCTEST, LIFETEST = 66 'Branches to Life Cycle Testing if equal to 66
+	'Initialization
+LBL BEGIN
+BR NOPOS, Io 24 = 0        'Check for In Position Condition, If False Branch to No Position Error
+PRINT " "
+PRINT "The Dichroic Select is in a VALID POSITION"
+	'Check Current Dichroic Position
+NUMPOS = 4
+MAXPOS = NUMPOS-1	
+A = Io 21
+B = Io 22 * 2
+DICHNUM = A + B
+PRINT " "
+PRINT "Current Dichroic # in Use = " DICHNUM
+PRINT " "
+        'User Request for New Dichroic Position
+PRINT "Please Select Next Dichroic Position When Ready (1-3)"
+PRINT " "
+INPUT TARGNUM
+TARGMOV = TARGNUM - DICHNUM      'Determines the difference between the Target & Current Position
+        'Check User Input for Valid Entry
+BR VALPOS, TARGNUM>MAXPOS       'Target must be less than MAXPOS, Otherwise Branch to VALPOS
+BR VALPOS, TARGNUM<1            'Target must be greater or equal than 1, Otherwise Branch to VALPOS
+BR NOMOVE, TARGNUM=DICHNUM	'IF Target is the same as the Current Position, Branch to NOMOVE
+LBL MOVEDISK
+Drven=1				'Enables to Drive		
+MOVEINC=0			'sets Incremental Move Counter to Zero
+BR POSMOVE, TARGNUM>DICHNUM	'Used for Positive Direction Motion
+BR NOMOVE, TARGNUM=DICHNUM	'Used when no move is required
+BR NEGMOVE, TARGNUM<DICHNUM	'Used for Negative Direction Motion
+LBL POSMOVE			'Positive Motion Loop
+MOVR=DIST			'CW Move 1 Increment
+LBL CONTPOS			'Continues motion loop once previous motion/limit check ends
+HOLD 2
+DELAY 500			'Adds delay in program execution in milliseconds
+INC MOVEINC			'Increments Counter Variable
+BR CONFIRM, MOVEINC=TARGMOV	'Branches when Move Counter equals Move Requirement
+BR POSMOVE			'Closes Loop
+LBL NEGMOVE			'Negative Motion Loop
+MOVR=-DIST			'CCW Move 1 Dichroic Increment
+LBL CONTNEG			'Continues motion loop once previous motion/limit check ends
+HOLD 2
+DELAY 500			'Adds delay in program execution in milliseconds
+DEC MOVEINC			'Decrements Counter Variable
+BR CONFIRM, MOVEINC=TARGMOV	'Branches when Move Counter equals Move Requirement
+BR NEGMOVE			'Closes Loop
+LBL CONFIRM			'Re-Reads Code Bits in order to Confirm Position
+HOLD 2
+DELAY 500			'Adds delay that allows detent to settle prior to reading IO status
+A1 = Io 21
+B1 = Io 22 * 2
+NEWPOS = A1 + B1
+BR BEGIN, NEWPOS=TARGNUM	'Confirms that New Position matches Target once motion stops
+PRINT " "
+PRINT "WRONG POSITION?, SENSORS INDICATE POSITION #" NEWPOS	'New Position Doesn't Match Target
+PRINT " "
+PRINT "ENTER 99 TO TRY TO RE-INITIALIZE, ENTER 55 TO QUIT"	'Optional Re-Initialize
+PRINT " "
+INPUT RECOV99			'Checks for User Input
+BR BEGIN, RECOV99 = 99		'Branch to beginning if Re-Initialization (99) is entered by user
+BR END_IT	'If any number other than 99 is entered by user the program branches to END_IT
+LBL NOPOS
+Drven=1		'Enables the Drive		
+PRINT " " 				
+PRINT "ERROR:  DICHROIC SELECT IS NOT IN A VALID POSITION, PLEASE WAIT FOR RECOVERY"
+PRINT " "
+SLEW 0.25		'Slews while waiting for In Position Bit to be activated
+ERROR1=0
+BR TIMEOUT
+LBL TIMEOUT		'Loop that can be used as a timer for error recovery
+DELAY 250		'Delay time in milliseconds
+BR STOP_IT, Io 24 =1	'Looks for In Position Bit to be activated
+INC error1		'Increments counter variable
+BR FAILED,error1>160	'Sets the maximum number of cycles before timeout error occurs
+BR timeout		'Closes Timeout Loop
+LBL STOP_IT
+SSTP 0			'Soft Stop: Option 0 stops motion only, program continues to execute
+BR INCTEST, LIFETEST=66 'Used for Life Cycle Test Only
+BR BEGIN
+LBL FAILED		'Recovery Timeout Message Followed by End of Program
+PRINT " "
+PRINT "RECOVERY FAILED"
+PRINT " "
+BR END_IT
+LBL VALPOS		'Invalid Position Message Followed by End of Program		
+PRINT " "
+PRINT "INVALID POSITION REQUESTED"
+PRINT " "
+BR BEGIN
+LBL NOMOVE		'Alerts User that they've selected a target that's already in use
+PRINT " "
+PRINT "YOU ARE ALREADY USING #" DICHNUM
+PRINT " "
+BR BEGIN
+LBL INCTEST    'INCREMENTAL MOTION CYCLE TEST ROUTINE
+DELAY 250
+BR NOPOS, Io 24 = 0      'Looks for In Position Bit before starting test
+Drven=1
+A = Io 21
+B = Io 22 * 2
+DICHNUM = A + B   'CHECKS POSITION PRIOR TO STARTING LIFE CYCLE TEST
+PRINT " "
+PRINT "BEGIN INCREMENTAL MOTION LIFE CYCLE TEST"
+PRINT " "
+PRINT "CURRENT POSITION # " DICHNUM
+PRINT " "
+PRINT "ATTEMPTING TO MOVE TO POSITION #3 TO BEGIN TEST"
+PRINT " "
+TARGNUM = 3				'Always moves to Position 2 to Start Test
+TARGMOV = TARGNUM-DICHNUM
+MOVR DIST*TARGMOV
+HOLD 2
+DELAY 2000				'Allows Detent to Settle
+A = Io 21
+B = Io 22 * 2
+DICHNUM = A + B
+PRINT "TEST STARTING AT POSITION #" DICHNUM
+PRINT " "
+PRINT "HOW MANY COMPLETE LIFECYCLE LOOPS TO DO?"
+INPUT CYCTOTAL
+LBL INCSTART		'Incremental Motion Cycle Test Loop
+MOVEINC=0
+INC CYCCOUNT
+BR FINALCHK, CYCCOUNT > CYCTOTAL
+PRINT " "
+PRINT "STARTING LIFECYCLE LOOP # " CYCCOUNT
+LBL NEGTEST		Negative Direction Test Loop
+MOVR=-DIST
+HOLD 2
+DELAY 500
+INC MOVEINC
+BR NEGTEST, MOVEINC<2	'Loops for 2 Cycles
+MOVEINC=0		'Resets Counter Variable
+LBL POSTEST		'Positve Direction Test Loop
+MOVR=DIST
+HOLD 2
+DELAY 500
+INC MOVEINC
+BR POSTEST, MOVEINC<2	'Loops for 2 Cycles
+MOVEINC=0		'Resets Counter Variable
+BR INCSTART
+LBL FINALCHK		'Checks IO and Gives Life Cycle Test Results
+DELAY 1000
+A1 = Io 21
+B1 = Io 22 * 2
+NEWPOS = A1 + B1
+PRINT "THE LIFE CYCLE TEST IS DONE"
+PRINT " "
+PRINT "THE TEST STARTED AT POSITION # " DICHNUM
+PRINT " "
+PRINT "THE TEST ENDED AT POSITION # " NEWPOS
+PRINT " "
+BR BADTEST, DICHNUM<>NEWPOS
+PRINT "THE TEST WAS SUCCESSFUL"
+BR END_IT
+LBL BADTEST		'Error Message for Failed Life Cycle Test
+PRINT " "
+PRINT "THE START POSITION DOES NOT MATCH THE FINISH POSITION"
+PRINT "THIS INDICATES A STALL OCCURRED DURING THE TEST"
+BR END_IT
+LBL END_IT		
+PRINT " "
+PRINT "END PROGRAM"
+PRINT " "
+SSTP 1 			'Stops the Motion and the Program Execution
+END
+Pgm

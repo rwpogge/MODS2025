@@ -1,0 +1,89 @@
+* Date: 20 July 2005
+* Author: OSU/ISL Astronomy Staff
+****************************************
+** SlitMask System low level software *
+* *                                  *
+*  *        SLIT MASK INSERT        *
+* *                                  *
+**    Many Thanks to Tom O'Brien      *
+****************************************
+* 'Motion Parameters
+MSEL= 10      '10 microsteps per step
+MUNIT=2000    'units to revs
+MAC=50        'accel current is 0.50 * 7
+MRC=30        'run current is 0.30 * 7
+MHC=0         'hold current is zero
+HCDT=500      'hold current delay msec (for overlap with brake engagement)
+*
+*      'Input & Output Configuration
+IOS 21 = 13,0,0    'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0    'NEGATIVE (CCW)limit, active low
+IOS 23=0,0,0       'SCIENCE position occupied sensor
+IOS 24=0,0,0       'STOWED position occupied sensor
+IOS 25=0,0,0       'NOT USED
+IOS 26=18,1,0      'Brake relay coil (internal pull-up switch opened)
+*                  'Output defaults to NO, Brake wired to NO contacts on relay
+*                  'Brake is applied with power off and default state of
+*                  'drive output
+*
+*      'Motion Configuration
+ACCL=50          'acceleration rate in rev/sec^2
+DECL=ACCL        'acceleration rate = deceleration rate
+LDECL=500        'set decel after a limit is asserted
+VM=5             '5 rev/sec running speed
+*
+*      'Variable Declarations
+VAR INCR = 1.8	  'revs between mask positions is 18mm
+* MicroLYNX source code
+PGM 100          'Starts at address 100
+LBL POSDATUM     'POSITION DATUM procedure:
+*
+* Initial SCIENCE seek
+VM=5             '5 rev/sec running speed
+MOVA 70,0        'move to some distance and decelerate
+HOLD 2           'suspend procedure until move is complete
+MOVR -0.5        'relative index to -0.5 position
+HOLD 2           'suspend procedure until move is complete
+VM=1.5             'reduce velocity to 1 rev/sec running speed
+MOVR 1           'relative index to 1 position
+HOLD 2           'suspend procedure until move is complete
+POS=0            'MARK position as 0th position
+PRINT "Position Datum = " POS 'prove that position is 0.00
+BR ENDIT         'branch to exit
+*
+LBL STOW         'STOW procedure: 
+VM=5             'change the velocity to 5.0 rev/sec running speed
+MOVA -62,1       'move to an absolute index of -61.1
+HOLD 0           'suspend procedure until position change is complete
+VM=1.5             'change the velocity to 2.0 rev/sec running speed
+MOVA -70         'move to an absolute index of -70
+HOLD 2           'suspend procedure until move is complete
+PRINT "STOWED Position = " POS 'show me the position
+VM=5             '5 rev/sec running speed
+BR ENDIT         'branch to exit
+*
+LBL SPOS         'Science Position procedure: 
+VM=5             'set the velocity to 5.0 rev/sec running speed
+MOVA -2,1        'move to an absolute index of -2.1
+HOLD 0           'suspend procedure until position change is complete
+* Now take it slow we want to get as close as possible
+VM=1             'reduce the velocity to 1.0 rev/sec running speed
+MOVA 1           'move to an absolute index of 1
+HOLD 2           'suspend procedure until move is complete
+MOVR -0.5        'move to relative index of -0.5
+HOLD 2           'suspend procedure until move is complete
+VM=1.5           'reduce the velocity to 1 rev/sec running speed
+MOVR 1           'move to relative index of 1
+HOLD 2           'suspend procedure until move is complete
+VM=5             '5 rev/sec running speed
+PRINT "SCIENCE Position = " POS 'are we there?
+BR ENDIT         'branch to exit
+LBL STOP         'Stop procedure
+VM=2             '2 rev/sec running speed
+SSTP 1           'stop
+PRINT "Motion has STOPPED! at Position = " POS
+VM=5             '5 rev/sec running speed
+BR ENDIT         'branch to exit
+LBL ENDIT        'EXIT
+END              'end the procedures
+PGM              'end of program in RAM 

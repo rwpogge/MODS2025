@@ -1,0 +1,59 @@
+# MicroLYNX source code
+# Default motion parameters for all motors.
+0 set msel=10
+0 set munit=2000
+0 set mac=50
+0 set mrc=30
+0 set mhc=0
+0 set hcdt=100
+# Input/Output configuration.
+0 set ios 21=13,0,0
+0 set ios 22=14,0,0
+0 set ios 23=0,0,0
+0 set ios 24=0,0,0
+0 set ios 26=18,1,0
+# Motor configuration.
+0 set accl=50
+0 set decl=accl
+0 set ldecl=500
+0 set vm=5
+# MicroLYNX source code
+pgm 200
+LBL HOME
+# Initial SCIENCE seek
+0 mova 70,0
+0 hold 2
+0 movr -0.5
+0 hold 2
+0 set vm=.2
+0 movr 1
+0 hold 2
+0 pos=0
+0 print "Position Datum = " pos
+BR ENDIT
+LBL STOW
+0 set vm=5
+0 mova -62,1
+0 hold 0
+0 set vm=1
+0 mova -70
+0 hold 2
+0 print "STOWED Position = " pos
+BR ENDIT
+LBL SPOS
+0 set vm=5
+0 mova -2,1
+0 hold 0
+0 set vm=1
+0 mova 1
+0 hold 2
+0 movr -0.5
+0 hold 2
+0 set vm=.2
+0 movr 1
+0 hold 2
+0 print "SCIENCE Position = " pos
+BR ENDIT
+LBL ENDIT
+end
+pgm

@@ -1,0 +1,51 @@
+#
+# Makefile for vueinfo 
+#
+# Use "build", not "make" to build the SHM viewer executable.
+# Test root directory 
+#
+# 2025 June 19 - AlmaLinux 9 port [rwp/osu]
+#
+ROOTDIR = /home/dts/mods
+ISISDIR = /home/dts/ISIS
+
+#############################
+VERSION     = v1.2
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+
+INCS        = -I$(ROOTDIR)/include -I$(ISISDIR)/lib
+CFLAGS      = -w -c $(INCS) 
+VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
+              -DAPP_COMPTIME='"$(COMPTIME)"'
+
+# retired libpoutils, wagoutils, siutils
+LIBS        = -L$(ROOTDIR)/ulib -L$(ISISDIR)/lib -lislutils -linstrutils \
+        -lisis -llogutils -lisltimes -lmmcutils -lagwutils -lreadline -lhistory -lncurses
+#
+LFLAGS      = -o vueinfo
+MFLAGS      = -o vueMaps
+#
+OBJS        = vuecalq.o what_help.o 
+#../obj/islapi.o
+.c.o:
+	$(CC) $(CFLAGS) $(VFLAGS) $*.c
+#
+all:          vueinfo vueMaps install
+#
+vueinfo:      $(OBJS) vueinfo.c
+	      $(CC) $(LFLAGS) $(VFLAGS) vueinfo.c $(OBJS) $(LIBS) $(INCS)
+
+vueMaps:      $(OBJS) vueMaps.c
+	      $(CC) $(MFLAGS) $(VFLAGS) vueMaps.c $(OBJS) $(LIBS) $(INCS)
+
+clean:
+	    /bin/rm -f vueinfo *.o
+	    /bin/rm -f vueMaps *.o
+
+# bunch of stuff retired
+
+install:
+	\mv vueinfo $(ROOTDIR)/bin
+	\mv vueMaps $(ROOTDIR)/bin
+	/bin/rm -f *.o

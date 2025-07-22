@@ -1,0 +1,375 @@
+/*!
+  \mainpage calib.plc - CALIBration Tower PLC program
+
+  \author Staff, OSU Astronomy Dept. (rgonzale@astronomy.ohio-state.edu)
+
+  \date 2007 May 20
+
+  \section Usage
+
+  Usage: Multi-level command set used with ISL system 
+	 or Window IMS system
+
+  Where: \c MODS instrument
+
+  \section Introduction
+
+	Small command set the key words:
+	o initial: Initialize the mask select magazine
+	o storage: Store the Calibration Tower
+	o calmode: Move Calibration Tower into the beam
+	o scimode: Stow the Calibration Tower
+	o Others:  Helper subroutines
+
+	All Motion Parameters are documented in the MicroLYNX Part III
+	Software Reference.
+
+<pre>
+2006 Nov 01 - new application [rdg]
+2008 Aug 13 - fixed bugs [rdg]
+2008 Aug 14 - added pwrfail and fail_cnt variables [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+
+/*!
+  \file calib.plc
+  \brief Small command set for calibration mechanism
+*/
+/** END HEADER **/
+' Start here with PLC code
+Drven=0		'Disables Motor
+Msel= 10	'10 microsteps per step
+Munit=2000	'units to revs
+Mac=70		'accl current is 0.70 x 7amps
+Mrc=70		'run current is 0.70 x 7amps
+Mhc=0		'Hold current is Zero
+Hcdt=2000	'Hold Current Delay msec
+'
+'Input & Output Configuration
+Ios 21 = 13,0,0	'CW Limit sensor (active low)
+Ios 22 = 14,0,0	'CCW Limit sensor (active low)
+Ios 26 = 18,1,0	'User Output for Brake Control
+'Ios 26 = 0,1,0	'User Output for Brake Control Keep this for test
+'
+'Motion Configuration
+Aclt=1		'Linear Acceleration
+Accl=50		'Acceleration (Rev/sec^2)
+Decl=Accl	'Deceleration (Rev/sec^2)
+Ldecl=500	'Limit Deceleration (Rev/sec^2)
+'
+'Variable Declarations
+VAR VNORM=8.0	'Nominal operating velocity (8 revs/sec)
+VAR VSLOW=3.0	'HOME Seeking reset velocity (3 revs/sec)
+VAR VSEEK=2.0	'Seeking velocity (2 revs/sec)
+VAR TTIME=12000	'Timeout at 12 seconds from limit to limit at
+		'normal (VNORM) speed
+VAR T_RESET=30000 	'Timeout at 22 seconds for power resets at
+			'slow (VSLOW) speed
+'
+VAR STEPCAL=-55.00	'User unit count for Calibration mode
+VAR STEPSCI=-2.0	'User unit count for Science mode
+VAR SAVE_POS		'Save position
+
+VAR STEPPOS=0		'Number of steps to move
+VAR PWRFAIL=1		'Power Failure variable
+'
+'VM=VNORM		'Set the speed
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STARTUP MODE
+' PLC Ladder code starts at address #100
+'
+Pgm 100
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                INITIALize STORAGE PROCEDURE
+' Intialize Calibration Tower to its Storage(SAFE) Position
+'
+LBL INITIAL			'Intialize Calibration Tower
+LBL STORAGE
+' IO 26=1
+  PWRFAIL=0
+'
+  BR BITERR, IO 21+IO 22=2	'CW and CCW high:on:1 not allowed
+  BR GOODTOGO, Io 21=1		'If Already at the reset position
+  VM=VNORM		'Set the speed
+'
+  TT1=T_RESET,TIME_ERR	'Configure to trip in T_RESET milliseconds
+  TTE1=1                'Enable timeout
+'
+'
+'  TP2=STEPSCI,SCNT1     'Configure with user units
+'  TPE2=1                'Enable user units
+'
+  Drven=1		'Enables Drive
+  SLEW VSLOW,0		'Slew very slowly to the home limit
+  HOLD 2
+  SAVE_POS=POS
+  LBL GOODTOGO		'Already at the reset position
+   POS=0.0       	'Sets Position to Zero
+    PWRFAIL=0
+  PRINT "OUT"         'RESET Successful, CALIB=OUT"
+' IO 26=0
+BR END_IT 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CALMODE PROCEDURE
+' Starts Calibration Mode
+'
+LBL CALMODE		'Starts Calibration Mode
+'
+' IO 26=1
+  BR BITERR, IO 21+IO 22=2	'CW and CCW high:on:1 not allowed
+  BR UNKERR, IO 21+IO 22=0	'CW and CCW low:off:0 Unknown position
+  BR SWERR, Io 22=1		'If already in CALMODE do nothing
+'
+  CALL PWROK, IO 21+IO 22=1
+  BR PWRERR, PWRFAIL=1  'Check for Power Failure or was turned off
+  TT1=TTIME,TIME_ERR    'Configure to trip in TTIME milliseconds
+  TTE1=1                'Enable timeout
+'
+  TP1=STEPCAL,SCNT1     'Configure with user units
+  TPE1=1                'Enable user units
+'
+  Drven=1		'Enable the motor
+'
+  SLEW -VNORM,0		'Slew to the first part of the trip
+  HOLD 2		'Waits for motion to stop before proceeding
+  SLEW -VSEEK,0		'Sneak up on the CW limit
+  HOLD 2		'Waits for motion to stop before proceeding
+  SAVE_POS=POS
+  PRINT "IN"
+' IO 26=0
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                SCIMODE PROCEDURE
+' Start Science Mode
+'
+LBL SCIMODE
+'
+' IO 26=1
+  BR BITERR, IO 21+IO 22=2	'CW and CCW high:on:1 not allowed
+  BR UNKERR, IO 21+IO 22=0	'CW and CCW low:off:0 Unknown position
+  BR SWERR, Io 21=1		'If already in SCIMODE do nothing
+'
+  TT1=TTIME,TIME_ERR	'Configure to trip in TTIME milliseconds
+  TTE1=1                'Enable timeout
+'
+  CALL PWROK, IO 21+IO 22=1
+  BR PWRERR, PWRFAIL=1  'Check for Power Failure or was turned off
+  TP2=STEPSCI,SCNT1	'Configure with user units
+  TPE2=1                'Enable user units
+'
+'  TI1=21,TRIPCCW	'Configure limit trip
+'  TIE1=1                'Enable trip
+'
+  Drven=1
+  SLEW VNORM,0		'Slew to the first part of the trip
+  HOLD 2		'Waits for motion to stop before proceeding
+  SLEW VSEEK,0		'Sneak up on the CW limit
+  HOLD 2		'Waits for motion to stop before proceeding
+  SAVE_POS=POS
+  POS=0.0       	'Sets Position to Zero
+  PRINT "OUT"
+' IO 26=0
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                SWERR and SW21 PROCEDURES
+' Check Position of Calibration Tower
+'
+LBL SWERR
+  PWRFAIL=0
+  BR SW21, IO 21=1
+   BR PWRERR, PWRFAIL=1  'Check for Power Failure or was turned off
+    PRINT "IN"
+BR END_IT
+'
+LBL SW21
+   BR PWRERR, PWRFAIL=1  'Check for Power Failure or was turned off
+    PRINT "OUT"
+'     PWRFAIL=0
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STEP(step +/-revs) PROCEDURE
+' STEP Relative moves
+'
+LBL STEP
+'
+  Drven=1
+  MOVR STEPPOS
+  HOLD 2
+  PRINT POS
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		BITERR(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+'
+LBL BITERR
+  PRINT "? FAULT Sensor Fault, both limits asserted"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		PWRERR(power failure error) PROCEDURE
+' I'm indicating a power failure
+'
+LBL PWRERR
+  PRINT "? PWRFLR power failure, re-cycled or turned off (reset)"
+BR END_IT
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TRIPCW(io error) PROCEDURE
+' TRIPCW on a CW bit.(21)
+' o If Calibration Tower was tripped early
+'       o Stop operation
+'       o End and give an error message 
+'
+LBL TRIPCW
+  PRINT "? CW limit tripped early"
+BR END_IT
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TRIPCCW(io error) PROCEDURE
+' TRIPCCW on a CCW bit.(22)
+' o If Calibration Tower was tripped early
+'       o Stop operation
+'       o End and give an error message 
+'
+LBL TRIPCCW
+  PRINT "? CCW limit tripped early"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TIME_ERR PROCEDURE
+' Timed out. We cannot go on forever.
+'
+LBL TIME_ERR
+  PRINT "? UNKNOWN request timed out"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               UNKERR PROCEDURE
+' Unknown position
+'
+LBL UNKERR
+  CALL PWROK,  IO 21+IO 22=1
+  BR PWRERR, PWRFAIL=1  'Check for Power Failure or turned off
+  PRINT "? UNKNOWN position, please reset"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		PWROK(power is ok) PROCEDURE
+' I'm indicating a power ok at CW or CCW
+'
+LBL PWROK
+   PWRFAIL=0
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               StepCouNT1 PROCEDURE
+' Close or Open not reached
+'
+LBL SCNT1               'user units
+  SSTP 0
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ENDIT(exit) PROCEDURE
+' EXIT the PLC routine
+'
+LBL END_IT		'End Program Execution
+  DELAY 1000
+  Drven=0
+  SSTP 0
+end
+Pgm
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''' NEW PLC PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+'
+PGM 6000
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+  PRINT "calib"
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+  PRINT POS
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+  PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+  PRINT "codeV=0.1(5/12/06)",":HW",VER
+BR END_PLC      'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO2122 PROCEDURE for bits 21 and 22 limit bits
+' Check limit bits
+'
+LBL IO2122
+  PRINT IO 21," ",IO 22
+BR END_PLC       'branch to exit
+
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+  PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                MASK2122 PROCEDURE for bits 21 and 22
+' Check IO 21 and 22 bits for showing position of carrier
+'
+LBL MASK2122
+  VAR LIMITS
+  LIMITS=IO 22*2+IO 21
+  PRINT LIMITS
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20MASK PROCEDURE
+' Check the Select, Insert bit mask 24-21
+'
+LBL IO20MASK
+  VAR B21=IO 21*8 
+  VAR B22=IO 22*4 
+  VAR B23=IO 23*2 
+  VAR B24=IO 24
+  VAR BITMASK=B21+B22+B23+B24
+  PRINT BITMASK
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC		
+END 
+PGM
+

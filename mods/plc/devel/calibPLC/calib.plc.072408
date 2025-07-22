@@ -1,0 +1,535 @@
+/*!
+  \mainpage calib.plc - CALIBration Tower PLC program
+
+  \author Staff, OSU Astronomy Dept. (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2007 May 20
+  
+  \section Usage
+
+  Usage: Multi-level command set used with ISL system
+         or Window IMS system
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+        Small command set the key words.
+
+        All Motion Parameters are documented in the MicroLYNX Part III 
+        Software Reference.
+
+<pre>
+2006 Nov 01 - new application [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file calib.plc
+  \brief Small command set for calibration mechanism
+*/
+/** END HEADER **/
+' START loading PLC
+'Motion Parameters
+Drven=0		'Disables Motor
+Msel= 10	'10 microsteps per step
+Munit=2000	'units to revs
+Mac=70		'accl current is 0.70 x 7amps
+Mrc=70		'run current is 0.70 x 7amps
+Mhc=0		'Hold current is Zero
+Hcdt=2000	'Hold Current Delay msec
+'
+	'Input & Output Configuration
+Ios 21 = 13,0,0	'CW Limit sensor (active low)
+Ios 22 = 14,0,0	'CCW Limit sensor (active low)
+'Ios 26 = 0,1,0	'User Output for Brake Control
+Ios 26 = 18,1,0	'User Output for Brake Control
+
+	'Motion Configuration
+Aclt=1		'Linear Acceleration
+Accl=50		'Acceleration (Rev/sec^2)
+Decl=4		'Deceleration (Rev/sec^2)
+Ldecl=1000	'Limit Deceleration (Rev/sec^2)	
+
+	'Variable Declarations
+VAR VNORM	'Nominal operating velocity (rev/sec)
+VNORM=8.0
+VAR VSEEK 	'Home Seeking Velocity (rev/sec)
+VSEEK=2.0
+VAR DIST        'Distance between positions (revs) - Needs Fine Tuned
+VAR OVERTRVL    'Overtravel distance (revs)
+VAR MAXMOV	'Maximum mechanism travel (revs)
+DIST=66		'Distance between positions (revs)
+OVERTRVL=1.5	'Overtravel for limit activation (revs)
+MAXMOV=DIST+OVERTRVL	'Maximum travel
+'VAR INITIAL	'Looks for user input to begin Initialization Mode
+'VAR CALIB	'Looks for user input to begin Calibration Mode
+'VAR SCIMODE	'Looks for user input to begin Science Mode
+VAR TIMER1	'Timer for Timeout routine
+VAR TTIME=30000 'Timeout at 10 seconds
+VAR TIMERMAX	'Maximum Timer Count before Timeout Occurs
+TIMERMAX=90
+Vm=VNORM
+
+VAR STEPCNT=56.00
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                STARTUP MODE
+' PLC starts at address #100
+'
+Pgm 100		'program starts at address 100
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                INITIALize PROCEDURE
+' Intialize Calibration Tower to its Storage / Science Position
+'
+'                STORAGE PROCEDURE
+' Slews Calibration Tower to its Storage / Science Position
+'
+LBL INITIAL
+LBL STORAGE	'Slews Calibration Tower to its Storage / Science Position
+  BR BITERR, IO 21+IO 22=2	'CW and CCW high:on:1 not allowed
+  BR SWERR, Io 21=1	'If already in SCIMODE or STORAGE do nothing
+'
+  TT1=TTIME,TIME_ERR	'Configure to trip in TTIME milliseconds
+  TTE1=1                'Enable timeout
+'
+  TP1=STEPCNT,SCNT1     'Configure with user units
+  TPE1=1                'Enable user units
+'
+  TI1=22,TRIPCCW	'Configure CCW limit trip
+  TIE1=1                'Enable trip
+'
+  Drven=1		'Enables Drive
+'  Io 26=1		'Disables Brake
+'PRINT "0 PLEASE WAIT APPROX. 30 SECONDS FOR INTIALIZATION TO COMPLETE>"
+
+  SLEW VNORM,0		'Slew to the first part of the trip
+  HOLD 2
+  SLEW VSEEK,0		'Sneak up to the CCW limit
+  HOLD 2
+  TIMER1 = 1	'Sets inital Timer count to 1
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                TIMEOUT1 PROCEDURE
+' Timeout Loop
+'
+'LBL TIMEOUT1	'Timeout Loop
+'  DELAY 250	'Adds short delay between Timeout Loop Cycles
+'If Timer exceeds max allowable counts an error is triggered
+'  BR FAILED, TIME_ERR > TIMERMAX
+'  BR CONTINUE, Io 21=1 'Program continues if Limit is reached prior to timeout
+'  INC TIMER1	'Increments the Timer Varaible		
+'BR TIMEOUT1	'Closes Timeout Loop			
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CONTINUE PROCEDURE
+' Continue if Limit is reached prior to timeout
+'
+LBL CONTINUE
+'  Io 26=0		'Enables Brake
+'Adds Delay to allow brake to activate prior to motor being turned off
+  DELAY 100
+  Drven = 0	'Turns motor off
+  Pos=0.0         'Sets Position to Zero
+BR ENDSCI 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CALMODE PROCEDURE
+' Starts Calibration Mode
+'
+LBL CALMODE		'Starts Calibration Mode
+'  Pos=0.0         	'Sets Position to Zero
+  BR BITERR, IO 21+IO 22=2	'CW and CCW high:on:1 not allowed
+'
+  TT1=TTIME,TIME_ERR    'Configure to trip in TTIME milliseconds
+  TTE1=1                'Enable timeout
+'
+  TP1=-STEPCNT,SCNT1    'Configure with user negative units
+  TPE1=1                'Enable user units
+'
+  TIMER1 = 1			'Sets inital Timer count to 1
+  Vm=VNORM
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'             	CALMOVE PROCEDURE
+' Begins Move to Calibration Mode
+'
+LBL CALMOVE  		'Begins Move to Calibration Mode
+  BR SWERR, Io 22=1	'If already in CALMODE do nothing
+  BR NOSCIPOS, Io 21<>1	'Verify that Calibration Tower is Leaving 
+			'from a Valid Science Position
+  Drven=1		'Enable the motor
+'
+  TI1=22,TRIPCCW	'Configure CCW limit trip
+  TIE1=1                'Enable trip
+'
+'  Io 26=1
+'  MOVR -MAXMOV
+  SLEW -VNORM,0		'Slew to the first part of the trip
+  HOLD 2		'Waits for motion to stop before proceeding
+  SLEW -VSEEK,0		'Sneak up on the CW limit
+  HOLD 2		'Waits for motion to stop before proceeding
+  Pos=0.0         	'Sets Position to Zero
+BR ENDCAL
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CALHOME PROCEDURE
+' Calibration Homing Routine
+'
+LBL CALHOME		'Calibration Homing Routine
+  DELAY 250
+  Pos=0			'Sets Position to Zero
+  Vm=VSEEK
+  MOVR=MAXMOV
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLLIT PROCEDURE
+' Looks for edge of limit trip zone
+'
+LBL POLLIT		'Looks for edge of limit trip zone
+  BR SEEK, Io 21=0
+  BR POLLIT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                SEEK PROCEDURE
+' Homing Seek
+'
+LBL SEEK		'Homing Seek
+  SSTP			'Soft Stop for motion
+  DELAY 1000
+  MOVA -1
+  HOLD 2
+  Pos=0.0
+'  Io 26=0
+  Vm=VNORM
+  DELAY 1000
+  Drven = 0
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CALACTIV PROCEDURE
+' Checks for Active Tower in calibration direction
+'
+LBL CALACTIV
+  BR LIMERCCW, Io 22<>1	'Checks for End of Travel Limit Assertion
+  PRINT "0 CALIB=IN"
+BR ENDCAL
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                SCIMODE PROCEDURE
+' Start Science Mode
+'
+LBL SCIMODE
+'
+  TT1=TTIME,TIME_ERR	'Configure to trip in TTIME milliseconds
+  TTE1=1                'Enable timeout
+'
+  TP1=STEPCNT,SCNT1	'Configure with user units
+  TPE1=1                'Enable user units
+'
+  Vm=VNORM
+  TIMER1 = 1	'Sets inital Timer count to 1
+BR SCIENCE
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                SCIENCE PROCEDURE
+' Begins Move to Science Mode
+'
+LBL SCIENCE		'Begins Science Mode
+  BR BITERR, IO 21+IO 22=2	'CW and CCW high:on:1 not allowed
+  BR SWERR, Io 21=1		'If already in SCIMODE do nothing
+  BR NOCALPOS, Io 22<>1
+'
+  TI1=21,TRIPCW		'Configure limit trip
+  TIE1=1                'Enable trip
+'
+  Drven=1
+' Io 26=1
+' MOVR MAXMOV
+  SLEW VNORM,0		'Slew to the first part of the trip
+  HOLD 2		'Waits for motion to stop before proceeding
+  SLEW VSEEK,0		'Sneak up on the CW limit
+  HOLD 2		'Waits for motion to stop before proceeding
+'  Io 26=0
+'  DELAY 100
+  Drven = 0
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                SCIACTIV PROCEDURE
+' Checks for Active Tower in science direction
+'
+LBL SCIACTIV
+  BR LIMERCW, Io 21<>1	'Checks for End of Travel Limit Assertion
+  POS=0.0
+BR ENDSCI 'added by RDG for ISL software.
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                'LIMERCW PROCEDURE
+' CW Limit Error Recovery
+'
+LBL LIMERCW		'CW Limit Error Recovery
+  DELAY 1000
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                'CALRCVR PROCEDURE
+' Calibration recover
+'
+LBL CALRCVR
+  Drven=1
+'  Io 26=1
+  SLEW -3
+  TIMER1 = 1
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                TIMEOUT2 PROCEDURE
+' Timeout Loop
+'
+LBL TIMEOUT2
+  DELAY 250
+  BR FAILED, TIMER1 > TIMERMAX
+  BR CALHOME, Io 22=1
+  INC TIMER1
+BR TIMEOUT2
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                LIMERCCW PROCEDURE
+' CCW Limit Error Recovery
+'
+LBL LIMERCCW		'CCW Limit Error Recovery
+  DELAY 1000
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                SCIRCVR PROCEDURE
+' Science
+'
+LBL SCIRCVR
+  Drven=1
+'  Io 26=1
+  SLEW 3
+  TIMER1 = 1
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                TIMEOUT3 PROCEDURE
+' Timeout Loop
+'
+LBL TIMEOUT3
+  DELAY 250
+  BR FAILED, TIMER1 > TIMERMAX
+  BR SCIACTIV, Io 21=1
+  INC TIMER1
+BR TIMEOUT3
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                NOSCIPOS PROCEDURE
+' Out of Science Position Error Recovery
+'
+LBL NOSCIPOS		'Out of Science Position Error Recovery
+BR SCIRCVR
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                NOCALPOS PROCEDURE
+' Out of Calibration Position Error Recovery
+'
+LBL NOCALPOS		'Out of Calibration Position Error Recovery
+BR CALRCVR
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                FAILED PROCEDURE
+' Timeout Failure Message
+'
+LBL FAILED		'Timeout Failure Message
+  PRINT "1 FAILED....TIMEOUT OCCURRED"
+BR ENDIT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                ENDCAL and ENDSCI PROCEDURE
+' End of the line
+'
+LBL ENDCAL              'End Program Execution
+'  PRINT "0 CALIBRATION MODE ACTIVATED"
+BR ENDIT
+'
+LBL ENDSCI              'End Program Execution
+'  PRINT "0 SCIENCE MODE ACTIVATED"
+BR ENDIT
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                ENDIT PROCEDURE
+' End of the line
+'
+LBL SWERR
+  BR SW21, IO 21=1
+  PRINT "0 CALIB=IN"
+BR ENDIT
+'
+LBL SW21
+  PRINT "0 CALIB=OUT"
+BR ENDIT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		BITERR(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+'
+LBL BITERR
+  PRINT "2 Bits 21(ON)=",IO 21," and 22(ON)=",IO 22," not allowed"
+  'reset iobits
+  IOBITS=0
+BR ENDIT
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TRIPCW(io error) PROCEDURE
+' TRIPCW on a CW bit.(21)
+' o If Calibration Tower was tripped early
+'       o Stop operation
+'       o End and give an error message 
+'
+LBL TRIPCW
+'  ERROR=0
+  SSTP 0
+  BR SMODE_OK, CTR1/MUNIT>STEPCNT
+  PRINT "1 CW limit tripped early:b21[",IO 21,"]"
+BR ENDIT
+'
+LBL SMODE_OK
+'  ERROR=0
+  PRINT "0 CALIB=OUT"
+BR ENDIT
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TRIPCCW(io error) PROCEDURE
+' TRIPCCW on a CCW bit.(22)
+' o If Calibration Tower was tripped early
+'       o Stop operation
+'       o End and give an error message 
+'
+LBL TRIPCCW
+'  ERROR=0
+  SSTP 0
+  BR CMODE_OK, CTR1/MUNIT<-STEPCNT
+  PRINT "1 CCW limit tripped early:b22[",IO 22,"]"
+BR ENDIT
+'
+LBL CMODE_OK
+'  ERROR=0
+  PRINT "0 CALIB=IN"
+BR ENDIT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TIME_ERR PROCEDURE
+' Timed out. We cannot go on forever.
+'
+LBL TIME_ERR
+  PRINT "1 CALIB timed out: ",TTIME," millisecs, CALIB=Unknown"
+  SSTP 0
+BR ENDIT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               StepCouNT1 PROCEDURE
+' Close or Open not reached
+'
+LBL SCNT1               'user units
+  SSTP 0
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ENDIT(exit) PROCEDURE
+' EXIT the PLC routine
+'
+LBL ENDIT		'End Program Execution
+  SSTP 0
+'  Io 26=0
+  Drven=0
+  SSTP 1
+end
+Pgm
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''' NEW PLC PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+'
+PGM 6000
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+  PRINT "0 calib"
+BR END_PLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+  PRINT "0 ",POS
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKMVG PROCEDURE check moving status
+'
+LBL CHKMVG
+  PRINT "0 ",MVG
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+  PRINT "0 POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+  PRINT "0 codeV=0.1(5/12/06)",":HW",VER
+BR END_PLC      'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO2122 PROCEDURE for bits 21 and 22 limit bits
+' Check limit bits
+'
+LBL IO2122
+  PRINT "0 ",IO 21," ",IO 22
+BR END_PLC       'branch to exit
+
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+  PRINT "0 ",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                MASK2122 PROCEDURE for bits 21 and 22
+' Check IO 21 and 22 bits for showing position of carrier
+'
+LBL MASK2122
+  VAR LIMITS
+  LIMITS=IO 22*2+IO 21
+  PRINT "0 ",LIMITS
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20MASK PROCEDURE
+' Check the Select, Insert bit mask 24-21
+'
+LBL IO20MASK
+  VAR B21=IO 21*8 
+  VAR B22=IO 22*4 
+  VAR B23=IO 23*2 
+  VAR B24=IO 24
+  VAR BITMASK=B21+B22+B23+B24
+  PRINT "0 ",BITMASK
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC		
+END 
+PGM
+

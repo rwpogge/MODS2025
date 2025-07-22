@@ -1,0 +1,14 @@
+#
+# MODS2 Blue Camera Filter Wheel
+# 2014-03-04
+# R. Pogge, OSU Astronomy Dept
+#
+#Pos  Name   dFoc   Info
+  1   Clear     0   Fused Silica Clear 128x86x6mm Nr2
+  2   g_sdss    0   Asahi SDSS g 86x86mm
+  3   Empty     0   Position Empty
+  4   Empty     0   Position Empty
+  5   UG5       0   Omega UG5+FS 128x86x6mm Nr2
+  6   u_sdss   50   Asahi SDSS u 86x86mm
+  7   ND1.5     0   Omega ND1.5 128x86x6mm Nr133496
+  8   Empty     0   Position Empty

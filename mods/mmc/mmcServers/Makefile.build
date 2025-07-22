@@ -1,0 +1,73 @@
+#
+# Makefile for mmcService
+#
+# "make" to build the mmcService executable.
+#
+# OSU Astronomy Dept.
+# rgonzale@astronomy.ohio-state.edu, pogge.1@osu.edu
+# date: 2006 February 9
+#
+# Modification History:
+#   2013 Aug 02 - removed modsenv [defunct - rwp/osu]
+#   2025 Jun 24 - modification for AlmaLinux 9 port [rwp/osu]
+#   2025 Jul 02 - replaced blue/redIMCS_n with new version for WAGO QC readout [rwp/osu]
+#
+ROOTDIR     = /home/dts/mods
+ISISDIR     = /home/dts/ISIS
+VERSION     = mmcService v3.1.0
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+
+# For /usr/local/bin installation remove comment and comment the next line.
+
+BINDIR      = ../bin
+OBJDIR      = ../obj
+CFGFILE     = $(ROOTDIR)/Config/mechanisms.ini
+INCS        = -I$(ROOTDIR)/include -I$(ISISDIR)/lib -I/usr/include/modbus
+
+CFLAGS      = -w -D_REENTRANT -pthread -c $(INCS) 
+VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
+              -DAPP_COMPTIME='"$(COMPTIME)"' -DAPP_CFGFILE='"$(CFGFILE)"'
+
+LIBS        = -L$(ISISDIR)/lib -L$(ROOTDIR)/ulib -lislutils -linstrutils -lisis -llogutils -lmmcutils -lagwutils -lmodbus -lisltimes -lpthread
+
+LFLAGS      = -o mmcService
+RFLAGS      = -o mlcRecover
+QBFLAGS     = -o blueIMCS
+QRFLAGS     = -o redIMCS
+
+OBJS        = loadconfig.o commands.o checkForError.o mmcLOGGER.o
+
+.c.o:	
+	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
+
+all:        mmcService mlcRecover blueIMCS redIMCS install clean
+
+mmcService: $(OBJS) mmcService.c
+	    $(CC) $(LFLAGS) $(VFLAGS) mmcService.c $(OBJS) $(LIBS) $(INCS)
+
+mlcRecover: $(OBJS) mlcRecover.cpp
+	    $(CC) $(RFLAGS) $(VFLAGS) mlcRecover.cpp $(LIBS) $(INCS)
+
+blueIMCS:   $(OBJS) blueIMCS.cpp
+	    $(CC) $(QBFLAGS) $(VFLAGS) blueIMCS.cpp $(LIBS) $(INCS)
+
+redIMCS:    $(OBJS) redIMCS.cpp
+	    $(CC) $(QRFLAGS) $(VFLAGS) redIMCS.cpp $(LIBS) $(INCS)
+
+clean:
+	    \rm -f *.o
+
+# install copies into local and "public" bin
+
+install:
+	    \cp -f mmcService $(ROOTDIR)/bin
+	    \mv -f mmcService $(BINDIR)
+	    \cp -f mlcRecover $(ROOTDIR)/bin
+	    \mv -f mlcRecover $(BINDIR)
+	    \cp -f blueIMCS   $(ROOTDIR)/bin
+	    \mv -f blueIMCS   $(BINDIR)
+	    \cp -f redIMCS    $(ROOTDIR)/bin
+	    \mv -f redIMCS    $(BINDIR)
+
+	    \cp -f *.o $(OBJDIR)/.

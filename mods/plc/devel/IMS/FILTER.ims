@@ -1,0 +1,115 @@
+
+
+ Pgm 100         'program starts at address 100
+
+      'Motion Parameters
+Msel= 10      '10 microsteps per step
+Munit=2000    'units to revs
+Mac=50        'accel current is 0.50 * 7
+Mrc=30        'run current is 0.30 * 7
+Mhc=0         'hold current is zero
+Hcdt=0      'hold current delay msec
+
+
+
+      'Input & Output Configuration
+Ios 21 = 0,0,1    'LSB, Active High
+Ios 22 = 0,0,1
+Ios 23 = 0,0,1	   'MSB, Active High
+Ios 24 = 0,0,1	   'In Position, Active High
+
+      'Motion Configuration
+Accl=3          'acceleration rate in rev/sec^2
+Decl=Accl
+Vm=1
+
+
+      'Variable Declarations
+VAR DIST = 2.5625    'revs between Filter positions
+'VAR FILTNUM          'Filter Position Number
+VAR TARGNUM	      'Desired Filter Number
+VAR TARGMOV		'Target Filter Move Requirement
+VAR TARGABS		'Absolute Value of Target Filter Move
+VAR CELLMOVE		'Resultant number of filter cells to move for most efficient travel to next target
+VAR A = Io 21
+VAR B = Io 22 * 2
+VAR C = Io 23 * 4
+VAR FILTNUM = A + B + C
+
+	'Initialization
+	LBL BEGIN
+
+	'Check for In Position Condition
+'VALID = Io 24				
+BR NOPOS, Io 24 = 0
+PRINT "The Filter Wheel is in a VALID POSITION"
+
+	'Check Current Filter Position
+A = Io 21
+B = Io 22 * 2
+C = Io 23 * 4
+FILTNUM = A + B + C
+PRINT "Current Filter # in Use = " FILTNUM
+'User Request for New Filter Position
+PRINT "Please Select Next Filter Position When Ready (0-7)"
+INPUT TARGNUM
+TARGMOV = FILTNUM - TARGNUM
+TARGABS = abs TARGMOV
+'cccc
+BR BEGIN, TARGNUM>7
+BR BEGIN, TARGNUM<0
+
+'ccccccccccccc
+BR COND1x, TARGABS>5
+BR COND2x, TARGABS<4
+BR COND3x, TARGABS>5
+BR COND4x, TARGABS<4
+'ccccccccccccc
+LBL cond1x
+BR cond1, FILTNUM>TARGNUM
+BR cond3, FILTNUM<TARGNUM
+'ccccccccccc
+BR begin
+LBL cond2x
+BR cond2, FILTNUM>TARGNUM
+BR cond4, FILTNUM<TARGNUM
+BR begin
+
+LBL COND1
+CELLMOVE = 8-TARGABS
+PRINT "CONDITION 1"
+BR MOVEDISK
+LBL COND2
+CELLMOVE = -TARGABS
+PRINT "CONDITION 2"
+BR MOVEDISK
+LBL COND3
+CELLMOVE = TARGABS-8
+PRINT "CONDITION 3"
+BR MOVEDISK
+LBL COND4
+CELLMOVE = TARGABS
+PRINT "CONDITION 4"
+BR MOVEDISK
+LBL END_IT
+
+LBL MOVEDISK
+MOVR CELLMOVE*DIST
+LBL LOOP1
+BR BEGIN,Mvg=0
+BR LOOP1
+
+LBL NOPOS
+PRINT "ERROR: FILTER WHEEL IS NOT IN A VALID POSITION,PLEASE WAIT FOR RECOVERY"
+SLEW 0.25
+LBL LOOP2
+BR STOP_IT, Io 24=1
+BR LOOP2
+LBL STOP_IT
+SSTP 0
+BR BEGIN
+
+
+LBL END_IT
+END
+Pgm

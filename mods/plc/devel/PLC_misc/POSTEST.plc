@@ -1,0 +1,22 @@
+PGM 200
+LBL start-up
+POS=0
+MUNIT=2000
+IOS 21=0,0,0,0,0
+VAR speed
+VAR Time
+LBL moveit
+PRINT "Enter Speed:"
+INPUT speed
+SLEW speed
+LBL loop1
+DELAY 2
+Time=Time+0.0002
+BR loop1, IO 21=0
+PRINT "Position = " POS
+PRINT "Time = ",Time," secs"
+MOVA 0
+HOLD 2
+BR moveit
+END
+PGM

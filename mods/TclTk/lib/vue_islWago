@@ -1,0 +1,171 @@
+#!/usr/bin/wish
+# vue_modsqc source for the Tk toolkit
+# Basic font for button, menus and labels
+# Product of OSU/ISL Astronomy Dept.
+# to be incorporated into ISL software
+
+  # Window manager configurations
+  set ICONDIR /home/dts/mods/TclTK/images
+  set LIBDIR /home/dts/mods/TclTK/lib
+
+  global tkVersion
+
+  wm positionfrom . user
+  wm sizefrom . ""
+  wm maxsize . 1152 900  
+  wm iconposition . 1200 0
+  wm iconname . {qc}
+  wm title . {MESI}
+wm geometry . +0+0
+set w .
+
+array set Fonts {
+    main   {Sans 12 bold}
+    bold   {Helvetica 12 bold}
+    title  {Helvetica 24 normal}
+    title2 {Helvetica 18 bold}
+    status {Helvetica 10}
+    vars   {Helvetica 14}
+    ariel  {Ariel 12 }
+    abold  {Ariel 12 bold}
+    tbold  {century 12}
+}
+#title  {Helvetica 18 bold}
+
+set fc grey85
+set osucolor red4
+set fcoff Darkgrey
+set bcolor RoyalBlue3
+set fcready $fcoff
+
+set bfont $Fonts(title2)
+
+set openb 0
+set closeb 0
+
+canvas .c -width [expr 108*1] -height [expr 90*1] -bg $fc
+
+$w config -cursor {top_left_arrow black white} -bg $fc
+
+set MESI 1
+set font $Fonts(main)
+
+menu .menuBar -bg $osucolor -fg white -activebackground $bcolor -tearoff 0
+.menuBar add cascade -menu .menuBar.file -label File -underline 0
+.menuBar add cascade -menu .menuBar.help -bitmap @$ICONDIR/info.icon \
+    -background navy;
+
+menu .menuBar.file -tearoff 0
+# On the Mac use the specia .apple menu for the about item
+if {[tk windowingsystem] eq "classic" || [tk windowingsystem] eq "aqua"} {
+    .menuBar add cascade -menu .menuBar.apple
+    menu .menuBar.apple -tearoff 0
+    .menuBar.apple add command -label "About..." -command "aboutBox"
+} else {
+    .menuBar.file add command -label "About..." -command "aboutBox" \
+	-underline 0 -accelerator "<F1>"
+    .menuBar.file add sep
+}
+
+.menuBar.file add command -label "Exit" -command { exit };
+
+# Help menu
+menu .menuBar.help -background $fc -fg black -activebackground $bcolor -relief raised
+.menuBar.help add command -label "Information"  -command { exec vueinfo help noinfo & };
+
+. configure -menu .menuBar -background $fc
+
+bind . <F1> aboutBox
+
+global result1 result3 result2 result4 fc bcolor osucolor
+
+# Top frame is a menubar
+# there is more magic that you can do with this
+# build widget .m
+frame .m \
+    -bg $fc\
+    -borderwidth {2} \
+    -relief {groove}
+frame .m1 \
+    -bg $fc\
+    -borderwidth {2} \
+    -relief {groove}
+frame .m2 \
+    -bg $fc\
+    -borderwidth {2} \
+    -relief {groove}
+frame .m3 \
+    -bg $fc\
+    -borderwidth {2} \
+    -relief {groove}
+frame .m4 \
+    -bg $fc\
+    -borderwidth {2} \
+    -relief {groove}
+
+proc flash { w option value1 value2 interval count} {
+    for {set i 0} {$i < $count} {incr i} {
+	$w config $option $value1
+	update idletasks
+	after $interval
+	$w config $option $value1
+	update idletasks
+	after $interval
+    }
+}
+set bfont {Helvetica 18}
+
+#label .label1 -text "Monitor Voltages\nRTD\nMicroLYNX\nlamps" -font $bfont -bg $fc -fg black
+label .m1.result1Lab -text Voltage -bg $fc -font $bfont
+label .m1.result1 -relief sunken -font $bfont -textvariable result1 -bg white
+label .m2.result2Lab -text Current -bg $fc -font $bfont
+label .m2.result2 -relief sunken -font $bfont -textvariable result2 -bg white
+label .m3.result3Lab -text MicroLYNX -bg $fc -font $bfont
+label .m3.result3 -relief sunken -font $bfont -textvariable result3 -bg white
+label .m4.result4Lab -text Lamps -bg $fc -font $bfont
+label .m4.result4 -relief sunken -font $bfont -textvariable result4 -bg white
+
+# Get Voltage.
+set result1 [format "%6.2f" [expr [exec getWagoParam -m tcp -p 502 172.16.1.60 -r 1 -c 1 ]/32000.0*10.0*9.78]]
+set result2 [format "%6.2f" [expr [exec getWagoParam -m tcp -p 502 172.16.1.60 -r 2 -c 1 ]/32000.0*10.0]]
+#set result2 [exec getWagoParam -m tcp -p 502 172.16.1.35 -r 2 -c 1 ]
+set result3 [format "%#x" [expr [exec getWagoParam -m tcp -p 502 172.16.1.60 -r 513 -c 1]]]
+set result4 [format "%#x" [expr [exec getWagoParam -m tcp -p 502 172.16.1.60 -r 514 -c 1]]]
+
+pack .m1 .m2 .m3 .m4 -fill x -expand 0
+pack .m1.result1Lab -side left -fill x -expand 0
+pack .m1.result1 -fill x -expand 0
+pack .m2.result2Lab -side left -fill x -expand 0
+pack .m2.result2 -fill x -expand 0
+pack .m3.result3Lab -side left -fill x -expand 0
+pack .m3.result3 -fill x -expand 0
+pack .m4.result4Lab -side left -fill x -expand 0
+pack .m4.result4 -fill x -expand 0
+
+proc mldata { } {
+    global result1 result2 result3 result4 
+set result1 [format "%6.2f" [expr [exec getWagoParam -m tcp -p 502 172.16.1.60 -r 1 -c 1 ]/32000.0*10.0*9.78]]
+set result2 [format "%6.2f" [expr [exec getWagoParam -m tcp -p 502 172.16.1.60 -r 2 -c 1 ]/32000.0*10.0]]
+#set result2 [exec getWagoParam -m tcp -p 502 172.16.1.60 -r 2 -c 1 ]
+set result3 [format "%d" [expr [exec getWagoParam -m tcp -p 502 172.16.1.60 -r 513 -c 1]]]
+set result4 [format "%d" [expr [exec getWagoParam -m tcp -p 502 172.16.1.60 -r 514 -c 1]]]
+
+    after 1000 mldata
+}
+after 1000 mldata
+# tellBox --
+#
+#       Pops up a message box with an "tell" message
+#
+proc aboutBox {} {
+    tk_messageBox -icon info -type ok -title "MESI GUI" -message \
+"MODS Engineering Support Interface
+ 
+Ohio State University(2007)
+ 
+Voltage/RTD
+MicroLYNX/lamps
+Widget
+ 
+"
+}

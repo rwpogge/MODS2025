@@ -1,0 +1,69 @@
+Pgm 100         'program starts at address 100
+      'Motion Parameters
+Msel=10       '10 microsteps per step
+Munit=2000    'units to revs
+Mac=50       'accel current is 0.50 * 7
+Mrc=30        'run current is 0.30 * 7
+Mhc=0         'hold current is zero
+Hcdt=100      'hold current delay msec
+      'Input & Output Configuration
+Ios 21 = 13,0,0   'POSITIVE (CW) limit,active low
+Ios 22 = 14,0,0   'NEGATUVE (CCW)limit, active low
+Ios 23 = 0,0,0      'SCIENCE position Occupied, active low
+Ios 24 = 0,0,0      'STOWED Position Occupied, active low
+Ios 26 = 18,1,0   'line 26 is "moving" output
+      'Motion configuration
+Accl=50          'acceleration rate in rev/sec^2
+Decl=Accl
+Ldecl=500         'set decel after a limit is asserted
+Vm=5              'max velocity in revs/sec
+      'Initial SCIENCE seek
+MOVR 70,0       'relative move toward CW SCIENCE position,will hit limit
+HOLD 2          'suspend program exec
+MOVR -0.5       'backs away from CW limit fast
+HOLD 2
+Vm=.2           'sets slow speed for homing
+MOVR 1          'completes CW Limit homing
+HOLD 2
+Pos=0             ' assigns position datum
+DELAY=1000
+      'Insert/Retract Testing Routine
+VAR cycle=0       'initializes loop counter
+VAR STOWNOM = -65.36
+VAR STOW
+VAR STOWERR
+LBL INSERT
+cycle=cycle+1     'increments loop counter
+PRINT "CYCLE # = " cycle
+Vm=5              'resets speed to higher value
+MOVA -62,1        'moves toward stowed position, no decel at end of move
+HOLD 0           'supends program until position is reached
+Vm=1            'sets transfer speed slower
+MOVA -70        'moves toward stowed position, will hit limit & decel LDECL
+HOLD 2
+STOW = Pos
+STOWERR = STOWNOM - STOW
+PRINT "STOWED Position = " STOW
+PRINT "STOW ERROR = " STOWERR
+DELAY 1000       'delay for 1 sec
+Vm=5             'resets speed to higher value
+MOVA -1,1        'relative move toward CW SCIENCE position,no decel at end of move
+HOLD 0           'supends program until position is reached
+Vm=0.5           'sets transfer speed slower
+MOVA 1           'moves toward science position, completes CW Limit homing
+HOLD 2
+PRINT "SCIENCE Position = " Pos
+DELAY=1000
+BR INSERT
+END
+Pgm
+
+
+
+
+
+
+
+
+
+

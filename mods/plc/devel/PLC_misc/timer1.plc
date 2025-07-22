@@ -1,0 +1,37 @@
+*Timer 
+PGM 2000
+' Code for Timer
+LBL TIMER
+DELAY 1
+INC MillisC
+BR tickSec,MillisC=1000
+BR TIMER
+*BR TIMER,MillisC<65352
+BR ZERO
+* Increase seconds
+LBL tickSec
+INC SecsC
+MillisC=0
+BR tickMin,SecsC=60
+BR TIMER
+
+* Increase Mins
+LBL tickMin
+INC MinsC
+SecsC=0
+BR tickHrs,MinsC=60
+BR TIMER
+
+* Increase Hours
+LBL tickHrs
+INC HrsC
+MinsC=0
+BR TIMER
+
+* Zero the ticker
+*LBL ZERO
+*Millis=0
+*BR TIMER
+END
+PGM
+

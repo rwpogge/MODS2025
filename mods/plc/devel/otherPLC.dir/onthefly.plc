@@ -1,0 +1,171 @@
+/*!
+  \mainpage <name>.plc - <name> PLC program
+
+  \author Staff, OSU Dept. of Astronomy (<name>@astronomy.ohio-state.edu)
+ 
+  \date YYYY MMM DD
+  
+  \section Usage
+  
+  Usage: Multi-level command set
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+    
+<pre>
+<DATE> - new application [initials]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+
+/*!
+  \file template.plc
+  \brief Template header file for all PLC code.
+*/
+
+/** END HEADER - This statement must be here. DO NOT remove **/
+* Start here with PLC code
+'Motion Configuration
+'
+' Input & Output Configuration
+'
+'Variable Declarations
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	        'STARTUP MODE
+		'PLC starts at address #100
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+PGM 100         'Starts at address 100
+'ONTHEFLY.txt changes speeds and toggles output while
+'moving.
+'Last edited 9/5/99
+'******** Parameter Setup ********
+MSEL= 10
+MUNIT=2000
+MAC = 60
+MRC=35
+MHC = 0
+HCDT = 0
+ACLT = 1
+ACCL=10         'acceleration rate in rev/sec^2
+DECL=ACCL       'acceleration rate = deceleration rate
+'LDECL=500       'set decel after a limit is asserted
+' Input & Output Configuration
+IOS 21 = 0,0,1 'POSITIVE (CW) limit,active low,
+IOS 22 = 0,0,1 'NEGATIVE (CCW)limit, active low
+IOS 24 = 0,0,1 'NEGATIVE (CCW)limit, active low
+  
+IOS 31 = 0,1,0		'Output - general purpose, low true.
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+		'INITIAL(initializing) and HOME PROCEDURES
+' HOME and INITIAL are identical
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+	        'Initialization
+PGM     100
+LBL  ONTHEFLY
+   TP1 = 20, PSUB1  	'Configure 1st position trip at 5 revs
+   TP2 = 50, PSUB2 	'Configure 2nd position trip at 10 revs
+   TPE1  =  1		'Enable both position trips
+   TPE2 = 1 
+   VM = 10 		'Initial max speed 10 rps
+   MOVA 20.25, 1 	'Move out to 4.25 revs at 10 rps
+   HOLD     0
+   VM = 2  		'Reduce max speed to 2 rps
+   MOVA 50.2		'Move to 10.5 revs
+   HOLD 2
+   DELAY 250
+   VM = 10		'Reset max speed to 10 rps
+   MOVA 0		'return to origin
+   HOLD 2
+   
+ LBL PSUB1		'Turn on output at 5 revs.
+   IO 31 = 1
+   PRINT " Sub-Position: ",pos
+   RET
+
+ LBL PSUB2		'Turn off output at 10 revs
+   IO 31 = 0
+   PRINT " Sub-Position: ",pos
+   RET
+
+   END
+PGM              'end of users plc program
+
+'''''''''''''''''''' GENERAL ISL PLC PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+'
+PGM 6000
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+PRINT "name"
+DELAY 100
+BR END_PLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+PRINT POS
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKMVG PROCEDURE check moving status
+'
+LBL CHKMVG
+PRINT MVG
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+PRINT "codeV=0.1(MM/DD/YY)",":HW",VER
+DELAY 100
+BR END_PLC      'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO30 PROCEDURE for bits 36 - 31
+' Check IO 30 bits
+'
+LBL IO30
+PRINT IO 36,IO 35,IO 34,IO 33,IO 32,IO 31
+DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC		
+DELAY 100
+END 
+PGM

@@ -1,0 +1,405 @@
+/*!
+  \mainpage rfilter.plc - rfilter PLC code
+
+  \author Staff, OSU Dept. of Astronomy rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2007 March 02
+  
+  \section Usage
+  
+  Usage: Multi-level command set
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+
+     The MODS Filter Wheel places one of eight possible filters into the MODS
+ science camera beam directly in front of the Field Flattener & CCD.
+ The rectangular filters are mounted in cells with RTV.  The filter cells are
+ loaded into the filter wheel radially and are prevented from being inserted
+ the wrong way by asymmetric guide rails.  The filter cells are temporarily
+ held in place with spring loaded ball detents and then locked in place with
+ mounting cleats (requires 2.5mm hex wrench).
+
+<pre>
+2007 March 02 - new application [mad]
+2007 March 02 - added header [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+
+/*!
+  \file rfilter.plc
+  \brief Position the desired filter for the RED Camera.
+*/
+/** END HEADER - This statement must be here. DO NOT remove **/
+' Start here with filterWheel PLC code
+      'Motion Parameters
+Drven=0       'Disable Motor Until User Inputs New Target Filter
+Msel= 10      '10 microsteps per step
+Munit=2000    'units to revs
+Mac=60        'accel current is 0.60 * 7
+Mrc=35        'run current is 0.35 * 7
+Mhc=0         'hold current is zero
+Hcdt=0        'hold current delay msec
+
+      'Input & Output Configuration
+Ios 21 = 0,0,1     'LSB, Active High
+Ios 22 = 0,0,1
+Ios 23 = 0,0,1    'MSB, Active High
+Ios 24 = 0,0,1    'In Position, Active High
+
+      'Motion Configuration
+Accl=30         'Acceleration rate in rev/sec^2
+Decl=20  'Deceleration rate in rev/sec^2
+Vm=10  'Move Velocity in rev/sec
+
+      'Variable Declarations
+VAR LIFETEST           'ENTERS INCREMENTAL MOTION TEST CYCLE WHEN SET TO 66
+VAR CYCTOTAL              'REQUESTED # OF LIFE CYCLE LOOPS BY USER
+VAR CYCCOUNT = 0          'COUNTER FOR LIFE CYCLE LOOPS
+VAR MOVEINC = 0           'COUNTER FOR INCREMENTAL MOVES
+VAR NUMPOS=8              'Number of Filter Positions in the Filter Wheel
+VAR MIDPOS=NUMPOS/2   'Midpoint of Filter Wheel  
+VAR MAXPOS=NUMPOS-1   'Highest Value of Filter that can be requested  
+VAR DIST = 2.5625         'Motor revs between Filter positions
+VAR TARGNUM	          'Target Filter Number
+VAR TARGMOV		  'Target Filter Move Requirement
+VAR TARGABS		  'Absolute Value of Target Filter Move
+'
+'Number of Filter Cell Positions Required to Move from 
+'Current Filter to Target Filter
+VAR CELLMOVE
+'
+VAR A = Io 21		  'One's	
+VAR B = Io 22 * 2	  'Two's
+VAR C = Io 23 * 4	  'Four's
+VAR A1 = Io 21		  'One's (Read after move complete)	
+VAR B1 = Io 22 * 2	  'Two's (Read after move complete)
+VAR C1 = Io 23 * 4	  'Four's (Read after move complete)
+'
+'The Current Filter Position as Determined by the Code Bit Arithmetic
+VAR FILTNUM = A + B + C
+'
+'The New Filter Position as Determineed by the 
+'Code Bit Arithmetic (Re-Reads VAR A,B,C after move to target)
+VAR NEWPOS = A1 + B1 + C1
+'
+VAR error1 = 0  'Incremented Counter Variable used for Timeout Loop
+VAR RECOV99     'When = 99 Re-Initialization is attempted
+
+'Prints to screen with 3 places before decimal, 
+'0 places after decimal, and no padding
+'Pfmt=3,0,2
+'
+      'STARTUP MODE
+'PRINT " "
+'PRINT "ENTER 66 FOR Incremental Motion Life Cycle Test Mode"
+'PRINT "ENTER 44 FOR Normal Operation Mode"
+'INPUT LIFETEST		  'Looks for User Input for Mode Variable
+'BR INCTEST, LIFETEST = 66 'Branches to Life Cycle Testing if equal to 66
+
+Pgm 1000       'program starts at address 100
+'	'Initialization
+LBL INITIAL
+TARGNUM=1
+LBL BEGIN
+'
+'Check for In Position Condition, If False Branch to No Position Error
+BR NOPOS, Io 24 = 0
+'PRINT " "
+'PRINT "The Filter Wheel is in a VALID POSITION"
+
+	'Check Current Filter Position
+NUMPOS = 8
+MIDPOS = NUMPOS/2
+MAXPOS = NUMPOS-1	
+A = Io 21
+B = Io 22 * 2
+C = Io 23 * 4
+FILTNUM = A + B + C
+
+'PRINT " "
+'PRINT "Current Filter # in Use = " FILTNUM
+'PRINT " "
+
+        'User Request for New Filter Position
+'PRINT "Please Select Next Filter Position When Ready (0-7)"
+'PRINT " "
+'INPUT TARGNUM,1
+        'One second delay.
+BR INCTEST, TARGNUM = 66 'Branches to Life Cycle Testing if equal to 66
+'
+'Determines the differnce between the Current Filter Postion
+'& the Target Filter Position
+TARGMOV = FILTNUM - TARGNUM
+TARGABS = abs TARGMOV
+'
+        'Check User Input for Valid Entry
+'Target Filter must be less than MAXPOS, Otherwise Branch to VALPOS
+BR VALPOS, TARGNUM>MAXPOS
+'Target Filter must be greater than 0, Otherwise Branch to VALPOS
+BR VALPOS, TARGNUM<0
+'IF Target Filter is the same as the Current Filter, Branch to NOMOVE
+BR NOMOVE, TARGNUM=FILTNUM
+'
+	'Determine Minimum Filter Wheel Movement Requirements
+BR COND_A, TARGABS>=MIDPOS
+BR COND_B, TARGABS<MIDPOS
+
+'(Condition A Met) Check to see if Target Filter is CW or CCW 
+'from Current Filter
+LBL COND_A
+BR cond1, FILTNUM>TARGNUM
+BR cond3, FILTNUM<TARGNUM
+BR begin
+'
+'(Condition B Met) Check to see if Target Filter is CW or CCW 
+'from Current Filter
+LBL COND_B
+BR cond2, FILTNUM>TARGNUM
+BR cond4, FILTNUM<TARGNUM
+BR begin
+'
+        'Calculate Most Efficient Move to Target Filter
+'Use when move to Target Filter >= (Number of Positions / 2),
+'& (Current Filter # > Target #)
+LBL COND1			
+CELLMOVE = NUMPOS-TARGABS
+'PRINT "CONDITION 1 MET"
+BR MOVEDISK
+'
+'Use when move to Target Filter < (Number of Positions / 2), 
+'& (Current Filter # > Target #)
+LBL COND2
+CELLMOVE = -TARGABS
+'PRINT "CONDITION 2 MET"
+BR MOVEDISK
+'
+'Use when move to Target Filter >= (Number of Positions / 2), 
+'& (Current Filter # < Target #)
+LBL COND3
+CELLMOVE = TARGABS-NUMPOS
+'PRINT "CONDITION 3 MET"
+BR MOVEDISK
+'
+'Use when move to Target Filter < (Number of Positions / 2), 
+'& (Current Filter # < Target #)
+LBL COND4
+CELLMOVE = TARGABS
+'PRINT "CONDITION 4 MET"
+BR MOVEDISK
+'TARGNUM=-1			
+BR END_IT     'If no condition met, branch to END_IT
+'
+     'If no condition met, branch back to beginning
+BR BEGIN
+'
+LBL MOVEDISK
+Drven=1                  'Enables to Drive		
+MOVEINC=0                'sets Incremental Move Counter to Zero
+BR POSMOVE, CELLMOVE>0   'Used for Positive Direction Motion
+BR NOMOVE, CELLMOVE=0    'Used when no move is required
+BR NEGMOVE, CELLMOVE<0   'Used for Negative Direction Motion
+'
+          'Positive Motion Loop
+LBL POSMOVE
+MOVR=DIST
+HOLD 2      'Waits until Motion ends before executing next command
+DELAY 250   'Adds delay in program execution in milliseconds
+INC MOVEINC 'Increments Counter Variable
+BR CONFIRM, MOVEINC=CELLMOVE 'Branches when Move Counter equals Move Requirement
+BR POSMOVE
+'
+          'Negative Motion Loop
+LBL NEGMOVE
+MOVR=-DIST
+HOLD 2
+DELAY 250
+DEC MOVEINC  'Decrements Counter Variable
+BR CONFIRM, MOVEINC=CELLMOVE
+BR NEGMOVE
+'
+          'Re-Reads Code Bits in order to Confirm Position
+LBL CONFIRM
+A1 = Io 21
+B1 = Io 22 * 2
+C1 = Io 23 * 4
+NEWPOS = A1 + B1 + C1
+'
+'Confirms that the New Filter Wheel Position matches 
+'the Target Position once motion stops
+BR BEGIN, NEWPOS=TARGNUM
+'
+'If the New Position Doesn't Match the Target, PRINT WARNING MESSAGE
+'PRINT " "
+'PRINT "WRONG POSITION?, SENSORS INDICATE POSITION #" NEWPOS
+'
+'Optional Re-Initialize to correct Wrong Position
+'PRINT " "
+'PRINT "ENTER 99 TO TRY TO RE-INITIALIZE, ENTER 55 TO QUIT"
+'PRINT " "
+'INPUT RECOV99 'Checks for User Input
+'
+'Branch to beginning if Re-Initialization (99) is entered by user
+'INPUT RECOV99 'Checks for User Input
+TARGNUM=99
+BR BEGIN
+'BR BEGIN, TARGNUM = 99
+'If any number other than 99 is entered by user the program branches to BEGIN
+'BR END_IT
+	
+           'Recover from an Out of Position Error
+LBL NOPOS
+Drven=1       'Enables the Drive		
+'PRINT " " 				
+'PRINT "ERROR: rcFW IS NOT IN A VALID POSITION, PLEASE WAIT FOR RECOVERY"
+'PRINT " "
+SLEW 0.25     'Slews while waiting for In Position Bit to be activated
+BR TIMEOUT
+'
+LBL TIMEOUT   'Loop that can be used as a timer for error recovery
+DELAY 250     'Delay time in milliseconds
+'
+'Sets the maximum number of cycles before timeout error occurs
+BR FAILED,error1>80 
+BR STOP_IT, Io 24 =1  'Looks for In Position Bit to be activated
+INC error1            'Increments counter variable
+BR timeout            'Closes Timeout Loop
+'
+'Soft Stop: Option 0 stops motion only, program continues to execute
+LBL STOP_IT
+SSTP 0
+'BR BEGIN
+BR END_IT
+'
+'Recovery Timeout Message Followed by End of Program
+LBL FAILED
+'PRINT " "
+'PRINT "RECOVERY FAILED"
+'PRINT " "
+'BR BEGIN
+BR END_IT
+'
+'Invalid Position Message Followed by End of Program
+LBL VALPOS
+'PRINT " "
+'PRINT "INVALID POSITION REQUESTED"
+'PRINT " "
+'BR BEGIN
+BR END_IT
+'
+'Alerts User that they've selected a Filter that's already in use
+LBL NOMOVE
+'PRINT " "
+'PRINT "YOU ARE ALREADY USING FILTER #" FILTNUM
+'PRINT " "
+'BR BEGIN
+BR END_IT
+'
+'INCREMENTAL MOTION CYCLE TEST ROUTINE
+LBL INCTEST
+A = Io 21
+B = Io 22 * 2
+C = Io 23 * 4
+FILTNUM = A + B + C  'CHECKS POSITION PRIOR TO STARTING LIFE CYCLE TEST
+'PRINT " "
+'PRINT "BEGIN INCREMENTAL MOTION LIFE CYCLE TEST"
+'PRINT " "
+'PRINT "THE TEST IS STARTING AT POSITION # " FILTNUM
+'PRINT " "
+'PRINT "HOW MANY COMPLETE LIFECYCLE LOOPS TO DO?"
+'INPUT CYCTOTAL,1
+Drven=1
+Pos = 0     'SETS CURRENT POSITION TO ZERO
+
+LBL INCSTART		'Incremental Motion Cycle Test Loop
+MOVEINC=0
+INC CYCCOUNT
+BR FINALCHK, CYCCOUNT > CYCTOTAL
+'PRINT " "
+'PRINT "STARTING LIFECYCLE LOOP # " CYCCOUNT
+'
+'Positve Direction Test Loop
+LBL POSTEST
+MOVR=DIST
+HOLD 2
+DELAY 250
+INC MOVEINC
+BR POSTEST, MOVEINC<9	'Loops for 9 Cycles
+MOVEINC=0		'Resets Counter Variable
+'
+'Negative Direction Test Loop
+LBL NEGTEST
+MOVR=-DIST
+HOLD 2
+DELAY 250
+INC MOVEINC
+BR NEGTEST, MOVEINC<9
+MOVEINC=0
+'
+BR INCSTART
+'
+'Checks IO and Gives Life Cycle Test Results
+LBL FINALCHK
+A1 = Io 21
+B1 = Io 22 * 2
+C1 = Io 23 * 4
+NEWPOS = A1 + B1 + C1
+'PRINT "THE LIFE CYCLE TEST IS DONE"
+'PRINT " "
+'PRINT "THE TEST STARTED AT POSITION # " FILTNUM
+'PRINT " "
+'PRINT "THE TEST ENDED AT POSITION # " NEWPOS
+'PRINT " "
+BR BADTEST, FILTNUM<>NEWPOS
+'PRINT "THE TEST WAS SUCCESSFUL"
+BR END_IT
+'
+'Error Message for Failed Life Cycle Test
+LBL BADTEST
+'PRINT " "
+'PRINT "THE START POSITION DOES NOT MATCH THE FINISH POSITION"
+'PRINT "THIS INDICATES A STALL OCCURRED DURING THE TEST"
+'BR BEGIN
+BR END_IT
+                       'WHO AM I PROCEDURE
+LBL WHO
+PRINT "rcFW"
+BR END_IT
+                       'POLL THE CONTROLLER AM I PROCEDURE
+LBL POLL
+PRINT "RED FILTER#=",FILTNUM,",BITS=26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_IT       'branch to exit
+                       'CODE VERSION PROCEDURE
+LBL CODEV
+PRINT "Red codeV=0.1(05/20/07)",":HW",VER
+BR END_IT       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20MASK PROCEDURE
+' Check the Select, Insert bit mask 24-21
+'
+LBL IO20MASK
+  VAR B21=IO 21*8 
+  VAR B22=IO 22*4 
+  VAR B23=IO 23*2 
+  VAR B24=IO 24
+  VAR BITMASK=B21+B22+B23+B24
+  PRINT "0 ",BITMASK
+BR END_IT
+'                       'END of PLC code
+LBL END_IT		
+BR NOTONE, TARGNUM<>1
+POS=0.0
+LBL NOTONE
+'PRINT " "
+'PRINT "END PROGRAM"
+'PRINT " "
+SSTP 1 			'Stops the Motion and the Program Execution
+END
+Pgm

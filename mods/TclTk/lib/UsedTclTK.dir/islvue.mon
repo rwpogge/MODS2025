@@ -1,0 +1,122 @@
+#!/usr/bin/wish -f
+#
+  wm positionfrom . user
+  wm sizefrom . ""
+  wm maxsize . 1152 900
+  wm iconposition . 1200 500
+  wm iconname . {mods}
+#position window full screen from top left corner.
+#  wm geometry . $vieX\x$vieY+0+0
+#position window from top left corner.
+  wm geometry . +0+0
+  wm title . {MODS Client}
+
+set WINFONT -b&h-lucidatypewriter-bold-r-normal-sans-14-140-75-75-m-90-iso8859-1
+frame .op \
+    -bg {black} \
+    -relief {groove} 
+
+pack .op -side top -fill both -expand 0
+global modsrun
+set modsrun 0
+## Entry windows for IP.
+#
+entry .op.ip -width 40 -relief sunken -textvariable command
+#bind .op.ip <Return> Start
+focus .op.ip
+###
+## STOP Button with this button will exit and loose connection.
+# 
+set energizer [button .op.run -text "<< Connect >>" \
+    -relief raised -background blue -foreground white -activebackground red -command Start]
+button .op.stop -text "Exit" -font 9x15bold -background red -foreground white\
+    -activebackground red -command { if {$modsrun==1} {error "Still Connected\nDisconnect then exit" } else { exit }}
+#label .op.result -text "Remote MODS Monitor" -background blue \
+    -foreground white -font 9x15bold
+label .op.ip_label -text "IP address:" -background black \
+    -foreground white -font 9x15bold
+pack .op.ip_label -side left
+pack .op.ip .op.run -side left -fill x
+#pack .op.result .op.stop -side right -fill x
+pack .op.stop -side right -fill x
+
+label .op.hmlab -text "CMD:"
+entry .op.hment -textvariable hmval -width 20
+
+pack .op.hmlab -side left
+pack .op.hment -side left
+
+bind .op.hment <Return> $hmval
+
+text .t -height 20 -width 90 -background blue -yscrollc {.sb set} -font $WINFONT -bg linen
+scrollbar .sb -bg linen -command {.t yview}
+pack .sb -side right -fill y
+pack .t  -fill both -expand 1
+#
+##
+###
+# Global parameter.
+###
+global sid hmval
+
+proc client_handle {} {
+    global backend buffer sid request hmval modsrun
+
+    if {[gets $sid request] <= 0} {
+	catch {close $sid}
+	set backend ""
+	.t insert end "Lost connection to server be=$backend req=$request h=$hmval\n"
+ 	set modsrun 0;
+	update idletasks
+    } else {
+	if {[string match $buffer $request]} {
+	    update idletasks
+#	    client_send 0
+	    client_send $hmval
+	} else {
+	    set buffer $request
+	    set line [lindex $request 0]
+	    if {[regexp ">" $line] == 1 } {
+		.t tag configure "red" -background linen -foreground Red
+		.t insert end $line\n red
+	    } else {
+		.t insert end $line\n
+	    }
+	    .t see end
+	}
+	update idletasks
+	after 100
+	client_send 0
+    }
+}
+
+proc client_send {args} {
+    global backend .t request energizer hmval
+
+    set args "agw"
+    if {$backend != ""} {
+	puts $backend $args
+    }
+}
+proc Stop {} {
+    global sid energizer modsrun
+    catch close $sid
+    set modsrun 0
+    $energizer config -text "<< Connect >>" -state normal -command Start
+}
+proc Start {} {
+    global .op.ip backend request buffer sid modsrun energizer hmval
+
+    $energizer config -text "<< Disconnect >>" -state normal -command Stop
+
+    set modsrun 1
+    set request ""
+#    set sid [socket localhost 8002]
+    set host [.op.ip get]
+    set sid [socket $host 10435]
+    fileevent $sid readable "client_handle"
+    fconfigure $sid -blocking 0 -buffering line
+    set backend $sid
+    set buffer ""
+    client_send 0
+}

@@ -1,0 +1,32 @@
+/*!
+  \mainpage <name>.plc - <name> PLC program
+
+  \author Staff, OSU Dept. of Astronomy (<name>@astronomy.ohio-state.edu)
+ 
+  \date 2005 May 01
+  
+  \section Usage
+  
+  Usage: Multi-level command set
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+    
+<pre>
+<DATE> - new application [initials]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+
+/*!
+  \file <filename>
+  \brief <what the PLC does>
+*/
+
+/** END HEADER - This statement must be here. DO NOT remove **/
+* Start here with PLC code

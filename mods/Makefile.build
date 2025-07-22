@@ -1,0 +1,46 @@
+#
+# Makefile for the MODS instrument control servers and utilities
+#
+# Updated: 2025 July 16 [rwp/osu]
+#
+# Version 2 for the MODS2025 Archon Controller Upgrade
+#
+VERSION = 2
+SUBLEVEL = 0
+PATCHLEVEL = 0
+ISL_VERSION = $(VERSION).$(SUBLEVEL).$(PATCHLEVEL)
+export VERSION SUBLEVEL PATCHLEVEL ISL_VERSION
+#
+# build order: utilities first!
+#
+LIB_DIR = utilities agw mmc
+
+EXEC_DIR = modsalloc TclTk
+
+all:	libs execs
+
+clean:
+	rm -f `find . -name 'core' -print`
+	rm -f `find . -name '#*#' -print`
+	rm -f `find . -name '*~' -print`
+	rm -f `find . -name '.*~' -print`
+	rm -f `find . -name '.#*' -print`
+
+rmexe:
+	rm -fr bin/*
+	rm -fr ulib/*
+	rm -fr agw/bin/*
+	rm -fr mmc/bin/*
+
+libs:
+	for dir in $(LIB_DIR); do\
+		make --no-print-directory -C $$dir ;\
+	done
+
+execs:
+	for dir in $(EXEC_DIR); do \
+		make --no-print-directory -C $$dir; \
+	done
+
+# no install yet, needs work
+

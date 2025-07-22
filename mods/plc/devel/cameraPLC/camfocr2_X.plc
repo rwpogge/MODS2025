@@ -1,0 +1,104 @@
+****************************************
+**           camera focus             **
+* *       low level software         * *
+*  *                                *  *
+*   *           CAMFOCR1  PLC           *   *
+*  *       Date: June  2006        *  *
+* *  Author: OSU/ISL Astronomy Staff * *
+**                                    **
+****************************************
+* asterisk '*' is a commented line and/or field.
+* single quote ' is a PLC MicroLYNX code comment.
+*
+** Drive Motor 
+* Motor type = Size 23 step motor, 200 steps per revolution, single-ended shaft
+* Part #KML061F05  Superior Electric
+* Rated Current = 2.7 amps/phase, parallel (RMS)
+* Rated Holding Torque = 170 in*oz
+* Rated Torque at Operating Speed = 35 in*oz @ 70 volts
+*
+** Motor Controller Specifications:
+* Manufacturer & Model = IMS MicroLYNX 7 (#MX-CS100-701)
+* Rated Current = 5 amps RMS/phase, 7 amps peak/phase
+* Rated Voltage = 24 to 75 VDC
+* Daughterboards = None
+*
+** Motor Controller Settings:
+*
+MSEL= 10      '10 usteps/fullstep = 2000 microsteps/rev
+MUNIT=2000    '(2000 usteps/rev) gives velocity and acceleration in rev/sec
+MAC=54        'Acceleration Current
+MRC=54        'Run Current
+MHC=0         'hold current is zero
+HCDT=500      'hold current delay msec (for overlap with brake engagement)
+*
+** Motion Configuration:
+*
+ACLT=1          'linear acceleration (default)
+ACCL=5          'acceleration rate in rev/sec^2
+DECL=ACCL       'deceleration rate in rev/sec^2
+LDECL=5		'set decel after a limit is asserted
+*
+* Be aware of overtravel when seeking limits, must not decelerate hard into 
+* limits.
+* Maximum Permitted Overtravel  ~0.5mm , ~0.020"
+*
+** Motion Controller I/O Connections
+* Vpull = not used
+* GND = 24 volts
+*
+IOS 21 = 13,0,0    'POSITIVE (CW) limit,active low (viewed from front of motor)
+IOS 22 = 14,0,0    'NEGATIVE (CCW)limit, active low
+*IOS 23 = 'not used
+*IOS 24 = 'not used
+*IOS 25 = 'not used
+*IOS 26 = 'not used, no brake
+*
+*      Variable Declarations
+VAR VNOM	'Nominal operating velocity (revs/sec)
+VNOM=1.0
+VAR VSEEK	'HOME seeking velocity
+VSEEK=0.5
+VAR NOMFOC      'Absolute position of best focus (revs)
+NOMFOC = 6.0    'Nominal Best Focus (revs)
+VAR MAXMOV	'Maximum mechanism travel
+MAXMOV = 12	'Maximum mechanism travel 
+VAR CODEV       'PLC code version
+*
+* Initialize at address 100
+PGM 100
+LBL HOME	'HOME procedure to establish position datum
+VM=VNOM		'set the velocity to nominal value (rev/sec)
+MOVR MAXMOV	'move toward home
+HOLD 2          'suspend program execution until move completion
+*log position at HOME swithc assert point prior to resetting POS
+POS=0		'tentative setting of position datum
+MOVR -MAXMOV	'moves away from HOME to de-assert switch
+*Routine to poll for the HOME switch de-assert point
+LBL POLL
+BR SEEK, IO 21 = 0
+BR POLL
+LBL SEEK	'HOME assert trip point slow seek
+DELAY=500	'wait while logging de-assert position
+*log de-assert position at this point
+VM=VSEEK	'set velocity to seek speed
+MOVA 1		'move toward HOME slowly, re-assert switch
+HOLD 2		'suspend program execution until move completion
+POS=0.0		'set absolute position datum
+PRINT "Position = " pos		'prints present position
+BR END_IT       'branch to exit
+*
+LBL FOCUS	'Moves to commanded focus position (mm)
+VM=VNOM		'set the velocity to nominal value (rev/sec)
+MOVA -NOMFOC	'move to an absolute position
+HOLD 2          'suspend program execution until position completionc
+PRINT "focus = " pos	'print present focus position
+BR END_IT       'branch to exit
+*
+LBL END_IT       'Exit
+*
+* More code will be developed here 
+*               
+************************************
+END              'end the procedures
+PGM              'end of program in RAM 

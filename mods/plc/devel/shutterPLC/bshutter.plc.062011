@@ -1,0 +1,274 @@
+/*!
+  \mainpage bshutter.plc - Blue Shutter PLC program
+
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2007 Feb 02
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system.
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+
+ The following application program generates motion in the MicroLYNX 
+ by following an external pulse source. The code checks the value of an 
+ IO and updates whether they want the following to be fine or coarse. 
+ The program also includes limit switches that only allow for motion in 
+ one direction when the limit has been reached.
+
+ Notes:
+
+   1. Module in ML15
+   2. Pulse Generator - signal from HE
+   3. Digital Inputs in IO Lines 21, 22
+     (these need to be turned off at the microlynx module)
+
+ All Motion Parameters are documented in the MicroLYNX Part III 
+ Software Reference.
+
+<pre>
+2007 Feb 02 - new application [rdg]
+2008 Dec 29 - Replaced with Tom O'briens OPEN,CLOSE,HOME code[rdg]
+2008 Jan 05 - Added Tom O'briens REMOTE code with a few minor changes[rdg]
+2007 Jan 07 - Made minor adjustments to all code[rdg]
+2007 Jan 08 - Removed test branched[rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file bshutter.plc
+  \brief Listens to an external Pulse from the HE for the MODS Blue Shutter
+*/
+/** END HEADER **/
+'Code for MicroLynx controller starts here
+'Blue & Red have different Limit Switch Configurations
+'Blue & Red have different Signs on all Relative Moves 
+'(OPEN,CLOSE,HOME,CHKSTATE subroutines for REMOTE task)
+'(SHUTTER,WHO are ISL subroutines)
+
+' General MicroLynx Parameters
+Msel=10		'10 usteps/fullstep = 2000 microsteps/rev
+Munit=2000	'(2000 usteps/rev) gives velocity and acceleration in rev/sec
+'
+' Configure Motor current Settings
+Mac=65		'Acceleration Current
+Mrc=54		'Run Current
+Mhc=0		'hold current is zero
+Hcdt=0		'hold current delay msec, 
+		'NO delay to allow detent quick response
+'
+'Motion Configuration
+Aclt=1		'linear acceleration (default)
+Accl=20		'acceleration rate in rev/sec^2
+Decl=Accl	'deceleration rate in rev/sec^2
+Ldecl=500	'set decel after a limit is asserted
+'Motion Controller I/O Connections
+'Execute a IP ALL and SAVE to restore factory defaults
+'when changing from Blue to Red
+'
+'Red Shutter Limit Configuration
+'Ios 21 = 13,0,0	'RED SHUTTER, POSITIVE (CW)
+			'limit,active low, shutter closed
+'Ios 22 = 14,0,0	'READ SHUTTER, NEGATIVE (CCW)
+			'limit, active low
+'
+'Blue Shutter Limit Configuration
+Ios 21 = 14,0,0		'BLUE SHUTTER, NEGATIVE (CCW)
+			'limit, active low
+Ios 22 = 13,0,0		'BLUE SHUTTER, POSITIVE (CW)
+			'limit,active low, shutter closed
+'
+'Individual Blade Status Input Configuration (Ble & Red Shutters)
+Ios 31 = 0,0,0		'Blade #1 Closed
+Ios 32 = 0,0,0		'Blade #2 Closed
+Ios 33 = 0,0,0		'Blade #1 Open
+Ios 34 = 0,0,0		'Blade #2 Open
+Ios 35 = 0,0,1		'Shutter Trigger Input
+'
+' Variable Declarations and Calculations
+VAR VNORM	'Nominal operating velocity (revs/sec)
+VNORM=5.0
+VAR VSEEK	'HOME seeking velocity
+VSEEK=0.5
+VAR NOMMOV	'Nominal Number of Steps to Open or Close Blue or Red Shutter
+NOMMOV = 1.25	'1.25 revs (250 motor fullsteps) to cycle shutter
+VAR BOUNCE	'Time delay in msec to debounce microswitches
+BOUNCE = 25
+VAR TRIGGER	'Shutter external trigger, IO 35
+VAR CL		'Check for closed state
+VAR OP		'Check for open state
+VAR BETW	'Check for both blades between open and closed
+VAR COUNT=-1	'Cycle count
+VAR T_DELAY=500	'Cycle delay
+VAR PWRFAIL=0	'Power Failures of any kind
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               'STARTUP MODE
+' PLC starts at address #10
+Pgm 10
+LBL startup
+LBL STARTIT
+ RUN REMOTE
+LBL LOOP
+ DELAY 1000
+BR LOOP
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               OPEN(or home) PROCEDURE
+' 	o If unsucessful opening, stop and give error message
+' 	o If opened, stop let user know
+LBL OPEN	'Beginning of Shutter OPEN subroutine
+'
+ CL=Io 31+Io 32	'Confirm that both shutter blades are closed
+ CALL CHKSTATE, CL<>2
+'
+ Vm=VNORM	'Set velocity to normal
+ 'MOVR -NOMMOV	'RED shutter relative move to open shutter blades
+ MOVR NOMMOV	'BLUE shutter relative move to open shutter blades
+ HOLD 2		'suspend program execution until move completion
+ DELAY BOUNCE	'microswitch de-bounce pause
+'
+ OP=Io 33+Io 34	'Confirm that both shutter blades are open
+ CALL CHKSTATE, OP<>2
+'
+RET		'return to main program
+'
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               CLOSE(close) PROCEDURE
+' o If unsucessful closing, stop and give error message
+' o If closed, return to caller
+'
+LBL CLOSE	'Beginning of Shutter CLOSE subroutine
+'
+ OP=Io 33+Io 34	'Confirm that both shutter blades are open
+ CALL CHKSTATE, OP<>2
+'
+ Vm=VNORM	'Set velocity to normal
+ 'MOVR NOMMOV	'RED shutter relative move to close shutter blades
+ MOVR -NOMMOV	'BLUE shutter relative move to close shutter blades
+ HOLD 2		'suspend program execution until move completion
+ DELAY BOUNCE	'microswitch de-bounce pause
+'
+ CL=Io 31+Io 32	'Confirm that both shutter blades are closed
+ CALL CHKSTATE, CL<>2
+RET		'return to main program
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               HOME(homing) - HOME PROCEDURES
+'	o Home the mechanism
+LBL HOME	'HOME subroutine to put shutter
+		'in closed condition from any start
+ CALL CHKSTATE, BETW<>0 'Check the state of the mechanism
+			'are between positions
+ Vm=VSEEK	'set the velocity to seeking value (rev/sec)
+ 'MOVR NOMMOV	'RED shutter relative move to close shutter blades
+ MOVR -NOMMOV	'BLUE shutter relative move to close shutter blades
+ HOLD 2		'suspend program execution until move completion
+ DELAY 100	'delay for detent drop-in and microswitch de-bounce
+'
+ CL=Io 31+Io 32	'Confirm that both shutter blades are closed
+ CALL CHKSTATE, CL<>2
+'
+RET		'return to main program	'
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               BITERRor(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+'
+LBL BITERR
+  PRINT "? FAULT Sensor Fault, both limits asserted"
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               CHKOpenClose PROCEDURE
+' Status Information (OPEN,CLOSED,UNKNOWN)
+'
+LBL CHKSTATE
+ BR SOP, IO 31+IO 32+IO 33+IO 34=0
+ BR SCL, IO 31+IO 32=2
+  PRINT "OPEN"
+RET
+  LBL SCL
+    PRINT "CLOSED"
+RET
+   LBL SOP			'Unsure?
+    PRINT "? AJAR"
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               END_IT(exit) PROCEDURE
+' END of Main PLC Ladder Logic Code
+'
+LBL END_IT
+ COUNT=-1
+END		'end the procedures
+Pgm		'end of program STARTIT in RAM
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'	Background Task:
+'	Controlled by the Head Electronics Box(HEB)
+Pgm 1000
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+LBL REMOTE
+'
+ BR BITERR, IO 21+IO 22=2 'Check io b21 and b22 both high:on:1 not allow
+'
+'Determine shutter state
+ CL=Io 31+Io 32		'Check for closed shutter
+ OP=Io 33+Io 34		'Check for open shutter
+'
+ BETW=Io 31+Io 32+Io 33+Io 34	'Test for shutter between Open and Closed
+ CALL HOME, BETW<>2	'Shutter neither opened nor closed, attempt to HOME
+'
+ TRIGGER=Io 35		'HEB Trigger
+'
+' Call to trigger
+ CALL OPEN, TRIGGER+CL=2	'execute OPEN subroutine when shutter trigger
+ 				'is low (request OPEN) and shutter is closed
+ CALL CLOSE, TRIGGER+OP=3	'execute CLOSE subroutine when shutter trigger
+				'is high (request CLOSE) and shutter is open
+ BR END_IT, COUNT=0
+BR REMOTE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+END		'end the procedures
+Pgm		'end of program REMOTE in RAM
+'
+'''''''''''''''''''' ISL PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC Ladder Logic PROCEDURES
+'
+PGM 6000
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               SHUTTER PROCEDURE
+' Shutter status information (OPEN,CLOSED,UNKNOWN)
+'
+LBL SHUTTER
+ BR S_OP, IO 31+IO 32+IO 33+IO 34=0
+ BR S_CL, IO 31+IO 32=2
+  PRINT "OPEN"
+BR END_PLC
+ LBL S_CL
+  PRINT "CLOSED"
+BR END_PLC
+  LBL S_OP			'Unsure?
+   PRINT "? FAULT shutter partially open"
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+' What name has been assigned to this mechanism
+'
+LBL WHO
+  PRINT "bshutter"
+BR END_PLC
+'
+LBL END_PLC
+END		'end the procedures
+Pgm		'end of program in RAM

@@ -1,0 +1,9 @@
+#
+# MODS1 Red Grating Table
+# 2009-07-271T13:16:16 [rwp/osu]
+#
+#Pos ID            Unique Indentifier
+  1  Flat        # Ag Imaging Flat Nr1
+  2  G670L       # RGL MR122-5-5-1 250l/mm Grating
+  3  P700L       # TIH6+Ag Double-Pass Prism Nr1
+  4  *None*      # Position Empty

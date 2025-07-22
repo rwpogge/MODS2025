@@ -1,0 +1,87 @@
+#!/usr/bin/wish
+
+set IMGPATH /home/dts/mods/TclTK/images
+set BINPATH /home/dts/mods/TclTK/bin
+
+
+frame .m \
+    -bg {white} \
+    -borderwidth {5} \
+    -background {red4} \
+    -relief {groove} 
+
+image create photo modsvue -file "$IMGPATH/MODS_spectra.gif"
+#image create photo modsvue -file "$IMGPATH/MODS_SpecWname.gif"
+
+button .m.imswin -text "Windows IMS"  \
+    -activebackground red4 -activeforeground white \
+    -relief {raise} -background gray -fg black \
+    -command { exec /home/dts/mods/TclTK/lib/vue_isldesktop & } 
+
+button .m.widgets -text "WIDGETS"  \
+    -activebackground red4 -activeforeground white \
+    -relief {raise} -background gray -fg black \
+    -command {  exec /home/dts/mods/TclTK/lib/vue_widgets &} 
+
+button .m.mods -text "RUN MESI"  -background red4 \
+    -activebackground red4 -activeforeground white \
+    -relief {raise} -background gray -fg black \
+    -command { exec /home/dts/mods/bin/mesi & }
+ 
+
+button .m.mui -text "RUN MUI"  -background red4 \
+    -activebackground red4 -activeforeground white \
+    -relief {raise} -background gray -fg black \
+    -command { exec /home/dts/mods/bin/mui & }
+ 
+button .m.ds9 -text "DS9"   -background gray \
+    -activebackground red4 -activeforeground white \
+    -relief {raise} -background gray -fg black \
+    -command { exec ds9 & } 
+
+button .m.browser -text "Doc's"  -background gray \
+    -activebackground red4 -activeforeground white \
+    -relief {raise} -background gray -fg black \
+    -command { exec firefox http://www.astronomy.ohio-state.edu/~rgonzale/modsMechSoft.html } 
+
+button .m.help -text "MODS COMMAND SET"  -background gray \
+    -activebackground red4 -activeforeground white \
+    -relief {raise} -background gray -fg black \
+    -command { exec vueinfo help help & }
+
+button .m.xt -text "Xterm"  -background gray \
+    -activebackground red4 -activeforeground white \
+    -relief {raise} -background gray -fg black \
+    -command { exec xterm -bg black -fg white -sb -cr yellow -geometry +10+120 -fn 10x20 & } 
+
+button .m.smail -text "send mail"  -background gray \
+    -activebackground red4 -activeforeground white \
+    -relief {raise} -background gray -fg black \
+    -command { exec /home/dts/mods/TclTK/lib/vue_islmail & } 
+
+button .m.mvcc -text "MVC calc"  -background gray \
+    -activebackground red4 -activeforeground white \
+    -relief {raise} -background gray -fg black \
+    -command { exec /home/dts/mods/TclTK/lib/vue_islcalq & } 
+
+button .m.fcp -text "MSWindows Copy"  -background gray \
+    -activebackground red4 -activeforeground white \
+    -relief {raise} -background gray -fg black \
+    -command { exec /home/dts/mods/TclTK/lib/vue_islfcp & } 
+
+button .m.q -text "Exit" -background red \
+    -activebackground red4  -activeforeground white \
+    -command { set choice [tk_messageBox -type yesno -default no \
+			       -message "All widgets started with this menu will EXIT\nAre you sure you want to EXIT this menu list?"\
+			       -icon question];
+	if {[regexp "yes" $choice] == 1} { exit }
+    }
+
+label .m.ver -bg red4 -fg gray -relief {ridge} -bd 0 -text "Version 1.0"
+label .image -image modsvue -bg black -background black
+
+pack .image -side top -fill both -expand 1
+#pack .m .m.ver .m.xt .m.widgets .m.imswin .m.mods .m.mui .m.ds9 .m.browser .m.smail .m.mvcc .m.fcp .m.q -side left -fill both -expand 1
+#pack .m .m.ver .m.help .m.xt .m.widgets .m.mods .m.mui .m.ds9 .m.browser .m.smail .m.mvcc .m.fcp .m.q -side left -fill both -expand 1
+pack .m .m.ver .m.help .m.xt .m.widgets .m.mods .m.mui .m.ds9 .m.browser .m.smail .m.q -side left -fill both -expand 1
+

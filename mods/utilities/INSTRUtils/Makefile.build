@@ -1,0 +1,59 @@
+#
+# Makefile for libinstrutils (Instrument Utilities) API library
+#
+# Build the package using the "build" script not with make.
+#
+# OSU Astronomy Dept. Computer Staff
+# staff@astronomy.ohio-state.edu
+# Last Modified 2005 May 05
+#
+# Versions:
+#   v1.0 - 2005 May 05 - first version of the general library [osu/isl]
+# set environment variable NO_FTOK_ISL non-empty if ftok() is not available
+# if you use csh/tcsh add this to your .login file:
+#   setenv NO_FTOK_ISL TRUE
+# and log-out and back in
+#
+#ifdef NO_FTOK_ISL
+#CFLAGS :=  -DNO_FTOK_ISL -w -c
+#endif
+#
+#  Note that the backslash character has been used at the end of each line
+#  to indicate continuation.
+#
+#  Version 1.1 - 2025 Jun 18 - port to AlmaLinux 9 [rwp/osu]
+#
+ROOTDIR     = /home/dts/mods
+ISISDIR     = /home/dts/ISIS
+VERSION     = INSTRUtils v1.1
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+INCDIR      = -I$(ROOTDIR)/include -I$(ISISDIR)/lib
+LIBDIR      = -L$(ROOTDIR)/ulib -L$(ISISDIR)/lib
+ISLOBJ_LIB  = instrutils.o
+
+VFLAGS      = -DTTY_VERSION='"$(VERSION)"' -DTTY_COMPDATE='"$(COMPDATE)"' \
+              -DTTY_COMPTIME='"$(COMPTIME)"'
+
+CFLAGS 	=  -w -c -DLINUX
+
+ISLSRC      =  	instrutils.c loadconfig.c 
+
+OBJS =  $(LIBS) $(ISLSRC:.c=.o)
+
+.c.o:  
+	$(CC) $(INCDIR) $(CFLAGS) $(VFLAGS) $*.c
+
+all: libinstrutils.a 
+
+libinstrutils.a:  $(OBJS) 
+	/bin/rm -f  libinstutils.a 
+	$(AR) cr libinstrutils.a $(OBJS) $(.c.o)
+	ranlib libinstrutils.a
+	\cp libinstrutils.a $(ROOTDIR)/ulib/
+	$(LD) -r -o $(ISLOBJ_LIB) $(OBJS)
+	\cp instrutils.o $(ROOTDIR)/obj/
+	/bin/rm -f libinstrutils.a *.o
+clean:
+	/bin/rm -f libinstrutils.a *.o
+

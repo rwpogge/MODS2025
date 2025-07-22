@@ -1,0 +1,313 @@
+' Start here with PLC Ladder Logic Code
+' Motion Configuration
+MSEL=10		'10 usteps/fullstep = 2000 microsteps/rev
+MUNIT=2000	'sets units to 2000 usteps/rev gives
+		'velocity and acceleration in rev/sec
+MAC=50		'Acceleration Current = 50% ~3.5 amps peak
+MRC=40		'Run Current = 1.5 amps RMS*1.4 = 2.1 amps peak(2.1/7 = 30%)
+MHC=0		'Motor Hold Current is zero
+HCDT=500
+ACLT=1		'linear
+ACCL=50		'acceleration rate in rev/sec^2
+DECL=ACCL	'acceleration rate = deceleration rate
+LDECL=500	'set decel after a limit is asserted
+'
+' Input & Output Configuration
+IOS 21 = 13,0,0 'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0 'NEGATIVE (CCW)limit, active low
+IOS 26=18,1,0   'Brake relay coil (internal pull-up switch opened)
+                'Output defaults to NO, Brake wired to NO contacts on relay
+                'Brake is applied with power off and default state of
+                'drive output
+'
+' Variable Declarations
+VAR VNORM=2.0   	'2 rev/sec running speed
+VAR VSLOW=0.50		'.5 rev/sec running speed
+VAR VSEEK=0.25		'.25 rev/sec running speed
+VM=VNORM
+VAR MODSERR		'Host Program errors
+VAR STEPOPEN=-.50	'-0.50 user units(revs)
+VAR STEPCLOS=-2.75	'-2.75 user units(revs)
+VAR TTIME=4000		'Timer 4 secs
+'
+VAR COUNT=0		'Cycle count
+VAR T_DELAY=500		'Cycle delay
+VAR PWRFAIL=1		'Power Failures of any kind
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               'STARTUP MODE
+' PLC starts at address #100
+'
+PGM 100		'Starts at address 100
+'
+LBL LOOPIT
+  BR END_IT, COUNT=0
+  CALL OPEN
+  DELAY T_DELAY
+  CALL CLOSE
+  DELAY T_DELAY
+  DEC COUNT
+BR LOOPIT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               INITIAL(initializing) - HOME PROCEDURES
+' INITIALize or RESET mechanism
+'
+LBL INITIAL
+  PWRFAIL=0			'Reset Power Failure variable
+  BR BITERR, IO 21+IO 22=2	'Check io b21 and b22 both high:on:1 not allow
+  SLEW -VSLOW,0
+  HOLD 2
+  PRINT "Initialize Successful"
+  POS=-3.157
+BR END_IT		'branch to exit
+'
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               HOME PROCEDURE
+' o If homed, stop let user know
+' o If CW(b21), and CCW(b22) are high:on:1 give error
+'	o If not completely at homed, try homeing
+'	o If unsucessful homeing, stop and give error
+'
+LBL HOME
+  VM=VNORM
+  BR PWRERR, PWRFAIL=1		'Check for Power Failure or was turned off/on
+'
+' Interigate IO 21 and IO 22, these are the CW(HOME) and CCW(OTHER) limits
+  BR BITERR, IO 21+IO 22=2	'Check io b21 and b22 both high:on:1 not allow
+  BR IOFAIL, IO 21=1		'Check CW(HOME) on starting position
+'
+  TP1=STEPOPEN,SCNT1	'Configure with user units
+  TPE1=1		'Enable user units
+'
+  TT1=TTIME,TIMER1	'Configure to trip in TTIME milliseconds
+  TTE1=1		'Enable timeout
+'
+  SLEW VNORM,0		'slew to to set position 0.000
+  HOLD 2		'suspend procedure until move is complete
+  SLEW VSEEK,0		'sneak-up on the limit
+  HOLD 2		'suspend procedure until move is complete
+  POS=0.0
+  PRINT "HOME Sucessful"
+BR END_IT, COUNT=0    	'branch to exit
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               OTHER PROCEDURE
+' o If other, stop let user know
+' o If CW(b21), and CCW(b22) are high:on:1 give error
+' o Make sure mechanism is homed before other
+'	o If unsucessful other, stop and give error
+'
+LBL OTHER
+  VM=VNORM
+  BR PWRERR, PWRFAIL=1  	'Check for Power Failure or was turned off/on
+'
+' Interigate IO 21 and IO 22, these are the CW(HOME) and CCW(OTHER) limits
+  BR BITERR, IO 21+IO 22=2	'Check io b21 and b22 both high:on:1 not allow
+  BR IOFAIL, IO 22=1		'Check CCW(OTHER) on starting position
+'
+  TP2=STEPCLOS,SCNT1	'Configure with user units
+  TPE2=1		'Enable user units
+'
+'  TI1=22,TRIPPED	'Trip on IO 22
+'  TIE1=1		'Enable Trip wire
+'
+  TT1=TTIME,TIMER1	'Configure to trip in TTIME milliseconds
+  TTE1=1		'Enable timeout
+'
+  SLEW -VNORM,0		'slew to OTHER position
+  HOLD 2		'suspend procedure until move is complete
+  SLEW -VSEEK,0		'sneak-up on limit
+  HOLD 2		'suspend procedure until move is complete
+  PRINT "OTHER Sucessful"
+BR END_IT, COUNT=0    	'branch to exit
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Subroutines to end Ladder Logic
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		STOP(halt) PROCEDURE
+'
+LBL STOP
+BR END_IT		'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               BITERRor(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+'
+LBL BITERR
+  PRINT "2 Mechanism Sensor Fault, both limits asserted"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		PWRERR(power failure error) PROCEDURE
+' I'm indicating a power failure
+'
+LBL PWRERR
+  PRINT "1 Mechanism power failure or turned off (reset)"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TRIPPED(io error) PROCEDURE
+' TRIPPED on a CW or CCW bit. 21 or 22 repectively
+' //!<o If hatch completed return to caller
+' //!<o If hatch was tripped early
+'	//!<o Stop operation (open or close)
+'	//!<o End and give an error message 
+'
+LBL TRIPPED
+  BR CW21, IO 21=1
+  PRINT "1 CCW Limit tripped"
+BR END_IT
+'
+LBL CW21
+  PRINT "1 CW Limit tripped"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               TIMER1 PROCEDURE
+' Timed out. We cannot go on forever.
+'
+LBL TIMER1
+  PRINT "1 HATCH request timed out, HATCH=UNKNOWN"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Return Subroutines
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		SETBRaKe PROCEDURE
+' Set brake
+LBL SETBRK
+  IO 26=0
+RET 
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               RELeaseBRaKe PROCEDURE
+' release the brake.
+'
+LBL RELBRK
+  IO 26=1
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               IOFAIL PROCEDURE
+' IO has failed or already there PROCEDURE
+'
+LBL IOFAIL
+  BR OCREADY, IO 21=1
+   BR PWRERR, PWRFAIL=1  'Check for Power Failure or was turned off
+    PRINT "Mechanism OTHER"
+BR END_IT
+'
+LBL OCREADY
+  PRINT "Mechanism HOME"
+' PWRFAIL=0
+BR END_IT
+'
+LBL RESETERR
+  PRINT "0 Mechanism already in reset state"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               StepCouNT1 PROCEDURE
+' Close or HOME not reached
+'
+LBL SCNT1		'user units
+  SSTP 0
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               MechanismSTATUS PROCEDURE
+' Status information
+'
+LBL MSTATUS
+  BR BITERR, IO 21+IO 22=2
+  BR OTHER_S, IO 22=1
+    PRINT "HOME"
+    BR END_IT
+'
+LBL OTHER_S
+  PRINT "OTHER"
+BR END_IT
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               END_IT(exit) PROCEDURE
+' END of Main PLC Ladder Logic Code
+'
+LBL END_IT       'Exit
+  SSTP 1
+END              'end the procedures
+PGM              'end of program in RAM
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''' ISL PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC Ladder Logic PROCEDURES
+'
+PGM 6000
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+  PRINT "mechanism name"
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+  PRINT POS
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+  PRINT "POS=",POS," : b26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+  PRINT "code ver = 0.1(latest)"
+BR END_PLC      'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+  PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20MASK PROCEDURE
+' Check the Select, Insert bit mask 24-21
+'
+LBL IO20MASK
+  VAR B21=IO 21*8 
+  VAR B22=IO 22*4 
+  VAR B23=IO 23*2 
+  VAR B24=IO 24
+  VAR BITMASK=B21+B22+B23+B24
+  PRINT BITMASK
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO2122 PROCEDURE for cw and ccw bits 21,22
+' Check limit switches
+'
+LBL IO2122
+  PRINT IO 21," ",IO 22
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC		
+END 
+PGM

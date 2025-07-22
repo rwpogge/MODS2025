@@ -1,0 +1,32 @@
+#
+# MODS1 Blue Low-Res Grating (G400L) Preset Tilt Table
+# 2009-09-13 [rwp/osu]
+#
+# Format: IDStr grtilt
+#
+# Position ID strings must not contain any spaces, and should be
+# either the central wavelength in Angstroms or a given name (e.g.,
+# Zero).  Settings are determined by the orders of the IMCS
+# holographic bypass gratings.
+#
+# dA dB and dC are the collimator TTF actuator offsets from the
+# nominal grating mode TTF settings listed in the rconfig.ini file.
+# Usually the primary grating tilt setting is the reference value, and
+# has d(A,B,C)=(0,0,0).  These are the offsets needed to roughly
+# center the IMCS laser spot for that order on the quad cell, removing
+# a residual rotation between the science and bypass gratings.
+#
+# The first entry must be the PRIMARY setting, so that it appears
+# first in the pull-down menu of preset grating tilts.
+#
+# MODS1 G400L 400l/mm 1st-order grating MR162-2-7-1
+# Measured 2009 Sept 13 [rwp/osu]
+#
+# name  tilt   dA  dB  dC   # notes
+#
+4350A   19290   0   0   0   # Primary Setting
+3800A   17790 -10  -7  17   # Primary-2
+4075A   18533  -9  -6  15   # Primary-1
+4626A   20000   1  -8   6   # Primary+1
+4901A   20741   5 -18  15   # Primary+2
+Zeroth   1275   0   0   0   # 0th Order

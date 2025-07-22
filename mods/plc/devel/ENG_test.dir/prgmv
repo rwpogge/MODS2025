@@ -1,0 +1,10 @@
+# MicroLYNX source code.
+msel=10
+munit=3000
+mac=20
+mrc=20
+mhc=10
+ios 21=13,0,1,1
+ios 22=14,0,1,1
+vm=5
+vi=1

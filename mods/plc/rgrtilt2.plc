@@ -1,0 +1,306 @@
+/*!
+  \mainpage rgrtilt2.plc - rgrtilt2 PLC program
+ 
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+  
+  \date 2007 Feb 02
+   
+  \section Usage
+   
+  Usage: Multi-level command set used with ISL system
+         or Window IMS system
+   
+  Where: \c MODS instrument
+   	IMS manual is incorrect on the BLM mode designations.
+	MODE=0 Mechanical Compensation (this is the mode needed)
+
+  \section Introduction
+        Small command set of key words are -
+	Any item with a LBL is a keyword
+		
+        All Motion Parameters are documented in the MicroLYNX Part III
+        Software Reference.
+
+<pre>
+2007 Feb 02 - new application header only [rdg]
+2008 May 25 - added PLC code for the new application [rdg]
+2009 June 10 - Fixed for backlash compensation[tpo/rdg]
+</pre>
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file rgrtilt2.plc
+  \brief Small command set for BLUE grating tilt 1 mechanism
+*/
+/** END HEADER **/
+' START loading PLC code
+' Motion Parameters
+DRVEN=1    'Disable Motor Until User Inputs New Target Grating
+MSEL= 10   '10 microsteps per step
+MUNIT=2000 'units to revs
+MAC=50     'accel current is 0.50 * 7
+MRC=30     'run current is 0.30 * 7
+MHC=0      'hold current is zero
+HCDT=0     'hold current delay msec
+ACLT=1     'linear acceleration
+'
+'Input & Output Configuration
+Ios 21 = 13,0,0 'CW Limit, Active Low
+Ios 22 = 14,0,0 'CCW Limit, Active Low
+'Ios 23 - 26 	'NOT used
+IOS 26=18,1,0	'Brake relay coil (internal pull-up switch opened)
+' 
+'Motion Configuration
+Accl=50   	'Acceleration rate in rev/sec^2
+Decl=Accl 	'Deceleration rate in rev/sec^2
+Ldecl=500 	'Limit Deceleration in rev/sec^2
+'
+VAR TTIME=60000	'Wait for 60 secs before assuming anything.
+VAR BKLIMIT	'position + compensation limit
+'
+VAR VNORM=25.0	'Move Velocity in rev/sec GRATING TILT parameter
+VAR VSEEK=2.0	'Seeking speed.
+VM=VNORM	'Set Speed to normal
+VI=2.0          'Increased the backlash velocity from default(0.5)
+'
+'Variable Declarations
+VAR TILT=0.0	'Grating tilt commanded position sent by host computer
+'
+' IEB Power detection
+VAR PWRFAIL=1   	'Power Failures of any kind
+VAR STEPCNT=-5.0	'User units stop and sneak up on limit
+VAR RELAX=-1.75		'Negative offloading of tension. (optional?)
+BLSH=8.0	'Amount of backlash. Settable by user
+BLM=0   	'IMS manual is incorrect on the BLM mode designations.
+		'MODE=0 Mechanical Compensation (this is the mode needed)
+		'0=Mechanical, 1=Mathematical (backlash)
+BLE=1		'Backlash enable
+VAR NVMPOS	'Position saved as fail safe
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               STARTUP MODE
+'               PLC starts at address #100
+'
+PGM 100          'Starts at address #100
+' 
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               INITIALize or HOME PROCEDURES
+' Initialize or home grating tilt
+LBL HOME
+LBL INITIAL
+  PWRFAIL=0			'Reset Power Failure
+  VM=VNORM			'Reset Speed
+  BR BITERR, IO 21+IO 22=2	'Both IO bits(21,22) ON not allowed
+  VI=2.0          	'Increased the backlash velocity from default(0.5)
+'
+  TT2=TTIME, GRSUB2	'Configure time trip TTIME in millisecs.
+  TTE2=1		'Enable trip one
+'
+  Drven=1		'Enable Drive
+'
+  SLEW VNORM,0		'slew to CW limit
+  HOLD 2 		'suspend until completed
+'
+  BLE=0			'diable backlash (NOT compatible with initial)
+  MOVR -BLSH
+  HOLD 2 		'suspend until completed
+  BLE=1			're-enable backlash
+'
+  SLEW VSEEK,0		'slew to CW limit
+  HOLD 2 		'suspend until completed
+  POS=0.0		'set position to Zero
+  Drven=0		'Enable Drive
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ZeroLimitTILTAsolute(absolute tilt) PROCEDURE
+' Tilt with backlash compensation taking care of relax value
+' for final position requested.
+' 
+LBL ZLTILTA
+  '
+  BR PWRERR, PWRFAIL=1		'Check for Power Failure
+  BR BITERR, IO 21+IO 22=2	'Both IO bits(21,22) ON not allowed
+  BR RELAXERR TILT>=RELAX	'Illegal position if request is greater then
+				'RELAX variable
+  BR CHKSTA, TILT=POS		'Check for same position
+'
+  Drven=1		'Enable Drive		
+  TILT=TILT-RELAX	'To make value of requested and final position
+			'identical
+  MOVA TILT		'Move until position is reached
+  HOLD 2		'suspend until move has completed
+'
+  BLE=0			'diable backlash (NOT compatible with relax)
+  VM=VSEEK		'Relax should run at a lower speed
+  MOVR RELAX		'Release stored energy (relax the tension)
+  HOLD 2		'suspend until move has completed
+  VM=VNORM		'reset the speed to nominal
+  BLE=1			're-enable backlash
+'
+  Drven=0		'diable Drive
+BR CHKSTA		'Check position status
+'
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'	ZeroLimitTILTRelative(relative tilt) PROCEDURE
+' Same as ZLTILTA, except moves are relative
+' 
+LBL ZLTILTR
+  '
+  BR PWRERR, PWRFAIL=1		'Check for Power Failure
+  BR BITERR, IO 21+IO 22=2	'Both IO bits(21,22) ON not allowed
+'
+  TILT=TILT-RELAX	'To make value of requested and final position
+			'identical
+  Drven=1		'Enable Drive		
+  MOVR TILT		'Move until position+backlash is reached
+			'then do the backlash
+  HOLD 2		'suspend procedure until move is complete
+'
+  BLE=0			'diable backlash (NOT compatible with relax)
+  VM=VSEEK		'Relax should run at a lower speed
+  MOVR RELAX            'Release stored energy (relax the tension)
+  HOLD 2		'suspend procedure until move is complete
+  VM=VNORM		'reset the speed to nominal
+  BLE=1			're-enable backlash
+  Drven=0		'diable Drive
+BR CHKSTA		'Check position status
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		GRatingSUBroutine2 PROCEDURE
+' Timed out. We cannot go on forever.
+LBL GRSUB2		'Turn off at user input revolutions
+  PRINT "? TIMEOUT time out on request"
+RET
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                BITERR(io error) PROCEDURE
+' BITERR Both bits 21 and 22 "ON" not allowed.
+LBL BITERR
+  PRINT "? FAULT Sensor Fault, both limits asserted"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                RELAXERR(RELAX error) PROCEDURE
+' RELAXERR Request position was greater then RELAX value
+LBL RELAXERR
+  PRINT "? FAULT requested position cannot be >RELAX"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'               PWRERR(power failure error) PROCEDURE
+' I'm indicating a power failure
+LBL PWRERR
+  PRINT "? PWRFLR power failure or turned off (reset)"
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		CHecKSTAtus PROCEDURES
+' Check where we are.
+LBL CHKSTA
+  BR GTHOME, POS=0.0
+  'PRINT "RGRTILT2=", POS
+  PRINT POS
+BR END_IT2
+LBL GTHOME
+  'PRINT "RGRTILT2=HOME"
+  PRINT "HOME"
+LBL END_IT2
+BR END_IT
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_IT PROCEDURE
+' END of PLC code
+LBL END_IT
+  NVMPOS=POS
+END
+PGM
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''' NEW PLC PGM STARTED '''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		ISL PLC General PROCEDURES
+'
+PGM 6000
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                WHO AM I PROCEDURE
+'
+LBL WHO
+  PRINT "rgrtilt2"
+  DELAY 100
+BR END_PLC
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKPOS PROCEDURE check position
+'
+LBL CHKPOS
+  PRINT POS
+  DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CHKMVG PROCEDURE check moving status
+'
+LBL CHKMVG
+  PRINT MVG
+  DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                POLL THE CONTROLLER PROCEDURE
+'
+LBL POLL
+  PRINT "POS=",POS," : BITS26-21=",IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+  DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                CODE VERSION PROCEDURE
+'
+LBL CODEV
+  PRINT "codeV=0.1(06/12/07)",":HW",VER
+  DELAY 100
+BR END_PLC      'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20 PROCEDURE for bits 26 - 21
+' Check IO 20 bits
+'
+LBL IO20
+  PRINT IO 26,IO 25,IO 24,IO 23,IO 22,IO 21
+  DELAY 100
+BR END_PLC       'branch to exit
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO30 PROCEDURE for bits 36 - 31
+' Check IO 30 bits
+'
+LBL IO30
+  PRINT IO 36,IO 35,IO 34,IO 33,IO 32,IO 31
+  DELAY 100
+BR END_PLC       'branch to exit
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'                IO20MASK PROCEDURE
+' Check the Select, Insert bit mask 24-21
+'
+LBL IO20MASK
+  VAR B21=IO 21*8 
+  VAR B22=IO 22*4 
+  VAR B23=IO 23*2 
+  VAR B24=IO 24
+  VAR BITMASK=B21+B22+B23+B24
+  PRINT BITMASK
+BR END_PLC
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'		END_PLC PROCEDURE
+' END of ISL PLC code
+'
+LBL END_PLC		
+  DELAY 100
+END 
+PGM

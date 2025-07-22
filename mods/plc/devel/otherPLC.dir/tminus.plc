@@ -1,0 +1,56 @@
+/** END HEADER **/
+'Start the timer with command - run timer.
+VAR NHr=0          'Number of Hours
+VAR THr=0          'Tick Hours
+VAR TMin=0         'Tick Minutes
+VAR TSec=0         'Tick Seconds
+VAR TMilli=0       'Tick Millisecs.
+VAR TRate=100.0   'Clock Rate 100 millisec.
+'
+' Start the timer with command - run timer.
+' Code for Timer
+PGM 6000
+LBL TIMER
+DELAY TRate                 '100ms
+TMilli=TMilli+TRate+25.6    '1ms
+BR tickSec,TMilli>=1000.0   '3ms
+'TMilli=TMilli+25.6
+BR TIMER                    '2ms
+'
+'Tick the Minutes
+LBL tickSec
+INC TSec               '1ms
+BR tickMin,TSec>=60.0  '2ms
+TMilli=0               '1ms
+BR TIMER               '2ms
+'
+'Tick the Minutes
+LBL tickMin
+INC TMin                    '1ms
+BR tickHrs,TMin>=60.0       '2ms
+TSec=0                      '1ms
+TMilli=0                    '1ms
+BR TIMER                    '2ms
+'
+' Tick the Hours
+LBL tickHrs
+INC THr                            '1ms
+BR numbHrs,THr>=24.0               '2ms
+TSec=0                             '1ms
+TMin=0                             '1ms
+TMilli=0                           '1ms
+BR TIMER                           '2ms
+'
+'Tick the Number of Hours
+LBL numbHrs
+INC NHr                            '1ms
+TSec=0                             '1ms
+TMin=0                             '1ms
+THr=0                              '1ms 
+TMilli=0                           '1ms
+BR TIMER                           '2ms
+'
+'END Stop with command - sspt 1,timer
+END
+PGM
+

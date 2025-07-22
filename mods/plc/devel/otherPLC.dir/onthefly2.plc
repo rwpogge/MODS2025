@@ -1,0 +1,48 @@
+/** END HEADER **/
+'******** Parameter Setup ********
+
+MUNIT  =  51200  
+VI  =  0.500  
+ACCL = 20
+DECL = 50
+'IOS 31 = 0,1,0		'Output - general purpose, low true.
+
+
+'******** Program ********
+
+PGM     100
+
+LBL  ONTHEFLY
+'   TP1 = 5, PSUB1  	'Configure 1st position trip at 5 revs
+'   TP2 = 10, PSUB2 	'Configure 2nd position trip at 10 revs
+'   TPE1  =  1		'Enable both position trips
+'   TPE2 = 1 
+   TT1 = 1000, PSUB1  	'Configure 1st position trip at 1sec
+   TT2 = 10000, PSUB2 	'Configure 2nd position trip at 10secs
+   TTE1  =  1		'Enable both position trips
+   TTE2 = 1 
+   VM = 10		'Initial max speed 10 rps
+   MOVA 100.25, 1 	'Move out to 10.25 revs at 10 rps
+   HOLD     0
+   VM = 2  		'Reduce max speed to 2 rps
+   MOVA 20.5		'Move to 20.5 revs
+   HOLD 2
+   DELAY 250
+   VM = 10		'Reset max speed to 10 rps
+   MOVA 0		'return to origin
+   HOLD 2
+   END
+
+ LBL PSUB1		'Turn on output at 5 revs
+ '  IO 31 = 1
+   sstp 0
+   PRINT "Position=",pos,TT1,TTE1
+   RET
+
+ LBL PSUB2		'Turn off output at 10 revs
+'   IO 31 = 0
+   sstp 1
+   PRINT "Position=",pos,TT2,TTE2
+   RET
+  
+   PGM

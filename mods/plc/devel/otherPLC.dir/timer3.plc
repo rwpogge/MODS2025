@@ -1,0 +1,95 @@
+/*!
+  \mainpage Generic.plc - Generic PLC program
+
+  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+ 
+  \date 2007 Feb 02
+  
+  \section Usage
+  
+  Usage: Multi-level command set used with ISL system.
+  
+  Where: \c MODS instrument
+  
+  \section Introduction
+ Small command set the key words are -
+ initial: Initialize Generic (move to CW or CCW and set 
+          pos=0.000)
+ home: Send open to position 0.000
+ stow: Send close position oposite of home.
+ stop: Stop all mechanism movement
+ relbrk: Release break
+ setbrk: Set break on mechanism
+
+ All Motion Parameters are documented in the MicroLYNX Part III 
+ Software Reference.
+
+<pre>
+2007 Feb 02 - new application [rdg]
+</pre>
+
+\todo
+
+<ul>
+</ul>
+*/
+/*!
+  \file Generic.plc
+  \brief Small command set for a mechanisms
+*/
+/** END HEADER **/
+* Start here with PLC code
+* 'Motion Configuration
+MSEL= 10
+MUNIT=2000
+MAC = 50
+MRC=34
+MHC = 0
+HCDT = 500
+ACLT = 1
+ACCL=50  'acceleration rate in rev/sec^2
+DECL=ACCL 'acceleration rate = deceleration rate
+LDECL=500 'set decel after a limit is asserted
+* Input & Output Configuration
+IOS 21 = 13,0,0 'POSITIVE (CW) limit,active low,
+IOS 22 = 14,0,0 'NEGATIVE (CCW)limit, active low
+* Variable Declarations
+VAR VNORM=10.0   
+VM=VNORM '5 rev/sec running speed
+VAR VSEEK=0.5
+*VAR BACKLASH = -->> 0.2? <<--
+*
+* MicroLYNX source code
+PGM 100          'Starts at address 100
+*
+*   INITIAL(initializing) PROCEDURE
+LBL INITIAL
+DELAY 10000
+BR WHO         'branch to exit
+*                       WHO AM I PROCEDURE
+LBL WHO
+PRINT "timer"
+BR POLL       'branch to exit
+*
+*                       POLL THE CONTROLLER AM I PROCEDURE
+LBL POLL
+PRINT "POS = ",POS," : IO 21= ",IO 21," : IO 22=",IO 22
+BR CODEV
+*
+*                       CODE VERSION PROCEDURE
+LBL CODEV
+PRINT "code ver = 0.1(latest)"
+BR TSTGEN       'branch to exit
+*
+*   TEST PROCEDURE
+LBL TSTGEN
+PRINT "HELLO I'M HERE: ", POS," ",ACCL
+PRINT "AND TIMER.PLC IS FINE:: ", POS
+BR END_IT
+*
+*   END_IT(exit) PROCEDURE
+LBL END_IT       'Exit
+END              'end the procedures
+PGM              'end of program in RAM 
+
+
