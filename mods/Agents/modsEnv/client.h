@@ -28,9 +28,6 @@
 #define ENV_LOGS "/home/dts/Logs/Env/modsenv"       //!< Default enviromental log file path and rootname
 #define HDF_LOGS "/home/dts/Logs/Env/modsenv-hdf5"  //!< Default hdf5 telemetry log file path
 
-#define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"  //!< Default path to the leap-seconds.list file.
-#define FALLBACK_LEAP_SECONDS_FILE "./leap-seconds.list"          //!< If an updated leap-seconds file can't be found, this one is used instead.
-
 // Default ISIS server information (see loadconfig.c if used)
 
 #define DEFAULT_ISISID   "IS"        //!< default ISIS server node name
@@ -306,6 +303,10 @@ public:
 #define MODS_WFSPOWER  1
 
 // ... more as needed ...
+
+#define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"  //!< Default path to the leap-seconds.list file.
+#define FALLBACK_LEAP_SECONDS_FILE "./leap-seconds.list"          //!< If the leap-seconds file can't be found at the path above, this one is tried next.
+
 
 //------------------------------
 // Globals - use very sparingly

@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+CDATE=`date +'%Y-%m-%d'`
+CTIME=`date +'%T'`
+# make clean                                # TODO: Uncomment clean and rm *.o lines.
+make "COMPDATE=$CDATE" "COMPTIME=$CTIME"
+# /bin/rm *.o
+exit

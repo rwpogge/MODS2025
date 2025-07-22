@@ -1,14 +1,10 @@
-//
-// logutils - Functions used to export log files go here.
-//
-
 /*!
   \file logutils.c
   \brief Functions used to export ASCII and HDF5 log files go here
 
   \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
   \author X. Carroll, OSU.
-  \date 2010 June 21
+  \date 2024 August 15
 */
 
 #include "client.h" // custom client application header 
@@ -34,106 +30,38 @@ int initTelemetryData(envdata_t* envi){
     std::shared_ptr<lbto::tel::ambassador> callBack(new TelemetryCallback());
     lbto::tel::collection_manager::init(callBack);
 
-    //Defining a telemetry stream with modlue name "tel" and stream name "modsenv".
+    //Defining a telemetry stream with modlue name "tel" and stream name "modsHEB".
     lbto::tel::telemeter_definer modsDefiner = lbto::tel::collection_manager::instance().make_telemeter_definer(
-      lbto::tel::system(lbto::tel::name("tel")), lbto::tel::name("modsenv")
+      lbto::tel::system(lbto::tel::name("tel")), lbto::tel::name("modsHEB")
     );
 
-    //Adding measures to the telemetry.
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->ambientTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("ambientTemp"),
-      lbto::tel::description("Outside ambient air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolSupplyPresMeasure, 
-      lbto::tel::unit::kilopascal(), 
-      lbto::tel::name("glycolSupplyPres"),
-      lbto::tel::description("Instrument glycol supply pressure in psi-g")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolReturnPresMeasure, 
-      lbto::tel::unit::kilopascal(), 
-      lbto::tel::name("glycolReturnPres"),
-      lbto::tel::description("Instrument glycol return pressure in psi-g")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolSupplyTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("glycolSupplyTemp"),
-      lbto::tel::description("Instrument glycol supply temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->glycolReturnTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("glycolReturnTemp"),
-      lbto::tel::description("Instrument glycol return temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->utilBoxTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("utilBoxTemp"),
-      lbto::tel::description("IUB inside-box air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->agwHSTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("agwHSTemp"),
-      lbto::tel::description("AGw camera controller heat sink temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebBAirTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebB_AirTemp"),
-      lbto::tel::description("Blue IEB box air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebBReturnTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebB_ReturnTemp"),
-      lbto::tel::description("Blue IEB glycol return temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebRAirTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebR_AirTemp"),
-      lbto::tel::description("Red IEB box air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->iebRReturnTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("iebR_ReturnTemp"),
-      lbto::tel::description("Red IEB glycol return temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->airTopTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("airTopTemp"),
-      lbto::tel::description("MODS instrument Top inside air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->airBotTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("airBotTemp"),
-      lbto::tel::description("MODS instrument Bottom inside air temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->trussTopTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("trussTopTemp"),
-      lbto::tel::description("MODS collimator truss tube Top temperature in degrees C")
-    ));
-    modsDefiner.add_child(lbto::tel::float_measure(
-      envi->trussBotTempMeasure, 
-      lbto::tel::unit::celsius(), 
-      lbto::tel::name("trussBotTemp"),
-      lbto::tel::description("MODS collimator truss tube Bottom temperature in degrees C")
-    ));
+    //Adding measures based off the device table.
+    for(int i=0; i<envi->numModules; i++){
+
+      //Set the correct units for this module.
+      lbto::tel::unit units = lbto::tel::unit::none();
+      switch(envi->modules[i].processingType){
+        case RTD: units = lbto::tel::unit::celsius(); break;
+        case  AI: units = lbto::tel::unit::volt();    break;
+        case  DO: units = lbto::tel::unit::none();    break;
+        default: break;
+      }
+
+      // Add all of the telemetry streams to the definer.  
+      for(int j=0; j<envi->modules[i].numDevices; j++){
+        if(!envi->modules[i].devices[j].logEntry) continue;
+
+        modsDefiner.add_child(lbto::tel::float_measure(
+          envi->modules[i].devices[j].floatMeasure,
+          units, 
+          lbto::tel::name(envi->modules[i].devices[j].name),
+          lbto::tel::description(envi->modules[i].devices[j].description)
+        ));
+      }
+    }
 
     //Adding this definition to the telemetry store.
     envi->modsCollector.reset(new lbto::tel::collector(modsDefiner.make_definition(), MAX_TELEMETRY_BUFFER_BYTES, false));
-
 
   //Catching exceptions thrown while initalizing lib-telemetry data.
   }catch(std::exception const& exn){
@@ -181,6 +109,7 @@ int initEnvLog(envdata_t *envi){
   int ierr;
   char logStr[MED_STR_SIZE];
   int exists;
+  int stringLength = 0;
 
   // Get the UTC Date in CCYYMMDD format
   strcpy(envi->lastDate,UTCDateTag());
@@ -198,7 +127,7 @@ int initEnvLog(envdata_t *envi){
   if (envi->logFD == -1) {
     printf("ERROR: cannot open environmental data log file %s - %s\n",
 	    envi->logFile,strerror(errno));
-    envi->doLogging == 0; // disable logging to prevent noise...
+    envi->doLogging = 0; // disable logging to prevent noise...
     return -1;
   }
   chmod(envi->logFile,0666);
@@ -211,20 +140,34 @@ int initEnvLog(envdata_t *envi){
     // This is the first time we've had this file open, write the
     // detailed file header.
     memset(logStr,0,sizeof(logStr));
-    sprintf(logStr,"#\n# %s Environmental Sensor Data Log\n#\n",envi->modsID);
+    sprintf(logStr,"#\n# Environmental Sensor Data Log\n#\n");
     ierr = write(envi->logFD,logStr,strlen(logStr));
 
     memset(logStr,0,sizeof(logStr));
-    sprintf(logStr,"# Started: UTC %s\n# Sampling Cadence: %d seconds\n#\n",
+    sprintf(logStr,"# Started: UTC %s\n# Sampling Cadence: %ld seconds\n#\n",
 	    ISODate(),envi->cadence);
     ierr = write(envi->logFD,logStr,strlen(logStr));
-
-    memset(logStr,0,sizeof(logStr));
-    sprintf(logStr,"# UTC Date/Time      Tamb  Psup  Pret  Tsup  Tret  Tiub"
-	    "  Tagw  Bair  Bret  Rair  Rret  AirT  AirB  ColT  ColB\n"
-    );
-    ierr = write(envi->logFD,logStr,strlen(logStr));
   }
+
+  //Creating the enviornmental data header string.
+  memset(logStr,0,sizeof(logStr));                                                    // Clear the string.
+  stringLength += snprintf(logStr, sizeof(logStr), "# UTC Date/Time    ");            // Append the date header.
+  for(int i=0; i<envi->numModules; i++){
+    for(int j=0; j<envi->modules[i].numDevices; j++){
+      if(!envi->modules[i].devices[j].logEntry) continue;
+      
+      stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
+        " %-7.7s", envi->modules[i].devices[j].name
+      );
+    }
+  }
+
+  stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, "\n");   // Append a new line.
+  sprintf(logStr+sizeof(logStr)-2, "\n");                                             // And make the last character a new line in-case of buffer overflow.
+  
+  //Write the header string to the log file.
+  ierr = write(envi->logFD,logStr,strlen(logStr));
+
   return 0;
 }
 
@@ -239,12 +182,10 @@ int initEnvLog(envdata_t *envi){
   data log.  This routine checks the time and rolls over the data log
   at midnight UTC.
 
-  At present (v2.x) we do not log AC power status sensor data, only
-  the data from temperature and pressure sensors.
-
 */
 int logEnvData(envdata_t *envi){
   int ierr;
+  int stringLength = 0;
   char dateTag[MED_STR_SIZE];  
   char logStr[BIG_STR_SIZE];
 
@@ -257,19 +198,33 @@ int logEnvData(envdata_t *envi){
   if (strcasecmp(dateTag,envi->lastDate) != 0)
     if (initEnvLog(envi)<0) return -1;
 
-  // Append the current enviromental sensor data to the data log
-  memset(logStr,0,sizeof(logStr));
-  sprintf(logStr,"%s %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f"
-	  " %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f\n",
-	  envi->utcDate, envi->ambientTemp,
-	  envi->glycolSupplyPres, envi->glycolReturnPres,
-	  envi->glycolSupplyTemp, envi->glycolReturnTemp,
-	  envi->utilBoxTemp, envi->agwHSTemp,
-	  envi->iebB_AirTemp, envi->iebB_ReturnTemp,
-	  envi->iebR_AirTemp, envi->iebR_ReturnTemp,
-	  envi->airTopTemp, envi->airBotTemp,
-	  envi->trussTopTemp, envi->trussBotTemp
-  );
+  // Create the enviornmental data string.
+  memset(logStr, 0, sizeof(logStr));                                                  // Clear the string.
+  stringLength += snprintf(logStr, sizeof(logStr), "%s", envi->utcDate);              // Append the date.
+  for(int i=0; i<envi->numModules; i++){
+    for(int j=0; j<envi->modules[i].numDevices; j++){                             // Append each device reading.
+      if(!envi->modules[i].devices[j].logEntry) continue;
+
+      // Print DO's as a simple On/Off
+      if(envi->modules[i].processingType == DO){
+        stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
+          " %-7.7s", envi->modules[i].devices[j].data ? "ON" : "OFF"
+        );
+      }
+      
+      // Print the float value for the device.      
+      else{
+        stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, 
+          " %-7.3f", envi->modules[i].devices[j].data
+        );
+      }
+    }
+  }
+
+  stringLength += snprintf(logStr+stringLength, sizeof(logStr)-stringLength, "\n");   // Append a new line.
+  sprintf(logStr+sizeof(logStr)-2, "\n");                                             // And make the last character a new line in-case of buffer overflow.
+
+  // Write the data string to the log file.
   ierr = write(envi->logFD,logStr,strlen(logStr));
   
   return 0;
@@ -290,7 +245,7 @@ int logEnvData(envdata_t *envi){
 
   \sa initEnvLog(), logEnvData()
 */
-int logMessage(envdata_t *envi, char *msgStr){
+int logMessage(envdata_t *envi, const char* msgStr){
   int ierr;
   char logStr[BIG_STR_SIZE];
 
@@ -357,9 +312,6 @@ int fileExists(char *fileName){
   Appends the most recent environmental sensor readings to the current
   HDF5 stream.
 
-  At present (v2.x) we do not log AC power status sensor data, only
-  the data from temperature and pressure sensors.
-
 */
 int logTelemetryData(envdata_t *envi){
   time_t commitTime = time(NULL);
@@ -371,25 +323,17 @@ int logTelemetryData(envdata_t *envi){
   }
 
   try{    
-    //Storing variable data in the streams.
-    envi->ambientTempMeasure.store(envi->ambientTemp);
-    envi->glycolSupplyPresMeasure.store(envi->glycolSupplyPres);
-    envi->glycolReturnPresMeasure.store(envi->glycolReturnPres);
-    envi->glycolSupplyTempMeasure.store(envi->glycolSupplyTemp);
-    envi->glycolReturnTempMeasure.store(envi->glycolReturnTemp);
-    envi->utilBoxTempMeasure.store(envi->utilBoxTemp);
-    envi->agwHSTempMeasure.store(envi->agwHSTemp);
-    envi->iebBAirTempMeasure.store(envi->iebB_AirTemp);
-    envi->iebBReturnTempMeasure.store(envi->iebB_ReturnTemp);
-    envi->iebRAirTempMeasure.store(envi->iebR_AirTemp);
-    envi->iebRReturnTempMeasure.store(envi->iebR_ReturnTemp);
-    envi->airTopTempMeasure.store(envi->airTopTemp);
-    envi->airBotTempMeasure.store(envi->airBotTemp);
-    envi->trussTopTempMeasure.store(envi->trussTopTemp);
-    envi->trussBotTempMeasure.store(envi->trussBotTemp);
-    
+    //Storing data in the streams based on the module table.
+    for(int i=0; i<envi->numModules; i++){
+      for(int j=0; j<envi->modules[i].numDevices; j++){
+        if(!envi->modules[i].devices[j].logEntry) continue;
+
+        envi->modules[i].devices[j].floatMeasure.store(envi->modules[i].devices[j].data);
+      }
+    }
+
     //Commiting the data to the HDF5 file.
-    envi->modsCollector->commit_sample(lbto::tel::date::from_posix_utc_s(commitTime));    //TODO: Fix time stamps.
+    envi->modsCollector->commit_sample(lbto::tel::date::from_posix_utc_s(commitTime));
 
   //Catching exceptions thrown while sending lib-telemetry data to an output stream.
   }catch(lbto::tel::sample_dropped const& exn){
