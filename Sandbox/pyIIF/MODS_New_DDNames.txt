@@ -9,7 +9,7 @@ on the LBT GitHub (iif/configuration/IIF/DDNames)
 Name                             Type    Units   Description
 
         [MODS data]
-S_MODSMODE                       string  ---     Instrument Mode (CALMODE or OBSMODE)
+S_MODSMode                       string  ---     Instrument Mode (CALMODE or OBSMODE)
 S_MODSAGWXPos                    float   mm      AGW Stage X actuator position 
 S_MODSAGWYPos                    float   mm      AGW Stage Y actuator position 
 S_MODSAGWFPos                    float   mm      AGW Stage Focus actuator position 
