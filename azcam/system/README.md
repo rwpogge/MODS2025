@@ -6,7 +6,7 @@ transparent without exposing critical system configuration files.
 
 We use `system/` as the root folder for all system-specific files
  * `parameters/` for azcam server parameter files
- * `templates/` for FITS header template and IIF data dictionary files
+ * `templates/` for FITS header templates and IIF data dictionary files
  * `archon/` for the Archon controller files (.acf and .ncf)
  * `logs/` for azcam server logs
 
