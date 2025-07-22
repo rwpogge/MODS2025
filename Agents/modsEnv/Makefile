@@ -25,7 +25,7 @@ CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 HOMEDIR     = /home/dts
 ISISLIB     = $(HOMEDIR)/ISIS/lib
-TELEMDIR	= /usr/include/lbto/lib-telemetry
+TELEMDIR    = /usr/include/lbto/lib-telemetry
 
 # keep binaries local during development
 
