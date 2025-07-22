@@ -24,7 +24,7 @@ class LBTTCS(Telescope):
     
     Author: R. Pogge, OSU Astronomy Dept (pogge.1@osu.edu)
     
-    Updated: 2025 July 20
+    Updated: 2025 July 21
     '''
     
     def __init__(self, tool_id="telescope", description="Large Binocular Telescope",instID="mods",side="left"):
@@ -78,7 +78,7 @@ class LBTTCS(Telescope):
         # instantiate the iif proxy
         
         try:
-            self.proxy = iif.model['Proxies'].get(self.instID)
+            self.proxy = iif.model['PROXIES'].get(self.instID)
         except Exception as exp:
             azcam.log(f"ERROR: TCS init failed - could not get IIF proxy - {exp}")
             self.is_initialized = 0
@@ -88,9 +88,9 @@ class LBTTCS(Telescope):
         
         try:
             self.tcs = iif.iifproxy(proxyName=self.proxyName,
-                                    instrument=self.proxy['instrument'],
+                                    instrumentID=self.proxy['instrument'],
                                     focalStation=self.proxy['focalstation'],
-                                    side=self.lbtSside,
+                                    side=self.lbtSide,
                                     config_client=self.clientFile)
         except Exception as exp:
             azcam.log(f"ERROR: TCS init failed - could start IIF link - {exp}")
@@ -150,7 +150,7 @@ class LBTTCS(Telescope):
 
         # add keywords to header
 
-        for key in self.fitsKeys:
+        for key in self.fitsList:
             self.header.keywords[key] = self.iifKeywords[key]
             self.header.comments[key] = self.iifComments[key]
             self.header.typestrings[key] = self.iifTypes[key]
@@ -421,74 +421,74 @@ class LBTTCS(Telescope):
                 self.iifTypes[fitsKey] = self.ddDict[key][1]
             self.iifComments[fitsKey] = self.ddDict[key][2]
 
-        azcam.log("Loaded TCS header configuration from {configFile}")
+        azcam.log(f"Loaded TCS header configuration from {configFile}")
         
         return
     
         
-        def get_TCSData(self,keyList):
-            '''
-            start proxy, get data, close proxy return data
+    def get_TCSData(self,keyList):
+        '''
+        start proxy, get data, close proxy return data
 
-            Parameters
-            ----------
-            keyList : string list
-                List of strings with valid DD keywords to retreive
+        Parameters
+        ----------
+        keyList : string list
+        List of strings with valid DD keywords to retreive
 
-            Returns
-            -------
-            None.
+        Returns
+        -------
+        None.
 
-            Description
-            -----------
-            Starts the IIF proxy, does the query, closes the proxy.  This way
-            we don't have an active IIF proxy live during long periods of 
-            idleness.
+        Description
+        -----------
+        Starts the IIF proxy, does the query, closes the proxy.  This way
+        we don't have an active IIF proxy live during long periods of 
+        idleness.
             
-            Experiments show it adds negligibly to the IIF query which 
-            for the usual query of 70+ DD parameters takes 120-150msec with
-            of the proxy setup/teardown overhead.
+        Experiments show it adds negligibly to the IIF query which 
+        for the usual query of 70+ DD parameters takes 120-150msec with
+        of the proxy setup/teardown overhead.
             
-            We intend to only use the IIF interface as an "instantaneous"
-            TCS status query, no active operation of the telescope.  If
-            we ever got it in our heads to do that, we need to investigate
-            async methods in the python ZeroC Ice implementation.
+        We intend to only use the IIF interface as an "instantaneous"
+        TCS status query, no active operation of the telescope.  If
+        we ever got it in our heads to do that, we need to investigate
+        async methods in the python ZeroC Ice implementation.
             
-            '''
-            
-            try:
-                self.tcs.proxy_destroy(self.proxyName)
-            except:
-                pass
-            
-            try:
-                self.tcs = iif.iifproxy(proxyName=self.proxyName,
-                                                    instrument=self.proxy['instrument'],
-                                                    focalStation=self.proxy['focalstation'],
-                                                    side=self.lbtSside,
-                                                    config_client=self.clientFile)
-            except Exception as exp:
-                azcam.log(f"ERROR: TCS IIF proxy init failed - could start IIF link - {exp}")
-                self.is_initialized = 0
-                self.tcs = None
-                raise azcam.exceptions.AzCamError(f"getTCSData() query failed - {exp}")
-                return
+        '''
+        
+        try:
+            self.tcs.proxy_destroy(self.proxyName)
+        except:
+            pass
+        
+        try:
+            self.tcs = iif.iifproxy(proxyName=self.proxyName,
+                                    instrumentID=self.proxy['instrument'],
+                                    focalStation=self.proxy['focalstation'],
+                                    side=self.lbtSide,
+                                    config_client=self.clientFile)
+        except Exception as exp:
+            azcam.log(f"ERROR: TCS IIF proxy init failed - could start IIF link - {exp}")
+            self.is_initialized = 0
+            self.tcs = None
+            raise azcam.exceptions.AzCamError(f"getTCSData() query failed - {exp}")
+            return
 
-            # We have a link, send the request
+        # We have a link, send the request
 
-            try:
-                iifData = self.tcs.GetParameter(keyList)
-            except Exception as exp:
-                azcam.log(f"ERROR: TCS IIF GetParameter() query failed - {exp}")
-                raise azcam.exceptions.AzCamError(f"getTCSData() query failed - {exp}")
-                return
+        try:
+            iifData = self.tcs.GetParameter(keyList)
+        except Exception as exp:
+            azcam.log(f"ERROR: TCS IIF GetParameter() query failed - {exp}")
+            raise azcam.exceptions.AzCamError(f"getTCSData() query failed - {exp}")
+            return
             
-            # all done, close the proxy and return the data
+        # all done, close the proxy and return the data
             
-            try:
-                self.tcs.proxy_destroy(self.proxyName)
-            except:
-                pass
+        try:
+            self.tcs.proxy_destroy(self.proxyName)
+        except:
+            pass
             
-            return iifData
+        return iifData
             
