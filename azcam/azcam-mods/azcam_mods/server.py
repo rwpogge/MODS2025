@@ -305,12 +305,6 @@ def setup():
     if len(expTemplate) > 0 and os.path.exists(expTemplate):
         azcam.db.tools["exposure"].header.read_file(expTemplate)
         
-    # load the instrument header template if it exists
-    
-    if len(instTemplate) and os.path.exists(instTemplate):
-        azcam.db.tools["instrument"].header.read_file(instTemplate)
-
-
     # read the server parameter file.  For MODS this will contain TCS interface 
     # (IIF) info needed later
 
@@ -348,6 +342,12 @@ def setup():
     # direct instrument methods (none yet, maybe later?)
     
     instrument = Instrument()
+
+    # load the instrument header template if it exists
+    
+    if len(instTemplate) and os.path.exists(instTemplate):
+        azcam.db.tools["instrument"].header.read_file(instTemplate)
+
 
     # instantiate a MODS LBT TCS interface class
 
