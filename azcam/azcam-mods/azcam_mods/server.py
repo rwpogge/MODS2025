@@ -197,7 +197,7 @@ def setup():
         # exposure information header template
         # filename is header_<systemname>.txt in the system templates folder
         
-        expTemplate = os.oath.join(azcam.db.systemfolder,
+        expTemplate = os.path.join(azcam.db.systemfolder,
                                    "templates",
                                    f"header_{azcam.db.systemname}.txt")
         
