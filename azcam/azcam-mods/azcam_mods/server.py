@@ -3,7 +3,7 @@ Setup method for LBTO MODS azcamserver
 Usage example:
   python -i -m azcam_mods.server -- -mods1r
   
-  Updated: 2025 July 21 [rwp/osu]
+  Updated: 2025 July 22 [rwp/osu]
   
 """
 
@@ -185,23 +185,28 @@ def setup():
         
         parfile = os.path.join(azcam.db.systemfolder,
                                "parameters", 
-                               f"server_{option}.ini"
-                               )
-        
-        # FITS header template files are <modsID>_hdr.txt in system/<modsID>/templates/
-        
-        template = os.path.join(azcam.db.systemfolder, 
-                                "templates", 
-                                f"header_{option}.txt"
-                                )
+                               f"server_{option}.ini")
         
         # "flight" archon configuration (aka "timing") files are 
         # named <modsID>.acf or .ncf in system/<modsID>/archon/
         
         timingfile = os.path.join(azcam.db.systemfolder,
                                   "archon",
-                                  f"{option}.ncf",
-                                  )
+                                  f"{option}.ncf")
+
+        # exposure information header template
+        # filename is header_<systemname>.txt in the system templates folder
+        
+        expTemplate = os.oath.join(azcam.db.systemfolder,
+                                   "templates",
+                                   f"header_{azcam.db.systemname}.txt")
+        
+        # instrument information header template
+        # name is instHdr_<systemname>.txt in the system templates folder
+        
+        instTemplate = os.path.join(azcam.db.systemfolder,
+                                    "templates",
+                                    f"instHdr_{azcam.db.systemname}.txt")
         
         azcam.db.servermode = "archon"
         cmdport = 2402
@@ -211,16 +216,16 @@ def setup():
     elif "test" in option:
         parfile = os.path.join(azcam.db.systemfolder,
                                "parameters",
-                               "server_mods.ini"
-                               )
-        template = os.path.join(azcam.db.systemfolder,
-                                "templates",
-                                "header_mods.txt" 
-                                )
+                               "server_mods.ini")
+
+        expTemplate = os.path.join(azcam.db.systemfolder,   
+                                   "templates",    
+                                   "header_mods.txt")
+        
         timingfile = os.path.join(azcam.db.systemfolder,
                                   "archon",
-                                  "mods_test.ncf",
-                                  )
+                                  "mods_test.ncf")
+        
         azcam.db.servermode = "MODS"
         cmdport = 2402
 
@@ -229,10 +234,8 @@ def setup():
 
     # logging - in <azcamRoot>/system/logs/server.log for all configurations
     
-    logfile = os.path.join(azcamRoot,
-                           "system/logs", 
-                           "server.log"
-                           )
+    logfile = os.path.join(azcamRoot,"system/logs","server.log")
+                           
     azcam.db.logger.start_logging(logfile=logfile)
     azcam.log(f"MODS Channel: {modsID}")
     azcam.log(f"LBT Side: {lbtSide}")
@@ -274,7 +277,7 @@ def setup():
     # set server instance identity info in the header
     
     try:
-        system = System("MODS", template)
+        system = System("MODS", expTemplate)
         system.set_keyword("INSTRUME", option, "MODS Instrument Channel Name")
         system.set_keyword("DEWAR",option,"CCD Dewar")
     except Exception:
@@ -297,13 +300,19 @@ def setup():
 
     mods = MODS()
 
-    # load the header template
+    # load the exposure header template (static header content)
     
-    if len(template) > 0 and os.path.exists(template):
-        azcam.db.tools["exposure"].header.read_file(template)
+    if len(expTemplate) > 0 and os.path.exists(expTemplate):
+        azcam.db.tools["exposure"].header.read_file(expTemplate)
         
-    # read the server parameter file.  For MODS this could
-    # contain TCS interface (IIF) info
+    # load the instrument header template if it exists
+    
+    if len(instTemplate) and os.path.exists(instTemplate):
+        azcam.db.tools["instrument"].header.read_file(instTemplate)
+
+
+    # read the server parameter file.  For MODS this will contain TCS interface 
+    # (IIF) info needed later
 
     azcam.db.parameters.read_parfile(parfile)
     azcam.db.parameters.update_pars()
