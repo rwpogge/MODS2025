@@ -60,10 +60,10 @@
    IEB_B   192.168.139.110
 
    # Runtime flags 
-   USEHDF5
-   NoLog
+   #NoHDF
+   #NoLog
 
-   VERBOSE
+   #VERBOSE
    #debug
   \endcode
  
@@ -344,8 +344,8 @@ loadConfig(char *cfgfile)
 
       // HDF5 Output: When enabeled, HDF5 log files will be created.
       
-      else if (strcasecmp(keyword,"USEHDF5")==0) {
-	env.useHdf5 = 1;
+      else if (strcasecmp(keyword,"NOHDF")==0) {
+	env.useHdf5 = 0;
       
       }
 

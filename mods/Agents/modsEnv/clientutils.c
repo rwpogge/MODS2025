@@ -75,7 +75,7 @@ void initEnvData(envdata_t *envi){
   envi->irlaserTempSet = 0.0; 
 
   envi->doLogging = 1;                      // enable enviromental data logging by default
-  envi->useHdf5 = 0;                        // default: do not output enviornmental data to Hdf5
+  envi->useHdf5 = 1;                        // default: output enviornmental data to Hdf5
   envi->hdfInitalized = 0;
   strcpy(envi->logRoot,ENV_LOGS);
   strcpy(envi->hdfRoot,HDF_LOGS);
