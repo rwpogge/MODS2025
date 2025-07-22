@@ -359,7 +359,7 @@ class LBTTCS(Telescope):
                 raise RuntimeError(f"ERROR: could not load LBT TCS header config file {configFile} - {exp}")
                 return
     
-            if len(self.cfgDdata)==0:
+            if len(self.cfgData)==0:
                 self.cfgData = None
                 stream.close()
                 raise RuntimeError(f"ERROR: LBT TCS header config file {configFile} is empty!")
