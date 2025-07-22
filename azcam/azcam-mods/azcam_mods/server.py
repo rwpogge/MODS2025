@@ -3,7 +3,7 @@ Setup method for LBTO MODS azcamserver
 Usage example:
   python -i -m azcam_mods.server -- -mods1r
   
-  Updated: 2025 July 14 [rwp/osu]
+  Updated: 2025 July 21 [rwp/osu]
   
 """
 
@@ -26,7 +26,13 @@ from azcam.tools.instrument import Instrument
 from azcam.tools.archon.controller_archon import ControllerArchon
 from azcam.tools.archon.exposure_archon import ExposureArchon
 from azcam.tools.archon.tempcon_archon import TempConArchon
+
+# azcam_mods modules
+
 from azcam_mods.detector_mods import detector_mods
+from azcam_mods.telescope_lbt import LBTTCS
+
+# other stuff
 
 from azcam.web.fastapi_server import WebServer
 
@@ -265,9 +271,12 @@ def setup():
         exposure.send_image = 1
         exposure.sendimage.set_remote_imageserver(remote_host, 6543, "azcam")
 
+    # set server instance identity info in the header
+    
     try:
         system = System("MODS", template)
-        system.set_keyword("DETNAME", option, "Detector name")
+        system.set_keyword("INSTRUME", option, "MODS Instrument Channel Name")
+        system.set_keyword("DEWAR",option,"CCD Dewar")
     except Exception:
         pass
 
@@ -317,7 +326,7 @@ def setup():
     azcam.db.tools["exposure"].root = f"{modsID.lower()}.{obsDate()}."
     azcam.db.tools["exposure"].folder = datafolder
     
-    # let the MODS azcam tool know our MODS ID and which side of the
+    # Let the MODS azcam tool know our MODS ID and which side of the
     # telescope it is on
 
     mods.modsID = modsID
@@ -327,13 +336,13 @@ def setup():
     except:
         mods.lbtSide = lbtSide
     
-    # direct instrument methods (if any)
+    # direct instrument methods (none yet, maybe later?)
     
     instrument = Instrument()
 
-    # direct telescope methods (if any)
+    # instantiate a MODS LBT TCS interface class
 
-    telescope = Telescope()
+    telescope = LBTTCS(instID="mods",side=mods.lbtSide)
     
     # command server
 
@@ -362,5 +371,8 @@ def setup():
 
 
 # start
+
 setup()
+
 from azcam.cli import *
+
