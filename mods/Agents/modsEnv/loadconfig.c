@@ -328,11 +328,18 @@ loadConfig(char *cfgfile)
 	strcpy(env.llb_Addr,argStr);
       }
 
-      // ION: IP address of the Ion Guage
+      // IONR: IP address of the Red Ion Guage
 
-      else if (strcasecmp(keyword,"ION")==0) {
+      else if (strcasecmp(keyword,"ION_R")==0) {
 	GetArg(inStr,2,argStr);
-	strcpy(env.ion_Addr,argStr);
+	strcpy(env.ionR_Addr,argStr);
+      }
+
+      // IONR: IP address of the Blue Ion Guage
+
+      else if (strcasecmp(keyword,"ION_B")==0) {
+	GetArg(inStr,2,argStr);
+	strcpy(env.ionB_Addr,argStr);
       }
 
       // NoLog: Explicitly disable data logging

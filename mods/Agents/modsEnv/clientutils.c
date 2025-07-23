@@ -74,8 +74,10 @@ void initEnvData(envdata_t *envi){
   envi->irlaserTemp = 0.0;    
   envi->irlaserTempSet = 0.0; 
 
-  strcpy(envi->ion_Addr,"");
-  envi->ionData  = 0; 
+  strcpy(envi->ionR_Addr,"");
+  envi->ionRData  = 0; 
+  strcpy(envi->ionB_Addr,"");
+  envi->ionBData  = 0; 
 
   envi->doLogging = 1;                      // enable enviromental data logging by default
   envi->useHdf5 = 1;                        // default: output enviornmental data to Hdf5
@@ -237,7 +239,8 @@ int getEnvData(envdata_t *envi) {
   }
 
   // Get data from the Ion Guage
-  envi->ionData = getIonPressure(envi->ion_Addr, ION_PORT, 2);
+  envi->ionRData = getIonPressure(envi->ionR_Addr, ION_PORT, 2);
+  envi->ionBData = getIonPressure(envi->ionB_Addr, ION_PORT, 2);
   
   // In the future, might put IR laser state info here, but laser
   // control logic is complicated...

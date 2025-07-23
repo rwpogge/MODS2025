@@ -180,8 +180,11 @@ typedef struct envData {
 
   // Ion Guage information
 
-  char ion_Addr[64];    //!< IP address of the Ion Pressure Gauge
-  float ionData;        //!< Current reading of the ion in torr
+  char ionR_Addr[64];   //!< IP address of the Red Ion Pressure Gauge
+  float ionRData;       //!< Current reading of the red ion in torr
+
+  char ionB_Addr[64];   //!< IP address of the Blue Ion Pressure Gauge
+  float ionBData;       //!< Current reading of the blue ion in torr
 
   // Logging information
 
@@ -214,7 +217,8 @@ typedef struct envData {
   lbto::tel::float_measure::buf_proxy airBotTempMeasure;        //!< The airBotTemp data in the telemetry stream
   lbto::tel::float_measure::buf_proxy trussTopTempMeasure;      //!< The trussTopTemp data in the telemetry stream
   lbto::tel::float_measure::buf_proxy trussBotTempMeasure;      //!< The trussBotTemp data in the telemetry stream
-  lbto::tel::float_measure::buf_proxy ionMeasure;               //!< The ionData in the telemetry stream
+  lbto::tel::float_measure::buf_proxy ionRMeasure;              //!< The red ionData in the telemetry stream
+  lbto::tel::float_measure::buf_proxy ionBMeasure;              //!< The blue ionData in the telemetry stream
 
   std::shared_ptr<lbto::tel::collector> modsCollector;          //!< The telemetry collection interface
 
