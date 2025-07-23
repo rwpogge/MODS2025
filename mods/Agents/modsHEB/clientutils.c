@@ -33,6 +33,7 @@ void initEnvData(envdata_t *envi){
   envi->modules = NULL;             // device module setup.
   envi->rawWagoData = NULL;
   envi->numModules = 0;
+  envi->ionData = 0;
 
   envi->doLogging = 1;              // enable enviromental ascii data logging by default
   envi->useHdf5 = 1;                // default: enable enviornmental hdf5 data logging by default
