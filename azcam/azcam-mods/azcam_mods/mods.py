@@ -1044,6 +1044,10 @@ class MODS(object):
         if len(isisStr) == 0:
             return
         
+        # strip extraneous quotes that might come from the server parser
+        
+        isisStr = re.sub("[\"\']","",isisStr)
+
         # current keyword list from the instrument header template
         
         keys = list(azcam.db.tools["instrument"].header.keywords.keys())
