@@ -67,7 +67,7 @@
         \param port integer with the port to connect to.
         \param timeout integer with the maximum number of seconds that should be spent trying to connect.
         
-        \return the pressure as a float, NULL on errors.  
+        \return the pressure as a float, 0 on errors.  
         
         Opens a connection to the ion gauge, reads the pressure, returns it as a float, and closes the ion connection.
     */
