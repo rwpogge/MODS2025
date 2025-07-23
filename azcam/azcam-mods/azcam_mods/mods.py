@@ -25,6 +25,7 @@ Additions:
     set_expnum() and get_expnum(): set/get number of next image to be written
     set/get_keyword(): set/get a header keyword, ensure proper sytnax
     set/get_imageInfo(): set/get IMAGETYP and OBJECT for the next image
+    set_istatus(): process instrument ISTATUS info into the instrument FITS header database
     obsDate(): return the observing date CCYYMMDD noon-to-noon local time
     modsFilename(): split a filename string into dataPath, rootName, and expNum
     
