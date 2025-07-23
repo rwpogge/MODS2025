@@ -1051,9 +1051,17 @@ class MODS(object):
         if len(isisStr) == 0:
             return
         
-        # strip extraneous quotes remaining from the server command parser
+        # strip residual extraneous quotes from isisStr
         
         isisStr = re.sub("[\"\']","",isisStr)
+
+        # dice up isisStr and make a dictionary of values
+        
+        isisBits = isisStr.split('|')
+        statusDict = {}
+        for bit in isisBits:
+            keyval = bit.strip().split(':')
+            statusDict[keyval[0].upper()] = keyval[1]
 
         # current keyword list from the instrument header template
         
@@ -1064,19 +1072,15 @@ class MODS(object):
         values = azcam.db.tools["instrument"].header.values
         types = azcam.db.tools["instrument"].header.typestrings
         
-        # parse the ISTATUS message string into component keyword:value pairs
-
-        istatusDict = self.isisParser(isisStr)
-        
         # Only change the values of keywords in the ISTATUS message we
         # are expecting.  Typecase as needed.
         
         for key in keys:
-            if key in istatusDict:
-                if types[key] is not 'str':
-                    values[key] = knownTypes[types[key]](istatusDict[key])
+            if key in statusDict:
+                if types[key] != 'str':
+                    values[key] = knownTypes[types[key]](statusDict[key])
                 else:
-                    values[key] = istatusDict[key]
+                    values[key] = statusDict[key]
                 
         # We have values, pass them back to the server
         
@@ -1209,55 +1213,6 @@ class MODS(object):
             return datetime.date.today().strftime("%Y%m%d")
 
 
-    def isisParser(self, isisStr: str, typeDict):
-        '''
-        Parse a |-separated ISIS status data block into components against
-        a parsing dictionary
-
-        Parameters
-        ----------
-        isisStr : str
-            raw ISIS message string go parse
-        
-        Returns
-        -------
-        isisDict: dictionary of values extracted from isisStr
-        
-        Order of entries is in the order the appear in the status message
-        string. We let downstream functions change the order as needed
-        (anticipating order is overengineering) and other processing
-        
-        Description
-        -----------
-        Function knows how to break apart a |-sparated keyword:value pair
-        data set derived from an IMPv2 message string passed from a MODS 
-        data-taking system ISIS client and breaking it into
-        a dictionary that can be passed to a tool header database.
-        
-        We can't just receive a raw ISTATUS string with keyword=value
-        pairs because the azcam command server treats the = sign as
-        a reserved token separator it intreprets as indicating that
-        this is a python function parameter.  We get it, so this is 
-        the work around.
-
-        Format is
-            key1:val1|key2:val2|...|keyN:valN
-        where | separates key:val pairs, and : separates key and val
-        
-        '''
-        
-        # dice isisStr into a dictionary of values, enforce
-        # upper case on keywords
-        
-        isisBits = isisStr.split('|')
-        isisDict = {}
-        for bit in isisBits:
-            keyval = bit.strip().split(':')
-            isisDict[keyval[0].upper] = keyval[1]
-            
-        return None if len(isisDict)==0 else isisDict
-    
-    
     # modest test function, as in "wtf does _this_ do?"
 
     def wtf(self,cmdStr: str,wait: bool=False) -> str:
