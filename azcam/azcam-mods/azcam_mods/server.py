@@ -3,7 +3,7 @@ Setup method for LBTO MODS azcamserver
 Usage example:
   python -i -m azcam_mods.server -- -mods1r
   
-  Updated: 2025 July 22 [rwp/osu]
+  Updated: 2025 July 23 [rwp/osu]
   
 """
 
@@ -25,12 +25,16 @@ from azcam.tools.telescope import Telescope
 from azcam.tools.instrument import Instrument
 from azcam.tools.archon.controller_archon import ControllerArchon
 from azcam.tools.archon.exposure_archon import ExposureArchon
-from azcam.tools.archon.tempcon_archon import TempConArchon
+#
+# we are using a modified version of TempConArchon called TempConMODS
+#
+#from azcam.tools.archon.tempcon_archon import TempConArchon
 
 # azcam_mods modules
 
 from azcam_mods.detector_mods import detector_mods
 from azcam_mods.telescope_lbt import LBTTCS
+from azcam_mods.tempcon_mods import TempConMODS
 
 # other stuff
 
@@ -251,8 +255,10 @@ def setup():
 
     # tempcon
     
-    tempcon = TempConArchon(description="MODS Archon")
-    tempcon.temperature_ids = [0, 2]  # camtemp, mnttemp
+#    tempcon = TempConArchon(description="MODS Archon")
+    
+    tempcon = TempConMODS(description="MODS Archon")
+    tempcon.temperature_ids = [0, 2]  # ccdtemp, basetemp
     tempcon.heaterx_board = "MOD1"
     tempcon.control_temperature = -95.0
     controller.heater_board_installed = 1
