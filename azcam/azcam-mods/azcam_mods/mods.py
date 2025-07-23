@@ -1002,7 +1002,7 @@ class MODS(object):
             
         return
         
-    
+
     def get_imageInfo(self):
         '''
         Get the image type and image title for the next image
@@ -1025,6 +1025,55 @@ class MODS(object):
             return f"{imgType.upper()} {imgTitle}"
         
             
+    def set_istatus(self,isisStr):
+        '''
+        Parse an ISTATUS string from the MODS IE and set the instrument
+        tool header keyword dictionaries for the image FITS haders.
+
+        Parameters
+        ----------
+        isisStr : string
+            Raw ISTATUS command message string from an IE (mmc server) client
+
+        Returns
+        -------
+        None.
+
+        '''    
+        
+        if len(isisStr) == 0:
+            return
+        
+        # current keyword list from the instrument header template
+        
+        keys = list(azcam.db.tools["instrument"].header.keywords.keys())
+        
+        # current header keyword value and typestring dicts 
+        
+        values = azcam.db.tools["instrument"].header.values
+        types = azcam.db.tools["instrument"].header.typestrings
+        
+        # parse the ISTATUS message string into component keyword:value pairs
+
+        istatusDict = self.isisParser(isisStr,"DONE: ISTATUS",types)
+        
+        # Only change the values of keywords contained in the ISTATUs
+        # message.
+        
+        for key in keys:
+            if key in istatusDict:
+                values[key] = istatusDict[key]
+                
+        # We have values, pass them back to the server
+        
+        azcam.db.tools["instrument"].header.values = values
+    
+        return
+    
+    #----------------------------------------------------
+    #  various utilities
+    #    
+
     def modsFilename(self,fileStr=None):
         '''
         Break a filename string down into the components
@@ -1146,6 +1195,70 @@ class MODS(object):
             return datetime.date.today().strftime("%Y%m%d")
 
 
+    def isisParser(self, isisStr: str, header: str, parse):
+        '''
+        Parse an ISIS status message into components against
+        a parsing dictionaroy
+
+        Parameters
+        ----------
+        isisStr : str
+            raw ISIS message string go parse
+        header : str
+            message header (e.g., "DONE: STATUS")
+        parse : dict
+            dictionary of data types for each header keyword of interest
+            
+        The `parse` parameter is usually derived from the typestrings
+        dictionary for a header (e.g., `azcam.db.tools["instrument"].header.typestrings`)
+        
+        Returns
+        -------
+        result: dictionary of keywords:values extracted from isisStr
+        
+        Order of entries is in the order the appear in the status message
+        string.
+        
+        Description
+        -----------
+        Function knows how to break apart an IMPv2 message string passed
+        from a MODS data-taking system ISIS client and breaking it into
+        a dictionary that can be passed to a tool header database.
+        
+        Primary use is to pull apart an ISTATUS (instrument status) query
+        to a MODS mechanisms server (mms) client to update the instrument
+        block of FITS headers in an Archon image.
+        
+        Based on an ISIS message parser from LBTO 
+        (https://github.com/LBTO/ahs/blob/master/python/src/lbto-ahs-modsalert)
+        adapted for azcam-mods
+
+        '''
+        
+        # Recognized data types.  The standard typestrings dict carries
+        # strings (e.g., 'int') we translate to data type for type casting
+        
+        knownTypes = {'int':int,'float':float,'str':str}
+    
+        s = isisStr.find(header)
+        if s == -1:
+            return None
+        isisStr = isisStr[s:].lstrip(header).strip().split()
+        result = dict()
+        for e in isisStr:
+            e = e.split('=')
+            if len(e) != 2:
+                continue
+            k, v = e
+            try:
+                result[k]= knownTypes[parse.get(k)](v)
+                if parse[k] == 'str':
+                    result[k] = re.sub("[\"\']","",result[k])
+            except:
+                pass
+        return None if len(result)==0 else result
+    
+    
     # modest test function, as in "wtf does _this_ do?"
 
     def wtf(self,cmdStr: str,wait: bool=False) -> str:
