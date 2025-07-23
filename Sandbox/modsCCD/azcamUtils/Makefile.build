@@ -1,0 +1,34 @@
+#
+# Makefile for libazcam, the AzCam API library
+#
+# Build the package using the "build" script not with make.
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge@astronomy.ohio-state.edu
+# Last Modified 2005 May 17
+#
+
+VERSION     = AzCamUtils v1.6.0
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+ROOTDIR     = /home/dts/Workshop/Y4KCam
+
+CFLAGS      = -w -c
+VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
+              -DAPP_COMPTIME='"$(COMPTIME)"'
+
+OBJS        = server.o image.o exposure.o ccdtemp.o azcamutils.o iosubs.o
+
+.c.o:       azcam.h
+	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
+
+all:        libazcam.a 
+
+libazcam.a:  $(OBJS) 
+	    /bin/rm -f  libazcam.a
+	    $(AR) cr libazcam.a $(OBJS)
+	    ranlib libazcam.a
+
+clean:
+	    /bin/rm -f libazcam.a *.o
+

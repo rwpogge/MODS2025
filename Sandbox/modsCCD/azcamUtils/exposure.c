@@ -1,0 +1,787 @@
+/*!
+  \file exposure.c
+  \brief AzCam Exposure Control Functions
+
+  The following are a suite of interface functions that provide access
+  to all of the azcam server exposure control functions.
+
+  Most function names recapitulate the analogous azcam server commands,
+  while others serve as interface functions that provide access to
+  server commands that provide more than one function (e.g., setMode)
+
+  All routines call the communication layer routines in iosubs.c to take
+  care of common handling of timeout, errors, and reply processing.
+
+  All of the server exposure control commands documented in Section 9
+  of the <i>AzCam Programmers Reference Manual</i> have been
+  implemented except the following:
+  <pre>
+  Expose - not implemented (doesn't work well with the OSU cameras)
+  readImage - deprecated in recent AzCam versions
+  setSyntheticImage - future expansion
+  Guide - future expansion
+  </pre>
+  Two new functions
+  <pre>
+  setShutterMode()
+  setReadoutMode()
+  </pre>
+  Are defined to implement the "setMode 1 X" and "setMode 2 X"
+  commands, respectively.
+
+  Finally, ParShift has been renamed RowShift in this implementation.
+
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
+  \original 2005 May 17
+  \date 2025 July 23
+*/
+
+#include "azcam.h" // AzCam client API header 
+
+/*!
+  \brief Clear (flush) the detector array
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Erases the detector array preparatory to starting an integration.
+
+*/
+
+int
+clearArray(azcam_t *cam, char *reply)
+{
+  char cmdstr[64];
+
+  strcpy(cmdstr,"mods.flush");
+
+  if (azcamCmd(cam,cmdstr,reply)<0)
+    return -1;
+
+  // success, set various flags as required...
+
+  strcpy(reply,"CCD Erased");
+  return 0;
+
+}
+
+/*!
+  \brief Start an exposure (integration)
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param wait sets whether the azcam server waits until the exposure, 
+  is complete before replying.  One of #EXP_NOWAIT or #EXP_WAIT.
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Starts an exposure on the detector of the current exposure time (see
+  setExposure()).  The array is not erased first, this must be done
+  explicitly using clearArray().
+
+  If wait=#EXP_WAIT, the azcam server will not return status until the
+  integration is completed.  This is usually only done for zero-length
+  (ZERO or BIAS) images, or very short integrations where the
+  application decides not to poll the exposure progress using
+  readExposure() calls.
+
+  If wait=#EXP_NOWAIT, the azcam server will return status immediately
+  after starting the integration.  Integration progress can be monitored
+  using the readExposure() function.
+
+  IMPORTANT: if wait=#EXP_WAIT, the timeout interval for the AzCam
+  server communications (#azcam::Timeout) must be set long enough as as
+  to not timeout before the integration is complete.  To ensure that
+  this does not happen, we store the current default timeout, compute a
+  new timeout of the exposure time + 10 seconds, and then make the call,
+  resetting the default timeout after completion (or error).  The
+  exposure time used is the value in the #azcam::ExpTime data member.
+
+  \sa setExposure()
+*/
+
+int
+startExposure(azcam_t *cam, int wait, char *reply)
+{
+  char cmdstr[64];
+  long default_to;
+
+  // A gotcha here: if we are waiting, we better have the command
+  // timeout interval longer than the integration time, or we'll
+  // timeout.  Usually only done for short zero-length exposures.
+
+
+  switch(wait) {
+  case EXP_WAIT:
+    strcpy(cmdstr,"mods.expwait");
+    default_to = cam->Timeout;
+    cam->Timeout = (long)(cam->ExpTime) + 10L;
+    break;
+
+  case EXP_NOWAIT:
+    strcpy(cmdstr,"mods.expose");
+    break;
+  }
+
+  // If we are waiting, save the default timeout, compute
+  // a new timeout of exptime+10s
+
+  if (azcamCmd(cam,cmdstr,reply)<0) {
+    if (wait) cam->Timeout = default_to;
+    return -1;
+  }
+
+  // success, set various flags as required...
+
+  switch(wait) {
+  case EXP_WAIT:
+    cam->Timeout = default_to;
+    strcpy(reply,"Exposure Sequence Completed");
+    cam->State = READOUT;
+    break;
+
+  case EXP_NOWAIT:
+    strcpy(reply,"Exposure Sequence Started");
+    cam->State = EXPOSING;
+    break;
+  }
+
+  return 0;
+  
+}
+
+/*!
+  \brief Set the exposure (integration) time
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param exptime exposure time in decimal seconds
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Sets the exposure time for subsequent integrations.  The user provides
+  the exposure time in seconds to millisecond precision.
+
+*/
+
+int
+setExposure(azcam_t *cam, float exptime, char *reply)
+{
+  char cmdstr[64];
+  int expmsec;
+
+  if (exptime < 0) {
+    sprintf(reply,"Invalid exposure time %.3f, must be positive",exptime);
+    return -1;
+  }
+
+  sprintf(cmdstr,"mods.set_exptime %f.3",exptime);
+
+  if (azcamCmd(cam,cmdstr,reply)<0)
+    return -1;
+
+  // Successful, save the exposure time in the cam struct
+
+  cam->ExpTime = exptime;
+  sprintf(reply,"ExpTime=%.3f sec",exptime);
+  return 0;
+
+}
+
+/*!
+  \brief Query the azcam server for the current elapsed exposure time
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return elapsed exposure time in milliseconds, or -1 if errors,
+          with error text in reply
+
+  Query the azcam server and return the elapsed exposure (integration)
+  time in milliseconds.
+
+  \par Note 
+
+  In some azcam server implementions (i.e., every one we've encountered
+  or heard about so far), if you send a readExposure command to the
+  azcam server while a readout is in progress, the server will crash
+  after readout is done, rebooting the machine (meaning total system
+  crash).  We avoid this by not allowing the user to send this directive
+  during readout by checking the value of the #azcam::State data member.
+
+*/
+
+int
+readExposure(azcam_t *cam, char *reply)
+{
+  char cmdstr[64];
+
+  if (cam->State == READOUT) return 0; 
+
+  // Hope we're safe, do it...
+
+  strcpy(cmdstr,"mods.timeleft");
+
+  if (azcamCmd(cam,cmdstr,reply)<0)
+    return -1;
+
+  cam->Elapsed = atoi(reply);
+  sprintf(reply,"Elapsed=%.3f sec",cam->Elapsed);
+  return cam->Elapsed;
+
+}
+
+/*!
+  \brief Abort an exposure in progress.
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Issues an AbortExposure command to the azcam server and sets the API's
+  ABORT flag (kept in the #azcam::Abort data member).  It also sets the
+  server state flag to #IDLE (#azcam::State data member).
+
+  Because of some odd hardware interactions that we have observed, an
+  AbortExposure() command must be preceeded by PauseExposure().  We do
+  not know if this is generic to all ARC controllers or just the ones
+  we're working with at OSU.
+
+  Applications calling this API should call AbortExposure() with some
+  circumspection.
+
+*/
+
+int
+abortExposure(azcam_t *cam, char *reply)
+{
+  char cmdstr[64];
+
+  strcpy(cmdstr,"exposure.abort");
+
+  if (azcamCmd(cam,cmdstr,reply)<0) {
+    strcat(reply," - abortExposure Failed");
+    return -1;
+  }
+
+  // success, set various abort flags as required...
+
+  cam->Abort = 1;
+  cam->State = IDLE;
+  strcpy(reply,"Exposure Aborted");
+  return 0;
+
+}
+
+/*!
+  \brief Pause an exposure in progress.
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Issues a PauseExposure command to the azcam server.  Sets the
+  #azcam::State flag to #PAUSE on success.  If it fails, the
+  #azcam::State flag is left unchanged.
+
+  A PauseExposure should be followed by either AbortExposure() or
+  ResumeExposure().
+
+  We test the value of the #azcam::State flag and only send a
+  PauseExposure command if #EXPOSING.  Sending a PauseExposure directive
+  otherwise may be unpredictable.
+  
+  \sa AbortExposure(), ResumeExposure()
+*/
+
+int
+pauseExposure(azcam_t *cam, char *reply)
+{
+  char cmdstr[64];
+
+  if (cam->State != EXPOSING) {
+    strcpy(reply,"No exposure in-progress to PAUSE");
+    return -1;
+  }
+
+  strcpy(cmdstr,"exposure.pause");
+
+  if (azcamCmd(cam,cmdstr,reply)<0) {
+    strcat(reply," - pauseExposure Failed");
+    return -1;
+  }
+
+  // success, set various flags as required...
+
+  cam->State = PAUSE;
+  strcpy(reply,"Exposure Paused");
+  return 0;
+
+}
+
+/*!
+  \brief Resume a paused exposure
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Issues a ResumeExposure command to the azcam server.  Sets the
+  #azcam::State flag to #EXPOSING on success.  If it fails, the
+  #azcam::State flag is left unchanged.
+
+  Does not send ResumeExposure if the controller is not in a #PAUSE
+  state.
+
+  If you send a ResumeExposure() command when the azcam server is
+  not actually in a paused state, very bad things can happen (e.g.,
+  it crashes and reboots its host computer).
+
+  \sa PauseExposure()
+*/
+
+int
+resumeExposure(azcam_t *cam, char *reply)
+{
+  char cmdstr[64];
+
+  if (cam->State != PAUSE) {
+    strcpy(reply,"No PAUSEd exposure to RESUME");
+    return -1;
+  }
+
+  strcpy(cmdstr,"exposure.resume");
+
+  if (azcamCmd(cam,cmdstr,reply)<0) {
+    strcat(reply," - resumeExposure Failed");
+    return -1;
+  }
+
+  // success, set various flags as required...
+
+  cam->State = EXPOSING;
+  strcpy(reply,"Exposure Resumed");
+  return 0;
+
+}
+
+/*!
+  \brief Define the detector format in unbinned pixels
+
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Defines the detector format in unbinned pixels.  Since this function
+  is very complicated and important, involving 9 parameters, we do this
+  by using the relevant data members of the #azcam struct to define the
+  parameters, rather than having a lot of function arguments.  The
+  relevant data members are:
+  <pre>
+    #azcam::NCtotal      - Total number of columns (serial pixels)
+    #azcam::NCpredark    - Number of physical dark prescan columns
+    #azcam::NCunderscan  - Number of underscan columns to read
+    #azcam::NCoverscan   - Number of overscan columns to read
+    #azcam::NRtotal      - Total number of rows (lines)
+    #azcam::NRpredark    - Number of physical dark prescan rows
+    #azcam::NRunderscan  - Number of underscan rows to read
+    #azcam::NRoverscan   - Number of overscan rows to read
+    #azcam::NRframexfer  - Number of rows to shift for frame transfer mode
+  </pre>
+  A calling application would first set the various parameters in the
+  #azcam struct and then call this function to send them to the AzCam
+  server.
+
+  \sa setROI()
+*/
+
+int
+setFormat(azcam_t *cam, char *reply)
+{
+  char cmdstr[64];
+
+  // It can be somewhat bad to load a bogus detector format
+  // so the default set by InitAzCam() has coded "don't know"
+  // values.  Basically, if either NCtotal or NRtotal
+  // are zero (0), we don't know the format and won't load it
+
+  if (cam->NCtotal == 0 || cam->NRtotal ==0) {
+    sprintf(reply,"Invalid detector format (NCtotal=%d NRtotal=%d)",
+	    cam->NCtotal,cam->NRtotal);
+    return -1;
+  }
+
+  // We hope we're valid (hard to globally validate this, let the server
+  // gripe if it has problems, no guarantees...)
+
+  sprintf(cmdstr,"exposure.set_format %d %d %d %d %d %d %d %d %d",
+	  cam->NCtotal, cam->NCpredark, cam->NCunderscan,
+	  cam->NCoverscan, cam->NRtotal, cam->NRpredark,
+	  cam->NRunderscan, cam->NRoverscan, cam->NRframexfer);
+
+  if (azcamCmd(cam,cmdstr,reply)<0)
+    return -1;
+
+  // set flags as required...
+
+  strcpy(reply,cmdstr);
+	  
+  return 0;
+
+}
+  
+  
+/*!
+  \brief Define the detector region of interest for the next readout
+
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Sets the region of interest for the next detector readout in 
+  units of unbinned pixels.  Since this is complicated and would
+  involve a lot of arguments, we set this by using the relevant data 
+  members of the #azcam struct to define the parameters:
+  <pre>
+    #azcam::FirstCol - first column to read in unbinned pixels
+    #azcam::LastCol  - last column to read in unbinned pixels
+    #azcam::ColBin   - column-axis binning factor
+    #azcam::FirstRow - first row to read in unbinned pixels
+    #azcam::LastRow  - last row to read in unbinned pixels
+    #azcam::RowBin   - row-axis binning factor
+  </pre>
+  Note that regions of interest that are smaller than the physical
+  size of the device in unbinned pixels are only supported for
+  single-amplifier readout modes.
+
+*/
+
+int
+setROI(azcam_t *cam, char *reply)
+{
+  char cmdstr[64];
+
+  // Quick check, if FirstCol or LastCol is 0, that signals "don't know"
+  // we we should not set the ROI
+
+  if (cam->FirstCol == 0 || cam->FirstRow == 0) {
+    sprintf(reply,"Invalid ROI, FirstCol=%d FirstRow=%d",
+	    cam->FirstCol,cam->FirstRow);
+    return -1;
+  }
+
+  // Another is if either ColBin or RowBin are zero
+
+  if (cam->ColBin == 0 || cam->RowBin == 0) {
+    sprintf(reply,"Invalid ROI, ColBin=%d RowBin=%d",
+	    cam->ColBin,cam->RowBin);
+    return -1;
+  }
+    
+  // We hope we're OK, send it up
+
+  sprintf(cmdstr,"mods.set_roi %d %d %d %d %d %d",
+	  cam->FirstCol,cam->LastCol,
+	  cam->FirstRow,cam->LastRow,
+	  cam->ColBin,cam->RowBin);
+
+  if (azcamCmd(cam,cmdstr,reply)<0)
+    return -1;
+
+  // set flags as required...
+
+  sprintf(reply,"ROI=[%d:%d,%d:%d] XBin=%d YBin=%d",
+	  cam->FirstCol,cam->LastCol,
+	  cam->FirstRow,cam->LastRow,
+	  cam->ColBin,cam->RowBin);
+	  
+  return 0;
+
+}
+  
+/*!
+  \brief Open the Shutter.
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Instructs the azcam server to open the shutter.
+
+  \sa CloseShutter()
+*/
+
+int
+openShutter(azcam_t *cam, char *reply)
+{
+  char cmdstr[64];
+
+  strcpy(cmdstr,"mods.shopen");
+
+  if (azcamCmd(cam,cmdstr,reply)<0)
+    return -1;
+
+  // success, set various flags as required...
+
+  cam->Shutter = SH_OPEN;
+  strcpy(reply,"Shutter=1 (Open)");
+  return 0;
+
+}
+
+/*!
+  \brief Close the Shutter.
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Instructs the azcam server to close the shutter.
+
+  \sa OpenShutter()
+*/
+
+int
+closeShutter(azcam_t *cam, char *reply)
+{
+  char cmdstr[64];
+
+  strcpy(cmdstr,"mods.shclose");
+
+  if (azcamCmd(cam,cmdstr,reply)<0)
+    return -1;
+
+  // success, set various flags as required...
+
+  cam->Shutter = SH_CLOSED;
+  strcpy(reply,"Shutter=0 (Closed)");
+  return 0;
+
+}
+
+/*!
+  \brief Query the azcam server for the current image size
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return the total number of pixels in the image if successful, -1 if
+  errors.
+
+  Queries the azcam server for the current total image size in pixels
+  (including effects of binning, overscan regions, etc).  It also sets
+  the #azcam::Ncols, #azcam::Nrows, and #azcam::Npixels data members in
+  the cam struct for the convenience of the calling application.
+
+*/
+
+int
+getDetPars(azcam_t *cam, char *reply)
+{
+  char cmdstr[64];
+  char msgstr[64];
+  int ncols;
+  int nc_pdk;
+  int nc_usc;
+  int nc_osc;
+  int nrows;
+  int np_pdk;
+  int np_usc;
+  int np_osc;
+  int np_ft;
+  int npix;
+
+  strcpy(cmdstr,"exposure.get_format");
+  memset(msgstr,0,sizeof(msgstr));
+
+  if (azcamCmd(cam,cmdstr,msgstr)<0) {
+    sprintf(reply,"Cannot get detector parameters - %s",msgstr);
+    return -1;
+  }
+
+  // extract the data
+
+  sscanf(msgstr,"%d %d %d %d %d %d %d %d %d",&ncols,&nc_pdk,&nc_usc,&nc_osc,&nrows,&np_pdk,&np_usc,&np_osc,&np_ft);
+
+  npix = nrows * ncols;
+
+  // store the results in the cam struct
+
+  cam->Nrows = nrows;
+  cam->Ncols = ncols;
+  cam->Npixels = npix;
+  sprintf(reply,"Ncols=%d Nrows=%d Npix=%d",nrows,ncols,npix);
+  return npix;
+ 
+}
+
+/*!
+  \brief Query the azcam server for the number of pixels readout
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return Count of the number of pixels readout if successful, -1 
+          on errors, with error text in reply
+
+  Queries the azcam server and returns the number of pixels readout from
+  the detector array.  Repeated calls to getPixelCount() are often used
+  by applications to monitor readout progress.  When the array is
+  finished reading out, the pixel count returned should equal the total
+  pixel size returned by getDetPars().  After each call to
+  getPixelCount(), it stores the current number of pixels read in
+  #azcam::Nread.
+
+  Note that unlike readExposure(), experiments have so far shown that
+  calling getPixelCount() is benign in all circumstances.
+
+  \sa getDetPars()
+*/
+
+int
+getPixelCount(azcam_t *cam, char *reply)
+{
+  char cmdstr[64];
+  int pixcount;
+
+  strcpy(cmdstr,"mods.pixelsLeft"); // pixread = numpix - pixelsLeft...
+
+  if (azcamCmd(cam,cmdstr,reply)<0)
+    return -1;
+
+  pixcount = atoi(reply);
+  sprintf(reply,"PixCount=%d",pixcount);
+  cam->Nread = pixcount; 
+  return pixcount;
+
+}
+
+/*!
+  \brief Set the shutter mode
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param mode shutter mode, one of #DARK_IMAGE, #LIGHT_IMAGE, #TDI
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Sets the shutter mode to be used during subsequent exposures.  The
+  options are:
+  <pre>
+    #DARK_IMAGE:  shutter kept closed during integration
+    #LIGHT_IMAGE: shutter is opened during integration
+    #TDI: shutter open during readout (currently unsupported)
+  </pre>
+  Shutter mode settings stay in force for the rest of the AzCam
+  session unless changed.
+
+  This function implements the "SetMode 1 X" server command.
+
+  \sa SetReadoutMode()
+*/
+
+int
+SetShutterMode(azcam_t *cam, int mode, char *reply)
+{
+  char cmdstr[64];
+
+  switch(mode) {
+  case DARK_IMAGE:
+    strcpy(cmdstr,"SetMode 1 0");
+    break;
+    
+  case LIGHT_IMAGE:
+    strcpy(cmdstr,"SetMode 1 1");
+    break;
+    
+  case TDI:
+    strcpy(cmdstr,"SetMode 1 2"); // may not be supported...
+    break;
+    
+  default:
+    sprintf(reply,"Unknown shutter mode: %d",mode);
+    return -1;  // unknown value
+    break;
+    
+  } // end switch
+  
+  if (azcamCmd(cam,cmdstr,reply)<0)
+    return -1;
+
+  // success, set various flags as required...
+
+  cam->ShutterMode = mode;
+  switch(mode) {
+  case DARK_IMAGE:
+    strcpy(reply,"ShutterMode=Dark");
+    break;
+
+  case LIGHT_IMAGE:
+    strcpy(reply,"ShutterMode=Light");
+    break;
+
+  case TDI:
+    strcpy(reply,"ShutterMode=TDI");
+    break;
+  }
+  return 0;
+
+}
+
+/*!
+  \brief Set the detector readout mode
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param mode detector readout mode, one of #IMMEDIATE or #DEFERRED
+  \param reply string to contain any reply text
+  \return 0 if successful, -1 on errors, with error text in reply
+
+  Sets the readout behavior for exposures.  There are two options:
+  <pre>
+    #IMMEDIATE: readout is initiated immediately after integration
+    #DEFERRED: readout is deferred until an explicit readout is requested
+  </pre>
+  #IMMEDIATE mode should be used for all normal exposures, whereas
+  #DEFERRED is used for custom multiple exposures like focus plates,
+  nod-and-shuffle, shutter shading calibrations, etc.
+
+  This function implements the "SetMode 2 X" server command, where
+  we have introduced the "immediate" and "deferred" mode names.
+
+  \sa SetShutterMode()
+*/
+
+int
+SetReadoutMode(azcam_t *cam, int mode, char *reply)
+{
+  char cmdstr[64];
+
+  switch(mode) {
+  case IMMEDIATE:
+    strcpy(cmdstr,"SetMode 2 0");
+    break;
+    
+  case DEFERRED:
+    strcpy(cmdstr,"SetMode 2 1");
+    break;
+    
+  default:
+    sprintf(reply,"Unknown readout mode: %d",mode);
+    return -1; // unknown readout mode
+    break;
+  }
+
+  if (azcamCmd(cam,cmdstr,reply)<0)
+    return -1;
+
+  // success, set various flags as required...
+
+  cam->Readout = mode;
+  switch(mode){
+  case IMMEDIATE:
+    strcpy(reply,"ReadoutMode=Immediate");
+    break;
+
+  case DEFERRED:
+    strcpy(reply,"ReadoutMode=Deferred");
+    break;
+  }
+  return 0;
+
+}
+
