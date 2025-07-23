@@ -3,7 +3,7 @@ Defines the MODS class for azcam
 
 Original by Mike Lesser
 
-Updated: 2025 July 13 [rwp/osu]
+Updated: 2025 July 23 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -25,6 +25,7 @@ Additions:
     set_expnum() and get_expnum(): set/get number of next image to be written
     set/get_keyword(): set/get a header keyword, ensure proper sytnax
     set/get_imageInfo(): set/get IMAGETYP and OBJECT for the next image
+    set_istatus(): process instrument ISTATUS info into the instrument FITS header database
     obsDate(): return the observing date CCYYMMDD noon-to-noon local time
     modsFilename(): split a filename string into dataPath, rootName, and expNum
     
@@ -38,6 +39,7 @@ import typing
 
 import azcam
 
+#============================================================
 
 class MODS(object):
     '''
@@ -1002,7 +1004,7 @@ class MODS(object):
             
         return
         
-    
+
     def get_imageInfo(self):
         '''
         Get the image type and image title for the next image
@@ -1025,6 +1027,72 @@ class MODS(object):
             return f"{imgType.upper()} {imgTitle}"
         
             
+    def set_istatus(self,isisStr):
+        '''
+        Parse an ISTATUS string from the MODS IE and set the instrument
+        tool header keyword dictionaries for the image FITS haders.
+
+        Parameters
+        ----------
+        isisStr : string
+            Raw ISTATUS command message string from an IE (mmc server) client
+
+        Returns
+        -------
+        None.
+
+        '''    
+        # Recognized data types.  The standard typestrings dict carries
+        # strings (e.g., 'int') we translate to data type for type casting
+
+        knownTypes = {'int':int,'float':float,'str':str}
+        
+        # if nothing to parse, return
+        
+        if len(isisStr) == 0:
+            return
+        
+        # strip residual extraneous quotes from isisStr
+        
+        isisStr = re.sub("[\"\']","",isisStr)
+
+        # dice up isisStr and make a dictionary of values
+        
+        isisBits = isisStr.split('|')
+        statusDict = {}
+        for bit in isisBits:
+            keyval = bit.strip().split(':')
+            statusDict[keyval[0].upper()] = keyval[1]
+
+        # current keyword list from the instrument header template
+        
+        keys = list(azcam.db.tools["instrument"].header.keywords.keys())
+        
+        # current header keyword value and typestring dicts 
+        
+        values = azcam.db.tools["instrument"].header.values
+        types = azcam.db.tools["instrument"].header.typestrings
+        
+        # Only change the values of keywords in the ISTATUS message we
+        # are expecting.  Typecase as needed.
+        
+        for key in keys:
+            if key in statusDict:
+                if types[key] != 'str':
+                    values[key] = knownTypes[types[key]](statusDict[key])
+                else:
+                    values[key] = statusDict[key]
+                
+        # We have values, pass them back to the server
+        
+        azcam.db.tools["instrument"].header.values = values
+    
+        return
+    
+    #----------------------------------------------------
+    #  various utilities
+    #    
+
     def modsFilename(self,fileStr=None):
         '''
         Break a filename string down into the components
@@ -1151,10 +1219,9 @@ class MODS(object):
     def wtf(self,cmdStr: str,wait: bool=False) -> str:
         try:
             if wait:
-                return f"wtf {cmdStr} wait"
+                return f"wtf is {cmdStr} wait"
             else:
-                return f"wtf {cmdStr} nowait"
+                return f"wtf is {cmdStr} nowait"
         except Exception as e:
-            return f"ERROR: wtf - {e}"
+            return f"ERROR: wtf~? - {e}"
         
-    

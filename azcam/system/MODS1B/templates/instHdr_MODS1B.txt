@@ -1,0 +1,62 @@
+HATCH     HatchPos             / Instrument Dark Hatch [open|closed]
+CALIB     CalibPos             / Calibration Tower Position [in|out]
+CALLAMPS  None                 / Calibration Lamps
+VFLAT                      0.0 / Variable Intensity Flat Lamp Intensity
+SLITMASK                     0 / Slit Mask Cassette position
+MASKPOS   IN                   / Slit Mask Position
+MASKNAME  Mask Name            / Slit Mask Name
+MASKINFO  Mask Description     / Slit Mask Description
+DICHROIC                     0 / Dichroic Turret Position
+DICHNAME  Dichroic Name        / Dichroic Beam Selector position ID
+DICHINFO  Dichoic Description  / Dichroic Beam Selector Description
+COLFOCUS                     0 / Collimator Focus (A+B+C) [microns]
+COLTTFA                      0 / Collimator TTF actuator A [microns]
+COLTTFB                      0 / Collimator TTF actuator B [microns]
+COLTTFC                      0 / Collimator TTF actuator C [microns]
+GRATING                      0 / Grating Turret Position
+GRATNAME  Grating Name         / Name of the Disperser at GRATING
+GRATINFO  Grating Description  / Description of the Disperser
+GRATTILT                     0 / Grating Tilt [microns]
+FILTER                       0 / Camera Filter Wheel Position
+FILTNAME  Filter Name          / Camera Filter Name
+FILTINFO  Filter Description   / Camera Filter Description
+CAMFOCUS                     0 / Camera Primary Mirror Focus [microns]
+IRLASER   OFF                  / IMCS IR Laser AC Power On or Off
+IRBEAM    DISABLED             / IMCS IR Laser Beam Enabled or Disabled
+IRPSET                     0.0 / IMCS IR Laser Beam Power Set Point [mW]
+IRPOUT                     0.0 / IMCS IR Laser Beam Power Output [mW]
+IRTEMP                     0.0 / IMCS IR Laser Head Temperature [deg C]
+IRTSET                     0.0 / IMCS IR Laser Head Temp Set Point [deg C]
+AGWXGP                     0.0 / AGW Guide Probe X focal plane position [mm]
+AGWYGP                     0.0 / AGW Guide Probe Y focal plane position [mm]
+AGWFOCUS                   0.0 / AGW Guide Probe relative focus [mm]
+AGWFILT                      0 / Guide Camera Filter Wheel position
+AGWFNAME  AGW Filter Name      / Guide Camera Filter Name
+AGWFINFO  AGW Filter Info      / Guide Camera Filter Description
+AGWXS                      0.0 / AGW Stage X actuator position [mm]
+AGWYS                      0.0 / AGW Stage Y actuator position [mm]
+AGWFS                      0.0 / AGW Stage Focus actuator position [mm]
+AGWFS0                     0.0 / AGW Stage Focus Zero Point [mm]
+AGWXWFS                    0.0 / AGW WFS Pickoff X focal plane position [mm]
+AGWYWFS                    0.0 / AGW WFS Pickoff Y focal plane position [mm]
+DEWPRES                    0.0 / Dewar Pressure [torr]
+DEWTEMP                    0.0 / Dewar LN2 Reservoir Temperature [deg C]
+CCDTEMP                    0.0 / CCD Mount Temperature [deg C]
+HEBTEMP                    0.0 / HEB Air Temperature [deg C]
+IGPOWER   ONOFF                / Dewar Vacuum Ion Gauge Power State
+ARPOWER   ONOFF                / Archon CCD Controller Power State
+AMBTEMP                    0.0 / Outside Ambient Air Temperature [deg C]
+TAIRTOP                    0.0 / MODS Inside Air Temp at Top [deg C]
+TAIRBOT                    0.0 / MODS Inside Air Temp at Bottom [deg C]
+TCOLLTOP                   0.0 / Collimator Truss Tube Top Temp [deg C]
+TCOLLBOT                   0.0 / Collimator Truss Tube Bottom Temp [deg C]
+IEBTEMPB                   0.0 / Blue IEB Air Temperature [deg C]
+IEBGRT_B                   0.0 / Blue IEB Glycol Return Temperature [deg C]
+IEBTEMPR                   0.0 / Red IEB Air Temperature [deg C]
+IEBGRT_R                   0.0 / Red IEB Glycol Return Temperature [deg C]
+IUBTAIR                    0.0 / Utility Box Air Temperature [deg C]
+AGHSTEMP                   0.0 / AGw Controller Heat Sink Temp [deg C]
+GSPRES                     0.0 / Glycol Supply Pressure [psi-g]
+GSTEMP                     0.0 / Glycol Supply Temperature [deg C]
+GRPRES                     0.0 / Glycol Return Pressure [psi-g]
+GRTEMP                     0.0 / Glycol Return Temperature [deg C]

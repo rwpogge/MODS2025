@@ -1,6 +1,8 @@
 # modsheb - MODS Head Electronics Box Monitor Agent
 Version: 1.0.0
+
 Author: X. Carroll, OSU Astronomy (carroll.892@osu.edu)
+
 Author: R. Pogge, OSU Astronomy (pogge.1@osu.edu)
 
 ## Overview

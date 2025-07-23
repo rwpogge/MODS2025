@@ -6,7 +6,7 @@ transparent without exposing critical system configuration files.
 
 We use `system/` as the root folder for all system-specific files
  * `parameters/` for azcam server parameter files
- * `templates/` for FITS header template and IIF data dictionary files
+ * `templates/` for FITS header templates and IIF data dictionary files
  * `archon/` for the Archon controller files (.acf and .ncf)
  * `logs/` for azcam server logs
 
@@ -32,7 +32,8 @@ Header and other templates used by the azcam server.  The FITS header template i
 static header structure for each `<modsID>` system.  The azcam server will add various
 other parameters as it will, and populate the headers with dates, times, and specific
 data like actual exposure time, total dark time, etc.
- * `header_<modsID>.txt` - FITS header template for `<modsID>`
+ * `header_<modsID>.txt` - static exposure info FITS header template for `<modsID>`
+ * `instHdr_<modsID>.txt` - Instrument configuration and status info FITS header template for `<modsID>`
  * `modsTCS_<side>.txt` - LBT IIF data dictionary to TCS FITS header keyword mapping used by `telescope_lbt.py`. <side> is left (SX) or right (DX), same for both channels in a single MODS
 
 ## Archon Control Files
