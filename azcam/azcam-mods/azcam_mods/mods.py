@@ -3,7 +3,7 @@ Defines the MODS class for azcam
 
 Original by Mike Lesser
 
-Updated: 2025 July 13 [rwp/osu]
+Updated: 2025 July 23 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -38,6 +38,7 @@ import typing
 
 import azcam
 
+#============================================================
 
 class MODS(object):
     '''
@@ -1040,11 +1041,17 @@ class MODS(object):
         None.
 
         '''    
+        # Recognized data types.  The standard typestrings dict carries
+        # strings (e.g., 'int') we translate to data type for type casting
+
+        knownTypes = {'int':int,'float':float,'str':str}
+        
+        # if nothing to parse, return
         
         if len(isisStr) == 0:
             return
         
-        # strip extraneous quotes that might come from the server parser
+        # strip extraneous quotes remaining from the server command parser
         
         isisStr = re.sub("[\"\']","",isisStr)
 
@@ -1059,14 +1066,17 @@ class MODS(object):
         
         # parse the ISTATUS message string into component keyword:value pairs
 
-        istatusDict = self.isisParser(isisStr,"DONE: ISTATUS",types)
+        istatusDict = self.isisParser(isisStr)
         
-        # Only change the values of keywords contained in the ISTATUs
-        # message.
+        # Only change the values of keywords in the ISTATUS message we
+        # are expecting.  Typecase as needed.
         
         for key in keys:
             if key in istatusDict:
-                values[key] = istatusDict[key]
+                if types[key] is not 'str':
+                    values[key] = knownTypes[types[key]](istatusDict[key])
+                else:
+                    values[key] = istatusDict[key]
                 
         # We have values, pass them back to the server
         
@@ -1199,68 +1209,53 @@ class MODS(object):
             return datetime.date.today().strftime("%Y%m%d")
 
 
-    def isisParser(self, isisStr: str, header: str, parse):
+    def isisParser(self, isisStr: str, typeDict):
         '''
-        Parse an ISIS status message into components against
-        a parsing dictionaroy
+        Parse a |-separated ISIS status data block into components against
+        a parsing dictionary
 
         Parameters
         ----------
         isisStr : str
             raw ISIS message string go parse
-        header : str
-            message header (e.g., "DONE: STATUS")
-        parse : dict
-            dictionary of data types for each header keyword of interest
-            
-        The `parse` parameter is usually derived from the typestrings
-        dictionary for a header (e.g., `azcam.db.tools["instrument"].header.typestrings`)
         
         Returns
         -------
-        result: dictionary of keywords:values extracted from isisStr
+        isisDict: dictionary of values extracted from isisStr
         
         Order of entries is in the order the appear in the status message
-        string.
+        string. We let downstream functions change the order as needed
+        (anticipating order is overengineering) and other processing
         
         Description
         -----------
-        Function knows how to break apart an IMPv2 message string passed
-        from a MODS data-taking system ISIS client and breaking it into
+        Function knows how to break apart a |-sparated keyword:value pair
+        data set derived from an IMPv2 message string passed from a MODS 
+        data-taking system ISIS client and breaking it into
         a dictionary that can be passed to a tool header database.
         
-        Primary use is to pull apart an ISTATUS (instrument status) query
-        to a MODS mechanisms server (mms) client to update the instrument
-        block of FITS headers in an Archon image.
-        
-        Based on an ISIS message parser from LBTO 
-        (https://github.com/LBTO/ahs/blob/master/python/src/lbto-ahs-modsalert)
-        adapted for azcam-mods
+        We can't just receive a raw ISTATUS string with keyword=value
+        pairs because the azcam command server treats the = sign as
+        a reserved token separator it intreprets as indicating that
+        this is a python function parameter.  We get it, so this is 
+        the work around.
 
+        Format is
+            key1:val1|key2:val2|...|keyN:valN
+        where | separates key:val pairs, and : separates key and val
+        
         '''
         
-        # Recognized data types.  The standard typestrings dict carries
-        # strings (e.g., 'int') we translate to data type for type casting
+        # dice isisStr into a dictionary of values, enforce
+        # upper case on keywords
         
-        knownTypes = {'int':int,'float':float,'str':str}
-    
-        s = isisStr.find(header)
-        if s == -1:
-            return None
-        isisStr = isisStr[s:].lstrip(header).strip().split()
-        result = dict()
-        for e in isisStr:
-            e = e.split('=')
-            if len(e) != 2:
-                continue
-            k, v = e
-            try:
-                result[k]= knownTypes[parse.get(k)](v)
-                if parse[k] == 'str':
-                    result[k] = re.sub("[\"\']","",result[k])
-            except:
-                pass
-        return None if len(result)==0 else result
+        isisBits = isisStr.split('|')
+        isisDict = {}
+        for bit in isisBits:
+            keyval = bit.strip().split(':')
+            isisDict[keyval[0].upper] = keyval[1]
+            
+        return None if len(isisDict)==0 else isisDict
     
     
     # modest test function, as in "wtf does _this_ do?"
@@ -1268,10 +1263,9 @@ class MODS(object):
     def wtf(self,cmdStr: str,wait: bool=False) -> str:
         try:
             if wait:
-                return f"wtf {cmdStr} wait"
+                return f"wtf is {cmdStr} wait"
             else:
-                return f"wtf {cmdStr} nowait"
+                return f"wtf is {cmdStr} nowait"
         except Exception as e:
-            return f"ERROR: wtf - {e}"
+            return f"ERROR: wtf~? - {e}"
         
-    
