@@ -522,7 +522,7 @@ class MODS(object):
         Poll the server for the current exposure status, returning
         numerical code (0..13) and a status string.
             
-        The current exposre flag in code is in `azcam.db.tools["exposure"].exposure_flag`
+        The current exposure flag in code is in `azcam.db.tools["exposure"].exposure_flag`
         and the dictionary of string translations is `azcam.db.exposureflags`.
         
         Examples:
@@ -669,6 +669,37 @@ class MODS(object):
         mountTemp = "%.1f" % reply[1]
 
         return ["OK", ccdTemp, mountTemp]
+    
+    
+    def set_CCDSetPoint(self,setPoint):
+        '''
+        Set the CCD temperature control setpoint on the Archon
+
+        Parameters
+        ----------
+        setPoint : float
+            new setpoint temperature in degrees C
+
+        Returns
+        -------
+        None.
+
+        '''
+        azcam.db.tools["tempcon"].set_control_temperature(setPoint)
+        return
+    
+    
+    def get_CCDSetPoint(self):
+        '''
+        Get the CCD temperature control setpoint temperature 
+
+        Returns
+        -------
+        setPoint: float
+            current setpoint temperature in degrees C
+
+        '''
+        return azcam.db.tools["tempcon"].control_temperature
     
 
     def shopen(self):
@@ -885,7 +916,7 @@ class MODS(object):
 
     def set_keyword(self,fitsKey,value,comment=None):
         '''
-        Set a FITS header keywrd
+        Set a FITS header keyword
 
         Parameters
         ----------
@@ -938,6 +969,22 @@ class MODS(object):
             return val
         except:
             return f"ERROR: get_keyword() header keyword {fitsKey} not found"
+        
+        
+    def clearKeywords(self,toolID="exposure"):
+        '''
+        Clear a keyword database.  Default is the exposure database
+
+        Returns
+        -------
+        None.
+
+        '''
+        try:
+            azcam.db.tools[toolID].header.delete_all_keys()
+            return
+        except:
+            return
         
         
     def set_imageInfo(self,imgType=None,imgTitle=None):
