@@ -159,7 +159,7 @@ int getEnvData(envdata_t *envi) {
   int iubBreaker = 0;     // IUB AC power breaker status word
 
   // Get data from the IUB environmental sensors
-  ierr = wagoSetGet(0,envi->iub_Addr,1,10,iubData);
+  ierr = wagoSetGetRegisters(0,envi->iub_Addr,1,10,iubData);
   if (ierr != 0) {
     if (useCLI) printf("WARNING: %s IUB WAGO read error",envi->modsID);
     return ierr;
@@ -174,7 +174,7 @@ int getEnvData(envdata_t *envi) {
   envi->ambientTemp = (float)iubData[8]/10.0;
 
   // Get the IUB AC power control status data
-  ierr = wagoSetGet(0,envi->iub_Addr,513,1,iubData);
+  ierr = wagoSetGetRegisters(0,envi->iub_Addr,513,1,iubData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s IUB WAGO error reading power status word",envi->modsID);
   }
@@ -194,7 +194,7 @@ int getEnvData(envdata_t *envi) {
   }
   
   // Get the IUB AC power breaker output side current sensor data
-  ierr = wagoSetGet(0,envi->iub_Addr,11,1,iubData);
+  ierr = wagoSetGetRegisters(0,envi->iub_Addr,11,1,iubData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s cannot read IUB breaker output status",envi->modsID);
   }
@@ -210,7 +210,7 @@ int getEnvData(envdata_t *envi) {
   }
   
   // Get data from the Red IEB environmental sensors
-  ierr = wagoSetGet(0,envi->iebR_Addr,1,10,iebRData);
+  ierr = wagoSetGetRegisters(0,envi->iebR_Addr,1,10,iebRData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Red IEB WAGO read error",envi->modsID);
   }
@@ -222,7 +222,7 @@ int getEnvData(envdata_t *envi) {
   }
   
   // Get data from the Blue IEB environmental sensors
-  ierr = wagoSetGet(0,envi->iebB_Addr,1,10,iebBData);
+  ierr = wagoSetGetRegisters(0,envi->iebB_Addr,1,10,iebBData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue WAGO IEB read error",envi->modsID);
   }
