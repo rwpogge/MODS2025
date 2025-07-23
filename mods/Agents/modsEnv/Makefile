@@ -41,9 +41,9 @@ LIBS        = $(INCLUDES) $(LIBRARIES) -L/usr/X11R6/lib -lX11 \
 
 LFLAGS      = -o modsenv
 
-OBJS        = clientutils.o loadconfig.o commands.o modbusutils.o logutils.o
+OBJS        = clientutils.o loadconfig.o commands.o modbusutils.o logutils.o ionutils.o
 
-%.o : %.c client.h commands.h modbusutils.h
+%.o : %.c client.h commands.h modbusutils.h ionutils.h
 	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
 
 all:        modsenv

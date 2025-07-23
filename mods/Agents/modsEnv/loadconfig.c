@@ -328,6 +328,13 @@ loadConfig(char *cfgfile)
 	strcpy(env.llb_Addr,argStr);
       }
 
+      // ION: IP address of the Ion Guage
+
+      else if (strcasecmp(keyword,"ION")==0) {
+	GetArg(inStr,2,argStr);
+	strcpy(env.ion_Addr,argStr);
+      }
+
       // NoLog: Explicitly disable data logging
 
       else if (strcasecmp(keyword,"NOLOG")==0) {

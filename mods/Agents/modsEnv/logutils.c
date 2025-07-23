@@ -130,6 +130,12 @@ int initTelemetryData(envdata_t* envi){
       lbto::tel::name("trussBotTemp"),
       lbto::tel::description("MODS collimator truss tube Bottom temperature in degrees C")
     ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->ionMeasure, 
+      lbto::tel::unit::torr(), 
+      lbto::tel::name("ionPressure"),
+      lbto::tel::description("The pressure reading of the ion gauge in torr")
+    ));
 
     //Adding this definition to the telemetry store.
     envi->modsCollector.reset(new lbto::tel::collector(modsDefiner.make_definition(), MAX_TELEMETRY_BUFFER_BYTES, false));
@@ -221,7 +227,7 @@ int initEnvLog(envdata_t *envi){
 
     memset(logStr,0,sizeof(logStr));
     sprintf(logStr,"# UTC Date/Time      Tamb  Psup  Pret  Tsup  Tret  Tiub"
-	    "  Tagw  Bair  Bret  Rair  Rret  AirT  AirB  ColT  ColB\n"
+	    "  Tagw  Bair  Bret  Rair  Rret  AirT  AirB  ColT  ColB  Ion   \n"
     );
     ierr = write(envi->logFD,logStr,strlen(logStr));
   }
@@ -260,7 +266,7 @@ int logEnvData(envdata_t *envi){
   // Append the current enviromental sensor data to the data log
   memset(logStr,0,sizeof(logStr));
   sprintf(logStr,"%s %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f"
-	  " %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f\n",
+	  " %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f, %5.1f\n",
 	  envi->utcDate, envi->ambientTemp,
 	  envi->glycolSupplyPres, envi->glycolReturnPres,
 	  envi->glycolSupplyTemp, envi->glycolReturnTemp,
@@ -268,7 +274,8 @@ int logEnvData(envdata_t *envi){
 	  envi->iebB_AirTemp, envi->iebB_ReturnTemp,
 	  envi->iebR_AirTemp, envi->iebR_ReturnTemp,
 	  envi->airTopTemp, envi->airBotTemp,
-	  envi->trussTopTemp, envi->trussBotTemp
+	  envi->trussTopTemp, envi->trussBotTemp,
+    envi->ionData
   );
   ierr = write(envi->logFD,logStr,strlen(logStr));
   
@@ -387,6 +394,7 @@ int logTelemetryData(envdata_t *envi){
     envi->airBotTempMeasure.store(envi->airBotTemp);
     envi->trussTopTempMeasure.store(envi->trussTopTemp);
     envi->trussBotTempMeasure.store(envi->trussBotTemp);
+    envi->ionMeasure.store(envi->ionData);
     
     //Commiting the data to the HDF5 file.
     envi->modsCollector->commit_sample(lbto::tel::date::from_posix_utc_s(commitTime));    //TODO: Fix time stamps.

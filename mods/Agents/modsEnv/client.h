@@ -99,6 +99,7 @@ extern isisclient_t client; // global client runtime config table
 */
 
 #include "modbusutils.h"
+#include "ionutils.h"
 
 // MODS Instrument Server Shared Memory
 
@@ -177,6 +178,11 @@ typedef struct envData {
   float irlaserTemp;       //!< IR Laser head temperature in degrees C
   float irlaserTempSet;    //!< IR laser head temperature control set point in degrees C
 
+  // Ion Guage information
+
+  char ion_Addr[64];    //!< IP address of the Ion Pressure Gauge
+  float ionData;        //!< Current reading of the ion in torr
+
   // Logging information
 
   int  doLogging;                  //!< Is logging enabled?  
@@ -208,6 +214,7 @@ typedef struct envData {
   lbto::tel::float_measure::buf_proxy airBotTempMeasure;        //!< The airBotTemp data in the telemetry stream
   lbto::tel::float_measure::buf_proxy trussTopTempMeasure;      //!< The trussTopTemp data in the telemetry stream
   lbto::tel::float_measure::buf_proxy trussBotTempMeasure;      //!< The trussBotTemp data in the telemetry stream
+  lbto::tel::float_measure::buf_proxy ionMeasure;               //!< The ionData in the telemetry stream
 
   std::shared_ptr<lbto::tel::collector> modsCollector;          //!< The telemetry collection interface
 
