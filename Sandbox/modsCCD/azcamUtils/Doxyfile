@@ -24,7 +24,11 @@
 # https://www.gnu.org/software/libiconv/ for the list of possible encodings.
 # The default value is: UTF-8.
 
+<<<<<<< Updated upstream
 DOXYFILE_ENCODING      = UTF-8
+=======
+PROJECT_NAME           = "azcamUtils: azcam server client library"
+>>>>>>> Stashed changes
 
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded by
 # double-quotes, unless you are using Doxywizard) that should identify the
@@ -32,7 +36,11 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
+<<<<<<< Updated upstream
 PROJECT_NAME           = "azcam server client utilities"
+=======
+PROJECT_NUMBER         = "Version 2.0.0"
+>>>>>>> Stashed changes
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
