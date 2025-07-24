@@ -25,7 +25,11 @@
 # The default value is: UTF-8.
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 DOXYFILE_ENCODING      = UTF-8
+=======
+PROJECT_NAME           = "azcamUtils: azcam server client library"
+>>>>>>> Stashed changes
 =======
 PROJECT_NAME           = "azcamUtils: azcam server client library"
 >>>>>>> Stashed changes
@@ -37,7 +41,11 @@ PROJECT_NAME           = "azcamUtils: azcam server client library"
 # The default value is: My Project.
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 PROJECT_NAME           = "azcam server client utilities"
+=======
+PROJECT_NUMBER         = "Version 2.0.0"
+>>>>>>> Stashed changes
 =======
 PROJECT_NUMBER         = "Version 2.0.0"
 >>>>>>> Stashed changes
