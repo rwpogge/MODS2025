@@ -124,14 +124,12 @@ initAzCam(azcam_t *cam)
     cam->FD = -1;         // -1 means no socket
   }
   cam->Timeout = 10L;   // default timeout is 10 seconds
-  strcpy(cam->IniFile,"NONE");
-  strcpy(cam->CfgFile,"NONE");
+  strcpy(cam->iniFile,"NONE");
+  strcpy(cam->cfgFile,"NONE");
 
   // Default state flags
 
   cam->State = IDLE;
-  cam->ShutterMode = LIGHT_IMAGE;
-  cam->Readout = IMMEDIATE;
   cam->Shutter = SH_CLOSED;
   cam->Abort = 0;
 
@@ -162,29 +160,23 @@ initAzCam(azcam_t *cam)
   cam->NRoverscan = 0;
   cam->NRframexfer = 0;
 
-  // Default Readout Configuration: single amp
-
-  cam->ReadMode = SINGLE_AMP;
-  cam->Splits = NO_SPLIT;
-  cam->NumDetX = 1;
-  cam->NumDetY = 1;
-  strcpy(cam->AmpConfig,"0000");
-
   // Default readout pixel counts (0)
 
   cam->Ncols = 0;
   cam->Nrows = 0;
   cam->Npixels = 0;
+  cam->pixLeft = 0;
+  cam->Nread = 0;
 
   // Default Exposure and File info
 
-  cam->ExpTime = 0.0;
-  cam->Elapsed = 0;
-  strcpy(cam->FilePath,"NONE");
-  strcpy(cam->FileName,"NONE");
-  cam->FileNum = 1;
-  cam->FileFormat = MEF;
-  strcpy(cam->LastFile,"NONE");
+  cam->expTime = 0.0;
+  cam->timeLeft = 0;
+  strcpy(cam->filePath,"NONE");
+  strcpy(cam->fileName,"NONE");
+  cam->fileNum = 1;
+  cam->fileFormat = MEF;
+  strcpy(cam->lastFile,"NONE");
 
 }
 
@@ -201,7 +193,7 @@ void
 azcamInfo(azcam_t *cam)
 {
   printf("azcam Server Interface Configuration:\n");
-  printf("  azcam Client Config File: %s\n",cam->CfgFile);
+  printf("  azcam Client Config File: %s\n",cam->cfgFile);
 
   printf("Communications:\n");
   if (cam->FD < 0) 
@@ -218,11 +210,26 @@ azcamInfo(azcam_t *cam)
   case EXPOSING:
     printf("  Server State: EXPOSURE in progress\n");
     break;
+  case ABORT:
+    printf("  Server State: Exposure is Aborting\n");
+    break;
+  case PAUSE:
+    printf("  Server State: Exposure PAUSED\n");
+    break;
+  case RESUME:
+    printf("  Server State: Exposure is Resuming\n");
+    break;
+  case READ:
+    printf("  Server State: Exposure file readout done, write pending\n");
+    break;
   case READOUT:
     printf("  Server State: READOUT in progress\n");
     break;
-  case PAUSE:
-    printf("  Server State: Exposure PAUSEd\n");
+  case SETUP:
+    printf("  Server State: Exposure is being initialized\n");
+    break;
+  case WRITING:
+    printf("  Server State: Exposure file is being written\n");
     break;
   default:
     printf("  Server State: UNKNOWN\n");
@@ -230,36 +237,7 @@ azcamInfo(azcam_t *cam)
   }
 
   printf("Camera Configuration:\n");
-  printf("  CCD Config File: %s\n",cam->IniFile);
-
-  switch(cam->ShutterMode) {
-  case DARK_IMAGE:
-    printf("  Shutter Mode: Always Closed\n");
-    break;
-  case LIGHT_IMAGE:
-    printf("  Shutter Mode: Open During Exposures\n");
-    break;
-  case TDI:
-    printf("  Shutter Mode: Open During Readout\n");
-    break;
-  default:
-    printf("  Shutter Mode: UNKNOWN\n");
-    break;
-  }
-  printf("  Shutter: %s\n",
-	 ((cam->Shutter) ? "Open" : "Closed"));
-  
-  switch (cam->Readout) {
-  case IMMEDIATE:
-    printf("  Readout Mode: IMMEDIATE\n");
-    break;
-  case DEFERRED:
-    printf("  Readout Mode: DEFERRED\n");
-    break;
-  default:
-    printf("  Readout Mode: UNKNOWN\n");
-    break;
-  }
+  printf("  CCD Config File: %s\n",cam->iniFile);
 
   printf("  CCD ROI: [%d:%d,%d:%d]  Binning: %dx%d\n",
 	 cam->FirstCol,cam->LastCol,
@@ -271,62 +249,20 @@ azcamInfo(azcam_t *cam)
 	 cam->NRtotal,cam->NRpredark,cam->NRunderscan,cam->NRoverscan,
 	 cam->NRframexfer);
 
-  switch(cam->ReadMode) {
-  case SINGLE_AMP:
-    printf("  Readout Config: Single Amp\n");
-    break;
-  case TWO_AMP_PARALLEL:
-    printf("  Readout Config: 2-Amp Parallel\n");
-    break;
-  case TWO_AMP_SERIAL:
-    printf("  Readout Config: 2-Amp Serial\n");
-    break;
-  case FOUR_AMP_QUAD:
-    printf("  Readout Config: 4-Amp Quad\n");
-    break;
-  case MOSAIC:
-    printf("  Readout Config: MOSAIC\n");
-    break;
-  default:
-    printf("  Readout Config: UNKNOWN\n");
-    break;
-  }
-
-  switch(cam->Splits) {
-  case NO_SPLIT:
-    printf("  No Split Register\n");
-    break;
-  case SPLIT_SERIAL:
-    printf("  Split Serial Registers\n");
-    break;
-  case SPLIT_PARALLEL:
-    printf("  Split Parallel Registers\n");
-    break;
-  case SPLIT_QUAD:
-    printf("  Quad Splits\n");
-    break;
-  default:
-    printf("  Unknown Register Split\n");
-    break;
-  }
-
-  printf("  Number of Detectors: %d x %d\n",
-	 cam->NumDetX, cam->NumDetY);
-  printf("  Amplifier Configuration: %s\n",cam->AmpConfig);
   printf("  Next Readout: %d x %d pixels (%d pixels total)\n",
 	 cam->Ncols,cam->Nrows,cam->Npixels);
 
   printf("CCD Temperature Control:\n");
   printf("  SetPoint: %.1f C\n",cam->setPoint);
   printf("  Last CCD Temperature: %.1f C\n",cam->ccdTemp);
-  printf("  Last Dewar Temperature: %.1f C\n",cam->baseTemp);
+  printf("  Last Base Temperature: %.1f C\n",cam->baseTemp);
   
   printf("Exposure & File Information:\n");
-  printf("  Exposure Time: %.3f sec\n",cam->ExpTime);
+  printf("  Exposure Time: %.3f sec\n",cam->expTime);
   printf("  Next Filename: %s/%s.%0.4d.fits\n",
-	 cam->FilePath,cam->FileName,cam->FileNum);
-  printf("  Last Filename: %s\n",cam->LastFile);
-  switch(cam->FileFormat) {
+	 cam->filePath,cam->fileName,cam->fileNum);
+  printf("  Last Filename: %s\n",cam->lastFile);
+  switch(cam->fileFormat) {
   case STDFITS:
     printf("  File Format: Standard FITS\n");
     break;

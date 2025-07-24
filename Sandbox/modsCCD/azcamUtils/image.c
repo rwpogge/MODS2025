@@ -92,7 +92,7 @@ imgExpNum(azcam_t *cam, int expNum, char *reply)
     doSet = 0;
   }
   else {
-    sprintf(cmdStr,"mods.set_expnum %d",exmNum);
+    sprintf(cmdStr,"mods.set_expnum %d",expNum);
     doSet = 1;
   }
   if (azcamCmd(cam,cmdStr,reply)<0)
@@ -213,7 +213,7 @@ setSocket(azcam_t *cam, int client, char *host, int port, char *reply)
   disk file.  This function is issued after readout has finished.  If
   the image is a multi-detector mosaic, the format code is ignored and
   the image is written as a multi-extension FITS (MEF) format image
-  (same as format=#MEF) as indicated by the #azcam::FileFormat
+  (same as format=#MEF) as indicated by the #azcam::fileFormat
   value.
 
   The filename provided must be the full name of the file including all
@@ -235,7 +235,7 @@ writeImage(azcam_t *cam, char *filename, char *reply)
   char cmdStr[128];
   char msgStr[256];
 
-  switch(cam->FileFormat) {
+  switch(cam->fileFormat) {
   case STDFITS:
     sprintf(cmdStr,"exposure.image.write_file %s 0",filename);
     break;
@@ -249,7 +249,7 @@ writeImage(azcam_t *cam, char *filename, char *reply)
     break;
 
   default:
-    sprintf(reply,"Unknown file format code: %d",cam->FileFormat);
+    sprintf(reply,"Unknown file format code: %d",cam->fileFormat);
     return -1; // unknown format
     break;
   }
