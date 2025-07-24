@@ -122,7 +122,7 @@ openAzCam(azcam_t *cam, char *reply)
 void
 closeAzCam(azcam_t *cam) 
 {
-  char cmdstr[128];
+  char cmdStr[128];
   char reply[128];
 
   // Send the info to close the azcam server connection
@@ -142,26 +142,26 @@ closeAzCam(azcam_t *cam)
   \brief Send data to an azcam server TCP socket
 
   \param cam pointer to an #azcam struct with the azcam server parameters
-  \param cmdstr message string to write
+  \param cmdStr message string to write
   \return Number of bytes written if successful, 0 or -1 if unsuccessful.
 
   Sends the message string provided to the azcam server described by the
   cam struct.  An azcam client session must have been previously initiated
   using the openAzCam() function.
 
-  On errors, it returns an error message in cmdstr.
+  On errors, it returns an error message in cmdStr.
 
   \sa readAzCam()
 */
 
 int  
-sendAzCam(azcam_t *cam, char *cmdstr)
+sendAzCam(azcam_t *cam, char *cmdStr)
 {
   int nsent = 0;
 
-  nsent = write(cam->FD,cmdstr,strlen(cmdstr));
+  nsent = write(cam->FD,cmdStr,strlen(cmdStr));
   if (nsent < 0) 
-    sprintf(cmdstr,"ERROR(sendAzCam()) - Cannot send to TCP azcam server %s:%d - %s\n",
+    sprintf(cmdStr,"ERROR(sendAzCam()) - Cannot send to TCP azcam server %s:%d - %s\n",
 	   cam->Host,cam->Port,strerror(errno));
   return nsent;
 }
@@ -170,9 +170,9 @@ sendAzCam(azcam_t *cam, char *cmdstr)
   \brief Read data from an azcam server TCP socket 
 
   \param cam Pointer to an #azcam struct with the azcam server parameters
-  \param msgstr Message string to carry the input string
+  \param msgStr Message string to carry the input string
   \return The number of characters read, or <0 if an error.  -1 on error
-  or timeout, with \e msgstr containing the error message text.
+  or timeout, with \e msgStr containing the error message text.
 
   Uses select() to read data from the specified comm port with the
   timeout interval specified.  Note that because TCP sockets are streams
@@ -192,7 +192,7 @@ sendAzCam(azcam_t *cam, char *cmdstr)
 */
 
 int  
-readAzCam(azcam_t *cam, char *msgstr)
+readAzCam(azcam_t *cam, char *msgStr)
 {
   int keepReading;
   char inbuf[256];  // working buffer
@@ -235,16 +235,16 @@ readAzCam(azcam_t *cam, char *msgstr)
 
     if (nready < 0) {
       if (errno == EINTR) { // got a Ctrl+C interrupt
-	sprintf(msgstr,"(readAzCam) Socket %s:%d read aborted Ctrl+C",
+	sprintf(msgStr,"(readAzCam) Socket %s:%d read aborted Ctrl+C",
 		cam->Host,cam->Port);
 	return -1;
       }
-      sprintf(msgstr,"(readAzCam) Socket %s:%d read select() error - %s",
+      sprintf(msgStr,"(readAzCam) Socket %s:%d read select() error - %s",
 	      cam->Host,cam->Port,strerror(errno));
       return -1;
     }
     else if (nready == 0 && cam->Timeout > 0L) {
-      sprintf(msgstr,"(readAzCam) Socket %s:%d read timed out after %d sec",
+      sprintf(msgStr,"(readAzCam) Socket %s:%d read timed out after %d sec",
 	      cam->Host,cam->Port,cam->Timeout);
       return -1;
     }
@@ -252,7 +252,7 @@ readAzCam(azcam_t *cam, char *msgstr)
       if (FD_ISSET(cam->FD,&readfds)) {
 	memset(inbuf,0,sizeof(inbuf));
 	if (read(cam->FD,inbuf,sizeof(inbuf))<0) {
-	  sprintf(msgstr,"(readAzCam) Cannot read socket %s:%d - %s",
+	  sprintf(msgStr,"(readAzCam) Cannot read socket %s:%d - %s",
 		  cam->Host,cam->Port,strerror(errno));
 	  return -1;
 	}
@@ -262,13 +262,13 @@ readAzCam(azcam_t *cam, char *msgstr)
 	// ourselves on account of lack of stream synch etc.
 
 	if (strlen(inbuf) > 0) {
-	  strcat(msgstr,inbuf);  
-	  lastchar = strlen(msgstr)-1;
+	  strcat(msgStr,inbuf);  
+	  lastchar = strlen(msgStr)-1;
 	  // if the last char is \r or \n the string is complete then
 	  // null terminate & return
-	  if (msgstr[lastchar]=='\r' || msgstr[lastchar]=='\n') {
-	    msgstr[lastchar]='\0'; 
-	    return strlen(msgstr);
+	  if (msgStr[lastchar]=='\r' || msgStr[lastchar]=='\n') {
+	    msgStr[lastchar]='\0'; 
+	    return strlen(msgStr);
 	  }
 	}
       }
@@ -284,7 +284,7 @@ readAzCam(azcam_t *cam, char *msgstr)
   \brief Send a command to the azcam server and await a reply
 
   \param cam pointer to an #azcam struct with the azcam server parameters
-  \param cmdstr command to send
+  \param cmdStr command to send
   \param reply  string returned by the azcam server
   \return Number of bytes written if successful, 0 or -1 if unsuccessful.
 
@@ -302,50 +302,50 @@ readAzCam(azcam_t *cam, char *msgstr)
 */
 
 int  
-azcamCmd(azcam_t *cam, char *cmdstr, char *reply)
+azcamCmd(azcam_t *cam, char *cmdStr, char *reply)
 {
   int nsent = 0;
-  char msgstr[256];
+  char msgStr[256];
   char status[32];
-  char msgbody[256];
+  char msgBody[256];
 
   // terminate the command string with \n and send it.  We do not validate
   // commands at this stage.  If the azcam server doesn't like the command,
   // it will complain
 
-  if (cmdstr[strlen(cmdstr)-1] != '\n') strcat(cmdstr,"\n");
+  if (cmdStr[strlen(cmdStr)-1] != '\n') strcat(cmdStr,"\n");
 
-  if (sendAzCam(cam,cmdstr)<0) {
-    sprintf(reply,"ERROR: %s",cmdstr);
+  if (sendAzCam(cam,cmdStr)<0) {
+    sprintf(reply,"ERROR: %s",cmdStr);
     return -1;
   }
 
   // Now wait timeout for a reply
 
-  memset(msgstr,0,sizeof(msgstr));
+  memset(msgStr,0,sizeof(msgStr));
 
-  if (readAzCam(cam,msgstr)<0) { 
-    strcpy(reply,msgstr);
+  if (readAzCam(cam,msgStr)<0) { 
+    strcpy(reply,msgStr);
     return -1;
   }
 
   // Split the reply into components and check for errors
 
-  sscanf(msgstr,"%s %[^\n]",status,msgbody);
+  sscanf(msgStr,"%s %[^\n]",status,msgBody);
 
   // strip off any residual termination
 
-  if (msgbody[strlen(msgbody)-1] == '\n') msgbody[strlen(msgbody-1)] = '\0';
+  if (msgBody[strlen(msgBody)-1] == '\n') msgBody[strlen(msgBody-1)] = '\0';
 
   // What we do depends on the value of status
 
   if (strcasecmp(status,"OK")==0) {
-    strcpy(reply,msgbody);
+    strcpy(reply,msgBody);
     return 0;
   }
 
   if (strcasecmp(status,"ERROR")==0) {
-    sprintf(reply,"SERVER ERROR %s",msgbody);
+    sprintf(reply,"SERVER ERROR %s",msgBody);
     return -1;
   }
 

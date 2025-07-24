@@ -10,7 +10,7 @@
 
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \date 2025 July 23
-  \orginal 2005 May 17
+  \original 2005 May 17
 */
 
 #include "azcam.h" // azcam client API header 
@@ -24,8 +24,8 @@
   Temperature values are in #azcam::CCDTemp and #azcam::DewarTemp.
 
   Queries the azcam server and readout out the detector and dewar
-  temperatures in degrees C, storing the results in the #azcam::CCDTemp
-  and #azcam::DewarTemp data members.
+  temperatures in degrees C, storing the results in the #azcam::ccdTemp
+  and #azcam::baseTemp data members.
 
   \sa setTemp(), setTempCal()
 */
@@ -33,28 +33,28 @@
 int
 getTemp(azcam_t *cam, char *reply)
 {
-  char cmdstr[16];
-  char msgstr[64];
+  char cmdStr[16];
+  char msgStr[64];
   float t1, t2;
 
-  memset(cmdstr,0,sizeof(cmdstr));
-  strcpy(cmdstr,"mods.ccdTemps");
+  memset(cmdStr,0,sizeof(cmdStr));
+  strcpy(cmdStr,"mods.ccdTemps");
 
-  if (azcamCmd(cam,cmdstr,msgstr)<0) {
-    strcpy(reply,msgstr);
+  if (azcamCmd(cam,cmdStr,msgStr)<0) {
+    strcpy(reply,msgStr);
     return -1;
   }
 
   // process the message string
   
-  if (sscanf(msgstr,"%f %f",&t1,&t2) == 2) {
+  if (sscanf(msgStr,"%f %f",&t1,&t2) == 2) {
     cam->ccdTemp = t1;
     cam->baseTemp = t2;
     sprintf(reply,"CCDTEMP=%.1f BASETEMP=%.1f",t1,t2);
     return 0;
   }
-  else { // got something weird, treat as an error
-    strcpy(reply,msgstr);
+  else { // got something weird, treat it as an error
+    strcpy(reply,msgStr);
     return -1;
   }
 
@@ -83,11 +83,11 @@ getTemp(azcam_t *cam, char *reply)
 int
 setTemp(azcam_t *cam, float temp, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
-  sprintf(cmdstr,"mods.set_CCDsetPoint %.1f",temp);
+  sprintf(cmdStr,"mods.set_CCDsetPoint %.1f",temp);
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   // success, set various flags as required...

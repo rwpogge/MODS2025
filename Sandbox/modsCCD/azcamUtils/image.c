@@ -54,31 +54,31 @@
 int
 setSocket(azcam_t *cam, int client, char *host, int port, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
   switch(client) {
   case GUIDER_CLIENT:
-    sprintf(cmdstr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
+    sprintf(cmdStr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
     break;
 
   case GUIDER_CLOSE:
-    sprintf(cmdstr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
+    sprintf(cmdStr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
     break;
 
   case MESSAGE_CLIENT:
-    sprintf(cmdstr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
+    sprintf(cmdStr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
     break;
 
   case MESSAGE_CLOSE:
-    sprintf(cmdstr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
+    sprintf(cmdStr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
     break;
 
   case DISPLAY_CLIENT:
-    sprintf(cmdstr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
+    sprintf(cmdStr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
     break;
 
   case FILE_CLIENT:
-    sprintf(cmdstr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
+    sprintf(cmdStr,"exposure.sendimage.set_remote_imageserver %s %d",host,port);
     break;
 
   default:
@@ -87,7 +87,7 @@ setSocket(azcam_t *cam, int client, char *host, int port, char *reply)
     break;
   }
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   // success, set various flags as required...
@@ -127,20 +127,20 @@ setSocket(azcam_t *cam, int client, char *host, int port, char *reply)
 int
 writeImage(azcam_t *cam, char *filename, char *reply)
 {
-  char cmdstr[128];
-  char msgstr[256];
+  char cmdStr[128];
+  char msgStr[256];
 
   switch(cam->FileFormat) {
   case STDFITS:
-    sprintf(cmdstr,"exposure.image.write_file %s 0",filename);
+    sprintf(cmdStr,"exposure.image.write_file %s 0",filename);
     break;
 
   case MEF:
-    sprintf(cmdstr,"exposure.image.write_file %s 1",filename);
+    sprintf(cmdStr,"exposure.image.write_file %s 1",filename);
     break;
 
   case BINARY:
-    sprintf(cmdstr,"exposure.image.write_file %s 2",filename);
+    sprintf(cmdStr,"exposure.image.write_file %s 2",filename);
     break;
 
   default:
@@ -149,9 +149,9 @@ writeImage(azcam_t *cam, char *filename, char *reply)
     break;
   }
 
-  memset(msgstr,0,sizeof(msgstr));
-  if (azcamCmd(cam,cmdstr,msgstr)<0) {
-    strcpy(reply,msgstr);
+  memset(msgStr,0,sizeof(msgStr));
+  if (azcamCmd(cam,cmdStr,msgStr)<0) {
+    strcpy(reply,msgStr);
     return -1;
   }
 
@@ -189,11 +189,11 @@ writeImage(azcam_t *cam, char *filename, char *reply)
 int
 sendImage(azcam_t *cam, char *localFile, char *remoteFile, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
-  sprintf(cmdstr,"exposure.sendimage.send_image %s %s",localFile,remoteFile);
+  sprintf(cmdStr,"exposure.sendimage.send_image %s %s",localFile,remoteFile);
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   // success, set various flags as required...
@@ -202,4 +202,3 @@ sendImage(azcam_t *cam, char *localFile, char *remoteFile, char *reply)
   return 0;
 
 }
-

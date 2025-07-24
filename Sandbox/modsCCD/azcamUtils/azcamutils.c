@@ -349,7 +349,7 @@ azcamInfo(azcam_t *cam)
   \brief Send a raw command to the Archon controller
   
   \param cam pointer to an #azcam struct with the server parameters
-  \param cmdstr command string to send
+  \param cmdStr command string to send
   \param reply string to contain any reply text
   \return 0 if successful, -1 on errors, with error text in reply
 
@@ -365,21 +365,21 @@ azcamInfo(azcam_t *cam)
 */
 
 int
-archonCmd(azcam_t *cam, char *cmdstr, char*reply)
+archonCmd(azcam_t *cam, char *cmdStr, char*reply)
 {
-  char msgstr[128];
+  char msgStr[128];
 
-  memset(msgstr,0,sizeof(msgstr));
+  memset(msgStr,0,sizeof(msgStr));
 
-  if (azcamCmd(cam,cmdstr,msgstr)<0) {
-    strcpy(reply,msgstr);
+  if (azcamCmd(cam,cmdStr,msgStr)<0) {
+    strcpy(reply,msgStr);
     return -1;
   }
 
-  if (strlen(msgstr)==0)
+  if (strlen(msgStr)==0)
     strcpy(reply,"OK");
   else
-    sprintf(reply,"OK %s",msgstr);
+    sprintf(reply,"OK %s",msgStr);
 
   return 0;
 
