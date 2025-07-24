@@ -1,4 +1,4 @@
-# azcamUtils - azcam server utility library
+# azcamUtils - azcam client utility library
 
 Version: 2.0.0
 
