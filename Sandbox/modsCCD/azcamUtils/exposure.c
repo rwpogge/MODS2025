@@ -151,6 +151,43 @@ startExposure(azcam_t *cam, int wait, char *reply)
 }
 
 /*!
+  \brief Query exposure status
+  
+  \return exposure state code (see azcam.h or azcam server docs)
+  
+  Queries the server and returns the current exposure status as
+  an integer code.  Tranlsate this to a string and set the value
+  of cam->State
+  
+*/
+
+int
+expStatus(azcam_t *cam, char *reply)
+{
+   char cmdStr[64];
+   char msgstr[64];
+   char status[32];
+   int expCode;
+   
+    
+    sprintf(cmdstr,"mods.expstatus");
+    memset(msgstr,0,sizeof(msgstr));
+    
+    if (azcamCmd(cam,cmdstr,msgstr)<0) {
+        sprintf(reply,"Cannot get exposure status - %s",msgstr);
+        return -1;
+    }
+    
+    sscanf(msgstr,"%d %s",&expCode,status);
+    
+    cam->State = expCode;
+    sprintf(reply,"ExpStatus=%s",status);
+    
+    return 0;
+
+}
+  
+/*!
   \brief Set the exposure (integration) time
   
   \param cam pointer to an #azcam struct with the server parameters
@@ -167,7 +204,6 @@ int
 setExposure(azcam_t *cam, float exptime, char *reply)
 {
   char cmdstr[64];
-  int expmsec;
 
   if (exptime < 0) {
     sprintf(reply,"Invalid exposure time %.3f, must be positive",exptime);
@@ -649,139 +685,6 @@ getPixelCount(azcam_t *cam, char *reply)
   sprintf(reply,"PixCount=%d",pixcount);
   cam->Nread = pixcount; 
   return pixcount;
-
-}
-
-/*!
-  \brief Set the shutter mode
-  
-  \param cam pointer to an #azcam struct with the server parameters
-  \param mode shutter mode, one of #DARK_IMAGE, #LIGHT_IMAGE, #TDI
-  \param reply string to contain any reply text
-  \return 0 if successful, -1 on errors, with error text in reply
-
-  Sets the shutter mode to be used during subsequent exposures.  The
-  options are:
-  <pre>
-    #DARK_IMAGE:  shutter kept closed during integration
-    #LIGHT_IMAGE: shutter is opened during integration
-    #TDI: shutter open during readout (currently unsupported)
-  </pre>
-  Shutter mode settings stay in force for the rest of the AzCam
-  session unless changed.
-
-  This function implements the "SetMode 1 X" server command.
-
-  \sa SetReadoutMode()
-*/
-
-int
-SetShutterMode(azcam_t *cam, int mode, char *reply)
-{
-  char cmdstr[64];
-
-  switch(mode) {
-  case DARK_IMAGE:
-    strcpy(cmdstr,"SetMode 1 0");
-    break;
-    
-  case LIGHT_IMAGE:
-    strcpy(cmdstr,"SetMode 1 1");
-    break;
-    
-  case TDI:
-    strcpy(cmdstr,"SetMode 1 2"); // may not be supported...
-    break;
-    
-  default:
-    sprintf(reply,"Unknown shutter mode: %d",mode);
-    return -1;  // unknown value
-    break;
-    
-  } // end switch
-  
-  if (azcamCmd(cam,cmdstr,reply)<0)
-    return -1;
-
-  // success, set various flags as required...
-
-  cam->ShutterMode = mode;
-  switch(mode) {
-  case DARK_IMAGE:
-    strcpy(reply,"ShutterMode=Dark");
-    break;
-
-  case LIGHT_IMAGE:
-    strcpy(reply,"ShutterMode=Light");
-    break;
-
-  case TDI:
-    strcpy(reply,"ShutterMode=TDI");
-    break;
-  }
-  return 0;
-
-}
-
-/*!
-  \brief Set the detector readout mode
-  
-  \param cam pointer to an #azcam struct with the server parameters
-  \param mode detector readout mode, one of #IMMEDIATE or #DEFERRED
-  \param reply string to contain any reply text
-  \return 0 if successful, -1 on errors, with error text in reply
-
-  Sets the readout behavior for exposures.  There are two options:
-  <pre>
-    #IMMEDIATE: readout is initiated immediately after integration
-    #DEFERRED: readout is deferred until an explicit readout is requested
-  </pre>
-  #IMMEDIATE mode should be used for all normal exposures, whereas
-  #DEFERRED is used for custom multiple exposures like focus plates,
-  nod-and-shuffle, shutter shading calibrations, etc.
-
-  This function implements the "SetMode 2 X" server command, where
-  we have introduced the "immediate" and "deferred" mode names.
-
-  \sa SetShutterMode()
-*/
-
-int
-SetReadoutMode(azcam_t *cam, int mode, char *reply)
-{
-  char cmdstr[64];
-
-  switch(mode) {
-  case IMMEDIATE:
-    strcpy(cmdstr,"SetMode 2 0");
-    break;
-    
-  case DEFERRED:
-    strcpy(cmdstr,"SetMode 2 1");
-    break;
-    
-  default:
-    sprintf(reply,"Unknown readout mode: %d",mode);
-    return -1; // unknown readout mode
-    break;
-  }
-
-  if (azcamCmd(cam,cmdstr,reply)<0)
-    return -1;
-
-  // success, set various flags as required...
-
-  cam->Readout = mode;
-  switch(mode){
-  case IMMEDIATE:
-    strcpy(reply,"ReadoutMode=Immediate");
-    break;
-
-  case DEFERRED:
-    strcpy(reply,"ReadoutMode=Deferred");
-    break;
-  }
-  return 0;
 
 }
 

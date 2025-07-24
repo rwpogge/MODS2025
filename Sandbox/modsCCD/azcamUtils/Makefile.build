@@ -1,17 +1,19 @@
 #
-# Makefile for libazcam, the AzCam API library
+# Makefile for libazcam, the AzCam client utility libraries
 #
 # Build the package using the "build" script not with make.
 #
 # R. Pogge, OSU Astronomy Dept.
-# pogge@astronomy.ohio-state.edu
-# Last Modified 2005 May 17
+# pogge.1@osu.edu
+#
+# First Version: 2005 May 17
+# Updated: 2025 July 23 [rwp/osu]
 #
 
-VERSION     = AzCamUtils v1.6.0
+VERSION     = azcamUtils v2.0.0
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
-ROOTDIR     = /home/dts/Workshop/Y4KCam
+ROOTDIR     = /home/dts/mods
 
 CFLAGS      = -w -c
 VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \

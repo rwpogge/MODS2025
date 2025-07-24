@@ -132,14 +132,21 @@ typedef struct azcam {
 #define SH_OPEN   1   //!< Shutter is open
 #define SH_CLOSED 0   //!< Shutter is closed
 
-#define IDLE     0    //!< Server is idle and awaiting commands
-#define READOUT  1    //!< Server is busy reading out the detector
-#define EXPOSING 2    //!< Server is busy exposing (integrating) the detector
-#define PAUSE    3    //!< Server is busy with a paused exposure
+// Exposure Status Codes for azcam = exposure.get_exposureflag
+// list is in exposure.exposureflags (on the server not remote)
 
-#define DT670  0      //!< Temperature sensor is a DT670 diode
-#define AD590  1      //!< Temperature sensor is an AD590 IC temperature transducer
-#define N914   3      //!< Temperature sensor is a 1N914 diode (weirdness of C, doesn't allow a #def to begin with a number)
+#define IDLE     0    //!< Server is idle and awaiting commands
+#define EXPOSING 1    //!< Exposure in progress
+#define ABORT    2    //!< Exposure Abort in progress
+#define PAUSE    3    //!< Exposure is paused
+#define RESUME   4    //!< Exposure is resuming
+#define READ     5    //!< Exposure has readout, pending write
+#define READOUT  7    //!< Exposure is being read out
+#define SETUP    8    //!< Exposure is being set up
+#define WRITING  9    //!< Exposure file being written to disk
+#define ERROR   11    //!< Exposure error code
+
+// Image types
 
 #define DARK_IMAGE  0 //!< Dark image, keep shutter closed during integration
 #define LIGHT_IMAGE 1 //!< Light image, open shutter during integration
@@ -201,6 +208,7 @@ int sendImage(azcam_t *, char *, char *, char *);
 int clearArray(azcam_t *, char *);
 int startExposure(azcam_t *, int , char *);
 int setExposure(azcam_t *, float , char *);
+int expStatus(azcam_t *, char *);
 int readExposure(azcam_t *, char *);
 int abortExposure(azcam_t *, char *);
 int abortReadout(azcam_t *, char*);
@@ -214,8 +222,8 @@ int closeShutter(azcam_t *, char *);
 //int RowShift(azcam_t *, int , char *); not implemented for Archon
 int getDetPars(azcam_t *, char *);
 int getPixelCount(azcam_t *, char *);
-int setShutterMode(azcam_t *, int , char *); // ?
-int setReadoutMode(azcam_t *, int , char *); // ?
+// int setShutterMode(azcam_t *, int , char *); // ?
+// int setReadoutMode(azcam_t *, int , char *); // ?
 
 // Temperature Commands (ccdtemp.c)
 
