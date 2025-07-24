@@ -16,8 +16,8 @@ OBSERVER  Observer Name(s)     / Observer(s)
 PARTNER   ENGINEERING          / LBT Project Partner(s)
 PROPID    ENGINEERING          / Observing Proposal ID
 PI_NAME   ENGINEERING          / Project PI Name(s)
-SUPPORT   Support Name(s)      / LBT Support Scientist(s)
-TELOPS    TelOps Name(s)       / LBT Telescope Operator(s)
+SUPPORT   Support Name(s)      / LBT Support Scientist(s) on duty
+TELOPS    TelOps Name(s)       / LBT Telescope Operator(s) on duty
 GRORDER                      1 / Grating order used
 RADECSYS  FK5                  / Coordinate System
 EQUINOX                 2000.0 / Equinox of coordinates
