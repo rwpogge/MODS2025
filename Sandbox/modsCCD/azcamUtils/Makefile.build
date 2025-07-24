@@ -10,10 +10,10 @@
 # Updated: 2025 July 23 [rwp/osu]
 #
 
+ROOTDIR     = /home/dts/mods
 VERSION     = azcamUtils v2.0.0
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
-ROOTDIR     = /home/dts/mods
 
 CFLAGS      = -w -c
 VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
@@ -30,6 +30,9 @@ libazcam.a:  $(OBJS)
 	    /bin/rm -f  libazcam.a
 	    $(AR) cr libazcam.a $(OBJS)
 	    ranlib libazcam.a
+#	    \cp libazcam.a $(ROOTDIR)/ulib/
+#	    \cp azcam.h $(ROOTDIR)/include/
+	    /bin/rm *.o
 
 clean:
 	    /bin/rm -f libazcam.a *.o

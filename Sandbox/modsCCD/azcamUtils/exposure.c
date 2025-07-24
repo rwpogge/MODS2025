@@ -52,11 +52,11 @@
 int
 clearArray(azcam_t *cam, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
-  strcpy(cmdstr,"mods.flush");
+  strcpy(cmdStr,"mods.flush");
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   // success, set various flags as required...
@@ -103,7 +103,7 @@ clearArray(azcam_t *cam, char *reply)
 int
 startExposure(azcam_t *cam, int wait, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
   long default_to;
 
   // A gotcha here: if we are waiting, we better have the command
@@ -113,20 +113,20 @@ startExposure(azcam_t *cam, int wait, char *reply)
 
   switch(wait) {
   case EXP_WAIT:
-    strcpy(cmdstr,"mods.expwait");
+    strcpy(cmdStr,"mods.expwait");
     default_to = cam->Timeout;
     cam->Timeout = (long)(cam->ExpTime) + 10L;
     break;
 
   case EXP_NOWAIT:
-    strcpy(cmdstr,"mods.expose");
+    strcpy(cmdStr,"mods.expose");
     break;
   }
 
   // If we are waiting, save the default timeout, compute
   // a new timeout of exptime+10s
 
-  if (azcamCmd(cam,cmdstr,reply)<0) {
+  if (azcamCmd(cam,cmdStr,reply)<0) {
     if (wait) cam->Timeout = default_to;
     return -1;
   }
@@ -165,20 +165,20 @@ int
 expStatus(azcam_t *cam, char *reply)
 {
    char cmdStr[64];
-   char msgstr[64];
+   char msgStr[64];
    char status[32];
    int expCode;
    
     
-    sprintf(cmdstr,"mods.expstatus");
-    memset(msgstr,0,sizeof(msgstr));
+    sprintf(cmdStr,"mods.expstatus");
+    memset(msgStr,0,sizeof(msgStr));
     
-    if (azcamCmd(cam,cmdstr,msgstr)<0) {
-        sprintf(reply,"Cannot get exposure status - %s",msgstr);
+    if (azcamCmd(cam,cmdStr,msgStr)<0) {
+        sprintf(reply,"Cannot get exposure status - %s",msgStr);
         return -1;
     }
     
-    sscanf(msgstr,"%d %s",&expCode,status);
+    sscanf(msgStr,"%d %s",&expCode,status);
     
     cam->State = expCode;
     sprintf(reply,"ExpStatus=%s",status);
@@ -203,16 +203,16 @@ expStatus(azcam_t *cam, char *reply)
 int
 setExposure(azcam_t *cam, float exptime, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
   if (exptime < 0) {
     sprintf(reply,"Invalid exposure time %.3f, must be positive",exptime);
     return -1;
   }
 
-  sprintf(cmdstr,"mods.set_exptime %f.3",exptime);
+  sprintf(cmdStr,"mods.set_exptime %f.3",exptime);
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   // Successful, save the exposure time in the cam struct
@@ -248,15 +248,15 @@ setExposure(azcam_t *cam, float exptime, char *reply)
 int
 readExposure(azcam_t *cam, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
   if (cam->State == READOUT) return 0; 
 
   // Hope we're safe, do it...
 
-  strcpy(cmdstr,"mods.timeleft");
+  strcpy(cmdStr,"mods.timeleft");
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   cam->Elapsed = atoi(reply);
@@ -289,11 +289,11 @@ readExposure(azcam_t *cam, char *reply)
 int
 abortExposure(azcam_t *cam, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
-  strcpy(cmdstr,"exposure.abort");
+  strcpy(cmdStr,"exposure.abort");
 
-  if (azcamCmd(cam,cmdstr,reply)<0) {
+  if (azcamCmd(cam,cmdStr,reply)<0) {
     strcat(reply," - abortExposure Failed");
     return -1;
   }
@@ -331,16 +331,16 @@ abortExposure(azcam_t *cam, char *reply)
 int
 pauseExposure(azcam_t *cam, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
   if (cam->State != EXPOSING) {
     strcpy(reply,"No exposure in-progress to PAUSE");
     return -1;
   }
 
-  strcpy(cmdstr,"exposure.pause");
+  strcpy(cmdStr,"exposure.pause");
 
-  if (azcamCmd(cam,cmdstr,reply)<0) {
+  if (azcamCmd(cam,cmdStr,reply)<0) {
     strcat(reply," - pauseExposure Failed");
     return -1;
   }
@@ -377,16 +377,16 @@ pauseExposure(azcam_t *cam, char *reply)
 int
 resumeExposure(azcam_t *cam, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
   if (cam->State != PAUSE) {
     strcpy(reply,"No PAUSEd exposure to RESUME");
     return -1;
   }
 
-  strcpy(cmdstr,"exposure.resume");
+  strcpy(cmdStr,"exposure.resume");
 
-  if (azcamCmd(cam,cmdstr,reply)<0) {
+  if (azcamCmd(cam,cmdStr,reply)<0) {
     strcat(reply," - resumeExposure Failed");
     return -1;
   }
@@ -432,7 +432,7 @@ resumeExposure(azcam_t *cam, char *reply)
 int
 setFormat(azcam_t *cam, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
   // It can be somewhat bad to load a bogus detector format
   // so the default set by InitAzCam() has coded "don't know"
@@ -448,17 +448,17 @@ setFormat(azcam_t *cam, char *reply)
   // We hope we're valid (hard to globally validate this, let the server
   // gripe if it has problems, no guarantees...)
 
-  sprintf(cmdstr,"exposure.set_format %d %d %d %d %d %d %d %d %d",
+  sprintf(cmdStr,"exposure.set_format %d %d %d %d %d %d %d %d %d",
 	  cam->NCtotal, cam->NCpredark, cam->NCunderscan,
 	  cam->NCoverscan, cam->NRtotal, cam->NRpredark,
 	  cam->NRunderscan, cam->NRoverscan, cam->NRframexfer);
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   // set flags as required...
 
-  strcpy(reply,cmdstr);
+  strcpy(reply,cmdStr);
 	  
   return 0;
 
@@ -493,7 +493,7 @@ setFormat(azcam_t *cam, char *reply)
 int
 setROI(azcam_t *cam, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
   // Quick check, if FirstCol or LastCol is 0, that signals "don't know"
   // we we should not set the ROI
@@ -514,12 +514,12 @@ setROI(azcam_t *cam, char *reply)
     
   // We hope we're OK, send it up
 
-  sprintf(cmdstr,"mods.set_roi %d %d %d %d %d %d",
+  sprintf(cmdStr,"mods.set_roi %d %d %d %d %d %d",
 	  cam->FirstCol,cam->LastCol,
 	  cam->FirstRow,cam->LastRow,
 	  cam->ColBin,cam->RowBin);
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   // set flags as required...
@@ -548,11 +548,11 @@ setROI(azcam_t *cam, char *reply)
 int
 openShutter(azcam_t *cam, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
-  strcpy(cmdstr,"mods.shopen");
+  strcpy(cmdStr,"mods.shopen");
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   // success, set various flags as required...
@@ -578,11 +578,11 @@ openShutter(azcam_t *cam, char *reply)
 int
 closeShutter(azcam_t *cam, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
-  strcpy(cmdstr,"mods.shclose");
+  strcpy(cmdStr,"mods.shclose");
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   // success, set various flags as required...
@@ -611,8 +611,8 @@ closeShutter(azcam_t *cam, char *reply)
 int
 getDetPars(azcam_t *cam, char *reply)
 {
-  char cmdstr[64];
-  char msgstr[64];
+  char cmdStr[64];
+  char msgStr[64];
   int ncols;
   int nc_pdk;
   int nc_usc;
@@ -624,17 +624,17 @@ getDetPars(azcam_t *cam, char *reply)
   int np_ft;
   int npix;
 
-  strcpy(cmdstr,"exposure.get_format");
-  memset(msgstr,0,sizeof(msgstr));
+  strcpy(cmdStr,"exposure.get_format");
+  memset(msgStr,0,sizeof(msgStr));
 
-  if (azcamCmd(cam,cmdstr,msgstr)<0) {
-    sprintf(reply,"Cannot get detector parameters - %s",msgstr);
+  if (azcamCmd(cam,cmdStr,msgStr)<0) {
+    sprintf(reply,"Cannot get detector parameters - %s",msgStr);
     return -1;
   }
 
   // extract the data
 
-  sscanf(msgstr,"%d %d %d %d %d %d %d %d %d",&ncols,&nc_pdk,&nc_usc,&nc_osc,&nrows,&np_pdk,&np_usc,&np_osc,&np_ft);
+  sscanf(msgStr,"%d %d %d %d %d %d %d %d %d",&ncols,&nc_pdk,&nc_usc,&nc_osc,&nrows,&np_pdk,&np_usc,&np_osc,&np_ft);
 
   npix = nrows * ncols;
 
@@ -673,12 +673,12 @@ getDetPars(azcam_t *cam, char *reply)
 int
 getPixelCount(azcam_t *cam, char *reply)
 {
-  char cmdstr[64];
+  char cmdStr[64];
   int pixcount;
 
-  strcpy(cmdstr,"mods.pixelsLeft"); // pixread = numpix - pixelsLeft...
+  strcpy(cmdStr,"mods.pixelsLeft"); // pixread = numpix - pixelsLeft...
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   pixcount = atoi(reply);

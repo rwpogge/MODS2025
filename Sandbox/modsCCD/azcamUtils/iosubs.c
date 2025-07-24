@@ -112,7 +112,7 @@ openAzCam(azcam_t *cam, char *reply)
   \param cam pointer to an #azcam struct with the azcam server parameters
   (see openAzCam())
   
-  Sends the "CloseConnection" command to the azcam server and closes the
+  Sends the "closeConnection" command to the azcam server and closes the
   client TCP socket.
 
   \sa openAzCam().
@@ -127,7 +127,7 @@ closeAzCam(azcam_t *cam)
 
   // Send the info to close the azcam server connection
 
-  CloseConnection(cam,reply);
+  // closeConnection(cam,reply); // nothing equivalent for Archon
 
   // Close the client-side socket and reset the file descriptor
 

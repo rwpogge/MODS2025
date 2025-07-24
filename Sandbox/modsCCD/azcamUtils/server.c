@@ -38,11 +38,11 @@
 int 
 setKeyword(azcam_t *cam, char *keyword, char *value, char *comment, char *reply)
 {
-  char cmdstr[128];
+  char cmdStr[128];
 
-  sprintf(cmdstr,"mods.set_keyword %s \"%s\" \"%s\"",keyword,value,comment);
+  sprintf(cmdStr,"mods.set_keyword %s \"%s\" \"%s\"",keyword,value,comment);
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   // success, set various flags as required...
@@ -80,17 +80,17 @@ setKeyword(azcam_t *cam, char *keyword, char *value, char *comment, char *reply)
 int
 getKeyword(azcam_t *cam, char *keyword, char *value, char *reply)
 {
-  char cmdstr[64];
-  char msgstr[128];
+  char cmdStr[64];
+  char msgStr[128];
 
-  sprintf(cmdstr,"mods.get_keyword %s",keyword);
+  sprintf(cmdStr,"mods.get_keyword %s",keyword);
 
-  if (azcamCmd(cam,cmdstr,msgstr)<0) {
-    strcpy(reply,msgstr);
+  if (azcamCmd(cam,cmdStr,msgStr)<0) {
+    strcpy(reply,msgStr);
     return -1;
   }
 
-  strcpy(value,msgstr);
+  strcpy(value,msgStr);
   sprintf(reply,"%s=%s",keyword,value);
 
   return 0;
@@ -116,14 +116,14 @@ getKeyword(azcam_t *cam, char *keyword, char *value, char *reply)
 int
 clearKeywords(azcam_t *cam, char *dbName, char *reply) 
 {
-  char cmdstr[64];
+  char cmdStr[64];
 
   if (strlen(dbName)==0)
-    strcpy(cmdstr,"mods.clearKeywords");
-  else:
+    strcpy(cmdStr,"mods.clearKeywords");
+  else
     sprintf(cmdStr,"mods.clearKeywords %s",dbName);
 
-  if (azcamCmd(cam,cmdstr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   strcpy(reply,"Server FITS header database cleared");

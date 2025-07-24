@@ -137,12 +137,9 @@ initAzCam(azcam_t *cam)
 
   // Default temperature info
 
-  cam->SetPoint = 0.0;
-  cam->CCDTemp =  0.0;
-  cam->DewarTemp = 0.0;
-  cam->DiodeSensor = DT670;
-  cam->CCDSensor = DT670;
-  cam->DewarSensor = DT670;
+  cam->setPoint = 0.0;
+  cam->ccdTemp =  0.0;
+  cam->baseTemp = 0.0;
 
   // Default ROI: 0 for <axis>Bin means not defined
 
@@ -186,7 +183,7 @@ initAzCam(azcam_t *cam)
   strcpy(cam->FilePath,"NONE");
   strcpy(cam->FileName,"NONE");
   cam->FileNum = 1;
-  cam->FileFormat = EXTFITS;
+  cam->FileFormat = MEF;
   strcpy(cam->LastFile,"NONE");
 
 }
@@ -320,51 +317,10 @@ azcamInfo(azcam_t *cam)
 	 cam->Ncols,cam->Nrows,cam->Npixels);
 
   printf("CCD Temperature Control:\n");
-  printf("  SetPoint: %.1f C\n",cam->SetPoint);
-  printf("  Last CCD Temperature: %.1f C\n",cam->CCDTemp);
-  printf("  Last Dewar Temperature: %.1f C\n",cam->DewarTemp);
-  switch(cam->DiodeSensor) {
-  case DT670:
-    printf("  Diode Sensor: DT670\n");
-    break;
-  case AD590:
-    printf("  Diode Sensor: AD590\n");
-    break;
-  case N914:
-    printf("  Diode Sensor: 1N914\n");
-    break;
-  default:
-    printf("  Diode Sensor: UNKNOWN\n");
-    break;
-  }
-  switch(cam->CCDSensor) {
-  case DT670:
-    printf("  CCD Sensor: DT670\n");
-    break;
-  case AD590:
-    printf("  CCD Sensor: AD590\n");
-    break;
-  case N914:
-    printf("  CCD Sensor: 1N914\n");
-    break;
-  default:
-    printf("  CCD Sensor: UNKNOWN\n");
-    break;
-  }
-  switch(cam->DewarSensor) {
-  case DT670:
-    printf("  Dewar Sensor: DT670\n");
-    break;
-  case AD590:
-    printf("  Dewar Sensor: AD590\n");
-    break;
-  case N914:
-    printf("  Dewar Sensor: 1N914\n");
-    break;
-  default:
-    printf("  Dewar Sensor: UNKNOWN\n");
-    break;
-  }
+  printf("  SetPoint: %.1f C\n",cam->setPoint);
+  printf("  Last CCD Temperature: %.1f C\n",cam->ccdTemp);
+  printf("  Last Dewar Temperature: %.1f C\n",cam->baseTemp);
+  
   printf("Exposure & File Information:\n");
   printf("  Exposure Time: %.3f sec\n",cam->ExpTime);
   printf("  Next Filename: %s/%s.%0.4d.fits\n",
@@ -374,7 +330,7 @@ azcamInfo(azcam_t *cam)
   case STDFITS:
     printf("  File Format: Standard FITS\n");
     break;
-  case EXTFITS:
+  case MEF:
     printf("  File Format: Multi-Extension FITS\n");
     break;
   case BINARY:
