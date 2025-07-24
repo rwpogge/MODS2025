@@ -772,7 +772,7 @@ class MODS(object):
             dataPath,rootName,expNum = self.modsFilename(fileStr)
         else:
             # build the default name based on obsDate (CCYYMMDD at local noon)
-            rootName = f"{self.modsID}.{self.obsDate()}."
+            rootName = f"{self.modsID.lower()}.{self.obsDate()}."
             expNum = 1
             
         if not rootName.endswith('.'): rootName += '.'
