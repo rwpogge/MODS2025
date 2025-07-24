@@ -1,6 +1,6 @@
 /*!
   \file exposure.c
-  \brief AzCam Exposure Control Functions
+  \brief azcam Exposure Control Functions
 
   The following are a suite of interface functions that provide access
   to all of the azcam server exposure control functions.
@@ -12,31 +12,12 @@
   All routines call the communication layer routines in iosubs.c to take
   care of common handling of timeout, errors, and reply processing.
 
-  All of the server exposure control commands documented in Section 9
-  of the <i>AzCam Programmers Reference Manual</i> have been
-  implemented except the following:
-  <pre>
-  Expose - not implemented (doesn't work well with the OSU cameras)
-  readImage - deprecated in recent AzCam versions
-  setSyntheticImage - future expansion
-  Guide - future expansion
-  </pre>
-  Two new functions
-  <pre>
-  setShutterMode()
-  setReadoutMode()
-  </pre>
-  Are defined to implement the "setMode 1 X" and "setMode 2 X"
-  commands, respectively.
-
-  Finally, ParShift has been renamed RowShift in this implementation.
-
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \original 2005 May 17
   \date 2025 July 23
 */
 
-#include "azcam.h" // AzCam client API header 
+#include "azcam.h" // azcam client utility library header 
 
 /*!
   \brief Clear (flush) the detector array
@@ -95,7 +76,7 @@ clearArray(azcam_t *cam, char *reply)
   this does not happen, we store the current default timeout, compute a
   new timeout of the exposure time + 10 seconds, and then make the call,
   resetting the default timeout after completion (or error).  The
-  exposure time used is the value in the #azcam::ExpTime data member.
+  exposure time used is the value in the #azcam::expTime data member.
 
   \sa setExposure()
 */
@@ -115,7 +96,7 @@ startExposure(azcam_t *cam, int wait, char *reply)
   case EXP_WAIT:
     strcpy(cmdStr,"mods.expwait");
     default_to = cam->Timeout;
-    cam->Timeout = (long)(cam->ExpTime) + 10L;
+    cam->Timeout = (long)(cam->expTime) + 10L;
     break;
 
   case EXP_NOWAIT:
@@ -151,39 +132,39 @@ startExposure(azcam_t *cam, int wait, char *reply)
 }
 
 /*!
-  \brief Query exposure status
+  \brief Query the exposure status
   
   \return exposure state code (see azcam.h or azcam server docs)
   
   Queries the server and returns the current exposure status as
   an integer code.  Tranlsate this to a string and set the value
-  of cam->State
+  of cam->State and also return it.
   
 */
 
 int
 expStatus(azcam_t *cam, char *reply)
 {
-   char cmdStr[64];
-   char msgStr[64];
-   char status[32];
-   int expCode;
+  char cmdStr[64];
+  char msgStr[64];
+  char status[32];
+  int expCode;
    
     
-    sprintf(cmdStr,"mods.expstatus");
-    memset(msgStr,0,sizeof(msgStr));
+  sprintf(cmdStr,"mods.expstatus");
+  memset(msgStr,0,sizeof(msgStr));
     
-    if (azcamCmd(cam,cmdStr,msgStr)<0) {
-        sprintf(reply,"Cannot get exposure status - %s",msgStr);
-        return -1;
-    }
+  if (azcamCmd(cam,cmdStr,msgStr)<0) {
+    sprintf(reply,"Cannot get exposure status - %s",msgStr);
+    return -1;
+  }
     
-    sscanf(msgStr,"%d %s",&expCode,status);
+  sscanf(msgStr,"%d %s",&expCode,status);
     
-    cam->State = expCode;
-    sprintf(reply,"ExpStatus=%s",status);
+  cam->State = expCode;
+  sprintf(reply,"ExpStatus=%s",status);
     
-    return 0;
+  return expCode;
 
 }
   
@@ -217,51 +198,48 @@ setExposure(azcam_t *cam, float exptime, char *reply)
 
   // Successful, save the exposure time in the cam struct
 
-  cam->ExpTime = exptime;
-  sprintf(reply,"ExpTime=%.3f sec",exptime);
+  cam->expTime = exptime;
+  sprintf(reply,"expTime=%.3f sec",exptime);
   return 0;
 
 }
 
 /*!
-  \brief Query the azcam server for the current elapsed exposure time
+  \brief Query the azcam server for the time left on the current exposure
   
   \param cam pointer to an #azcam struct with the server parameters
   \param reply string to contain any reply text
   \return elapsed exposure time in milliseconds, or -1 if errors,
           with error text in reply
 
-  Query the azcam server and return the elapsed exposure (integration)
-  time in milliseconds.
-
-  \par Note 
-
-  In some azcam server implementions (i.e., every one we've encountered
-  or heard about so far), if you send a readExposure command to the
-  azcam server while a readout is in progress, the server will crash
-  after readout is done, rebooting the machine (meaning total system
-  crash).  We avoid this by not allowing the user to send this directive
-  during readout by checking the value of the #azcam::State data member.
+  Query the azcam server and return the time remaining on the current
+  exposure in seconds.
 
 */
 
 int
-readExposure(azcam_t *cam, char *reply)
+timeLeft(azcam_t *cam, char *reply)
 {
   char cmdStr[64];
 
-  if (cam->State == READOUT) return 0; 
+  // don't read time left on exposure if we're reading out
+  // report 0.0 seconds left
+  
+  if (cam->State == READOUT) {
+    cam->timeLeft = 0.000;
+    return 0;
+  }
 
-  // Hope we're safe, do it...
-
+  // Ask server for time left
+  
   strcpy(cmdStr,"mods.timeleft");
 
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  cam->Elapsed = atoi(reply);
-  sprintf(reply,"Elapsed=%.3f sec",cam->Elapsed);
-  return cam->Elapsed;
+  cam->timeLeft = atof(reply);
+  sprintf(reply,"timeLeft=%.3f sec",cam->timeLeft);
+  return 0;
 
 }
 
@@ -657,21 +635,21 @@ getDetPars(azcam_t *cam, char *reply)
           on errors, with error text in reply
 
   Queries the azcam server and returns the number of pixels readout from
-  the detector array.  Repeated calls to getPixelCount() are often used
+  the detector array.  Repeated calls to pixelsLeft() are often used
   by applications to monitor readout progress.  When the array is
   finished reading out, the pixel count returned should equal the total
   pixel size returned by getDetPars().  After each call to
-  getPixelCount(), it stores the current number of pixels read in
+  pixelsLeft(), it stores the current number of pixels read in
   #azcam::Nread.
 
   Note that unlike readExposure(), experiments have so far shown that
-  calling getPixelCount() is benign in all circumstances.
+  calling pixelsLeft() is benign in all circumstances.
 
   \sa getDetPars()
 */
 
 int
-getPixelCount(azcam_t *cam, char *reply)
+pixelsLeft(azcam_t *cam, char *reply)
 {
   char cmdStr[64];
   int pixcount;
@@ -682,9 +660,37 @@ getPixelCount(azcam_t *cam, char *reply)
     return -1;
 
   pixcount = atoi(reply);
-  sprintf(reply,"PixCount=%d",pixcount);
+  sprintf(reply,"pixelsLeft=%d",pixcount);
   cam->Nread = pixcount; 
   return pixcount;
 
 }
 
+/*!
+  \brief Set the image type and image title for the next image(s)
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param imgType string - image type, one of {object,bias,flat,dark,comp,zero}
+  \param imgTitle string - image title (aka OBJECT)
+  \param reply string to contain any reply text
+  \return 0 on success, -1 on errors, error text in reply
+
+  Tells the azcam server the image type and image title to use for the next
+  image(s).  imgType must be one of the valid types, lowercase is enforced
+  on the server side.  The shutter mode (light or dark) is defined internally
+  on the server by the imgType.
+
+ */
+
+int
+setImageInfo(azcam_t *cam, char *imgType, char *imgTitle, char *reply)
+{
+  char cmdStr[64];
+
+  strcpy(cmdStr,"mods.set_ImageInfo %s %s",imgType,imgTitle);
+
+  if (azcamCmd(cam,cmdStr,reply)<0)
+    return -1;
+
+  return 0;
+}

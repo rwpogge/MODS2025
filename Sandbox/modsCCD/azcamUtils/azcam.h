@@ -62,14 +62,12 @@ typedef struct azcam {
   int  Port;         //!< Port number of the AzCam server client socket
   int  FD;           //!< File descriptor of the open client port, -1 = closed
   long Timeout;      //!< Timeout Interval for communications
-  char CfgFile[128]; //!< Name of the AzCam client configuration file (on the client)
-  char IniFile[128]; //!< Name of the AzCam server initialization file (on the server)
+  char cfgFile[128]; //!< Name of the AzCam client configuration file (on the client)
+  char iniFile[128]; //!< Name of the AzCam server initialization file (on the server)
 
   // System State flags
 
   int State;       //!< Server state, one of #IDLE, #EXPOSING, #READOUT, or #PAUSE
-  int ShutterMode; //!< Shutter mode, one of #DARK_IMAGE or #LIGHT_IMAGE
-  int Readout;     //!< Readout mode, one of #IMMEDIATE or #DEFERRED
   int Shutter;     //!< Shutter state, one of #SH_OPEN or #SH_CLOSED
   int Abort;       //!< Abort Flag, if 1 an abort has been requested
 
@@ -100,30 +98,23 @@ typedef struct azcam {
   int NRoverscan;  //!< Number of overscan rows to read
   int NRframexfer; //!< Number of rows to shift for frame transfer mode
 
-  // Detector Readout Configuration Parameters
-
-  int ReadMode;      //!< Readout mode, one of #SINGLE_AMP, #TWO_AMP_PARALLEL, #TWO_AMP_SERIAL, #FOUR_AMP_QUAD, or #MOSAIC
-  int Splits;        //!< Splits flag, one of #NO_SPLIT, #SPLIT_SERIAL, #SPLIT_PARALLEL, or #SPLIT_QUAD
-  int NumDetX;       //!< number of detectors in the X (columns) direction in a multi-detector mosaic
-  int NumDetY;       //!< number of detectors in the Y (rows) direction in a multi-detector mosaic
-  char AmpConfig[6]; //!< Amplifier configuration, one for each amp, coding is 0=no flip, 1=flip cols, 2=flip rows, 3=flip both
-
   // Detector Readout Pixel Count Parameters
 
   int Ncols;       //!< Number of columns to be readout
   int Nrows;       //!< Number of rows to be readout
   int Npixels;     //!< Total number of pixels to be readout
+  int pixLeft;     //!< Number of pixels left to be readout
   int Nread;       //!< Number of pixels readout so far
 
   // Other parameters
 
-  float ExpTime;       //!< Exposure (integration) time in decimal seconds
-  int   Elapsed;       //!< Elapsed exposure time in milliseconds
-  char  FilePath[128]; //!< File path for images (must be valid on the AzCam server machine)
-  char  FileName[128]; //!< Rootname of image files
-  int   FileNum;       //!< Image sequence number of the next file to be written
-  int   FileFormat;    //!< File format, one of #STDFITS, #MEF, #BINARY
-  char  LastFile[128]; //!< Full name of the last image file written, including path
+  float expTime;       //!< Exposure (integration) time in seconds
+  float timeLeft;      //!< Time remaining on the current exposure in seconds
+  char  filePath[128]; //!< File path for images (must be valid on the AzCam server machine)
+  char  fileName[128]; //!< Rootname of image files
+  int   fileNum;       //!< Image sequence number of the next file to be written
+  int   fileFormat;    //!< File format, one of #STDFITS, #MEF, #BINARY
+  char  lastFile[128]; //!< Full name of the last image file written, including path
 
 } azcam_t;
 
@@ -180,7 +171,7 @@ typedef struct azcam {
 #define SPLIT_PARALLEL 2 //!< Detector has split parallel registers (2-amp readout)
 #define SPLIT_QUAD     3 //!< Detector has split parallel and serial registers (4-amp readout)
 
-// azcamutils Function Prototypes
+// azcamutils function prototypes
 
 int openAzCam(azcam_t *, char *);
 void closeAzCam(azcam_t *);
@@ -188,8 +179,7 @@ int sendAzCam(azcam_t *, char *);
 int readAzCam(azcam_t *, char *);
 int azcamCmd(azcam_t *, char *, char *);
 
-// Method function prototypes (implement single or multiple AzCam server
-// commands
+// Method function prototypes (implement single or multiple azcam server commands
 
 // Server Control and Database Commands (server.c)
 
@@ -199,6 +189,11 @@ int clearKeywords(azcam_t *, char *, char *);
 
 // Image Writing Commands (image.c)
 
+int imgFilename(azcam_t *, char *, char *);
+int imgPath(azcam_t *, char *, char *);
+int imgExpNum(azcam_t *, int, char *);
+int getLastFile(azcam_t *, char *);
+
 int setSocket(azcam_t *, int , char *, int , char *);
 int writeImage(azcam_t *, char *, char *);
 int sendImage(azcam_t *, char *, char *, char *);
@@ -206,24 +201,25 @@ int sendImage(azcam_t *, char *, char *, char *);
 // Exposure Control Commands (exposure.c)
 
 int clearArray(azcam_t *, char *);
-int startExposure(azcam_t *, int , char *);
+
+int setImageInfo(azcam_t *, char*, char *, char*);
 int setExposure(azcam_t *, float , char *);
+int startExposure(azcam_t *, int , char *);
 int expStatus(azcam_t *, char *);
-int readExposure(azcam_t *, char *);
+int timeLeft(azcam_t *, char *);
 int abortExposure(azcam_t *, char *);
-int abortReadout(azcam_t *, char*);
 int pauseExposure(azcam_t *, char *);
 int resumeExposure(azcam_t *, char *);
-int setFormat(azcam_t *, char *);
-//int SetConfiguration(azcam_t *, char *); no Archon equivalent
-int setROI(azcam_t *, char *);
+
+int pixelsLeft(azcam_t *, char *);
+int abortReadout(azcam_t *, char*);
+
 int openShutter(azcam_t *, char *);
 int closeShutter(azcam_t *, char *);
-//int RowShift(azcam_t *, int , char *); not implemented for Archon
+
+int setFormat(azcam_t *, char *);
+int setROI(azcam_t *, char *);
 int getDetPars(azcam_t *, char *);
-int getPixelCount(azcam_t *, char *);
-// int setShutterMode(azcam_t *, int , char *); // ?
-// int setReadoutMode(azcam_t *, int , char *); // ?
 
 // Temperature Commands (ccdtemp.c)
 
@@ -237,4 +233,3 @@ void azcamInfo(azcam_t *);
 int archonCmd(azcam_t *, char *, char *);
 
 #endif // AZCAM_H
-

@@ -16,6 +16,111 @@
 
 #include "azcam.h" // azcam client API header 
 
+// imgFilename - set/get the next image file to be written
+// empty string returns the current full name
+
+int
+imgFilename(azcam_t *cam, char *fileStr, char *reply)
+{
+  char cmdStr[64];
+  int doSet;
+  
+  if (strlen(fileStr) == 0) {
+    doSet = 0;
+    sprintf(cmdStr,"mods.get_filename");
+  }
+  else {
+    doSet = 1;
+    sprintf(cmdStr,"mods.set_filename %s",fileStr);
+  }
+  
+  if (azcamCmd(cam,cmdStr,reply)<0)
+    return -1;
+
+  if (doSet)
+    strcpy(cam->fileName,reply);
+  else
+    strcpy(cam->fileName,fileStr);
+
+  sprintf(reply,"filename=%s",cam->fileName);
+  
+  return 0;
+}
+
+// imgPath - set/get the azcam server image file path
+// empty string returns the current path
+
+int
+imgPath(azcam_t *cam, char *pathStr, char *reply)
+{
+  char cmdStr[64];
+  int doSet;
+  
+  if (strlen(pathStr) == 0) {
+    doSet = 0;
+    sprintf(cmdStr,"mods.get_path");
+  }
+  else {
+    doSet = 1;
+    sprintf(cmdStr,"mods.set_path %s",pathStr);
+  }
+  
+  if (azcamCmd(cam,cmdStr,reply)<0)
+    return -1;
+
+  if (doSet)
+    strcpy(cam->filePath,reply);
+  else
+    strcpy(cam->filePath,pathStr);
+
+  sprintf(reply,"path=%s",cam->filePath);
+  
+  return 0;
+}
+
+// imgExpNum - set/get counter for the next image file
+// argument <= 0 returns current expnum
+
+int
+imgExpNum(azcam_t *cam, int expNum, char *reply)
+{
+  char cmdStr[64];
+  int doSet;
+  
+  if (expNum <= 0) {
+    strcpy(cmdStr,"mods.get_expnum");
+    doSet = 0;
+  }
+  else {
+    sprintf(cmdStr,"mods.set_expnum %d",exmNum);
+    doSet = 1;
+  }
+  if (azcamCmd(cam,cmdStr,reply)<0)
+    return -1;
+
+  if (doSet)
+    cam->fileNum = expNum;
+  else
+    cam->fileNum = atoi(reply);
+
+  sprintf(reply,"expnum=%d",cam->fileNum);
+  return 0;
+}
+
+// getLastFile - return name of the last file written
+
+int
+getLastFile(azcam_t *cam, char *reply)
+{
+  if (azcamCmd(cam,"mods.get_lastfile",reply)<0)
+    return -1;
+
+  strcpy(cam->lastFile,reply);
+  
+  sprintf(reply,"lastfile=%s",cam->lastFile);
+  return 0;
+}
+
 /*!
   \brief Open/Close socket connections to various azcam server clients.
   
@@ -157,7 +262,7 @@ writeImage(azcam_t *cam, char *filename, char *reply)
 
   // success, set various flags as required...
 
-  strcpy(cam->LastFile,filename);
+  strcpy(cam->lastFile,filename);
   sprintf(reply,"LastFile=%s",filename);
   return 0;
 

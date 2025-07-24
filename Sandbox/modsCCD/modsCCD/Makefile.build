@@ -1,0 +1,44 @@
+#
+# Makefile for y4kcam - an AzCam-based instrument agent 
+# for the Y4KCam on the CTIO Yale 1-meter telescope
+#
+# Use "build", not "make" to build the y4kcam executable.
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge@astronomy.ohio-state.edu
+# Last Modified: 2005 May 16
+#
+# 2025 July - port to AlmaLinux 9
+#
+VERSION     = v0.6.0
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+ROOTDIR     = /home/dts/Workshop/Y4KCam
+ISISDIR     = /home/dts/ISIS
+AZCAMDIR    = $(ROOTDIR)/AzCamUtils
+
+INCS        = -I$(ISISDIR)/lib -I$(AZCAMDIR)
+CFLAGS      = -w -c $(INCS) 
+VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
+              -DAPP_COMPTIME='"$(COMPTIME)"'
+LIBS        = $(INCS) -L$(ISISDIR)/lib -L$(AZCAMDIR) -lisis -lazcam \
+	      -lreadline -lhistory -lncurses
+LFLAGS      = -o y4kcam
+
+OBJS        = commands.o clientutils.o config.o sclutils.o fwheel.o \
+	      pctcs.o dataman.o
+
+.c.o:       client.h commands.h fwheel.h sclutils.h pctcs.h
+	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
+
+all:        y4kcam
+
+y4kcam:     $(OBJS) main.c
+	    $(CC) $(LFLAGS) $(VFLAGS) main.c $(OBJS) $(LIBS)
+
+clean:
+	    /bin/rm -f y4kcam *.o
+
+install:
+	    \cp y4kcam ../bin/
+	    /bin/rm -f *.o
