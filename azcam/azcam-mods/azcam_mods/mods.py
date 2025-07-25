@@ -1207,7 +1207,7 @@ class MODS(object):
             expNum = 1
 
         # if more than one part, look at last part.  Is it "fits"?
-        
+
         else:
             if fileBits[-1] == "fits":
                 if numBits == 2:
@@ -1223,14 +1223,19 @@ class MODS(object):
                         rootName = '.'.join(fileBits[:-1])
                         expNum = 1
             else:
-                # is last bit a number?
+                # doesn't end in fits,is last bit a number < 9999?
                 try:
-                    expNum = int(fileBits[-1])
-                    rootName = '.'.join(fileBits[:-1])
+                    isInt = int(fileBits[-1])
+                    if isInt <= 9999:
+                        expNum = isInt
+                        rootName = '.'.join(fileBits[:-1])
+                    else:
+                        expNum = 1
+                        rootName = '.'.join(fileBits[:])
                 except:
-                    rootName = '.'.join(fileBits[:-1])
+                    rootName = '.'.join(fileBits[:])
                     expNum = 1
-            
+
         return dataPath, rootName, expNum
                 
 
