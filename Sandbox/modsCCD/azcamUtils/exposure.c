@@ -40,8 +40,6 @@ clearArray(azcam_t *cam, char *reply)
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  // success, set various flags as required...
-
   strcpy(reply,"CCD Erased");
   return 0;
 
@@ -91,7 +89,6 @@ startExposure(azcam_t *cam, int wait, char *reply)
   // timeout interval longer than the integration time, or we'll
   // timeout.  Usually only done for short zero-length exposures.
 
-
   switch(wait) {
   case EXP_WAIT:
     strcpy(cmdStr,"mods.expwait");
@@ -118,12 +115,10 @@ startExposure(azcam_t *cam, int wait, char *reply)
   case EXP_WAIT:
     cam->Timeout = default_to;
     strcpy(reply,"Exposure Sequence Completed");
-    cam->State = READOUT;
     break;
 
   case EXP_NOWAIT:
     strcpy(reply,"Exposure Sequence Started");
-    cam->State = EXPOSING;
     break;
   }
 
@@ -137,7 +132,7 @@ startExposure(azcam_t *cam, int wait, char *reply)
   \return exposure state code (see azcam.h or azcam server docs)
   
   Queries the server and returns the current exposure status as
-  an integer code.  Tranlsate this to a string and set the value
+  an integer code.  Translate this to a string and set the value
   of cam->State
   
 */
@@ -213,17 +208,7 @@ setExposure(azcam_t *cam, float exptime, char *reply)
           with error text in reply
 
   Query the azcam server and return the elapsed exposure (integration)
-  time in milliseconds.
-
-  \par Note 
-
-  In some azcam server implementions (i.e., every one we've encountered
-  or heard about so far), if you send a readExposure command to the
-  azcam server while a readout is in progress, the server will crash
-  after readout is done, rebooting the machine (meaning total system
-  crash).  We avoid this by not allowing the user to send this directive
-  during readout by checking the value of the #azcam::State data member.
-
+  time in seconds
 */
 
 int
@@ -234,8 +219,6 @@ readExposure(azcam_t *cam, char *reply)
   if (cam->State == READOUT) return 0; 
   cam->timeLeft = 0.0;
   
-  // Hope we're safe, do it...
-
   strcpy(cmdStr,"mods.timeleft");
 
   if (azcamCmd(cam,cmdStr,reply)<0)
@@ -340,9 +323,6 @@ pauseExposure(azcam_t *cam, char *reply)
     return -1;
   }
 
-  // success, set various flags as required...
-
-  cam->State = PAUSE;
   strcpy(reply,"Exposure Paused");
   return 0;
 
@@ -361,10 +341,6 @@ pauseExposure(azcam_t *cam, char *reply)
 
   Does not send resumeExposure if the controller is not in a #PAUSE
   state.
-
-  If you send a resumeExposure() command when the azcam server is
-  not actually in a paused state, very bad things can happen (e.g.,
-  it crashes and reboots its host computer).
 
   \sa pauseExposure()
 */
@@ -386,9 +362,6 @@ resumeExposure(azcam_t *cam, char *reply)
     return -1;
   }
 
-  // success, set various flags as required...
-
-  cam->State = RESUME;
   strcpy(reply,"Exposure Resumed");
   return 0;
 
@@ -418,7 +391,7 @@ resumeExposure(azcam_t *cam, char *reply)
     #azcam::NRframexfer  - Number of rows to shift for frame transfer mode
   </pre>
   A calling application would first set the various parameters in the
-  #azcam struct and then call this function to send them to the AzCam
+  #azcam struct and then call this function to send them to the azcam
   server.
 
   \sa setROI()
@@ -457,8 +430,7 @@ setFormat(azcam_t *cam, char *reply)
 	  
   return 0;
 
-}
-  
+}  
   
 /*!
   \brief Define the detector region of interest for the next readout
@@ -479,9 +451,6 @@ setFormat(azcam_t *cam, char *reply)
     #azcam::LastRow  - last row to read in unbinned pixels
     #azcam::RowBin   - row-axis binning factor
   </pre>
-  Note that regions of interest that are smaller than the physical
-  size of the device in unbinned pixels are only supported for
-  single-amplifier readout modes.
 
 */
 
@@ -628,7 +597,7 @@ int setYBin(azcam_t *cam, int ybin, char *reply)
 
   Instructs the azcam server to open the shutter.
 
-  \sa CloseShutter()
+  \sa closeShutter()
 */
 
 int
@@ -658,7 +627,7 @@ openShutter(azcam_t *cam, char *reply)
 
   Instructs the azcam server to close the shutter.
 
-  \sa OpenShutter()
+  \sa openShutter()
 */
 
 int
@@ -749,9 +718,6 @@ getDetPars(azcam_t *cam, char *reply)
   pixel size returned by getDetPars().  After each call to
   getPixelCount(), it stores the current number of pixels read in
   #azcam::Nread.
-
-  Note that unlike readExposure(), experiments have so far shown that
-  calling getPixelCount() is benign in all circumstances.
 
   \sa getDetPars()
 */
