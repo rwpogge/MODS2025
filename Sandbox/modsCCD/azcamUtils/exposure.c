@@ -202,7 +202,7 @@ setExposure(azcam_t *cam, float exptime, char *reply)
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  if isSet
+  if (isSet)
     cam->expTime = exptime;
   else
     cam->expTime = atof(reply);
@@ -510,7 +510,7 @@ getROI(azcam_t *cam, char *reply)
 
   // extract the data: sc ec sr er binx biny
 
-  sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bx,&bn);
+  sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bx,&by);
   cam->FirstCol = sc;
   cam->LastCol = ec;
   cam->FirstRow = sr;
@@ -549,7 +549,7 @@ resetROI(azcam_t *cam, char *reply)
 
   // extract the data: sc ec sr er binx biny
 
-  sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bx,&bn);
+  sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bx,&by);
   cam->FirstCol = sc;
   cam->LastCol = ec;
   cam->FirstRow = sr;
@@ -779,8 +779,10 @@ setImageInfo(azcam_t *cam, char *imgType, char *imgTitle, char *reply)
   if (azcamCmd(cam,"exposure.get_image_title()",reply)<0)
     return -1;
   strcpy(cam->imgTitle,reply);
-    
-  sprintf(reply,"IMGTYPE=%s Title=(%s)",cam->imgType,cam->imgTitle);
+
+  // craft the reply, using the FITS header versions of the data
+  
+  sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",cam->imgType,cam->imgTitle);
   
   return 0;
 }

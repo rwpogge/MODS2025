@@ -108,6 +108,8 @@ typedef struct azcam {
 
   // Other parameters
 
+  char  imgType[12];   //!< Image type string (aka IMAGETYP keyword, object,flat,bias,etc.)
+  char  imgTitle[64];  //!< Image title string (aka OBJECT keyword)
   float expTime;       //!< Exposure (integration) time in seconds
   float timeLeft;      //!< Time remaining on the current exposure in seconds
   char  filePath[128]; //!< File path for images (must be valid on the AzCam server machine)
