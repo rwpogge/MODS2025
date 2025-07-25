@@ -111,6 +111,7 @@ class MODS(object):
                              'flat':1,
                              'dark':0,
                              'comp':1,
+                             'std':1,
                              'zero':0
                              }
         
