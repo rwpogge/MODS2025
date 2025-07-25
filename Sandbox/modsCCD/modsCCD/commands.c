@@ -540,7 +540,7 @@ cmd_reset(char *args, MsgType msgtype, char *reply)
 {
   int i;
 
-  // Re-initialize the AzCamServer parameters
+  // Re-initialize the azcam server parameters
 
   if (initCCDConfig(&ccd,reply)<0) {
     strcat(reply," - reset failed");
@@ -1072,7 +1072,7 @@ int
 cmd_object(char *args, MsgType msgtype, char *reply)
 {
   char argbuf[32];
-
+  
   // check the file descriptor and make sure we have an active connection
 
   if (ccd.FD<0) {
@@ -1080,23 +1080,27 @@ cmd_object(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // If we have arguments, define the target name
+  // If we have no arguments, we set the image type but don't change
+  // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.Object,args);
-
-  obs.ImageTyp = OBJECT;
-  ccd.ShutterMode = LIGHT_IMAGE;  // Object images open the shutter
-
-  if (strlen(obs.Object)>0) {
-    setKeyword(&ccd,"OBJECT",obs.Object,"Target Name",reply);
-    setKeyword(&ccd,"IMGTYPE","OBJECT","Astronomical Object",reply);
-    sprintf(reply,"IMGTYPE=OBJECT OBJECT=(%s)",obs.Object);
+    strcpy(obs.imgTitle,args);
+  
+  strcpy(obs.imgType,"OBJECT");
+  
+  if (strlen(obs.imgTitle)>0) {
+    // set image type and title
+    if (setImageInfo(&ccd,obs.imgType,obs.imgTitle,reply)<0)
+      return CMD_ERR;
   }
   else {
-    setKeyword(&ccd,"IMGTYPE","OBJECT","Astronomical Object",reply); 
-    strcpy(reply,"IMGTYPE=OBJECT");
+    // only set image type, return title
+    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+      return CMD_ERR;
+    strcpy(obs.imgTitle,ccd.imgTitle);
   }
+  
+  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 }
@@ -1135,23 +1139,27 @@ cmd_flat(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // If we have arguments, define the target name
+  // If we have no arguments, we set the image type but don't change
+  // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.Object,args);
-
-  obs.ImageTyp = FLAT;
-  ccd.ShutterMode = LIGHT_IMAGE;  // flat field images open the shutter
-
-  if (strlen(obs.Object)>0) {
-    setKeyword(&ccd,"OBJECT",obs.Object,"Target Name",reply);
-    setKeyword(&ccd,"IMGTYPE","FLAT","Flat Field",reply);
-    sprintf(reply,"IMGTYPE=FLAT OBJECT=(%s)",obs.Object);
+    strcpy(obs.imgTitle,args);
+  
+  strcpy(obs.imgType,"FLAT");
+  
+  if (strlen(obs.imgTitle)>0) {
+    // set image type and title
+    if (setImageInfo(&ccd,obs.imgType,obs.imgTitle,reply)<0)
+      return CMD_ERR;
   }
   else {
-    setKeyword(&ccd,"IMGTYPE","OBJECT","Flat Field",reply); 
-    strcpy(reply,"IMGTYPE=FLAT");
+    // only set image type, return title
+    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+      return CMD_ERR;
+    strcpy(obs.imgTitle,ccd.imgTitle);
   }
+  
+  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 }
@@ -1190,25 +1198,30 @@ cmd_comp(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // If we have arguments, define the target name
+  // If we have no arguments, we set the image type but don't change
+  // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.Object,args);
-
-  obs.ImageTyp = COMP;
-  ccd.ShutterMode = LIGHT_IMAGE;  // comp field images open the shutter
-
-  if (strlen(obs.Object)>0) {
-    setKeyword(&ccd,"OBJECT",obs.Object,"Target Name",reply);
-    setKeyword(&ccd,"IMGTYPE","COMP","Comparison Source Image",reply);
-    sprintf(reply,"IMGTYPE=COMP OBJECT=(%s)",obs.Object);
+    strcpy(obs.imgTitle,args);
+  
+  strcpy(obs.imgType,"COMP");
+  
+  if (strlen(obs.imgTitle)>0) {
+    // set image type and title
+    if (setImageInfo(&ccd,obs.imgType,obs.imgTitle,reply)<0)
+      return CMD_ERR;
   }
   else {
-    setKeyword(&ccd,"IMGTYPE","OBJECT","Comparison Source Image",reply); 
-    strcpy(reply,"IMGTYPE=COMP");
+    // only set image type, return title
+    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+      return CMD_ERR;
+    strcpy(obs.imgTitle,ccd.imgTitle);
   }
+  
+  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
+
 }
 
 /*!  
@@ -1245,25 +1258,30 @@ cmd_std(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // If we have arguments, define the target name
+  // If we have no arguments, we set the image type but don't change
+  // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.Object,args);
-
-  obs.ImageTyp = STD;
-  ccd.ShutterMode = LIGHT_IMAGE;  // std field images open the shutter
-
-  if (strlen(obs.Object)>0) {
-    setKeyword(&ccd,"OBJECT",obs.Object,"Target Name",reply);
-    setKeyword(&ccd,"IMGTYPE","STD","Flux Standard Source",reply);
-    sprintf(reply,"IMGTYPE=STD OBJECT=(%s)",obs.Object);
+    strcpy(obs.imgTitle,args);
+  
+  strcpy(obs.imgType,"STD");
+  
+  if (strlen(obs.imgTitle)>0) {
+    // set image type and title
+    if (setImageInfo(&ccd,obs.imgType,obs.imgTitle,reply)<0)
+      return CMD_ERR;
   }
   else {
-    setKeyword(&ccd,"IMGTYPE","OBJECT","Flux Standard Source",reply); 
-    strcpy(reply,"IMGTYPE=STD");
+    // only set image type, return title
+    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+      return CMD_ERR;
+    strcpy(obs.imgTitle,ccd.imgTitle);
   }
+  
+  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
+
 }
 
 /*!  
@@ -1301,25 +1319,30 @@ cmd_dark(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // If we have arguments, define the target name
+  // If we have no arguments, we set the image type but don't change
+  // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.Object,args);
-
-  obs.ImageTyp = DARK;
-  ccd.ShutterMode = DARK_IMAGE;  // darks keep the shutter closed
-
-  if (strlen(obs.Object)>0) {
-    setKeyword(&ccd,"OBJECT",obs.Object,"Target Name",reply);
-    setKeyword(&ccd,"IMGTYPE","DARK","Dark Image",reply);
-    sprintf(reply,"IMGTYPE=DARK OBJECT=(%s)",obs.Object);
+    strcpy(obs.imgTitle,args);
+  
+  strcpy(obs.imgType,"DARK");
+  
+  if (strlen(obs.imgTitle)>0) {
+    // set image type and title
+    if (setImageInfo(&ccd,obs.imgType,obs.imgTitle,reply)<0)
+      return CMD_ERR;
   }
   else {
-    setKeyword(&ccd,"IMGTYPE","DARK","Dark Image",reply); 
-    strcpy(reply,"IMGTYPE=DARK");
+    // only set image type, return title
+    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+      return CMD_ERR;
+    strcpy(obs.imgTitle,ccd.imgTitle);
   }
+  
+  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
+
 }
 
 /*!  
@@ -1358,29 +1381,30 @@ cmd_bias(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // If we have arguments, define the target name
+  // If we have no arguments, we set the image type but don't change
+  // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.Object,args);
-
-  obs.ImageTyp = BIAS;
-  ccd.ShutterMode = DARK_IMAGE;  // biases keep the shutter closed
-  obs.ExpTime = 0.0;  // Biases use a 0.0 second integration time
-  SetExposure(&ccd,0.0,reply);
-
-  // Craft the reply 
-
-  if (strlen(obs.Object)>0) {
-    setKeyword(&ccd,"OBJECT",obs.Object,"Target Name",reply);
-    setKeyword(&ccd,"IMGTYPE","BIAS","Bias (Zero) Image",reply);
-    sprintf(reply,"IMGTYPE=BIAS OBJECT=(%s) ExpTime=0.0",obs.Object);
+    strcpy(obs.imgTitle,args);
+  
+  strcpy(obs.imgType,"BIAS");
+  
+  if (strlen(obs.imgTitle)>0) {
+    // set image type and title
+    if (setImageInfo(&ccd,obs.imgType,obs.imgTitle,reply)<0)
+      return CMD_ERR;
   }
   else {
-    setKeyword(&ccd,"IMGTYPE","BIAS","Bias (Zero) Image",reply); 
-    strcpy(reply,"IMGTYPE=BIAS ExpTime=0.0");
+    // only set image type, return title
+    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+      return CMD_ERR;
+    strcpy(obs.imgTitle,ccd.imgTitle);
   }
+  
+  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
+
 }
 
 /*!  
@@ -1422,29 +1446,30 @@ cmd_zero(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // If we have arguments, define the target name
+  // If we have no arguments, we set the image type but don't change
+  // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.Object,args);
-
-  obs.ImageTyp = ZERO;
-  ccd.ShutterMode = DARK_IMAGE;  // zeroes keep the shutter closed
-  obs.ExpTime = 0.0;  // Zeroes use a 0.0 second integration time
-  SetExposure(&ccd,0.0,reply);
-
-  // Craft the reply 
-
-  if (strlen(obs.Object)>0) {
-    setKeyword(&ccd,"OBJECT",obs.Object,"Target Name",reply);
-    setKeyword(&ccd,"IMGTYPE","ZERO","Zero (Bias) Image",reply);
-    sprintf(reply,"IMGTYPE=ZERO OBJECT=(%s) ExpTime=0.0",obs.Object);
+    strcpy(obs.imgTitle,args);
+  
+  strcpy(obs.imgType,"ZERO");
+  
+  if (strlen(obs.imgTitle)>0) {
+    // set image type and title
+    if (setImageInfo(&ccd,obs.imgType,obs.imgTitle,reply)<0)
+      return CMD_ERR;
   }
   else {
-    setKeyword(&ccd,"IMGTYPE","ZERO","Zero (Bias) Image",reply); 
-    strcpy(reply,"IMGTYPE=ZERO ExpTime=0.0");
+    // only set image type, return title
+    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+      return CMD_ERR;
+    strcpy(obs.imgTitle,ccd.imgTitle);
   }
+  
+  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
+
 }
 
 /*!  
@@ -1456,13 +1481,12 @@ cmd_zero(char *args, MsgType msgtype, char *reply)
   an error message.
 
   \par Usage:
-  ccdbin [1|2|4]
+  ccdbin xbin ybin
 
-  Sets the CCD on-chip binning factor to one of 1x1, 2x2, or 4x4. 
-  In this system we restrict the binning options to symmetric
-  binning on both axes, and to integer powers of 2 up to 4x4.
+  Sets the CCD on-chip binning factor.  Binning is allowed to be asymmetric
+  so 1x1, 1x2, 2x1, 2x2, etc. are allowed combinations up to 4x4.
 
-  If given without arguments, it reports the binning factor.
+  If given without arguments, it reports the binning factors.
   
   Sets the values of the #azcam::ColBin and #azcam::RowBin data members,
   and sends a new SetROI command to the azcam server.
@@ -1473,8 +1497,10 @@ int
 cmd_ccdbin(char *args, MsgType msgtype, char *reply)
 {
   char argbuf[32];
-  int bin;
-
+  int xbin;
+  int ybin;
+  int nargs;
+  
   // check the file descriptor and make sure we have an active connection
 
   if (ccd.FD<0) {
@@ -1486,33 +1512,97 @@ cmd_ccdbin(char *args, MsgType msgtype, char *reply)
   // Must be 1, 2, or 4, all others are invalid
 
   if (strlen(args)>0) {
-    GetArg(args,1,argbuf); 
-    bin = atoi(argbuf);
-    switch(bin) {
-    case 1:
-    case 2:
-    case 4:
-      ccd.ColBin = bin;
-      ccd.RowBin = bin;
-      break;
-
-    default:
-      sprintf(reply,"Invalid binning factor %s - must be 1, 2, or 4",argbuf);
+    nargs = sscanf(args,"%d %d",&xbin,&ybin);
+    if (nargs <= 0) {
+      sprintf(reply,"Invalid binning factor %s - must be 1 or 2 integers",args);
       return CMD_ERR;
-      break;
-
     }
-    if (SetROI(&ccd,reply)<0) 
+    else if (nargs == 1) {
+      ybin = xbin;
+    }
+
+    if (setCCDBin(&ccd,xbin,ybin,reply)<0)
       return CMD_ERR;
   }
+
+  // query to get/confirm the binning factors
   
-  if (GetDetPars(&ccd,reply)<0) // get the image readout size
+  if (setCCDBin(&ccd,-1,-1,reply)<0)
     return -1;
 
-  sprintf(reply,"CCDXBin=%d CCDYBin=%d",ccd.ColBin,ccd.RowBin);
+  sprintf(reply,"XBin=%d YBin=%d",ccd.ColBin,ccd.RowBin);
   return CMD_OK;
 
 }
+
+// XBIN variant, just set X (column) binning
+
+int
+cmd_xbin(char *args, MsgType msgtype, char *reply)
+{
+  char argbuf[32];
+  int xbin;
+
+  // check the file descriptor and make sure we have an active connection
+
+  if (ccd.FD<0) {
+    strcpy(reply,"No azcam server connection active");
+    return CMD_ERR;
+  }
+
+  // an argumetn is the binning factor
+  if (strlen(args)>0) {
+    GetArg(args,1,argbuf);
+    xbin = atoi(argbuf);
+
+    if (setCCDBin(&ccd,xbin,-1,reply)<0) 
+      return CMD_ERR;
+  }
+
+  // query to get/confirm the binning factors
+  
+  if (setCCDBin(&ccd,-1,-1,reply)<0)
+    return -1;
+
+  sprintf(reply,"XBin=%d YBin=%d",ccd.ColBin,ccd.RowBin);
+  return CMD_OK;
+
+}
+
+// YBIN variant, just set Y (row) binning
+
+int
+cmd_ybin(char *args, MsgType msgtype, char *reply)
+{
+  char argbuf[32];
+  int ybin;
+
+  // check the file descriptor and make sure we have an active connection
+
+  if (ccd.FD<0) {
+    strcpy(reply,"No azcam server connection active");
+    return CMD_ERR;
+  }
+
+  // an argumetn is the binning factor
+  if (strlen(args)>0) {
+    GetArg(args,1,argbuf);
+    ybin = atoi(argbuf);
+
+    if (setCCDBin(&ccd,-1,ybin,reply)<0) 
+      return CMD_ERR;
+  }
+
+  // query to get/confirm the binning factors
+  
+  if (setCCDBin(&ccd,-1,-1,reply)<0)
+    return -1;
+
+  sprintf(reply,"XBin=%d YBin=%d",ccd.ColBin,ccd.RowBin);
+  return CMD_OK;
+
+}
+
 
 /*!  
   \brief CCDTEMP command - Set/Query the CCD temperature
@@ -1610,7 +1700,7 @@ cmd_shopen(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  if (OpenShutter(&ccd,reply)<0)
+  if (openshutter(&ccd,reply)<0)
     return CMD_ERR;
 
   strcpy(reply,"Shutter=1");
@@ -1644,7 +1734,7 @@ cmd_shclose(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  if (CloseShutter(&ccd,reply)<0)
+  if (closeShutter(&ccd,reply)<0)
     return CMD_ERR;
 
   strcpy(reply,"Shutter=0");
@@ -1690,9 +1780,9 @@ cmd_shutter(char *args, MsgType msgtype, char *reply)
     GetArg(args,1,argbuf);
     ishut = atoi(argbuf);
     if (ishut)
-      ierr = OpenShutter(&ccd,reply);
+      ierr = openShutter(&ccd,reply);
     else
-      ierr = CloseShutter(&ccd,reply);
+      ierr = closeShutter(&ccd,reply);
     if (ierr<0)
       return CMD_ERR;
   }
@@ -1951,13 +2041,11 @@ cmd_azcam(char *args, MsgType msgtype, char *reply)
 // GO n - take n exposures (n=1 if absent).  Returns control to the main event
 //        loop, setting the ccd.State variable as required.
 //
-// FOCUS - Take a focus image, the most complex of these commands
-//
 // PAUSE - Pause an exposure in progress.  Must follow with Resume or Abort
 //
 // RESUME - Resume a paused exposure
 //
-// ABORT - Sends an AbortExposure command to the azcam server
+// ABORT - Sends an abortExposure command to the azcam server
 //
 
 /*!  
@@ -1997,7 +2085,7 @@ cmd_go(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // Some care must be taken here to make sure the AzCamServer state is IDLE
+  // Some care must be taken here to make sure the azcam server state is IDLE
   // before executing an exposure
 
   switch(ccd.State) {
@@ -2021,7 +2109,7 @@ cmd_go(char *args, MsgType msgtype, char *reply)
     break;
 
   default:
-    strcpy(reply,"AzCamServer State UNKNOWN, GO not allowed");
+    strcpy(reply,"azcam server state UNKNOWN, GO not allowed");
     return CMD_ERR;
     break;
   }    
@@ -2034,19 +2122,18 @@ cmd_go(char *args, MsgType msgtype, char *reply)
   case COMP:
   case STD:
   case DARK:
-    if (DoExposure(&ccd,&obs,reply)<0)
+    if (doExposure(&ccd,&obs,reply)<0)
       return CMD_ERR;
     break;
 
   case BIAS:
   case ZERO:
-    if (DoBias(&ccd,&obs,reply)<0)
+    if (doBias(&ccd,&obs,reply)<0)
       return CMD_ERR;
     break;
 
   default:
-    sprintf(reply,"Unknown IMGTYPE %d - Cannot Initiate Exposure",
-	    obs.ImageTyp);
+    sprintf(reply,"Unknown IMGTYPE %d - Cannot Initiate Exposure",obs.ImageTyp);
     return CMD_ERR;
     break;
   }
@@ -2055,148 +2142,6 @@ cmd_go(char *args, MsgType msgtype, char *reply)
 
   return CMD_NOOP;
 
-}
-
-/*!  
-  \brief FOCUS command - take a focus plate image
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  focus [first|last] nrows
-
-  Takes a focus image, one image in a multiple-exposure sequence in
-  which the shutter is opened for #obspars::ExpTime, and then closed but
-  not readout (unless "last" is given).  If the first or intermediate
-  image in the sequence, the image is shifted vertically by nrows pixels
-  after the shutter closes.
-
-  If the first keyword is used, the CCD array is erased and the image
-  becomes the first image in the sequence, and the image is shifted by
-  nrows after the shutter closes but not read out.  If no post-exposure
-  rowshift is required, the command must use nrows=0 (blank is not
-  allowed).  The CCD readout mode is set to DEFERRED.
-
-  If neither keyword is used, an exposure is taken without erasing the
-  CCD and the image is shifted nrows after the shutter closes.
-
-  If the last keyword is used, the CCD is exposed without first erasing
-  the CCD then readout.  In this case the nrows argument is ignored,
-  and the CCD readout mode is set to IMMEDIATE.
-
-  The usual sequence of a focus image is as follows:
-  <pre>
-     focus first 10
-     focus 10
-     focus 10
-     ...
-     focus 20
-     focus last
-  </pre>
-  The first image sets up the focus plate, erasing the CCD, taking the
-  exposure and then shifting the image up 10 rows.
-
-  Subsequent focus commands instruct the azcam server to take an image
-  and then shift the image 10 rows after the shutter closes.  The next
-  to last image is taken with a double rowshift of 20 rows to make the
-  direction of the image sequence unambiguous.
-
-  The last command takes one last focus image and then readsout the
-  array.
-
-  A focus image may be aborted simply by taking a regular exposure,
-  which always erases the CCD first.
-  
-*/
-
-int
-cmd_focus(char *args, MsgType msgtype, char *reply)
-{
-  char argbuf[32];
-  int shift = 0;
-  int first = 0;
-  int last = 0;
-
-  // check the file descriptor and make sure we have an active connection
-
-  if (ccd.FD<0) {
-    strcpy(reply,"No azcam server connection active");
-    return CMD_ERR;
-  }
-
-  // Some care must be taken here to make sure the AzCamServer state is IDLE
-  // before executing an exposure
-
-  switch(ccd.State) {
-  case PAUSE:
-    strcpy(reply,"Exposure PAUSEd, FOCUS not allowed");
-    return CMD_ERR;
-    break;
-
-  case EXPOSING:
-    strcpy(reply,"Exposure in progress, FOCUS not allowed");
-    return CMD_ERR;
-    break;
-    
-  case READOUT:
-    strcpy(reply,"Readout in progress, FOCUS not allowed");
-    return CMD_ERR;
-    break;
-    
-  case IDLE:
-    // We're OK to expose, fall through
-    break;
-
-  default:
-    strcpy(reply,"AzCamServer State UNKNOWN, FOCUS not allowed");
-    return CMD_ERR;
-    break;
-  }    
-
-  // If we have no arguments, assume a focus image with zero row shift.
-
-  if (strlen(args)==0) {
-    first = 0;
-    last = 0;
-    shift = 0;
-  }
-  else {
-    GetArg(args,1,argbuf);
-    if (strcasecmp(argbuf,"FIRST")==0) { // first image in the sequence
-      first = 1;
-      last = 0;
-      GetArg(args,2,argbuf);
-      shift = atoi(argbuf);
-    }
-    else if (strcasecmp(argbuf,"LAST")==0) { // last image in the sequence
-      last = 1;
-      first = 0;
-      shift = 0;
-    }
-    else { // a number of rows to shift
-      first = 0;
-      last = 0;
-      shift = atoi(argbuf);
-    }
-  }
-
-  if (DoFocus(&ccd,&obs,shift,first,last,reply)<0)
-    return CMD_ERR;
-
-  strcpy(reply,"Focus image acquired, Readout Deferred.");
-
-  if (last) {
-    strcpy(reply,"Last Focus image acquired, Reading out...");
-    return CMD_NOOP;  // because we now hand off to readout processing
-  }
-
-  if (first)
-    strcpy(reply,"First Focus image acquired, Readout Deferred.");
-
-  return CMD_OK;
 }
 
 /*!  
@@ -2222,6 +2167,7 @@ cmd_focus(char *args, MsgType msgtype, char *reply)
 int
 cmd_pause(char *args, MsgType msgtype, char *reply)
 {
+  char cmdStr[64];
   
   // check the file descriptor and make sure we have an active connection
 
@@ -2230,44 +2176,15 @@ cmd_pause(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // Some care must be taken as PauseExposure can cause unpredictable
-  // behavior if sent when the AzCamServer is in certain states.  What
-  // we do depends on the value of ccd.State
-
-  switch(ccd.State) {
-
-  case EXPOSING:  // Exposure in progress, OK to Pause
-    if (PauseExposure(&ccd,reply)<0)
-      return CMD_ERR;
-    break;
-
-  case PAUSE:  // Exposure already paused...
-    strcpy(reply,"Already PAUSEd, only RESUME or ABORT allowed");
+  // pauseExposure checks the exposure state for us
+  
+  if (pauseExposure(&ccd,reply)<0)
     return CMD_ERR;
-    break;
 
-  case IDLE:  // Cannot Pause while idle (OK, maybe, but unpredictable), gripe
-    strcpy(reply,"No exposure in progress, Cannot PAUSE");
-    return CMD_ERR;
-    break;
+  // We were able to pause
 
-  case READOUT:  // Cannot Pause during readout
-    strcpy(reply,"Readout in Progress, Cannot PAUSE");
-    return CMD_ERR;
-    break;
-
-  default:  // Don't know the state, cannot abort
-    strcpy(reply,"AzCamServer state is Unknown, PAUSE not allowed");
-    return CMD_ERR;
-    break;
-
-  }
-
-  // We were able to Pause, set the CCD state to PAUSE
-
-  strcpy(reply,"Exposure PAUSEd - RESUME to continue or ABORT");
-  NotifyClient(&obs,reply,STATUS);
-  ccd.State = PAUSE;
+  strcpy(reply,"Exposure PAUSED - RESUME to continue or ABORT");
+  notifyClient(&obs,reply,STATUS);
   ccd.Abort = 0;
 
   return CMD_NOOP;
@@ -2307,44 +2224,15 @@ cmd_resume(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // Some care must be taken as ResumeExposure can cause unpredictable
-  // and predictably bad behavior if sent when the AzCamServer is in
-  // certain states.  What we do depends on the value of ccd.State
+  // resumeExposure checks the exposure state for us
 
-  switch(ccd.State) {
-
-  case PAUSE:  // We have a PAUSEd exposure, RESUME permitted
-    if (ResumeExposure(&ccd,reply)<0)
-      return CMD_ERR;
-    break;
-
-  case EXPOSING:  // Exposure in progress, Cannot Resume
-    strcpy(reply,"Exposure in Progress, only PAUSE or ABORT allowed");
+  if (resumeExposure(&ccd,reply)<0)
     return CMD_ERR;
-    break;
 
-  case IDLE:  // Cannot Resume while idle - can crash/reboot the server
-    strcpy(reply,"No exposure in progress, RESUME not allowed");
-    return CMD_ERR;
-    break;
-
-  case READOUT:  // Cannot RESUME during readout
-    strcpy(reply,"Readout in Progress, RESUME not allowed");
-    return CMD_ERR;
-    break;
-
-  default:  // Don't know the state, cannot abort
-    strcpy(reply,"AzCamServer state is Unknown, RESUME not allowed");
-    return CMD_ERR;
-    break;
-
-  }
-
-  // We were able to Resume, set the CCD state to EXPOSING
+  // We were able to resume
 
   strcpy(reply,"Exposure Resumed...");
-  NotifyClient(&obs,reply,STATUS);
-  ccd.State = EXPOSING;
+  notifyClient(&obs,reply,STATUS);
   ccd.Abort = 0;
 
   // Return CMD_NOOP to return exposure control to the main event handler
@@ -2363,23 +2251,7 @@ cmd_resume(char *args, MsgType msgtype, char *reply)
   \par Usage:
   Abort
 
-  Aborts an integration in progress.  The abort is actually a 2-step process
-  of sending two commands to the azcam server in sequence:
-  <ol>
-  <li>PauseExposure
-  <li>AbortExposure
-  </ol>
-  The first pauses the exposure, the second tells it how to exit the
-  paused state, here "Abort" = cancel integration and discard the
-  image.  
-
-  During development, we found that if an AbortExposure directive is
-  sent without being preceeded by PauseExposure, the AzCamServer will
-  eventually crash (rebooting the server WinXP system).  The stock
-  AzCamTool provided by ITL does the Pause/Abort sequence, which
-  suggests this might be of a piece with the ReadExposure-related crash
-  we experienced (see PollExposure()).  As such, what we do depends
-  on the value of the ccd.State flag.
+  Aborts an integration in progress.
 
   On a successful abort, it sets the ccd.State flag to IDLE, and
   the ccd.Abort flag to 1 (true).
@@ -2398,51 +2270,18 @@ cmd_abort(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // Some care must be taken as AbortExposure can cause unpredictable
-  // behavior if sent when the AzCamServer is in certain states.  What
-  // we do depends on the value of ccd.State
+  // abortExposure verifies the exposure status for us
 
-  switch(ccd.State) {
-
-  case EXPOSING:  // Exposure in progress, AbortExposure allowed, but PauseExposure first
-    if (PauseExposure(&ccd,reply)<0) // First pause, then abort... weird
-      return CMD_ERR;
-
-    if (AbortExposure(&ccd,reply)<0) // If we get errors, abort may have failed
-      return CMD_ERR;
-    
-    break;
-
-  case PAUSE:  // Exposure PAUSEd already, so we can send AbortExposure directly
-    if (AbortExposure(&ccd,reply)<0) // If we get errors, abort may have failed
-      return CMD_ERR;
-    break;
-
-  case IDLE:  // Cannot abort when idle, gripe
-    strcpy(reply,"Cannot Abort, no exposure in progress");
+  if (abortExposure(&ccd,reply)<0)
     return CMD_ERR;
-    break;
-
-  case READOUT:  // Cannot abort during readout
-    strcpy(reply,"Readout in Progress, Cannot Abort");
-    return CMD_ERR;
-    break;
-
-  default:  // Don't know the state, cannot abort
-    strcpy(reply,"AzCamServer state is Unknown, Cannot Abort");
-    return CMD_ERR;
-    break;
-
-  }
-
-  // We were able to send the Abort, so set the CCD state to IDLE and
+  
+  // We were able to send the Abort
   // set the Abort flag
 
-  ccd.State = IDLE;
   ccd.Abort = 1;  
 
-  strcpy(reply,"Exposure Aborted");
-  NotifyClient(&obs,reply,DONE);  // Abort is always "done"
+  strcpy(reply,"ABORT requested");
+  notifyClient(&obs,reply,DONE);  // Abort is always "done"
   return CMD_OK;
 }
 
@@ -2461,12 +2300,12 @@ cmd_abort(char *args, MsgType msgtype, char *reply)
   runtime state can be left in something of a mess.  It performs the
   following cleanup tasks
   <ol>
-  <li>Sends an AbortExposure command to make sure no image integration 
+  <li>Sends an abortExposure command to make sure no image integration 
       continues.
-  <li>Sends a CloseShutter command to make sure the shutter is closed.
+  <li>Sends a closeShutter command to make sure the shutter is closed.
   <li>Sets the ccd.State flag to IDLE
   <li>Sets the ccd.Abort flag to 0
-  <li>Queries to reset the readout pixel counters (GetDetPars())
+  <li>Queries to reset the readout pixel counters 
   <li>Instructs the server to clear the CCD array
   <li>Gets the current CCD and Dewar temperatures
   </ol>
@@ -2490,10 +2329,10 @@ cmd_cleanup(char *args, MsgType msgtype, char *reply)
   
   ccd.State = IDLE;
   ccd.Abort = 0;
-  CloseShutter(&ccd,reply);
-  GetPixelCount(&ccd,reply);
-  ClearArray(&ccd,reply);
-  GetTemp(&ccd,reply);
+  closeShutter(&ccd,reply);
+  getPixelCount(&ccd,reply);
+  clearArray(&ccd,reply);
+  getTemp(&ccd,reply);
 
   strcpy(reply,"Cleanup Completed");
   return CMD_OK;
@@ -2645,7 +2484,7 @@ cmd_process(char *args, MsgType msgtype, char *reply)
 
   // upload it to DataMan for post-processing
 
-  if (ProcessCCDImage(&ccd,&obs,fname,reply)<0)
+  if (processImage(&ccd,&obs,fname,reply)<0)
     return CMD_ERR;
 
   return CMD_OK;
@@ -2681,7 +2520,7 @@ cmd_ccdinit(char *args, MsgType msgtype, char *reply)
   }
 
   memset(msgstr,0,sizeof(msgstr));
-  if (InitCCDConfig(&ccd,msgstr)<0) {
+  if (initCCDConfig(&ccd,msgstr)<0) {
     sprintf(reply,"CCDINIT Failed - %s",msgstr);
     return CMD_ERR;
   }
@@ -2689,549 +2528,6 @@ cmd_ccdinit(char *args, MsgType msgtype, char *reply)
   strcat(reply,msgstr);
   return CMD_OK;
 
-}
-
-//----------------------------------------------------------------
-//
-// Filter Wheel Commands
-//
-
-/*!
-  \brief FWINIT - Initialize the Filter Wheel Interface
-
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  fwinit 
-
-  Initializes the filter wheel interface.  Usually used to restart the
-  interface if there have been problems, as the filter wheel is usually
-  initialized at client startup time.  Function calls FWStartup().
-
-*/
-
-int
-cmd_fwinit(char *args, MsgType msgtype, char *reply)
-{
-
-  if (fw.useFW) {
-    if (FWStartup(&fw)<0) {
-      strcpy(reply,"Filter Wheel Init Failed FW=Disabled - see console for details");
-      return CMD_ERR;
-    }
-    else {
-      strcpy(reply,"Filter Wheel Initialized FW=Enabled");
-      return CMD_OK;
-    }
-  }
-  else {
-    strcpy(reply,"Filter Wheel no enabled for use, cannot init");
-    return CMD_ERR;
-  }
-
-}
-
-/*!
-  \brief FILTER - Set/Query the filter in the beam position
-
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  filter [n]
-
-  Puts filter n into the beam, or if given with no arguments queries
-  the current filter position.  Also saves the current filter info in
-  the #obspars::Filter and #obspars::FilterID data members
-
-*/
-
-int
-cmd_filter(char *args, MsgType msgtype, char *reply)
-{
-  char argbuf[64];
-  int reqfilt;
-  char keyval[16];
-
-  // Make sure the filter wheel is enabled...
-
-  if (!fw.useFW) {
-    strcpy(reply,"No Filter Wheel Enabled by this Configuration");
-    return CMD_ERR;
-  }
-
-  // And if enabled, active
-
-  if (!fw.Link) {
-    strcpy(reply,"Filter Wheel Offline");
-    return CMD_ERR;
-  }
-
-  // If we have no arguments, this is just a query
-
-  if (strlen(args)>0) {
-    GetArg(args,1,argbuf);
-    reqfilt = atoi(argbuf);
-    if (reqfilt < 1 || reqfilt > fw.npos) {
-      sprintf(reply,"Invalid filter requested '%s' must be 1..%d",
-	      argbuf,fw.npos);
-      return CMD_ERR;
-    }
-  }
-  else {
-    reqfilt = 0;  // query position only
-  }
-
-  // Set the filter or just query as required
-
-  if (FWSelect(&fw,reqfilt) < 0) {
-    sprintf(reply,"Could not set the filter, Filter=0 FilterID=(Unknown) - see console for details");
-    fw.beampos = 0;
-    obs.Filter = 0;
-    strcpy(obs.FilterID,"UNKNOWN");
-    return CMD_ERR;
-  }
-  sprintf(reply,"Filter=%d FilterID=(%s)",
-	  fw.beampos,(fw.FilterID)[fw.beampos-1]);
-  obs.Filter = fw.beampos;
-  strcpy(obs.FilterID,(fw.FilterID)[fw.beampos-1]);
-
-  return CMD_OK;
-
-}
-/*!
-  \brief LOADFILT - Set/Query the filter in the load position
-
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  loadfilt [n]
-
-  Moves filter n to the load port.  If this command is given with no
-  arguments it will return the filter currently at the load port.  Used
-  to move filters into the load port when adding or removing filters
-  from the filter wheel.
-
-*/
-
-int
-cmd_loadfilt(char *args, MsgType msgtype, char *reply)
-{
-  char argbuf[64];
-  int reqfilt;
-  char keyval[16];
-
-  // Make sure the filter wheel is enabled...
-
-  if (!fw.useFW) {
-    strcpy(reply,"No Filter Wheel Enabled by this Configuration");
-    return CMD_ERR;
-  }
-
-  // And if enabled, active
-
-  if (!fw.Link) {
-    strcpy(reply,"Filter Wheel Offline");
-    return CMD_ERR;
-  }
-
-  // If we have no arguments, this is just a query
-
-  if (strlen(args)>0) {
-    GetArg(args,1,argbuf);
-    reqfilt = atoi(argbuf);
-    if (reqfilt < 1 || reqfilt > fw.npos) {
-      sprintf(reply,"Invalid filter requested '%s' must be 1..%d",
-	      argbuf,fw.npos);
-      return CMD_ERR;
-    }
-  }
-  else {
-    reqfilt = 0;  // query position only
-  }
-
-  // Set the filter or just query as required
-
-  if (FWLoadFilt(&fw,reqfilt) < 0) {
-    sprintf(reply,"Could not move the filter wheel - see console for details");
-    fw.beampos = 0;
-    obs.Filter = 0;
-    strcpy(obs.FilterID,"UNKNOWN");
-    return CMD_ERR;
-  }
-  sprintf(reply,"Load=%d LoadID=(%s)",
-	  fw.loadpos,(fw.FilterID)[fw.loadpos-1]);
-
-  // store the current in-beam filter info as well in the obs struct
-
-  obs.Filter = fw.beampos;
-  strcpy(obs.FilterID,(fw.FilterID)[fw.beampos-1]);
-
-  return CMD_OK;
-
-}
-
-/*!
-  \brief FILTERID - Set/Query a Filter ID
-
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  filterid [n [IDstr]]
-
-  Set the ID of filter n.  If IDstr is absent, reports the ID of filter
-  n, or if given with no arguments at all, reports all filter IDs.
-
-  Requires that a filter wheel be initialized and a filter table loaded.
-*/
-
-int
-cmd_filterid(char *args, MsgType msgtype, char *reply)
-{
-  char argbuf[64];
-  char idstr[64];
-  int reqfilt;
-  int nargs;
-  int i;
-  char temp[64];
-
-  // Make sure the filter wheel is enabled (it need not be online)
-
-  if (!fw.useFW) {
-    strcpy(reply,"No Filter Wheel Enabled by this Configuration");
-    return CMD_ERR;
-  }
-
-  // If we have no arguments, this is just a query
-
-  if (strlen(args)>0) {  
-    nargs = sscanf(args,"%d %[^\n]",&reqfilt,idstr);
-    if (nargs <= 0) {
-       sprintf(reply,"Illegal command arguments '%s'",args);
-       return CMD_ERR;
-    }
-
-    // make sure the requested filter is valid
-
-    if (reqfilt < 1 || reqfilt > fw.npos) {
-      sprintf(reply,"Invalid filter position '%s', must be 1..%d",
-	      argbuf,fw.npos);
-      return CMD_ERR;
-    }
-
-    // We only got a filter number (e.g., filterid 1), return its ID
-
-    if (nargs==1) {
-      sprintf(reply,"%d=(%s)",reqfilt,(fw.FilterID)[reqfilt-1]);
-      return CMD_OK;
-    }
-
-    // We got 2 arguments, redefine the filter ID associated with reqfilt
-
-    strcpy((fw.FilterID)[reqfilt-1],idstr);
-    sprintf(reply,"%d=(%s)",reqfilt,idstr);
-
-  }
-
-  // No arguments, return all filter IDs
-
-  else {
-    for (i=0;i<fw.npos;i++) {
-      sprintf(temp, "%d=(%s) ",(i+1),(fw.FilterID)[i]);
-      strcat(reply,temp);
-    }
-  }
-
-  return CMD_OK;
-
-}
-
-/*!
-  \brief FWTABLE - Load/Query the Filter ID Table
-
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  fwtable [file|reload]
-
-  Loads the named filter wheel ID table.  If given with no arguments, 
-  returns the name of the filter wheel table in use.  If the "reload"
-  keyword is given in place of a filename, it reloads the filter
-  table given by the #fwheel_params::FWTable string.
-
-*/
-
-int
-cmd_fwtable(char *args, MsgType msgtype, char *reply)
-{
-
-  // Make sure the filter wheel is enabled (it need not be online)
-
-  if (!fw.useFW) {
-    strcpy(reply,"No Filter Wheel Enabled by this Configuration");
-    return CMD_ERR;
-  }
-
-  // If we have no arguments, this is just a query
-
-  if (strlen(args)>0) {
-    if (strcasecmp(args,"RELOAD")==0) { // reload the current table
-      if (FWGetIDs(&fw,reply)<0)
-	return CMD_ERR;
-    }
-    else { // load the named table
-      strcpy(fw.FWTable,args);
-      if (FWGetIDs(&fw,reply)<0)
-	return CMD_ERR;
-    }
-  }
-  else { 
-    // just a query, tell them which table we are using
-    sprintf(reply,"FWTable=%s",fw.FWTable);
-  }
-
-  return CMD_OK;
-
-}
-
-/*!
-  \brief ISTATUS - Report the Instrument Status
-
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  istatus
-
-  Reports the instrument status.
-
-*/
-
-int
-cmd_istatus(char *args, MsgType msgtype, char *reply)
-{
-
-  // What is the filter wheel state and current beam position?
-
-  if (fw.beampos > 0)
-    sprintf(reply,"FW=%s Filter=%d FilterID=(%s)",
-	  ((fw.useFW) ? "Enabled" : "Disabled"),
-	    fw.beampos,(fw.FilterID)[fw.beampos-1]);
-  else
-    sprintf(reply,"FW=%s Filter=0 FilterID=(UNKNOWN)",
-	    ((fw.useFW) ? "Enabled" : "Disabled"));
-
-  // The CCD shutter and temperatures are part of the "instrument" status
-
-  sprintf(reply,"%s Shutter=%d SetPoint=%.1f CCDTemp=%.1f DewarTemp=%.1f",
-	  reply,ccd.Shutter,ccd.SetPoint,ccd.CCDTemp,ccd.DewarTemp);
-
-  return CMD_OK;
-
-}
-
-/*!
-  \brief FWINFO - Print the current filter wheel configuration (engineering)
-
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  fwinfo
-
-  Prints the current filter wheel configuration info to the console.  This
-  command is used for engineering purposes only and is not available to
-  remote commands.
-
-
-*/
-
-int
-cmd_fwinfo(char *args, MsgType msgtype, char *reply)
-{
-  if (msgtype == EXEC) {
-    FWInfo(&fw);
-  }
-  else {
-    strcpy(reply,"Cannot execute FWINFO command except as EXEC:");
-    return CMD_ERR;
-  }
-  strcpy(reply,"FWINFO dump complete.");
-  return CMD_OK;
-}
-
-//----------------------------------------------------------------
-//
-// PC-TCS Commands
-//
-
-/*!
-  \brief TCINIT - Initialize the PC-TCS link
-
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  tcinit
-
-  Initializes the link to the PC-TCS agent.  This is typically done
-  to re-initialize the link after errors, as the application usually
-  initializes the link at startup time.
-
-  \sa cmd_tcclose()
-*/
-
-int
-cmd_tcinit(char *args, MsgType msgtype, char *reply)
-{
-
-  if (!client.useISIS) {
-    ClosePCTCS(&tcs); // close any delinquent connections if standalone
-
-    if (OpenPCTCS(&tcs,0)<0) {
-      sprintf(reply,"Could not connect to the PC-TCS Agent - %s=Disabled",
-	      tcs.ID);
-      return CMD_ERR;
-    }
-  }
-
-  // Try to get TCS info
-
-  if (GetPCTCSInfo(&tcs,reply)<0) {
-    sprintf(reply,"PC-TCS init query failed - %s - %s=Disabled",reply,tcs.ID);
-    return CMD_ERR;
-  }
-
-  sprintf(reply,"PC-TCS Interface Initialized - %s=Enabled",tcs.ID);
-
-  return CMD_OK;
-}
-
-/*!
-  \brief TCCLOSE - Close the PC-TCS link
-
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  tcclose
-
-  Closes the link to the PC-TCS agent and resets the interface state
-  flags.
-
-  \sa cmd_tcinit()
-*/
-
-int
-cmd_tcclose(char *args, MsgType msgtype, char *reply)
-{
-  if (client.useISIS)
-    tcs.Link = 0;
-  else
-    ClosePCTCS(&tcs);
-
-  sprintf(reply,"PC-TCS Interface Closed - %s=Disabled",tcs.ID);
-  return CMD_OK;
-}
-
-/*!
-  \brief TCSTATUS - Query the PC-TCS for current status info
-
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  tcstatus
-
-  Queries the PC-TCS for current telescope status information.  If the link
-  is active, it returns an IMPv2 message with the current pointing information
-  (Date, Time, JD, RA, Dec, Equinox, HA, LST, and SecZ), and the telescope
-  focus and temperature (if available).
-
-  If the link is down, it returns at least the date and time, and sets the
-  #pctcs_config::Link flag false so the header knows that the TCS is down
-  and only reports time/date info as provided by the azcam server.
-
-*/
-
-int
-cmd_tcstatus(char *args, MsgType msgtype, char *reply)
-{
-  
-  if (GetPCTCSInfo(&tcs,reply)<0)
-    return CMD_ERR;
-
-  if (client.Debug)
-    printf("PC-TCS returned '%s'\n",reply);
-
-  // We got info, print a message in IMPv2 Format
-
-  if (tcs.Link) {
-    sprintf(reply,"TCSLink=UP DATE-OBS=%s TIME-OBS=%s JD=%s RA=%s DEC=%s EQUINOX=%s HA=%s LST=%s SECZ=%s TELFOCUS=%s TELTEMP=%s",
-	    tcs.DateObs,tcs.TimeObs,tcs.JD,tcs.RA,tcs.Dec,
-	    tcs.Equinox,tcs.HA,tcs.LST,tcs.SecZ,tcs.TelFocus,
-	    tcs.TelTemp);
-    
-  } 
-  else {
-    sprintf(reply,"TCSLink=DOWN DATE-OBS=%s TIME-OBS=%s",
-	    tcs.DateObs,tcs.TimeObs);
-  }
-
-  // redundant copies of date/time info for obspars_t
-
-  strcpy(obs.DateObs,tcs.DateObs);
-  strcpy(obs.TimeObs,tcs.TimeObs);
-
-  return CMD_OK;
-}
-
-int
-cmd_tcinfo(char *args, MsgType msgtype, char *reply)
-{
-  if (msgtype == EXEC) {
-    PCTCSInfo(&tcs);
-  }
-  else {
-    strcpy(reply,"Cannot execute TCINFO command except as EXEC:");
-    return CMD_ERR;
-  }
-  strcpy(reply,"TCINFO dump complete.");
-  return CMD_OK;
 }
 
 

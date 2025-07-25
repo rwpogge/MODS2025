@@ -55,13 +55,16 @@ int cmd_flat    (char *, MsgType, char *); // Set image type to flat w/optional 
 int cmd_dark    (char *, MsgType, char *); // Set image type to dark w/optional name 
 int cmd_comp    (char *, MsgType, char *); // Set image type to comp w/optional name 
 int cmd_zero    (char *, MsgType, char *); // Set image type to zero w/optional name
+int cmd_std     (char *, MsgType, char *); // Set image type to std w/optional name
 
 int cmd_filename(char *, MsgType, char *); // Set/Query the raw data file name pattern 
 int cmd_path    (char *, MsgType, char *); // Set/Query the raw data file path 
 int cmd_expnum  (char *, MsgType, char *); // Set/Query the raw data file counter 
 int cmd_lastfile(char *, MsgType, char *); // Query the name of the last file written
 
-int cmd_ccdbin  (char *, MsgType, char *); // Set/Query the CCD on-chip binning factor
+int cmd_ccdbin  (char *, MsgType, char *); // Set/Query the CCD on-chip binning factors
+int cmd_xbin    (char *, MsgType, char *); // Set/Query the CCD on-chip x (column) binning factor
+int cmd_ybin    (char *, MsgType, char *); // Set/Query the CCD on-chip y (row) binning factor
 int cmd_roi     (char *, MsgType, char *); // Set/Query the CCD readout region-of-interest (ROI)
 
 int cmd_ccdtemp (char *, MsgType, char *); // query the CCD temperatures (detector and base)
@@ -148,6 +151,7 @@ cmdtab[] = {   //!< global scope command table for this application
   {"bias"    ,cmd_bias    ,"bias <name>","Set image type to BIAS, including optional image name"},
   {"zero"    ,cmd_zero    ,"zero <name>","Set image type to ZERO, including optional image name"},
   {"comp"    ,cmd_comp    ,"comp <name>","Set image type to COMP, including optional image name"},
+  {"std"     ,cmd_std     ,"std <name>","Set image type to STD, including optional image name"},
   {"observer",cmd_observer,"observer <str>","Set/query the OBSERVER name(s) for the header"},
   {"pi_name" ,cmd_piname  ,"pi_name <str>","Set/query the PI_NAME keyword for the header"},
   {"partner" ,cmd_partner ,"partner <str>","Set/query the PARTNER keyword for the header"},

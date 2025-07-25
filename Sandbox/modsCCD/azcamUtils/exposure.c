@@ -288,13 +288,19 @@ abortExposure(azcam_t *cam, char *reply)
 {
   char cmdStr[64];
 
-  // we are cautious to do this by querying the
-  // exposure status
-
+  // query the exposure status
+  
   if (expStatus(cam,reply)<0)
     return -1;
 
-  if (cam->State == EXPOSING) {
+  // We can only abort if EXPOSING, PAUSE, or RESUME
+
+  switch(cam->State) {
+
+  case EXPOSING:
+  case PAUSE:
+  case RESUME:
+
     strcpy(cmdStr,"exposure.abort");
 
     if (azcamCmd(cam,cmdStr,reply)<0) {
@@ -303,24 +309,14 @@ abortExposure(azcam_t *cam, char *reply)
     }
 
     sprintf(reply,"Exposure Aborted");
-  }
-  else if (cam->State == READOUT) {
-    strcpy(cmdStr,"mods.abort_readout");
-    
-    if (azcamCmd(cam,cmdStr,reply)<0) {
-      strcat(reply," - abortExposure Failed");
-      return -1;
-    }
-    sprintf(reply,"Exposure Readout Aborted");
-  }    
-  else {
+    cam->Abort = 1;
+    break;
+
+  default:
     strcpy(reply,"No exposure in progress to abort");
-    return -1;
+    cam->Abort = 0;
+    break;
   }
-
-  // success, set various abort flags as required...
-
-  cam->Abort = 1;
   
   return 0;
 
@@ -398,7 +394,7 @@ resumeExposure(azcam_t *cam, char *reply)
   char cmdStr[64];
 
   if (cam->State != PAUSE) {
-    strcpy(reply,"No PAUSEd exposure to RESUME");
+    strcpy(reply,"No PAUSED exposure to RESUME");
     return -1;
   }
 
@@ -411,7 +407,7 @@ resumeExposure(azcam_t *cam, char *reply)
 
   // success, set various flags as required...
 
-  cam->State = EXPOSING;
+  cam->State = RESUME;
   strcpy(reply,"Exposure Resumed");
   return 0;
 

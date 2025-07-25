@@ -166,7 +166,7 @@ int  initCCDConfig(azcam_t *, char *);
 int  uploadFITS(azcam_t *, obsPars_t *, char *);
 
 void initObsPars(obsPars_t *);
-int  procCCDImage(azcam_t *, obsPars_t *, char *, char *);
+int  processImage(azcam_t *, obsPars_t *, char *, char *);
 int  readTemps(azcam_t *, char *);
 
 // Signal Handlers

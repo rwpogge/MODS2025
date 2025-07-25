@@ -252,10 +252,15 @@ notifyClient(obsPars_t *obs, char *msgStr, MsgType msgType)
 
   if (strlen(msgStr)<0) return 0;
 
-  // if msgType = STATUS and cam->State > 0 (taking data), set one of the EXPSTATUS flags
+  // if msgType = STATUS and cam->State > 0 (taking data), augment the
+  // msgStr with an appropriate EXPSTATUS flag
 
   if (msgType == STATUS) {
     switch(cam->State) {
+    case SETUP:
+      sprintf(msgStr,"%s EXPSTATUS=INITIALIZING",msgStr);
+      break;
+      
     case EXPOSING:
       sprintf(msgStr,"%s EXPSTATUS=INTEGRATING",msgStr);
       break;
@@ -273,11 +278,8 @@ notifyClient(obsPars_t *obs, char *msgStr, MsgType msgType)
       break;
 
     case READOUT:
+    case READ:
       sprintf(msgStr,"%s EXPSTATUS=READOUT",msgStr);
-      break;
-      
-    case SETUP:
-      sprintf(msgStr,"%s EXPSTATUS=INITIALIZING",msgStr);
       break;
       
     case WRITING:
@@ -462,7 +464,7 @@ writeCCDImage(azcam_t *cam, obsPars_t *obs, char *reply)
 */
 
 int
-procCCDImage(azcam_t *cam, obsPars_t *obs, char *fname, char *reply)
+processImage(azcam_t *cam, obsPars_t *obs, char *fname, char *reply)
 {
   char cmdStr[256];    // command string to send
   char srcID[16];      // source ID of whoever started this

@@ -1,5 +1,5 @@
 /*!
-  \mainpage y4kcam - Interactive AzCam Client
+  \mainpage y4kcam - Interactive azcam Client
 
   \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
   \date 2005 May 2
@@ -85,11 +85,10 @@
 // Global data structures
 
 isisclient_t client; // ISIS Client data structure
-azcam_t ccd;         // AzCam server parameters data structure
+azcam_t ccd;         // azcam server parameters data structure
 obspars_t obs;       // Observation parameters data structure
-pctcs_t tcs;         // PC-TCS agent data structure
-fwheel_t fw;         // Y4KCam Filter Wheel data structure
-dataman_t dm;        // Data Manager data structure
+
+// dataman_t dm;        // Data Manager data structure
 
 //----------------------------------------------------------------
 //
@@ -103,12 +102,17 @@ main(int argc, char *argv[])
   int nread;
   int readout = 0;
   int countdown = 0;
+  
+  int expCount = 0;   // running exposure tick reports
+  int numExpRep = 60; // max number of exposure tick reports
+  
   double dt;
+  float pctRead;
 
   char buf[ISIS_MSGSIZE]; // command/message buffer
   char reply[256];   // generic reply string
 
-  char camData[256];   // raw AzCam socket port string
+  char camData[256];   // raw azcam socket port string
   int lastchar;
   char cmdstr[64];
 
@@ -142,8 +146,8 @@ main(int argc, char *argv[])
   
   printf("\n");
   printf("  -------------------------------------------\n");
-  printf("                    y4kcam\n");
-  printf("  Interactive Y4KCam Instrument Control Agent\n\n");
+  printf("                    modsCCD\n");
+  printf("  Interactive MODS CCD (aka IC) Control Agent\n\n");
 
   printf("  Version: %s (%s %s)\n",APP_VERSION,APP_COMPDATE,APP_COMPTIME);
   printf("  -------------------------------------------\n\n");
@@ -157,7 +161,7 @@ main(int argc, char *argv[])
     n = LoadConfig(DEFAULT_RCFILE);
 
   if (n!=0) {
-    printf("Unable to load the runtime config file...y4kcam aborting\n");
+    printf("Unable to load the runtime config file...modsCCD aborting\n");
     exit(1);
   }
 
@@ -182,19 +186,19 @@ main(int argc, char *argv[])
   }
 
   if (client.useISIS)
-    printf("Started y4kcam as ISIS client node %s on %s port %d\n",
+    printf("Started modsCCD as ISIS client node %s on %s port %d\n",
 	   client.ID, client.Host, client.Port);
   else
-    printf("Started y4kcam as standalone agent %s on %s port %d\n",
+    printf("Started modsCCD as standalone agent %s on %s port %d\n",
 	   client.ID, client.Host, client.Port);
   
-  // Now, open the AzCam server connection and attempt to initialize the session
+  // Now, open the azcam server connection and attempt to initialize the session
   
-  OpenAzCam(&ccd,reply);
+  openAzCam(&ccd,reply);
   if (ccd.FD>0) {
-    printf("Opened connection to AzCam Server host %s:%d\n",
+    printf("Opened connection to azcam server host %s:%d\n",
 	   ccd.Host,ccd.Port);
-    if (InitCCDConfig(&ccd,reply)<0) {
+    if (initCCDConfig(&ccd,reply)<0) {
       printf("CCD Initialization Failed - %s\n",reply);
       printf("  Options: 1) Quit and fix the problem with the %s script\n",
 	     ccd.IniFile);
@@ -205,42 +209,14 @@ main(int argc, char *argv[])
     }
   }
   else {
-    printf("ERROR: Could not open connection to AzCam server host %s:%d\n",
+    printf("ERROR: Could not open connection to azcam server host %s:%d\n",
 	   ccd.Host,ccd.Port);
     printf("       Make sure the system is on and properly configured,\n");
     printf("       then try again.\n");
-    printf("y4kcam aborting\n");
+    printf("modsCCD aborting\n");
     exit(3);
   }
   
-  // Initialize the filter wheel if enabled
-
-  if (fw.useFW) {
-    
-    // Initialize the filter table
-    
-    fw.FilterID = (char **)malloc(MAX_FILTERS * sizeof(char *));
-    for (i=0; i<MAX_FILTERS; i++)
-      (fw.FilterID)[i] = (char *)calloc(FWHEEL_IDSIZE, sizeof(char));
-    
-    // Startup the filter wheel and read the starting position
-    
-    if (FWStartup(&fw)<0) {
-      printf("\nWARNING: Could not initialize the filter wheel\n");
-      printf("Disabling filter wheel - restart later with FWINIT.\n");
-      fw.Link = 0;
-    }
-    else {
-      printf("Filter Wheel initialized, starting position %d [%s]\n",
-	     fw.beampos,fw.FilterID[fw.beampos-1]);
-      obs.Filter = fw.beampos;
-      strcpy(obs.FilterID,(fw.FilterID)[fw.beampos-1]);
-    }
-  }
-  else {
-    printf("NOTE: Started with no Filter Wheel enabled.\n");
-  }
-
   // Broadcast a PING to the ISIS server, if enabled.  If it fails,
   // we'll have to do the ping by hand after the comm loop starts.
 
@@ -253,44 +229,9 @@ main(int argc, char *argv[])
       printf("OUT: %s\n",buf);
   }
 
-  // Initialize the PC-TCS interface if used
-  
-  strcpy(tcs.Name,client.ID); // copy client ID into tcs.Name member
-
-  if (tcs.useTCS) {
-    if (client.useISIS) {
-      tcs.FD = client.FD;  // use the ISIS socket
-    }
-    else {
-      if (OpenPCTCS(&tcs,0)<0) { // open on any free localhost port
-	printf("\nWARNING: Could not connect to the PC-TCS Agent\n");
-	printf("Disabling TCS Link - restart later with TCINIT.\n");
-	tcs.Link = 0;
-	tcs.FD = -1;
-      }
-    }
-    if (tcs.FD>0) {
-      if (PCTCSCmd(&tcs,(char*)"tcinit",reply)<0) {
-	printf("PC-TCS init failed - %s\n",reply);
-	printf("Try again using tcinit by hand later\n");
-	tcs.Link = 0;
-      }
-      else {
-	tcs.Link = 1;
-	GetPCTCSInfo(&tcs,reply);
-      }
-      if (client.useISIS)
-	printf("PC-TCS Link via ISIS initialized\n");
-      else
-	printf("PC-TCS Direct Link initialized\n");
-    }
-  }
-  else {
-    printf("NOTE: Started with no PC-TCS interface\n");
-  }
-
   // Initialize the DataMan link, if used
-  
+
+  /*
   strcpy(dm.Name,client.ID); // copy client ID into dm.Name member
 
   if (dm.useDM) {
@@ -298,7 +239,7 @@ main(int argc, char *argv[])
       dm.FD = client.FD;  // use the ISIS socket
     }
     else {
-      if (OpenDataMan(&dm,0)<0) { // open on any free localhost port
+      if (openDataMan(&dm,0)<0) { // open on any free localhost port
 	printf("\nWARNING: Could not connect to the DataMan Agent\n");
 	printf("Disabling DataMan Link ...\n");
 	dm.FD = -1;
@@ -314,12 +255,13 @@ main(int argc, char *argv[])
   else {
     printf("NOTE: Started with no DataMan interface\n");
   }
-
+  */
+  
   // Now that all components are connected, upload the
   // baseline FITS header database
 
-  GetTemp(&ccd,reply);
-  UploadFITS(&ccd,&obs,reply);
+  getTemp(&ccd,reply);
+  uploadFITS(&ccd,&obs,reply);
 
   // All set to rock-n-roll...
 
@@ -348,32 +290,57 @@ main(int argc, char *argv[])
   //
   // Start the I/O event handling loop.
   //
-  // The event handler has to have some awareness of the AzCam server
+  // The event handler has to have some awareness of the azcam server
   // state, which it tracks using the ccd.State data member.
   //
+  // For the Archon controller, the sequence of exposure states are:
+  //
+  //   (IDLE)
+  //    SETUP
+  //    EXPOSING
+  //       PAUSE/RESUME/ABORT
+  //    READOUT
+  //    READ
+  //    WRITING
+  //    (IDLE)
+  //    
   // If ccd.State = IDLE, the handler just waits for input (select()
-  // call with no timeout).  If, however, there is an AzCam server
-  // connected, then every 120 seconds it queries the AzCam server to
-  // read the CCD and Dewar temperature.
+  // call with no timeout).  If, however, there is an azcam server
+  // connected, then every 120 seconds it queries the azcam server to
+  // read the CCD and base temperatures and do housekeeping tasks
   //
-  // If ccd.State = EXPOSING, then it sets up select() with a 1
-  // second timeout to watch for Abort directives from the console or
-  // remote clients, and then polls the AzCam for the current
-  // integration status, maintaining a parallel countdown.  On
-  // integration completion, it switches the state to ccd.State=READOUT
-  // as appropriate.
-  // 
-  // If ccd.State = READOUT, it similarly sets up select()  with a 1
-  // second timeout and polls the AzCam server for the readout
-  // status by watching the pixel counter.  When the pixel counter
-  // reaches the expected number (ccd.Npixels), it fires off the
-  // Write command and when write is done, sets the AzCam server state
-  // flag back to IDLE.
-  // 
-  // If ccd.State = PAUSE, we have a paused exposure, so we go into
-  // a minimal polling state like being idle.
+  // When ccd.State changes to SETUP or EXPOSING, it sets up the
+  // select() loop with a 0.5 second timeout to watch for any
+  // Abort/Pause/Resume directives from the console or remote clients,
+  // and then polls the azcam for the current integration status,
+  // maintaining a parallel countdown.  On integration completion, it
+  // switches the state to ccd.State=READOUT as appropriate.
   //
-
+  // If ccd.State = PAUSE indicating a paused exposure, so we go into
+  // a minimal polling state like being idle until ccd.state is
+  // set to RESUME, and we resume the fast exposure cadence.
+  // 
+  // When ccd.State changes to READOUT, it sets up the select() loop
+  // with a 1 second timeout and polls the azcam server for the
+  // readout status by watching the pixel counter, reporting readout
+  // progress (typically few 10s of seconds) to the console or 
+  // remote client.
+  //
+  // When readout is complete, ccd.State changes to READ while the
+  // controller does post-readout cleanup in preparation for
+  // image write.  We keep the 1-second timeout running, and
+  // inform the console or remote client that readout is complete.
+  //
+  // When ccd.State changes to WRITING, we inform the console
+  // or remote client that writing has commenced.
+  //
+  // When the image is written and closed, the azcam server
+  // sets ccd.State = IDLE and we switch back to the normal
+  // non-exposure select() loop timing.
+  // 
+  //
+  // !*** this is where the exposure progress event loop starts ***!
+  
   client.KeepGoing = 1;
   ccd.State = IDLE;
 
@@ -390,42 +357,54 @@ main(int argc, char *argv[])
     if (client.FD > 0) 
       FD_SET(client.FD, &read_fd);
     
-    // Also listen to the AzCam server comm port, if active
+    // Also listen to the azcam server comm port, if active
     
     if (ccd.FD > 0) 
       FD_SET(ccd.FD, &read_fd);    
 
+    /*
     // Listen to DataMan if active and we're standalone
 
     if (dm.FD > 0 && (!client.useISIS)) 
       FD_SET(dm.FD, &read_fd);
-
-    // Listen to PC-TCS agent if active and we're standalone
-
-    if (tcs.FD > 0 && (!client.useISIS))
-      FD_SET(tcs.FD, &read_fd);
-
+    */
+    
     // Do the select() call and wait for activity on any of our comm
     // ports or the console keyboard
      
     n_ready = 0;
 
-    // Setup select depending on the AzCam state
+    // Setup the select() loop timeout depending on the exposure state
 
     switch(ccd.State) {
-    case EXPOSING: // AzCamServer is busy integrating, setup select() for 0.5s exposure polling
+      
+    case EXPOSING:
+    case RESUME:
+      // azcam server is busy integrating
+      //   setup select() for 0.5s polling
+
       timeout.tv_sec = 0;
       timeout.tv_usec = 500000;
       n_ready = select(sel_wid, &read_fd, NULL, NULL, &timeout);
       break;
 
-    case READOUT: // AzCamServer is busy reading out, setup select() for 1s readout polling
+    case READOUT:
+    case SETUP:
+    case WRITING:
+    case ABORT:
+    case READ:
+      // azcam server is busy reading out, writing, setup, servicing abort,
+      //   setup select() for 1s polling
+      
       timeout.tv_sec = 1;
       timeout.tv_usec = 0;
       n_ready = select(sel_wid, &read_fd, NULL, NULL, &timeout);
       break;
+
+    default:
+      // azcam server is idle or paused
+      //   setup select() for 120s polling for idle-time housekeeping
       
-    default: // AzCam server is idle or paused, setup select() for 120s polling
       if (ccd.FD>0) {
 	timeout.tv_sec = 120;
 	timeout.tv_usec = 0;
@@ -440,102 +419,232 @@ main(int argc, char *argv[])
     
     //----------------------------------------------------------------
     //
-    // select() done, take action depending on the value of n_ready
-    // returned
+    // select() done, take action if something is ready
     //
 
-    // select() timed out, do activities after timeout as required by the AzCam state
+    // select() timed out, do activities after timeout as required by the azcam state
 
     if (n_ready == 0) {
 
-      switch(ccd.State) {
+      switch(ccd.State) {      
 
-      case READOUT: // we're reading out, poll current readout status
-	if (PollReadout(&ccd,&obs,reply)<0) {
-	  NotifyClient(&obs,reply,ERROR);
+      case SETUP: // we were setting up, poll current status
+	if (expStatus(&ccd,reply)<0) {
+	  notifyClient(&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
 	
-	// PollReadout() sets ccd.State depending on the polling outcome
-	
 	switch(ccd.State) {
-	case IDLE:  // readout has completed since last time we polled, write image and wrap up
-	  printf("\n");
-	  NotifyClient(&obs,(char*)"Readout Complete, Writing image...",STATUS);
-	  if (WriteCCDImage(&ccd,&obs,reply)<0)
-	    NotifyClient(&obs,reply,ERROR);
-	  else
-	    NotifyClient(&obs,reply,STATUS);
 
-	  // Any post-processing is done here
-
-	  if (dm.useDM) {
-	    if (ProcessCCDImage(&ccd,&obs,ccd.LastFile,reply)<0)
-	      NotifyClient(&obs,reply,ERROR);
-	    else
-	      NotifyClient(&obs,reply,STATUS);
-	  }
-
-	  // All done at long last...
-
-	  NotifyClient(&obs,(char*)"Exposure Completed.",DONE);
-	  rl_refresh_line(0,0);
-	  
-	  break;
-	  
-	case READOUT: // still reading out, status to console and keep rolling
-	  printf("Read out %d pixels of %d...                \r",
-		 ccd.Nread,ccd.Npixels);
+	case EXPOSING:
+	case RESUME:
+	  printf("\nStarted %.2f sec exposure...              \r",obs.expTime);
 	  fflush(stdout);
+	  sprintf(reply,"%.2f sec exposure started",obs.expTime);
+	  notifyClient(&obs,reply,STATUS);
+	  break;
+
+	case READOUT: // could happen if a bias/zero image
+	  printf("\nReadout Started                           \r");
+	  fflush(stdout);
+	  sprintf(reply,"Readout Started PCTREAD=0");
+	  notifyClient(&obs,reply,STATUS);
 	  break;
 	  
-	default:  // whatever, keep moving
-	  break;
+	default:
+	  break; // nothing to report
 	}
+	// end of SETUP handling
 	break;
 	
-      case EXPOSING: // poll current exposure status
-	if (PollExposure(&ccd,&obs,reply)<0) {
-	  NotifyClient(&obs,reply,ERROR);
+      case READOUT: // we're reading out, poll current readout status
+	if (pollReadout(&ccd,&obs,reply)<0) {
+	  notifyClient(&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
 	
-	// PollExposure() sets ccd.State depending on the polling outcome
+	// pollReadout() sets ccd.State depending on the polling outcome
 	
 	switch(ccd.State) {
-	case EXPOSING:  // still exposing, give countdown on console as required
+
+	case READOUT: // still reading out... status to console and remote as needed
+	  printf("Read out %d pixels of %d...                \r",ccd.Nread,ccd.Npixels);
+	  fflush(stdout);
+	  pctRead = 100.0*float(ccd.Nread)/float(ccd.Npixels); // percent readout
+	  sprintf(reply,"PCTREAD=%d",int(pctRead));
+ 	  notifyClient(&obs,reply,STATUS);
+	  break;
+
+	case READ:  // readout is complete, preparing to write
+	  printf("\nReadout Complete, preparing to write image");
+	  notifyClient(&obs,(char*)"Readout Complete PCTREAD=100",STATUS);
+	  break;
+	  
+	case WRITING: // started writing the image (in case READ state was missed)
+	  printf("\nWriting image %s to disk",ccd.fileName);
+	  fflush(stdout);	
+	  sprintf(reply,"Writing Image PCTREAD=100",int(pctRead));
+ 	  notifyClient(&obs,reply,STATUS);
+	  break;
+	  	  
+	default:  // nothing else requires action
+	  break;
+	}
+	// end of READOUT handling
+	break;
+
+      case EXPOSING: // poll current exposure status - RESUME set instead of EXPOSING after PAUSE
+      case RESUME:
+	if (pollExposure(&ccd,&obs,reply)<0) {
+	  notifyClient(&obs,reply,ERROR);
+	  ccd.State = IDLE;
+	}
+	
+	// pollExposure() sets ccd.State depending on the polling outcome
+	
+	switch(ccd.State) {
+	  
+	case EXPOSING:  // still exposing, update the countdown on console as required
+	case RESUME:
 	  if (obs.doCountDown) {
 	    if (obs.Tleft > 0.0) {
-	      printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",
-		     obs.ExpTime,(int)(obs.Tleft));
+	      printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",obs.expTime,(int)(obs.Tleft));
 	      fflush(stdout);
 	    }
 	  }
+	  
+	  // notify client of exposure countdown - need code to keep reasonable, helps
+	  // keep-alive state for remote UDP socket clients during long (>5min) exposures
+	  
 	  break;
 	  
 	case READOUT:  // started readout since last time we polled
-	  printf("Exposure Completed, Reading out CCD...                  \n");
-	  NotifyClient(&obs,(char*)"Exposure Completed, Shutter=0 (Closed), Reading out CCD...",STATUS);
+	  printf("\nExposure Completed, Readout started...                  \n");
+	  notifyClient(&obs,(char*)"Exposure Completed, Shutter=0 (Closed), Readout started PCTREAD=0",STATUS);
 	  break;
 	  
-	case IDLE:  // exposure done since the last time we polled
-	  printf("Exposure Completed...                                   \n");
-	  NotifyClient(&obs,(char*)"Exposure Completed, Shutter=0 (Closed), Readout Deferred",DONE);
-          rl_refresh_line(0,0);
+	case ABORT:  // exposure done since the last time we polled
+	  printf("\nExposure Aborting, wait for completion...\n");
+	  notifyClient(&obs,(char*)"Exposure Aborting, waiting for completion",STATUS);
 	  break;
-	  
-	} // end of state switch
-	break;
-	
-      case PAUSE: // AzCam server has a PAUSEd exposure, do nothing (for now)
-	break;
-	
-      case IDLE: // AzCam server is IDLE, check the CCD and dewar temperatures
-	if (ccd.FD>0)
-	  if (CheckTemp(&ccd,reply)==0)
-	    if (strcasecmp(obs.expHost,"console")!=0)
-	      NotifyClient(&obs,reply,STATUS);
 
+	case PAUSE: // pause requested
+	  printf("\nExposure paused, waiting for RESUME or ABORT...\n");
+	  notifyClient(&obs,(char*)"Exposure Paused, waiting for RESUME or ABORT",STATUS);
+	  break;
+
+	default:
+	  break;
+	}
+	// end of EXPOSING handling
+	break;
+	
+      case PAUSE: // exposure was paused, did this change?
+	if (expStatus(&ccd,reply)<0) {
+	  notifyClient(&obs,reply,ERROR);
+	  ccd.State = IDLE;
+	}
+	
+	switch(ccd.State) {
+
+	case RESUME:
+	case EXPOSING:
+	  pollExposure(&ccd,&obs,reply);
+	  printf("\nExposure resumed...\n");
+	  printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",obs.expTime,(int)(obs.Tleft));
+	  fflush(stdout)
+	  notifyClient(&obs,(char*)"Exposure Resumed",STATUS);
+	  break;
+
+	case ABORT:
+	  printf("\nPAUSED Exposure Aborted...\n");
+	  notifyClient(&obs,(char*)"Paused Exposure ABORTED, waiting for completion",STATUS);
+	  break;
+	  
+	default:
+	  break; // otherwise nothing to do
+	}
+	// end of PAUSE handling
+	break;
+
+      case READ:  // readout complete, waiting for write
+	if (expStatus(&ccd,reply)<0) {
+	  notifyClient(&obs,reply,ERROR);
+	  ccd.State = IDLE;
+	}
+	
+	switch(ccd.State) {
+
+	case WRITING:
+	  printf("\nWriting CCD to disk...\n");
+	  notifyClient(&obs,(char*)"Writing image to disk PCTREAD=0",STATUS);
+	  break;
+
+	default:
+	  break;
+	}
+	// end of READ handling
+	break;
+		 
+      case WRITING: // azcam server is writing the image to disk, waiting for IDLE
+	if (expStatus(&ccd,reply)<0) {
+	  notifyClient(&obs,reply,ERROR);
+	  ccd.State = IDLE;
+	}
+	
+	switch(ccd.State) {
+
+	case IDLE:
+	  printf("Done: Image readout and written to disk\n");
+	  notifyClient(&obs,(char*)"Exposure finished. EXPSTATUS=DONE",DONE);
+	  break;
+
+	default:
+	  break;
+	}
+	// end of WRITING handlng
+	break;
+
+      case ABORT: // exposure is aborting, waiting for IDLE
+	if (expStatus(&ccd,reply)<0) {
+	  notifyClient(&obs,reply,ERROR);
+	  ccd.State = IDLE;
+	}
+
+	switch(ccd.State) {
+
+	case IDLE:
+	  printf("\nDone: Exposure abort complete.\n");
+	  notifyClient(&obs,(char*)"Exposure Aborted. EXPSTATUS=DONE",DONE);
+	  break;
+
+	default:
+	  break;
+	}
+	// End of ABORT handling
+	break;
+      
+      case IDLE: // azcam server is IDLE, check for SETUP, otherwise housekeeping
+	if (expStatus(&ccd,reply)<0) {
+	  notifyClient(&obs,reply,ERROR);
+	  ccd.State = IDLE;
+	}
+
+	switch(ccd.State) {
+
+	case SETUP:
+	  printf("\nExposure Setup started..                 \r");
+	  fflush(stdout);
+	  notifyClient(&obs,(char*)"Exposure Setup started",STATUS);
+	  break;
+
+	default:
+	  if (ccd.FD>0)
+	    getTemp(&ccd,reply);
+	  // do something with this someday, shmem, DD?
+	  break;
+	}
+	// end of IDLE handling
 	break;
 	
       default:  // nothing to do, keep rolling
@@ -582,7 +691,7 @@ main(int argc, char *argv[])
 	}
       }
       
-      // Unexpected input from the AzCam server - just echo it to the
+      // Unexpected input from the azcam server - just echo it to the
       // console for now.
       
       if (ccd.FD > 0) {
@@ -594,11 +703,12 @@ main(int argc, char *argv[])
 	    rl_refresh_line(0,0);
 	  }
 	}
-      } // end of AzCam server TCP port handling
+      } // end of azcam server TCP port handling
       
       // Message from the DataMan agent - just echo it to the console
       // for now.
-      
+
+      /*
       if (dm.FD > 0 && (!client.useISIS)) {
 	if (FD_ISSET(dm.FD, &read_fd)) {
 	  nread = ReadDataMan(&dm,camData);  // direct read, no timeout
@@ -609,20 +719,7 @@ main(int argc, char *argv[])
 	  }
 	}
       }
-      
-      // Message from the PC-TCS agent - just echo it to the console
-      // for now.
-      
-      if (tcs.FD > 0 && (!client.useISIS)) {
-	if (FD_ISSET(tcs.FD, &read_fd)) {
-	  nread = ReadPCTCS(&tcs,camData);  // direct read, no timeout
-	  if (nread > 0) {
-	    printf("TCS> %s\n",camData);
-	    memset(camData,0,sizeof(camData));
-	    rl_refresh_line(0,0);
-	  }
-	}
-      }
+      */
       
       // add any new FD handlers here...
       
@@ -635,28 +732,20 @@ main(int argc, char *argv[])
   // If we got here, the client was instructed to shut down
   //
 
-  printf("\nY4KCam Instrument Control Client Shutting Down...\n");
+  printf("\nMODS CCD client shutting down...\n");
 
-  // Tear down the AzCam server link
+  // Tear down the azcam server link
   
   if (ccd.FD>0) 
     CloseAzCam(&ccd);
 
-  // Tear down the Filter Wheel link, if any
-
-  if (fw.FD>0)
-    FWClose(&fw);
-
-  // Tear down the PC-TCS link, if any
-
-  if (tcs.FD>0 && (!client.useISIS))
-    ClosePCTCS(&tcs);
-
   // Tear down the DataMan link, if any
 
+  /*
   if (dm.FD>0 && (!client.useISIS))
     CloseDataMan(&dm);
-
+  */
+  
   // Tear down the application's client socket
 
   CloseClientSocket(&client);
@@ -696,11 +785,6 @@ HandleInt(int signalValue)
 
   if (ccd.FD>0)
     AbortExposure(&ccd,reply);
-
-  // If the Filter Wheel is active, abort any motions
-
-  if (fw.FD>0)
-    FWAbort(&fw);
 
   printf("Ctrl+C Abort requested - Aborts Sent\n");
 
