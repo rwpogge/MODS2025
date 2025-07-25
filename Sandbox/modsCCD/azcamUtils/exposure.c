@@ -1,6 +1,6 @@
 /*!
   \file exposure.c
-  \brief AzCam Exposure Control Functions
+  \brief azcam server exposure control functions
 
   The following are a suite of interface functions that provide access
   to all of the azcam server exposure control functions.
@@ -12,31 +12,12 @@
   All routines call the communication layer routines in iosubs.c to take
   care of common handling of timeout, errors, and reply processing.
 
-  All of the server exposure control commands documented in Section 9
-  of the <i>AzCam Programmers Reference Manual</i> have been
-  implemented except the following:
-  <pre>
-  Expose - not implemented (doesn't work well with the OSU cameras)
-  readImage - deprecated in recent AzCam versions
-  setSyntheticImage - future expansion
-  Guide - future expansion
-  </pre>
-  Two new functions
-  <pre>
-  setShutterMode()
-  setReadoutMode()
-  </pre>
-  Are defined to implement the "setMode 1 X" and "setMode 2 X"
-  commands, respectively.
-
-  Finally, ParShift has been renamed RowShift in this implementation.
-
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \original 2005 May 17
-  \date 2025 July 23
+  \date 2025 July 25
 */
 
-#include "azcam.h" // AzCam client API header 
+#include "azcam.h" // azcam client utility library header 
 
 /*!
   \brief Clear (flush) the detector array
