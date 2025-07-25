@@ -115,7 +115,7 @@ startExposure(azcam_t *cam, int wait, char *reply)
   case EXP_WAIT:
     strcpy(cmdStr,"mods.expwait");
     default_to = cam->Timeout;
-    cam->Timeout = (long)(cam->ExpTime) + 10L;
+    cam->Timeout = (long)(cam->expTime) + 10L;
     break;
 
   case EXP_NOWAIT:
@@ -217,7 +217,7 @@ setExposure(azcam_t *cam, float exptime, char *reply)
 
   // Successful, save the exposure time in the cam struct
 
-  cam->ExpTime = exptime;
+  cam->expTime = exptime;
   sprintf(reply,"ExpTime=%.3f sec",exptime);
   return 0;
 
@@ -576,7 +576,7 @@ int setCCDBin(azcam_t *cam, int xbin, int ybin, char *reply)
   cam->ColBin = xbin;
   cam->RowBin = ybin;
   
-  return CMD_OK;
+  return 0;
     
 }
 
@@ -605,7 +605,7 @@ int setXBin(azcam_t *cam, int xbin, char *reply)
   cam->ColBin = xbin;
   cam->RowBin = ybin;
   
-  return CMD_OK;
+  return 0;
     
 }
 
@@ -634,7 +634,7 @@ int setYBin(azcam_t *cam, int ybin, char *reply)
   cam->ColBin = xbin;
   cam->RowBin = ybin;
   
-  return CMD_OK;
+  return 0;
     
 }
 
