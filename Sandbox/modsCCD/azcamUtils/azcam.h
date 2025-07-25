@@ -15,6 +15,7 @@
   \par Modification History:
 <pre>
   2005 May 17 - updated and cleaned up Doxygen hooks [rwp/osu]
+  2025 July 25 - major overhaul for python azcam server [rwp/osu]
 </pre>
 */
 
@@ -148,9 +149,6 @@ typedef struct azcam {
 #define EXP_NOWAIT 0  //!< Do not wait for exposure to complete, return immediately from StartExposure
 #define EXP_WAIT   1  //!< Wait for exposure to complete before returning status from StartExposure
 
-#define IMMEDIATE 0   //!< Readout occurs immediately after integration 
-#define DEFERRED  1   //!< Readout is deferred until explicit readout request
-
 #define STDFITS   0   //!< Write image as Standard FITS format
 #define MEF       1   //!< Write image as Multi-extension FITS (MEF) format
 #define BINARY    2   //!< Write image as raw Binary format
@@ -161,17 +159,6 @@ typedef struct azcam {
 #define MESSAGE_CLOSE  4 //!< Close a message client socket
 #define DISPLAY_CLIENT 5 //!< Set hostname/port of a display client socket
 #define FILE_CLIENT    6 //!< Set hostname/port of a file client socket
-
-#define SINGLE_AMP       0 //!< Single-amplifier readout mode
-#define TWO_AMP_PARALLEL 1 //!< 2-amplifier, split parallels, diagonally opposed corners readout
-#define TWO_AMP_SERIAL   2 //!< 2-amplifier, split serials
-#define FOUR_AMP_QUAD    3 //!< 4-amplifier, quad radout
-#define MOSAIC           6 //!< Multi-detector mosaic
-
-#define NO_SPLIT       0 //!< Detector has no split registers
-#define SPLIT_SERIAL   1 //!< Detector has split serial registers (2-amp readout)
-#define SPLIT_PARALLEL 2 //!< Detector has split parallel registers (2-amp readout)
-#define SPLIT_QUAD     3 //!< Detector has split parallel and serial registers (4-amp readout)
 
 // azcamutils function prototypes
 
@@ -223,6 +210,10 @@ int setFormat(azcam_t *, char *);
 int setROI(azcam_t *, int, int, int, int, char *);
 int getROI(azcam_t *, char *);
 int resetROI(azcam_t *, char *);
+int setCCDBin(azcam_t *, int, int, char *);
+int setXBin(azcam_t *, int, char *);
+int setYBin(azcam_t *, int, char *);
+
 int getDetPars(azcam_t *, char *);
 
 // Temperature Commands (ccdtemp.c)

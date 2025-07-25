@@ -1,6 +1,6 @@
 /*!
   \file exposure.c
-  \brief azcam Exposure Control Functions
+  \brief AzCam Exposure Control Functions
 
   The following are a suite of interface functions that provide access
   to all of the azcam server exposure control functions.
@@ -12,12 +12,31 @@
   All routines call the communication layer routines in iosubs.c to take
   care of common handling of timeout, errors, and reply processing.
 
+  All of the server exposure control commands documented in Section 9
+  of the <i>AzCam Programmers Reference Manual</i> have been
+  implemented except the following:
+  <pre>
+  Expose - not implemented (doesn't work well with the OSU cameras)
+  readImage - deprecated in recent AzCam versions
+  setSyntheticImage - future expansion
+  Guide - future expansion
+  </pre>
+  Two new functions
+  <pre>
+  setShutterMode()
+  setReadoutMode()
+  </pre>
+  Are defined to implement the "setMode 1 X" and "setMode 2 X"
+  commands, respectively.
+
+  Finally, ParShift has been renamed RowShift in this implementation.
+
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \original 2005 May 17
   \date 2025 July 23
 */
 
-#include "azcam.h" // azcam client utility library header 
+#include "azcam.h" // AzCam client API header 
 
 /*!
   \brief Clear (flush) the detector array
@@ -76,7 +95,7 @@ clearArray(azcam_t *cam, char *reply)
   this does not happen, we store the current default timeout, compute a
   new timeout of the exposure time + 10 seconds, and then make the call,
   resetting the default timeout after completion (or error).  The
-  exposure time used is the value in the #azcam::expTime data member.
+  exposure time used is the value in the #azcam::ExpTime data member.
 
   \sa setExposure()
 */
@@ -96,7 +115,7 @@ startExposure(azcam_t *cam, int wait, char *reply)
   case EXP_WAIT:
     strcpy(cmdStr,"mods.expwait");
     default_to = cam->Timeout;
-    cam->Timeout = (long)(cam->expTime) + 10L;
+    cam->Timeout = (long)(cam->ExpTime) + 10L;
     break;
 
   case EXP_NOWAIT:
@@ -132,39 +151,39 @@ startExposure(azcam_t *cam, int wait, char *reply)
 }
 
 /*!
-  \brief Query the exposure status
+  \brief Query exposure status
   
   \return exposure state code (see azcam.h or azcam server docs)
   
   Queries the server and returns the current exposure status as
   an integer code.  Tranlsate this to a string and set the value
-  of cam->State and also return it.
+  of cam->State
   
 */
 
 int
 expStatus(azcam_t *cam, char *reply)
 {
-  char cmdStr[64];
-  char msgStr[64];
-  char status[32];
-  int expCode;
+   char cmdStr[64];
+   char msgStr[64];
+   char status[32];
+   int expCode;
    
     
-  sprintf(cmdStr,"mods.expstatus");
-  memset(msgStr,0,sizeof(msgStr));
+    sprintf(cmdStr,"mods.expstatus");
+    memset(msgStr,0,sizeof(msgStr));
     
-  if (azcamCmd(cam,cmdStr,msgStr)<0) {
-    sprintf(reply,"Cannot get exposure status - %s",msgStr);
-    return -1;
-  }
+    if (azcamCmd(cam,cmdStr,msgStr)<0) {
+        sprintf(reply,"Cannot get exposure status - %s",msgStr);
+        return -1;
+    }
     
-  sscanf(msgStr,"%d %s",&expCode,status);
+    sscanf(msgStr,"%d %s",&expCode,status);
     
-  cam->State = expCode;
-  sprintf(reply,"ExpStatus=%s",status);
+    cam->State = expCode;
+    sprintf(reply,"ExpStatus=%s",status);
     
-  return expCode;
+    return 0;
 
 }
   
@@ -177,10 +196,7 @@ expStatus(azcam_t *cam, char *reply)
   \return 0 if successful, -1 on errors, with error text in reply
 
   Sets the exposure time for subsequent integrations.  The user provides
-  the exposure time in seconds to millisecond precision (0.001 sec)
-
-  If exptime = -1, it queries for the current exposure time and
-  returns it.
+  the exposure time in seconds to millisecond precision.
 
 */
 
@@ -188,66 +204,64 @@ int
 setExposure(azcam_t *cam, float exptime, char *reply)
 {
   char cmdStr[64];
-  int isSet;
-  
+
   if (exptime < 0) {
-    isSet = 0;
-    strcpy(cmdStr,"mods.get_exptime");
+    sprintf(reply,"Invalid exposure time %.3f, must be positive",exptime);
+    return -1;
   }
-  else {
-    isSet = 1;
-    sprintf(cmdStr,"mods.set_exptime %f.3",exptime);
-  }
+
+  sprintf(cmdStr,"mods.set_exptime %f.3",exptime);
 
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  if (isSet)
-    cam->expTime = exptime;
-  else
-    cam->expTime = atof(reply);
-  
-  sprintf(reply,"EXPTIME=%.3f sec",exptime);
+  // Successful, save the exposure time in the cam struct
+
+  cam->ExpTime = exptime;
+  sprintf(reply,"ExpTime=%.3f sec",exptime);
   return 0;
 
 }
 
 /*!
-  \brief Query the azcam server for the time left on the current exposure
+  \brief Query the azcam server for the current elapsed exposure time
   
   \param cam pointer to an #azcam struct with the server parameters
   \param reply string to contain any reply text
   \return elapsed exposure time in milliseconds, or -1 if errors,
           with error text in reply
 
-  Query the azcam server and return the time remaining on the current
-  exposure in seconds.
+  Query the azcam server and return the elapsed exposure (integration)
+  time in milliseconds.
+
+  \par Note 
+
+  In some azcam server implementions (i.e., every one we've encountered
+  or heard about so far), if you send a readExposure command to the
+  azcam server while a readout is in progress, the server will crash
+  after readout is done, rebooting the machine (meaning total system
+  crash).  We avoid this by not allowing the user to send this directive
+  during readout by checking the value of the #azcam::State data member.
 
 */
 
 int
-timeLeft(azcam_t *cam, char *reply)
+readExposure(azcam_t *cam, char *reply)
 {
   char cmdStr[64];
 
-  // don't read time left on exposure if we're reading out
-  // report 0.0 seconds left
-  
-  if (cam->State == READOUT) {
-    cam->timeLeft = 0.000;
-    return 0;
-  }
+  if (cam->State == READOUT) return 0; 
 
-  // Ask server for time left
-  
+  // Hope we're safe, do it...
+
   strcpy(cmdStr,"mods.timeleft");
 
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  cam->timeLeft = atof(reply);
-  sprintf(reply,"timeLeft=%.3f sec",cam->timeLeft);
-  return 0;
+  cam->Elapsed = atoi(reply);
+  sprintf(reply,"Elapsed=%.3f sec",cam->Elapsed);
+  return cam->Elapsed;
 
 }
 
@@ -455,38 +469,62 @@ setFormat(azcam_t *cam, char *reply)
   \brief Define the detector region of interest for the next readout
 
   \param cam pointer to an #azcam struct with the server parameters
-  \param sc int, starting column
-  \param ec int, ending column
-  \param sr int, starting row
-  \param er int, ending row
   \param reply string to contain any reply text
   \return 0 if successful, -1 on errors, with error text in reply
 
   Sets the region of interest for the next detector readout in 
-  units of unbinned pixels.
+  units of unbinned pixels.  Since this is complicated and would
+  involve a lot of arguments, we set this by using the relevant data 
+  members of the #azcam struct to define the parameters:
+  <pre>
+    #azcam::FirstCol - first column to read in unbinned pixels
+    #azcam::LastCol  - last column to read in unbinned pixels
+    #azcam::ColBin   - column-axis binning factor
+    #azcam::FirstRow - first row to read in unbinned pixels
+    #azcam::LastRow  - last row to read in unbinned pixels
+    #azcam::RowBin   - row-axis binning factor
+  </pre>
+  Note that regions of interest that are smaller than the physical
+  size of the device in unbinned pixels are only supported for
+  single-amplifier readout modes.
 
 */
 
 int
-setROI(azcam_t *cam, int sc, int ec, int sr, int er, char *reply)
+setROI(azcam_t *cam, char *reply)
 {
   char cmdStr[64];
 
-  // azcam roi command includes bin factors as last two, -1 means "keep same"
-  
-  sprintf(cmdStr,"mods.set_roi %d %d %d %d -1 -1",sc,ec,sr,er);
+  // Quick check, if FirstCol or LastCol is 0, that signals "don't know"
+  // we we should not set the ROI
+
+  if (cam->FirstCol == 0 || cam->FirstRow == 0) {
+    sprintf(reply,"Invalid ROI, FirstCol=%d FirstRow=%d",
+	    cam->FirstCol,cam->FirstRow);
+    return -1;
+  }
+
+  // Another is if either ColBin or RowBin are zero
+
+  if (cam->ColBin == 0 || cam->RowBin == 0) {
+    sprintf(reply,"Invalid ROI, ColBin=%d RowBin=%d",
+	    cam->ColBin,cam->RowBin);
+    return -1;
+  }
+    
+  // We hope we're OK, send it up
+
+  sprintf(cmdStr,"mods.set_roi %d %d %d %d %d %d",
+	  cam->FirstCol,cam->LastCol,
+	  cam->FirstRow,cam->LastRow,
+	  cam->ColBin,cam->RowBin);
 
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  cam->FirstCol = sc;
-  cam->LastCol = ec;
-  cam->FirstRow = sr;
-  cam->LastRow = er;
-  
   // set flags as required...
 
-  sprintf(reply,"ROI=(%d,%d,%d,%d) XBin=%d YBin=%d",
+  sprintf(reply,"ROI=[%d:%d,%d:%d] XBin=%d YBin=%d",
 	  cam->FirstCol,cam->LastCol,
 	  cam->FirstRow,cam->LastRow,
 	  cam->ColBin,cam->RowBin);
@@ -495,77 +533,97 @@ setROI(azcam_t *cam, int sc, int ec, int sr, int er, char *reply)
 
 }
 
-// getROI - to complicated to put into setROI like we do for others
+// set CCD binning
 
-int
-getROI(azcam_t *cam, char *reply)
+int setCCDBin(azcam_t *cam, int xbin, int ybin, char *reply)
 {
   char cmdStr[64];
-  int sc, ec, sr, er, bx, by;
-  
-  strcpy(cmdStr,"mods.get_roi");
 
+  if (xbin<=0) xbin = -1;  // means "no change" 
+  if (ybin<=0) ybin = -1;
+
+  // set one or both
+  
+  if (xbin > 0 || ybin > 0) {
+    sprintf(cmdStr,"mods.set_ccdbin %d %d",xbin,ybin);
+    if (azcamCmd(cam,cmdStr,reply)<0)
+      return -1;
+  }
+
+  // query to confirm
+
+  strcpy(cmdStr,"mods.get_ccdbin");
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  // extract the data: sc ec sr er binx biny
+  sscanf(reply,"%d %d",&xbin,&ybin);
+  sprintf(cmdStr,"XBIN=%d YBIN=%d",xbin,ybin);
 
-  sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bx,&by);
-  cam->FirstCol = sc;
-  cam->LastCol = ec;
-  cam->FirstRow = sr;
-  cam->LastRow = er;
-  cam->ColBin = bx;
-  cam->RowBin = by;
-
-  sprintf(reply,"ROI=(%d,%d,%d,%d) XBin=%d YBin=%d",
-	  cam->FirstCol,cam->LastCol,
-	  cam->FirstRow,cam->LastRow,
-	  cam->ColBin,cam->RowBin);
-	  
-  return 0;  
-
+  cam->ColBin = xbin;
+  cam->RowBin = ybin;
+  
+  return CMD_OK;
+    
 }
 
-// reset ROI to full frame unbinned (used for ROI OFF)
+// set CCD x (column) binning
 
-int
-resetROI(azcam_t *cam, char *reply)
+int setXBin(azcam_t *cam, int xbin, char *reply)
 {
   char cmdStr[64];
-  int sc, ec, sr, er, bx, by;
+  int ybin;
   
-  strcpy(cmdStr,"mods.reset_roi");
+  if (xbin > 1) {
+    sprintf(cmdStr,"mods.set_ccdbin %d -1",xbin);
+    if (azcamCmd(cam,cmdStr,reply)<0)
+      return -1;
+  }
 
+  // query to confirm
+
+  strcpy(cmdStr,"mods.get_ccdbin");
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  // verify
+  sscanf(reply,"%d %d",&xbin,&ybin);
+  sprintf(cmdStr,"XBIN=%d YBIN=%d",xbin,ybin);
 
-  strcpy(cmdStr,"mods.get_roi");
-
-  if (azcamCmd(cam,cmdStr,reply)<0)
-    return -1;
-
-  // extract the data: sc ec sr er binx biny
-
-  sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bx,&by);
-  cam->FirstCol = sc;
-  cam->LastCol = ec;
-  cam->FirstRow = sr;
-  cam->LastRow = er;
-  cam->ColBin = bx;
-  cam->RowBin = by;
-
-  sprintf(reply,"ROI=(%d,%d,%d,%d) XBin=%d YBin=%d",
-	  cam->FirstCol,cam->LastCol,
-	  cam->FirstRow,cam->LastRow,
-	  cam->ColBin,cam->RowBin);
-	  
-  return 0;  
+  cam->ColBin = xbin;
+  cam->RowBin = ybin;
   
+  return CMD_OK;
+    
 }
+
+// set CCD y (row) binning
+
+int setYBin(azcam_t *cam, int ybin, char *reply)
+{
+  char cmdStr[64];
+  int xbin;
   
+  if (ybin > 1) {
+    sprintf(cmdStr,"mods.set_ccdbin -1 %d",ybin);
+    if (azcamCmd(cam,cmdStr,reply)<0)
+      return -1;
+  }
+
+  // query to confirm
+
+  strcpy(cmdStr,"mods.get_ccdbin");
+  if (azcamCmd(cam,cmdStr,reply)<0)
+    return -1;
+
+  sscanf(reply,"%d %d",&xbin,&ybin);
+  sprintf(cmdStr,"XBIN=%d YBIN=%d",xbin,ybin);
+
+  cam->ColBin = xbin;
+  cam->RowBin = ybin;
+  
+  return CMD_OK;
+    
+}
+
 /*!
   \brief Open the Shutter.
   
@@ -651,10 +709,10 @@ getDetPars(azcam_t *cam, char *reply)
   int nc_usc;
   int nc_osc;
   int nrows;
-  int nr_pdk;
-  int nr_usc;
-  int nr_osc;
-  int nr_ft;
+  int np_pdk;
+  int np_usc;
+  int np_osc;
+  int np_ft;
   int npix;
 
   strcpy(cmdStr,"exposure.get_format");
@@ -667,7 +725,7 @@ getDetPars(azcam_t *cam, char *reply)
 
   // extract the data
 
-  sscanf(msgStr,"%d %d %d %d %d %d %d %d %d",&ncols,&nc_pdk,&nc_usc,&nc_osc,&nrows,&nr_pdk,&nr_usc,&nr_osc,&nr_ft);
+  sscanf(msgStr,"%d %d %d %d %d %d %d %d %d",&ncols,&nc_pdk,&nc_usc,&nc_osc,&nrows,&np_pdk,&np_usc,&np_osc,&np_ft);
 
   npix = nrows * ncols;
 
@@ -677,19 +735,6 @@ getDetPars(azcam_t *cam, char *reply)
   cam->Ncols = ncols;
   cam->Npixels = npix;
   sprintf(reply,"Ncols=%d Nrows=%d Npix=%d",nrows,ncols,npix);
-
-  // store the format parameters in the azcam struct
-
-  cam->NCtotal = ncols;
-  cam->NCpredark = nc_pdk;
-  cam->NCunderscan = nc_usc;
-  cam->NCoverscan = nc_osc;
-  cam->NRtotal = nrows;
-  cam->NRpredark = nr_pdk;
-  cam->NRunderscan = nr_usc;
-  cam->NRoverscan = nr_osc;
-  cam->NRframexfer = nr_ft;
-  
   return npix;
  
 }
@@ -703,21 +748,21 @@ getDetPars(azcam_t *cam, char *reply)
           on errors, with error text in reply
 
   Queries the azcam server and returns the number of pixels readout from
-  the detector array.  Repeated calls to pixelsLeft() are often used
+  the detector array.  Repeated calls to getPixelCount() are often used
   by applications to monitor readout progress.  When the array is
   finished reading out, the pixel count returned should equal the total
   pixel size returned by getDetPars().  After each call to
-  pixelsLeft(), it stores the current number of pixels read in
+  getPixelCount(), it stores the current number of pixels read in
   #azcam::Nread.
 
   Note that unlike readExposure(), experiments have so far shown that
-  calling pixelsLeft() is benign in all circumstances.
+  calling getPixelCount() is benign in all circumstances.
 
   \sa getDetPars()
 */
 
 int
-pixelsLeft(azcam_t *cam, char *reply)
+getPixelCount(azcam_t *cam, char *reply)
 {
   char cmdStr[64];
   int pixcount;
@@ -728,61 +773,9 @@ pixelsLeft(azcam_t *cam, char *reply)
     return -1;
 
   pixcount = atoi(reply);
-  sprintf(reply,"pixelsLeft=%d",pixcount);
+  sprintf(reply,"PixCount=%d",pixcount);
   cam->Nread = pixcount; 
   return pixcount;
 
 }
 
-/*!
-  \brief Set the image type and image title for the next image(s)
-  
-  \param cam pointer to an #azcam struct with the server parameters
-  \param imgType string - image type, one of {object,bias,flat,dark,comp,zero}
-  \param imgTitle string - image title (aka OBJECT)
-  \param reply string to contain any reply text
-  \return 0 on success, -1 on errors, error text in reply
-
-  Tells the azcam server the image type and image title to use for the next
-  image(s).  imgType must be one of the valid types, lowercase is enforced
-  on the server side.  The shutter mode (light or dark) is defined internally
-  on the server by the imgType.
-
-  If either parameter is omitted, it uses the current value
-  
- */
-
-int
-setImageInfo(azcam_t *cam, char *imgType, char *imgTitle, char *reply)
-{
-  char cmdStr[64];
-  
-  if (strlen(imgType)>0 && strlen(imgTitle)>0) {
-    if (strlen(imgType)==0)
-      strcpy(imgType,cam->imgType); // no imgType given, use current
-
-    if (strlen(imgTitle)==0)
-      strcpy(imgTitle,cam->imgTitle); // no imgTitle given, use current
-
-    sprintf(cmdStr,"mods.set_imageInfo %s %s",imgType,imgTitle);
-
-    if (azcamCmd(cam,cmdStr,reply)<0)
-      return -1;
-  }
-
-  // get values from the server
-  
-  if (azcamCmd(cam,"exposure.get_image_type()",reply)<0)
-    return -1;
-  strcpy(cam->imgType,reply);
-  
-  if (azcamCmd(cam,"exposure.get_image_title()",reply)<0)
-    return -1;
-  strcpy(cam->imgTitle,reply);
-
-  // craft the reply, using the FITS header versions of the data
-  
-  sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",cam->imgType,cam->imgTitle);
-  
-  return 0;
-}
