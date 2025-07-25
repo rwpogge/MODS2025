@@ -251,7 +251,8 @@ readExposure(azcam_t *cam, char *reply)
   char cmdStr[64];
 
   if (cam->State == READOUT) return 0; 
-
+  cam->timeLeft = 0.0;
+  
   // Hope we're safe, do it...
 
   strcpy(cmdStr,"mods.timeleft");
@@ -259,9 +260,9 @@ readExposure(azcam_t *cam, char *reply)
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  cam->Elapsed = atoi(reply);
-  sprintf(reply,"Elapsed=%.3f sec",cam->Elapsed);
-  return cam->Elapsed;
+  cam->timeLeft = atof(reply);
+  sprintf(reply,"TimeLeft=%.3f sec",cam->timeLeft);
+  return cam->timeLeft;
 
 }
 
@@ -272,17 +273,13 @@ readExposure(azcam_t *cam, char *reply)
   \param reply string to contain any reply text
   \return 0 if successful, -1 on errors, with error text in reply
 
-  Issues an AbortExposure command to the azcam server and sets the API's
-  ABORT flag (kept in the #azcam::Abort data member).  It also sets the
-  server state flag to #IDLE (#azcam::State data member).
+  Issues an abort command to the azcam server and sets our internal
+  Abort flag (kept in the #azcam::Abort data member).
 
-  Because of some odd hardware interactions that we have observed, an
-  AbortExposure() command must be preceeded by PauseExposure().  We do
-  not know if this is generic to all ARC controllers or just the ones
-  we're working with at OSU.
-
-  Applications calling this API should call AbortExposure() with some
-  circumspection.
+  We check the azcam server exposure status and issue an exposure or
+  readout abort as required.  If the CCD is neither exposing nor
+  reading, there are no abort available for setup or writing phases,
+  we just have to let those finish (at least they are quick).
 
 */
 
@@ -291,18 +288,40 @@ abortExposure(azcam_t *cam, char *reply)
 {
   char cmdStr[64];
 
-  strcpy(cmdStr,"exposure.abort");
+  // we are cautious to do this by querying the
+  // exposure status
 
-  if (azcamCmd(cam,cmdStr,reply)<0) {
-    strcat(reply," - abortExposure Failed");
+  if (expStatus(cam,reply)<0)
+    return -1;
+
+  if (cam->State == EXPOSING) {
+    strcpy(cmdStr,"exposure.abort");
+
+    if (azcamCmd(cam,cmdStr,reply)<0) {
+      strcat(reply," - abortExposure Failed");
+      return -1;
+    }
+
+    sprintf(reply,"Exposure Aborted");
+  }
+  else if (cam->State == READOUT) {
+    strcpy(cmdStr,"mods.abort_readout");
+    
+    if (azcamCmd(cam,cmdStr,reply)<0) {
+      strcat(reply," - abortExposure Failed");
+      return -1;
+    }
+    sprintf(reply,"Exposure Readout Aborted");
+  }    
+  else {
+    strcpy(reply,"No exposure in progress to abort");
     return -1;
   }
 
   // success, set various abort flags as required...
 
   cam->Abort = 1;
-  cam->State = IDLE;
-  strcpy(reply,"Exposure Aborted");
+  
   return 0;
 
 }
@@ -314,18 +333,17 @@ abortExposure(azcam_t *cam, char *reply)
   \param reply string to contain any reply text
   \return 0 if successful, -1 on errors, with error text in reply
 
-  Issues a PauseExposure command to the azcam server.  Sets the
-  #azcam::State flag to #PAUSE on success.  If it fails, the
+  Issues an exposure.pause command to the azcam server and sets
+  the #azcam::State flag to PAUSE on success.  If it fails, the
   #azcam::State flag is left unchanged.
 
-  A PauseExposure should be followed by either AbortExposure() or
-  ResumeExposure().
+  A pause should be followed by either abort or resume.
 
   We test the value of the #azcam::State flag and only send a
-  PauseExposure command if #EXPOSING.  Sending a PauseExposure directive
-  otherwise may be unpredictable.
+  pauseExposure command if #EXPOSING.  Sending a pauseExposure
+  directive otherwise may be unpredictable.
   
-  \sa AbortExposure(), ResumeExposure()
+  \sa abortExposure(), resumeExposure()
 */
 
 int
@@ -360,18 +378,18 @@ pauseExposure(azcam_t *cam, char *reply)
   \param reply string to contain any reply text
   \return 0 if successful, -1 on errors, with error text in reply
 
-  Issues a ResumeExposure command to the azcam server.  Sets the
+  Issues a resumeExposure command to the azcam server.  Sets the
   #azcam::State flag to #EXPOSING on success.  If it fails, the
   #azcam::State flag is left unchanged.
 
-  Does not send ResumeExposure if the controller is not in a #PAUSE
+  Does not send resumeExposure if the controller is not in a #PAUSE
   state.
 
-  If you send a ResumeExposure() command when the azcam server is
+  If you send a resumeExposure() command when the azcam server is
   not actually in a paused state, very bad things can happen (e.g.,
   it crashes and reboots its host computer).
 
-  \sa PauseExposure()
+  \sa pauseExposure()
 */
 
 int
