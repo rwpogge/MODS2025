@@ -41,8 +41,10 @@
   \arg KeyboardCommand() Keyboard command handler (command-line interface)
   \arg SocketCommand() Socket command/message handler (client socket interface)
 
-  \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
-  \date 2003 October 13
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
+  \original 2003 October 13
+  \date 2025 July 24 [rwp/osu] -
+  
 */
 
 #include "isisclient.h" // ISIS common client library header
@@ -360,20 +362,6 @@ cmd_info(char *args, MsgType msgtype, char *reply)
   sprintf(reply,"%s CCDHost=%s:%d Config=%s CCDConf=%s", reply, 
 	  ccd.Host,ccd.Port,ccd.cfgFile,ccd.iniFile);
 
-  // Are we using a Filter Wheel?
-
-  if (fw.useFW)
-    strcat(reply," +FWheel");
-  else
-    strcat(reply," -FWheel");
-
-  // Are we using a PCTCS?
-
-  if (tcs.useTCS)
-    strcat(reply," +PCTCS");
-  else
-    strcat(reply," -PCTCS");
-
   // Report application runtime flags
 
   sprintf(reply,"%s %s %s",reply,
@@ -543,6 +531,8 @@ cmd_history(char *args, MsgType msgtype, char *reply)
   Resets the azcam server by instructing it to re-execute its
   runtime configuration script.
 
+  !*** NOT SURE HOW THIS MAPS TO ARCHON YET ***!
+  
 */
 
 int
@@ -602,7 +592,7 @@ cmd_exptime(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // If we have arguments, get the host and port info
+  // If we have arguments, this is a set.  No arguments is a get.
 
   if (strlen(args)>0) {
     GetArg(args,1,argbuf); 
@@ -611,14 +601,21 @@ cmd_exptime(char *args, MsgType msgtype, char *reply)
       sprintf(reply,"Invalid exposure time %s, must be >0.0 sec",argbuf);
       return CMD_ERR;
     }
-    obs.expTime = expt;
     if (setExposure(&ccd,expt,reply)<0)
       return CMD_ERR;
   }
+  else {
+    if (setExposure(&ccd,-1.0,reply)<0)
+      return CMD_ERR;
+  }
 
+  // copy into the obs struct
+  
+  obs.expTime = ccd.expTime;
+  
   // Report the exposure time
 
-  sprintf(reply,"ExpTime=%.3f seconds",obs.ExpTime);
+  sprintf(reply,"EXPTIME=%.3f seconds",obs.ExpTime);
   return CMD_OK;
 
 }
@@ -878,13 +875,13 @@ cmd_expnum(char *args, MsgType msgtype, char *reply)
 
   }
   else {
-    // get current exposure number
-    imgExpNum(&ccd,0,reply);
+    // get current exposure number (-1 is a get)
+    imgExpNum(&ccd,-1,reply);
   }
 
-  // what is the full filename now?
+  // what is the full filename now (empty filename string means get)
   
-  imgFilename(&ccd,"",reply);
+  imgFilename(&ccd,(char *)"",reply);
   
   sprintf(reply,"expnum=%d nextfile=%s",ccd.fileNum,ccd.fileName);
   
@@ -914,7 +911,7 @@ cmd_expnum(char *args, MsgType msgtype, char *reply)
   <pre>
        /home/data/instID.CCYYMMDD.nnnn.fits
   </pre>
-  Where "instIDd" is the instrumetn channel name (e.g., mods1b),
+  Where "instID" is the instrumetn channel name (e.g., mods1b),
   "CCYYMMDD" is the observing date (e.g., 20250724), and "nnnn" is a
   4-digit file counter. Rootnames may only use valid alphanumeric
   characters (a-z,0-9)
@@ -939,6 +936,7 @@ cmd_expnum(char *args, MsgType msgtype, char *reply)
 int
 cmd_filename(char *args, MsgType msgtype, char *reply)
 {
+  char cmdStr[64];
   char argbuf[32];
   char fullname[32];
 
@@ -949,17 +947,18 @@ cmd_filename(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // If we have arguments, get the rootname and reset the file counter to 1
+  // If we have arguments, send it to azcam and let it deal with it
 
   if (strlen(args)>0) {
-    GetArg(args,1,argbuf); 
-    strcpy(ccd.fileName,argbuf);
-    ccd.fileNum = 1;
-    sprintf(fullname,"%s.%4.4d",ccd.fileName,ccd.fileNum);
-    setKeyword(&ccd,"FILENAME",fullname,"Image Filename",reply);
+    GetArg(args,1,argbuf);
+    if (imgFilename(&ccd,argbuf,reply)<0)
+      return CMD_ERR;
   }
-  
-  sprintf(reply,"Filename=%s.%4.4d.fits",ccd.fileName,ccd.fileNum);
+
+  if (imgFilename(&ccd,(char*)"",reply)<0) // get filename
+    return CMD_ERR;
+
+  sprintf(reply,"FILENAME=%s,ccd.fileName);
   return CMD_OK;
 
 }
@@ -1002,14 +1001,18 @@ cmd_path(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // If we have arguments, get the rootname and reset the file counter to 1
+  // If we have arguments, send it to azcam and let it deal with it
 
   if (strlen(args)>0) {
-    GetArg(args,1,argbuf); 
-    strcpy(ccd.filePath,argbuf);
+    GetArg(args,1,argbuf);
+    if (imgPath(&ccd,argbuf,reply)<0)
+      return CMD_ERR;
   }
-  
-  sprintf(reply,"Path=%s",ccd.filePath);
+
+  if (imgPath(&ccd,(char*)"",reply)<0) // get image data path
+    return CMD_ERR;
+
+  sprintf(reply,"PATH=%s",ccd.filePath);
   return CMD_OK;
 
 }
@@ -1034,6 +1037,11 @@ cmd_path(char *args, MsgType msgtype, char *reply)
 int
 cmd_lastfile(char *args, MsgType msgtype, char *reply)
 {
+  // If we have arguments, send it to azcam and let it deal with it
+
+  if (getLastFile(&ccd,reply)<0) // get last filename
+    return CMD_ERR;
+
   sprintf(reply,"LastFile=%s",ccd.LastFile);
   return CMD_OK;
 }

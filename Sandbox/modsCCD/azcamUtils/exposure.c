@@ -177,7 +177,10 @@ expStatus(azcam_t *cam, char *reply)
   \return 0 if successful, -1 on errors, with error text in reply
 
   Sets the exposure time for subsequent integrations.  The user provides
-  the exposure time in seconds to millisecond precision.
+  the exposure time in seconds to millisecond precision (0.001 sec)
+
+  If exptime = -1, it queries for the current exposure time and
+  returns it.
 
 */
 
@@ -185,21 +188,26 @@ int
 setExposure(azcam_t *cam, float exptime, char *reply)
 {
   char cmdStr[64];
-
+  int isSet;
+  
   if (exptime < 0) {
-    sprintf(reply,"Invalid exposure time %.3f, must be positive",exptime);
-    return -1;
+    isSet = 0;
+    strcpy(cmdStr,"mods.get_exptime");
   }
-
-  sprintf(cmdStr,"mods.set_exptime %f.3",exptime);
+  else {
+    isSet = 1;
+    sprintf(cmdStr,"mods.set_exptime %f.3",exptime);
+  }
 
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  // Successful, save the exposure time in the cam struct
-
-  cam->expTime = exptime;
-  sprintf(reply,"expTime=%.3f sec",exptime);
+  if isSet
+    cam->expTime = exptime;
+  else
+    cam->expTime = atof(reply);
+  
+  sprintf(reply,"EXPTIME=%.3f sec",exptime);
   return 0;
 
 }
@@ -447,68 +455,115 @@ setFormat(azcam_t *cam, char *reply)
   \brief Define the detector region of interest for the next readout
 
   \param cam pointer to an #azcam struct with the server parameters
+  \param sc int, starting column
+  \param ec int, ending column
+  \param sr int, starting row
+  \param er int, ending row
   \param reply string to contain any reply text
   \return 0 if successful, -1 on errors, with error text in reply
 
   Sets the region of interest for the next detector readout in 
-  units of unbinned pixels.  Since this is complicated and would
-  involve a lot of arguments, we set this by using the relevant data 
-  members of the #azcam struct to define the parameters:
-  <pre>
-    #azcam::FirstCol - first column to read in unbinned pixels
-    #azcam::LastCol  - last column to read in unbinned pixels
-    #azcam::ColBin   - column-axis binning factor
-    #azcam::FirstRow - first row to read in unbinned pixels
-    #azcam::LastRow  - last row to read in unbinned pixels
-    #azcam::RowBin   - row-axis binning factor
-  </pre>
-  Note that regions of interest that are smaller than the physical
-  size of the device in unbinned pixels are only supported for
-  single-amplifier readout modes.
+  units of unbinned pixels.
 
 */
 
 int
-setROI(azcam_t *cam, char *reply)
+setROI(azcam_t *cam, int sc, int ec, int sr, int er, char *reply)
 {
   char cmdStr[64];
 
-  // Quick check, if FirstCol or LastCol is 0, that signals "don't know"
-  // we we should not set the ROI
-
-  if (cam->FirstCol == 0 || cam->FirstRow == 0) {
-    sprintf(reply,"Invalid ROI, FirstCol=%d FirstRow=%d",
-	    cam->FirstCol,cam->FirstRow);
-    return -1;
-  }
-
-  // Another is if either ColBin or RowBin are zero
-
-  if (cam->ColBin == 0 || cam->RowBin == 0) {
-    sprintf(reply,"Invalid ROI, ColBin=%d RowBin=%d",
-	    cam->ColBin,cam->RowBin);
-    return -1;
-  }
-    
-  // We hope we're OK, send it up
-
-  sprintf(cmdStr,"mods.set_roi %d %d %d %d %d %d",
-	  cam->FirstCol,cam->LastCol,
-	  cam->FirstRow,cam->LastRow,
-	  cam->ColBin,cam->RowBin);
+  // azcam roi command includes bin factors as last two, -1 means "keep same"
+  
+  sprintf(cmdStr,"mods.set_roi %d %d %d %d -1 -1",sc,ec,sr,er);
 
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
+  cam->FirstCol = sc;
+  cam->LastCol = ec;
+  cam->FirstRow = sr;
+  cam->LastRow = er;
+  
   // set flags as required...
 
-  sprintf(reply,"ROI=[%d:%d,%d:%d] XBin=%d YBin=%d",
+  sprintf(reply,"ROI=(%d,%d,%d,%d) XBin=%d YBin=%d",
 	  cam->FirstCol,cam->LastCol,
 	  cam->FirstRow,cam->LastRow,
 	  cam->ColBin,cam->RowBin);
 	  
   return 0;
 
+}
+
+// getROI - to complicated to put into setROI like we do for others
+
+int
+getROI(azcam_t *cam, char *reply)
+{
+  char cmdStr[64];
+  int sc, ec, sr, er, bx, by;
+  
+  strcpy(cmdStr,"mods.get_roi");
+
+  if (azcamCmd(cam,cmdStr,reply)<0)
+    return -1;
+
+  // extract the data: sc ec sr er binx biny
+
+  sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bx,&bn);
+  cam->FirstCol = sc;
+  cam->LastCol = ec;
+  cam->FirstRow = sr;
+  cam->LastRow = er;
+  cam->ColBin = bx;
+  cam->RowBin = by;
+
+  sprintf(reply,"ROI=(%d,%d,%d,%d) XBin=%d YBin=%d",
+	  cam->FirstCol,cam->LastCol,
+	  cam->FirstRow,cam->LastRow,
+	  cam->ColBin,cam->RowBin);
+	  
+  return 0;  
+
+}
+
+// reset ROI to full frame unbinned (used for ROI OFF)
+
+int
+resetROI(azcam_t *cam, char *reply)
+{
+  char cmdStr[64];
+  int sc, ec, sr, er, bx, by;
+  
+  strcpy(cmdStr,"mods.reset_roi");
+
+  if (azcamCmd(cam,cmdStr,reply)<0)
+    return -1;
+
+  // verify
+
+  strcpy(cmdStr,"mods.get_roi");
+
+  if (azcamCmd(cam,cmdStr,reply)<0)
+    return -1;
+
+  // extract the data: sc ec sr er binx biny
+
+  sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bx,&bn);
+  cam->FirstCol = sc;
+  cam->LastCol = ec;
+  cam->FirstRow = sr;
+  cam->LastRow = er;
+  cam->ColBin = bx;
+  cam->RowBin = by;
+
+  sprintf(reply,"ROI=(%d,%d,%d,%d) XBin=%d YBin=%d",
+	  cam->FirstCol,cam->LastCol,
+	  cam->FirstRow,cam->LastRow,
+	  cam->ColBin,cam->RowBin);
+	  
+  return 0;  
+  
 }
   
 /*!
@@ -596,10 +651,10 @@ getDetPars(azcam_t *cam, char *reply)
   int nc_usc;
   int nc_osc;
   int nrows;
-  int np_pdk;
-  int np_usc;
-  int np_osc;
-  int np_ft;
+  int nr_pdk;
+  int nr_usc;
+  int nr_osc;
+  int nr_ft;
   int npix;
 
   strcpy(cmdStr,"exposure.get_format");
@@ -612,7 +667,7 @@ getDetPars(azcam_t *cam, char *reply)
 
   // extract the data
 
-  sscanf(msgStr,"%d %d %d %d %d %d %d %d %d",&ncols,&nc_pdk,&nc_usc,&nc_osc,&nrows,&np_pdk,&np_usc,&np_osc,&np_ft);
+  sscanf(msgStr,"%d %d %d %d %d %d %d %d %d",&ncols,&nc_pdk,&nc_usc,&nc_osc,&nrows,&nr_pdk,&nr_usc,&nr_osc,&nr_ft);
 
   npix = nrows * ncols;
 
@@ -622,6 +677,19 @@ getDetPars(azcam_t *cam, char *reply)
   cam->Ncols = ncols;
   cam->Npixels = npix;
   sprintf(reply,"Ncols=%d Nrows=%d Npix=%d",nrows,ncols,npix);
+
+  // store the format parameters in the azcam struct
+
+  cam->NCtotal = ncols;
+  cam->NCpredark = nc_pdk;
+  cam->NCunderscan = nc_usc;
+  cam->NCoverscan = nc_osc;
+  cam->NRtotal = nrows;
+  cam->NRpredark = nr_pdk;
+  cam->NRunderscan = nr_usc;
+  cam->NRoverscan = nr_osc;
+  cam->NRframexfer = nr_ft;
+  
   return npix;
  
 }
@@ -680,17 +748,39 @@ pixelsLeft(azcam_t *cam, char *reply)
   on the server side.  The shutter mode (light or dark) is defined internally
   on the server by the imgType.
 
+  If either parameter is omitted, it uses the current value
+  
  */
 
 int
 setImageInfo(azcam_t *cam, char *imgType, char *imgTitle, char *reply)
 {
   char cmdStr[64];
+  
+  if (strlen(imgType)>0 && strlen(imgTitle)>0) {
+    if (strlen(imgType)==0)
+      strcpy(imgType,cam->imgType); // no imgType given, use current
 
-  sprintf(cmdStr,"mods.set_ImageInfo %s %s",imgType,imgTitle);
+    if (strlen(imgTitle)==0)
+      strcpy(imgTitle,cam->imgTitle); // no imgTitle given, use current
 
-  if (azcamCmd(cam,cmdStr,reply)<0)
+    sprintf(cmdStr,"mods.set_imageInfo %s %s",imgType,imgTitle);
+
+    if (azcamCmd(cam,cmdStr,reply)<0)
+      return -1;
+  }
+
+  // get values from the server
+  
+  if (azcamCmd(cam,"exposure.get_image_type()",reply)<0)
     return -1;
-
+  strcpy(cam->imgType,reply);
+  
+  if (azcamCmd(cam,"exposure.get_image_title()",reply)<0)
+    return -1;
+  strcpy(cam->imgTitle,reply);
+    
+  sprintf(reply,"IMGTYPE=%s Title=(%s)",cam->imgType,cam->imgTitle);
+  
   return 0;
 }

@@ -202,7 +202,7 @@ int sendImage(azcam_t *, char *, char *, char *);
 
 int clearArray(azcam_t *, char *);
 
-int setImageInfo(azcam_t *, char*, char *, char*);
+int setImageInfo(azcam_t *, char *, char *, char*);
 int setExposure(azcam_t *, float , char *);
 int startExposure(azcam_t *, int , char *);
 int expStatus(azcam_t *, char *);
@@ -218,7 +218,9 @@ int openShutter(azcam_t *, char *);
 int closeShutter(azcam_t *, char *);
 
 int setFormat(azcam_t *, char *);
-int setROI(azcam_t *, char *);
+int setROI(azcam_t *, int, int, int, int, char *);
+int getROI(azcam_t *, char *);
+int resetROI(azcam_t *, char *);
 int getDetPars(azcam_t *, char *);
 
 // Temperature Commands (ccdtemp.c)

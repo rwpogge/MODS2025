@@ -11,7 +11,7 @@
 
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \original 2005 May 17
-  \datre 2025 July 23
+  \date 2025 July 23
 */
 
 #include "azcam.h" // azcam client API header 
@@ -38,9 +38,9 @@ imgFilename(azcam_t *cam, char *fileStr, char *reply)
     return -1;
 
   if (doSet)
-    strcpy(cam->fileName,reply);
-  else
     strcpy(cam->fileName,fileStr);
+  else
+    strcpy(cam->fileName,reply);
 
   sprintf(reply,"filename=%s",cam->fileName);
   
@@ -87,7 +87,7 @@ imgExpNum(azcam_t *cam, int expNum, char *reply)
   char cmdStr[64];
   int doSet;
   
-  if (expNum <= 0) {
+  if (expNum < 0) {
     strcpy(cmdStr,"mods.get_expnum");
     doSet = 0;
   }
