@@ -9,6 +9,7 @@ Usage example:
 
 import os
 import sys
+import glob
 
 import azcam
 import azcam.utils
@@ -331,9 +332,21 @@ def setup():
     
     # default filename root pattern is the instrument ID lower case
     # and the current observing date, e.g., mods1b.20251007.  mind the .
+    # at the end of root!
     
     azcam.db.tools["exposure"].root = f"{modsID.lower()}.{obsDate()}."
     azcam.db.tools["exposure"].folder = datafolder
+
+    # This might be a restart on the same obsDate, so see if there are
+    # any files matching the intended file pattern in datafolder and
+    # if there are, count them and select a safe next sequence number.
+    # It looks for a 4-digit number followed by .fits
+    
+    oldFiles = glob.glob(f"{os.path.join(exposure.folder,exposure.root)}????.fits")
+    nextNum = len(oldFiles) + 1
+    exposure.sequence_number = nextNum
+
+    # not bulletproof, but at least a start
     
     # Let the MODS azcam tool know our MODS ID and which side of the
     # telescope it is on

@@ -793,7 +793,9 @@ class MODS(object):
             next file to be written in sequence
 
         '''
-        return azcam.db.tools["exposure"].get_filename()
+
+        fullName = azcam.db.tools["exposure"].get_filename()
+        return os.path.basename(fullName)
     
     # get_nextfile() and nextfile() are aliases for get_filname()
     
@@ -815,7 +817,12 @@ class MODS(object):
 
         '''
 
-        return azcam.db.tools["exposure"].last_filename
+        lastFile = azcam.db.tools["exposure"].last_filename
+        if len(lastFile) == 0:
+            return 'None'
+        else:
+            return os.path.basename(lastFile)
+    
     
     # lastfile() is an alias for get_lastfile()
     
@@ -1193,21 +1200,21 @@ class MODS(object):
         
         dataPath, baseName = os.path.split(fileStr)
         if len(dataPath) == 0:
-            dataPath = dataPath = azcam.db.tools["exposure"].folder
+            dataPath = azcam.db.tools["exposure"].folder
         
         # split basename on .
         
         fileBits = baseName.split('.')
         numBits = len(fileBits)
         
-        # if no . anywhere in baseMame, return default parts
+        # if no . anywhere in baseName, return default parts
         
         if numBits == 1:
             rootName = baseName
             expNum = 1
 
         # if more than one part, look at last part.  Is it "fits"?
-
+        
         else:
             if fileBits[-1] == "fits":
                 if numBits == 2:
@@ -1223,7 +1230,7 @@ class MODS(object):
                         rootName = '.'.join(fileBits[:-1])
                         expNum = 1
             else:
-                # doesn't end in fits,is last bit a number < 9999?
+                # doesn't end in fits, is last bit a number < 9999?
                 try:
                     isInt = int(fileBits[-1])
                     if isInt <= 9999:
@@ -1241,7 +1248,7 @@ class MODS(object):
 
     def obsDate(self):
         '''
-        Return the observing date string
+        Return the observing date string in CCYYMMDD format
 
         Returns
         -------
