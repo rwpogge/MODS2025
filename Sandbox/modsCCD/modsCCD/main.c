@@ -85,8 +85,10 @@
 // Global data structures
 
 isisclient_t client; // ISIS Client data structure
-azcam_t ccd;         // azcam server parameters data structure
-obspars_t obs;       // Observation parameters data structure
+
+azcam_t cam;         // azcam server parameters data structure
+
+obsPars_t obs;       // Observation parameters data structure
 
 // dataman_t dm;        // Data Manager data structure
 
@@ -194,14 +196,13 @@ main(int argc, char *argv[])
   
   // Now, open the azcam server connection and attempt to initialize the session
   
-  openAzCam(&ccd,reply);
+  openAzCam(&cam,reply);
   if (ccd.FD>0) {
     printf("Opened connection to azcam server host %s:%d\n",
 	   ccd.Host,ccd.Port);
-    if (initCCDConfig(&ccd,reply)<0) {
+    if (initCCDConfig(&cam,reply)<0) {
       printf("CCD Initialization Failed - %s\n",reply);
-      printf("  Options: 1) Quit and fix the problem with the %s script\n",
-	     ccd.IniFile);
+      printf("  Options: 1) Quit and fix the problem with the %s script\n",ccd.iniFile);
       printf("           2) Try to configure using interactive commands\n");
     }
     else {
@@ -260,8 +261,8 @@ main(int argc, char *argv[])
   // Now that all components are connected, upload the
   // baseline FITS header database
 
-  getTemp(&ccd,reply);
-  uploadFITS(&ccd,&obs,reply);
+  getTemp(&cam,reply);
+  uploadFITS(&cam,&obs,reply);
 
   // All set to rock-n-roll...
 
@@ -429,7 +430,7 @@ main(int argc, char *argv[])
       switch(ccd.State) {      
 
       case SETUP: // we were setting up, poll current status
-	if (expStatus(&ccd,reply)<0) {
+	if (expStatus(&cam,reply)<0) {
 	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
@@ -458,7 +459,7 @@ main(int argc, char *argv[])
 	break;
 	
       case READOUT: // we're reading out, poll current readout status
-	if (pollReadout(&ccd,&obs,reply)<0) {
+	if (pollReadout(&cam,&obs,reply)<0) {
 	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
@@ -495,7 +496,7 @@ main(int argc, char *argv[])
 
       case EXPOSING: // poll current exposure status - RESUME set instead of EXPOSING after PAUSE
       case RESUME:
-	if (pollExposure(&ccd,&obs,reply)<0) {
+	if (pollExposure(&cam,&obs,reply)<0) {
 	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
@@ -507,8 +508,8 @@ main(int argc, char *argv[])
 	case EXPOSING:  // still exposing, update the countdown on console as required
 	case RESUME:
 	  if (obs.doCountDown) {
-	    if (obs.Tleft > 0.0) {
-	      printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",obs.expTime,(int)(obs.Tleft));
+	    if (obs.tLeft > 0.0) {
+	      printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",obs.expTime,(int)(obs.tLeft));
 	      fflush(stdout);
 	    }
 	  }
@@ -540,7 +541,7 @@ main(int argc, char *argv[])
 	break;
 	
       case PAUSE: // exposure was paused, did this change?
-	if (expStatus(&ccd,reply)<0) {
+	if (expStatus(&cam,reply)<0) {
 	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
@@ -549,9 +550,9 @@ main(int argc, char *argv[])
 
 	case RESUME:
 	case EXPOSING:
-	  pollExposure(&ccd,&obs,reply);
+	  pollExposure(&cam,&obs,reply);
 	  printf("\nExposure resumed...\n");
-	  printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",obs.expTime,(int)(obs.Tleft));
+	  printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",obs.expTime,(int)(obs.tLeft));
 	  fflush(stdout)
 	  notifyClient(&cam,&obs,(char*)"Exposure Resumed",STATUS);
 	  break;
@@ -568,7 +569,7 @@ main(int argc, char *argv[])
 	break;
 
       case READ:  // readout complete, waiting for write
-	if (expStatus(&ccd,reply)<0) {
+	if (expStatus(&cam,reply)<0) {
 	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
@@ -587,7 +588,7 @@ main(int argc, char *argv[])
 	break;
 		 
       case WRITING: // azcam server is writing the image to disk, waiting for IDLE
-	if (expStatus(&ccd,reply)<0) {
+	if (expStatus(&cam,reply)<0) {
 	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
@@ -606,7 +607,7 @@ main(int argc, char *argv[])
 	break;
 
       case ABORT: // exposure is aborting, waiting for IDLE
-	if (expStatus(&ccd,reply)<0) {
+	if (expStatus(&cam,reply)<0) {
 	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
@@ -625,7 +626,7 @@ main(int argc, char *argv[])
 	break;
       
       case IDLE: // azcam server is IDLE, check for SETUP, otherwise housekeeping
-	if (expStatus(&ccd,reply)<0) {
+	if (expStatus(&cam,reply)<0) {
 	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
@@ -640,7 +641,7 @@ main(int argc, char *argv[])
 
 	default:
 	  if (ccd.FD>0)
-	    getTemp(&ccd,reply);
+	    getTemp(&cam,reply);
 	  // do something with this someday, shmem, DD?
 	  break;
 	}
@@ -696,7 +697,7 @@ main(int argc, char *argv[])
       
       if (ccd.FD > 0) {
 	if (FD_ISSET(ccd.FD, &read_fd)) {
-	  nread = ReadAzCam(&ccd,camData);  // direct read, no timeout
+	  nread = readAzCam(&cam,camData);  // direct read, no timeout
 	  if (nread > 0) {
 	    printf("AzCam> %s\n",camData);
 	    memset(camData,0,sizeof(camData));
@@ -737,7 +738,7 @@ main(int argc, char *argv[])
   // Tear down the azcam server link
   
   if (ccd.FD>0) 
-    CloseAzCam(&ccd);
+    closeAzCam(&cam);
 
   // Tear down the DataMan link, if any
 
@@ -784,7 +785,7 @@ HandleInt(int signalValue)
   // If the CCD link is up, send an abort exposure (harmless if not exposing)
 
   if (ccd.FD>0)
-    AbortExposure(&ccd,reply);
+    abortExposure(&cam,reply);
 
   printf("Ctrl+C Abort requested - Aborts Sent\n");
 

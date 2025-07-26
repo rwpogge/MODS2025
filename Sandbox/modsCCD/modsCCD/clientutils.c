@@ -499,233 +499,6 @@ processImage(azcam_t *cam, obsPars_t *obs, char *fname, char *reply)
 
 }
 
-/*!
-  \brief Load an azcam config file contents into an azcam struct
-
-  \param cam pointer to an azcam_t struct for an open azcam server
-  \param config string with the azcam camera configuration file name
-  \param reply string to carry any messages returned from the server
-  \return 0 on success, -1 if failure
-  
-  Opens and parses the contents of a azcam server configuration file
-  containing all of the basic parameters required to setup the server
-  nad detector for operation.
-
-  It is assumed that the azcam config file resides on a path visible to
-  the system running the azcam *client* application, not on the server
-  system.  
-
-  \sa loadconfig()
-
-*/
-
-int
-loadAzCamConfig(azcam_t *cam, char *config, char *reply)
-{
-
-  char inbuf[MAXCFGLINE];   // Generic line buffer
-  char keyword[MAXCFGLINE]; // File is organized into KEYWORD VALUE pairs
-  char argbuf[MAXCFGLINE];  // Generic argument buffer
-
-  FILE *cfgFP;              // config file pointer
-  int i;
-  char c;                    
-
-  // Open the config file readonly
-
-  if (!(cfgFP=fopen(config, "r"))) {
-    sprintf(reply,"Cannot open azcam config file %s - %s\n",
-	    config,strerror(errno));
-    return -1;
-  }
-
-  strcpy(cam->cfgFile,config); // save the name of this file
-
-  while(fgets(inbuf, MAXCFGLINE, cfgFP)) {
-
-    // Skip comments (#) and blank lines
-
-    if ((inbuf[0]!='#') && (inbuf[0]!='\n') && inbuf[0]!='\0') {
-      inbuf[MAXCFGLINE] ='\0';
-      GetArg(inbuf, 1, argbuf);
-      strcpy(keyword, argbuf);
-      
-      // Parse Keywords
-
-      // azcam Server Host 
-
-      if (strcasecmp(keyword,"azcamHost")==0) {
-	GetArg(inbuf,2,argbuf);
-	strcpy(cam->Host,argbuf);
-      }
-
-      // azcam Server Port
-
-      else if (strcasecmp(keyword,"azcamPort")==0) {
-	GetArg(inbuf,2,argbuf);
-	cam->Port = atoi(argbuf);
-      }
-
-      // azcam server comm timeout
-
-      else if (strcasecmp(keyword,"Timeout")==0) {
-	GetArg(inbuf,2,argbuf);
-	cam->Timeout = (long)(atoi(argbuf));
-	if (cam->Timeout < 0) cam->Timeout = 10L;
-      }
-
-      // azcam initialization script (on the azcam server proper)
-
-      else if (strcasecmp(keyword,"iniFile")==0) {
-	GetArg(inbuf,2,argbuf);
-	if (strlen(argbuf)>0) {
-	  strcpy(cam->iniFile,argbuf);
-	}
-	else {
-	  sprintf(reply,"iniFile keyword blank in %s, must contain an entry",
-		  config);
-	  if (cfgFP !=0) fclose(cfgFP);
-	  return -1;
-	}
-      }
-
-      // CCD detector and control parameters for azcam
-
-      // Region-of-Interest
-
-      else if (strcasecmp(keyword,"FirstCol")==0) {
-	GetArg(inbuf,2,argbuf);
-	cam->firstCol = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"LastCol")==0) {
-	GetArg(inbuf,2,argbuf);
-	cam->lastCol = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"ColBin")==0) {
-	GetArg(inbuf,2,argbuf);
-	cam->colBin = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"FirstRow")==0) {
-	GetArg(inbuf,2,argbuf);
-	cam->firstRow = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"LastRow")==0) {
-	GetArg(inbuf,2,argbuf);
-	cam->lastRow = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"RowBin")==0) {
- 	GetArg(inbuf,2,argbuf);
-	cam->rowBin = atoi(argbuf);
-      }
-
-      // Detector Configuration
-
-      else if (strcasecmp(keyword,"NCtotal")==0) {
- 	GetArg(inbuf,2,argbuf);
-	cam->NCtotal = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"NCpredark")==0) {
- 	GetArg(inbuf,2,argbuf);
-	cam->NCpredark = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"NCunderscan")==0) {
- 	GetArg(inbuf,2,argbuf);
-	cam->NCunderscan = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"NCoverscan")==0) {
- 	GetArg(inbuf,2,argbuf);
-	cam->NCoverscan = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"NRtotal")==0) {
- 	GetArg(inbuf,2,argbuf);
-	cam->NRtotal = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"NRpredark")==0) {
- 	GetArg(inbuf,2,argbuf);
-	cam->NRpredark = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"NRunderscan")==0) {
- 	GetArg(inbuf,2,argbuf);
-	cam->NRunderscan = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"NRoverscan")==0) {
- 	GetArg(inbuf,2,argbuf);
-	cam->NRoverscan = atoi(argbuf);
-      }
-
-      else if (strcasecmp(keyword,"NRframexfer")==0) {
- 	GetArg(inbuf,2,argbuf);
-	cam->NRframexfer = atoi(argbuf);
-      }
-
-      // CCD Detector Temperature setpoint
-
-      else if (strcasecmp(keyword,"CCDTemp")==0) {
-	GetArg(inbuf,2,argbuf);
-	cam->setPoint = atof(argbuf);
-      }
-
-      // Output File Info
-
-      else if (strcasecmp(keyword,"FileFormat")==0) {
- 	GetArg(inbuf,2,argbuf);
-	if (strcasecmp(argbuf,"STDFITS")==0) {
-	  cam->fileFormat = STDFITS;
-	}
-	else if (strcasecmp(argbuf,"MEF")==0) {
-	  cam->fileFormat = MEF;
-	}
-	else if (strcasecmp(argbuf,"BINARY")==0) {
-	  cam->fileFormat = BINARY;
-	}
-	else {
-	  sprintf(reply,"FileFormat option '%s' unrecognized in %s",
-		 argbuf,config);
-	  if (cfgFP !=0) fclose(cfgFP);
-	  return -1;
-	}
-      }
-
-      else if (strcasecmp(keyword,"FileName")==0) {
-	GetArg(inbuf,2,argbuf);
-	strcpy(cam->fileName,argbuf);
-      }
-
-      else if (strcasecmp(keyword,"FilePath")==0) {
-	GetArg(inbuf,2,argbuf);
-	strcpy(cam->filePath,argbuf);
-      }
-
-      // Any other junk? gripe to stdout but don't generate an error
-
-      else { 
-	printf("Ignoring unrecognized config file entry '%s'", inbuf);
-	
-      }
-    }
-    memset(inbuf,0,sizeof(inbuf));
-  }
-
-  // All done, close the config file and report success
-
-  if (cfgFP !=0) fclose(cfgFP);
-  
-  sprintf(reply,"Loaded azcam config file %s successfully",config);
-  return 0;
-
-}
 
 /*!
   \brief (re)Initialize the CCD Configuration
@@ -734,10 +507,10 @@ loadAzCamConfig(azcam_t *cam, char *config, char *reply)
   \param reply string to carry any messages returned from the server
   \return 0 on success, -1 if failure
   
-  Re-initialize the CCD configuration by instructing the azcam Server to
-  execute the initialization script (cam->iniFile) normall loaded at
-  startup time.
+  Re-initialize the CCD configuration on the azcam server.
 
+  !*** this needs something but not sure what yet ***!
+  
 */
 
 int
@@ -751,25 +524,12 @@ initCCDConfig(azcam_t *cam, char *reply)
     return -1;
   }
 
-  // cam->iniFile file needs to be defined for this to work.
-
-  if (strlen(cam->iniFile)==0) {
-    strcpy(reply,"No CCD Initialization File Defined, Cannot Initialize");
-    return -1;
-  }
-
-  // Tell the azcam Server to run the script in cam->iniFile
-  /*
-  if (RunScript(cam,cam->iniFile,reply)<0)
-    return -1;
-  */
-  
   // Reset some state variables
     
   cam->State = IDLE;
   cam->Abort = 0;
 
-  sprintf(reply,"azcam Server initialized using the %s script",cam->iniFile);
+  strcpy(reply,"azcam Server initialized...");
   return 0;
 }
 
