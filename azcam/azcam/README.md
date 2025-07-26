@@ -19,7 +19,7 @@ core code that inhibit function, not extensions to the functionality.
 
 MODS is being updated to use STA Archon controllers for the CCDs (replacing the now 20-year old OSU controllers which are reaching end of life), and 
 all computers are being updated to AlmaLinux 9.x servers, consolidating the data-taking system from 34U of rack space to 16U (including spares), and 
-modernizing integration with mountain telescope and data telemetry systems among other changes. 
+modernizing integration with mountain telescope control and data telemetry systems among other changes. 
 
 
 ## Documentation
