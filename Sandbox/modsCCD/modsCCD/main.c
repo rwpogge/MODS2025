@@ -1,23 +1,23 @@
 /*!
-  \mainpage y4kcam - Interactive azcam Client
+  \mainpage modsCCD - Interactive azcam Client
 
   \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
   \date 2005 May 2
 
   \section Usage
 
-  Usage: y4kcam [rcfile]
+  Usage: modsCCD [rcfile]
 
   Where: \c rcfile is an optional runtime config file to load.  
 
-  By default, y4kcam uses the runtime config file defined by
+  By default, modsCCD uses the runtime config file defined by
   #DEFAULT_RCFILE in the client.h header.
 
   \section Introduction
 
   ...
 
-  y4kcam can be run as either a standalone interactive program with a
+  modsCCD can be run as either a standalone interactive program with a
   command-line interface and backdoor socket interface, or as a client
   in an ISIS system.  Using the agent in standalone mode with the
   backdoor socket interface (the same UDP socket used for ISIS server
@@ -27,14 +27,14 @@
 
   \section Commands
 
-  These are the interactive commands for y4kcam:
+  These are the interactive commands for modsCCD:
   <pre>
   info           - report client information
-  version        - report y4kcam version & compile info
+  version        - report modsCCD version & compile info
   reset          - reset runtime & controller parameters
   verbose        - toggle verbose output mode
   debug          - toggle debugging output
-  quit           - quit y4kcam
+  quit           - quit modsCCD
   history        - show command history
   !!             - repeat last command
   !cmd           - repeat last command matching 'cmd'
@@ -44,8 +44,8 @@
 
   \section Config Runtime Configuration File
 
-  This is a typical runtime config file for the y4kcam agent:
-  \verbinclude y4kcam.ini
+  This is a typical runtime config file for the modsCCD agent:
+  \verbinclude modsCCD.ini
 
   Note that all parameter names are \e case-insensitive.
 
@@ -71,7 +71,7 @@
 
 /*!
   \file main.c
-  \brief y4kcam main program and I/O event handler.
+  \brief modsCCD main program and I/O event handler.
 */
 
 #include "isisclient.h"  // ISIS common client library header
@@ -197,12 +197,12 @@ main(int argc, char *argv[])
   // Now, open the azcam server connection and attempt to initialize the session
   
   openAzCam(&ccd,reply);
-  if (cam.FD>0) {
+  if (ccd.FD>0) {
     printf("Opened connection to azcam server host %s:%d\n",
-	   cam.Host,cam.Port);
+	   ccd.Host,ccd.Port);
     if (initCCDConfig(&ccd,reply)<0) {
       printf("CCD Initialization Failed - %s\n",reply);
-      printf("  Options: 1) Quit and fix the problem with the %s script\n",cam.iniFile);
+      printf("  Options: 1) Quit and fix the problem with the %s script\n",ccd.iniFile);
       printf("           2) Try to configure using interactive commands\n");
     }
     else {
@@ -211,7 +211,7 @@ main(int argc, char *argv[])
   }
   else {
     printf("ERROR: Could not open connection to azcam server host %s:%d\n",
-	   cam.Host,cam.Port);
+	   ccd.Host,ccd.Port);
     printf("       Make sure the system is on and properly configured,\n");
     printf("       then try again.\n");
     printf("modsCCD aborting\n");
@@ -292,7 +292,7 @@ main(int argc, char *argv[])
   // Start the I/O event handling loop.
   //
   // The event handler has to have some awareness of the azcam server
-  // state, which it tracks using the cam.State data member.
+  // state, which it tracks using the ccd.State data member.
   //
   // For the Archon controller, the sequence of exposure states are:
   //
@@ -305,45 +305,45 @@ main(int argc, char *argv[])
   //    WRITING
   //    (IDLE)
   //    
-  // If cam.State = IDLE, the handler just waits for input (select()
+  // If ccd.State = IDLE, the handler just waits for input (select()
   // call with no timeout).  If, however, there is an azcam server
   // connected, then every 120 seconds it queries the azcam server to
   // read the CCD and base temperatures and do housekeeping tasks
   //
-  // When cam.State changes to SETUP or EXPOSING, it sets up the
+  // When ccd.State changes to SETUP or EXPOSING, it sets up the
   // select() loop with a 0.5 second timeout to watch for any
   // Abort/Pause/Resume directives from the console or remote clients,
   // and then polls the azcam for the current integration status,
   // maintaining a parallel countdown.  On integration completion, it
-  // switches the state to cam.State=READOUT as appropriate.
+  // switches the state to ccd.State=READOUT as appropriate.
   //
-  // If cam.State = PAUSE indicating a paused exposure, so we go into
-  // a minimal polling state like being idle until cam.state is
+  // If ccd.State = PAUSE indicating a paused exposure, so we go into
+  // a minimal polling state like being idle until ccd.state is
   // set to RESUME, and we resume the fast exposure cadence.
   // 
-  // When cam.State changes to READOUT, it sets up the select() loop
+  // When ccd.State changes to READOUT, it sets up the select() loop
   // with a 1 second timeout and polls the azcam server for the
   // readout status by watching the pixel counter, reporting readout
   // progress (typically few 10s of seconds) to the console or 
   // remote client.
   //
-  // When readout is complete, cam.State changes to READ while the
+  // When readout is complete, ccd.State changes to READ while the
   // controller does post-readout cleanup in preparation for
   // image write.  We keep the 1-second timeout running, and
   // inform the console or remote client that readout is complete.
   //
-  // When cam.State changes to WRITING, we inform the console
+  // When ccd.State changes to WRITING, we inform the console
   // or remote client that writing has commenced.
   //
   // When the image is written and closed, the azcam server
-  // sets cam.State = IDLE and we switch back to the normal
+  // sets ccd.State = IDLE and we switch back to the normal
   // non-exposure select() loop timing.
   // 
   //
   // !*** this is where the exposure progress event loop starts ***!
   
   client.KeepGoing = 1;
-  cam.State = IDLE;
+  ccd.State = IDLE;
 
   while (client.KeepGoing) {
     
@@ -360,8 +360,8 @@ main(int argc, char *argv[])
     
     // Also listen to the azcam server comm port, if active
     
-    if (cam.FD > 0) 
-      FD_SET(cam.FD, &read_fd);    
+    if (ccd.FD > 0) 
+      FD_SET(ccd.FD, &read_fd);    
 
     /*
     // Listen to DataMan if active and we're standalone
@@ -377,7 +377,7 @@ main(int argc, char *argv[])
 
     // Setup the select() loop timeout depending on the exposure state
 
-    switch(cam.State) {
+    switch(ccd.State) {
       
     case EXPOSING:
     case RESUME:
@@ -406,7 +406,7 @@ main(int argc, char *argv[])
       // azcam server is idle or paused
       //   setup select() for 120s polling for idle-time housekeeping
       
-      if (cam.FD>0) {
+      if (ccd.FD>0) {
 	timeout.tv_sec = 120;
 	timeout.tv_usec = 0;
 	n_ready = select(sel_wid, &read_fd, NULL, NULL, &timeout);
@@ -427,15 +427,15 @@ main(int argc, char *argv[])
 
     if (n_ready == 0) {
 
-      switch(cam.State) {      
+      switch(ccd.State) {      
 
       case SETUP: // we were setting up, poll current status
 	if (expStatus(&ccd,reply)<0) {
 	  notifyClient(&ccd,&obs,reply,ERROR);
-	  cam.State = IDLE;
+	  ccd.State = IDLE;
 	}
 	
-	switch(cam.State) {
+	switch(ccd.State) {
 
 	case EXPOSING:
 	case RESUME:
@@ -461,17 +461,17 @@ main(int argc, char *argv[])
       case READOUT: // we're reading out, poll current readout status
 	if (pollReadout(&ccd,&obs,reply)<0) {
 	  notifyClient(&ccd,&obs,reply,ERROR);
-	  cam.State = IDLE;
+	  ccd.State = IDLE;
 	}
 	
-	// pollReadout() sets cam.State depending on the polling outcome
+	// pollReadout() sets ccd.State depending on the polling outcome
 	
-	switch(cam.State) {
+	switch(ccd.State) {
 
 	case READOUT: // still reading out... status to console and remote as needed
-	  printf("Read out %d pixels of %d...                \r",cam.Nread,cam.Npixels);
+	  printf("Read out %d pixels of %d...                \r",ccd.Nread,ccd.Npixels);
 	  fflush(stdout);
-	  pctRead = 100.0*float(cam.Nread)/float(cam.Npixels); // percent readout
+	  pctRead = 100.0*float(ccd.Nread)/float(ccd.Npixels); // percent readout
 	  sprintf(reply,"PCTREAD=%d",int(pctRead));
  	  notifyClient(&ccd,&obs,reply,STATUS);
 	  break;
@@ -482,7 +482,7 @@ main(int argc, char *argv[])
 	  break;
 	  
 	case WRITING: // started writing the image (in case READ state was missed)
-	  printf("\nWriting image %s to disk",cam.fileName);
+	  printf("\nWriting image %s to disk",ccd.fileName);
 	  fflush(stdout);	
 	  sprintf(reply,"Writing Image PCTREAD=100",int(pctRead));
  	  notifyClient(&ccd,&obs,reply,STATUS);
@@ -498,12 +498,12 @@ main(int argc, char *argv[])
       case RESUME:
 	if (pollExposure(&ccd,&obs,reply)<0) {
 	  notifyClient(&ccd,&obs,reply,ERROR);
-	  cam.State = IDLE;
+	  ccd.State = IDLE;
 	}
 	
-	// pollExposure() sets cam.State depending on the polling outcome
+	// pollExposure() sets ccd.State depending on the polling outcome
 	
-	switch(cam.State) {
+	switch(ccd.State) {
 	  
 	case EXPOSING:  // still exposing, update the countdown on console as required
 	case RESUME:
@@ -543,10 +543,10 @@ main(int argc, char *argv[])
       case PAUSE: // exposure was paused, did this change?
 	if (expStatus(&ccd,reply)<0) {
 	  notifyClient(&ccd,&obs,reply,ERROR);
-	  cam.State = IDLE;
+	  ccd.State = IDLE;
 	}
 	
-	switch(cam.State) {
+	switch(ccd.State) {
 
 	case RESUME:
 	case EXPOSING:
@@ -571,10 +571,10 @@ main(int argc, char *argv[])
       case READ:  // readout complete, waiting for write
 	if (expStatus(&ccd,reply)<0) {
 	  notifyClient(&ccd,&obs,reply,ERROR);
-	  cam.State = IDLE;
+	  ccd.State = IDLE;
 	}
 	
-	switch(cam.State) {
+	switch(ccd.State) {
 
 	case WRITING:
 	  printf("\nWriting CCD to disk...\n");
@@ -590,10 +590,10 @@ main(int argc, char *argv[])
       case WRITING: // azcam server is writing the image to disk, waiting for IDLE
 	if (expStatus(&ccd,reply)<0) {
 	  notifyClient(&ccd,&obs,reply,ERROR);
-	  cam.State = IDLE;
+	  ccd.State = IDLE;
 	}
 	
-	switch(cam.State) {
+	switch(ccd.State) {
 
 	case IDLE:
 	  printf("Done: Image readout and written to disk\n");
@@ -609,10 +609,10 @@ main(int argc, char *argv[])
       case ABORT: // exposure is aborting, waiting for IDLE
 	if (expStatus(&ccd,reply)<0) {
 	  notifyClient(&ccd,&obs,reply,ERROR);
-	  cam.State = IDLE;
+	  ccd.State = IDLE;
 	}
 
-	switch(cam.State) {
+	switch(ccd.State) {
 
 	case IDLE:
 	  printf("\nDone: Exposure abort complete.\n");
@@ -628,10 +628,10 @@ main(int argc, char *argv[])
       case IDLE: // azcam server is IDLE, check for SETUP, otherwise housekeeping
 	if (expStatus(&ccd,reply)<0) {
 	  notifyClient(&ccd,&obs,reply,ERROR);
-	  cam.State = IDLE;
+	  ccd.State = IDLE;
 	}
 
-	switch(cam.State) {
+	switch(ccd.State) {
 
 	case SETUP:
 	  printf("\nExposure Setup started..                 \r");
@@ -640,7 +640,7 @@ main(int argc, char *argv[])
 	  break;
 
 	default:
-	  if (cam.FD>0)
+	  if (ccd.FD>0)
 	    getTemp(&ccd,reply);
 	  // do something with this someday, shmem, DD?
 	  break;
@@ -695,8 +695,8 @@ main(int argc, char *argv[])
       // Unexpected input from the azcam server - just echo it to the
       // console for now.
       
-      if (cam.FD > 0) {
-	if (FD_ISSET(cam.FD, &read_fd)) {
+      if (ccd.FD > 0) {
+	if (FD_ISSET(ccd.FD, &read_fd)) {
 	  nread = readAzCam(&ccd,camData);  // direct read, no timeout
 	  if (nread > 0) {
 	    printf("AzCam> %s\n",camData);
@@ -737,7 +737,7 @@ main(int argc, char *argv[])
 
   // Tear down the azcam server link
   
-  if (cam.FD>0) 
+  if (ccd.FD>0) 
     closeAzCam(&ccd);
 
   // Tear down the DataMan link, if any
@@ -784,7 +784,7 @@ HandleInt(int signalValue)
   
   // If the CCD link is up, send an abort exposure (harmless if not exposing)
 
-  if (cam.FD>0)
+  if (ccd.FD>0)
     abortExposure(&ccd,reply);
 
   printf("Ctrl+C Abort requested - Aborts Sent\n");
