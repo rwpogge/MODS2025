@@ -186,7 +186,7 @@ class LBTTCS(Telescope):
         reqKey = keyword.upper()
         
         if reqKey not in self.fitsList:
-            raise azcam.exceptions.AzCamError(f"ERROR: invalid {reqKey} not in list")
+            raise azcam.exceptions.AzcamError(f"ERROR: invalid {reqKey} not in list")
             return
         
         # retrieve just reqKey.  You have to send it a list even if just one...
@@ -348,7 +348,7 @@ class LBTTCS(Telescope):
             try:
                 stream = open(configFile,'r')
             except Exception as exp:
-                raise azcam.exceptions.AzCamError(f"could not open LBT TCS header config file {configFile} - {exp}")
+                raise azcam.exceptions.AzcamError(f"could not open LBT TCS header config file {configFile} - {exp}")
                 return
         
             try:
@@ -388,7 +388,7 @@ class LBTTCS(Telescope):
             self.clientFile = None
             self.proxyName = None
             
-            raise azcam.exceptions.AzCamError(f"Could not read IIFConfig data from {configFile} - {exp}")
+            raise azcam.exceptions.AzcamError(f"Could not read IIFConfig data from {configFile} - {exp}")
         
         # Extract the DD dictionary and list of DD entries.  We use these to load the 
         # the header definition dictionaries (keywords, typestrings, and comments)
@@ -399,7 +399,7 @@ class LBTTCS(Telescope):
         except Exception as exp:
             self.ddDict = None
             self.ddList = None
-            raise azcam.exceptions.AzCamError(f"Could not read DD entries from {configFile} - {exp}")
+            raise azcam.exceptions.AzcamError(f"Could not read DD entries from {configFile} - {exp}")
         
         # build the dictionaries that map FITS keywords to IIF DD entries and their attributes: 
         #      fitsList = list of FITS header keywords
@@ -480,7 +480,8 @@ class LBTTCS(Telescope):
             iifData = self.tcs.GetParameter(keyList)
         except Exception as exp:
             azcam.log(f"ERROR: TCS IIF GetParameter() query failed - {exp}")
-            raise azcam.exceptions.AzCamError(f"getTCSData() query failed - {exp}")
+            self.tcs.proxy_destroy(self.proxyName)
+            raise azcam.exceptions.AzcamError(f"getTCSData() query failed - {exp}")
             return
             
         # all done, close the proxy and return the data
@@ -491,4 +492,138 @@ class LBTTCS(Telescope):
             pass
             
         return iifData
+
+
+    def tcsSetParameter(self,ddKey: str,ddVal: str):
+        '''
+        Set a data dictionary parameter on the LBT TCS        
+
+        Parameters
+        ----------
+        ddKey : string
+            IIF data dictionary keyword
+        ddV : string
+            IIF data value to set as ddKey
+
+        Raises
+        ------
+        azcam
+            AzcamError exception if there are errors.
+
+        Returns
+        -------
+
+        Description
+        -----------
+        Starts the IIF proxy, sends the parameter, closes the proxy.  This way
+        we don't have an active IIF proxy live during long periods of 
+        idleness.
             
+        somewhat inefficient, but we aren't sending much very often.            
+        '''
+        
+        try:
+            self.tcs.proxy_destroy(self.proxyName)
+        except:
+            pass
+        
+        try:
+            self.tcs = iif.iifproxy(proxyName=self.proxyName,
+                                    instrumentID=self.proxy['instrument'],
+                                    focalStation=self.proxy['focalstation'],
+                                    side=self.lbtSide,
+                                    config_client=self.clientFile)
+        except Exception as exp:
+            azcam.log(f"ERROR: TCS IIF proxy init failed - could start IIF link - {exp}")
+            self.is_initialized = 0
+            self.tcs = None
+            raise azcam.exceptions.AzcamError(f"tcsSetParameter() failed - {exp}")
+            return
+
+        # We have a link, send the parameter
+
+        iifData = {}
+        iifData[ddKey]=ddVal
+        
+        try:
+            self.tcs.SetParameter(iifData)
+        except Exception as exp:
+            azcam.log(f"ERROR: TCS IIF SetParameter() failed - {exp}")
+            self.tcs.proxy_destroy(self.proxyName)
+            raise azcam.exceptions.AzcamError(f"tcsSetParameter() query failed - {exp}")
+            return
+            
+        # all done, close the proxy and return the data
+            
+        try:
+            self.tcs.proxy_destroy(self.proxyName)
+        except:
+            pass
+            
+        return
+
+
+    def tcsGetParameter(self,ddKey: str):
+        '''
+        Get a data dictionary parameter from the LBT TCS        
+
+        Parameters
+        ----------
+        ddKey : string
+            IIF data dictionary keyword
+
+        Raises
+        ------
+        azcam
+            AzcamError exception if there are errors.
+
+        Returns
+        -------
+        ddVal : string
+            data dictionary value retrieved
+            
+        Description
+        -----------
+        Starts the IIF proxy, requests the parameter, closes the proxy.  
+        This way we don't have an active IIF proxy live during long periods of 
+        idleness.
+            
+        Somewhat inefficient, but we aren't doing this very often.            
+        '''
+        
+        try:
+            self.tcs.proxy_destroy(self.proxyName)
+        except:
+            pass
+        
+        try:
+            self.tcs = iif.iifproxy(proxyName=self.proxyName,
+                                    instrumentID=self.proxy['instrument'],
+                                    focalStation=self.proxy['focalstation'],
+                                    side=self.lbtSide,
+                                    config_client=self.clientFile)
+        except Exception as exp:
+            azcam.log(f"ERROR: TCS IIF proxy init failed - could start IIF link - {exp}")
+            self.is_initialized = 0
+            self.tcs = None
+            raise azcam.exceptions.AzcamError(f"tcsGetParameter() failed - {exp}")
+            return
+
+        # We have a link, get the DD parameter
+        
+        try:
+            iifData = self.tcs.GetParameter([ddKey])
+        except Exception as exp:
+            azcam.log(f"ERROR: TCS IIF GetParameter() failed - {exp}")
+            self.tcs.proxy_destroy(self.proxyName)
+            raise azcam.exceptions.AzcamError(f"tcsGetParameter() query failed - {exp}")
+            return
+            
+        # all done, close the proxy and return the data
+            
+        try:
+            self.tcs.proxy_destroy(self.proxyName)
+        except:
+            pass
+            
+        return iifData
