@@ -394,7 +394,7 @@ resumeExposure(azcam_t *cam, char *reply)
   #azcam struct and then call this function to send them to the azcam
   server.
 
-  \sa setROI()
+  \sa setROI(), resetROI()
 */
 
 int
@@ -433,69 +433,86 @@ setFormat(azcam_t *cam, char *reply)
 }  
   
 /*!
-  \brief Define the detector region of interest for the next readout
+  \brief Define the CCD subframe region of interest for the next readout
 
   \param cam pointer to an #azcam struct with the server parameters
+  \param sc int starting column (x) in unbinned full-frame pixels
+  \param ec int ending column (x) in unbinned full-frame pixels
+  \param sr int starting row (y) in unbinned full-frame pixels
+  \param er int ending row (y) in unbinned full-frame pixels
   \param reply string to contain any reply text
   \return 0 if successful, -1 on errors, with error text in reply
 
   Sets the region of interest for the next detector readout in 
-  units of unbinned pixels.  Since this is complicated and would
-  involve a lot of arguments, we set this by using the relevant data 
-  members of the #azcam struct to define the parameters:
-  <pre>
-    #azcam::FirstCol - first column to read in unbinned pixels
-    #azcam::LastCol  - last column to read in unbinned pixels
-    #azcam::ColBin   - column-axis binning factor
-    #azcam::FirstRow - first row to read in unbinned pixels
-    #azcam::LastRow  - last row to read in unbinned pixels
-    #azcam::RowBin   - row-axis binning factor
-  </pre>
+  units of unbinned pixels.
+
+  If all arguments are -1, treat as a query and return the
+  current ROI (-1 to azcam means "don't change")
 
 */
 
 int
-setROI(azcam_t *cam, char *reply)
+setROI(azcam_t *cam, int sc, int ec, int sr, int er, char *reply)
 {
   char cmdStr[64];
+  int bc, br;
 
-  // Quick check, if FirstCol or LastCol is 0, that signals "don't know"
-  // we we should not set the ROI
+  // check parameters
 
-  if (cam->FirstCol == 0 || cam->FirstRow == 0) {
-    sprintf(reply,"Invalid ROI, FirstCol=%d FirstRow=%d",
-	    cam->FirstCol,cam->FirstRow);
-    return -1;
+  if (sc>0 && ec>0 && sr>0 && er>0) {
+    sprintf(cmdStr,"mods.set_roi %d %d %d %d");
+    if (azcamCmd(cam,cmdStr,reply)<0)
+      return -1;
   }
 
-  // Another is if either ColBin or RowBin are zero
+  // query and return
 
-  if (cam->ColBin == 0 || cam->RowBin == 0) {
-    sprintf(reply,"Invalid ROI, ColBin=%d RowBin=%d",
-	    cam->ColBin,cam->RowBin);
-    return -1;
-  }
-    
-  // We hope we're OK, send it up
-
-  sprintf(cmdStr,"mods.set_roi %d %d %d %d %d %d",
-	  cam->FirstCol,cam->LastCol,
-	  cam->FirstRow,cam->LastRow,
-	  cam->ColBin,cam->RowBin);
-
-  if (azcamCmd(cam,cmdStr,reply)<0)
+  if (azcamCmd(cam,(char *)"mods.get_roi",reply)<0)
     return -1;
 
-  // set flags as required...
+  sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bc,&br);
+  sprintf(reply,"ROI=(%d,%d,%d,%d) XBIN=%d YBIN=%d",sc,ec,sr,er,bc,br);
 
-  sprintf(reply,"ROI=[%d:%d,%d:%d] XBin=%d YBin=%d",
-	  cam->FirstCol,cam->LastCol,
-	  cam->FirstRow,cam->LastRow,
-	  cam->ColBin,cam->RowBin);
-	  
+  cam->firstCol = sc;
+  cam->lastCol = ec;
+  cam->firstRow = sr;
+  cam->lastRow = er;
+  cam->colBin = bc;
+  cam->rowBin = br;
+  
   return 0;
 
 }
+
+// reset ROI - restore CCD to full-frame *unbinned* readout mode
+
+int
+resetROI(azcam_t *cam, char *reply)
+{
+  int sc, ec, sr, er, bc, br;
+  
+  if (azcamCmd(cam,(char *)"mods.reset_roi",reply)<0)
+    return -1;
+
+  // query and return
+
+  if (azcamCmd(cam,(char *)"mods.get_roi",reply)<0)
+    return -1;
+
+  sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bc,&br);
+  sprintf(reply,"ROI=(%d,%d,%d,%d) XBIN=%d YBIN=%d",sc,ec,sr,er,bc,br);
+
+  cam->firstCol = sc;
+  cam->lastCol = ec;
+  cam->firstRow = sr;
+  cam->lastRow = er;
+  cam->colBin = bc;
+  cam->rowBin = br;
+  
+  return 0;
+  
+}
+
 
 // set CCD binning
 
@@ -521,10 +538,10 @@ int setCCDBin(azcam_t *cam, int xbin, int ybin, char *reply)
     return -1;
 
   sscanf(reply,"%d %d",&xbin,&ybin);
-  sprintf(cmdStr,"XBIN=%d YBIN=%d",xbin,ybin);
+  sprintf(reply,"XBIN=%d YBIN=%d",xbin,ybin);
 
-  cam->ColBin = xbin;
-  cam->RowBin = ybin;
+  cam->colBin = xbin;
+  cam->rowBin = ybin;
   
   return 0;
     
@@ -550,10 +567,10 @@ int setXBin(azcam_t *cam, int xbin, char *reply)
     return -1;
 
   sscanf(reply,"%d %d",&xbin,&ybin);
-  sprintf(cmdStr,"XBIN=%d YBIN=%d",xbin,ybin);
+  sprintf(reply,"XBIN=%d YBIN=%d",xbin,ybin);
 
-  cam->ColBin = xbin;
-  cam->RowBin = ybin;
+  cam->colBin = xbin;
+  cam->rowBin = ybin;
   
   return 0;
     
@@ -579,10 +596,10 @@ int setYBin(azcam_t *cam, int ybin, char *reply)
     return -1;
 
   sscanf(reply,"%d %d",&xbin,&ybin);
-  sprintf(cmdStr,"XBIN=%d YBIN=%d",xbin,ybin);
+  sprintf(reply,"XBIN=%d YBIN=%d",xbin,ybin);
 
-  cam->ColBin = xbin;
-  cam->RowBin = ybin;
+  cam->colBin = xbin;
+  cam->rowBin = ybin;
   
   return 0;
     

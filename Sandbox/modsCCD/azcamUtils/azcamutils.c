@@ -141,12 +141,12 @@ initAzCam(azcam_t *cam)
 
   // Default ROI: 0 for <axis>Bin means not defined
 
-  cam->FirstCol = 0;
-  cam->LastCol = 0;
-  cam->ColBin = 0;
-  cam->FirstRow = 0;
-  cam->LastRow = 0;
-  cam->RowBin = 0;
+  cam->firstCol = 0;
+  cam->lastCol = 0;
+  cam->colBin = 0;
+  cam->firstRow = 0;
+  cam->lastRow = 0;
+  cam->rowBin = 0;
 
   // Default Detector Format.  0 for all means not defined
 
@@ -205,34 +205,34 @@ azcamInfo(azcam_t *cam)
   printf("  Comm Timeout: %d seconds\n",cam->Timeout);
   switch(cam->State) {
   case IDLE:
-    printf("  Server State: IDLE\n");
+    printf("  Exposure State: IDLE\n");
     break;
   case EXPOSING:
-    printf("  Server State: EXPOSURE in progress\n");
+    printf("  Exposure State: Integrating\n");
     break;
   case ABORT:
-    printf("  Server State: Exposure is Aborting\n");
+    printf("  Exposure State: Exposure Aborting\n");
     break;
   case PAUSE:
-    printf("  Server State: Exposure PAUSED\n");
+    printf("  Exposure State: Exposure Paused\n");
     break;
   case RESUME:
-    printf("  Server State: Exposure is Resuming\n");
+    printf("  Exposure State: Integration Resumed\n");
     break;
   case READ:
-    printf("  Server State: Exposure file readout done, write pending\n");
+    printf("  Exposure State: Readout complete, write pending\n");
     break;
   case READOUT:
-    printf("  Server State: READOUT in progress\n");
+    printf("  Exposure State: Readout in progress\n");
     break;
   case SETUP:
-    printf("  Server State: Exposure is being initialized\n");
+    printf("  Exposure State: Exposure is being initialized\n");
     break;
   case WRITING:
-    printf("  Server State: Exposure file is being written\n");
+    printf("  Exposure State: Image file is being written\n");
     break;
   default:
-    printf("  Server State: UNKNOWN\n");
+    printf("  Exposure State: UNKNOWN (state code %d)\n",cam->State);
     break;
   }
 
@@ -240,9 +240,9 @@ azcamInfo(azcam_t *cam)
   printf("  CCD Config File: %s\n",cam->iniFile);
 
   printf("  CCD ROI: [%d:%d,%d:%d]  Binning: %dx%d\n",
-	 cam->FirstCol,cam->LastCol,
-	 cam->FirstRow,cam->LastRow,
-	 cam->ColBin,cam->RowBin);
+	 cam->firstCol,cam->lastCol,
+	 cam->firstRow,cam->lastRow,
+	 cam->colBin,cam->rowBin);
 
   printf("  CCD Format: %d %d %d %d %d %d %d %d %d\n",
 	 cam->NCtotal,cam->NCpredark,cam->NCunderscan,cam->NCoverscan,
@@ -253,13 +253,13 @@ azcamInfo(azcam_t *cam)
 	 cam->Ncols,cam->Nrows,cam->Npixels);
 
   printf("CCD Temperature Control:\n");
-  printf("  SetPoint: %.1f C\n",cam->setPoint);
-  printf("  Last CCD Temperature: %.1f C\n",cam->ccdTemp);
-  printf("  Last Base Temperature: %.1f C\n",cam->baseTemp);
+  printf("    CCD Detector Temperature: %.1f C\n",cam->ccdTemp);
+  printf("   CCD Temperature Set Point: %.1f C\n",cam->setPoint);
+  printf("  CCD Mount Base Temperature: %.1f C\n",cam->baseTemp);
   
-  printf("Exposure & File Information:\n");
+  printf("Exposure and File Information:\n");
   printf("  Exposure Time: %.3f sec\n",cam->expTime);
-  printf("  Next Filename: %s/%s.%0.4d.fits\n",
+  printf("  Next Filename: %s/%s.fits, sequence no. %d\n",
 	 cam->filePath,cam->fileName,cam->fileNum);
   printf("  Last Filename: %s\n",cam->lastFile);
   switch(cam->fileFormat) {
@@ -281,42 +281,3 @@ azcamInfo(azcam_t *cam)
 
 }
 
-/*!
-  \brief Send a raw command to the Archon controller
-  
-  \param cam pointer to an #azcam struct with the server parameters
-  \param cmdStr command string to send
-  \param reply string to contain any reply text
-  \return 0 if successful, -1 on errors, with error text in reply
-
-  Sends a raw Archon Controller command to the azcam server.  Command
-  strings are sent as-is with no validation, so if there is a syntax
-  error on the server side, this function will report an error back to
-  the calling application.
-
-  A complete list of valid Archon controller commands may be found
-  in the Archon manual (http://www.sta-inc.net/archonmanual) available
-  from the STA website.
-
-*/
-
-int
-archonCmd(azcam_t *cam, char *cmdStr, char*reply)
-{
-  char msgStr[128];
-
-  memset(msgStr,0,sizeof(msgStr));
-
-  if (azcamCmd(cam,cmdStr,msgStr)<0) {
-    strcpy(reply,msgStr);
-    return -1;
-  }
-
-  if (strlen(msgStr)==0)
-    strcpy(reply,"OK");
-  else
-    sprintf(reply,"OK %s",msgStr);
-
-  return 0;
-
-}

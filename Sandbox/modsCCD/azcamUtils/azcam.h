@@ -80,12 +80,12 @@ typedef struct azcam {
 
   // Detector Region of Interest (ROI) Parameters
 
-  int FirstCol;   //!< First column to be read in unbinned pixels
-  int LastCol;    //!< Last column to be read in unbinned pixels
-  int ColBin;     //!< Column-axis binning factor
-  int FirstRow;   //!< First row to be read in unbinned pixels
-  int LastRow;    //!< Last row to be read in unbinned pixels
-  int RowBin;     //!< Row-axis binning factor
+  int firstCol;   //!< first column to be read in unbinned pixels
+  int lastCol;    //!< last column to be read in unbinned pixels
+  int colBin;     //!< Column-axis binning factor
+  int firstRow;   //!< first row to be read in unbinned pixels
+  int lastRow;    //!< last row to be read in unbinned pixels
+  int rowBin;     //!< Row-axis binning factor
 
   // Detector Format Parameters
 
@@ -208,7 +208,6 @@ int closeShutter(azcam_t *, char *);
 
 int setFormat(azcam_t *, char *);
 int setROI(azcam_t *, int, int, int, int, char *);
-int getROI(azcam_t *, char *);
 int resetROI(azcam_t *, char *);
 int setCCDBin(azcam_t *, int, int, char *);
 int setXBin(azcam_t *, int, char *);
@@ -225,6 +224,5 @@ int setTemp(azcam_t *, float , char *);
 
 void initAzCam(azcam_t *);
 void azcamInfo(azcam_t *);
-int archonCmd(azcam_t *, char *, char *);
 
 #endif // AZCAM_H
