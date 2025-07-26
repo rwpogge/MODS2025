@@ -423,6 +423,8 @@ setROI(azcam_t *cam, int sc, int ec, int sr, int er, char *reply)
 int
 getROI(azcam_t *cam, char *reply)
 {
+  int sc, ec, sr, er, bc, br;
+  
   if (azcamCmd(cam,(char *)"mods.get_roi",reply)<0)
     return -1;
 
