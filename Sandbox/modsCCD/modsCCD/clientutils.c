@@ -155,13 +155,12 @@ doBias(azcam_t *cam, obsPars_t *obs, char *reply)
   \param reply string to carry any messages returned from the server
   \return 0 on success, -1 if failure
 
-  Query the azcam server to determine the time remaining on the
-  exposure.  Update exposure status info as well.
-
-  QUESTION: does the python azcam server crash if you try to read
-  time remaining before it is done?  Dunno.  We will check the
-  azcam server exposure state flag and only do the time left
-  query if we are actually exposing.
+  Query the azcam server to determine the time remaining on the exposure.
+  This function also checks exposure status to make sure it is exposing
+  before asking.
+  
+  The time remaining on the exposure is in cam->timeLeft and
+  obs->tLeft.
 
   \sa pollReadout()
 
@@ -180,10 +179,10 @@ pollExposure(azcam_t *cam, obsPars_t *obs, char *reply)
 
     // compute the time remaining in the current integration
 
-    if (timeLeft(cam,reply)<0)
+    if (getTimeLeft(cam,reply)<0)
       return -1;
 
-    obs->tLeft = atof(reply);
+    obs->tLeft = cam->timeLeft;
 
     if (obs->tLeft <= 0.0) 
       obs->tLeft = 0.0;
@@ -201,7 +200,11 @@ pollExposure(azcam_t *cam, obsPars_t *obs, char *reply)
   \return 0 on success, -1 if failure
 
   Query the azcam server to determine the number of pixels that have
-  been readout from the CCD.
+  been readout from the CCD.  This function also checks the exposure
+  status to make sure we are reading out before asking.
+
+  Number of pixels left to read is in cam->pixLeft, the number of
+  pixels read is in cam->Nread
 
   \sa pollExposure()
 */
@@ -216,11 +219,8 @@ pollReadout(azcam_t *cam, obsPars_t *obs, char *reply)
   if (cam->State != READOUT) 
     return 0;
 
-  pixLeft = pixelsLeft(cam,reply);
-  if (pixLeft<0)
+  if (getPixLeft(cam,reply)<0)
     return -1;
-
-  cam->pixLeft = pixLeft;
 
   return 0;
 }

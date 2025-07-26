@@ -199,37 +199,6 @@ setExposure(azcam_t *cam, float exptime, char *reply)
 }
 
 /*!
-  \brief Query the azcam server for the current elapsed exposure time
-  
-  \param cam pointer to an #azcam struct with the server parameters
-  \param reply string to contain any reply text
-  \return elapsed exposure time in milliseconds, or -1 if errors,
-          with error text in reply
-
-  Query the azcam server and return the elapsed exposure (integration)
-  time in seconds
-*/
-
-int
-readExposure(azcam_t *cam, char *reply)
-{
-  char cmdStr[64];
-
-  if (cam->State == READOUT) return 0; 
-  cam->timeLeft = 0.0;
-  
-  strcpy(cmdStr,"mods.timeleft");
-
-  if (azcamCmd(cam,cmdStr,reply)<0)
-    return -1;
-
-  cam->timeLeft = atof(reply);
-  sprintf(reply,"TimeLeft=%.3f sec",cam->timeLeft);
-  return cam->timeLeft;
-
-}
-
-/*!
   \brief Abort an exposure in progress.
   
   \param cam pointer to an #azcam struct with the server parameters
@@ -683,7 +652,38 @@ getFormat(azcam_t *cam, char *reply)
 }
 
 /*!
-  \brief Query the azcam server for the number of pixels readout
+  \brief Query the azcam server for the remaining exposure time
+  
+  \param cam pointer to an #azcam struct with the server parameters
+  \param reply string to contain any reply text
+  \return remaining exposure time in seconds or -1 if errors
+
+  Query the azcam server and return the remaining exposure (integration)
+  time in seconds.
+*/
+
+int
+getTimeLeft(azcam_t *cam, char *reply)
+{
+  char cmdStr[64];
+
+  if (cam->State == READOUT) return 0; 
+  cam->timeLeft = 0.0;
+  
+  strcpy(cmdStr,"mods.timeleft");
+
+  if (azcamCmd(cam,cmdStr,reply)<0)
+    return -1;
+
+  cam->timeLeft = atof(reply);
+  
+  sprintf(reply,"TimeLeft=%.3f sec",cam->timeLeft);
+  return cam->timeLeft;
+
+}
+
+/*!
+  \brief Query the azcam server for the pixels left to be readout
   
   \param cam pointer to an #azcam struct with the server parameters
   \param reply string to contain any reply text
@@ -702,20 +702,20 @@ getFormat(azcam_t *cam, char *reply)
 */
 
 int
-getPixelCount(azcam_t *cam, char *reply)
+getPixLeft(azcam_t *cam, char *reply)
 {
   char cmdStr[64];
-  int pixcount;
-
-  strcpy(cmdStr,"mods.pixelsLeft"); // pixread = numpix - pixelsLeft...
+  
+  strcpy(cmdStr,"mods.pixelsLeft"); // Nread = Npixels - pixelsLeft...
 
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  pixcount = atoi(reply);
-  sprintf(reply,"PixCount=%d",pixcount);
-  cam->Nread = pixcount; 
-  return pixcount;
+  cam->pixLeft = atoi(reply);
+  cam->Nread = cam->Npixels - cam->pixLeft;
+
+  sprintf(reply,"PixelsLeft=%d",cam->pixLeft);
+  return cam->pixLeft;
 
 }
 

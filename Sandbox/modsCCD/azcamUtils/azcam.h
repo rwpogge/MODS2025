@@ -195,13 +195,13 @@ int setImageInfo(azcam_t *, char *, char *, char*);
 int setExposure(azcam_t *, float , char *);
 int startExposure(azcam_t *, int , char *);
 int expStatus(azcam_t *, char *);
-int timeLeft(azcam_t *, char *);
 int abortExposure(azcam_t *, char *);
 int pauseExposure(azcam_t *, char *);
 int resumeExposure(azcam_t *, char *);
-
-int pixelsLeft(azcam_t *, char *);
 int abortReadout(azcam_t *, char*);
+
+int getTimeLeft(azcam_t *, char *);
+int getPixLeft(azcam_t *, char *);
 
 int openShutter(azcam_t *, char *);
 int closeShutter(azcam_t *, char *);
