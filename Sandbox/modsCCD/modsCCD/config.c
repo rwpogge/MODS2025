@@ -418,8 +418,8 @@ saveConfig(char *cfgfile)
   fprintf(cfgFP,"PI_Name %s\n",obs.PIName);
   fprintf(cfgFP,"Support %s\n",obs.Support);
   fprintf(cfgFP,"TelOps %s\n",obs.TelOps);
-  fprintf(cfgFP,"FileName %s\n",ccd.FileName);
-  fprintf(cfgFP,"FileNum %d\n",ccd.FileNum);
+  fprintf(cfgFP,"FileName %s\n",ccd.fileName);
+  fprintf(cfgFP,"FileNum %d\n",ccd.fileNum);
   fprintf(cfgFP,"ImgType %s\n",obs.imgType);
   fprintf(cfgFP,"ImgTitle %s\n",obs.imgTitle);
   fprintf(cfgFP,"ExpTime %.2f\n",ccd.expTime);
