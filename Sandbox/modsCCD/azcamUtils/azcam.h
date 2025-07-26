@@ -138,7 +138,7 @@ typedef struct azcam {
 #define READOUT  7    //!< Exposure is being read out
 #define SETUP    8    //!< Exposure is being set up
 #define WRITING  9    //!< Exposure file being written to disk
-#define ERROR   11    //!< Exposure error code
+#define AZERROR 11    //!< azcam error code
 
 // Image types
 
