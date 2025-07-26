@@ -31,7 +31,9 @@ from azcam.tools.archon.exposure_archon import ExposureArchon
 #
 #from azcam.tools.archon.tempcon_archon import TempConArchon
 
-# azcam_mods modules
+# azcam_mods classes
+
+from azcam_mods.mods import MODS
 
 from azcam_mods.detector_mods import detector_mods
 from azcam_mods.telescope_lbt import LBTTCS
@@ -303,8 +305,6 @@ def setup():
 
     # MODS customized commands
 
-    from azcam_mods.mods import MODS
-
     mods = MODS(modsID,lbtSide)
 
     # load the exposure header template (static header content)
@@ -367,7 +367,7 @@ def setup():
     # instantiate a MODS LBT TCS interface class
 
     telescope = LBTTCS(instID="mods",side=mods.lbtSide)
-    
+        
     # command server
 
     cmdserver = CommandServer()
