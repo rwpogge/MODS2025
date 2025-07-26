@@ -553,7 +553,7 @@ main(int argc, char *argv[])
 	  pollExposure(&cam,&obs,reply);
 	  printf("\nExposure resumed...\n");
 	  printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",obs.expTime,(int)(obs.tLeft));
-	  fflush(stdout)
+	  fflush(stdout);
 	  notifyClient(&cam,&obs,(char*)"Exposure Resumed",STATUS);
 	  break;
 
