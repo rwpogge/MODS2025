@@ -2240,7 +2240,7 @@ cmd_pause(char *args, MsgType msgtype, char *reply)
   // We were able to pause
 
   strcpy(reply,"Exposure PAUSED - RESUME to continue or ABORT");
-  notifyClient(&obs,reply,STATUS);
+  notifyClient(&cam,&obs,reply,STATUS);
   ccd.Abort = 0;
 
   return CMD_NOOP;
@@ -2288,7 +2288,7 @@ cmd_resume(char *args, MsgType msgtype, char *reply)
   // We were able to resume
 
   strcpy(reply,"Exposure Resumed...");
-  notifyClient(&obs,reply,STATUS);
+  notifyClient(&cam,&obs,reply,STATUS);
   ccd.Abort = 0;
 
   // Return CMD_NOOP to return exposure control to the main event handler
@@ -2337,7 +2337,7 @@ cmd_abort(char *args, MsgType msgtype, char *reply)
   ccd.Abort = 1;  
 
   strcpy(reply,"ABORT requested");
-  notifyClient(&obs,reply,DONE);  // Abort is always "done"
+  notifyClient(&cam,&obs,reply,DONE);  // Abort is always "done"
   return CMD_OK;
 }
 

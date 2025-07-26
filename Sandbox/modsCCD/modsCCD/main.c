@@ -430,7 +430,7 @@ main(int argc, char *argv[])
 
       case SETUP: // we were setting up, poll current status
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&obs,reply,ERROR);
+	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
 	
@@ -441,14 +441,14 @@ main(int argc, char *argv[])
 	  printf("\nStarted %.2f sec exposure...              \r",obs.expTime);
 	  fflush(stdout);
 	  sprintf(reply,"%.2f sec exposure started",obs.expTime);
-	  notifyClient(&obs,reply,STATUS);
+	  notifyClient(&cam,&obs,reply,STATUS);
 	  break;
 
 	case READOUT: // could happen if a bias/zero image
 	  printf("\nReadout Started                           \r");
 	  fflush(stdout);
 	  sprintf(reply,"Readout Started PCTREAD=0");
-	  notifyClient(&obs,reply,STATUS);
+	  notifyClient(&cam,&obs,reply,STATUS);
 	  break;
 	  
 	default:
@@ -459,7 +459,7 @@ main(int argc, char *argv[])
 	
       case READOUT: // we're reading out, poll current readout status
 	if (pollReadout(&ccd,&obs,reply)<0) {
-	  notifyClient(&obs,reply,ERROR);
+	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
 	
@@ -472,19 +472,19 @@ main(int argc, char *argv[])
 	  fflush(stdout);
 	  pctRead = 100.0*float(ccd.Nread)/float(ccd.Npixels); // percent readout
 	  sprintf(reply,"PCTREAD=%d",int(pctRead));
- 	  notifyClient(&obs,reply,STATUS);
+ 	  notifyClient(&cam,&obs,reply,STATUS);
 	  break;
 
 	case READ:  // readout is complete, preparing to write
 	  printf("\nReadout Complete, preparing to write image");
-	  notifyClient(&obs,(char*)"Readout Complete PCTREAD=100",STATUS);
+	  notifyClient(&cam,&obs,(char*)"Readout Complete PCTREAD=100",STATUS);
 	  break;
 	  
 	case WRITING: // started writing the image (in case READ state was missed)
 	  printf("\nWriting image %s to disk",ccd.fileName);
 	  fflush(stdout);	
 	  sprintf(reply,"Writing Image PCTREAD=100",int(pctRead));
- 	  notifyClient(&obs,reply,STATUS);
+ 	  notifyClient(&cam,&obs,reply,STATUS);
 	  break;
 	  	  
 	default:  // nothing else requires action
@@ -496,7 +496,7 @@ main(int argc, char *argv[])
       case EXPOSING: // poll current exposure status - RESUME set instead of EXPOSING after PAUSE
       case RESUME:
 	if (pollExposure(&ccd,&obs,reply)<0) {
-	  notifyClient(&obs,reply,ERROR);
+	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
 	
@@ -520,17 +520,17 @@ main(int argc, char *argv[])
 	  
 	case READOUT:  // started readout since last time we polled
 	  printf("\nExposure Completed, Readout started...                  \n");
-	  notifyClient(&obs,(char*)"Exposure Completed, Shutter=0 (Closed), Readout started PCTREAD=0",STATUS);
+	  notifyClient(&cam,&obs,(char*)"Exposure Completed, Shutter=0 (Closed), Readout started PCTREAD=0",STATUS);
 	  break;
 	  
 	case ABORT:  // exposure done since the last time we polled
 	  printf("\nExposure Aborting, wait for completion...\n");
-	  notifyClient(&obs,(char*)"Exposure Aborting, waiting for completion",STATUS);
+	  notifyClient(&cam,&obs,(char*)"Exposure Aborting, waiting for completion",STATUS);
 	  break;
 
 	case PAUSE: // pause requested
 	  printf("\nExposure paused, waiting for RESUME or ABORT...\n");
-	  notifyClient(&obs,(char*)"Exposure Paused, waiting for RESUME or ABORT",STATUS);
+	  notifyClient(&cam,&obs,(char*)"Exposure Paused, waiting for RESUME or ABORT",STATUS);
 	  break;
 
 	default:
@@ -541,7 +541,7 @@ main(int argc, char *argv[])
 	
       case PAUSE: // exposure was paused, did this change?
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&obs,reply,ERROR);
+	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
 	
@@ -553,12 +553,12 @@ main(int argc, char *argv[])
 	  printf("\nExposure resumed...\n");
 	  printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",obs.expTime,(int)(obs.Tleft));
 	  fflush(stdout)
-	  notifyClient(&obs,(char*)"Exposure Resumed",STATUS);
+	  notifyClient(&cam,&obs,(char*)"Exposure Resumed",STATUS);
 	  break;
 
 	case ABORT:
 	  printf("\nPAUSED Exposure Aborted...\n");
-	  notifyClient(&obs,(char*)"Paused Exposure ABORTED, waiting for completion",STATUS);
+	  notifyClient(&cam,&obs,(char*)"Paused Exposure ABORTED, waiting for completion",STATUS);
 	  break;
 	  
 	default:
@@ -569,7 +569,7 @@ main(int argc, char *argv[])
 
       case READ:  // readout complete, waiting for write
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&obs,reply,ERROR);
+	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
 	
@@ -577,7 +577,7 @@ main(int argc, char *argv[])
 
 	case WRITING:
 	  printf("\nWriting CCD to disk...\n");
-	  notifyClient(&obs,(char*)"Writing image to disk PCTREAD=0",STATUS);
+	  notifyClient(&cam,&obs,(char*)"Writing image to disk PCTREAD=0",STATUS);
 	  break;
 
 	default:
@@ -588,7 +588,7 @@ main(int argc, char *argv[])
 		 
       case WRITING: // azcam server is writing the image to disk, waiting for IDLE
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&obs,reply,ERROR);
+	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
 	
@@ -596,7 +596,7 @@ main(int argc, char *argv[])
 
 	case IDLE:
 	  printf("Done: Image readout and written to disk\n");
-	  notifyClient(&obs,(char*)"Exposure finished. EXPSTATUS=DONE",DONE);
+	  notifyClient(&cam,&obs,(char*)"Exposure finished. EXPSTATUS=DONE",DONE);
 	  break;
 
 	default:
@@ -607,7 +607,7 @@ main(int argc, char *argv[])
 
       case ABORT: // exposure is aborting, waiting for IDLE
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&obs,reply,ERROR);
+	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
 
@@ -615,7 +615,7 @@ main(int argc, char *argv[])
 
 	case IDLE:
 	  printf("\nDone: Exposure abort complete.\n");
-	  notifyClient(&obs,(char*)"Exposure Aborted. EXPSTATUS=DONE",DONE);
+	  notifyClient(&cam,&obs,(char*)"Exposure Aborted. EXPSTATUS=DONE",DONE);
 	  break;
 
 	default:
@@ -626,7 +626,7 @@ main(int argc, char *argv[])
       
       case IDLE: // azcam server is IDLE, check for SETUP, otherwise housekeeping
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&obs,reply,ERROR);
+	  notifyClient(&cam,&obs,reply,ERROR);
 	  ccd.State = IDLE;
 	}
 
@@ -635,7 +635,7 @@ main(int argc, char *argv[])
 	case SETUP:
 	  printf("\nExposure Setup started..                 \r");
 	  fflush(stdout);
-	  notifyClient(&obs,(char*)"Exposure Setup started",STATUS);
+	  notifyClient(&cam,&obs,(char*)"Exposure Setup started",STATUS);
 	  break;
 
 	default:

@@ -63,10 +63,10 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
   // Start the Exposure, but do not wait for exposure completion
 
   if (!strcasecmp(obs->imgType,"dark") || !strcasecmp(obs->imgType,"bias") || !strcasecmp(obs->imgType,"zero")) {
-    notifyClient(obs,"Starting Integration, Shutter=0 (Closed)...",STATUS);
+    notifyClient(cam, obs,"Starting Integration, Shutter=0 (Closed)...",STATUS);
   }
   else {
-    notifyClient(obs,"Starting Integration, Shutter=1 (Open)...",STATUS);
+    notifyClient(cam, obs,"Starting Integration, Shutter=1 (Open)...",STATUS);
   }
 
   if (startExposure(cam,EXP_NOWAIT,reply)<0)
@@ -133,7 +133,7 @@ doBias(azcam_t *cam, obsPars_t *obs, char *reply)
 
   // Start the Exposure - since this is a bias, we wait for completion
 
-  notifyClient(obs,"Starting Bias Image - Shutter=0 (Closed)",STATUS);
+  notifyClient(cam, obs,"Starting Bias Image - Shutter=0 (Closed)",STATUS);
   if (startExposure(cam,EXP_WAIT,reply)<0)
     return -1;
   
@@ -183,7 +183,7 @@ pollExposure(azcam_t *cam, obsPars_t *obs, char *reply)
     if (timeLeft(cam,reply)<0)
       return -1;
 
-    obs->tLeft atof(reply);
+    obs->tLeft = atof(reply);
 
     if (obs->tLeft <= 0.0) 
       obs->tLeft = 0.0;
@@ -241,7 +241,7 @@ pollReadout(azcam_t *cam, obsPars_t *obs, char *reply)
 */
 
 int
-notifyClient(obsPars_t *obs, char *msgStr, MsgType msgType)
+notifyClient(azcam_t *cam, obsPars_t *obs, char *msgStr, MsgType msgType)
 {
   char outMsg[256];
 
@@ -466,6 +466,9 @@ processImage(azcam_t *cam, obsPars_t *obs, char *fname, char *reply)
 
   // can't do this if we don't have a data manager handy
 
+  return 0;
+
+  /*  
   if (!dm.useDM) {
     sprintf(reply,"No Data Manager agent enabled.");
     return -1;
@@ -481,15 +484,16 @@ processImage(azcam_t *cam, obsPars_t *obs, char *fname, char *reply)
   // build the command string
 
   sprintf(cmdStr,"%s>%s process %s\r",srcID,dm.ID,fname);
-
+  
   // Upload the command to DataMan and return
 
   if (writeDataMan(&dm,cmdStr)<0) {
     strcpy(reply,"Post-Processing command upload failed - cannot write to socket");
     return -1;
   }
-
+  
   sprintf(reply,"Post-Processing command uploaded to %s...",dm.ID);
+  */
 
   return 0;
 
@@ -670,7 +674,7 @@ loadAzCamConfig(azcam_t *cam, char *config, char *reply)
 
       else if (strcasecmp(keyword,"CCDTemp")==0) {
 	GetArg(inbuf,2,argbuf);
-	cam->SetPoint = atof(argbuf);
+	cam->setPoint = atof(argbuf);
       }
 
       // Output File Info
@@ -755,10 +759,11 @@ initCCDConfig(azcam_t *cam, char *reply)
   }
 
   // Tell the azcam Server to run the script in cam->iniFile
-
+  /*
   if (RunScript(cam,cam->iniFile,reply)<0)
     return -1;
-
+  */
+  
   // Reset some state variables
     
   cam->State = IDLE;

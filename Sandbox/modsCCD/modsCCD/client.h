@@ -152,7 +152,7 @@ void SocketCommand(char *);   // process messages from the client socket (see co
 
 // Client utility routines
 
-int  notifyClient(obsPars_t *, char *, MsgType);
+int  notifyClient(azcam_t *, obsPars_t *, char *, MsgType);
 int  doExposure(azcam_t *, obsPars_t *, char *);
 int  pollExposure(azcam_t *, obsPars_t *, char *);
 int  pollReadout(azcam_t *, obsPars_t *, char *);
