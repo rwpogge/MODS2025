@@ -22,7 +22,7 @@ all computers are being updated to AlmaLinux 9.x servers, consolidating the data
 modernizing integration with mountain telescope control and data telemetry systems among other changes. 
 
 ### MODS Notes
- * 2025 July 25 - made first change in core code, fixed bug in azcam/azcam/header.py, read_file() used "break" in the header template read loop if a # comment or blank line instead of "continue", so the template read was truncated at the first comment or blank line. 
+ * 2025 July 25 - made first change in core code, fixed bug in ``azcam/azcam/header.py``, the `read_file()` method used <code>break</code> in the header template read loop if a # comment or blank line instead of <code>continue</code>, so the template read was truncated at the first comment or blank line. 
 
 ## Documentation
 
