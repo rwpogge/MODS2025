@@ -2,7 +2,7 @@
 
 Version: 2.0.0
 
-Last Update: 2025 July 25 [rwp/osu]
+Last Update: 2025 July 26 [rwp/osu]
 
 Heritage: AzCamUtils library for the Y4KCam at the CTIO 1m with a Windows AzCamServer and ARC Gen3 (May 2005)
 
