@@ -97,7 +97,7 @@ cmd_quit(char *args, MsgType msgtype, char *reply)
 
   // Before quitting, save our runtime config for restart
 
-  if (SaveConfig(client.rcFile)<0)
+  if (saveConfig(client.rcFile)<0)
     sprintf(reply,"%s - Warning: config file %s not saved",
 	    reply,client.rcFile);
   else
@@ -615,7 +615,7 @@ cmd_exptime(char *args, MsgType msgtype, char *reply)
   
   // Report the exposure time
 
-  sprintf(reply,"EXPTIME=%.3f seconds",obs.ExpTime);
+  sprintf(reply,"EXPTIME=%.3f seconds",obs.expTime);
   return CMD_OK;
 
 }
@@ -970,7 +970,7 @@ cmd_filename(char *args, MsgType msgtype, char *reply)
   if (imgFilename(&ccd,(char*)"",reply)<0) // get filename
     return CMD_ERR;
 
-  sprintf(reply,"FILENAME=%s,ccd.fileName);
+  sprintf(reply,"FILENAME=%s",ccd.fileName);
   return CMD_OK;
 
 }
@@ -1935,7 +1935,7 @@ cmd_status(char *args, MsgType msgtype, char *reply)
   GetTemp(&ccd,reply);
 
   sprintf(reply,"Sh=%d Exp=%.3f Xbin=%d Ybin=%d ROI=(%d,%d,%d,%d)",
-	  ccd.Shutter,ccd.ExpTime,ccd.colBin,ccd.RowBin,
+	  ccd.Shutter,ccd.expTime,ccd.colBin,ccd.RowBin,
 	  ccd.firstCol,ccd.lastCol,ccd.firstRow,ccd.lastRow);
 
   sprintf(reply,"%s XOS=%d YOS=%d",
@@ -2512,7 +2512,7 @@ cmd_writeim(char *args, MsgType msgtype, char *reply)
 
     // write it 
 
-    if (WriteImage(&ccd,newfile,msgstr)<0) {
+    if (writeImage(&ccd,newfile,msgstr)<0) {
       sprintf(reply,"Write failed for %s - %s",newfile,msgstr);
       return CMD_ERR;
     }
@@ -2570,11 +2570,13 @@ cmd_process(char *args, MsgType msgtype, char *reply)
 
   // check the file descriptor and make sure we have an active connection
 
+  /*
   if (!dm.useDM) {
     strcpy(reply,"No Data Manager agent link is active");
     return CMD_ERR;
   }
-
+  */
+  
   memset(fname,0,sizeof(fname));
 
   // If we have an argument, use that for the filename, but
