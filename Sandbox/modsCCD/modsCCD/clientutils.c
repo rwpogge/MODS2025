@@ -264,7 +264,7 @@ notifyClient(azcam_t *cam, obsPars_t *obs, char *msgStr, MsgType msgType)
       sprintf(msgStr,"%s EXPSTATUS=ABORTING",msgStr);
       break;
 
-    case PAUSED:
+    case PAUSE:
       sprintf(msgStr,"%s EXPSTATUS=PAUSED",msgStr);
       break;
 
