@@ -172,7 +172,7 @@ class LBTTCS(Telescope):
         Raises
         ------
         azcam
-            AzCamError exception on problems
+            AzcamError exception on problems
 
         Returns
         -------
@@ -243,7 +243,7 @@ class LBTTCS(Telescope):
         Raises
         ------
         azcam
-            AzCamError exception on errors
+            AzcamError exception on errors
 
         Returns
         -------
@@ -471,7 +471,7 @@ class LBTTCS(Telescope):
             azcam.log(f"ERROR: TCS IIF proxy init failed - could start IIF link - {exp}")
             self.is_initialized = 0
             self.tcs = None
-            raise azcam.exceptions.AzCamError(f"getTCSData() query failed - {exp}")
+            raise azcam.exceptions.AzcamError(f"getTCSData() query failed - {exp}")
             return
 
         # We have a link, send the request
