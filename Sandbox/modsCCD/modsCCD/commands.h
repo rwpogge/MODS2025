@@ -30,7 +30,6 @@ int cmd_history(char *, MsgType, char *); // cli history utility
 
 int cmd_azcam   (char *, MsgType, char *); // Send a raw AzCam server command 
 int cmd_reset   (char *, MsgType, char *); // Reset the AzCam server
-int cmd_writeim (char *, MsgType, char *); // Write an image
 int cmd_process (char *, MsgType, char *); // Upload image info to DataMan for post-processing
 int cmd_ccdinit (char *, MsgType, char *); // (Re)Initialize the CCD Controller
 int cmd_ccdinfo (char *, MsgType, char *); // Print CCD config info

@@ -2386,89 +2386,11 @@ cmd_cleanup(char *args, MsgType msgtype, char *reply)
   ccd.State = IDLE;
   ccd.Abort = 0;
   closeShutter(&ccd,reply);
-  getPixelCount(&ccd,reply);
   clearArray(&ccd,reply);
   getTemp(&ccd,reply);
 
   strcpy(reply,"Cleanup Completed");
   return CMD_OK;
-}
-
-/*!  
-  \brief WRITE command - Write an image to disk
-  \param args string with the command-line arguments
-  \param msgtype message type if the command was sent as an IMPv2 message
-  \param reply string to contain the command return reply
-  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
-  an error message.
-
-  \par Usage:
-  write [image]
-
-  Instructs the azcam server to write the current contents of the
-  image buffer to disk.  This is usually used to recover "by hand"
-  when a regular post-exposure write fails (most often because the
-  azcam server refuses to overwrite images on its data disks).
-
-  If given with no arguments, the the current filename (as defined by
-  PATH, FILENAME and EXPNUM commands) will be used and the file
-  counter will be advanced.
-
-  If the optional argument is given, it overrides the current file
-  pattern except for the path on the server.  The file counter will
-  not be changed.
-
-  In either case, this command should be followed with a PROCESS
-  command to initiate any offline post-processing that might normally
-  follow a proper readout.
-
-*/
-
-int
-cmd_writeim(char *args, MsgType msgtype, char *reply)
-{
-  char argbuf[64];
-  char msgstr[256];
-  char newfile[256];
-
-  // check the file descriptor and make sure we have an active connection
-
-  if (ccd.FD<0) {
-    strcpy(reply,"No azcam server connection active");
-    return CMD_ERR;
-  }
-
-  memset(newfile,0,sizeof(newfile));
-
-  // If we have an argument, use that for the filename, but
-  // use the default path.
-
-  if (strlen(args)>0) {
-    GetArg(args,1,argbuf);
-
-    // If the .fits extension is not part of the new filename, add it
-
-    if (strstr(argbuf,".fits"))
-      sprintf(newfile,"%s\\%s",ccd.filePath,argbuf);
-    else
-      sprintf(newfile,"%s\\%s.fits",ccd.filePath,argbuf);
-
-    // write it 
-
-    if (writeImage(&ccd,newfile,msgstr)<0) {
-      sprintf(reply,"Write failed for %s - %s",newfile,msgstr);
-      return CMD_ERR;
-    }
-    strcpy(ccd.lastFile,argbuf);
-    sprintf(reply,"LastFile=%s written to disk",argbuf);
-  }
-  else {  // write using the default pattern
-    if (writeImage(&ccd,&obs,reply)<0)
-      return CMD_ERR;
-  }
-
-  return CMD_OK;
-
 }
 
 /*!  
