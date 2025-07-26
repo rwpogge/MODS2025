@@ -341,19 +341,13 @@ def setup():
     # any files matching the intended file pattern in datafolder and
     # if there are, count them and select a safe next sequence number.
     # It looks for a 4-digit number followed by .fits
+    # 
+    # not bulletproof, but at least a start
     
     oldFiles = glob.glob(f"{os.path.join(exposure.folder,exposure.root)}????.fits")
     nextNum = len(oldFiles) + 1
     exposure.sequence_number = nextNum
-
-    # not bulletproof, but at least a start
-    
-    # Let the MODS azcam tool know our MODS ID and which side of the
-    # telescope it is on
-
-    # mods.modsID = modsID
-    # mods.lbtSide = lbtSide    
-    
+       
     # direct instrument methods (none yet, maybe later?)
     
     instrument = Instrument()
@@ -364,7 +358,8 @@ def setup():
         azcam.db.tools["instrument"].header.read_file(instTemplate)
 
 
-    # instantiate a MODS LBT TCS interface class
+    # instantiate a MODS LBT TCS interface class near the end, it
+    # needs information from above.
 
     telescope = LBTTCS(instID="mods",side=mods.lbtSide)
         

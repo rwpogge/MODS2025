@@ -33,7 +33,33 @@ class LBTTCS(Telescope):
         self.lbtSide = side
         self.instID = instID
 
+        self.initialized = 0
+        
+        # tcs and proxy info
+        
+        self.tcs = None
+        self.proxy = iif.model['PROXIES'].get(self.instID)
+
+        # header file is in the systemfolder/template directory
+        
+        self.hdrFile = os.path.join(azcam.db.systemfolder, 
+                                    "templates", 
+                                    f"{self.instID}TCS_{self.lbtSide}.txt"
+                                    )
+
+        # This uses the configuration file to build other information
+        # we'll need.  
+
+        try:        
+            self.readHeaderConfig(self.hdrFile)
+        except Exception as exp:
+            azcam.log(f"ERROR: LBTTCS init cannot read {self.hdrFile} - {exp}")
+            return
+        
+        self.define_keywords()
+
         return
+
 
     def initialize(self):
         '''
@@ -43,10 +69,6 @@ class LBTTCS(Telescope):
         -------
         None.
         
-        Builds the header configuration file name, which is in the system
-        templates folder with names like <instID>TCS_<lbtSide>.txt
-        (e.g. `modsTCS_left.txt`).
-
         '''
 
         if self.is_initialized:
@@ -73,36 +95,6 @@ class LBTTCS(Telescope):
             return
         
         self.define_keywords()
-
-
-        # instantiate the iif proxy
-        
-        try:
-            self.proxy = iif.model['PROXIES'].get(self.instID)
-        except Exception as exp:
-            azcam.log(f"ERROR: TCS init failed - could not get IIF proxy - {exp}")
-            self.is_initialized = 0
-            self.tcs = None
-            self.proxy = None
-            return
-        
-        try:
-            self.tcs = iif.iifproxy(proxyName=self.proxyName,
-                                    instrumentID=self.proxy['instrument'],
-                                    focalStation=self.proxy['focalstation'],
-                                    side=self.lbtSide,
-                                    config_client=self.clientFile)
-        except Exception as exp:
-            azcam.log(f"ERROR: TCS init failed - could start IIF link - {exp}")
-            self.is_initialized = 0
-            self.tcs = None
-            return
-            
-        # We have a link to the LBT TCS, get some info that shut it
-        # down until we need it (prevents a broken proxy taking down)
-        # the azcam server
-        
-        azcam.log("LBT TCS Link initialized")
         
         self.is_initialized = 1
 
