@@ -13,11 +13,11 @@ This is a development project for the MODS2025 upgrade.
 
 ## Installation
 
-Download the code (usually into the *azcam* root folder such as `c:\azcam`) and install.
+Download the code into the *azcam* root folder (e.g., `/home/user/azcam`) and install:
 
 ```shell
-cd /wherever/azcam
-git clone https://github.com/mplesser/azcam-mods
+cd /home/user/azcam
+<copy from the Git respository>
 python -m pip install -e ./azcam-mods
 ```
 
@@ -27,7 +27,7 @@ Launch in an ipython interactive shell for code debugging
 ```shell
 ipython -i -m azcam_mods.server -- -mods1b
 ```
-Otherwise, launch as a python program.
+Otherwise, launch as a python program, either foreground or background.
 
 
 ## Development Notes
