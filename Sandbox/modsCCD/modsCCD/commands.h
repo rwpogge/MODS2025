@@ -148,7 +148,6 @@ cmdtab[] = {   //!< global scope command table for this application
   {"exptime" ,cmd_exptime ,"exptime <sec>","Set/query the exposure time in decimal seconds"},
   {"exp"     ,cmd_exptime ,"",""}, // alias for exptime
   {"object"  ,cmd_object  ,"object <name>","Set image type to OBJECT, including optional image name"},
-  {"filter"  ,cmd_filter  ,"filter <n>","Set/query the filter in the beam (CCD) position"},
   {"flat"    ,cmd_flat    ,"flat <name>","Set image type to FLAT, including optional image name"},
   {"dark"    ,cmd_dark    ,"dark <name>","Set image type to DARK, including optional image name"},
   {"bias"    ,cmd_bias    ,"bias <name>","Set image type to BIAS, including optional image name"},
