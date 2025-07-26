@@ -71,7 +71,7 @@ class MODS(object):
     pogge.1@osu.edu
     '''
 
-    def __init__(self):
+    def __init__(self,modsID,lbtSide):
         '''
         Instantiate a mods tool object
 
@@ -87,19 +87,18 @@ class MODS(object):
         azcam.db.tools["mods"] = self
         azcam.db.cli["mods"] = self
 
-        # MODS parameters we need to expose via azcam.db.tools["mods"]
-        
-        modsChannels = {"B":"Blue","R":"Red"}
-                     
         # MODS instrument channel and LBT telescope side
         
-        self.modsID = azcam.db.systemname
-        try:
-            self.lbtSide = azcam.db.parameters.get_par("side","lbttcs")
-        except:
-            self.lbtSide = "unknown"
+        self.modsID = modsID
+        self.lbtSide = lbtSide
+        
+        # The TCS data dictionary (DD) uses L_ and R_ for left and right
         
         self.ddSide = self.lbtSide.upper()[0]  # TCS DD uses L or R
+        
+        # expand MODS channel ID, B->Blue, R->Red
+        
+        modsChannels = {"B":"Blue","R":"Red"}
         self.modsChan = modsChannels[self.modsID.upper()[-1]]  # Blue or Red
         
         # MODS allowed image_types.  These are stored in the FITS headers

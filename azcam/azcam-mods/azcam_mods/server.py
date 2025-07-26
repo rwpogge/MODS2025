@@ -305,7 +305,7 @@ def setup():
 
     from azcam_mods.mods import MODS
 
-    mods = MODS()
+    mods = MODS(modsID,lbtSide)
 
     # load the exposure header template (static header content)
     
@@ -351,12 +351,8 @@ def setup():
     # Let the MODS azcam tool know our MODS ID and which side of the
     # telescope it is on
 
-    mods.modsID = modsID
-    
-    try:
-        mods.lbtSide = azcam.db.parameters.get_par("side","lbttcs")
-    except:
-        mods.lbtSide = lbtSide
+    # mods.modsID = modsID
+    # mods.lbtSide = lbtSide    
     
     # direct instrument methods (none yet, maybe later?)
     
