@@ -1,6 +1,5 @@
 /*!
-  \file exposure.c
-  \brief azcam server exposure control functions
+  \file exposure.c \brief azcam server exposure control functions
 
   The following are a suite of interface functions that provide access
   to all of the azcam server exposure control functions.
@@ -366,74 +365,9 @@ resumeExposure(azcam_t *cam, char *reply)
   return 0;
 
 }
-
-/*!
-  \brief Define the detector format in unbinned pixels
-
-  \param cam pointer to an #azcam struct with the server parameters
-  \param reply string to contain any reply text
-  \return 0 if successful, -1 on errors, with error text in reply
-
-  Defines the detector format in unbinned pixels.  Since this function
-  is very complicated and important, involving 9 parameters, we do this
-  by using the relevant data members of the #azcam struct to define the
-  parameters, rather than having a lot of function arguments.  The
-  relevant data members are:
-  <pre>
-    #azcam::NCtotal      - Total number of columns (serial pixels)
-    #azcam::NCpredark    - Number of physical dark prescan columns
-    #azcam::NCunderscan  - Number of underscan columns to read
-    #azcam::NCoverscan   - Number of overscan columns to read
-    #azcam::NRtotal      - Total number of rows (lines)
-    #azcam::NRpredark    - Number of physical dark prescan rows
-    #azcam::NRunderscan  - Number of underscan rows to read
-    #azcam::NRoverscan   - Number of overscan rows to read
-    #azcam::NRframexfer  - Number of rows to shift for frame transfer mode
-  </pre>
-  A calling application would first set the various parameters in the
-  #azcam struct and then call this function to send them to the azcam
-  server.
-
-  \sa setROI(), resetROI()
-*/
-
-int
-setFormat(azcam_t *cam, char *reply)
-{
-  char cmdStr[64];
-
-  // It can be somewhat bad to load a bogus detector format
-  // so the default set by InitAzCam() has coded "don't know"
-  // values.  Basically, if either NCtotal or NRtotal
-  // are zero (0), we don't know the format and won't load it
-
-  if (cam->NCtotal == 0 || cam->NRtotal ==0) {
-    sprintf(reply,"Invalid detector format (NCtotal=%d NRtotal=%d)",
-	    cam->NCtotal,cam->NRtotal);
-    return -1;
-  }
-
-  // We hope we're valid (hard to globally validate this, let the server
-  // gripe if it has problems, no guarantees...)
-
-  sprintf(cmdStr,"exposure.set_format %d %d %d %d %d %d %d %d %d",
-	  cam->NCtotal, cam->NCpredark, cam->NCunderscan,
-	  cam->NCoverscan, cam->NRtotal, cam->NRpredark,
-	  cam->NRunderscan, cam->NRoverscan, cam->NRframexfer);
-
-  if (azcamCmd(cam,cmdStr,reply)<0)
-    return -1;
-
-  // set flags as required...
-
-  strcpy(reply,cmdStr);
-	  
-  return 0;
-
-}  
   
 /*!
-  \brief Define the CCD subframe region of interest for the next readout
+  \brief Set the CCD subframe region of interest for the next readout
 
   \param cam pointer to an #azcam struct with the server parameters
   \param sc int starting column (x) in unbinned full-frame pixels
@@ -484,6 +418,30 @@ setROI(azcam_t *cam, int sc, int ec, int sr, int er, char *reply)
 
 }
 
+// get the ROI - get the current CCD ROI including binning
+
+int
+getROI(azcam_t *cam, char *reply)
+{
+  if (azcamCmd(cam,(char *)"mods.get_roi",reply)<0)
+    return -1;
+
+  sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bc,&br);
+  sprintf(reply,"ROI=(%d,%d,%d,%d) XBIN=%d YBIN=%d",sc,ec,sr,er,bc,br);
+
+  // load into the cam struct
+  
+  cam->firstCol = sc;
+  cam->lastCol = ec;
+  cam->firstRow = sr;
+  cam->lastRow = er;
+  cam->colBin = bc;
+  cam->rowBin = br;
+  
+  return 0;
+
+}
+
 // reset ROI - restore CCD to full-frame *unbinned* readout mode
 
 int
@@ -513,10 +471,10 @@ resetROI(azcam_t *cam, char *reply)
   
 }
 
-
 // set CCD binning
 
-int setCCDBin(azcam_t *cam, int xbin, int ybin, char *reply)
+int
+setCCDBin(azcam_t *cam, int xbin, int ybin, char *reply)
 {
   char cmdStr[64];
 
@@ -549,7 +507,8 @@ int setCCDBin(azcam_t *cam, int xbin, int ybin, char *reply)
 
 // set CCD x (column) binning
 
-int setXBin(azcam_t *cam, int xbin, char *reply)
+int
+setXBin(azcam_t *cam, int xbin, char *reply)
 {
   char cmdStr[64];
   int ybin;
@@ -578,7 +537,8 @@ int setXBin(azcam_t *cam, int xbin, char *reply)
 
 // set CCD y (row) binning
 
-int setYBin(azcam_t *cam, int ybin, char *reply)
+int
+setYBin(azcam_t *cam, int ybin, char *reply)
 {
   char cmdStr[64];
   int xbin;
@@ -666,7 +626,7 @@ closeShutter(azcam_t *cam, char *reply)
 }
 
 /*!
-  \brief Query the azcam server for the current image size
+  \brief Query the azcam server for the current image format
   
   \param cam pointer to an #azcam struct with the server parameters
   \param reply string to contain any reply text
@@ -681,7 +641,7 @@ closeShutter(azcam_t *cam, char *reply)
 */
 
 int
-getDetPars(azcam_t *cam, char *reply)
+getFormat(azcam_t *cam, char *reply)
 {
   char cmdStr[64];
   char msgStr[64];
@@ -732,11 +692,11 @@ getDetPars(azcam_t *cam, char *reply)
   the detector array.  Repeated calls to getPixelCount() are often used
   by applications to monitor readout progress.  When the array is
   finished reading out, the pixel count returned should equal the total
-  pixel size returned by getDetPars().  After each call to
+  pixel size returned by getFormat().  After each call to
   getPixelCount(), it stores the current number of pixels read in
   #azcam::Nread.
 
-  \sa getDetPars()
+  \sa getFormat()
 */
 
 int

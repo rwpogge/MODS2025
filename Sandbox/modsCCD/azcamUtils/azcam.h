@@ -206,14 +206,18 @@ int abortReadout(azcam_t *, char*);
 int openShutter(azcam_t *, char *);
 int closeShutter(azcam_t *, char *);
 
-int setFormat(azcam_t *, char *);
+// CCD format, ROI, and on-chip binning
+
+// int setFormat(azcam_t *, char *);  // probably not ever, but could change
+int getFormat(azcam_t *, char *);
+
 int setROI(azcam_t *, int, int, int, int, char *);
+int getROI(azcam_t *, char *);
 int resetROI(azcam_t *, char *);
+
 int setCCDBin(azcam_t *, int, int, char *);
 int setXBin(azcam_t *, int, char *);
 int setYBin(azcam_t *, int, char *);
-
-int getDetPars(azcam_t *, char *);
 
 // Temperature Commands (ccdtemp.c)
 

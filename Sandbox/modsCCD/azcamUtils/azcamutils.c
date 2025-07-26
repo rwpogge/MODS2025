@@ -1,5 +1,5 @@
 /*!
-  \mainpage azcamUtils - azcam CCD Camera Client API
+  \mainpage azcamUtils - azcam client utility library
 
   \author  R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \date 2025 July 23
@@ -31,31 +31,24 @@
   interface with the Archons (that might become an option in the
   future...)
 
-  \section Parts API Components
+  \section Components
 
-  The OSU azcam client API consists of two components:
+  The OSU azcam client library consists of these components:
   <pre>
-     server.c     - Server Control and Database Functions
-     image.c      - Image Writing Functions
-     exposure.c   - Exposure and Detector Control Functions
-     ccdtemp.c    - Temperature Control Functions
-     azcamutils.c - Additional Utility Functions
-     iosubs.c     - TCP socket routines providing a common 
-                      communication layer
-     azcam.h      - API header file
+     server.c     - azcam server control and database functions
+     image.c      - image writing functions
+     exposure.c   - exposure and detector control functions
+     ccdtemp.c    - temperature control functions
+     azcamutils.c - additional utility functions
+     iosubs.c     - TCP socket routines providing a common communication layer
+     azcam.h      - azcam client library header file
   </pre>
 
-  The API functions encapsulate most of the basic functions
-  of the azcam server, hiding the socket communications layer beneath
-  the API layer functions, and which know how to process any status
-  returns from the commands into data members of the #azcam struct, or
-  returned as data to the calling application.  Most API function names
-  recapitulate single azcam server commands, while others are "meta"
-  commands that incorporate one or more functions.  Not all azcam server
-  functions have their own API routines, for example, the ARC Controller
-  commands are accessed via the ARCCommand() function.  Defined
-  parameters are provided to give "macro" versions of all azcam server
-  numerical codes, making programming more straightforward.
+  The client functions encapsulate most of the basic functions of the
+  azcam server, hiding the socket communications layer from any applications
+  using the function.  It knows how to process coded status return from
+  the azcam server and translate it into useful data for the calling client
+  application.
 
   The iosubs.c functions provide the TCP socket communications layer,
   providing commands for initializing and closing a socket connection,
@@ -74,7 +67,7 @@
 
   \section Notes
 
-  \section Mods Modification History
+  \section Modification History
   <pre>
   2005 May 6 - initial development [rwp/osu]
   2005 May 13 - first field-test version [rwp/osu]
@@ -91,8 +84,10 @@
   The following are a suite of additional utility functions that provide
   additional functionality to an application using this client API.
 
-  \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
-  \date 2005 May 17
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
+  \original 2005 May 17
+  \date 2025 July 26
+  
 */
 
 #include "azcam.h" // azcam client API header 
@@ -118,14 +113,15 @@ initAzCam(azcam_t *cam)
 {
 
   // Check the file descriptor, we only change these if we're not already live
+  
   if (cam->FD < 0) {
-    strcpy(cam->Host,"NONE");
-    cam->Port = 0;
-    cam->FD = -1;         // -1 means no socket
+    strcpy(cam->Host,"localhost"); // default is the computer we're on
+    cam->Port = 2402;              // default azcam command server socket
+    cam->FD = -1;                  // -1 means no socket yet
   }
   cam->Timeout = 10L;   // default timeout is 10 seconds
+
   strcpy(cam->iniFile,"NONE");
-  strcpy(cam->cfgFile,"NONE");
 
   // Default state flags
 
@@ -193,7 +189,6 @@ void
 azcamInfo(azcam_t *cam)
 {
   printf("azcam Server Interface Configuration:\n");
-  printf("  azcam Client Config File: %s\n",cam->cfgFile);
 
   printf("Communications:\n");
   if (cam->FD < 0) 
