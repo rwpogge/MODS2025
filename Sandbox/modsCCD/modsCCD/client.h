@@ -85,7 +85,7 @@ extern isisclient_t client;  // global client runtime config table
 
 #include "azcam.h"   // azcam clinet utilities header
 
-extern azcam_t cam;  // azcam server info data structure
+extern azcam_t ccd;  // azcam server info data structure
 
 //#include "dataman.h" // Data Manager (DataMan) agent header
 
