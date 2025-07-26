@@ -317,6 +317,12 @@ class Header(object):
     def read_file(self, filename=""):
         """
         Read a header file and import the data into the header.
+
+        2025 July 25 - fixed bug in open() loop, should use
+                       continue instead of break to continue
+                       iteration, not break out of loop.  if
+                       a header template has # comments or 
+                       blank lines, it stops reading. [rwp/osu]
         """
 
         # if no file specified, just skip
@@ -331,9 +337,9 @@ class Header(object):
                 line = line.rstrip()
                 line = line.lstrip()
                 if line.startswith("#"):
-                    break
+                    continue # break
                 if len(line) == 0:
-                    break
+                    continue # break
                 tokens = line.split(" ", 1)
                 keyword = tokens[0]
 
