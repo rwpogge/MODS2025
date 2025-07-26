@@ -14,7 +14,8 @@ AzCam is not appropriate for consumer-level cameras and is not intended to have 
 
 For the MODS2025 detector controller upgrade, we have made a working copy of the original azcam code from Mike Lesser's GitHub (https://github.com/mplesser)
 and are modifying the system for the MODS instruments. We are starting by trying to make no changes to the core `azcam` code, and focusing all our development
-on the `azcam-mods` code, with the hope that we do not have to disturb the core code, at least at the outset.
+on the `azcam-mods` code, with the hope that we do not have to disturb the core code, at least at the outset.  The exception will be if we find actual bugs in the
+core code that inhibit function, not extensions to the functionality.
 
 MODS is being updated to use STA Archon controllers for the CCDs (replacing the now 20-year old OSU controllers which are reaching end of life), and 
 all computers are being updated to AlmaLinux 9.x servers, consolidating the data-taking system from 34U of rack space to 16U (including spares), and 
