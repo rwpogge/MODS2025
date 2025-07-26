@@ -85,7 +85,7 @@ extern isisclient_t client;  // global client runtime config table
 
 #include "azcam.h"   // azcam clinet utilities header
 
-extern azcam_t ccd;  // azcam server info data structure
+extern azcam_t cam;  // azcam server info data structure
 
 //#include "dataman.h" // Data Manager (DataMan) agent header
 
@@ -159,10 +159,7 @@ int  pollReadout(azcam_t *, obsPars_t *, char *);
 
 int  doBias(azcam_t *, obsPars_t *, char *);
 
-//int  DoFocus(azcam_t *, obsPars_t *, int, int, int, char *); // retired, not implemented for Archons
-
 int  writeCCDImage(azcam_t *, obsPars_t *, char *);
-int  loadAzCamConfig(azcam_t *, char *, char *);
 int  initCCDConfig(azcam_t *, char *);
 int  uploadFITS(azcam_t *, obsPars_t *, char *);
 
