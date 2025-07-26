@@ -1,6 +1,6 @@
 # azcam-mods
 
-Last Update: 2025 July 17
+Last Update: 2025 July 25
 
 ## Purpose
 
@@ -32,5 +32,7 @@ Otherwise, launch as a python program.
 
 ## Development Notes
 
-2025 Jul 8 - Starting work for the MODS Archon detector upgrade at LBTO in Summer 2025 [rwp/osu]
+2025 July 23 - multiple updates while developing the C++ client app that will sit between MODS and the azcam server
+2025 July 18 - got telescope_mods.py working with the LBT python-iif code to pull TCS info into azcam
+2025 July 8 - Starting work for the MODS Archon detector upgrade at LBTO in Summer 2025 [rwp/osu]
 
