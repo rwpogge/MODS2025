@@ -3,7 +3,7 @@ Defines the MODS class for azcam
 
 Original by Mike Lesser
 
-Updated: 2025 July 23 [rwp/osu]
+Updated: 2025 July 25 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -89,6 +89,8 @@ class MODS(object):
 
         # MODS parameters we need to expose via azcam.db.tools["mods"]
         
+        modsChannels = {"B":"Blue","R":"Red"}
+                     
         # MODS instrument channel and LBT telescope side
         
         self.modsID = azcam.db.systemname
@@ -97,14 +99,17 @@ class MODS(object):
         except:
             self.lbtSide = "unknown"
         
+        self.ddSide = self.lbtSide.upper()[0]  # TCS DD uses L or R
+        self.modsChan = modsChannels[self.modsID.upper()[-1]]  # Blue or Red
+        
         # MODS allowed image_types.  These are stored in the FITS headers
         # as the IMAGETYP keyword values expected by the LBTO data archive
         # and data reduction pipelines.
         
-        self.image_types = ['object','bias','flat','dark','comp','zero']
+        self.image_types = ['object','bias','flat','dark','comp','std','zero']
         
-        # The MODS shutter_dict tells the azcam exposure tool if the shutter 
-        # should be open (1) or closed (0) for each allowed MODS IMAGETYP:
+        # The MODS shutter_dict tells the azcam exposure tool  the shutter 
+        # should be open (1) or closed (0) for each allowed MODS IMAGETYP
         
         self.shutter_dict = {'object':1,
                              'bias':0,
@@ -143,7 +148,6 @@ class MODS(object):
         azcam.db.tools["exposure"].image_types = self.image_types
         azcam.db.tools["exposure"].shutter_dict = self.shutter_dict
         
-
         return
 
 
@@ -524,13 +528,18 @@ class MODS(object):
         numerical code (0..13) and a status string.
             
         The current exposure flag in code is in `azcam.db.tools["exposure"].exposure_flag`
-        and the dictionary of string translations is `azcam.db.exposureflags`.
+        and the dictionary of string translations is `azcam.db.tools["exposure"].exposureflags`.
         
-        Examples:
-           * '0 NONE'
-           * '8 SETUP'
+        Table:
+           * '0 NONE' (aka IDLE)
            * '1 EXPOSING'
+           * '2 ABORT'
+           * '3 PAUSE'
+           * '4 RESUME'
+           * '5 READ'
+           * '6 PAUSED' (unused)
            * '7 READOUT'
+           * '8 SETUP'
            * '9 WRITING'
 
         See also: timeleft(), pixelsLeft()
@@ -543,6 +552,16 @@ class MODS(object):
         efd = azcam.db.exposureflags
         statStr = list(filter(lambda key: efd[key]==expFlag,efd))[0]
         
+        if expFlag == 0: statStr = "IDLE"  # change to our term of art
+        
+        # try to push to the TCS DD, no penalty if it fails
+        
+        ccdState = {f"{self.ddSide}_MODS{self.modsChan}CCDState":statStr}
+        try:
+            azcam.db.tools["telescope"].set_parameter(ccdState)
+        except:
+            pass
+               
         return f"{expFlag} {statStr}"
 
     
@@ -655,6 +674,8 @@ class MODS(object):
         The dewar temperature and pressure are readout through
         the MODS instrument control system.
 
+        Push these to the telescope DD if it is available.
+        
         Returns
         -------
         list of floats: 
@@ -666,9 +687,19 @@ class MODS(object):
 
         reply = azcam.db.tools["tempcon"].get_temperatures()
 
-        ccdTemp = "%.1f" % reply[0]
-        mountTemp = "%.1f" % reply[1]
+        # translate into strings with 0.1C precision
+        
+        ccdTemp = f"{reply[0]:.1f}"
+        mountTemp = f"{reply[1]:.1f}"
+        
+        # push ccdTemp to the telescope DD.  No consequence if it fails
 
+        temps = {f"{self.ddSide}_MODS{self.modsChan}CCDTemp":ccdTemp}
+        try:
+            azcam.db.tools["telescope"].set_parameter(temps)
+        except:
+            pass
+        
         return ["OK", ccdTemp, mountTemp]
     
     

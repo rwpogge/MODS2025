@@ -24,7 +24,7 @@ class LBTTCS(Telescope):
     
     Author: R. Pogge, OSU Astronomy Dept (pogge.1@osu.edu)
     
-    Updated: 2025 July 21
+    Updated: 2025 July 25 [rwp/osu]
     '''
     
     def __init__(self, tool_id="telescope", description="Large Binocular Telescope",instID="mods",side="left"):
@@ -493,17 +493,18 @@ class LBTTCS(Telescope):
             
         return iifData
 
-
-    def tcsSetParameter(self,ddKey: str,ddVal: str):
+    #########################################################
+    #  methods for direct access to the IIF Data Dictionary 
+    #########################################################
+    
+    def set_parameter(self,ddDict):
         '''
-        Set a data dictionary parameter on the LBT TCS        
+        Set data dictionary parameters on the LBT TCS        
 
         Parameters
         ----------
-        ddKey : string
-            IIF data dictionary keyword
-        ddV : string
-            IIF data value to set as ddKey
+        ddDict : dictionary
+            IIF data dictionary parameters
 
         Raises
         ------
@@ -518,8 +519,17 @@ class LBTTCS(Telescope):
         Starts the IIF proxy, sends the parameter, closes the proxy.  This way
         we don't have an active IIF proxy live during long periods of 
         idleness.
-            
-        somewhat inefficient, but we aren't sending much very often.            
+        
+        ddDict has structure {ddName1:val1,ddName2:val2} we want to
+        send to the DD.  Values must be string representations of
+        the parameters, the IIF DD proper takes care of typing.
+        
+        Unknown ddNames will raise an AzcamError exception because
+        the keyword is unknown to the DD.
+        
+        This is exposed to other parts of the azcam server as
+        `telescope.set_parameter()`
+        
         '''
         
         try:
@@ -541,12 +551,9 @@ class LBTTCS(Telescope):
             return
 
         # We have a link, send the parameter
-
-        iifData = {}
-        iifData[ddKey]=ddVal
         
         try:
-            self.tcs.SetParameter(iifData)
+            self.tcs.SetParameter(ddDict)
         except Exception as exp:
             azcam.log(f"ERROR: TCS IIF SetParameter() failed - {exp}")
             self.tcs.proxy_destroy(self.proxyName)
@@ -562,8 +569,9 @@ class LBTTCS(Telescope):
             
         return
 
-
-    def tcsGetParameter(self,ddKey: str):
+    # probably not useful, but keep for now
+    
+    def get_parameter(self,ddKey: str):
         '''
         Get a data dictionary parameter from the LBT TCS        
 
