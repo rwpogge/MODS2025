@@ -651,7 +651,7 @@ class MODS(object):
 
         Returns
         -------
-        pctLeft : float
+        pctReadout : float
             percentage of the CCD readout, range 0..100%
 
         Will return 100% is readout is complete.
