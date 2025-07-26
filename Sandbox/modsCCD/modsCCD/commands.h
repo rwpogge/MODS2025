@@ -163,7 +163,6 @@ cmdtab[] = {   //!< global scope command table for this application
   {"path"    ,cmd_path    ,"path <C:/>","Set/query the raw data file path on the AzCam server"},
   {"expnum"  ,cmd_expnum  ,"expnum <n>","Set/query the file counter for the *NEXT* image"},
   {"lastfile",cmd_lastfile,"lastfile","Query the name of the last file written to disk"},
-  {"write"   ,cmd_writeim ,"write <image>","Write the current image buffer to disk (uses default path)"},
   {"process" ,cmd_process ,"process <image>","Upload image info for post-processing following write"},
   {"shopen"  ,cmd_shopen  ,"shopen","Open the shutter, stays open until shclose"},
   {"shclose" ,cmd_shclose ,"shclose","Close the shutter"},
