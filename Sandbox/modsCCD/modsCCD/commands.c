@@ -354,7 +354,7 @@ cmd_info(char *args, MsgType msgtype, char *reply)
       sprintf(reply,"%s Mode=STANDALONE RemHost=%s:%d",reply,
 	      client.remHost,client.remPort);
     else
-      strcat(reply," Mode=STANDALONE");
+      sprintf(reply,"%s Mode=STANDALONE",reply);
   }
 
   // List azcam CCD camera host information
@@ -543,7 +543,6 @@ cmd_reset(char *args, MsgType msgtype, char *reply)
   // Re-initialize the azcam server parameters
 
   if (initCCDConfig(&ccd,reply)<0) {
-    strcat(reply," - reset failed");
     return CMD_ERR;
   }
 
@@ -1118,7 +1117,7 @@ cmd_object(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 }
@@ -1177,7 +1176,7 @@ cmd_flat(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 }
@@ -1236,7 +1235,7 @@ cmd_comp(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -1296,7 +1295,7 @@ cmd_std(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -1357,7 +1356,7 @@ cmd_dark(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -1419,7 +1418,7 @@ cmd_bias(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -1484,7 +1483,7 @@ cmd_zero(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strpcy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -1543,7 +1542,7 @@ cmd_roi(char *args, MsgType msgtype, char *reply)
   // If we have arguments, interpret.  If no args, this is a query
 
   if (strlen(args)>0) {
-    GetArgs(args,1,argbuf); // first argument might be ON or OFF
+    GetArg(args,1,argbuf); // first argument might be ON or OFF
 
     if (strcasecmp(argbuf,"OFF")==0) { // OFF = reset ROI to full-frame, unbinned radout
       if (resetROI(&ccd,reply)<0)
@@ -1634,7 +1633,7 @@ cmd_ccdbin(char *args, MsgType msgtype, char *reply)
   if (setCCDBin(&ccd,-1,-1,reply)<0)
     return -1;
 
-  sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.RowBin);
+  sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.rowBin);
   return CMD_OK;
 
 }
@@ -1668,7 +1667,7 @@ cmd_xbin(char *args, MsgType msgtype, char *reply)
   if (setCCDBin(&ccd,-1,-1,reply)<0)
     return -1;
 
-  sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.RowBin);
+  sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.rowBin);
   return CMD_OK;
 
 }
@@ -1702,7 +1701,7 @@ cmd_ybin(char *args, MsgType msgtype, char *reply)
   if (setCCDBin(&ccd,-1,-1,reply)<0)
     return -1;
 
-  sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.RowBin);
+  sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.rowBin);
   return CMD_OK;
 
 }
@@ -1728,7 +1727,7 @@ cmd_ybin(char *args, MsgType msgtype, char *reply)
   queries the azcam server to retrieve the current CCD and Dewar
   temperatures.
   
-  Sets the values of the #azcam::SetPoint data member, and by
+  Sets the values of the #azcam::setPoint data member, and by
   querying the azcam ColBin and #azcam::RowBin data members,
   and sends a new SetROI command to the azcam server.
 
@@ -1753,29 +1752,30 @@ cmd_ccdtemp(char *args, MsgType msgtype, char *reply)
   if (strlen(args)>0) {
     GetArg(args,1,argbuf); 
     newtemp = atof(argbuf); 
-    if (SetTemp(&ccd,newtemp,reply)<0) 
+    if (setTemp(&ccd,newtemp,reply)<0) 
       return CMD_ERR;
   }
 
   // Query the azcam server for the current temperatures
 
-  if (GetTemp(&ccd,reply)<0)
+  if (getTemp(&ccd,reply)<0)
     return CMD_ERR;
 
   // and report them.
 
-  sprintf(reply,"SetPoint=%.1f CCDTemp=%.1f DewarTemp=%.1f",
-	  ccd.SetPoint,ccd.CCDTemp,ccd.DewarTemp);
+  sprintf(reply,"setPoint=%.1f CCDTemp=%.1f DewarTemp=%.1f",
+	  ccd.setPoint,ccd.ccdTemp,ccd.baseTemp);
 
-  // Compare the CCDTemp to the SetPoint, and issue a warm-up
+  // Compare the CCDTemp to the setPoint, and issue a warm-up
   // warming if CCDTemp is >10C above the setpoint
-
-  dtemp = ccd.CCDTemp - ccd.SetPoint;
+  /*
+  dtemp = ccd.ccdTemp - ccd.setPoint;
   if (dtemp > 10.0) 
     strcat(reply," +Warm");
   else
     strcat(reply," +Cold");
- 
+  */
+  
   return CMD_OK;
 
 }
@@ -1808,7 +1808,7 @@ cmd_shopen(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  if (openshutter(&ccd,reply)<0)
+  if (openShutter(&ccd,reply)<0)
     return CMD_ERR;
 
   strcpy(reply,"Shutter=1");
@@ -1932,55 +1932,34 @@ cmd_status(char *args, MsgType msgtype, char *reply)
 {
   float dtemp;
 
-  GetTemp(&ccd,reply);
+  getTemp(&ccd,reply);
 
   sprintf(reply,"Sh=%d Exp=%.3f Xbin=%d Ybin=%d ROI=(%d,%d,%d,%d)",
-	  ccd.Shutter,ccd.expTime,ccd.colBin,ccd.RowBin,
+	  ccd.Shutter,ccd.expTime,ccd.colBin,ccd.rowBin,
 	  ccd.firstCol,ccd.lastCol,ccd.firstRow,ccd.lastRow);
 
   sprintf(reply,"%s XOS=%d YOS=%d",
 	  reply,ccd.NCoverscan,ccd.NRoverscan);
 
-  switch(obs.ImageTyp) {
-  case OBJECT:
-    strcat(reply," Typ=OBJECT");
-    break;
-  case FLAT:
-    strcat(reply," Typ=FLAT");
-    break;
-  case COMP:
-    strcat(reply," Typ=COMP");
-    break;
-  case STD:
-    strcat(reply," Typ=STD");
-    break;
-  case DARK:
-    strcat(reply," Typ=DARK");
-    break;
-  case BIAS:
-    strcat(reply," Typ=BIAS");
-    break;
-  case ZERO:
-    strcat(reply," Typ=ZERO");
-    break;
-  }
+  sprintf(reply," IMAGETYP=%s",obs.imgType);
   
-  sprintf(reply,"%s Obj=(%s) File=%s.%4.4d.fits Last=%s",
-	  reply,obs.Object,ccd.fileName,ccd.fileNum,ccd.lastFile);
+  sprintf(reply,"%s Obj=(%s) Filename=%s SeqNum=%d LastFile=%s",
+	  reply,obs.imgTitle,ccd.fileName,ccd.fileNum,ccd.lastFile);
 
-  sprintf(reply,"%s Path=%s Temp=%.1f DTemp=%.1f Filt=%d",
-	  reply,ccd.filePath,ccd.CCDTemp,ccd.DewarTemp,obs.Filter);
+  sprintf(reply,"%s Path=%s CCDTemp=%.1f BaseTemp=%.1f",
+	  reply,ccd.filePath,ccd.ccdTemp,ccd.baseTemp);
 
 
   // Look at the difference between the setpoint and actual CCD
   // temperature.  If bigger than +10C, we're warm or at least warming
   // up!
-
-  dtemp = ccd.CCDTemp - ccd.SetPoint;
+  /*
+  dtemp = ccd.ccdTemp - ccd.setPoint;
   if (dtemp > 10.0) 
     strcat(reply," +Warm");
   else
     strcat(reply," +Cold");
+  */
   
   return CMD_OK;
 }
@@ -2009,27 +1988,10 @@ cmd_config(char *args, MsgType msgtype, char *reply)
   sprintf(reply,"Inst=%s",obs.instID);
 
   if (ccd.FD>0)
-    strcat(reply," %s=Enabled",client.ID);
+    sprintf(reply,"%s %s=Enabled",reply,client.ID);
   else
-    strcat(reply," %s=Disabled",client.ID);
+    sprintf(reply,"%s %s=Disabled",reply,client.ID);
 
-  /*
-  if (fw.Link)
-    strcat(reply," IE=Enabled");
-  else
-    strcat(reply," IE=Disabled");
-
-  if (tcs.Link)
-    strcat(reply," TC=Enabled");
-  else
-    strcat(reply," TC=Disabled");
-
-  if (dm.useDM)
-    strcat(reply," DM=Enabled");
-  else
-    strcat(reply," DM=Disabled");
-  */
-  
   return CMD_OK;
 }
 
@@ -2065,7 +2027,7 @@ cmd_saveconf(char *args, MsgType msgtype, char *reply)
 
   // Should we warn about overwrite?
 
-  if (SaveConfig(cfgfile)<0) {
+  if (saveConfig(cfgfile)<0) {
     sprintf(reply,"Could not save config file %s\n",cfgfile);
     return CMD_ERR;
   }
@@ -2229,7 +2191,7 @@ cmd_go(char *args, MsgType msgtype, char *reply)
 
   // What we do depends on the type of image we're to acquire
 
-  switch(obs.ImageTyp) {
+  switch(obs.imgType) {
   case OBJECT:
   case FLAT:
   case COMP:
@@ -2246,7 +2208,7 @@ cmd_go(char *args, MsgType msgtype, char *reply)
     break;
 
   default:
-    sprintf(reply,"Unknown IMGTYPE %d - Cannot Initiate Exposure",obs.ImageTyp);
+    sprintf(reply,"Unknown IMGTYPE %d - Cannot Initiate Exposure",obs.imgType);
     return CMD_ERR;
     break;
   }
@@ -2640,7 +2602,7 @@ cmd_ccdinit(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  strcat(reply,msgstr);
+  sprintf(reply,"%s %s",reply,msgstr);
   return CMD_OK;
 
 }
