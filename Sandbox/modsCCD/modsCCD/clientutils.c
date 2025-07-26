@@ -34,7 +34,7 @@
   readout progress, and then triggers the SaveImage() function to save
   the image.
 
-  \sa DoBias(), DoFocus()
+  \sa doBias()
 
 */
 
@@ -45,7 +45,7 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
 
   // Setup exposure parameters
   
-  if (getDetPars(cam,reply)<0) // get the image size to be readout
+  if (getFormat(cam,reply)<0) // get the detector format in pixels
     return -1;
 
   if (setImageInfo(cam,obs->imgType,obs->imgTitle,reply)<0) // image type and title
@@ -53,7 +53,7 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
   
   // Upload the basic header parameters from the instrument
 
-  uploadfits(cam,obs,reply);
+  uploadFITS(cam,obs,reply);
 
   // Erase (clear) the CCD array
 
@@ -74,21 +74,14 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
   
   obs->tStart = SysTimestamp();  // Note the time we started
 
-  if (obs->ExpTime > 5.0) // only do a count down if exptime>5 sec
+  if (obs->expTime > 5.0) // only do a count down if exptime>5 sec
     obs->doCountDown = 1;
   else
     obs->doCountDown = 0;
 
-  // If the integration time is <1 second, treat as effectively instantaneous
-
-  if (obs->ExpTime < 1.0) {
-    cam->State = READOUT;
-    obs->t1 = SysTimestamp();
-    notifyClient(obs,"Integration Complete, Reading Out, Shutter=0 (Closed)...",STATUS);
-  }
-  else {
-    cam->State = expStatus(cam,reply); // query exposure status from the server
-  }
+  // query exposure status
+  
+  expStatus(cam,reply);
 
   return 0;
 }
@@ -111,7 +104,7 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
   any integration countdown monitoring by setting the server state
   to READOUT immediately upon completion of the StartExposure call.
 
-  \sa DoExposure(), DoFocus()
+  \sa doExposure()
 
 */
 
@@ -121,7 +114,7 @@ doBias(azcam_t *cam, obsPars_t *obs, char *reply)
 
   // Setup exposure parameters
 
-  if (getDetPars(cam,reply)<0) // get the image size to be readout
+  if (getFormat(cam,reply)<0) // get the detector format in pixels
     return -1;
 
   strcpy(obs->imgType,"bias");
@@ -131,7 +124,7 @@ doBias(azcam_t *cam, obsPars_t *obs, char *reply)
   
   // Upload the basic header parameters from the instrument
 
-  uploadfits(cam,obs,reply);
+  uploadFITS(cam,obs,reply);
 
   // Erase (clear) the CCD array
 
@@ -144,9 +137,11 @@ doBias(azcam_t *cam, obsPars_t *obs, char *reply)
   if (startExposure(cam,EXP_WAIT,reply)<0)
     return -1;
   
-  cam->State = READOUT;  // since exposure is instantaneous...
   obs->t1 = SysTimestamp();
-  notifyClient(obs,"Reading Out",STATUS);
+
+  // query exposure status
+  
+  expStatus(cam,reply);
 
   return 0;
 }
@@ -426,9 +421,9 @@ writeCCDImage(azcam_t *cam, obsPars_t *obs, char *reply)
   // Advance the file counter
 
   cam->fileNum++;
-  strcpy(cam->LastFile,filename);
+  strcpy(cam->lastFile,filename);
   sprintf(reply,"Wrote LastFile=%s to Path=%s",
-	  cam->LastFile,cam->filePath);
+	  cam->lastFile,cam->filePath);
   cam->State = IDLE;
 
   return 0;
@@ -577,13 +572,13 @@ loadAzCamConfig(azcam_t *cam, char *config, char *reply)
 
       // azcam initialization script (on the azcam server proper)
 
-      else if (strcasecmp(keyword,"IniFile")==0) {
+      else if (strcasecmp(keyword,"iniFile")==0) {
 	GetArg(inbuf,2,argbuf);
 	if (strlen(argbuf)>0) {
-	  strcpy(cam->IniFile,argbuf);
+	  strcpy(cam->iniFile,argbuf);
 	}
 	else {
-	  sprintf(reply,"IniFile keyword blank in %s, must contain an entry",
+	  sprintf(reply,"iniFile keyword blank in %s, must contain an entry",
 		  config);
 	  if (cfgFP !=0) fclose(cfgFP);
 	  return -1;
@@ -596,32 +591,32 @@ loadAzCamConfig(azcam_t *cam, char *config, char *reply)
 
       else if (strcasecmp(keyword,"FirstCol")==0) {
 	GetArg(inbuf,2,argbuf);
-	cam->FirstCol = atoi(argbuf);
+	cam->firstCol = atoi(argbuf);
       }
 
       else if (strcasecmp(keyword,"LastCol")==0) {
 	GetArg(inbuf,2,argbuf);
-	cam->LastCol = atoi(argbuf);
+	cam->lastCol = atoi(argbuf);
       }
 
       else if (strcasecmp(keyword,"ColBin")==0) {
 	GetArg(inbuf,2,argbuf);
-	cam->ColBin = atoi(argbuf);
+	cam->colBin = atoi(argbuf);
       }
 
       else if (strcasecmp(keyword,"FirstRow")==0) {
 	GetArg(inbuf,2,argbuf);
-	cam->FirstRow = atoi(argbuf);
+	cam->firstRow = atoi(argbuf);
       }
 
       else if (strcasecmp(keyword,"LastRow")==0) {
 	GetArg(inbuf,2,argbuf);
-	cam->LastRow = atoi(argbuf);
+	cam->lastRow = atoi(argbuf);
       }
 
       else if (strcasecmp(keyword,"RowBin")==0) {
  	GetArg(inbuf,2,argbuf);
-	cam->RowBin = atoi(argbuf);
+	cam->rowBin = atoi(argbuf);
       }
 
       // Detector Configuration
@@ -736,7 +731,7 @@ loadAzCamConfig(azcam_t *cam, char *config, char *reply)
   \return 0 on success, -1 if failure
   
   Re-initialize the CCD configuration by instructing the azcam Server to
-  execute the initialization script (cam->IniFile) normall loaded at
+  execute the initialization script (cam->iniFile) normall loaded at
   startup time.
 
 */
@@ -808,7 +803,7 @@ uploadFITS(azcam_t *cam, obsPars_t *obs, char *reply)
   setKeyword(cam,"SUPPORT",obs->Support,"LBT Support Scientist(s)",reply);
   setKeyword(cam,"TELOPS",obs->TelOps,"LBT Telescope Operator(s)",reply);
 
-  // where we would get ISTATUS info and pass up to azcam (ugly)
+  // retrieve and upload ISTATUS info and pass up to azcam (gonna be ugly)
   
   // All done with custom header cards
 

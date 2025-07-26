@@ -156,9 +156,9 @@ main(int argc, char *argv[])
   // Load the specified runtime config file, or use the default if none given
 
   if (argc==2)
-    n = LoadConfig(argv[1]);
+    n = loadConfig(argv[1]);
   else
-    n = LoadConfig(DEFAULT_RCFILE);
+    n = loadConfig(DEFAULT_RCFILE);
 
   if (n!=0) {
     printf("Unable to load the runtime config file...modsCCD aborting\n");

@@ -42,8 +42,8 @@
   \arg SocketCommand() Socket command/message handler (client socket interface)
 
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
-  \original 2003 October 13
-  \date 2025 July 24 [rwp/osu] -
+  \original 2003 Oct 13
+  \date 2025 July 25 - major renovation for modsCCD app [rwp/osu]
   
 */
 
@@ -572,7 +572,7 @@ cmd_reset(char *args, MsgType msgtype, char *reply)
   Set/query the exposure time in decimal seconds.  If given with no arguments, it
   returns the current exposure time.
 
-  Exposure times will be converted to milliseconds when passed to the AzCam
+  Exposure times will be converted to milliseconds when passed to the azcam
   server, so any time passed to this routine will effectively be rounded
   to the nearest 0.001 seconds.  There is no maximum exposure time, though
   it must be positive.
@@ -620,6 +620,11 @@ cmd_exptime(char *args, MsgType msgtype, char *reply)
 
 }
 
+//---------------------------------------------------------------------------
+//
+// Observer and project info commands (observer, partner, propid, etc.)
+//
+
 /*!  
   \brief OBSERVER command - Set/Query the Observer name(s)
   \param args string with the command-line arguments
@@ -664,6 +669,8 @@ cmd_observer(char *args, MsgType msgtype, char *reply)
 
 }
 
+// PI_NAME - names of the project PIs for the LBTO data archive
+
 /*!  
   \brief PI_NAME command - Set/Query the data PI_Name
   \param args string with the command-line arguments
@@ -707,7 +714,7 @@ cmd_piname(char *args, MsgType msgtype, char *reply)
 
 }
 
-// PARTNER command
+// PARTNER command - LBT partner member ID for the LBTO data archive
 
 int
 cmd_partner(char *args, MsgType msgtype, char *reply)
@@ -734,7 +741,7 @@ cmd_partner(char *args, MsgType msgtype, char *reply)
 
 }
 
-// PROPID command
+// PROPID command - proposal ID for the LBTO data archive
 
 int
 cmd_propid(char *args, MsgType msgtype, char *reply)
@@ -761,7 +768,7 @@ cmd_propid(char *args, MsgType msgtype, char *reply)
 
 }
 
-// SUPPORT command
+// SUPPORT command - names of the LBTO support scientists on duty
 
 int
 cmd_support(char *args, MsgType msgtype, char *reply)
@@ -788,7 +795,7 @@ cmd_support(char *args, MsgType msgtype, char *reply)
 
 }
 
-// TELOPS command
+// TELOPS command - names of the LBTO telescope operators on duty
 
 int
 cmd_telops(char *args, MsgType msgtype, char *reply)
@@ -814,6 +821,11 @@ cmd_telops(char *args, MsgType msgtype, char *reply)
   return CMD_OK;
 
 }
+
+//---------------------------------------------------------------------------
+//
+// Image filename commands - filenames, paths, sequence numbers
+//
 
 /*!  
   \brief EXPNUM command - Set/Query the file counter for the next image
@@ -841,7 +853,7 @@ cmd_telops(char *args, MsgType msgtype, char *reply)
   the next image to be written to disk, otherwise it reports the new
   next filename pattern with the new counter value.
 
-  Sets the #azcam::FileNum data member in the AzCam data structure.  It
+  Sets the #azcam::FileNum data member in the azcam data structure.  It
   leaves the #azcam::FileName data member unchanged.  Also sets the
   FILENAME card in the azcam server's header database.
 
@@ -926,7 +938,7 @@ cmd_expnum(char *args, MsgType msgtype, char *reply)
   filename for the next image to be written including the sequence
   number.
 
-  Sets the #azcam::FileName and #azcam::FileNum members in the AzCam
+  Sets the #azcam::FileName and #azcam::FileNum members in the azcam
   data structure.  Also sets the FILENAME card in the azcam server's
   header database.
 
@@ -1042,7 +1054,7 @@ cmd_lastfile(char *args, MsgType msgtype, char *reply)
   if (getLastFile(&ccd,reply)<0) // get last filename
     return CMD_ERR;
 
-  sprintf(reply,"LastFile=%s",ccd.LastFile);
+  sprintf(reply,"LastFile=%s",ccd.lastFile);
   return CMD_OK;
 }
 
@@ -1067,6 +1079,12 @@ cmd_lastfile(char *args, MsgType msgtype, char *reply)
 
   \sa cmd_flat et al.
 */
+
+
+//---------------------------------------------------------------------------
+//
+// Image Type and Title commands (object, bias, flat, dark, comp, std)
+//
 
 int
 cmd_object(char *args, MsgType msgtype, char *reply)
@@ -1472,6 +1490,93 @@ cmd_zero(char *args, MsgType msgtype, char *reply)
 
 }
 
+//----------------------------------------------------------------------
+//
+// CCD subframe region of interest and binning commands
+//     ROI, CCDBIN, XBIN, YBIN
+//
+
+
+/*!  
+  \brief ROI command - Set/Query CCD subframe readout region of interest
+  \param args string with the command-line arguments
+  \param msgtype message type if the command was sent as an IMPv2 message
+  \param reply string to contain the command return reply
+  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
+  an error message.
+
+  \par Usage:
+  roi on sc ec sr er
+  roi off
+  roi
+
+  Sets the CCD subframe readout region of interest coordinates for subframe
+  readout for the next image.
+
+  ROI OFF will reset the CCD readout to full-frame unbinned
+
+  ROI given without arguments reports the ROI coordinates and binning
+  factors
+
+  Uses the setROI() azcamUtils function to make the changes
+  
+*/
+
+int
+cmd_roi(char *args, MsgType msgtype, char *reply)
+{
+  char argbuf[32];
+  int sc;
+  int ec;
+  int sr;
+  int er;
+  char cmd[16];
+  int nargs;
+
+  // check the file descriptor and make sure we have an active connection
+
+  if (ccd.FD<0) {
+    strcpy(reply,"No azcam server connection active");
+    return CMD_ERR;
+  }
+
+  // If we have arguments, interpret.  If no args, this is a query
+
+  if (strlen(args)>0) {
+    GetArgs(args,1,argbuf); // first argument might be ON or OFF
+
+    if (strcasecmp(argbuf,"OFF")==0) { // OFF = reset ROI to full-frame, unbinned radout
+      if (resetROI(&ccd,reply)<0)
+	return CMD_ERR;
+
+    }
+    else if (strcasecmp(argbuf,"ON")==0) { // ON = set subframe readout ROI
+      nargs = sscanf(args,"%s %d %d %d %d",cmd,&sc,&ec,&sr,&er);
+      if (nargs <= 0) {
+	sprintf(reply,"Invalid ROI directive %s, must be ON sc ec sr er",args);
+	return CMD_ERR;
+      }
+      if (setROI(&ccd,sc,ec,sr,er,reply)<0)
+	return CMD_ERR;
+    }
+    else {
+      sprintf(reply,"Invalid ROI directive %s, must be ON sc ec sr er",args);
+      return CMD_ERR;
+      
+    }
+  }
+
+  // query to get/confirm the binning factors
+  
+  if (setROI(&ccd,-1,-1,-1,-1,reply)<0)
+    return -1;
+
+  sprintf(reply,"ROI=(%d,%d,%d,%d)",ccd.firstCol,ccd.lastCol,ccd.firstRow,ccd.lastRow);
+  return CMD_OK;
+  
+}
+
+
 /*!  
   \brief CCDBIN command - Set/Query the CCD on-chip binning factor
   \param args string with the command-line arguments
@@ -1509,7 +1614,6 @@ cmd_ccdbin(char *args, MsgType msgtype, char *reply)
   }
 
   // If we have arguments, get the new binning value.
-  // Must be 1, 2, or 4, all others are invalid
 
   if (strlen(args)>0) {
     nargs = sscanf(args,"%d %d",&xbin,&ybin);
@@ -1530,7 +1634,7 @@ cmd_ccdbin(char *args, MsgType msgtype, char *reply)
   if (setCCDBin(&ccd,-1,-1,reply)<0)
     return -1;
 
-  sprintf(reply,"XBin=%d YBin=%d",ccd.ColBin,ccd.RowBin);
+  sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.RowBin);
   return CMD_OK;
 
 }
@@ -1564,7 +1668,7 @@ cmd_xbin(char *args, MsgType msgtype, char *reply)
   if (setCCDBin(&ccd,-1,-1,reply)<0)
     return -1;
 
-  sprintf(reply,"XBin=%d YBin=%d",ccd.ColBin,ccd.RowBin);
+  sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.RowBin);
   return CMD_OK;
 
 }
@@ -1598,11 +1702,15 @@ cmd_ybin(char *args, MsgType msgtype, char *reply)
   if (setCCDBin(&ccd,-1,-1,reply)<0)
     return -1;
 
-  sprintf(reply,"XBin=%d YBin=%d",ccd.ColBin,ccd.RowBin);
+  sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.RowBin);
   return CMD_OK;
 
 }
 
+//---------------------------------------------------------------------------
+//
+// CCD controller commands
+//
 
 /*!  
   \brief CCDTEMP command - Set/Query the CCD temperature
@@ -1621,7 +1729,7 @@ cmd_ybin(char *args, MsgType msgtype, char *reply)
   temperatures.
   
   Sets the values of the #azcam::SetPoint data member, and by
-  querying the AzCam ColBin and #azcam::RowBin data members,
+  querying the azcam ColBin and #azcam::RowBin data members,
   and sends a new SetROI command to the azcam server.
 
 */
@@ -1792,6 +1900,11 @@ cmd_shutter(char *args, MsgType msgtype, char *reply)
   return CMD_OK;
 }
 
+//---------------------------------------------------------------------------
+//
+// Status and configuration commands
+//
+ 
 /*!  
   \brief STATUS command - report the azcam server status
   \param args string with the command-line arguments
@@ -1822,8 +1935,8 @@ cmd_status(char *args, MsgType msgtype, char *reply)
   GetTemp(&ccd,reply);
 
   sprintf(reply,"Sh=%d Exp=%.3f Xbin=%d Ybin=%d ROI=(%d,%d,%d,%d)",
-	  ccd.Shutter,ccd.ExpTime,ccd.ColBin,ccd.RowBin,
-	  ccd.FirstCol,ccd.LastCol,ccd.FirstRow,ccd.LastRow);
+	  ccd.Shutter,ccd.ExpTime,ccd.colBin,ccd.RowBin,
+	  ccd.firstCol,ccd.lastCol,ccd.firstRow,ccd.lastRow);
 
   sprintf(reply,"%s XOS=%d YOS=%d",
 	  reply,ccd.NCoverscan,ccd.NRoverscan);
@@ -1850,13 +1963,10 @@ cmd_status(char *args, MsgType msgtype, char *reply)
   case ZERO:
     strcat(reply," Typ=ZERO");
     break;
-  case FOCUS:
-    strcat(reply," Typ=FOCUS");
-    break;
   }
   
   sprintf(reply,"%s Obj=(%s) File=%s.%4.4d.fits Last=%s",
-	  reply,obs.Object,ccd.fileName,ccd.fileNum,ccd.LastFile);
+	  reply,obs.Object,ccd.fileName,ccd.fileNum,ccd.lastFile);
 
   sprintf(reply,"%s Path=%s Temp=%.1f DTemp=%.1f Filt=%d",
 	  reply,ccd.filePath,ccd.CCDTemp,ccd.DewarTemp,obs.Filter);
@@ -1896,13 +2006,14 @@ cmd_status(char *args, MsgType msgtype, char *reply)
 int
 cmd_config(char *args, MsgType msgtype, char *reply)
 {
-  sprintf(reply,"Inst=%s",obs.Instrument);
+  sprintf(reply,"Inst=%s",obs.instID);
 
   if (ccd.FD>0)
-    strcat(reply," IC=Enabled");
+    strcat(reply," %s=Enabled",client.ID);
   else
-    strcat(reply," IC=Disabled");
+    strcat(reply," %s=Disabled",client.ID);
 
+  /*
   if (fw.Link)
     strcat(reply," IE=Enabled");
   else
@@ -1917,7 +2028,8 @@ cmd_config(char *args, MsgType msgtype, char *reply)
     strcat(reply," DM=Enabled");
   else
     strcat(reply," DM=Disabled");
-
+  */
+  
   return CMD_OK;
 }
 
@@ -1974,7 +2086,7 @@ cmd_saveconf(char *args, MsgType msgtype, char *reply)
   ccdinfo
 
   Prints the contents of the #azcam string on the console (stdout), giving
-  a snapshot of the AzCam CCD camera configuration.  This is an engineering
+  a snapshot of the azcam CCD camera configuration.  This is an engineering
   command not accessible to remote hosts.
 
 */
@@ -1983,7 +2095,7 @@ int
 cmd_ccdinfo(char *args, MsgType msgtype, char *reply)
 {
   if (msgtype == EXEC) {
-    AzCamInfo(&ccd);
+    azcamInfo(&ccd);
   }
   else {
     strcpy(reply,"Cannot execute CCDINFO command except as EXEC:");
@@ -1994,7 +2106,7 @@ cmd_ccdinfo(char *args, MsgType msgtype, char *reply)
 }
 
 /*!  
-  \brief AZCAM command - send a raw AzCam command to the azcam server
+  \brief AZCAM command - send a raw azcam command to the azcam server
   \param args string with the command-line arguments
   \param msgtype message type if the command was sent as an IMPv2 message
   \param reply string to contain the command return reply
@@ -2023,18 +2135,19 @@ cmd_azcam(char *args, MsgType msgtype, char *reply)
   // If we have arguments, get the exposure time and set it
 
   if (strlen(args)==0) {
-    strcpy(reply,"Cannot send a null command to the azcam server");
+    strcpy(reply,"Cannot send a blank command to the azcam server");
     return CMD_ERR;
   }
 
   // Do it, whatever it is
 
-  if (ARCCommand(&ccd,args,reply)<0)
+  if (azcamCmd(&ccd,args,reply)<0)
     return CMD_ERR;
 
   return CMD_OK;
 }
 
+//---------------------------------------------------------------------------
 //
 // Exposure Control Commands
 //
@@ -2069,7 +2182,7 @@ cmd_azcam(char *args, MsgType msgtype, char *reply)
   who requested the GO command, and for servicing any ABORT requests
   during the exposure (why we do this).
 
-  \sa cmd_abort(), cmd_focus()
+  \sa cmd_abort()
 */
 
 int
@@ -2256,7 +2369,7 @@ cmd_resume(char *args, MsgType msgtype, char *reply)
   On a successful abort, it sets the ccd.State flag to IDLE, and
   the ccd.Abort flag to 1 (true).
 
-  \sa cmd_go(), cmd_focus(), cmd_pause(), cmd_resume()
+  \sa cmd_go(), cmd_pause(), cmd_resume()
 */
 
 int
@@ -2403,7 +2516,7 @@ cmd_writeim(char *args, MsgType msgtype, char *reply)
       sprintf(reply,"Write failed for %s - %s",newfile,msgstr);
       return CMD_ERR;
     }
-    strcpy(ccd.LastFile,argbuf);
+    strcpy(ccd.lastFile,argbuf);
     sprintf(reply,"LastFile=%s written to disk",argbuf);
   }
   else {  // write using the default pattern
@@ -2479,7 +2592,7 @@ cmd_process(char *args, MsgType msgtype, char *reply)
 
   }
   else {
-    strcpy(fname,ccd.LastFile);
+    strcpy(fname,ccd.lastFile);
   }
 
   // upload it to DataMan for post-processing
@@ -2707,9 +2820,9 @@ KeyboardCommand(char *line)
 
   else { 
 
-    // If the command is GO or FOCUS, record the host requesting it
+    // If the command is GO record the host requesting it
     
-    if (strcasecmp(cmd,"GO")==0 || strcasecmp(cmd,"FOCUS")==0)
+    if (strcasecmp(cmd,"GO")==0)
       strcpy(obs.expHost,"console");
 
     // Traverse the command table, matches are case-insensitive, but
@@ -2723,22 +2836,6 @@ KeyboardCommand(char *line)
 	break;
       }
     }
-
-    /* old dangerous stuff - send any non-command verb to azcam server as-is
-    if (nfound == 0) { // Send to the comm port as-is if non-blank
-      if (strlen(cmd)>0) {
-        memset(msgbody,0,sizeof(msgbody));
-	if (strlen(args)>0) 
-	   sprintf(msgbody,"%s %s",cmd,args);
-	else	
-	   strcpy(msgbody,cmd);
-	if (msgbody[strlen(msgbody)-1] == '\n') msgbody[strlen(msgbody)-1] = '\0';   
-	if (client.Debug) printf(">%s: '%s'\n",ccd.Port,msgbody);
-	strcat(msgbody,"\n");
-	WriteAzCam(&ccd,msgbody);
-      }
-    }
-    */
 
     // If unknown command, gripe, otherwise do it
 
@@ -2869,9 +2966,9 @@ SocketCommand(char *buf)
 
     sscanf(msgbody,"%s %[^\n]",cmd,args);  // split into command + args
 
-    // If the command is GO or FOCUS, record the host requesting it
+    // If the command is GO record the host requesting it
     
-    if (strcasecmp(cmd,"GO")==0 || strcasecmp(cmd,"FOCUS")==0)
+    if (strcasecmp(cmd,"GO")==0)
       strcpy(obs.expHost,srcID);
 
     // Traverse the command table, exact case-insensitive match required
@@ -2885,16 +2982,6 @@ SocketCommand(char *buf)
       }
     }
 
-    /* old stuff - sent whatever else we got to the server as-is
-    if (nfound == 0) {
-      if (strlen(msgbody)>0) {
-	if (client.Debug) printf("AzCam> '%s'\n",msgbody);
-	strcat(msgbody,"\n");
-	WriteAzCam(&ccd,msgbody);
-      }
-    }
-    */
-    
     // Unknown command, gripe back to the sender, otherwise try to do it
 
     if (nfound == 0) {

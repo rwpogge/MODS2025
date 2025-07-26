@@ -36,7 +36,7 @@ int cmd_ccdinit (char *, MsgType, char *); // (Re)Initialize the CCD Controller
 int cmd_ccdinfo (char *, MsgType, char *); // Print CCD config info
 int cmd_cleanup (char *, MsgType, char *); // Clean up after problems
 
-// observation and project info (required by LBT Archive)
+// Observation and project info (required by the LBTO Data Archive)
 
 int cmd_observer(char *, MsgType, char *); // Set/query the observer name(s) 
 int cmd_piname   (char *, MsgType, char *); // Set the PI_NAME keyword
@@ -45,10 +45,9 @@ int cmd_propid   (char *, MsgType, char *); // Set the PROPID keyword
 int cmd_support  (char *, MsgType, char *); // Set the SUPPORT keyword
 int cmd_telops   (char *, MsgType, char *); // Set the TELOPS keyword
 
-// exposure setup
+// Exposure setup
 
 int cmd_exptime (char *, MsgType, char *); // Set/query the exposure time
-
 int cmd_object  (char *, MsgType, char *); // Set image type to object w/optional name
 int cmd_bias    (char *, MsgType, char *); // Set image type to bias w/optional name 
 int cmd_flat    (char *, MsgType, char *); // Set image type to flat w/optional name 
@@ -57,22 +56,26 @@ int cmd_comp    (char *, MsgType, char *); // Set image type to comp w/optional 
 int cmd_zero    (char *, MsgType, char *); // Set image type to zero w/optional name
 int cmd_std     (char *, MsgType, char *); // Set image type to std w/optional name
 
+// Image filenames and paths
+
 int cmd_filename(char *, MsgType, char *); // Set/Query the raw data file name pattern 
 int cmd_path    (char *, MsgType, char *); // Set/Query the raw data file path 
 int cmd_expnum  (char *, MsgType, char *); // Set/Query the raw data file counter 
 int cmd_lastfile(char *, MsgType, char *); // Query the name of the last file written
+
+// CCD on-chip binning and region-of-interest readout
 
 int cmd_ccdbin  (char *, MsgType, char *); // Set/Query the CCD on-chip binning factors
 int cmd_xbin    (char *, MsgType, char *); // Set/Query the CCD on-chip x (column) binning factor
 int cmd_ybin    (char *, MsgType, char *); // Set/Query the CCD on-chip y (row) binning factor
 int cmd_roi     (char *, MsgType, char *); // Set/Query the CCD readout region-of-interest (ROI)
 
-int cmd_ccdtemp (char *, MsgType, char *); // query the CCD temperatures (detector and base)
+// CCD controller functions
 
+int cmd_ccdtemp (char *, MsgType, char *); // query the CCD temperatures (detector and base)
 int cmd_shopen  (char *, MsgType, char *); // Open the shutter 
 int cmd_shclose (char *, MsgType, char *); // Close the shutter 
-
-int cmd_shutter (char *, MsgType, char *); // IE-style shutter command (shutter 1/0)
+int cmd_shutter (char *, MsgType, char *); // Alternative: shutter 1|0 (open/close)
 
 // Exposure control commands
 

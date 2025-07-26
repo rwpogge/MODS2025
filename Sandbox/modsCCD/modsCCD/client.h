@@ -131,7 +131,8 @@ typedef struct obsPars {
   char TelOps[40];     //!< LBT telescope operator(s) on duty
 
   // Miscellaneous
-  
+
+  char instID[12];     //!< instrument ID (e.g., MODS1B)
   double t1;           //!< diagnostic timetag (1 of 2)
   double t2;           //!< diagnostic timetag (2 of 2)
 
