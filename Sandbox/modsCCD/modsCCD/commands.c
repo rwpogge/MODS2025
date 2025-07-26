@@ -1117,7 +1117,7 @@ cmd_object(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 }
@@ -1176,7 +1176,7 @@ cmd_flat(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 }
@@ -1235,7 +1235,7 @@ cmd_comp(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -1295,7 +1295,7 @@ cmd_std(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -1356,7 +1356,7 @@ cmd_dark(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -1418,7 +1418,7 @@ cmd_bias(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -1483,7 +1483,7 @@ cmd_zero(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  strcpy(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -2189,29 +2189,10 @@ cmd_go(char *args, MsgType msgtype, char *reply)
     break;
   }    
 
-  // What we do depends on the type of image we're to acquire
-
-  switch(obs.imgType) {
-  case OBJECT:
-  case FLAT:
-  case COMP:
-  case STD:
-  case DARK:
-    if (doExposure(&ccd,&obs,reply)<0)
-      return CMD_ERR;
-    break;
-
-  case BIAS:
-  case ZERO:
-    if (doBias(&ccd,&obs,reply)<0)
-      return CMD_ERR;
-    break;
-
-  default:
-    sprintf(reply,"Unknown IMGTYPE %d - Cannot Initiate Exposure",obs.imgType);
+  // do it!
+  
+  if (doExposure(&ccd,&obs,reply)<0)
     return CMD_ERR;
-    break;
-  }
 
   // We're off, ccd.State tells the main event loop what to do
 
@@ -2482,7 +2463,7 @@ cmd_writeim(char *args, MsgType msgtype, char *reply)
     sprintf(reply,"LastFile=%s written to disk",argbuf);
   }
   else {  // write using the default pattern
-    if (WriteCCDImage(&ccd,&obs,reply)<0)
+    if (writeImage(&ccd,&obs,reply)<0)
       return CMD_ERR;
   }
 
