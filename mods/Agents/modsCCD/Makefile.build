@@ -17,7 +17,7 @@ ROOTDIR     = /home/dts/mods
 ISISDIR     = /home/dts/ISIS
 BINDIR      = $(ROOTDIR)/bin
 
-INCS        = -I$(ISISDIR)/lib -I$($ROOTDIR)/include
+INCS        = -I$(ISISDIR)/lib -I$(ROOTDIR)/include
 
 CFLAGS      = -w -c $(INCS) 
 VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
