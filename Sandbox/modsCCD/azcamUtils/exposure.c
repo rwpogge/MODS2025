@@ -172,13 +172,13 @@ setImageInfo(azcam_t *cam, char *imgType, char *imgTitle, char *reply)
 {
   char cmdStr[64];
 
-  if (len(imgType)==0) {
+  if (strlen(imgType)==0) {
     if (azcamCmd(cam,(char *)"exposure.get_image_type",reply)<0)
       return -1;
     strcpy(imgType,reply);
   }
 
-  if (len(imgTitle)==0) {
+  if (strlen(imgTitle)==0) {
     if (azcamCmd(cam,(char *)"exposure.get_image_title",reply)<0)
       return -1;
     strcpy(imgTitle,reply);
