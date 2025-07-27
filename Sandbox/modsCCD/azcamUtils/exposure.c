@@ -401,7 +401,7 @@ setROI(azcam_t *cam, int sc, int ec, int sr, int er, char *reply)
   // check parameters
 
   if (sc>0 && ec>0 && sr>0 && er>0) {
-    sprintf(cmdStr,"mods.set_roi %d %d %d %d");
+    sprintf(cmdStr,"mods.set_roi %d %d %d %d",sc,ec,sr,er);
     if (azcamCmd(cam,cmdStr,reply)<0)
       return -1;
   }
