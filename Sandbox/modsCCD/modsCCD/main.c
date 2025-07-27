@@ -1,7 +1,7 @@
 /*!
   \mainpage modsCCD - Interactive azcam Client
 
-  \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \date 2005 May 2
 
   \section Usage
@@ -116,7 +116,7 @@ main(int argc, char *argv[])
 
   char camData[256];   // raw azcam socket port string
   int lastchar;
-  char cmdstr[64];
+  char msgStr[64];
 
   // readline & history handling stuff
   
@@ -478,13 +478,15 @@ main(int argc, char *argv[])
 
 	case READ:  // readout is complete, preparing to write
 	  printf("\nReadout Complete, preparing to write image");
-	  notifyClient(&ccd,&obs,(char*)"Readout Complete PCTREAD=100",STATUS);
+	  strcpy(msgStr,"Readout Complete PCTREAD=100");
+	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 	  
 	case WRITING: // started writing the image (in case READ state was missed)
 	  printf("\nWriting image %s to disk",ccd.fileName);
-	  fflush(stdout);	
-	  sprintf(reply,"Writing Image PCTREAD=100",int(pctRead));
+	  fflush(stdout);
+	  strcpy(msgStr,"Writing Image PCTREAD=100");
+	  sprintf(reply,msgStr,int(pctRead));
  	  notifyClient(&ccd,&obs,reply,STATUS);
 	  break;
 	  	  
@@ -521,17 +523,20 @@ main(int argc, char *argv[])
 	  
 	case READOUT:  // started readout since last time we polled
 	  printf("\nExposure Completed, Readout started...                  \n");
-	  notifyClient(&ccd,&obs,(char*)"Exposure Completed, Shutter=0 (Closed), Readout started PCTREAD=0",STATUS);
+	  strcpy(msgStr,"Exposure Completed, Shutter=0 (Closed), Readout started PCTREAD=0");
+	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 	  
 	case ABORT:  // exposure done since the last time we polled
 	  printf("\nExposure Aborting, wait for completion...\n");
-	  notifyClient(&ccd,&obs,(char*)"Exposure Aborting, waiting for completion",STATUS);
+	  strcpy(msgStr,"Exposure Aborting, waiting for completion");
+	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 
 	case PAUSE: // pause requested
 	  printf("\nExposure paused, waiting for RESUME or ABORT...\n");
-	  notifyClient(&ccd,&obs,(char*)"Exposure Paused, waiting for RESUME or ABORT",STATUS);
+	  strcpy(msgStr,"Exposure Paused, waiting for RESUME or ABORT");
+	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 
 	default:
@@ -554,12 +559,14 @@ main(int argc, char *argv[])
 	  printf("\nExposure resumed...\n");
 	  printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",obs.expTime,(int)(obs.tLeft));
 	  fflush(stdout);
-	  notifyClient(&ccd,&obs,(char*)"Exposure Resumed",STATUS);
+	  strcpy(msgStr,"Exposure Resumed");
+	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 
 	case ABORT:
 	  printf("\nPAUSED Exposure Aborted...\n");
-	  notifyClient(&ccd,&obs,(char*)"Paused Exposure ABORTED, waiting for completion",STATUS);
+	  strcpy(msgStr,"Paused Exposure ABORTED, waiting for completion");
+	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 	  
 	default:
@@ -578,7 +585,8 @@ main(int argc, char *argv[])
 
 	case WRITING:
 	  printf("\nWriting CCD to disk...\n");
-	  notifyClient(&ccd,&obs,(char*)"Writing image to disk PCTREAD=0",STATUS);
+	  strcpy(msgStr,"Writing image to disk PCTREAD=0");
+	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 
 	default:
@@ -597,7 +605,8 @@ main(int argc, char *argv[])
 
 	case IDLE:
 	  printf("Done: Image readout and written to disk\n");
-	  notifyClient(&ccd,&obs,(char*)"Exposure finished. EXPSTATUS=DONE",DONE);
+	  strcpy(msgStr,"Exposure finished. EXPSTATUS=DONE");
+	  notifyClient(&ccd,&obs,msgStr,DONE);
 	  break;
 
 	default:
@@ -616,7 +625,8 @@ main(int argc, char *argv[])
 
 	case IDLE:
 	  printf("\nDone: Exposure abort complete.\n");
-	  notifyClient(&ccd,&obs,(char*)"Exposure Aborted. EXPSTATUS=DONE",DONE);
+	  strcpy(msgStr,"Exposure Aborted. EXPSTATUS=DONE");
+	  notifyClient(&ccd,&obs,msgStr,DONE);
 	  break;
 
 	default:
@@ -636,7 +646,8 @@ main(int argc, char *argv[])
 	case SETUP:
 	  printf("\nExposure Setup started..                 \r");
 	  fflush(stdout);
-	  notifyClient(&ccd,&obs,(char*)"Exposure Setup started",STATUS);
+	  strcpy(msgStr,"Exposure Setup started");
+	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 
 	default:

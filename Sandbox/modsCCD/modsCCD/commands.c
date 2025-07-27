@@ -894,7 +894,8 @@ cmd_expnum(char *args, MsgType msgtype, char *reply)
 
   // what is the full filename now (empty filename string means get)
   
-  imgFilename(&ccd,(char *)"",reply);
+  strcpy(cmdStr,"");
+  imgFilename(&ccd,cmdStr,reply);
   
   sprintf(reply,"expnum=%d nextfile=%s",ccd.fileNum,ccd.fileName);
   
@@ -968,7 +969,8 @@ cmd_filename(char *args, MsgType msgtype, char *reply)
       return CMD_ERR;
   }
 
-  if (imgFilename(&ccd,(char*)"",reply)<0) // get filename
+  strcpy(cmdStr,"");
+  if (imgFilename(&ccd,cmdStr,reply)<0) // get filename
     return CMD_ERR;
 
   sprintf(reply,"FILENAME=%s",ccd.fileName);
@@ -1022,7 +1024,8 @@ cmd_path(char *args, MsgType msgtype, char *reply)
       return CMD_ERR;
   }
 
-  if (imgPath(&ccd,(char*)"",reply)<0) // get image data path
+  strcpy(cmdStr,"");
+  if (imgPath(&ccd,cmdStr,reply)<0) // get image data path
     return CMD_ERR;
 
   sprintf(reply,"PATH=%s",ccd.filePath);
@@ -1114,7 +1117,8 @@ cmd_object(char *args, MsgType msgtype, char *reply)
   }
   else {
     // only set image type, return title
-    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+    strcpy(cmdStr,"");
+    if (setImageInfo(&ccd,obs.imgType,cmdStr,reply)<0)
       return CMD_ERR;
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
@@ -1173,7 +1177,8 @@ cmd_flat(char *args, MsgType msgtype, char *reply)
   }
   else {
     // only set image type, return title
-    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+    strcpy(cmdStr,"");
+    if (setImageInfo(&ccd,obs.imgType,cmdStr,reply)<0)
       return CMD_ERR;
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
@@ -1232,7 +1237,9 @@ cmd_comp(char *args, MsgType msgtype, char *reply)
   }
   else {
     // only set image type, return title
-    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+
+    strcpy(cmdStr,"");
+    if (setImageInfo(&ccd,obs.imgType,cmdStr,reply)<0)
       return CMD_ERR;
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
@@ -1292,7 +1299,8 @@ cmd_std(char *args, MsgType msgtype, char *reply)
   }
   else {
     // only set image type, return title
-    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+    strcpy(cmdStr,"");
+    if (setImageInfo(&ccd,obs.imgType,cmdStr,reply)<0)
       return CMD_ERR;
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
@@ -1353,7 +1361,8 @@ cmd_dark(char *args, MsgType msgtype, char *reply)
   }
   else {
     // only set image type, return title
-    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+    strcpy(cmdStr,"");
+    if (setImageInfo(&ccd,obs.imgType,cmdStr,reply)<0)
       return CMD_ERR;
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
@@ -1415,7 +1424,8 @@ cmd_bias(char *args, MsgType msgtype, char *reply)
   }
   else {
     // only set image type, return title
-    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+    strcpy(cmdStr,"");
+    if (setImageInfo(&ccd,obs.imgType,cmdStr,reply)<0)
       return CMD_ERR;
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
@@ -1480,7 +1490,8 @@ cmd_zero(char *args, MsgType msgtype, char *reply)
   }
   else {
     // only set image type, return title
-    if (setImageInfo(&ccd,obs.imgType,(char *)"",reply)<0)
+    strcpy(cmdStr,"");
+    if (setImageInfo(&ccd,obs.imgType,cmdStr,reply)<0)
       return CMD_ERR;
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
