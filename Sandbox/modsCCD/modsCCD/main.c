@@ -212,7 +212,7 @@ main(int argc, char *argv[])
   else {
     printf("ERROR: Could not open connection to azcam server host %s:%d\n",
 	   ccd.Host,ccd.Port);
-    printf("       Make sure the system is on and properly configured,\n");
+    printf("       Make sure the azcam server and archon are running,\n");
     printf("       then try again.\n");
     printf("modsCCD aborting\n");
     exit(3);
