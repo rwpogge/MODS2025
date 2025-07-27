@@ -34,8 +34,9 @@ OBJS        = commands.o clientutils.o config.o
 
 all:        modsCCD
 
-modsCCD:     $(OBJS) main.c
+modsCCD:    $(OBJS) main.c
 	    $(CC) $(LFLAGS) $(VFLAGS) main.c $(OBJS) $(LIBS)
+	    /bin/rm -f *.o
 
 clean:
 	    /bin/rm -f modsCCD *.o
