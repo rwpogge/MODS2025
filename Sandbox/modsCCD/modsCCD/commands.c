@@ -864,6 +864,7 @@ cmd_telops(char *args, MsgType msgtype, char *reply)
 int
 cmd_expnum(char *args, MsgType msgtype, char *reply)
 {
+  char cmdStr[64];
   char argbuf[32];
   int ctr;
   char fullname[32];
@@ -1006,6 +1007,7 @@ cmd_filename(char *args, MsgType msgtype, char *reply)
 int
 cmd_path(char *args, MsgType msgtype, char *reply)
 {
+  char cmdStr[64];
   char argbuf[32];
   char fullname[32];
 
@@ -1093,6 +1095,7 @@ cmd_lastfile(char *args, MsgType msgtype, char *reply)
 int
 cmd_object(char *args, MsgType msgtype, char *reply)
 {
+  char cmdStr[64];
   char argbuf[32];
   
   // check the file descriptor and make sure we have an active connection
@@ -1153,6 +1156,7 @@ cmd_object(char *args, MsgType msgtype, char *reply)
 int
 cmd_flat(char *args, MsgType msgtype, char *reply)
 {
+  char cmdStr[64];
   char argbuf[32];
 
   // check the file descriptor and make sure we have an active connection
@@ -1213,6 +1217,7 @@ cmd_flat(char *args, MsgType msgtype, char *reply)
 int
 cmd_comp(char *args, MsgType msgtype, char *reply)
 {
+  char cmdStr[64];
   char argbuf[32];
 
   // check the file descriptor and make sure we have an active connection
@@ -1275,6 +1280,7 @@ cmd_comp(char *args, MsgType msgtype, char *reply)
 int
 cmd_std(char *args, MsgType msgtype, char *reply)
 {
+  char cmdStr[64];
   char argbuf[32];
 
   // check the file descriptor and make sure we have an active connection
@@ -1337,6 +1343,7 @@ cmd_std(char *args, MsgType msgtype, char *reply)
 int
 cmd_dark(char *args, MsgType msgtype, char *reply)
 {
+  char cmdStr[64];
   char argbuf[32];
 
   // check the file descriptor and make sure we have an active connection
@@ -1400,6 +1407,7 @@ cmd_dark(char *args, MsgType msgtype, char *reply)
 int
 cmd_bias(char *args, MsgType msgtype, char *reply)
 {
+  char cmdStr[64];
   char argbuf[32];
 
   // check the file descriptor and make sure we have an active connection
@@ -1466,6 +1474,7 @@ cmd_bias(char *args, MsgType msgtype, char *reply)
 int
 cmd_zero(char *args, MsgType msgtype, char *reply)
 {
+  char cmdStr[64];
   char argbuf[32];
 
   // check the file descriptor and make sure we have an active connection
