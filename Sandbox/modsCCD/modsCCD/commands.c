@@ -1956,7 +1956,7 @@ cmd_status(char *args, MsgType msgtype, char *reply)
 
   getTemp(&ccd,reply);
 
-  sprintf(reply,"Inst=%s Controller=Archon Exp=%.1f ImType=%s Obj=(%s)",obs.Inst,
+  sprintf(reply,"Inst=%s Controller=Archon Exp=%.1f ImType=%s Obj=(%s)",obs.instID,
 	  ccd.expTime,obs.imgType,obs.imgTitle);
 
   sprintf(reply,"%s XBin=%d YBin=%d ROI=(%d,%d,%d,%d)",ccd.colBin,ccd.rowBin,
@@ -1964,7 +1964,7 @@ cmd_status(char *args, MsgType msgtype, char *reply)
 
   sprintf(reply,"%s CCDTemp=%.1f BaseTemp=%.1f",ccd.ccdTemp,ccd.baseTemp);
 
-  switch(cam->State) {
+  switch(ccd.State) {
   case SETUP:
     sprintf(reply,"%s Mode=INITIALIZING",reply);
     break;
