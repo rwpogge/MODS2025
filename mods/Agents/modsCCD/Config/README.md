@@ -24,12 +24,31 @@ machine for each MODS channel.
 
 ### modsCCD Agent Runtime Configuration Files:
 
- * `modsccd.ini` - runtime configuration files:
-   * `modsccd_MODS1B.ini` - MODS1B
-   * `modsccd_MODS1R.ini` - MODS1R
-   * `modsccd_MODS2B.ini` - MODS2B
-   * `modsccd_MODS2R.ini` - MODS2R
+ * `modsccd.ini` - OSU lab testing file
+ * `modsccd_MODS1B.ini` - MODS1B
+ * `modsccd_MODS1R.ini` - MODS1R
+ * `modsccd_MODS2B.ini` - MODS2B
+ * `modsccd_MODS2R.ini` - MODS2R
 
+## Installation
+
+Copy the contents of this `Config/` folder into a subfolder in the public `/home/dts/Config` directory
+name `modsCCD`:
+```shell
+  cd /home/dts/Config
+  mkdir modsCCD  (if it does not already exist)
+  cd modsCCD
+  cp MODS2025/mods/Agents/modsCCD/Config/modsccd_MODS*.ini .
+  cd ..
+```
+Then make a link pointing to the correct file for the particular MODS channel:
+```
+  cd /home/dts/Config
+  ln -s modsCCD/modsccd_MODS2R.ini modsccd.ini
+```
+for example, to setup that machine's `modsCCD` agent to run the MODS2 red channel archon controller.
+
+  
 ## Configuration File Structure
 A typical runtime config file has the following structure:
 ```
