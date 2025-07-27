@@ -167,6 +167,8 @@ cmdtab[] = {   //!< global scope command table for this application
   {"shopen"  ,cmd_shopen  ,"shopen","Open the shutter, stays open until shclose"},
   {"shclose" ,cmd_shclose ,"shclose","Close the shutter"},
   {"ccdbin"  ,cmd_ccdbin  ,"ccdbin nx ny","Set/query the CCD on-chip binning factors in x and y"},
+  {"xbin"    ,cmd_xbin    ,"xbin nx","Set/query the CCD on-chip binning in x (see ccdbin, ybin)"},
+  {"ybin"    ,cmd_ybin    ,"ybin ny","Set/query the CCD on-chip binning in y (see ccdbin, xbin)"},
   {"ccdtemp" ,cmd_ccdtemp ,"ccdtemp","Query the CCD detector and mount base temperatures in deg C"},
   {"roi"     ,cmd_roi     ,"roi [off|sc ec sr er]","Set/query/reset the CCD readout region-of-interest"},
   {"ccdinit" ,cmd_ccdinit ,"ccdinit","(Re)Initialize the CCD Controller"},
