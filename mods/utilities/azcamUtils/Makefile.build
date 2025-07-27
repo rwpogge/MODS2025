@@ -1,0 +1,39 @@
+#
+# Makefile for libazcam, the azcam client utility library for MODS
+#
+# Build the package using the "build" script not with make.
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge.1@osu.edu
+#
+# First Version: 2005 May 17
+# Updated: 2025 July 26 [rwp/osu]
+#
+
+ROOTDIR     = /home/dts/mods
+VERSION     = azcamUtils v2.0.1
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+
+CFLAGS      = -w -c
+VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
+              -DAPP_COMPTIME='"$(COMPTIME)"'
+
+OBJS        = server.o image.o exposure.o ccdtemp.o azcamutils.o iosubs.o
+
+.c.o:       azcam.h
+	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
+
+all:        libazcam.a 
+
+libazcam.a:  $(OBJS) 
+	    /bin/rm -f  libazcam.a
+	    $(AR) cr libazcam.a $(OBJS)
+	    ranlib libazcam.a
+	    \cp libazcam.a $(ROOTDIR)/ulib/
+	    \cp azcam.h $(ROOTDIR)/include/
+	    /bin/rm *.o
+
+clean:
+	    /bin/rm -f libazcam.a *.o
+
