@@ -35,3 +35,15 @@ instrument control and data-acquisition system.
  * build and Makefiles
 
 links to `libazcam.a` in another part of this repository folder with the azcam interface routines.
+
+## Sample status string
+
+This is an M1.BC status string from a pre-2025 DOS IC system for MODS1 Blue
+```
+STATUS Inst=MODS1B Det=(e2v 8Kx3K) DW=T M1.CBSYNCH=1  Scale=0 DMin=0 DMax=500 DSat=65000 Exp=1200 ImTyp=OBJECT Obj=(SBS0948+532) XBin=1 YBin=1 OverX=0 OverY=0 ROI=(1,8288,1,3088) +Seq +HE TEDPower=ON LEDPower=OFF GaugePower=ON IEBLen=1 Mode=Integrating
+```
+The new format will be
+```
+STATUS Inst=MODS1B Det=(e2v 8Kx3K) Exp=1200 ImTyp=OBJECT Obj=(SBS0948+532) XBin=1 YBin=1 ROI=(1,8288,1,3088) Mode=Integrating
+```
+
