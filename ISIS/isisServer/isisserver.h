@@ -5,11 +5,12 @@
 // Main ISIS header file
 //
 // R. Pogge, OSU Astronomy Dept.
-// pogge@astronomy.ohio-state.edu
+// pogge.1@osu.edu
 // 2003 January 20
 //
-// Last modification: 2024 Feb 19 [v3.x]
-//
+// Updated:
+//   2024 Feb 19 - v3.0 for AlmaLinux 9.1
+//   2025 Jul 27 - v3.1 for AlmaLinux 9.3, pre-installation
 
 /*!
   \file isisserver.h
@@ -224,8 +225,10 @@ extern struct serial {
 // on startup or restart.  These are not put into the host table
 // unless we get a response from one of the ports.
 //
+// increased to 12 - the 2025 system has more agents
+//
 
-#define MAXPRESET   8  //!< Maximum number of preset UDP ports
+#define MAXPRESET  12  //!< Maximum number of preset UDP ports
 
 /*!
   \brief ISIS preset UDP socket port table
