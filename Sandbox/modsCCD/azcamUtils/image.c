@@ -102,7 +102,10 @@ imgExpNum(azcam_t *cam, int expNum, char *reply)
 int
 getLastFile(azcam_t *cam, char *reply)
 {
-  if (azcamCmd(cam,"mods.get_lastfile",reply)<0)
+  char cmdStr[64];
+
+  strcpy(cmdStr,"mods.get_lastfile");
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   strcpy(cam->lastFile,reply);
