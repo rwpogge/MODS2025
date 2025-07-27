@@ -32,7 +32,17 @@ Otherwise, launch as a python program, either foreground or background.
 
 ## Development Notes
 
-2025 July 23 - multiple updates while developing the C++ client app that will sit between MODS and the azcam server
-2025 July 18 - got telescope_mods.py working with the LBT python-iif code to pull TCS info into azcam
-2025 July 8 - Starting work for the MODS Archon detector upgrade at LBTO in Summer 2025 [rwp/osu]
+### 2025 July 26
+Server tested with the `modsCCD` azcam client that will take the place of the DOS "IC" basic program functions.
+Version ready for live testing in the Tucson lab before Archon installation in MODS at LBTO first week of 
+August.
+
+### 2025 July 23
+Multiple updates while developing the C++ client app that will sit between MODS and the azcam server
+
+### 2025 July 18
+Got telescope_mods.py working with the LBT python-iif code to pull TCS info into azcam
+
+### 2025 July 8
+Starting work for the MODS Archon detector upgrade at LBTO in Summer 2025 [rwp/osu]
 
