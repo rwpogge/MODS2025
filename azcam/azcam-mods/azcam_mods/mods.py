@@ -397,12 +397,12 @@ class MODS(object):
 
         et = float(expTime)
         if et < 0.0:
-            return "ERROR: set_expTime() expTime={expTime} invalid, must be >= 0.0 seconds"
+            return "ERROR set_expTime() expTime={expTime} invalid, must be >= 0.0 seconds"
 
         try:        
             azcam.db.tools["exposure"].set_exposuretime(et)
         except Exception as e:
-            return f"ERROR: set_exptime() - {e}"
+            return f"ERROR set_exptime() - {e}"
 
         return "OK"
 
@@ -464,7 +464,7 @@ class MODS(object):
                                                        )
             return reply
         except Exception as e:                                                       
-            return f"ERROR: expose() - {e}"
+            return f"ERROR expose() - {e}"
     
     
     def expwait(self, 
@@ -508,7 +508,7 @@ class MODS(object):
                                                       )
             return reply
         except Exception as e:                                                       
-            return f"ERROR: expwait() - {e}"
+            return f"ERROR expwait() - {e}"
     
 
     def expstatus(self):
@@ -651,7 +651,7 @@ class MODS(object):
 
         Returns
         -------
-        pctReadout : float
+        pctLeft : float
             percentage of the CCD readout, range 0..100%
 
         Will return 100% is readout is complete.
@@ -750,7 +750,7 @@ class MODS(object):
         try:
             reply = azcam.db.tools["controller"].archon_command("TRIGOUTINVERT=1")
         except Exception as e:
-            reply = f"ERROR: shopen() - {e}"
+            reply = f"ERROR shopen() - {e}"
             
         return reply
     
@@ -769,7 +769,7 @@ class MODS(object):
         try:
             reply = azcam.db.tools["controller"].archon_command("TRIGOUTINVERT=0")
         except Exception as e:
-            reply = f"ERROR: shclose() - {e}"
+            reply = f"ERROR shclose() - {e}"
             
         return reply
         
@@ -879,7 +879,7 @@ class MODS(object):
         
         exn = int(expnum)
         if exn < 1 or exn > 9999:
-            return f"ERROR: set_expnum() expnum={expnum} invalid, must be 1..9999"
+            return f"ERROR set_expnum() expnum={expnum} invalid, must be 1..9999"
         
         azcam.db.tools["exposure"].sequence_number = exn
         
@@ -932,9 +932,9 @@ class MODS(object):
                 else:
                     azcam.db.tools["exposure"].folder = f"{dataPath}/"
             else:
-                return f"ERROR: set_path() directory {dataPath} exists but is not writable"
+                return f"ERROR set_path() directory {dataPath} exists but is not writable"
         else:
-            return f"ERROR: set_path() directory {dataPath} was not found"
+            return f"ERROR set_path() directory {dataPath} was not found"
         
         return "OK"
 
@@ -1006,7 +1006,7 @@ class MODS(object):
             val,comment,ktype = azcam.db.tools["exposure"].header.get_keyword(fitsKey.upper())
             return val
         except:
-            return f"ERROR: get_keyword() header keyword {fitsKey} not found"
+            return f"ERROR get_keyword() header keyword {fitsKey} not found"
         
         
     def clearKeywords(self,toolID="exposure"):
@@ -1067,7 +1067,7 @@ class MODS(object):
                 azcam.db.tools["exposure"].set_image_type(imgType.lower())
                 self.set_keyword("IMAGETYP",imgType.upper())
             else:
-                return f"ERROR: Unrecognized image type {imgType} must be one of {str(self.image_types)}"
+                return f"ERROR Unrecognized image type {imgType} must be one of {str(self.image_types)}"
 
         # if imgTitle is not given, don't change it.  We might have changed imgType
 
@@ -1313,5 +1313,5 @@ class MODS(object):
             else:
                 return f"wtf is {cmdStr} nowait"
         except Exception as e:
-            return f"ERROR: wtf~? - {e}"
+            return f"ERROR wtf~? - {e}"
         

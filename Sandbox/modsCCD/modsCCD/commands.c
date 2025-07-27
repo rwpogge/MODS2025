@@ -97,13 +97,15 @@ cmd_quit(char *args, MsgType msgtype, char *reply)
 
   // Before quitting, save our runtime config for restart
 
+  /*
   if (saveConfig(client.rcFile)<0)
     sprintf(reply,"%s - Warning: config file %s not saved",
 	    reply,client.rcFile);
   else
     sprintf(reply,"%s - Saved runtime config in %s",
 	    reply,client.rcFile);
-
+  */
+  
   return CMD_OK;
 }
 

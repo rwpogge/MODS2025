@@ -173,13 +173,15 @@ setImageInfo(azcam_t *cam, char *imgType, char *imgTitle, char *reply)
   char cmdStr[64];
 
   if (strlen(imgType)==0) {
-    if (azcamCmd(cam,(char *)"exposure.get_image_type",reply)<0)
+    strcpy(cmdStr,"exposure.get_image_type");
+    if (azcamCmd(cam,cmdStr,reply)<0)
       return -1;
     strcpy(imgType,reply);
   }
 
   if (strlen(imgTitle)==0) {
-    if (azcamCmd(cam,(char *)"exposure.get_image_title",reply)<0)
+    strcpy(cmdStr,"exposure.get_image_title");
+    if (azcamCmd(cam,cmdStr,reply)<0)
       return -1;
     strcpy(imgTitle,reply);
   }
@@ -213,20 +215,24 @@ setExposure(azcam_t *cam, float exptime, char *reply)
 {
   char cmdStr[64];
 
-  if (exptime < 0) {
-    sprintf(reply,"Invalid exposure time %.3f, must be positive",exptime);
-    return -1;
+  // if exptime is <0, this is a query
+  
+  if (exptime >= 0.0) {
+    sprintf(cmdStr,"mods.set_exptime %.3f",exptime);
+    if (azcamCmd(cam,cmdStr,reply)<0)
+      return -1;
   }
 
-  sprintf(cmdStr,"mods.set_exptime %f.3",exptime);
+  // confirm
 
+  strcpy(cmdStr,"mods.get_exptime");
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  // Successful, save the exposure time in the cam struct
+  printf("got reply=%s\n",reply);
+  cam->expTime = atof(reply);
+  sprintf(reply,"ExpTime=%.3f sec",cam->expTime);
 
-  cam->expTime = exptime;
-  sprintf(reply,"ExpTime=%.3f sec",exptime);
   return 0;
 
 }
@@ -403,7 +409,8 @@ setROI(azcam_t *cam, int sc, int ec, int sr, int er, char *reply)
 
   // query and return
 
-  if (azcamCmd(cam,(char *)"mods.get_roi",reply)<0)
+  strcpy(cmdStr,"mods.get_roi");
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bc,&br);
@@ -425,9 +432,11 @@ setROI(azcam_t *cam, int sc, int ec, int sr, int er, char *reply)
 int
 getROI(azcam_t *cam, char *reply)
 {
+  char cmdStr[64];
   int sc, ec, sr, er, bc, br;
-  
-  if (azcamCmd(cam,(char *)"mods.get_roi",reply)<0)
+
+  strcpy(cmdStr,"mods.get_roi");
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bc,&br);
@@ -451,14 +460,17 @@ getROI(azcam_t *cam, char *reply)
 int
 resetROI(azcam_t *cam, char *reply)
 {
+  char cmdStr[64];
   int sc, ec, sr, er, bc, br;
-  
-  if (azcamCmd(cam,(char *)"mods.reset_roi",reply)<0)
+
+  strcpy(cmdStr,"mods.reset_roi");
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   // query and return
 
-  if (azcamCmd(cam,(char *)"mods.get_roi",reply)<0)
+  strcpy(cmdStr,"mods.get_roi");
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   sscanf(reply,"%d %d %d %d %d %d",&sc,&ec,&sr,&er,&bc,&br);

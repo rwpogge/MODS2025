@@ -344,8 +344,8 @@ azcamCmd(azcam_t *cam, char *cmdStr, char *reply)
     return 0;
   }
 
-  if (strcasecmp(status,"ERROR")==0) {
-    sprintf(reply,"SERVER ERROR %s",msgBody);
+  if (strcasecmp(status,"ERROR")==0 || strcasecmp(status,"ERROR:")==0) {
+    sprintf(reply,"AZCAM ERROR %s",msgBody);
     return -1;
   }
 
