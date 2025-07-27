@@ -1,6 +1,6 @@
 #
 # retired: MSUtils, WAGOUtils, IMPv2Utils, SiUtils, FCSUtils
-EXEC_DIR = ISLUtils INSTRUtils ISLTimes LogUtils skyUtils iifUtils
+EXEC_DIR = ISLUtils INSTRUtils ISLTimes LogUtils skyUtils iifUtils azcamUtils
 #
 all:	execs
 #
