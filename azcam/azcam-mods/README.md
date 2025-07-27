@@ -29,7 +29,6 @@ ipython -i -m azcam_mods.server -- -mods1b
 ```
 Otherwise, launch as a python program, either foreground or background.
 
-
 ## Development Notes
 
 ### 2025 July 26
