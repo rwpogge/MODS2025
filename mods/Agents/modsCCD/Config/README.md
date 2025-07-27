@@ -30,4 +30,53 @@ machine for each MODS channel.
    * `modsccd_MODS2B.ini` - MODS2B
    * `modsccd_MODS2R.ini` - MODS2R
 
+## Configuration File Structure
+A typical runtime config file has the following structure:
+```
+#
+# modsCCD client runtime config file
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge.1@osu.edu
+# Updated: 2025 July 24 [rwp/osu]
+#
+# MODS1B LBTO Archon system
+#
+################################################################
+
+# modsCCD's ISIS client info (Host=localhost is implicit)
+
+ID   M1.BC
+Port 10401
+
+# Application Mode: either STANDALONE or ISISclient
+
+#Mode Standalone
+Mode ISISclient
+
+# Instrument Name
+
+Instrument MODS1B
+
+# azcam server info
+
+AzCamHost 192.168.139.132
+AzCamPort 2402
+TimeOut 10
+   
+# ISIS server info - only used if Mode=ISISclient
+
+ISISID   IS
+ISISHost 192.168.139.130
+ISISPort 6600
+
+# Runtime flags 
+
+VERBOSE
+#nolog
+#debug
+```
+As this example shows, the goal is that runtime configuration files
+are easily read and created by humans.  A common syntax makes
+maintenance of many clients easier.
 
