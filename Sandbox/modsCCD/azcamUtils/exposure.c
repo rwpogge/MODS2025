@@ -229,7 +229,6 @@ setExposure(azcam_t *cam, float exptime, char *reply)
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  printf("got reply=%s\n",reply);
   cam->expTime = atof(reply);
   sprintf(reply,"ExpTime=%.3f sec",cam->expTime);
 
