@@ -116,7 +116,7 @@ main(int argc, char *argv[])
 
   char camData[256];   // raw azcam socket port string
   int lastchar;
-  char msgStr[64];
+  char msgStr[256];
 
   // readline & history handling stuff
   
