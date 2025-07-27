@@ -1959,39 +1959,39 @@ cmd_status(char *args, MsgType msgtype, char *reply)
   sprintf(reply,"Inst=%s Controller=Archon Exp=%.1f ImType=%s Obj=(%s)",obs.instID,
 	  ccd.expTime,obs.imgType,obs.imgTitle);
 
-  sprintf(reply,"%s XBin=%d YBin=%d ROI=(%d,%d,%d,%d)",ccd.colBin,ccd.rowBin,
+  sprintf(reply,"%s XBin=%d YBin=%d ROI=(%d,%d,%d,%d)",reply,ccd.colBin,ccd.rowBin,
 	  ccd.firstCol,ccd.lastCol,ccd.firstRow,ccd.lastRow);
 
-  sprintf(reply,"%s CCDTemp=%.1f BaseTemp=%.1f",ccd.ccdTemp,ccd.baseTemp);
+  sprintf(reply,"%s CCDTemp=%.1f BaseTemp=%.1f",reply,ccd.ccdTemp,ccd.baseTemp);
 
   switch(ccd.State) {
   case SETUP:
-    sprintf(reply,"%s Mode=INITIALIZING",reply);
+    sprintf(reply,"%s Mode=Setup",reply);
     break;
       
   case EXPOSING:
-    sprintf(reply,"%s Mode=INTEGRATING",reply);
+    sprintf(reply,"%s Mode=Integrating",reply);
     break;
 
   case ABORT:
-    sprintf(reply,"%s Mode=ABORTING",reply);
+    sprintf(reply,"%s Mode=Aborting",reply);
     break;
 
   case PAUSE:
-    sprintf(reply,"%s Mode=PAUSED",reply);
+    sprintf(reply,"%s Mode=Paused",reply);
     break;
 
   case RESUME:
-    sprintf(reply,"%s Mode=INTEGRATING",reply);
+    sprintf(reply,"%s Mode=Integrating",reply);
     break;
 
   case READOUT:
   case READ:
-    sprintf(reply,"%s Mode=READOUT",reply);
+    sprintf(reply,"%s Mode=Readout",reply);
     break;
       
   case WRITING:
-    sprintf(reply,"%s Mode=WRITING",reply);
+    sprintf(reply,"%s Mode=Writing",reply);
     break;
       
   default:
