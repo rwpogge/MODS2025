@@ -21,7 +21,7 @@ MODS1:
    M1.TC  UDP/IP 192.168.139.130 10801 # SX lbttcs
    M1.RC  UPD/IP 192.168.139.131 10402 # red modsCCD agent
    M1.BC  UPD/IP 192.168.139.132 10401 # blue modsCCD agent
-   M1.RHE UDP/IP 192.168.139.142 10502 # red modsHEB agent
+   M1.RHE UDP/IP 192.168.139.131 10502 # red modsHEB agent
    M1.BHE UDP/IP 192.168.139.132 10501 # blue modsHEB agent
    M1.ENV UDP/IP 192.168.139.130 10901 # modsEnv agent
    modsUI UDP/IP 192.168.139.131 20800 (base), 20801 (dashboard)
