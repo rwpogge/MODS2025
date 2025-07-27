@@ -1,0 +1,45 @@
+#
+# Makefile for modsCCD - azcam client for MODS at LBT
+#
+# Use "build", not "make" to build the modsCCD executable.
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge.1@osu.edu
+# Last Modified: 2025 July 26
+#
+# 2025 July - port to AlmaLinux 9
+#
+VERSION     = v0.8.0
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+
+ROOTDIR     = /home/dts/mods
+ISISDIR     = /home/dts/ISIS
+BINDIR      = $(ROOTDIR)/bin
+
+INCS        = -I$(ISISDIR)/lib -I$($ROOTDIR)/include
+
+CFLAGS      = -w -c $(INCS) 
+VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
+              -DAPP_COMPTIME='"$(COMPTIME)"'
+
+LIBS        = $(INCS) -L$(ISISDIR)/lib -L$(ROOTDIR)/ulib -lisis -lazcam \
+	      -lreadline -lhistory -lncurses
+LFLAGS      = -o modsCCD
+
+OBJS        = commands.o clientutils.o config.o 
+
+.c.o:       client.h commands.h
+	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
+
+all:        modsCCD
+
+modsCCD:     $(OBJS) main.c
+	    $(CC) $(LFLAGS) $(VFLAGS) main.c $(OBJS) $(LIBS)
+
+clean:
+	    /bin/rm -f modsCCD *.o
+
+install:
+	    \cp modsCCD ../bin/
+	    /bin/rm -f *.o
