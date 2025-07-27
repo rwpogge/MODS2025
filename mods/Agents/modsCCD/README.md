@@ -19,11 +19,11 @@ but pretty close. Aside from the diffent syntax of the python `azcam` server com
 and has an open architecture (unlike the older AzCam which was pre-compiled for Windows), we can customize the server to meet us
 part way.
 
-The purpose of `modsCCD` is to replicate the function and command syntax of the OSU DOS IC program which has run OSU's CCD 
-cameras with Bruce Atwood's controller hardware.  This allows us to integrate `modsCCD` nearly seamlessly into the existing
-MODS data taking system (vintage 2010) without having to gut the core data-taking system.  `modsCCD` uses the same IMPv2
-messaging protocol (sometimes called "ISIS protocol" for the `isis` message-passing server we use) as the current MODS
-instrument control and data-acquisition system.
+The purpose of `modsCCD` is to replicate the function and command syntax of the OSU DOS IC program which was used to run OSU's CCD 
+cameras with Bruce Atwood's custom OSU controller hardware since the 1990s. By replicating the command-and-control flow and 
+syntax, it allows us to integrate `modsCCD` nearly seamlessly into the existing MODS data taking system (vintage 2010) without having
+to gut and rewrite the core data-taking system.  `modsCCD` uses the same IMPv2 messaging protocol (sometimes called "ISIS protocol" 
+for the `isis` message-passing server we use) as the current MODS instrument control and data-acquisition system.
 
 ## Contents
 
