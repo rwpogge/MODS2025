@@ -1552,6 +1552,8 @@ cmd_roi(char *args, MsgType msgtype, char *reply)
   int sr;
   int er;
   char cmd[16];
+  char roiStr[24];
+  
   int nargs;
 
   // check the file descriptor and make sure we have an active connection
@@ -1565,14 +1567,15 @@ cmd_roi(char *args, MsgType msgtype, char *reply)
 
   if (strlen(args)>0) {
     GetArg(args,1,argbuf); // first argument might be ON or OFF
-
+    
     if (strcasecmp(argbuf,"OFF")==0) { // OFF = reset ROI to full-frame, unbinned radout
       if (resetROI(&ccd,reply)<0)
 	return CMD_ERR;
 
     }
     else if (strcasecmp(argbuf,"ON")==0) { // ON = set subframe readout ROI
-      nargs = sscanf(args,"%s %d %d %d %d",cmd,&sc,&ec,&sr,&er);
+      sscanf(args,"%s %[^\n]",cmd,roiStr);
+      nargs = sscanf(roiStr,"%d %d %d %d",&sc,&ec,&sr,&er);
       if (nargs <= 0) {
 	sprintf(reply,"Invalid ROI directive %s, must be ON sc ec sr er",args);
 	return CMD_ERR;
