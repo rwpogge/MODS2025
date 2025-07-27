@@ -11,7 +11,7 @@
 
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \original 2005 May 17
-  \date 2025 July 23
+  \date 2025 July 26 for MODS
 */
 
 #include "azcam.h" // azcam client API header 
@@ -23,24 +23,20 @@ int
 imgFilename(azcam_t *cam, char *fileStr, char *reply)
 {
   char cmdStr[64];
-  int doSet;
   
-  if (strlen(fileStr) == 0) {
-    doSet = 0;
-    sprintf(cmdStr,"mods.get_filename");
-  }
-  else {
-    doSet = 1;
+  if (strlen(fileStr) > 0) {
     sprintf(cmdStr,"mods.set_filename %s",fileStr);
+    if (azcamCmd(cam,cmdStr,reply)<0)
+      return -1;
   }
+
+  // confirm
   
+  strcpy(cmdStr,"mods.get_filename");
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  if (doSet)
-    strcpy(cam->fileName,fileStr);
-  else
-    strcpy(cam->fileName,reply);
+  strcpy(cam->fileName,reply);
 
   sprintf(reply,"filename=%s",cam->fileName);
   
@@ -54,28 +50,25 @@ int
 imgPath(azcam_t *cam, char *pathStr, char *reply)
 {
   char cmdStr[64];
-  int doSet;
-  
-  if (strlen(pathStr) == 0) {
-    doSet = 0;
-    sprintf(cmdStr,"mods.get_path");
-  }
-  else {
-    doSet = 1;
+
+  if (strlen(pathStr) > 0) {
     sprintf(cmdStr,"mods.set_path %s",pathStr);
+    if (azcamCmd(cam,cmdStr,reply)<0)
+      return -1;
   }
+
+  // confirm
   
+  strcpy(cmdStr,"mods.get_path");
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  if (doSet)
-    strcpy(cam->filePath,reply);
-  else
-    strcpy(cam->filePath,pathStr);
+  strcpy(cam->pathName,reply);
 
-  sprintf(reply,"path=%s",cam->filePath);
+  sprintf(reply,"PATH=%s",cam->pathName);
   
   return 0;
+
 }
 
 // imgExpNum - set/get counter for the next image file
@@ -85,25 +78,22 @@ int
 imgExpNum(azcam_t *cam, int expNum, char *reply)
 {
   char cmdStr[64];
-  int doSet;
-  
-  if (expNum < 0) {
-    strcpy(cmdStr,"mods.get_expnum");
-    doSet = 0;
-  }
-  else {
+
+  if (expNum >= 0) {
     sprintf(cmdStr,"mods.set_expnum %d",expNum);
-    doSet = 1;
+    if (azcamCmd(cam,cmdStr,reply)<0)
+      return -1;
   }
+
+  // confirm (or query)
+  
+  strcpy(cmdStr,"mods.get_expnum");
   if (azcamCmd(cam,cmdStr,reply)<0)
-    return -1;
+      return -1;
+  
+  cam->fileNum = atoi(reply);
 
-  if (doSet)
-    cam->fileNum = expNum;
-  else
-    cam->fileNum = atoi(reply);
-
-  sprintf(reply,"expnum=%d",cam->fileNum);
+  sprintf(reply,"EXPNUM=%d",cam->fileNum);
   return 0;
 }
 
