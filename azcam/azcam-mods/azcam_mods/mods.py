@@ -1063,8 +1063,9 @@ class MODS(object):
         # lower case and validate against self.image_types for the class
         
         if imgType is not None and len(imgType) > 0:
-            if imgType.lower() in self.image_types:
-                azcam.db.tools["exposure"].set_image_type(imgType.lower())
+            imgType = re.sub("[\"\']","",imgType.lower()) # lowercase and cleaned of quotes
+            if imgType in self.image_types:
+                azcam.db.tools["exposure"].set_image_type(imgType)
                 self.set_keyword("IMAGETYP",imgType.upper())
             else:
                 return f"ERROR Unrecognized image type {imgType} must be one of {str(self.image_types)}"

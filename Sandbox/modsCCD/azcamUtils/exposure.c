@@ -186,7 +186,7 @@ setImageInfo(azcam_t *cam, char *imgType, char *imgTitle, char *reply)
     strcpy(imgTitle,reply);
   }
 			  
-  sprintf(cmdStr,"mods.set_imageInfo \'%s\' \'%s\'",imgType,imgTitle);
+  sprintf(cmdStr,"mods.set_imageInfo %s \'%s\'",imgType,imgTitle);
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
