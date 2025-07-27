@@ -63,9 +63,9 @@ imgPath(azcam_t *cam, char *pathStr, char *reply)
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
-  strcpy(cam->path,reply);
+  strcpy(cam->filePath,reply);
 
-  sprintf(reply,"PATH=%s",cam->path);
+  sprintf(reply,"PATH=%s",cam->filePath);
   
   return 0;
 
