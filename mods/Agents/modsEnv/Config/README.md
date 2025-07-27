@@ -2,7 +2,7 @@
 
 **Updated: 2025 July 27 [rwp/osu]**
 
-These are files used by modsEnv agents for each of the binocular MODS channels.
+These are files used by modsEnv agents for each of the binocular MODS instruments.
 
 ## Config directory
 
