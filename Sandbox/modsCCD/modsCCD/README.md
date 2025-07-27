@@ -44,6 +44,6 @@ STATUS Inst=MODS1B Det=(e2v 8Kx3K) DW=T M1.CBSYNCH=1  Scale=0 DMin=0 DMax=500 DS
 ```
 The new format will be
 ```
-STATUS Inst=MODS1B Det=(e2v 8Kx3K) Exp=1200 ImTyp=OBJECT Obj=(SBS0948+532) XBin=1 YBin=1 ROI=(1,8288,1,3088) Mode=Integrating
+STATUS Inst=MODS1B Det=(e2v 8Kx3K) Exp=1200 ImTyp=OBJECT Obj=(SBS0948+532) XBin=1 YBin=1 ROI=(1,8288,1,3088) CCDTemp=-95.3 BaseTemp=-132.5 Mode=Integrating
 ```
 
