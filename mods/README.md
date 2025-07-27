@@ -10,7 +10,7 @@ Main code tree for the MODS instrument control and data-taking software.
   * `TclTk` - tcl/tk code for the IMCS monitor GUIs (aka the IMCS "radar screens")
   * `agw` - MODS AGw server code (agwServer)
   * `mmc` - MODS Mechanism Controller (mmc) service (aka the MODS "IE")
-  * `utilities` - MODS utilities libraries
+  * `utilities` - code for the MODS utility libraries (e.g., azcamUtils, iifUtils, etc.)
   * `modsalloc` - MODS instrument server shared memory segment service (run as a `systemctl` service)
   * `plc` - MODS MicroLYNX-7 stepper motor controller microcode for the MODS mechanisms
 
