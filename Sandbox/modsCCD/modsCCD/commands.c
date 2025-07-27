@@ -2737,11 +2737,11 @@ KeyboardCommand(char *line)
       switch (cmdtab[icmd].action(args,EXEC,reply)) {
 	
       case CMD_ERR:
-	printf("ERROR: %s\n",reply);
+	printf("ERROR: %s %s\n",cmd, reply);
 	break;
 	
       case CMD_OK:
-	printf("DONE: %s\n",reply);
+	printf("DONE: %s %s\n",cmd, reply);
 	break;
 	
       case CMD_NOOP:
@@ -2785,6 +2785,10 @@ KeyboardCommand(char *line)
   used with care, as you could do something stupid (though your client
   application should not allow actions that would be physically unsafe
   to personnel or equipment).
+
+  New style since 2010 is to include the command name in the reply:
+  
+     me>other DONE: CMD your command returned this...
 
   \sa KeyboardCommand()
 */
@@ -2872,14 +2876,14 @@ SocketCommand(char *buf)
     // Unknown command, gripe back to the sender, otherwise try to do it
 
     if (nfound == 0) {
-      sprintf(msg,"%s>%s ERROR: Unknown command - %s\n",
-              client.ID,srcID,msgbody);
+      sprintf(msg,"%s>%s ERROR: %s Unknown command - %s\n",
+	      client.ID,srcID,cmd,msgbody);
     }
     else {
       switch(cmdtab[icmd].action(args,msgtype,reply)) {
 
       case CMD_ERR: // command generated an error
-	sprintf(msg,"%s>%s ERROR: %s\n",client.ID,srcID,reply);
+	sprintf(msg,"%s>%s ERROR: %s %s\n",client.ID,srcID,cmd,reply);
 	break;
 
       case CMD_NOOP: // command is a no-op, debug/verbose output only
@@ -2889,7 +2893,7 @@ SocketCommand(char *buf)
 
       case CMD_OK:  // command executed OK, return reply
       default:
-	sprintf(msg,"%s>%s DONE: %s\n",client.ID,srcID,reply);
+	sprintf(msg,"%s>%s DONE: %s %s\n",client.ID,srcID,cmd,reply);
 	break;
 	
       } // end of switch on cmdtab.action()

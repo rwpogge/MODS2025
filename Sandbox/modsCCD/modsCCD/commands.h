@@ -160,7 +160,7 @@ cmdtab[] = {   //!< global scope command table for this application
   {"support" ,cmd_support ,"support <str>","Set/query the SUPPORT keyword for the header"},
   {"telops"  ,cmd_telops  ,"telops <str>","Set/query the TELOPS keyword for the header"},
   {"filename",cmd_filename,"filename <root>","Set/query the data file rootname (rootname.nnnn.fits)"},
-  {"path"    ,cmd_path    ,"path <C:/>","Set/query the raw data file path on the AzCam server"},
+  {"path"    ,cmd_path    ,"path /home/data/","Set/query the raw data file path on the AzCam server"},
   {"expnum"  ,cmd_expnum  ,"expnum <n>","Set/query the file counter for the *NEXT* image"},
   {"lastfile",cmd_lastfile,"lastfile","Query the name of the last file written to disk"},
   {"process" ,cmd_process ,"process <image>","Upload image info for post-processing following write"},
