@@ -24,11 +24,11 @@ machine for each MODS channel.
 
 ### modsCCD Agent Runtime Configuration Files:
 
- * `modsccd.ini` - OSU lab testing file
  * `modsccd_MODS1B.ini` - MODS1B
  * `modsccd_MODS1R.ini` - MODS1R
  * `modsccd_MODS2B.ini` - MODS2B
  * `modsccd_MODS2R.ini` - MODS2R
+ * `modsccd.ini` - OSU lab testing file
 
 ## Installation
 
