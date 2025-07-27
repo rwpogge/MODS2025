@@ -1575,6 +1575,8 @@ cmd_roi(char *args, MsgType msgtype, char *reply)
     }
     else if (strcasecmp(argbuf,"ON")==0) { // ON = set subframe readout ROI
       sscanf(args,"%s %[^\n]",cmd,roiStr);
+      printf("args=%s, cmd=%s, roiStr=%s\n",args,cmd,roiStr);
+      
       nargs = sscanf(roiStr,"%d %d %d %d",&sc,&ec,&sr,&er);
       if (nargs <= 0) {
 	sprintf(reply,"Invalid ROI directive %s, must be ON sc ec sr er",args);
