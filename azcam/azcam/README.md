@@ -32,15 +32,23 @@ See https://github.com/mplesser/azcam-tool.git for the standard GUI used by most
 
 See https://github.com/mplesser/azcam-console.git for a python package which supports a local or remote command line interface and sensor characterization tools.
 
-## Installation Example
-
-Example from Mike Lesser's GitHub version for reference:
-
+## Installation
+Copy from the MODS2025 repository (/make sure there is no existing /home/dts/azcam folder or if so, back it up first:
 ```shell
-git clone https://github.com/mplesser/azcam
-git clone https://github.com/mplesser/azcam-mods
-git clone https://github.com/mplesser/azcam-console [**optional**]
-python -m pip install -e ./azcam
-python -m pip install -e ./azcam-mods
-[python -m pip install -e ./azcam-console]
+cd /home/dts
+cp -r ~/MODS2025/azcam .
 ```
+then
+```
+cp /home/dts/azcam
+python -m pip install -e ./azcam       <- core azcam server
+python -m pip install -e ./azcam-mods  <- custom MODS azcam server
+```
+
+## Running
+
+For test purposes, run the MODS azcam server in an interactive ipython shell
+```shell
+ipython -i -m azcam_mods.server -- -mods1b
+```
+which starts MODS azcam for the MODS1B detector system.
