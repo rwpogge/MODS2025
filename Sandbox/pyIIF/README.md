@@ -45,3 +45,14 @@ Will be interesting to see what this does with a live system instead of the simu
 that if I wrote a function that instantiated a proxy, did the GetParameters() query, then destroyed the proxy, the impact on timing was at the 10s of milliseconds level.
 azcam-mods interrogation of the TCS DD for headers is going to be low duty cycle, so we can stand a little setup/tear-down overhead if it means we are more safe
 against the TCS going down taking the azcam server with it. 
+
+### Installation Notes
+
+The python-iif code is installed in these steps
+```shell
+% conda activate /usr/local/conda/envs/py312
+% pip install --trusted-host yumsrv.tucson.lbto.org --extra-index-url http://yumsrv.tucson.lbto.org/pip/repo lbto-iif
+```
+The last step can sometimes take a while as it digs up some of the bits it needs.  
+
+#### missing 
