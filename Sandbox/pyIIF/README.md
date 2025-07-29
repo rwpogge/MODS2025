@@ -51,8 +51,9 @@ against the TCS going down taking the azcam server with it.
 The python-iif code is installed in these steps
 ```shell
 % conda activate /usr/local/conda/envs/py312
+% conda install conda-forge::zeroc-ice
 % pip install --trusted-host yumsrv.tucson.lbto.org --extra-index-url http://yumsrv.tucson.lbto.org/pip/repo lbto-iif
 ```
-The last step can sometimes take a while as it digs up some of the bits it needs.  
+The conda-forge step can take a long time, so wait it out.  
 
 #### missing 
