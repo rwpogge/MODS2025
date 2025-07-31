@@ -141,7 +141,7 @@ class TempConMODS(TempCon):
         if keyword == "CCDTEMP":
             temp = reply[0]
         elif keyword == "BASETEMP":
-            temp = reply[2]
+            temp = reply[1]
         elif keyword in self.get_keywords():
             value = self.header.values[keyword]
             temp = value
