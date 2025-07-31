@@ -3,7 +3,7 @@ Defines the MODS class for azcam
 
 Original by Mike Lesser
 
-Updated: 2025 July 25 [rwp/osu]
+Updated: 2025 July 31 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -452,19 +452,28 @@ class MODS(object):
         See also: expwait()        
         '''
 
+        # trust but verify: make sure shutter is closed
+        
+        try:
+            self.shclose()
+        except Exception as exp:
+            return f"ERROR expose() - {exp}"
+        
         # strip extraneous quotes from image_title
         
         if len(image_title) > 0:
             image_title = re.sub("[\"\']","",image_title)
 
+        # do it!
+        
         try:
             reply = azcam.db.tools["exposure"].expose1(exposure_time,
                                                        image_type,
                                                        image_title
                                                        )
             return reply
-        except Exception as e:                                                       
-            return f"ERROR expose() - {e}"
+        except Exception as exp:                                                       
+            return f"ERROR expose() - {exp}"
     
     
     def expwait(self, 
@@ -495,12 +504,23 @@ class MODS(object):
         
         This is not the preferred method, see expose()
 
-        See also: exppse()        
+        See also: expose()        
         '''
 
+        # trust but verify: make sure shutter is closed
+        
+        try:
+            self.shclose()
+        except Exception as exp:
+            return f"ERROR expose() - {exp}"
+        
+        # strip extraneous quotes from the title
+        
         if len(image_title) > 0:
             image_title = re.sub("[\"\']","",image_title)
 
+        # do it!
+        
         try:
             reply = azcam.db.tools["exposure"].expose(exposure_time,
                                                       image_type,
@@ -745,12 +765,25 @@ class MODS(object):
         The shutter stays open until shclose() is sent or the Archon
         controller is reset.
 
+        This is a bare-metal azcam controller operation.  We have
+        to find the index of system parameter TRIGOUTINVERT from the
+        controller tool dict_wconfig, craft the WCONFIG command to 
+        set TRIGOUTINVERT=1, send it, then follow with APPLYSYSTEM to set it.
+        
+        shopen() must always be followed by shclose().  However, to ensure
+        we don't leave the shutter open, every expose() command will
+        use shclose() to make sure.
+        
+        See also: shclose()
         '''
         
         try:
-            reply = azcam.db.tools["controller"].archon_command("TRIGOUTINVERT=1")
-        except Exception as e:
-            reply = f"ERROR shopen() - {e}"
+            indx = azcam.db.tools["controller"].dict_wconfig["TRIGOUTINVERT"]
+            cmd = f"WCONFIG{indx&0xFFFF:04X}TRIGOUTINVERT=1"
+            reply = azcam.db.tools["controller"].archon_command(cmd)
+            reply = azcam.db.tools["controller"].archon_command("APPLYSYSTEM")
+        except Exception as exp:
+            reply = f"ERROR shopen() - {exp}"
             
         return reply
     
@@ -763,11 +796,19 @@ class MODS(object):
         -------
         Archon controller response or error message if exception.
 
+        This is a bare-metal azcam controller operation.  We have
+        to find the index of system parameter TRIGOUTINVERT from the
+        controller tool dict_wconfig, craft the WCONFIG command to
+        set TRIGOUTINVERT=0, send it, then follow with APPLYSYSTEM to set it.
+
         See also: shopen()
         '''
         
         try:
-            reply = azcam.db.tools["controller"].archon_command("TRIGOUTINVERT=0")
+            indx = azcam.db.tools["controller"].dict_wconfig["TRIGOUTINVERT"]
+            cmd = f"WCONFIG{indx&0xFFFF:04X}TRIGOUTINVERT=0"
+            reply = azcam.db.tools["controller"].archon_command(cmd)
+            reply = azcam.db.tools["controller"].archon_command("APPLYSYSTEM")
         except Exception as e:
             reply = f"ERROR shclose() - {e}"
             
