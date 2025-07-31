@@ -1,7 +1,7 @@
 [project]
 name = "azcam-mods"
-version = "25.0.2"
-description = "AzCam extension for LBTO MODS camera system"
+version = "25.0.4"
+description = "azcam extension for the LBTO MODS camera system"
 license = { file = "LICENSE" }
 readme = "README.md"
 keywords = ["ccd", "imaging", "astronomy", "sensors"]
@@ -13,7 +13,7 @@ dependencies = ["ipython", "rich", "azcam"]
 
 [project.urls]
 Documentation = "https://azcam.readthedocs.io/"
-Repository = "https://github.com/mplesser/azcam-mods/"
+Repository = "https://github.com/rwpogge/MODS2025"
 
 [build-system]
 requires = ["flit_core >=3.2,<4"]
