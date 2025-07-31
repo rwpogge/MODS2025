@@ -34,7 +34,7 @@ class TempConMODS(TempCon):
         super().__init__(tool_id, description)
 
         self.num_temp_reads = 1
-        self.heaterx_board = "MOD1"
+        self.heaterx_board = "MOD10"
 
         self.temperature_ids = [0, 2]  # ccdtemp, basetemp
 
