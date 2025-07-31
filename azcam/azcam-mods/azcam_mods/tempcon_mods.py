@@ -26,7 +26,7 @@ class TempConMODS(TempCon):
      * basetemp - temperature at the base of the CCD mount where the old finger from the LN2 reservoir attaches
      
     These are sensors 0 and 2, respectively.
-    The heater board is MOD1 in the MODS archons
+    The heater board is MOD10 in the MODS archons
     '''
     
 
