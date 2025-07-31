@@ -161,7 +161,7 @@ def setup():
     #     header_<option>.txt
     #
     #  <azcamRoot>/system/<option>/archon/
-    #     <option>.acf or <option>.ncf
+    #     <option>.acf
     #
     
     azcam.db.systemfolder = os.path.join(azcamRoot,"system",option)
@@ -195,11 +195,11 @@ def setup():
                                f"server_{option}.ini")
         
         # "flight" archon configuration (aka "timing") files are 
-        # named <modsID>.acf or .ncf in system/<modsID>/archon/
+        # named <modsID>.acf in system/<modsID>/archon/
         
         timingfile = os.path.join(azcam.db.systemfolder,
                                   "archon",
-                                  f"{option}.ncf")
+                                  f"{option}.acf")
 
         # exposure information header template
         # filename is header_<systemname>.txt in the system templates folder
