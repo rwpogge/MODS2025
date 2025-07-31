@@ -8,7 +8,7 @@ only overload define_keywords() and get_temperatures, changing
 the keywords we assign to the two temperatures, and both the
 heater board and IDs in __init__() to the MODS versions
 
-Updated: 2025 July 23 [rwp/osu]
+Updated: 2025 July 31 [rwp/osu]
 
 """
 
@@ -124,3 +124,37 @@ class TempConMODS(TempCon):
         self.last_temps[temperature_id] = temp
 
         return temp
+
+    
+    def get_keyword(self, keyword: str) -> List:
+        """
+        Read a temperature keyword value and returns it as [value, comment, type string]
+        Args:
+            keyword: name of keyword
+        Returns:
+            list of [keyword, comment, type]
+        """
+
+        reply = self.get_temperatures()
+
+        if keyword == "CCDTEMP":
+            temp = reply[0]
+        elif keyword == "BASETEMP":
+            temp = reply[2]
+        elif keyword in self.get_keywords():
+            value = self.header.values[keyword]
+            temp = value
+        else:
+            raise azcam.exceptions.AzcamError(f"invalid keyword: {keyword}")
+
+        # store temperature values in header
+        if keyword == "CCDTEMP":
+            temp = float(f"{temp:.03f}")
+            self.header.set_keyword("CCDTEMP", temp, "CCD detector temperature [deg C]", "float")
+        elif keyword == "BASETEMP":
+            temp = float(f"{temp:.03f}")
+            self.header.set_keyword("BASETEMP", temp, "CCD mount base temperature [deg C]", "float")
+            
+        t = self.header.typestrings[keyword]
+
+        return [temp, self.header.comments[keyword], t]
