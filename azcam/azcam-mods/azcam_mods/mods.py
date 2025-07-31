@@ -452,6 +452,16 @@ class MODS(object):
         See also: expwait()        
         '''
 
+        # check the exposure state flag and only execute if idle because
+        # the exposure.expose1() below is asynchronous
+        
+        expFlag = azcam.db.tools["exposure"].exposure_flag
+        
+        if expFlag > 0:
+            efd = azcam.db.exposureflags
+            statStr = list(filter(lambda key: efd[key]==expFlag,efd))[0]  
+            return f"ERROR Exposure in progress (ExpStatus={statStr})"
+        
         # trust but verify: make sure shutter is closed
         
         try:
