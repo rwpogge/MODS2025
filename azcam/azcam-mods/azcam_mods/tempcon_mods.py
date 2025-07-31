@@ -16,6 +16,7 @@ import azcam
 import azcam.exceptions
 from azcam.tools.tempcon import TempCon
 
+from typing import Union, List, Optional
 
 class TempConMODS(TempCon):
     '''
