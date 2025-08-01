@@ -72,6 +72,8 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
   if (startExposure(cam,EXP_NOWAIT,reply)<0)
     return -1;
 
+  printf("Launched startExposure()\n");
+  
   usleep(100000);
   
   obs->tStart = SysTimestamp();  // Note the time we started
