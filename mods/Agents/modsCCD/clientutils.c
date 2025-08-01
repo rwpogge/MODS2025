@@ -71,6 +71,8 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
 
   if (startExposure(cam,EXP_NOWAIT,reply)<0)
     return -1;
+
+  usleep(100000);
   
   obs->tStart = SysTimestamp();  // Note the time we started
 
@@ -80,7 +82,7 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
     obs->doCountDown = 0;
 
   // query exposure status
-  
+
   expStatus(cam,reply);
 
   return 0;
