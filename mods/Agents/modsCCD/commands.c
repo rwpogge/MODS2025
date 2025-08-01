@@ -885,7 +885,8 @@ cmd_expnum(char *args, MsgType msgtype, char *reply)
       sprintf(reply,"Invalid file counter %s - must be 1-9999",argbuf);
       return CMD_ERR;
     }
-    imgExpNum(&ccd,ctr,reply);
+    if (imgExpNum(&ccd,ctr,reply)<0)
+      return CMD_ERR;
 
   }
   else {
@@ -2155,6 +2156,54 @@ cmd_azcam(char *args, MsgType msgtype, char *reply)
 
   return CMD_OK;
 }
+
+//
+// archon command
+//
+// some special arcon commands
+//
+// Usage:
+//    archon reset  - reset the controller
+//    
+
+ing
+cmd_archon(char *args, MsgType msgtype, char *reply)
+{
+  char argbuf[32];
+  char cmdStr[64];
+
+  // check the file descriptor and make sure we have an active connection
+
+  if (ccd.FD<0) {
+    strcpy(reply,"No azcam server connection active");
+    return CMD_ERR;
+  }
+
+  // process arguments
+  
+  if (strlen(args)>0) { // have an argument
+    GetArg(args,1,argbuf);
+    if (strcasecmp(argbuf,"reset")==0)
+      strcpy(cmdStr,"controller.reset_controller");
+
+    else {
+      strcpy(reply,"Unrecognized archon command %s",argbuf);
+      return CMD_ERR;
+
+    }
+
+    // send it
+    
+    if (azcamCmd(&ccd,cmdStr,reply)<0)
+      return CMD_ERR;
+  }
+  
+  return CMD_OK;
+
+}
+
+ 
+
 
 //---------------------------------------------------------------------------
 //

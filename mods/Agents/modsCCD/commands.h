@@ -28,7 +28,8 @@ int cmd_history(char *, MsgType, char *); // cli history utility
 
 // azcam server commands
 
-int cmd_azcam   (char *, MsgType, char *); // Send a raw AzCam server command 
+int cmd_azcam   (char *, MsgType, char *); // Send a raw AzCam server command
+int cmd_archon  (char *, MsgType, char *); // Send special Archon commands
 int cmd_reset   (char *, MsgType, char *); // Reset the AzCam server
 int cmd_process (char *, MsgType, char *); // Upload image info to DataMan for post-processing
 int cmd_ccdinit (char *, MsgType, char *); // (Re)Initialize the CCD Controller
@@ -160,6 +161,7 @@ cmdtab[] = {   //!< global scope command table for this application
   {"support" ,cmd_support ,"support <str>","Set/query the SUPPORT keyword for the header"},
   {"telops"  ,cmd_telops  ,"telops <str>","Set/query the TELOPS keyword for the header"},
   {"filename",cmd_filename,"filename <root>","Set/query the data file rootname (rootname.nnnn.fits)"},
+  {"nextfile",cmd_filename,"nextfile","Query the name of the next file to be written"},
   {"path"    ,cmd_path    ,"path /home/data/","Set/query the raw data file path on the AzCam server"},
   {"expnum"  ,cmd_expnum  ,"expnum <n>","Set/query the file counter for the *NEXT* image"},
   {"lastfile",cmd_lastfile,"lastfile","Query the name of the last file written to disk"},
@@ -176,6 +178,7 @@ cmdtab[] = {   //!< global scope command table for this application
   {"cleanup" ,cmd_cleanup ,"cleanup","Cleanup runtime parameters after serious errors"},
   {"saveconfig",cmd_saveconf,"saveconfig","Save the current runtime configuration (e.g., for restarts)"},
   {"azcam"   ,cmd_azcam   ,"azcam <cmd>","Send a raw command to the AzCam Server"},
+  {"archon"  ,cmd_archon  ,"archon [reset|...]","Send a command to the Archon controller"},
   {"?"       ,cmd_help    ,"",""},  // "" excludes from help
   {"ping"    ,cmd_ping    ,"",""},
   {"pong"    ,cmd_pong    ,"",""}   
