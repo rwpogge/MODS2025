@@ -163,7 +163,7 @@ main(int argc, char *argv[])
     n = loadConfig(DEFAULT_RCFILE);
 
   if (n!=0) {
-    printf("Unable to load the runtime config file...modsCCD aborting\n");
+    printf("Unable to load the runtime config file, modsCCD aborting\n");
     exit(1);
   }
 
@@ -225,7 +225,7 @@ main(int argc, char *argv[])
     memset(buf,0,ISIS_MSGSIZE);
     sprintf(buf,"%s>%s ping\r",client.ID,client.isisID);
     if (SendToISISServer(&client,buf)<0) 
-      printf("Failed to PING the ISIS server...\n",strerror(errno));
+      printf("Failed to PING the ISIS server\n",strerror(errno));
     if (client.isVerbose)
       printf("OUT: %s\n",buf);
   }
@@ -292,7 +292,7 @@ main(int argc, char *argv[])
   // Start the I/O event handling loop.
   //
   // The event handler has to have some awareness of the azcam server
-  // state, which it tracks using the ccd.State data member.
+  // state, which it tracks using the ccd.State flag.
   //
   // For the Archon controller, the sequence of exposure states are:
   //
@@ -339,7 +339,8 @@ main(int argc, char *argv[])
   // !*** this is where the exposure progress event loop starts ***!
   
   client.KeepGoing = 1;
-  ccd.State = IDLE;
+
+  expStatus(&ccd,reply);
 
   while (client.KeepGoing) {
     
@@ -402,9 +403,9 @@ main(int argc, char *argv[])
     default:
       // azcam server is idle or paused
       //   setup select() for 120s polling for idle-time housekeeping
-      
+
       if (ccd.FD>0) {
-	timeout.tv_sec = 120;
+	timeout.tv_sec = 60; // was 120s
 	timeout.tv_usec = 0;
 	n_ready = select(sel_wid, &read_fd, NULL, NULL, &timeout);
       }
@@ -436,9 +437,9 @@ main(int argc, char *argv[])
 
 	case EXPOSING:
 	case RESUME:
-	  printf("\nStarted %.2f sec exposure...              \r",obs.expTime);
+	  printf("\nStarted %.1f sec exposure              \r",obs.expTime);
 	  fflush(stdout);
-	  sprintf(reply,"%.2f sec exposure started",obs.expTime);
+	  sprintf(reply,"%.1f sec exposure started",obs.expTime);
 	  notifyClient(&ccd,&obs,reply,STATUS);
 	  break;
 
@@ -465,8 +466,8 @@ main(int argc, char *argv[])
 	
 	switch(ccd.State) {
 
-	case READOUT: // still reading out... status to console and remote as needed
-	  printf("Read out %d pixels of %d...                \r",ccd.Nread,ccd.Npixels);
+	case READOUT: // still reading out, status to console and remote as needed
+	  printf("Read out %d pixels of %d                   \r",ccd.Nread,ccd.Npixels);
 	  fflush(stdout);
 	  pctRead = 100.0*float(ccd.Nread)/float(ccd.Npixels); // percent readout
 	  sprintf(reply,"PCTREAD=%d",int(pctRead));
@@ -474,13 +475,13 @@ main(int argc, char *argv[])
 	  break;
 
 	case READ:  // readout is complete, preparing to write
-	  printf("\nReadout Complete, preparing to write image");
+	  printf("\nReadout Complete, preparing to write image\n");
 	  strcpy(msgStr,"Readout Complete PCTREAD=100");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 	  
 	case WRITING: // started writing the image (in case READ state was missed)
-	  printf("\nWriting image %s to disk",ccd.fileName);
+	  printf("\nWriting image to disk\n");
 	  fflush(stdout);
 	  strcpy(msgStr,"Writing Image PCTREAD=100");
 	  sprintf(reply,msgStr,int(pctRead));
@@ -508,7 +509,7 @@ main(int argc, char *argv[])
 	case RESUME:
 	  if (obs.doCountDown) {
 	    if (obs.tLeft > 0.0) {
-	      printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",obs.expTime,(int)(obs.tLeft));
+	      printf("Exposing: %.1f of %.1f sec                \r",obs.tLeft,obs.expTime);
 	      fflush(stdout);
 	    }
 	  }
@@ -519,19 +520,19 @@ main(int argc, char *argv[])
 	  break;
 	  
 	case READOUT:  // started readout since last time we polled
-	  printf("\nExposure Completed, Readout started...                  \n");
+	  printf("\nExposure Completed, Reading out                   \n");
 	  strcpy(msgStr,"Exposure Completed, Shutter=0 (Closed), Readout started PCTREAD=0");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 	  
 	case ABORT:  // exposure done since the last time we polled
-	  printf("\nExposure Aborting, wait for completion...\n");
+	  printf("\nExposure Aborting, wait for completion\n");
 	  strcpy(msgStr,"Exposure Aborting, waiting for completion");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 
 	case PAUSE: // pause requested
-	  printf("\nExposure paused, waiting for RESUME or ABORT...\n");
+	  printf("\nExposure paused, waiting for RESUME or ABORT\n");
 	  strcpy(msgStr,"Exposure Paused, waiting for RESUME or ABORT");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
@@ -553,15 +554,15 @@ main(int argc, char *argv[])
 	case RESUME:
 	case EXPOSING:
 	  pollExposure(&ccd,&obs,reply);
-	  printf("\nExposure resumed...\n");
-	  printf("ExpTime %.2f sec - Time Remaining %d sec...             \r",obs.expTime,(int)(obs.tLeft));
+	  printf("\nExposure resumed\n");
+	  printf("Exposing: %.1f of %.1f sec remaining           \r",obs.tLeft,obs.expTime);
 	  fflush(stdout);
 	  strcpy(msgStr,"Exposure Resumed");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 
 	case ABORT:
-	  printf("\nPAUSED Exposure Aborted...\n");
+	  printf("\nPAUSED Exposure Aborted\n");
 	  strcpy(msgStr,"Paused Exposure ABORTED, waiting for completion");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
@@ -581,7 +582,7 @@ main(int argc, char *argv[])
 	switch(ccd.State) {
 
 	case WRITING:
-	  printf("\nWriting CCD to disk...\n");
+	  printf("\nWriting CCD to disk\n");
 	  strcpy(msgStr,"Writing image to disk PCTREAD=0");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
@@ -665,10 +666,10 @@ main(int argc, char *argv[])
     else if (n_ready < 0) {
       if (errno == EINTR) { // caught Ctrl+C, hopefully sigint handler caught it
 	if (client.Debug)
-	  printf("select() interrupted by Ctrl+C...continuing\n");
+	  printf("select() interrupted by Ctrl+C, continuing\n");
       }
       else { // something else bad happened, let us know
-	printf("Warning: select() failed - %s - pressing on anyway...\n",
+	printf("Warning: select() failed - %s - pressing on anyway\n",
 	       strerror(errno));
       }
       rl_refresh_line(0,0);
@@ -739,7 +740,7 @@ main(int argc, char *argv[])
   // If we got here, the client was instructed to shut down
   //
 
-  printf("\nMODS CCD client shutting down...\n");
+  printf("\nMODS CCD client shutting down\n");
 
   // Tear down the azcam server link
   

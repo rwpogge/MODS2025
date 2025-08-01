@@ -72,9 +72,7 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
   if (startExposure(cam,EXP_NOWAIT,reply)<0)
     return -1;
 
-  printf("Launched startExposure()\n");
-  
-  usleep(100000);
+  // usleep(100000);
   
   obs->tStart = SysTimestamp();  // Note the time we started
 
@@ -86,7 +84,7 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
   // query exposure status
 
   expStatus(cam,reply);
-
+  
   return 0;
 }
 
@@ -177,7 +175,7 @@ pollExposure(azcam_t *cam, obsPars_t *obs, char *reply)
 
   // Only query for exposure time left if we are still exposing
   
-  cam->State = expStatus(cam,reply);
+  expStatus(cam,reply);
   if (cam->State == EXPOSING) {
     obs->tNow = SysTimestamp(); // check time now
 
@@ -219,7 +217,7 @@ pollReadout(azcam_t *cam, obsPars_t *obs, char *reply)
   double dt;
   int pixLeft;
   
-  cam->State = expStatus(cam,reply);
+  expStatus(cam,reply);
   if (cam->State != READOUT) 
     return 0;
 
