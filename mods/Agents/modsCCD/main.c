@@ -428,7 +428,7 @@ main(int argc, char *argv[])
 
       case SETUP: // we were setting up, poll current status
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,ERROR);
+	  notifyClient(&ccd,&obs,reply,STATUS);
 	  ccd.State = IDLE;
 	}
 	
@@ -457,7 +457,7 @@ main(int argc, char *argv[])
 	
       case READOUT: // we're reading out, poll current readout status
 	if (pollReadout(&ccd,&obs,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,ERROR);
+	  notifyClient(&ccd,&obs,reply,STATUS);
 	  ccd.State = IDLE;
 	}
 	
@@ -496,7 +496,7 @@ main(int argc, char *argv[])
       case EXPOSING: // poll current exposure status - RESUME set instead of EXPOSING after PAUSE
       case RESUME:
 	if (pollExposure(&ccd,&obs,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,ERROR);
+	  notifyClient(&ccd,&obs,reply,STATUS);
 	  ccd.State = IDLE;
 	}
 	
@@ -544,7 +544,7 @@ main(int argc, char *argv[])
 	
       case PAUSE: // exposure was paused, did this change?
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,ERROR);
+	  notifyClient(&ccd,&obs,reply,STATUS);
 	  ccd.State = IDLE;
 	}
 	
@@ -574,7 +574,7 @@ main(int argc, char *argv[])
 
       case READ:  // readout complete, waiting for write
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,ERROR);
+	  notifyClient(&ccd,&obs,reply,STATUS);
 	  ccd.State = IDLE;
 	}
 	
@@ -594,7 +594,7 @@ main(int argc, char *argv[])
 		 
       case WRITING: // azcam server is writing the image to disk, waiting for IDLE
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,ERROR);
+	  notifyClient(&ccd,&obs,reply,STATUS);
 	  ccd.State = IDLE;
 	}
 	
@@ -614,7 +614,7 @@ main(int argc, char *argv[])
 
       case ABORT: // exposure is aborting, waiting for IDLE
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,ERROR);
+	  notifyClient(&ccd,&obs,reply,STATUS);
 	  ccd.State = IDLE;
 	}
 
@@ -634,7 +634,7 @@ main(int argc, char *argv[])
       
       case IDLE: // azcam server is IDLE, check for SETUP, otherwise housekeeping
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,ERROR);
+	  notifyClient(&ccd,&obs,reply,STATUS);
 	  ccd.State = IDLE;
 	}
 
