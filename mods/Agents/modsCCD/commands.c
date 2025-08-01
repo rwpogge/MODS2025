@@ -1437,8 +1437,13 @@ cmd_bias(char *args, MsgType msgtype, char *reply)
       return CMD_ERR;
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
+
+  // Bias requires us to set exptime to 0.0 explicitly for azcam
+
+  if (setExposure(&ccd,0.0,reply)<0)
+    return CMD_ERR;
   
-  sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  sprintf(reply,"IMAGETYP=%s OBJECT=(%s) EXPTIME=0.0",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -1505,7 +1510,12 @@ cmd_zero(char *args, MsgType msgtype, char *reply)
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
   
-  sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
+  // ZERO requires us to set exptime to 0.0 explicitly for azcam
+
+  if (setExposure(&ccd,0.0,reply)<0)
+    return CMD_ERR;
+  
+  sprintf(reply,"IMAGETYP=%s OBJECT=(%s) EXPTIME=0.0",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
 
@@ -2173,13 +2183,14 @@ cmd_azcam(char *args, MsgType msgtype, char *reply)
 
   Starts an exposure with the CCD camera.  If doing a normal exposed
   ("light") or dark image, it calls DoExposure().  If doing a BIAS or
-  ZERO image, it calls DoBias().
+  ZERO image, it forces the exposure time to 0.0 before launching
+  doExposure()
 
-  Both functions set the ccd.State flag to signal to the main event
+  The function sets the ccd.State flag to signal to the main event
   handler loop in main as to the detector state, and otherwise returns
-  #CMD_NOOP.  The main loop takes care of sending info out to the client
-  who requested the GO command, and for servicing any ABORT requests
-  during the exposure (why we do this).
+  #CMD_NOOP.  The main loop takes care of sending info out to the
+  client who requested the GO command, and for servicing any ABORT
+  requests during the exposure (why we do this).
 
   \sa cmd_abort()
 */
@@ -2235,6 +2246,13 @@ cmd_go(char *args, MsgType msgtype, char *reply)
     break;
   }    
 
+  // A sanity checkpoint for azcam.  If obs.imgType is Bias or Zero, set exptime to 0.0
+
+  if (strcasecmp(obs.imgType,"BIAS")==0 || strcasecmp(obs.imgType,"ZERO")==0) {
+    if (setExposure(&ccd,0.0,reply)<0)
+      return CMD_ERR;
+  }
+  
   // do it!
   
   if (doExposure(&ccd,&obs,reply)<0) {
