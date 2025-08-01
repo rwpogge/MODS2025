@@ -344,8 +344,13 @@ def setup():
     # 
     # not bulletproof, but at least a start
     
-    oldFiles = glob.glob(f"{os.path.join(exposure.folder,exposure.root)}????.fits")
-    nextNum = len(oldFiles) + 1
+    flist = glob.glob(f"{os.path.join(exposure.folder,exposure.root)}*.fits")
+    flist.sort()
+    if len(flist)>0:
+        tp,rn,exn = mods.modsFilename(flist[-1])
+        nextNum = exn + 1
+    else:
+        nextNum = 1
     exposure.sequence_number = nextNum
        
     # direct instrument methods (none yet, maybe later?)
