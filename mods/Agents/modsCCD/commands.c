@@ -2166,7 +2166,7 @@ cmd_azcam(char *args, MsgType msgtype, char *reply)
 //    archon reset  - reset the controller
 //    
 
-ing
+int
 cmd_archon(char *args, MsgType msgtype, char *reply)
 {
   char argbuf[32];
