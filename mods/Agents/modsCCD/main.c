@@ -648,8 +648,6 @@ main(int argc, char *argv[])
 	  break;
 
 	default:
-	  if (ccd.FD>0)
-	    getTemp(&ccd,reply);
 	  // do something with this someday, shmem, DD?
 	  break;
 	}
