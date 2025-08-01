@@ -2207,6 +2207,9 @@ cmd_go(char *args, MsgType msgtype, char *reply)
     break;
 
   case EXPOSING:
+  case SETUP:
+  case READ:
+  case RESUME:
     strcpy(reply,"Exposure in progress, GO not allowed");
     return CMD_ERR;
     break;
@@ -2215,24 +2218,33 @@ cmd_go(char *args, MsgType msgtype, char *reply)
     strcpy(reply,"Readout in progress, GO not allowed");
     return CMD_ERR;
     break;
+
+  case WRITING:
+    strcpy(reply,"Image write in progress, GO not allowed");
+    return CMD_ERR;
+    break;
     
   case IDLE:
     // Good to GO as it were, fall through
     break;
 
   default:
-    strcpy(reply,"azcam server state UNKNOWN, GO not allowed");
+    sprintf(reply,"azcam server state UNKNOWN (ccd.State=%d), GO not allowed",ccd.State);
     return CMD_ERR;
+    ccd.State = IDLE;
     break;
   }    
 
   // do it!
   
   if (doExposure(&ccd,&obs,reply)<0)
+    ccd.State = IDLE;
     return CMD_ERR;
 
   // We're off, ccd.State tells the main event loop what to do
 
+  ccd.State = SETUP;
+  
   return CMD_NOOP;
 
 }
