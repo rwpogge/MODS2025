@@ -392,17 +392,16 @@ main(int argc, char *argv[])
     case WRITING:
     case ABORT:
       // azcam server is busy reading out, writing, servicing abort,
-      //   setup select() for 0.2s polling.  Shortest readout is about
-      //   1.2 seconds, so timeout is 1/6th.
+      //   setup select() for 0.1s polling. Shortest readout is ~1.5 sec
       
       timeout.tv_sec = 0;
-      timeout.tv_usec = 200000;
+      timeout.tv_usec = 100000;
       n_ready = select(sel_wid, &read_fd, NULL, NULL, &timeout);
       break;
 
     default:
       // azcam server is idle or paused
-      //   setup select() for 120s polling for idle-time housekeeping
+      //   setup select() for 60s polling for idle-time housekeeping
 
       if (ccd.FD>0) {
 	timeout.tv_sec = 60; // was 120s
