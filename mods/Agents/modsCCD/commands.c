@@ -2187,7 +2187,7 @@ cmd_archon(char *args, MsgType msgtype, char *reply)
       strcpy(cmdStr,"controller.reset_controller");
 
     else {
-      strcpy(reply,"Unrecognized archon command %s",argbuf);
+      sprintf(reply,"Unrecognized archon command %s",argbuf);
       return CMD_ERR;
 
     }
