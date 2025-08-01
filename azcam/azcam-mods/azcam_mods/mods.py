@@ -398,7 +398,7 @@ class MODS(object):
 
         et = float(expTime)
         if et < 0.0:
-            return "ERROR set_expTime() expTime={expTime} invalid, must be >= 0.0 seconds"
+            return f"ERROR set_expTime() expTime={expTime} invalid, must be >= 0.0 seconds"
 
         try:        
             azcam.db.tools["exposure"].set_exposuretime(et)
@@ -995,7 +995,7 @@ class MODS(object):
         rootName = azcam.db.tools["exposure"].root
         dataPath = azcam.db.tools["exposure"].folder
         if os.path.exists(os.path.join(dataPath,f"{rootName}{exn:04d}.fits")):
-            return "ERROR an image file with expnum={exn:04d} already exists, try again"
+            return f"ERROR an image file with expnum {exn:04d} already exists, try again"
         
         # we're good to go, commit
         
