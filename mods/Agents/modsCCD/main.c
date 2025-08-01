@@ -310,12 +310,8 @@ main(int argc, char *argv[])
   // connected, then every 120 seconds it queries the azcam server to
   // read the CCD and base temperatures and do housekeeping tasks
   //
-  // When ccd.State changes to SETUP or EXPOSING, it sets up the
-  // select() loop with a 0.5 second timeout to watch for any
-  // Abort/Pause/Resume directives from the console or remote clients,
-  // and then polls the azcam for the current integration status,
-  // maintaining a parallel countdown.  On integration completion, it
-  // switches the state to ccd.State=READOUT as appropriate.
+  // During exposures, ccd.State can change as fast as 180msec, so
+  // run the select() loop with a 50msec timeout (Archons are *FAST*!)
   //
   // If ccd.State = PAUSE indicating a paused exposure, so we go into
   // a minimal polling state like being idle until ccd.state is
@@ -380,25 +376,26 @@ main(int argc, char *argv[])
     switch(ccd.State) {
       
     case EXPOSING:
+    case SETUP:
     case RESUME:
-      // azcam server is busy integrating
-      //   setup select() for 0.5s polling
+      // azcam server is busy integrating.  Transitions can be as fast as 0.2 sec
+      // (SETUP).  Try to poll at 1/4 that or 50msec
 
       timeout.tv_sec = 0;
-      timeout.tv_usec = 500000;
+      timeout.tv_usec = 50000;
       n_ready = select(sel_wid, &read_fd, NULL, NULL, &timeout);
       break;
 
+    case READ:
     case READOUT:
-    case SETUP:
     case WRITING:
     case ABORT:
-    case READ:
-      // azcam server is busy reading out, writing, setup, servicing abort,
-      //   setup select() for 1s polling
+      // azcam server is busy reading out, writing, servicing abort,
+      //   setup select() for 0.2s polling.  Shortest readout is about
+      //   1.2 seconds, so timeout is 1/6th.
       
-      timeout.tv_sec = 1;
-      timeout.tv_usec = 0;
+      timeout.tv_sec = 0;
+      timeout.tv_usec = 200000;
       n_ready = select(sel_wid, &read_fd, NULL, NULL, &timeout);
       break;
 
