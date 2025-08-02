@@ -1605,7 +1605,7 @@ cmd_roi(char *args, MsgType msgtype, char *reply)
   // query to get/confirm the binning factors
   
   if (setROI(&ccd,-1,-1,-1,-1,reply)<0)
-    return -1;
+    return CMD_ERR;
 
   sprintf(reply,"ROI=(%d,%d,%d,%d)",ccd.firstCol,ccd.lastCol,ccd.firstRow,ccd.lastRow);
   return CMD_OK;
@@ -1668,7 +1668,7 @@ cmd_ccdbin(char *args, MsgType msgtype, char *reply)
   // query to get/confirm the binning factors
   
   if (setCCDBin(&ccd,-1,-1,reply)<0)
-    return -1;
+    return CMD_ERR;
 
   sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.rowBin);
   return CMD_OK;
@@ -1702,7 +1702,7 @@ cmd_xbin(char *args, MsgType msgtype, char *reply)
   // query to get/confirm the binning factors
   
   if (setCCDBin(&ccd,-1,-1,reply)<0)
-    return -1;
+    return CMD_ERR;
 
   sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.rowBin);
   return CMD_OK;
@@ -1736,7 +1736,7 @@ cmd_ybin(char *args, MsgType msgtype, char *reply)
   // query to get/confirm the binning factors
   
   if (setCCDBin(&ccd,-1,-1,reply)<0)
-    return -1;
+    return CMD_ERR;
 
   sprintf(reply,"XBin=%d YBin=%d",ccd.colBin,ccd.rowBin);
   return CMD_OK;
@@ -1968,8 +1968,17 @@ cmd_status(char *args, MsgType msgtype, char *reply)
 {
   float dtemp;
 
-  getTemp(&ccd,reply);
-
+  // query status
+  
+  if (getTemp(&ccd,reply)<0)
+    return CMD_ERR;
+  if (setROI(&ccd,-1,-1,-1,-1,reply)<0) // returns ROI and binning
+    return CMD_ERR;
+  if (setExposure(&ccd,-1.0,reply)<0)
+    return CMD_ERR;
+  
+  // done, show info
+  
   sprintf(reply,"Inst=%s Controller=Archon Exp=%.1f ImType=%s Obj=(%s)",obs.instID,
 	  ccd.expTime,obs.imgType,obs.imgTitle);
 
