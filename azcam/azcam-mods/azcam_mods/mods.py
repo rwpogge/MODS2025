@@ -1097,10 +1097,14 @@ class MODS(object):
             comment = None
         
         # strip extraneous quotes that might come in from a client string
-        
+
+        newKey = re.sub("[\"\']","",newKey)
+        comment = re.sub("[\"\']","",comment)
         if dataType == 'str':
             value = re.sub("[\"\']","",value)
-            
+
+        # set the keyword
+        
         azcam.db.tools["exposure"].header.set_keyword(newKey,value,comment,dataType)
         
         return
