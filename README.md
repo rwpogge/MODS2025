@@ -48,7 +48,7 @@ Also need the local LBTO versions of hdf5 and lbto-libtelemetry, build from loca
 - Rick Pogge (OSU Astronomy) pogge.1@osu.edu
 - Xander Carroll (OSU Astronomy) carroll.892@osu.edu
 - Jerry Mason (OSU Astronomy) mason.8@osu.edu
-- Mike Lesser (UA)
+- Mike Lesser (UA, retired)
 - Matthieu Bec (LBTO) mbec@lbto.org
 - Glenn Eychaner (LBTO) geychaner@lbto.org
 - ...
