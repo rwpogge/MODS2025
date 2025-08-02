@@ -1095,10 +1095,11 @@ class MODS(object):
         dataType = type(value).__name__
         if comment is not None and len(comment)==0:
             comment = None
-        
+        else:
+            comment = re.sub("[\"\']","",comment)
+
         # strip extraneous quotes that might come in from a client string
 
-        comment = re.sub("[\"\']","",comment)
         if dataType == 'str':
             value = re.sub("[\"\']","",value)
 
