@@ -40,7 +40,7 @@ setKeyword(azcam_t *cam, char *keyword, char *value, char *comment, char *reply)
 {
   char cmdStr[128];
 
-  sprintf(cmdStr,"mods.set_keyword %s \"%s\" \"%s\"",keyword,value,comment);
+  sprintf(cmdStr,"mods.set_keyword %s \'%s\' \'%s\'",keyword,value,comment);
 
   if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
