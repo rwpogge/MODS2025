@@ -531,7 +531,7 @@ initCCDConfig(azcam_t *cam, char *reply)
   cam->State = IDLE;
   cam->Abort = 0;
 
-  strcpy(reply,"azcam Server initialized...");
+  strcpy(reply,"azcam server connection initialized...");
   return 0;
 }
 
