@@ -2196,6 +2196,12 @@ cmd_azcam(char *args, MsgType msgtype, char *reply)
 //
 // Usage:
 //    archon reset  - reset the controller
+//
+// Instructing the azcam server to execute "exposure.reset"
+// will reset the Archon controller link between the azcam
+// server and the Archon, including rebooting the Archon
+// internal processor, checking power, and uploading the
+// configuration file.
 //    
 
 int
@@ -2218,8 +2224,8 @@ cmd_archon(char *args, MsgType msgtype, char *reply)
   
   if (strlen(args)>0) { // have an argument
     GetArg(args,1,argbuf);
-    if (strcasecmp(argbuf,"reset")==0)
-      strcpy(cmdStr,"controller.reset_controller");
+    if (strcasecmp(argbuf,"reset")==0)  // sending exposure.reset to the azcam server resets the archon controller
+      strcpy(cmdStr,"exposure.reset");
 
     else {
       sprintf(reply,"Unrecognized archon command %s",argbuf);
