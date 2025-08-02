@@ -1095,8 +1095,6 @@ class MODS(object):
         dataType = type(value).__name__
         if comment is not None and len(comment)==0:
             comment = None
-        else:
-            comment = re.sub("[\"\']","",comment)
 
         # strip extraneous quotes that might come in from a client string
 
@@ -1105,7 +1103,9 @@ class MODS(object):
 
         # set the keyword
         
-        azcam.db.tools["exposure"].header.set_keyword(newKey,value,comment,dataType)
+        azcam.db.tools["exposure"].header.set_keyword(newKey,value,
+                                                      azcam.utils.dequote(comment)
+                                                      ,dataType)
         
         return
     
