@@ -2137,14 +2137,8 @@ cmd_ccdinfo(char *args, MsgType msgtype, char *reply)
 int
 cmd_azcam(char *args, MsgType msgtype, char *reply)
 {
-
-  // check the file descriptor and make sure we have an active connection
-
-  if (ccd.FD<0) {
-    strcpy(reply,"No azcam server connection active");
-    return CMD_ERR;
-  }
-
+  char argbuf[64];
+  
   // If we have arguments, get the exposure time and set it
 
   if (strlen(args)==0) {
@@ -2152,8 +2146,43 @@ cmd_azcam(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // Do it, whatever it is
+  // Process arguments
+  // check for reserved commands (open/close) and do those.  If not those,
+  // pass the command through to the azcam server as is
 
+  GetArg(args,1,argbuf);
+  if (strcasecmp(argbuf,"open")==0) {
+      if (ccd.FD<0) {
+	openAzCam(&ccd,reply);
+	if (ccd.FD>0) {
+	  sprintf(reply,"Opened connection to azcam server host %s:%d",ccd.Host,ccd.Port);
+	  return CMD_OK;
+	}
+	else
+	  return CMD_ERR;
+      }
+      else {
+	strcpy(reply,"azcam server connection already open, close first");
+	return CMD_ERR;
+      }
+  }
+  else if (strcasecmp(argbuf,"close")==0) {
+      if (ccd.FD<0) {
+	strcpy(reply,"azcam server connection already closed");
+	return CMD_OK;
+      }
+      closeAzCam(&ccd);
+      strcpy(reply,"azcam server connection closed");
+      return CMD_OK;
+  }
+    
+  // We have a raw azcam server command, send it as-is if the connection is open
+
+  if (ccd.FD<0) {
+    strcpy(reply,"No azcam server connection active");
+    return CMD_ERR;
+  }
+		  
   if (azcamCmd(&ccd,args,reply)<0)
     return CMD_ERR;
 
@@ -2207,8 +2236,6 @@ cmd_archon(char *args, MsgType msgtype, char *reply)
   return CMD_OK;
 
 }
-
- 
 
 
 //---------------------------------------------------------------------------
