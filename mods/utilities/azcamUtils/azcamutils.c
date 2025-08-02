@@ -255,8 +255,7 @@ azcamInfo(azcam_t *cam)
   
   printf("Exposure and File Information:\n");
   printf("  Exposure Time: %.3f sec\n",cam->expTime);
-  printf("  Next Filename: %s.fits, sequence no. %d\n",
-	 cam->fileName,cam->fileNum);
+  printf("  Next Filename: %s\n",cam->fileName);
   printf("  Last Filename: %s\n",cam->lastFile);
   switch(cam->fileFormat) {
   case STDFITS:
