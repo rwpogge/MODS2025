@@ -456,7 +456,7 @@ main(int argc, char *argv[])
 	
       case READOUT: // we're reading out, poll current readout status
 	if (pollReadout(&ccd,&obs,reply)<0) {
-	  sprintf(reply,"GO %s",reply)
+	  sprintf(reply,"GO %s",reply);
 	  notifyClient(&ccd,&obs,reply,ERROR);
 	  //ccd.State = IDLE;
 	}
