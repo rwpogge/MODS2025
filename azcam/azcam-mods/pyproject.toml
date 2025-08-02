@@ -1,6 +1,6 @@
 [project]
 name = "azcam-mods"
-version = "25.0.5"
+version = "1.0.5"
 description = "azcam extension for the LBTO MODS camera system"
 license = { file = "LICENSE" }
 readme = "README.md"
