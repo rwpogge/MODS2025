@@ -239,23 +239,24 @@ azcamInfo(azcam_t *cam)
 	 cam->firstRow,cam->lastRow,
 	 cam->colBin,cam->rowBin);
 
+  /*
   printf("  CCD Format: %d %d %d %d %d %d %d %d %d\n",
 	 cam->NCtotal,cam->NCpredark,cam->NCunderscan,cam->NCoverscan,
 	 cam->NRtotal,cam->NRpredark,cam->NRunderscan,cam->NRoverscan,
 	 cam->NRframexfer);
-
+  */
   printf("  Next Readout: %d x %d pixels (%d pixels total)\n",
 	 cam->Ncols,cam->Nrows,cam->Npixels);
 
   printf("CCD Temperature Control:\n");
   printf("    CCD Detector Temperature: %.1f C\n",cam->ccdTemp);
-  printf("   CCD Temperature Set Point: %.1f C\n",cam->setPoint);
+  // printf("   CCD Temperature Set Point: %.1f C\n",cam->setPoint);
   printf("  CCD Mount Base Temperature: %.1f C\n",cam->baseTemp);
   
   printf("Exposure and File Information:\n");
   printf("  Exposure Time: %.3f sec\n",cam->expTime);
-  printf("  Next Filename: %s/%s.fits, sequence no. %d\n",
-	 cam->filePath,cam->fileName,cam->fileNum);
+  printf("  Next Filename: %s.fits, sequence no. %d\n",
+	 cam->fileName,cam->fileNum);
   printf("  Last Filename: %s\n",cam->lastFile);
   switch(cam->fileFormat) {
   case STDFITS:
