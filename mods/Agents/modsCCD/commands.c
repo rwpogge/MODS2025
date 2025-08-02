@@ -1989,7 +1989,7 @@ cmd_status(char *args, MsgType msgtype, char *reply)
   // queries done, show info
   
   sprintf(reply,"Inst=%s Controller=Archon Exp=%.1f ImType=%s Obj=(%s)",obs.instID,
-	  ccd.expTime,obs.imgType,obs.imgTitle);
+	  ccd.expTime,ccd.imgType,ccd.imgTitle);
 
   sprintf(reply,"%s XBin=%d YBin=%d ROI=(%d,%d,%d,%d)",reply,ccd.colBin,ccd.rowBin,
 	  ccd.firstCol,ccd.lastCol,ccd.firstRow,ccd.lastRow);
