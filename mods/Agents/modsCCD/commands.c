@@ -542,6 +542,9 @@ cmd_reset(char *args, MsgType msgtype, char *reply)
 {
   int i;
 
+  strcpy(reply,"reset not yet implemented");
+  return CMD_OK;
+  
   // Re-initialize the azcam server parameters
 
   if (initCCDConfig(&ccd,reply)<0) {
@@ -2179,6 +2182,9 @@ cmd_archon(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
+  strcpy(reply,"archon command not yet implemented");
+  return CMD_OK;
+	 
   // process arguments
   
   if (strlen(args)>0) { // have an argument
