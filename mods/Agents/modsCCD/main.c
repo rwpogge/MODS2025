@@ -338,7 +338,8 @@ main(int argc, char *argv[])
   
   client.KeepGoing = 1;
 
-  expStatus(&ccd,reply);
+  if (ccd.FD>0) 
+    expStatus(&ccd,reply);
 
   while (client.KeepGoing) {
     
@@ -392,7 +393,7 @@ main(int argc, char *argv[])
       //   setup select() for 0.1s polling. Shortest readout is ~1.5 sec
       
       timeout.tv_sec = 0;
-      timeout.tv_usec = 100000;
+      timeout.tv_usec = 200000;
       n_ready = select(sel_wid, &read_fd, NULL, NULL, &timeout);
       break;
 
