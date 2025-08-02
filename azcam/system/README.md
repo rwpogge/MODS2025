@@ -1,5 +1,7 @@
 # MODS azcam system files
 
+**Updated**: 2025 July 31
+
 We restructured the configuration for azcam for MODS to segregate system configuration files and logs from raw imaging data.  This is to help
 streamline our configuration management (4 Archon controllers across 2 instruments in the same rack), and to make getting at raw science image
 transparent without exposing critical system configuration files.
@@ -43,3 +45,15 @@ configuration. There may be many test or alternative files in this folder, but
 the `<modsID>.ncf` file will be considered the "flight" configuration.  Use
 symbolic links or judicious copying (careful!) to enable an alternative or test
 configuration
+
+Once on the ground in Tucson with the live system we identified the correct .ncf files
+and was able to convert it to an ACF format using the STA `archongui`.  With help
+from Greg Bredthauer, we learned we have to edit out the `[SYSTEM]` block to upload
+from a remote host, but need that section for local download into `archongui`.
+
+The reference file is `MODS_Example_2.ncf`, which we converted into `mods_1.acf` fore
+testing.  Copies of each are in the individual system `MODS#c/archon` folders named
+for the system channel in case we need to individually modify it.  So far this is
+just multiple redundant copies.
+
+
