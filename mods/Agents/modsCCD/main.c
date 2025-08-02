@@ -202,8 +202,6 @@ main(int argc, char *argv[])
 	   ccd.Host,ccd.Port);
     if (initCCDConfig(&ccd,reply)<0) {
       printf("CCD Initialization Failed - %s\n",reply);
-      printf("  Options: 1) Quit and fix the problem with the %s script\n",ccd.iniFile);
-      printf("           2) Try to configure using interactive commands\n");
     }
     else {
       printf("%s\n",reply);
