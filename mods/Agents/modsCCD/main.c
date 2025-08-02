@@ -379,11 +379,10 @@ main(int argc, char *argv[])
     case EXPOSING:
     case SETUP:
     case RESUME:
-      // azcam server is busy integrating.  Transitions can be as fast as 0.2 sec
-      // (SETUP).  Try to poll at 1/4 that or 50msec
+      // azcam server is busy integrating. Poll at 50-100msec
 
       timeout.tv_sec = 0;
-      timeout.tv_usec = 50000;
+      timeout.tv_usec = 100000;
       n_ready = select(sel_wid, &read_fd, NULL, NULL, &timeout);
       break;
 
