@@ -376,29 +376,29 @@ saveConfig(char *cfgfile)
   fprintf(cfgFP,"\n# modsCCD ISIS client info\n\n");
   fprintf(cfgFP,"ID %s\n",client.ID);
   fprintf(cfgFP,"Port %d\n",client.Port);
-
-  fprintf(cfgFP,"\n# Agent Mode: STANDALONE or ISISclient\n\n");
   if (client.useISIS) 
-    fprintf(cfgFP,"MODE ISISclient\n");
+    fprintf(cfgFP,"MODE isisClient\n");
   else 
     fprintf(cfgFP,"MODE STANDALONE\n");
 
   // ISIS Server Info
 
-  fprintf(cfgFP,"\n# ISIS Server Info - relevant if Mode=ISISclient\n\n");
-  fprintf(cfgFP,"ISISID %s\n",client.isisID);
-  fprintf(cfgFP,"ISISHost %s\n",client.isisHost);
-  fprintf(cfgFP,"ISISPort %d\n",client.isisPort);
+  fprintf(cfgFP,"\n# ISIS server info - relevant if Mode=isisClient\n\n");
+  fprintf(cfgFP,"isisID %s\n",client.isisID);
+  fprintf(cfgFP,"isisHost %s\n",client.isisHost);
+  fprintf(cfgFP,"isisPort %d\n",client.isisPort);
 
   // Instrument Info
 
   fprintf(cfgFP,"\n# Instrument Info\n\n");
   fprintf(cfgFP,"Instrument %s\n",obs.instID);
 
-  // Camera config file
+  // azcam config file
 
-  fprintf(cfgFP,"\n# azcam config file\n\n");
-  fprintf(cfgFP,"CamConfig %s\n",ccd.cfgFile);
+  fprintf(cfgFP,"\n# azcam server info\n\n");
+  fprintf(cfgFP,"azcamHost %s\n",ccd.Host);
+  fprintf(cfgFP,"azcamPort %s\n",ccd.Port);
+  fprintf(cfgFP,"Timeout %ld\n",ccd.Timeout);
 
   // Data Manager info if enabled
 
