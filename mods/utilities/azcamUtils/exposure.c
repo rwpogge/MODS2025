@@ -196,7 +196,7 @@ setImageInfo(azcam_t *cam, char *imgType, char *imgTitle, char *reply)
   return 0;
   
 }
-  
+
 /*!
   \brief Set the exposure (integration) time
   

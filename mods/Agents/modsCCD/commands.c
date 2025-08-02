@@ -1967,7 +1967,8 @@ int
 cmd_status(char *args, MsgType msgtype, char *reply)
 {
   float dtemp;
-
+  char cmdStr[64];
+  
   // query status
   
   if (getTemp(&ccd,reply)<0)
@@ -1976,8 +1977,16 @@ cmd_status(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   if (setExposure(&ccd,-1.0,reply)<0)
     return CMD_ERR;
+  strcpy(cmdStr,"exposure.get_image_type");
+  if (azcamCmd(&ccd,cmdStr,reply)<0)
+    return CMD_ERR;
+  strcpy(ccd.imgType,reply);
+  strcpy(cmdStr,"exposure.get_image_title");
+  if (azcamCmd(&ccd,cmdStr,reply)<0)
+    return CMD_ERR;
+  strcpy(ccd.imgTitle,reply);
   
-  // done, show info
+  // queries done, show info
   
   sprintf(reply,"Inst=%s Controller=Archon Exp=%.1f ImType=%s Obj=(%s)",obs.instID,
 	  ccd.expTime,obs.imgType,obs.imgTitle);

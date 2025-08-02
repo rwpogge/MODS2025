@@ -108,6 +108,8 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
 
   \sa doExposure()
 
+  Note: for azcam, we actually don't do this at first, maybe later
+
 */
 
 int
