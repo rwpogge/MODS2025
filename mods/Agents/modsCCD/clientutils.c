@@ -63,10 +63,10 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
   // Start the Exposure, but do not wait for exposure completion
 
   if (!strcasecmp(obs->imgType,"dark") || !strcasecmp(obs->imgType,"bias") || !strcasecmp(obs->imgType,"zero")) {
-    notifyClient(cam, obs,"Starting Integration, Shutter=0 (Closed)...",STATUS);
+    notifyClient(cam, obs,"GO Starting Integration, Shutter=0 (Closed)...",STATUS);
   }
   else {
-    notifyClient(cam, obs,"Starting Integration, Shutter=1 (Open)...",STATUS);
+    notifyClient(cam, obs,"GO Starting Integration, Shutter=1 (Open)...",STATUS);
   }
 
   if (startExposure(cam,EXP_NOWAIT,reply)<0)
