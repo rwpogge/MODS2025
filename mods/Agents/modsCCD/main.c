@@ -426,6 +426,7 @@ main(int argc, char *argv[])
 
       case SETUP: // we were setting up, poll current status
 	if (expStatus(&ccd,reply)<0) {
+	  sprintf(reply,"GO %s",reply);
 	  notifyClient(&ccd,&obs,reply,STATUS);
 	  //ccd.State = IDLE;
 	}
@@ -436,14 +437,14 @@ main(int argc, char *argv[])
 	case RESUME:
 	  printf("\nStarted %.1f sec exposure              \r",obs.expTime);
 	  fflush(stdout);
-	  sprintf(reply,"%.1f sec exposure started",obs.expTime);
+	  sprintf(reply,"GO started %.1f sec exposure",obs.expTime);
 	  notifyClient(&ccd,&obs,reply,STATUS);
 	  break;
 
 	case READOUT: // could happen if a bias/zero image
 	  printf("\nReadout Started                           \r");
 	  fflush(stdout);
-	  sprintf(reply,"Readout Started PCTREAD=0");
+	  sprintf(reply,"GO Readout Started PCTREAD=0");
 	  notifyClient(&ccd,&obs,reply,STATUS);
 	  break;
 	  
@@ -455,7 +456,8 @@ main(int argc, char *argv[])
 	
       case READOUT: // we're reading out, poll current readout status
 	if (pollReadout(&ccd,&obs,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,STATUS);
+	  sprintf(reply,"GO %s",reply)
+	  notifyClient(&ccd,&obs,reply,ERROR);
 	  //ccd.State = IDLE;
 	}
 	
@@ -467,20 +469,20 @@ main(int argc, char *argv[])
 	  printf("Read out %d pixels of %d                   \r",ccd.Nread,ccd.Npixels);
 	  fflush(stdout);
 	  pctRead = 100.0*float(ccd.Nread)/float(ccd.Npixels); // percent readout
-	  sprintf(reply,"PCTREAD=%d",int(pctRead));
+	  sprintf(reply,"GO PCTREAD=%d",int(pctRead));
  	  notifyClient(&ccd,&obs,reply,STATUS);
 	  break;
 
 	case READ:  // readout is complete, preparing to write
 	  printf("\nReadout Complete, preparing to write image\n");
-	  strcpy(msgStr,"Readout Complete PCTREAD=100");
+	  strcpy(msgStr,"GO Readout Complete PCTREAD=100");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 	  
 	case WRITING: // started writing the image (in case READ state was missed)
 	  printf("\nWriting image to disk\n");
 	  fflush(stdout);
-	  strcpy(msgStr,"Writing Image PCTREAD=100");
+	  strcpy(msgStr,"GO Writing Image PCTREAD=100");
 	  sprintf(reply,msgStr,int(pctRead));
  	  notifyClient(&ccd,&obs,reply,STATUS);
 	  break;
@@ -518,19 +520,19 @@ main(int argc, char *argv[])
 	  
 	case READOUT:  // started readout since last time we polled
 	  printf("\nExposure Completed, Reading out                   \n");
-	  strcpy(msgStr,"Exposure Completed, Shutter=0 (Closed), Readout started PCTREAD=0");
+	  strcpy(msgStr,"GO Exposure Completed, Shutter=0 (Closed), Readout started PCTREAD=0");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 	  
 	case ABORT:  // exposure done since the last time we polled
 	  printf("\nExposure Aborting, wait for completion\n");
-	  strcpy(msgStr,"Exposure Aborting, waiting for completion");
+	  strcpy(msgStr,"GO Exposure Aborting, waiting for completion");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 
 	case PAUSE: // pause requested
 	  printf("\nExposure paused, waiting for RESUME or ABORT\n");
-	  strcpy(msgStr,"Exposure Paused, waiting for RESUME or ABORT");
+	  strcpy(msgStr,"GO Exposure Paused, waiting for RESUME or ABORT");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 
@@ -542,7 +544,7 @@ main(int argc, char *argv[])
 	
       case PAUSE: // exposure was paused, did this change?
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,STATUS);
+	  notifyClient(&ccd,&obs,reply,ERROR);
 	  //ccd.State = IDLE;
 	}
 	
@@ -560,7 +562,7 @@ main(int argc, char *argv[])
 
 	case ABORT:
 	  printf("\nPAUSED Exposure Aborted\n");
-	  strcpy(msgStr,"Paused Exposure ABORTED, waiting for completion");
+	  strcpy(msgStr,"GO Paused Exposure ABORTED, waiting for completion");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 	  
@@ -572,7 +574,7 @@ main(int argc, char *argv[])
 
       case READ:  // readout complete, waiting for write
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,STATUS);
+	  notifyClient(&ccd,&obs,reply,ERROR);
 	  //ccd.State = IDLE;
 	}
 	
@@ -580,7 +582,7 @@ main(int argc, char *argv[])
 
 	case WRITING:
 	  printf("\nWriting CCD to disk\n");
-	  strcpy(msgStr,"Writing image to disk PCTREAD=0");
+	  strcpy(msgStr,"GO Writing image to disk PCTREAD=100");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 
@@ -592,7 +594,7 @@ main(int argc, char *argv[])
 		 
       case WRITING: // azcam server is writing the image to disk, waiting for IDLE
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,STATUS);
+	  notifyClient(&ccd,&obs,reply,ERROR);
 	  //ccd.State = IDLE;
 	}
 	
@@ -600,7 +602,7 @@ main(int argc, char *argv[])
 
 	case IDLE:
 	  printf("Done: Image readout and written to disk\n");
-	  strcpy(msgStr,"Exposure finished. EXPSTATUS=DONE");
+	  strcpy(msgStr,"GO Exposure finished. EXPSTATUS=DONE");
 	  notifyClient(&ccd,&obs,msgStr,DONE);
 	  break;
 
@@ -612,7 +614,7 @@ main(int argc, char *argv[])
 
       case ABORT: // exposure is aborting, waiting for IDLE
 	if (expStatus(&ccd,reply)<0) {
-	  notifyClient(&ccd,&obs,reply,STATUS);
+	  notifyClient(&ccd,&obs,reply,ERROR);
 	  //ccd.State = IDLE;
 	}
 
@@ -620,7 +622,7 @@ main(int argc, char *argv[])
 
 	case IDLE:
 	  printf("\nDone: Exposure abort complete.\n");
-	  strcpy(msgStr,"Exposure Aborted. EXPSTATUS=DONE");
+	  strcpy(msgStr,"GO Exposure Aborted. EXPSTATUS=DONE");
 	  notifyClient(&ccd,&obs,msgStr,DONE);
 	  break;
 
@@ -639,9 +641,9 @@ main(int argc, char *argv[])
 	switch(ccd.State) {
 
 	case SETUP:
-	  printf("\nExposure Setup started..                 \r");
+	  printf("\nExposure Setup started                     \r");
 	  fflush(stdout);
-	  strcpy(msgStr,"Exposure Setup started");
+	  strcpy(msgStr,"GO Exposure Setup started");
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 
