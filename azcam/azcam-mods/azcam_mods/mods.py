@@ -1098,7 +1098,7 @@ class MODS(object):
         
         # strip extraneous quotes that might come in from a client string
 
-        # comment = re.sub("[\"\']","",comment)
+        comment = re.sub("[\"\']","",comment)
         if dataType == 'str':
             value = re.sub("[\"\']","",value)
 
