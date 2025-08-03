@@ -1,8 +1,8 @@
 # libazcam - azcam client utility library
 
-Version: 2.0.0
+Version: 2.0.1
 
-Last Update: 2025 July 25 [rwp/osu]
+Last Update: 2025 Aug 3 [rwp/osu]
 
 Heritage: AzCamUtils library for the Y4KCam at the CTIO 1m with a Windows AzCamServer and ARC Gen3 (May 2005)
 
