@@ -250,11 +250,12 @@ azcamInfo(azcam_t *cam)
 
   printf("CCD Temperature Control:\n");
   printf("    CCD Detector Temperature: %.1f C\n",cam->ccdTemp);
-  // printf("   CCD Temperature Set Point: %.1f C\n",cam->setPoint);
   printf("  CCD Mount Base Temperature: %.1f C\n",cam->baseTemp);
+  // printf("   CCD Temperature Set Point: %.1f C\n",cam->setPoint);
   
   printf("Exposure and File Information:\n");
   printf("  Exposure Time: %.3f sec\n",cam->expTime);
+  printf("    Data Folder: %s\n",cam->filePath);
   printf("  Next Filename: %s\n",cam->fileName);
   printf("  Last Filename: %s\n",cam->lastFile);
   switch(cam->fileFormat) {
@@ -262,7 +263,7 @@ azcamInfo(azcam_t *cam)
     printf("  File Format: Standard FITS\n");
     break;
   case MEF:
-    printf("  File Format: Multi-Extension FITS\n");
+    printf("  File Format: Multi-Extension FITS (MEF)\n");
     break;
   case BINARY:
     printf("  File Format: Raw Binary\n");
