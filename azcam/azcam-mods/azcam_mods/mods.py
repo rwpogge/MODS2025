@@ -923,11 +923,11 @@ class MODS(object):
         
         # build the full /folder/filename to report
         
-        reqFilename = os.path.join(azcam.db.tools["exposure"].folder,"{rootName}{expNum:04d}.fits")
+        reqFilename = os.path.join(azcam.db.tools["exposure"].folder,f"{rootName}{expNum:04d}.fits")
             
         # return with the full filename including path for info
         
-        return f"{reqFilename}"
+        return reqFilename
        
     
     def get_filename(self):
@@ -1116,7 +1116,7 @@ class MODS(object):
                                                       azcam.utils.dequote(comment)
                                                       ,dataType)
         
-        return f"OK set header keyword {keyWord}"
+        return f"OK set header keyword {newKey}"
     
     
     def get_keyword(self,fitsKey):
@@ -1206,7 +1206,7 @@ class MODS(object):
         if imgTitle is None:
             imgType = azcam.db.tools["exposure"].get_image_type
             imgTitle = azcam.db.tools["exposure"].get_image_title
-            return "OK {imgType.upper()} {imgTitle}"
+            return f"OK {imgType.upper()} {imgTitle}"
 
         # strip extraneous quotes that might be in imgTitle
         
@@ -1223,7 +1223,7 @@ class MODS(object):
             
         imgType = azcam.db.tools["exposure"].get_image_type
         imgTitle = azcam.db.tools["exposure"].get_image_title
-        return "OK {imgType.upper()} {imgTitle}"
+        return f"OK {imgType.upper()} {imgTitle}"
         
 
     def get_imageInfo(self):
