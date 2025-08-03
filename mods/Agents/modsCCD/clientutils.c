@@ -81,7 +81,8 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
   // usleep(100000);
   
   obs->tStart = SysTimestamp();  // Note the time we started
-
+  obs->t1 = obs->tStart;         // for the keepalive timer
+  
   if (obs->expTime > 5.0) // only do a count down if exptime>5 sec
     obs->doCountDown = 1;
   else
