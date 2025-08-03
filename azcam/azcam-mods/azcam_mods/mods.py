@@ -1204,8 +1204,8 @@ class MODS(object):
         # if imgTitle is not given, don't change it.  We might have changed imgType
 
         if imgTitle is None:
-            imgType = azcam.db.tools["exposure"].get_image_type
-            imgTitle = azcam.db.tools["exposure"].get_image_title
+            imgType = azcam.db.tools["exposure"].get_image_type()
+            imgTitle = azcam.db.tools["exposure"].get_image_title()
             return f"OK {imgType.upper()} {imgTitle}"
 
         # strip extraneous quotes that might be in imgTitle
@@ -1221,8 +1221,8 @@ class MODS(object):
         else:
             azcam.db.tools["exposure"].set_image_title(imgTitle)
             
-        imgType = azcam.db.tools["exposure"].get_image_type
-        imgTitle = azcam.db.tools["exposure"].get_image_title
+        imgType = azcam.db.tools["exposure"].get_image_type()
+        imgTitle = azcam.db.tools["exposure"].get_image_title()
         return f"OK {imgType.upper()} {imgTitle}"
         
 
