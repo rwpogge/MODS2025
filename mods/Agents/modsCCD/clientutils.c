@@ -10,7 +10,7 @@
 
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \original 2005 May 4
-  \date 2025 July 24
+  \date 2025 Aug 3 (last update)
   
 */
 
@@ -513,14 +513,17 @@ processImage(azcam_t *cam, obsPars_t *obs, char *fname, char *reply)
   
   Re-initialize the CCD configuration on the azcam server.
 
-  !*** this needs something but not sure what yet ***!
-  
+  To restart the azcam/archon link and config, we send the
+  azcam server the "exposure.reset()" command that takes
+  care of all server and Archon reset required.
+
 */
 
 int
 initCCDConfig(azcam_t *cam, char *reply)
 {
-
+  char cmdStr[64];
+  
   // Check the file descriptor and make sure we have an active connection
 
   if (cam->FD<0) {
@@ -532,6 +535,12 @@ initCCDConfig(azcam_t *cam, char *reply)
     
   cam->State = IDLE;
   cam->Abort = 0;
+
+  // Reset the azcam server and Archon controller states
+
+  strcpy(cmdStr,"exposure.reset");
+  if (azcamCmd(&cam,cmdStr,reply)<0)
+    return -1;
 
   strcpy(reply,"azcam server connection initialized...");
   return 0;
