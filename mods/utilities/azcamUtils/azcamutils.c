@@ -231,8 +231,8 @@ azcamInfo(azcam_t *cam)
     break;
   }
 
-  printf("Camera Configuration:\n");
-  printf("  CCD Config File: %s\n",cam->iniFile);
+  printf("CCD Configuration:\n");
+  //  printf("  CCD Config File: %s\n",cam->iniFile);
 
   printf("  CCD ROI: [%d:%d,%d:%d]  Binning: %dx%d\n",
 	 cam->firstCol,cam->lastCol,
@@ -244,9 +244,9 @@ azcamInfo(azcam_t *cam)
 	 cam->NCtotal,cam->NCpredark,cam->NCunderscan,cam->NCoverscan,
 	 cam->NRtotal,cam->NRpredark,cam->NRunderscan,cam->NRoverscan,
 	 cam->NRframexfer);
-  */
   printf("  Next Readout: %d x %d pixels (%d pixels total)\n",
 	 cam->Ncols,cam->Nrows,cam->Npixels);
+  */
 
   printf("CCD Temperature Control:\n");
   printf("    CCD Detector Temperature: %.1f C\n",cam->ccdTemp);
@@ -260,16 +260,16 @@ azcamInfo(azcam_t *cam)
   printf("  Last Filename: %s\n",cam->lastFile);
   switch(cam->fileFormat) {
   case STDFITS:
-    printf("  File Format: Standard FITS\n");
+    printf("    File Format: Standard FITS\n");
     break;
   case MEF:
-    printf("  File Format: Multi-Extension FITS (MEF)\n");
+    printf("    File Format: Multi-Extension FITS (MEF)\n");
     break;
   case BINARY:
-    printf("  File Format: Raw Binary\n");
+    printf("    File Format: Raw Binary\n");
     break;
   default:
-    printf("  File Format: UNKNOWN\n");
+    printf("    File Format: UNKNOWN\n");
     break;
   }
 
