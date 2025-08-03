@@ -518,8 +518,8 @@ main(int argc, char *argv[])
 	  if (obs.expTime > obs.keepAlive) {
 	    obs.tNow = SysTimestamp();
 	    dt = obs.tNow - obs.t1;
-	    printf("dt=%.3f obs.t1=%.3f obs.tNow=%.3f obs.keepAlive=%.3f\n",dt,obs.t1,obs.tNow,obs.keepAlive);
-	    if (dt >= obs.keepAlive) {
+	    // printf("dt=%.3f obs.t1=%.3f obs.tNow=%.3f obs.keepAlive=%.3f\n",dt,obs.t1,obs.tNow,obs.keepAlive);
+	    if (dt >= 120.0) {
 	      obs.t1 = obs.tNow; // reset timer
 	      sprintf(msgStr,"GO Exposing: %.1f of %.1f sec remaining",obs.tLeft,obs.expTime);
 	      notifyClient(&ccd,&obs,msgStr,STATUS);
