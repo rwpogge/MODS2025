@@ -1968,7 +1968,7 @@ cmd_status(char *args, MsgType msgtype, char *reply)
 {
   float dtemp;
   char cmdStr[64];
-  
+  int ls;
   // query status
   
   if (getTemp(&ccd,reply)<0)
@@ -1980,12 +1980,18 @@ cmd_status(char *args, MsgType msgtype, char *reply)
   strcpy(cmdStr,"exposure.get_image_type");
   if (azcamCmd(&ccd,cmdStr,reply)<0)
     return CMD_ERR;
-  printf("strlen(reply)=%d\n",strlen(reply));
+  if (strlen(reply)>0){
+    sl = strline(reply);
+    reply[sl-1]='\0';
+  }
   strcpy(ccd.imgType,reply);
   strcpy(cmdStr,"exposure.get_image_title");
   if (azcamCmd(&ccd,cmdStr,reply)<0)
     return CMD_ERR;
-  printf("strlen(reply)=%d\n",strlen(reply));
+  if (strlen(reply)>0){
+    sl = strline(reply);
+    reply[sl-1]='\0';
+  }
   strcpy(ccd.imgTitle,reply);
   
   // queries done, show info
