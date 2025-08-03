@@ -1,6 +1,7 @@
 # azcam-mods
+Version 1.0.5
 
-Last Update: 2025 Aug 1
+Last Update: 2025 Aug 3
 
 ## Purpose
 
@@ -9,7 +10,9 @@ MODS camera system so we can operate the MODS science CCD detectors with STA Arc
 
 This is a development project for the MODS2025 upgrade.
 
-**Status:** Ready for initial deployment at LBTO for the MODS2025 detecctor system upgrade
+## Status
+
+Tested with the lab test dewar and Archon controller in the LBTO Tucson lab, ready for initial deployment at LBTO for the MODS2025 detecctor system upgrade
 
 ## Installation
 
@@ -30,6 +33,10 @@ ipython -i -m azcam_mods.server -- -mods1b
 Otherwise, launch as a python program, either foreground or background.
 
 ## Development Notes
+
+### 2025 Aug 3
+Final lab checkout complete, ready to deploy on the mountain computers alongside physical installation
+of the MODS Archon controllers in MODS1 and MODS2
 
 ### 2025 Aug 1
 Extensive testing with the live Archon system in the LBTO Tucson lab with the MODS test dewar (3x8K CCD).
