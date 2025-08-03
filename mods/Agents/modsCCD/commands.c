@@ -1968,7 +1968,8 @@ cmd_status(char *args, MsgType msgtype, char *reply)
 {
   float dtemp;
   char cmdStr[64];
-  int ls;
+  int sl;
+  
   // query status
   
   if (getTemp(&ccd,reply)<0)
