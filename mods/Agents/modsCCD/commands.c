@@ -1981,7 +1981,7 @@ cmd_status(char *args, MsgType msgtype, char *reply)
   if (azcamCmd(&ccd,cmdStr,reply)<0)
     return CMD_ERR;
   if (strlen(reply)>0){
-    sl = strline(reply);
+    sl = strlen(reply);
     reply[sl-1]='\0';
   }
   strcpy(ccd.imgType,reply);
@@ -1989,7 +1989,7 @@ cmd_status(char *args, MsgType msgtype, char *reply)
   if (azcamCmd(&ccd,cmdStr,reply)<0)
     return CMD_ERR;
   if (strlen(reply)>0){
-    sl = strline(reply);
+    sl = strlen(reply);
     reply[sl-1]='\0';
   }
   strcpy(ccd.imgTitle,reply);
