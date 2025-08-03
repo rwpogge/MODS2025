@@ -3,7 +3,7 @@ Setup method for LBTO MODS azcamserver
 Usage example:
   python -i -m azcam_mods.server -- -mods1r
   
-  Updated: 2025 July 23 [rwp/osu]
+  Updated: 2025 Aug 3 [rwp/osu]
   
 """
 

@@ -4,7 +4,7 @@ Defines the MODS class for azcam
 Initial version by Mike Lesser (UA ITL)
 Later versins by Rick Pogge (OSU Astronomy)
 
-Updated: 2025 Aug 1 [rwp/osu]
+Updated: 2025 Aug 3 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -228,7 +228,7 @@ class MODS(object):
 
         azcam.db.tools["exposure"].flush(cycles)
 
-        return
+        return f"OK CCD flushed {cycles} time(s)"
 
 
     def set_roi(self,
@@ -285,7 +285,7 @@ class MODS(object):
             first_col, last_col, first_row, last_row, col_bin, row_bin
         )
 
-        return
+        return azcam.db.tools["exposure"].get_roi()
     
     
     def get_roi(self):
@@ -315,7 +315,7 @@ class MODS(object):
         azcam.db.tools["exposure"].roi_reset()
         azcam.db.tools["exposure"].set_roi(-1,-1,-1,-1,1,1)
 
-        return "OK"
+        return azcam.db.tools["exposure"].get_roi()
 
     # roi_off is an alias for reset_roi()
     
@@ -342,7 +342,7 @@ class MODS(object):
        
         azcam.db.tools["exposure"].set_roi(-1, -1, -1, -1, colbin, rowbin)
         
-        return
+        return f"OK CCD binning {colbin} x {rowbin}"
 
     
     def get_ccdbin(self):
@@ -376,7 +376,7 @@ class MODS(object):
         
         azcam.db.tools["exposure"].set_roi(-1, -1, -1, -1, 1, 1)
         
-        return
+        return "OK binning reset to 1 x 1"
         
 
     def set_exptime(self, expTime: float) -> str:
@@ -405,7 +405,7 @@ class MODS(object):
         except Exception as e:
             return f"ERROR set_exptime() - {e}"
 
-        return "OK"
+        return f"OK exptime is {et:.1f} seconds"
 
 
     def get_exptime(self):
@@ -765,7 +765,8 @@ class MODS(object):
 
         '''
         azcam.db.tools["tempcon"].set_control_temperature(setPoint)
-        return
+    
+        return azcam.db.tools["tempcon"].control_temperature
     
     
     def get_CCDSetPoint(self):
@@ -810,6 +811,7 @@ class MODS(object):
             cmd = f"WCONFIG{indx&0xFFFF:04X}TRIGOUTINVERT=1"
             reply = azcam.db.tools["controller"].archon_command(cmd)
             reply = azcam.db.tools["controller"].archon_command("APPLYSYSTEM")
+            reply = "shutter open"
         except Exception as exp:
             reply = f"ERROR shopen() - {exp}"
             
@@ -837,6 +839,7 @@ class MODS(object):
             cmd = f"WCONFIG{indx&0xFFFF:04X}TRIGOUTINVERT=0"
             reply = azcam.db.tools["controller"].archon_command(cmd)
             reply = azcam.db.tools["controller"].archon_command("APPLYSYSTEM")
+            reply = "shutter open"
         except Exception as e:
             reply = f"ERROR shclose() - {e}"
             
@@ -909,7 +912,7 @@ class MODS(object):
                 flist.sort()
                 if len(flist)>0:
                     tp,tr,exn = self.modsFilename(flist[-1])
-                    expNum = exn+1
+                    expNum = exn + 1
                 else:
                     return f"ERROR filename {reqFilename} would overwrite existing file - check and try again"
                 
@@ -917,6 +920,10 @@ class MODS(object):
         
         azcam.db.tools["exposure"].root = rootName
         azcam.db.tools["exposure"].sequence_number = expNum
+        
+        # build the full /folder/filename to report
+        
+        reqFilename = os.path.join(azcam.db.tools["exposure"].folder,"{rootName}{expNum:04d}.fits")
             
         # return with the full filename including path for info
         
@@ -961,7 +968,7 @@ class MODS(object):
         if len(lastFile) == 0:
             return 'None'
         else:
-            return os.path.basename(lastFile)
+            return lastFile
     
     
     # lastfile() is an alias for get_lastfile()
@@ -1109,7 +1116,7 @@ class MODS(object):
                                                       azcam.utils.dequote(comment)
                                                       ,dataType)
         
-        return
+        return f"OK set header keyword {keyWord}"
     
     
     def get_keyword(self,fitsKey):
@@ -1197,7 +1204,9 @@ class MODS(object):
         # if imgTitle is not given, don't change it.  We might have changed imgType
 
         if imgTitle is None:
-            return
+            imgType = azcam.db.tools["exposure"].get_image_type
+            imgTitle = azcam.db.tools["exposure"].get_image_title
+            return "OK {imgType.upper()} {imgTitle}"
 
         # strip extraneous quotes that might be in imgTitle
         
@@ -1212,7 +1221,9 @@ class MODS(object):
         else:
             azcam.db.tools["exposure"].set_image_title(imgTitle)
             
-        return
+        imgType = azcam.db.tools["exposure"].get_image_type
+        imgTitle = azcam.db.tools["exposure"].get_image_title
+        return "OK {imgType.upper()} {imgTitle}"
         
 
     def get_imageInfo(self):
