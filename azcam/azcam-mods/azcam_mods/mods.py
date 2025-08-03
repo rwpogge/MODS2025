@@ -1063,7 +1063,7 @@ class MODS(object):
         else:
             return f"ERROR set_path() directory {dataPath} was not found"
         
-        return "OK"
+        return f"OK image path is {dataPath}"
 
 
     def get_path(self):
@@ -1308,7 +1308,7 @@ class MODS(object):
         
         azcam.db.tools["instrument"].header.values = values
     
-        return
+        return "OK loaded istatus into header"
     
     #----------------------------------------------------
     #  various utilities
