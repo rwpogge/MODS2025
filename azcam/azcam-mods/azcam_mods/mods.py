@@ -918,7 +918,9 @@ class MODS(object):
         azcam.db.tools["exposure"].root = rootName
         azcam.db.tools["exposure"].sequence_number = expNum
             
-        return "OK"
+        # return with the full filename including path for info
+        
+        return f"{reqFilename}"
        
     
     def get_filename(self):
@@ -1001,7 +1003,7 @@ class MODS(object):
         
         azcam.db.tools["exposure"].sequence_number = exn
         
-        return "OK"
+        return f"OK expnum is {exn:04d}"
     
     
     def get_expnum(self):
