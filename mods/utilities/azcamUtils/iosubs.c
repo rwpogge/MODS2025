@@ -335,14 +335,10 @@ azcamCmd(azcam_t *cam, char *cmdStr, char *reply)
 
   sscanf(msgStr,"%s %[^\n]",status,msgBody);
 
-  // strip off any residual termination, \n or \r
-
-  // if (msgBody[strlen(msgBody)-1] == '\n') msgBody[strlen(msgBody-1)] = '\0';
-
+  // strip off any \r or \n left from the server stream reply
+  
   msgBody[strcspn(msgBody, "\r\n")] = 0;
   
-  // if (msgBody[strlen(msgBody)-1] == '\r') msgBody[strlen(msgBody-1)] = '\0';
-
   // What we do depends on the value of status
 
   if (strcasecmp(status,"OK")==0) {
