@@ -516,6 +516,7 @@ main(int argc, char *argv[])
 	  // notify client of exposure countdown on interval obs.keepAlive if needed
 
 	  if (obs.expTime > obs.keepAlive) {
+	    obs.tNow = SysTimestamp();
 	    dt = obs.tNow - obs.t1;
 	    if (dt >= obs.keepAlive) {
 	      obs.t1 = obs.tNow; // reset timer
