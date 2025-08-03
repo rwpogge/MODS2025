@@ -44,7 +44,8 @@
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \original 2003 Oct 13
   \date 2025 July 25 - major renovation for modsCCD app [rwp/osu]
-  
+
+  Last Update: 2025 Aug 3 [rwp/osu]
 */
 
 #include "isisclient.h" // ISIS common client library header
@@ -1760,7 +1761,7 @@ cmd_ybin(char *args, MsgType msgtype, char *reply)
   ccdtemp [degC]
 
   Sets the CCD temperature control set point in degrees Celsius.
-  If given without arguments, it reports the current setpoiint and
+  If given without arguments, it reports the current setpoint and
   queries the azcam server to retrieve the current CCD and Dewar
   temperatures.
   
@@ -1784,24 +1785,24 @@ cmd_ccdtemp(char *args, MsgType msgtype, char *reply)
     return CMD_ERR;
   }
 
-  // If we have arguments, change the setpoint and upload it.
-
+  // If we have arguments, change the setpoint and upload it - DISABLED [rwp/osu]
+  /*
   if (strlen(args)>0) {
     GetArg(args,1,argbuf); 
     newtemp = atof(argbuf); 
     if (setTemp(&ccd,newtemp,reply)<0) 
       return CMD_ERR;
   }
-
+  */
+  
   // Query the azcam server for the current temperatures
 
   if (getTemp(&ccd,reply)<0)
     return CMD_ERR;
 
-  // and report them.
+  // and report te temperatures.
 
-  sprintf(reply,"setPoint=%.1f CCDTemp=%.1f DewarTemp=%.1f",
-	  ccd.setPoint,ccd.ccdTemp,ccd.baseTemp);
+  sprintf(reply,"CCDTemp=%.1f BaseTemp=%.1f",ccd.ccdTemp,ccd.baseTemp);
 
   // Compare the CCDTemp to the setPoint, and issue a warm-up
   // warming if CCDTemp is >10C above the setpoint
