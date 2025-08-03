@@ -1981,18 +1981,10 @@ cmd_status(char *args, MsgType msgtype, char *reply)
   strcpy(cmdStr,"exposure.get_image_type");
   if (azcamCmd(&ccd,cmdStr,reply)<0)
     return CMD_ERR;
-  if (strlen(reply)>0){
-    sl = strlen(reply);
-    reply[sl-1]='\0';
-  }
   strcpy(ccd.imgType,reply);
   strcpy(cmdStr,"exposure.get_image_title");
   if (azcamCmd(&ccd,cmdStr,reply)<0)
     return CMD_ERR;
-  if (strlen(reply)>0){
-    sl = strlen(reply);
-    reply[sl-1]='\0';
-  }
   strcpy(ccd.imgTitle,reply);
   
   // queries done, show info

@@ -9,6 +9,7 @@
   \date 2025 July 23
   (original 2005)
 
+  Last Update: 2025 Aug 3 [rwp/osu]
 */
 
 #include "azcam.h" // All the header we should need
@@ -333,9 +334,10 @@ azcamCmd(azcam_t *cam, char *cmdStr, char *reply)
 
   sscanf(msgStr,"%s %[^\n]",status,msgBody);
 
-  // strip off any residual termination
+  // strip off any residual termination, \n or \r
 
   if (msgBody[strlen(msgBody)-1] == '\n') msgBody[strlen(msgBody-1)] = '\0';
+  if (msgBody[strlen(msgBody)-1] == '\r') msgBody[strlen(msgBody-1)] = '\0';
 
   // What we do depends on the value of status
 
