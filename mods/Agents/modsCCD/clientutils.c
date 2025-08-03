@@ -539,7 +539,7 @@ initCCDConfig(azcam_t *cam, char *reply)
   // Reset the azcam server and Archon controller states
 
   strcpy(cmdStr,"exposure.reset");
-  if (azcamCmd(&cam,cmdStr,reply)<0)
+  if (azcamCmd(cam,cmdStr,reply)<0)
     return -1;
 
   strcpy(reply,"azcam server connection initialized...");
