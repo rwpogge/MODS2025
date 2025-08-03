@@ -3,13 +3,11 @@
 #
 # Use "build", not "make" to build the modsCCD executable.
 #
-# R. Pogge, OSU Astronomy Dept.
-# pogge.1@osu.edu
-# Last Modified: 2025 Aug 1
+# R. Pogge, OSU Astronomy Dept. pogge.1@osu.edu
 #
-# 2025 July - port to AlmaLinux 9
+# Last Modified: 2025 Aug 3
 #
-VERSION     = v1.0.1
+VERSION     = v1.0.2
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 
