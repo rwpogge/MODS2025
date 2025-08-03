@@ -309,7 +309,8 @@ azcamCmd(azcam_t *cam, char *cmdStr, char *reply)
   char msgStr[256];
   char status[32];
   char msgBody[256];
-
+  int sl;
+  
   // terminate the command string with \n and send it.  We do not validate
   // commands at this stage.  If the azcam server doesn't like the command,
   // it will complain
@@ -336,8 +337,11 @@ azcamCmd(azcam_t *cam, char *cmdStr, char *reply)
 
   // strip off any residual termination, \n or \r
 
-  if (msgBody[strlen(msgBody)-1] == '\n') msgBody[strlen(msgBody-1)] = '\0';
-  if (msgBody[strlen(msgBody)-1] == '\r') msgBody[strlen(msgBody-1)] = '\0';
+  // if (msgBody[strlen(msgBody)-1] == '\n') msgBody[strlen(msgBody-1)] = '\0';
+
+  msgBody[strcspn(msgBody, "\r\n")] = 0;
+  
+  // if (msgBody[strlen(msgBody)-1] == '\r') msgBody[strlen(msgBody-1)] = '\0';
 
   // What we do depends on the value of status
 
