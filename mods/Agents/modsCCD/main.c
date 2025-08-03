@@ -512,9 +512,17 @@ main(int argc, char *argv[])
 	      fflush(stdout);
 	    }
 	  }
-	  
-	  // notify client of exposure countdown - need code to keep reasonable, helps
-	  // keep-alive state for remote UDP socket clients during long (>5min) exposures
+
+	  // notify client of exposure countdown on interval obs.keepAlive if needed
+
+	  if (obs.expTime > obs.keepAlive) {
+	    dt = obs.tNow - obs.t1;
+	    if (dt >= obs.keepAlive) {
+	      obs.t1 = obs.tNow; // reset timer
+	      sprintf(msgStr,"GO Exposing: %.1f of %.1f sec remaining",obs.tLeft,obs.expTime);
+	      notifyClient(&ccd,&obs,msgStr,STATUS);
+	    }
+	  }
 	  
 	  break;
 	  

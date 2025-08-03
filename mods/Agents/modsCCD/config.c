@@ -301,6 +301,13 @@ loadConfig(char *cfgfile)
 	GetArg(inbuf,2,argbuf);
 	ccd.Timeout = atol(argbuf);
       }
+
+      // Remote client notification "keep-alive" time in seconds
+
+      else if (strcasecmp(keyword,"keepAlive")==0) {
+	GetArg(inbuf,2,argbuf);
+	obs.keepAlive = atof(argbuf);
+      }
       
       // Gripe if junk is in the config file
 

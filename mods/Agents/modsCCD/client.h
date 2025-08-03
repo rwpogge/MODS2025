@@ -115,6 +115,7 @@ typedef struct obsPars {
   double tStart;     //!< time at start of integration
   double tNow;       //!< time right now
   double tLeft;      //!< time remaining in the integration
+  double keepAlive;  //!< remote host keep-alive notification interval in seconds
   int doCountDown;   //!< countdown timer flag
 
   // Exposure control info

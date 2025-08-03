@@ -31,8 +31,14 @@
   further monitoring and handling.  This allows the client to watch for
   abort directives either from the console or remote sockets.  The main
   client loop handles polling during exposures to monitor integration and
-  readout progress, and then triggers the SaveImage() function to save
-  the image.
+  readout progress.
+
+  doExpose sets two timestamps:
+     obs->tStart = start time
+     obs->t1 = running time starting at obs-tStart
+
+  obs-t1 is used to send keep-alive notes on exposure progress if the
+  exposure time is longer than the keep-live time obs->keepAlive
 
   \sa doBias()
 
@@ -614,7 +620,8 @@ initObsPars(obsPars_t *obs)
   obs->tStart = 0.0;
   obs->tNow = 0.0;
   obs->tLeft = 0.0;
-
+  obs->keepAlive = 120.0; // default keepalive interval in seconds
+  
   strcpy(obs->expHost,"console");
 
   strcpy(obs->Observer,"NONE");
