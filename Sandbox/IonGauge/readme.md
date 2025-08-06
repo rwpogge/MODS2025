@@ -20,8 +20,9 @@ Run the generated executable.
 ## Ion Gauge settings
 These are the ion gauge interface settings for each channel on each MODS:
 
-* Comtrol Device Master setting is: `IP address : Port Number`
+* Comtrol Device Master setting is: `IP address : Port Number`, see below
 * RS485 (2-wire) config data are: `baud`, `parity`, `data bits`, `stop bit`
+* All are setup with RS485 channel **5** using the unit front panel rotary switch
 
 ### MODS1
 
