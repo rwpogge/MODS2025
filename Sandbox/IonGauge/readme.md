@@ -31,19 +31,21 @@ These are the ion gauge interface settings for each channel on each MODS:
 
 #### Red Channel
  * Comtrol Device Master: 192.168.139.103:8018 (port 2)
- * RS485 setup: xxxx/none/8/1
+ * RS485 setup: 9600/none/8/1
 
 #### Blue Channel 
  * Comtrol Device Master: 192.168.139.113:8018 (port 2)
- * RS485 setup: xxxx/none/8/1
+ * RS485 setup: 9600/none/8/1
 ### MODS2
 
 #### Red Channel
  * Comtrol Device Master: 192.168.139.203:8018 (port 2)
  * RS485 setup: 9600/none/8/1
 
-Note: MODS2 red dewar ion gauge is different than the others
-
 #### Blue Channel 
  * Comtrol Device Master: 192.168.139.213:8018 (port 2)
- * RS485 setup: 19200/none/8/1
+ * RS485 setup: **19200**/none/8/1
+
+**NOTE**: MODS2 Red ion gauge is weird, it was never reconfigured to our standard 9600 baud because
+a field repair was rushed and it fell off the to-do list (setting is non-trivial through firmware,
+not a front-panel setting).
