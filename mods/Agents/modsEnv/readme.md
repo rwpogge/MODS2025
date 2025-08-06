@@ -50,7 +50,7 @@ Run the executable with the following optional command line arguments.
 - `./modsenv <rcfile>`
 - `./modsenv`
 
-If Hdf5 logging will be used, then the user running the executable must be in a usergroup named `telemetry`.
+If hdf5 logging will be used, then the user running the executable must be in a usergroup named `telemetry`.
 
 ## Doxygen Documentation
 Generate the documentation by running the `doxygen` command from the modsEnv directory.
