@@ -56,8 +56,8 @@ m1bHost = '192.168.139.142' # MODS1 Blue HEB
 m2rHost = '192.168.139.241' # MODS2 Red HEB
 m2bHost = '192.168.139.242' # MODS2 Blue HEB
 
-wagoHost = m1rHost
-modsID = 'MODS2R'
+wagoHost = m2bHost
+modsID = "MODS2B"
 
 # WAGO register address of the 8-channel AI module
 
