@@ -51,7 +51,15 @@ from pymodbus.client import ModbusTcpClient as mbc
 # being tested standalone outside a DESI IEB in the lab at OSU - check
 # IP, may vary from unit to unit, but this is typical.
 
-wagoHost = '192.168.139.141'
+m1rHost = '192.168.139.141' # MODS1 Red HEB
+m1bHost = '192.168.139.142' # MODS1 Blue HEB
+m2rHost = '192.168.139.241' # MODS2 Red HEB
+m2bHost = '192.168.139.242' # MODS2 Blue HEB
+
+wagoHost = m1rHost
+
+# WAGO register address of the 8-channel AI module
+
 qcAddr = 0
 
 # Instantiate the client - interestingly the initializer does not
