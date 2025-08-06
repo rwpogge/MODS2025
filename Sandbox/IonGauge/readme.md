@@ -18,6 +18,9 @@ Run the generated executable.
 - `./test`
 
 ## Ion Gauge settings
+
+**Updated/Verified**: 2025 August 6 [rwp/osu]
+
 These are the ion gauge interface settings for each channel on each MODS:
 
 * Comtrol Device Master setting is: `IP address : Port Number`, see below
