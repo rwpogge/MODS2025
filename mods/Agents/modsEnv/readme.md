@@ -27,7 +27,9 @@ dnf config-manager --enablerepo=lbto,lbto-updates
 
 dnf install -y http://yumsrv.tucson.lbto.org/rpms/almalinux9/release/lbto-yum-repository-1-1.noarch.rpm
 ```
-before you add the `lbto-libtelemetry` bits
+before you add the `lbto-libtelemetry` bits.
+
+Then, install LBTO common versions of HDF5 and the observatory telemetry library `libtelemetry`:
 ```shell
 dnf -y install hdf5-1.12.1-11_lbto.el9.x86_64.rpm
 dnf -y install hdf5-devel-1.12.1-11_lbto.el9.x86_64.rpm
