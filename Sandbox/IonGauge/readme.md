@@ -16,3 +16,30 @@ Run the `make` command from the IonGuage directory.
 ## Usage Instructions
 Run the generated executable.
 - `./test`
+
+## Ion Gauge settings
+These are the ion gauge interface settings for each channel on each MODS:
+
+* Comtrol Device Master setting is: `IP address : Port Number`
+* RS485 (2-wire) config data are: `baud`, `parity`, `data bits`, `stop bit`
+
+### MODS1
+
+#### Red Channel
+ * Comtrol Device Master: 192.168.139.103:8018 (port 2)
+ * RS485 setup: xxxx/none/8/1
+
+#### Blue Channel 
+ * Comtrol Device Master: 192.168.139.113:8018 (port 2)
+ * RS485 setup: xxxx/none/8/1
+### MODS2
+
+#### Red Channel
+ * Comtrol Device Master: 192.168.139.203:8018 (port 2)
+ * RS485 setup: 9600/none/8/1
+
+Note: MODS2 red dewar ion gauge is different than the others
+
+#### Blue Channel 
+ * Comtrol Device Master: 192.168.139.213:8018 (port 2)
+ * RS485 setup: 19200/none/8/1
