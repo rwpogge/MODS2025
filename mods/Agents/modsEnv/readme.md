@@ -1,7 +1,7 @@
 # modsenv - MODS environmental sensor monitor agent
 Version: 3.1.1
 
-Author: R. Pogge, OSU Astronomy (pogge.1@osu.edu)
+Authors: R. Pogge & X. Carroll, OSU Astronomy
 
 ## Overview
 modsEnv collects and logs MODS instrument environmental and power-status data as an autonomous background process. Environmental sensors and power-status data are obtained from WAGO Modbus/TCP fieldbus controllers in the MODS instrument
@@ -18,9 +18,26 @@ Logs are kept on the local MODSn server machine.
 ## Dependencies
  * `isisClient` - ISIS client library (`libisis`) on the same machine.
  * `libmodbus` - open source libmodbus libraries (http://libmodbus.org) - verified with v3.1.7 (needs `libmodbus` and `libmodbus-devel`).
- * `lbto-libtelemetry` - The library used to export environmental sensor logs as Hdf5 files.
+ * `lbto-libtelemetry` - The library used to export environmental sensor logs as hdf5 files.
 
- ## Build Instructions
+These are best loaded on the mountain to make sure everything is correct. Once at LBTO, you don't have to mess with VPN or access to the local repositories.  Those
+are installed with 
+```shell
+dnf config-manager --enablerepo=lbto,lbto-updates
+
+dnf install -y http://yumsrv.tucson.lbto.org/rpms/almalinux9/release/lbto-yum-repository-1-1.noarch.rpm
+```
+before you add the `lbto-libtelemetry` bits
+```shell
+dnf -y install hdf5-1.12.1-11_lbto.el9.x86_64.rpm
+dnf -y install hdf5-devel-1.12.1-11_lbto.el9.x86_64.rpm
+
+dnf -y install lbto-libtelemetry-leapseconds-5-0.el9.x86_64.rpm
+dnf -y install lbto-libtelemetry-5-0.el9.x86_64.rpm
+dnf -y install lbto-libtelemetry-devel-5-0.el9.x86_64.rpm
+```
+
+## Build Instructions
 Run the `build` script in the modsEnv directory.
 
 ## Maintaining
