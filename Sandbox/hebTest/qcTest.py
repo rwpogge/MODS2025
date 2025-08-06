@@ -27,7 +27,7 @@ def getQCs(client,addr):
     numAI = 4
     qcData = []
     try:
-        rd = client.read_holding_registers(addr,numAI)
+        rd = client.read_holding_registers(addr,count=numAI)
     except Exception as ex:
         print(f"[{datetime.now(datetime.UTC).isoformat()}] *** Warning: Cannot read quad cell board - {ex}")
         for i in range(numAI):
@@ -53,7 +53,7 @@ def qc2vdc(rawQC):
 def getRTDs(client,addr,num):
     temp = []
     try:
-        rd = client.read_input_registers(addr,num)
+        rd = client.read_input_registers(addr,count=num)
     except Exception as ex:
         print(f"[{datetime.utcnow().isoformat()}] WARNING: Cannot read RTD module - {ex}")
         for i in range(num):

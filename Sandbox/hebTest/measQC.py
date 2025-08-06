@@ -15,7 +15,7 @@ def getQCs(client,addr):
     numAI = 4
     qcData = []
     try:
-        rd = client.read_holding_registers(addr,numAI)
+        rd = client.read_holding_registers(addr,count=numAI)
     except Exception as ex:
         print(f"[{datetime.datetime.now(datetime.UTC).isoformat()}] *** Warning: Cannot read quad cell board - {ex}")
         for i in range(numAI):
@@ -57,6 +57,7 @@ m2rHost = '192.168.139.241' # MODS2 Red HEB
 m2bHost = '192.168.139.242' # MODS2 Blue HEB
 
 wagoHost = m1rHost
+modsID = 'MODS2R'
 
 # WAGO register address of the 8-channel AI module
 
@@ -117,7 +118,7 @@ class StripChart:
                  dt=0.02,
                  y0=(0.0,0.0,0.0,0.0),
                  dy0=5.0,
-                 title='QuadCell Signal',
+                 title=f'{modsID} QuadCell Signal',
                  geom=(1600,512)):
         self.fig = fig
         self.ax = ax
