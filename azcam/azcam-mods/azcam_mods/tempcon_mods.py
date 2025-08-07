@@ -8,7 +8,7 @@ only overload define_keywords() and get_temperatures, changing
 the keywords we assign to the two temperatures, and both the
 heater board and IDs in __init__() to the MODS versions
 
-Updated: 2025 July 31 [rwp/osu]
+Updated: 2025 Aug 7 [rwp/osu]
 
 """
 
@@ -26,7 +26,9 @@ class TempConMODS(TempCon):
      * ccdtemp - CCD detector temperature 
      * basetemp - temperature at the base of the CCD mount where the old finger from the LN2 reservoir attaches
      
-    These are sensors 0 and 2, respectively.
+    These are sensors 0 and 1, respectively.  This is confirmed by live tests with the MODS
+    dewars and new Archons at LBTO.  There is no sensor 2
+    
     The heater board is MOD10 in the MODS archons
     '''
     
@@ -37,7 +39,7 @@ class TempConMODS(TempCon):
         self.num_temp_reads = 1
         self.heaterx_board = "MOD10"
 
-        self.temperature_ids = [0, 2]  # ccdtemp, basetemp
+        self.temperature_ids = [0, 1]  # ccdtemp, basetemp
 
         return
 

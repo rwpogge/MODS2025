@@ -3,7 +3,7 @@ Setup method for LBTO MODS azcamserver
 Usage example:
   python -i -m azcam_mods.server -- -mods1r
   
-  Updated: 2025 Aug 3 [rwp/osu]
+  Updated: 2025 Aug 7 [rwp/osu]
   
 """
 
@@ -261,7 +261,7 @@ def setup():
 #    tempcon = TempConArchon(description="MODS Archon")
     
     tempcon = TempConMODS(description="MODS Archon")
-    tempcon.temperature_ids = [0, 2]  # ccdtemp, basetemp
+    tempcon.temperature_ids = [0, 1]  # ccdtemp, basetemp
     tempcon.heaterx_board = "MOD10"
     tempcon.control_temperature = -95.0
     controller.heater_board_installed = 1
