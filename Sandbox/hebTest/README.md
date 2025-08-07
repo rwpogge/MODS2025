@@ -11,6 +11,7 @@ functions separate from the instrument control and data-taking system.
  * `testHEB.ipynb` - step-by-step function test of a flight HEB (subset of `HEB_WAGO.ipynb`)
  * `measQC.py` - "stripchart" plot of a quad cell readout, used for verification and bias adjustment, must be edited to change the WAGO address
  * `qcTest.py` - read and record QC data for long time series.  Must be edited to change the WAGO address.
+ * `igTest.ipynb` - Notebook to test the vacuum ionization gauges on MODS (connect via Comtrol but powered on via HEB WAGO)
 
 ### Dependencies
 
