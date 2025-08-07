@@ -1,7 +1,7 @@
 # azcam-mods
-Version 1.0.5
+Version 1.0.6
 
-Last Update: 2025 Aug 3
+Last Update: 2025 Aug 7
 
 ## Purpose
 
@@ -33,6 +33,16 @@ ipython -i -m azcam_mods.server -- -mods1b
 Otherwise, launch as a python program, either foreground or background.
 
 ## Development Notes
+
+### 2025 Aug 7
+Changes in code based on results of work with the flight MODS systems at LBTO during Archon/HEB 
+installation and testing in the MODS1 and MODS2 instruments.  Biggest changes are the assignment
+if the in-dewar temperature sensors (CCD and mount base) used by the Archon temperature controller
+(older assignments were incorrect). Changes also made to the .ncf and .acf files for temperature
+control as they had indicated the incorrect sensor type (they are RTD100 - 100-ohm Pt RTDs
+not DT-670 diodes which were common in ARC/Leach controller dewars).  Also created `MODS_Actual.ncf`
+with these changes, and turning continuous readout OFF initially for mountain testing.  We will
+derive the baseline `MODS_Actual.acf` configuration file from this once it is finalized.
 
 ### 2025 Aug 3
 Final lab checkout complete, ready to deploy on the mountain computers alongside physical installation
