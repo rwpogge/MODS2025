@@ -1,7 +1,7 @@
 # MODS2025
 Version 1.2.1
 
-Last Update: 2025 Aug 3 [rwp/osu]
+Last Update: 2025 Aug 7 [rwp/osu]
 
 Lead: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
@@ -51,4 +51,4 @@ Also need the local LBTO versions of hdf5 and lbto-libtelemetry, build from loca
 - Mike Lesser (UA, retired)
 - Matthieu Bec (LBTO) mbec@lbto.org
 - Glenn Eychaner (LBTO) geychaner@lbto.org
-- ...
+- Ray Gonzalez (OSU Retired)
