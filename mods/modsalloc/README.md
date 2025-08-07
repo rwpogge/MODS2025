@@ -1,11 +1,11 @@
-# modsalloc - MODS shared memory sector
+# modsalloc - MODS shared memory segment
 
-**Updated: 2025 July 14 [rwp/osu]**
+**Updated: 2025 August 7 [rwp/osu]**
 
 ## Overview
 
-modsalloc allocates a shared memory sector used by the MODS mechanism controller server (mmcService) and the AGw unit server (agwServer).
-Other programs can use shared memory as needed, for example the IMSC agents and TclTk scripts that run the IMCS tools like the
+`modsalloc` allocates a shared memory segment used by the MODS mechanism controller server (mmcService) and the AGw unit server (agwServer).
+Other programs can use shared memory as needed, for example the IMSC agents and Tcl/Tk scripts that run the IMCS tools like the
 "radar screen" gui and data readout gui. 
 
 ## Compile
@@ -67,12 +67,12 @@ Jul 17 15:14:39 mods1blue modsalloc.sh[1222496]: brk_get: id 0
 Jul 17 15:14:39 mods1blue modsalloc.sh[1222496]: semid_get: key=-1 id=0
 Jul 17 15:14:39 mods1blue systemd[1]: modsalloc.service: Deactivated successfully.
 ```
-The last line is correct, it does not stay running forever, it just needs to run once then deactivate to create th
-shared memory sector.
+The last line is correct, it does not stay running forever, it just needs to run once then deactivate to create the
+shared memory segment.
 
 ## Testing
 
-The `vueinfo` program is used to interrogate the shared memory sector.  
+`vueinfo` is a custom program we use to interrogate the MODS shared memory segment.  
 
 If the shared memory segment is active, you'll see the IP address map for the data-taking system elements, like this
 ```shell
@@ -90,7 +90,7 @@ IEB0 [ML2],  ,  BUSY[0],  HOST[0])
 IEB0 [ML3],  ,  BUSY[0],  HOST[0])
 ...
 ```
-This is what an initialized but empty shared memory sector will show. Once you've started the `mmcService` (the MODS "IE")
+This is what an initialized but empty shared memory segment will show. Once you've started the `mmcService` (the MODS "IE")
 you'll see something more substantial.
 
 If, however, shared memory is **not** initialized, you'll get this error message:
