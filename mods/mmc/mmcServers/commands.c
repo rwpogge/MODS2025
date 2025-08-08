@@ -5427,7 +5427,7 @@ cmd_slitmask(char *args, MsgType msgtype, char *reply)
   StrUpper(who_selected);
 
   if(!strcasecmp(cmd_instruction,"RDTAB")) { // re-read the slitmask table
-    system("/home2/mods/bin/mlcRecover slitmask");
+    system("/usr/local/bin/mlcRecover slitmask");
     sprintf(reply,"%s %s table read",who_selected,cmd_instruction);
     return CMD_OK;
   }
@@ -6036,7 +6036,7 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
   memset(dummy, 0, sizeof(dummy));
 
   if ( !strcasecmp(cmd_instruction, "RDTAB") ) { // re-read the filter tables
-    system("/home2/mods/bin/mlcRecover agwfilt");
+    system("/usr/local/bin/mlcRecover agwfilt");
     sprintf(reply, "%s %s table read", who_selected, cmd_instruction);
     return CMD_OK;
 
@@ -7216,7 +7216,7 @@ cmd_dichroic(char *args, MsgType msgtype, char *reply)
   GetArg(args,1,cmd_instruction);
 
   if(!strcasecmp(cmd_instruction,"RDTAB")) { // re-read the filter tables
-    system("/home2/mods/bin/mlcRecover dichroic");
+    system("/usr/local/bin/mlcRecover dichroic");
     sprintf(reply,"%s %s table read",who_selected,cmd_instruction);
     return CMD_OK;
   }
@@ -9421,10 +9421,10 @@ cmd_grating(char *args, MsgType msgtype, char *reply)
   if(!strcasecmp(cmd_instruction,"RDTAB")) { // re-read the filter tables
 
     if(who_selected[0]=='R') {
-      system("/home2/mods/bin/mlcRecover rgrating");
+      system("/usr/local/bin/mlcRecover rgrating");
       sprintf(reply,"%s %s table read",who_selected,cmd_instruction);
     } else if(who_selected[0]=='B') {
-      system("/home2/mods/bin/mlcRecover bgrating");
+      system("/usr/local/bin/mlcRecover bgrating");
       sprintf(reply,"%s %s table read",who_selected,cmd_instruction);
     }
     return CMD_OK;
@@ -10622,10 +10622,10 @@ cmd_filter(char *args, MsgType msgtype, char *reply)
 
   if(!strcasecmp(cmd_instruction,"RDTAB")) { // re-read the filter tables
     if(who_selected[0]=='R') {
-      system("/home2/mods/bin/mlcRecover rfilter");
+      system("/usr/local/bin/mlcRecover rfilter");
       sprintf(reply,"%s %s table read",who_selected,cmd_instruction);
     } else if(who_selected[0]=='B') {
-      system("/home2/mods/bin/mlcRecover bfilter");
+      system("/usr/local/bin/mlcRecover bfilter");
       sprintf(reply,"%s %s table read",who_selected,cmd_instruction);
     }
     return CMD_OK;

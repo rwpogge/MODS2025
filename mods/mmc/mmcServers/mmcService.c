@@ -516,13 +516,13 @@ int main(int argc, char *argv[])
   for(i = 0; i < MAX_ML-1; i++) {
     sprintf(shm_addr->MODS.ieb_msg[i],"Empty");
   }
-  system("/home2/mods/bin/mlcRecover agwfilt");
-  system("/home2/mods/bin/mlcRecover rfilter");
-  system("/home2/mods/bin/mlcRecover bfilter");
-  system("/home2/mods/bin/mlcRecover rgrating");
-  system("/home2/mods/bin/mlcRecover bgrating");
-  system("/home2/mods/bin/mlcRecover dichroic");
-  system("/home2/mods/bin/mlcRecover slitmask");
+  system("/usr/local/bin/mlcRecover agwfilt");
+  system("/usr/local/bin/mlcRecover rfilter");
+  system("/usr/local/bin/mlcRecover bfilter");
+  system("/usr/local/bin/mlcRecover rgrating");
+  system("/usr/local/bin/mlcRecover bgrating");
+  system("/usr/local/bin/mlcRecover dichroic");
+  system("/usr/local/bin/mlcRecover slitmask");
 
   if (client.useISIS) {
     if (InitISISServer(&client)<0) {
