@@ -149,8 +149,7 @@ extern char *getDateTime(void);
 
 void *thread_init_func(void *arg)
 {
-  // int tid = (int) arg;
-  int tid = *((int*) arg);
+  int tid = (long long) arg;
 
   int readsocks;
   int isis_read;
