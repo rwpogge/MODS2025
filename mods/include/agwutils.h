@@ -87,7 +87,7 @@
 #define FMILLIM       2000    //!< 2:1 Gear Ratio for Focus
 
 // AGW default logfile.
-#define DEFAULT_AGWLOG "/home/mods/Logs/AGW/agw.log"
+#define DEFAULT_AGWLOG "/home/dts/Logs/AGW/agw.log"
 
 //----------------------------------------------------------------
 //

@@ -115,9 +115,9 @@
 // Public instrument configuration tables (filters, gratings, slits, etc.)
 // MODS is the "active" config, MODS1/MODS2 are instance-specific
 
-#define MODS_CONFIG   "/home/mods/Config/MODS"
-#define MODS1_CONFIG  "/home/mods/Config/MODS1"
-#define MODS2_CONFIG  "/home/mods/Config/MODS2"
+#define MODS_CONFIG   "/home/dts/mods/Config/MODS"
+#define MODS1_CONFIG  "/home/dts/mods/Config/MODS1"
+#define MODS2_CONFIG  "/home/dts/mods/Config/MODS2"
 
 #define CL_PRIOR      -8
 #define MOD1_PRIOR   -12
