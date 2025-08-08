@@ -153,8 +153,7 @@ void nonblock(int sockfd)
 
 void *thread_init_func(void *arg)
 {
-  // int tid = (int) arg;
-  int tid = *((int*)arg);
+  int tid = (long long) arg;
 
   int readsocks;
   int fromlen;

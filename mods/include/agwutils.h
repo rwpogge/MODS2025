@@ -47,9 +47,9 @@
 #define AGW_XYRES        5 //!< XY stage linear resolution in microns
 #define AGW_XYSPEED     10 //!< XY stage drive speed in microns/millisec
 #define AGW_XSMIN        0 //!< Minimum XS-axis stage travel in mm from home (zero)
-#define AGW_XSMAX      184 //!< Maximum XS-axis stage travel in mm from home (zero)
+#define AGW_XSMAX      185 //!< Maximum XS-axis stage travel in mm from home (zero)
 #define AGW_YSMIN        0 //!< Minimum YS-axis stage travel in mm from home (zero)
-#define AGW_YSMAX      204 //!< Maximum YS-axis stage travel in mm from home (zero)
+#define AGW_YSMAX      206 //!< Maximum YS-axis stage travel in mm from home (zero)
 
 #define AGW_FOCRES      10 //!< Focus motion resolution in microns
 #define AGW_FOCSPEED     4 //!< Focus motion drive speed in microns/millisec

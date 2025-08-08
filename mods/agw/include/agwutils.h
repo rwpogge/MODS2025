@@ -51,9 +51,9 @@
 #define AGW_XYRES        5 //!< XY stage linear resolution in microns [no-op]
 #define AGW_XYSPEED     10 //!< XY stage drive speed in microns/millisec [no-op]
 #define AGW_XSMIN        0 //!< Minimum XS-axis stage travel in mm from home (zero)
-#define AGW_XSMAX      185 //!< Maximum XS-axis stage travel in mm from home (zero)
+#define AGW_XSMAX      186 //!< Maximum XS-axis stage travel in mm from home (zero)
 #define AGW_YSMIN        0 //!< Minimum YS-axis stage travel in mm from home (zero)
-#define AGW_YSMAX      204 //!< Maximum YS-axis stage travel in mm from home (zero)
+#define AGW_YSMAX      206 //!< Maximum YS-axis stage travel in mm from home (zero)
 
 #define AGW_FOCRES      10 //!< Focus motion resolution in microns [no-op]
 #define AGW_FOCSPEED     4 //!< Focus motion drive speed in microns/millisec [no-op]
@@ -114,7 +114,7 @@
 #define ERROR_UNKNOWN_MODSID   115 //!< User requested an unknown MODS instance (must be MODS1 or MODS2)
 
 // AGW default logfile.
-#define DEFAULT_AGWLOG "/home/mods/Logs/agw.log"
+#define DEFAULT_AGWLOG "/home/dts/Logs/AGW/agw.log"
 
 //----------------------------------------------------------------
 //

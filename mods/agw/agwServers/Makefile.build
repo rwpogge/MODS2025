@@ -22,7 +22,7 @@ BINDIR      = ../bin
 OBJDIR      = $(ROOTDIR)/obj
 ISISDIR     = /home/dts/ISIS
 
-CFGFILE     = /home/mods/Config/MODS/agw.ini
+CFGFILE     = /home/dts/mods/Config/MODS/agw.ini
 
 INCS        = -I$(ISISDIR)/lib -I$(ROOTDIR)/include
 CFLAGS      = -w -D_REENTRANT -pthread -c $(INCS)
