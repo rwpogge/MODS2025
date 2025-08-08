@@ -23,9 +23,9 @@
 
 #define DEFAULT_MYID      "M1.IE"  //!< default client ISIS node name
 #define DEFAULT_MYPORT    7101   //!< default client socket port   
-#define DEFAULT_RCFILE    (char*)"/home/dts/Config/mechanisms.ini" //!< default client runtime config file
-#define DEFAULT_LOGFILE   (char*)"/home/mods1/Logs/mmc.log" //!< default client runtime log file (unimplemented)
-#define DEFAULT_AGWLOG    (char*)"/home/mods1/Logs/agw.log" //!< default client runtime log file (unimplemented)
+#define DEFAULT_RCFILE    (char*)"/home/dts/mods/Config/mechanisms.ini" //!< default client runtime config file
+#define DEFAULT_LOGFILE   (char*)"/home/dts/Logs/MMC/mmc.log" //!< default client runtime log file (unimplemented)
+#define DEFAULT_AGWLOG    (char*)"/home/dts/Logs/AGW/agw.log" //!< default client runtime log file (unimplemented)
 
 // Default ISIS server information (see loadconfig.c if used)
 
