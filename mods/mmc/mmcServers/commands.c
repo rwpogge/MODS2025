@@ -52,6 +52,8 @@
   \date 2025 Jul 16 - changed HEB power status/on/off logic for new WAGO HEB [rwp/osu]
   \date 2025 Jul 20 - power state code updates and clean up shmem interaction [rwp/osu]
 
+  \date 2025 Aug 08 - many changes after live tests with MODS1 at LBT (off telescope) [rwp/osu]
+
 */
 #include <iostream>
 #include <string>
@@ -83,6 +85,8 @@ using namespace std;
 int
 wagoSetGet(int gs, char *host, int slaveAddr, int startRef, short regArr[], int refCnt);
 
+short devOnOff[1];
+
 int itoa(int ,char []);
 
 //2 state, Linear and Indexed mechanisms
@@ -91,17 +95,17 @@ int itoa(int ,char []);
 #define LINEAR     1
 #define INDEXED    2
 
-// WAGO Addresses
+// WAGO Addresses - all had to shift by 1 for libmodbus (0 -> 1) [rwp/osu]
 
-#define VISPOUTWAGO 1
-#define IRPOUTWAGO  2
-#define IRTSETWAGO  3
-#define IRTOUTWAGO  4
-#define VISPSETWAGO 513
-#define IRPSETWAGO  514
-#define VFLATPSET   515
-#define OPENADDR    516
-#define LLBONOFF    517
+#define VISPOUTWAGO 0
+#define IRPOUTWAGO  1
+#define IRTSETWAGO  2
+#define IRTOUTWAGO  3
+#define VISPSETWAGO 512
+#define IRPSETWAGO  513
+#define VFLATPSET   514
+#define OPENADDR    515
+#define LLBONOFF    516
 
 // Maximum mumber of characters/line in the program file
 
@@ -1114,7 +1118,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
 
   // IMCS IR Laser Status
   
-  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,(short *)1,1);
+  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,devOnOff,1);
   if(ierr==-1) {
     sprintf(reply,"%s IRLASER=OFF",reply);
   } else {
@@ -1144,7 +1148,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
 
   // IUB pressure and temperature sensors
   
-  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,1,pressureTemps,10);
+  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,0,pressureTemps,10);
 
   glycolSupplyPressure = (float)pressureTemps[0]/327.64;
   glycolReturnPressure = (float)pressureTemps[1]/327.64;
@@ -1187,7 +1191,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
 
   // Red HEB
   
-  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[rhebID],1,5,hebTemps,2);
+  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[rhebID],1,4,hebTemps,2);
   
   redHEBTemperature = ptRTD2C(hebTemps[0]);
   redDewarTemperature = ptRTD2C(hebTemps[1]);
@@ -1202,7 +1206,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
 
   // Blue HEB
   
-  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[bhebID],1,5,hebTemps,2);
+  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[bhebID],1,4,hebTemps,2);
   
   blueHEBTemperature = ptRTD2C(hebTemps[0]);
   blueDewarTemperature = ptRTD2C(hebTemps[1]);
@@ -1446,7 +1450,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
   char mmcMsg[PAGE_SIZE];
   char who_selected[24];
   char faultWord[8]="OK";
-  short devOnOff[1],devEnable[1];
+  short devEnable[1];
   char cmd_instruction[PAGE_SIZE];
   char hebChan;
   int hebWAGO;
@@ -2037,8 +2041,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
   // Below this point we need the IUB temperatures and pressure readouts
 
-  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,1,pressureTemps,10);
-	
+  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,0,pressureTemps,10);
+
   glycolSupplyPressure = (float)pressureTemps[0]/327.64;
   glycolReturnPressure = (float)pressureTemps[1]/327.64;
   glycolSupplyTemperature = ptRTD2C(pressureTemps[4]);
@@ -2059,7 +2063,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
   // Red IEB (ieb1)
   
-  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb1ID],1,5,iebTemps,4);
+  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb1ID],1,4,iebTemps,4);
 
   redIEBAirTemperature = ptRTD2C(iebTemps[0]);
   redIEBReturnTemperature = ptRTD2C(iebTemps[1]);
@@ -2073,7 +2077,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
   // Blue IEB (ieb2)
   
-  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb2ID],1,5,iebTemps,4);
+  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb2ID],1,4,iebTemps,4);
 
   blueIEBAirTemperature = ptRTD2C(iebTemps[0]);
   blueIEBReturnTemperature = ptRTD2C(iebTemps[1]);
@@ -2089,7 +2093,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
   
   // Red HEB
   
-  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[rhebID],1,5,hebTemps,2);
+  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[rhebID],1,4,hebTemps,2);
   
   redHEBTemperature = ptRTD2C(hebTemps[0]);
   redDewarTemperature = ptRTD2C(hebTemps[1]);
@@ -2098,7 +2102,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
   // Blue HEB
   
-  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[bhebID],1,5,hebTemps,2);
+  ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[bhebID],1,4,hebTemps,2);
     
   blueHEBTemperature = ptRTD2C(hebTemps[0]);
   blueDewarTemperature = ptRTD2C(hebTemps[1]);
@@ -2120,9 +2124,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     // Get the power relay states - if the IUB is off, everybody is off
     // (or the IUB is disconnected from the network, so OFF == UNKNOWN)
 
-    allUtilPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,513,(short *)1,1);
-
-    if (allUtilPower<0) {
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
+    if (ierr<0) {
       sprintf(reply,"%s %s", who_selected,"UTIL=OFF");
       shm_addr->MODS.utilState = 0;
       shm_addr->MODS.llbState = 0;
@@ -2137,22 +2140,31 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       return CMD_OK;
     }
     shm_addr->MODS.utilState = 1;
-
-    // Get circuit breaker states
-
-    allUtilBreaker = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,11,(short *)1,1);
+    allUtilPower = devOnOff[0];
 
     // Power control relay states
 	
     iebRedPower    = allUtilPower & 1;
     iebBluePower   = allUtilPower & 2;
-    hebRedPower    = allUtilPower & 4;
-    hebRedEnable   = allUtilPower & 8;
-    hebBluePower   = allUtilPower & 16;
-    hebBlueEnable  = allUtilPower & 32;
+    hebRedEnable   = allUtilPower & 4; // unused post-2025
+    hebRedPower    = allUtilPower & 8;
+    hebBlueEnable  = allUtilPower & 16; // unused post-2025
+    hebBluePower   = allUtilPower & 32;
     agwWFSPower    = allUtilPower & 64;
     agwGuidePower  = allUtilPower & 128;
     lampLaserPower = allUtilPower & 256;
+
+    /*
+    // helpful state info during testing
+    printf("\nPower: devOnOff=%d\n",devOnOff[0]);
+    printf("  iebR=%d iebB=%d hebR=%d hebB=%d wfs=%d agc=%d llb=%d\n",iebRedPower,
+	   iebBluePower,hebRedPower,hebBluePower,agwWFSPower,agwGuidePower,lampLaserPower);
+    */
+    
+    // Get circuit breaker states
+
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,10,devOnOff,1);
+    allUtilBreaker = devOnOff[0];
 
     // Circuit breaker states (current sense past break)
 
@@ -2164,6 +2176,14 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     agwGuideBreaker  = allUtilBreaker & 32;
     lampLaserBreaker = allUtilBreaker & 64;
 
+    /*
+    // helpful state info during testing
+    printf("Breakers: devOnOff=%d\n",devOnOff[0]);
+    printf("  iebR=%d iebB=%d hebR=%d hebB=%d wfs=%d agc=%d llb=%d\n",iebRedBreaker,
+	   iebBlueBreaker,hebRedBreaker,hebBlueBreaker,agwWFSBreaker,
+	   agwGuideBreaker,lampLaserBreaker);
+    */
+    
     // Process the specific UTIL request
 
     if(!strcasecmp(argbuf,"STATUS") || strlen(args)<=0) {  // STATUS or no-arg is implicit status request
@@ -2213,8 +2233,10 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       }
       
       // Post-2025 WAGO HEB power normally closed so test for ON is != 
-	
-      if (hebRedPower != 4) {
+      //   Red Power is on coil 4 = decimal 8
+      //   Red Breaker is on coil 3 = decimal 4
+      
+      if (hebRedPower != 8) {
 	if (hebRedBreaker == 4) {
 	  sprintf(reply,"%s HEB_R=ON HEB_R_BRK=OK",reply);
 	  shm_addr->MODS.redHEBState = 1;
@@ -2228,8 +2250,11 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	sprintf(reply,"%s HEB_R=OFF HEB_R_BRK=UNKNOWN",reply);
 	shm_addr->MODS.redHEBState = 0;
       }
+
+      // Blue Power is on coil 6 = decimal 32
+      // Blue Breaker is on coil 4 = decimal 8
       
-      if (hebBluePower != 16) {
+      if (hebBluePower != 32) {
 	if (hebBlueBreaker == 8) {
 	  sprintf(reply,"%s HEB_B=ON HEB_B_BRK=OK",reply);
 	  shm_addr->MODS.blueHEBState = 1;
@@ -2414,12 +2439,11 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       
     } else if(!strcasecmp(argbuf,"HEB_R")) {
       GetArg(args,2,argbuf);
-      hebRedPower = allUtilPower&4;
-      hebRedEnable = allUtilPower&8;
-      hebRedBreaker = allUtilBreaker&4;
+      hebRedPower = allUtilPower & 8;
+      hebRedBreaker = allUtilBreaker & 4;
       
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
-	if (hebRedPower != 4) {
+	if (hebRedPower != 8) {
 	  if (hebRedBreaker == 4) {
 	    sprintf(reply,"%s HEB_R=ON HEB_R_BRK=OK",who_selected);
 	    shm_addr->MODS.redHEBState = 1;
@@ -2435,9 +2459,9 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	}
 
       } else if(!strcasecmp(argbuf,"ON")) {
-	if(hebRedPower==1) {
-	  devOnOff[0]=(short )(allUtilPower^4);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	if(hebRedPower==8) {
+	  devOnOff[0]=(short )(allUtilPower ^ 8);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util heb_r", dummy);
@@ -2445,8 +2469,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
       } else if(!strcasecmp(argbuf,"OFF")) {
 	if(hebRedPower==0) {
-	  devOnOff[0]=(short )(allUtilPower|4);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  devOnOff[0]=(short )(allUtilPower | 8);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util heb_r", dummy);
@@ -2461,11 +2485,12 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
     } else if(!strcasecmp(argbuf,"HEB_B")) {
       GetArg(args,2,argbuf);
-      hebBluePower = allUtilPower&16;
-      hebBlueEnable = allUtilPower&32;
-      hebBlueBreaker = allUtilBreaker&8;
+
+      hebBluePower = allUtilPower & 32;
+      hebBlueBreaker = allUtilBreaker & 8; 
+      
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
-	if (hebBluePower != 16) {
+	if (hebBluePower != 32) {
 	  if (hebBlueBreaker == 8) {
 	    sprintf(reply,"%s HEB_B=ON HEB_B_BRK=OK",who_selected);
 	    shm_addr->MODS.blueHEBState = 1;
@@ -2481,9 +2506,9 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	}
 
       } else if(!strcasecmp(argbuf,"ON")) {
-	if(hebBluePower==1) {
-	  devOnOff[0]=(short )(allUtilPower^16);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	if(hebBluePower==32) {
+	  devOnOff[0]=(short )(allUtilPower ^ 32);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util heb_b", dummy);
@@ -2491,8 +2516,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
       } else if(!strcasecmp(argbuf,"OFF")) {
 	if(hebBluePower==0) {
-	  devOnOff[0]=(short )(allUtilPower|16);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  devOnOff[0]=(short )(allUtilPower | 32);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util heb_b", dummy);
@@ -2533,7 +2558,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
 	if(iebRedPower==1) {
 	  devOnOff[0]=(short )(allUtilPower^1);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util ieb_r", dummy);
@@ -2543,7 +2568,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
 	if(iebRedPower==0) {
 	  devOnOff[0]=(short )(allUtilPower|1);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util ieb_r", dummy);
@@ -2582,7 +2607,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
 	if(iebBluePower==2) {
 	  devOnOff[0]=(short )(allUtilPower^2);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util ieb_b", dummy);
@@ -2592,7 +2617,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
 	if(iebBluePower==0) {
 	  devOnOff[0]=(short )(allUtilPower|2);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util ieb_b", dummy);
@@ -2612,6 +2637,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
       agwWFSPower = allUtilPower&64;
       agwWFSBreaker = allUtilBreaker&16;
+      
       if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0) {
 	if (agwWFSPower == 64) {
 	  if (agwWFSBreaker == 16) {
@@ -2632,7 +2658,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
 	if(agwWFSPower==64) {
 	  devOnOff[0]=(short )(allUtilPower^64);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util wfs", dummy);
@@ -2642,7 +2668,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
 	if(agwWFSPower==0) {
 	  devOnOff[0]=(short )(allUtilPower|64);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util wfs", dummy);
@@ -2682,7 +2708,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
 	if(agwGuidePower==128) {
 	  devOnOff[0]=(short )(allUtilPower^128);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util agc", dummy);
@@ -2692,7 +2718,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
 	if(agwGuidePower==0) {
 	  devOnOff[0]=(short )(allUtilPower|128);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util agc", dummy);
@@ -2778,7 +2804,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
 	if(lampLaserPower==256) {
 	  devOnOff[0]=(short )(allUtilPower^256);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util llb", dummy);
@@ -2788,7 +2814,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
 	if(lampLaserPower==0) {
 	  devOnOff[0]=(short )(allUtilPower|256);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[utilID],1,512,devOnOff,1);
 	}
 	MilliSleep(200);
 	KeyCommand("util llb", dummy);
@@ -2941,8 +2967,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     // module has registar address 513 If a fault, HEB_x=OFF is the
     // mostly likely reason
     
-    allHEBPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,513,(short *)1,1);
-    if (allHEBPower<0) {
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+    if (ierr<0) {
       sprintf(reply,"%s HEB_%c=OFF", who_selected,hebChan);
       if (hebChan == 'R') {
 	shm_addr->MODS.redHEBState = 0; // and all its power must similarly be off
@@ -2956,12 +2982,15 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       }
       return CMD_OK;
     }
-
+    allHEBPower = devOnOff[0];
+    
     // Power relay states
     
     archonPower  = allHEBPower & 1;
     ionGaugePower = allHEBPower & 2;
 
+    printf("allHEBPower=%d archonPower=%d, ionGaugePower=%d\n",allHEBPower,archonPower,ionGaugePower);
+    
     // Temperatures (readout at the top of the command tree)
 
     if (hebChan == 'R') {
@@ -2971,6 +3000,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       hebAirTemp = blueHEBTemperature;
       dewarTemp = blueDewarTemperature;
     }
+
+    // printf("hebAir=%.2f dewTemp=%.2f\n",hebAirTemp,dewarTemp);
     
     // second argument tells us what to do.  If missing it is an implicit STATUS query
 
@@ -3003,6 +3034,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	  shm_addr->MODS.blueArchonState = 0;
       }
 
+      printf("reply=%s\n",reply);
+
       // Ion Gauge power relay is normally open
       
       if (ionGaugePower == 2) {
@@ -3020,11 +3053,15 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	  shm_addr->MODS.blueIonGaugeState = 0;
       }
       
-      (hebAirTemp>=850.0 ? sprintf(reply,"%s %sHEBTEMP=NOCOMM",reply,hebChan) : 
+      printf("reply=%s\n",reply);
+
+      (hebAirTemp>=850.0 ? sprintf(reply,"%s %cHEBTEMP=NOCOMM",reply,hebChan) : 
        sprintf(reply,"%s HEBTEMP_%c=%0.1f",reply,hebChan,hebAirTemp));
 
-      (dewarTemp>=850.0 ? sprintf(reply,"%s %sDEWTEMP=NOCOMM",reply,hebChan) : 
+      (dewarTemp>=850.0 ? sprintf(reply,"%s %cDEWTEMP=NOCOMM",reply,hebChan) : 
        sprintf(reply,"%s DEWTEMP_%c=%0.1f",reply,hebChan,dewarTemp));
+      
+      printf("reply=%s\n",reply);
 
       return CMD_OK;
       
@@ -3039,14 +3076,15 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       
       if (strlen(args) > 2) {
 	GetArg(args,3,argbuf);
-	allHEBPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,513,(short *)1,1);
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	allHEBPower = devOnOff[0];
 	if (!strcasecmp(argbuf,"ON")) {
 	  devOnOff[0]=(short)(allHEBPower|1);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	}
 	else if (!strcasecmp(argbuf,"OFF")) {
 	  devOnOff[0]=(short)(allHEBPower^1);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	}
 	else {
 	  sprintf(reply,"%s unrecognized power state %s - must be ON or OFF",reply,argbuf);
@@ -3055,7 +3093,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	MilliSleep(200);
       }
 
-      allHEBPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,513,(short *)1,1);
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+      allHEBPower = devOnOff[0];
       archonPower  = allHEBPower & 1;
       ionGaugePower = allHEBPower & 2;
 
@@ -3085,14 +3124,15 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       
       if (strlen(args) > 2) {
 	GetArg(args,3,argbuf);
-	allHEBPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,513,(short *)1,1);
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	allHEBPower = devOnOff[0];
 	if (!strcasecmp(argbuf,"ON")) {
 	  devOnOff[0]=(short)(allHEBPower|2);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	}
 	else if (!strcasecmp(argbuf,"OFF")) {
 	  devOnOff[0]=(short)(allHEBPower^2);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,513,devOnOff,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	}
 	else {
 	  sprintf(reply,"%s unrecognized power state %s - must be ON or OFF",reply,argbuf);
@@ -3101,7 +3141,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	MilliSleep(200);
       }
 
-      allHEBPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,513,(short *)1,1);
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+      allHEBPower = devOnOff[0];
       archonPower  = allHEBPower & 1;
       ionGaugePower = allHEBPower & 2;
 
@@ -3126,10 +3167,10 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
       sprintf(reply,"%s",who_selected);
       
-      (hebAirTemp>=850.0 ? sprintf(reply,"%s %sHEBTEMP=NOCOMM",reply,hebChan) : 
+      (hebAirTemp>=850.0 ? sprintf(reply,"%s %cHEBTEMP=NOCOMM",reply,hebChan) : 
        sprintf(reply,"%s HEBTEMP_%c=%0.1f",reply,hebChan,hebAirTemp));
 
-      (dewarTemp>=850.0 ? sprintf(reply,"%s %sDEWTEMP=NOCOMM",reply,hebChan) : 
+      (dewarTemp>=850.0 ? sprintf(reply,"%s %cDEWTEMP=NOCOMM",reply,hebChan) : 
        sprintf(reply,"%s DEWTEMP_%c=%0.1f",reply,hebChan,dewarTemp));
 
       return CMD_OK;
@@ -10980,8 +11021,8 @@ return CMD_OK;
 int
 cmd_lamp(char *args, MsgType msgtype, char *reply)
 {
-  // b1  AR    ON/OFF  0000000000000001 1
-  // b2  XE    ON/OFF  0000000000000010 2
+  // b1  AR    ON/OFF  0000000000000001 1       
+  // b2  XE    ON/OFF  0000000000000010 2       
   // b3  NE    ON/OFF  0000000000000100 4
   // b4  HG    ON/OFF  0000000000001000 8
   // b5  KR    ON/OFF  0000000000010000 16
@@ -11012,7 +11053,6 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
   int vflatPRet;
   float vflatPOut;
   
-
   strcpy(who_selected,cmdtab[commandID].cmd);
   StrUpper(who_selected);
 
@@ -11035,8 +11075,7 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
   if(!strcasecmp(stateOnOff,"STATUS")) {
     printf(who_selected,"LAMP");
 
-    //ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,515,(short *)1,1);
-    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,devOnOff,1);
     if(ierr==-1) {
       sprintf(reply,"%s LLB=PWROFF",who_selected);
 
@@ -11052,8 +11091,8 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
     return CMD_OK;
   }
 
-  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,(short *)1,1);
-  if(ierr==-1) {
+  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,devOnOff,1);
+  if (ierr<0) {
     sprintf(reply,"%s LLB=OFF CALLAMPS='None' MODS LLB is powered off, LAMP command unavailable",who_selected);
     return CMD_ERR;
   } 
@@ -11062,13 +11101,14 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
   if (strlen(args)<=0) { // Query when no command is issued
     sprintf(who_selected,"LAMP");
 
-    vflatPRet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VFLATPSET,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VFLATPSET,devOnOff,1);
+    vflatPRet = devOnOff[0];
     vflatPOut=-2.033972 + (0.000480 * (float)vflatPRet);
     
     if(vflatPOut < 0.0) vflatPOut = 0.0;
     shm_addr->MODS.vflat_power = vflatPOut;
 
-    ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,(short *)1,1);
+    ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,devOnOff,1);
 
     if(!ierr) {   // Reset Shared Memory if address has been cleared
       for(i=0;i<9;i++) {
@@ -11126,8 +11166,8 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
 	  //}
 
 	  tempVal=atof(dummy);
-	  if(tempVal>11.0 || tempVal < 0.0) {
-	    sprintf(reply,"LAMP requested VFLAT intensity level %0.1f is invalid, must be 0..11, VFLAT=%0.1f",tempVal, shm_addr->MODS.vflat_power);
+	  if (tempVal>11.0 || tempVal < 0.0) {
+	    sprintf(reply,"LAMP invalid VFLAT intensity %.1f, must be 0..11, VFLAT=%0.1f",tempVal, shm_addr->MODS.vflat_power);
 	    return CMD_ERR;
 	  }
 
@@ -11153,7 +11193,8 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
 	  // VFLAT getting and processing register:
 	  // vflatPOut = -2.033972 + (0.000480 * vflatPRet)
 	  */
-	  vflatPRet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VFLATPSET,(short *)1,1);
+	  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VFLATPSET,devOnOff,1);
+	  vflatPRet = devOnOff[0];
 	  vflatPOut=-2.033972 + (0.000480 * (float)vflatPRet);
 
 	  if(vflatPOut < 0.0) vflatPOut = 0.0;
@@ -11171,24 +11212,24 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
     }
   }
 
-  if(numArgs==1) {
+  if (numArgs==1) {
     nc--;
     GetArg(args,nc,temp[nc]);
-  } else if(numArgs==2) { 
+  }
+  else if(numArgs==2) { 
     nc-=2;
     GetArg(args,nc,temp[nc]);
   }
   else GetArg(args,nc,temp[nc]);
 
-  if(!strcasecmp(temp[1],"ON")) {
+  if (!strcasecmp(temp[1],"ON")) {
     sprintf(reply,"%s Invalid %s '%s', Usage: %s [AR|XE|NE|HG|KR|QTH6V|QTH1|QTH2|VFLAT|[VFLAT 0..11]] [ON|OFF|INFO]", 
 	    who_selected, cmdtab[commandID].cmd, args, cmdtab[commandID].cmd);
     return CMD_ERR;
-  } else if(!strcasecmp(temp[nc],"ON") || 
-	    !strcasecmp(temp[nc],"OFF")) {
+  }
+  else if (!strcasecmp(temp[nc],"ON") || !strcasecmp(temp[nc],"OFF")) {
 
-
-    if(!strcasecmp(temp[1],"OFF")) {
+    if (!strcasecmp(temp[1],"OFF")) {
       shm_addr->MODS.lamps.lamplaser_all[0] &= 0x03C0; // Turn off all lamps
       ierr = wagoSetGet(1, shm_addr->MODS.WAGOIP[llbID], 1, LLBONOFF, &shm_addr->MODS.lamps.lamplaser_all[0], 1);
 
@@ -11200,103 +11241,92 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
       }
       cmd_lamp("",EXEC,reply);
       return CMD_OK;
-    } else {
-      /*
-      // Wago Address: old 40515 new 40517
+    }
+    else {
+
+      // Wago Address: old 40515 new 40517 - see LLBONOFF=516
       // LAMPS: (b)its
       // AR(b1), XE(b2), NE(b4), HG(b8), KR=(b16),QTH6V(b32),
       // QTH1(b1024), QTH2(b2048), VFLAT(b4096)
       //
       // LASERS: (b)its
       // VIS(b64)-ENABLE(b256), IR(b128)-ENABLE(b512)
-      // Wago Address: VIS Power(40513)
-      // Wago Address: IR Power(40514)
-      */
-      for(j=0;j<nc;j++) {
-	for(i=0,k=1;i<9;i++,k+=k) {
-	  if(!strcasecmp(temp[j],lamp_names[i])) {
-	    if(!strcasecmp(temp[nc],"ON")) {
-	      if(i<6) {
+      // Wago Address: VIS Laser Power (40512) was 40513
+      // Wago Address: IR Laser Power (40513) was 40514
+
+      for (j=0;j<nc;j++) {
+	for (i=0,k=1;i<9;i++,k+=k) {
+	  if (!strcasecmp(temp[j],lamp_names[i])) {
+	    if (!strcasecmp(temp[nc],"ON")) {
+	      // Turn the lamp ON
+	      if (i<6) {
+		// This is one of the spectral (pen-ray) lamps
 		shm_addr->MODS.lamps.lamplaser_all[0] |= k;
-		ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-				  &shm_addr->MODS.lamps.lamplaser_all[0],1);
+		ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 		shm_addr->MODS.lamps.lamp_state[i]=1;
-
-	      } else { // This is for the QTH1, QTH2, VFLAT k needs adjusting.
-
-		/* 
-		// For QTH1, and QTH2: 
-		// Turn on the 6 volt power supply if not on already
-		*/
-		if(i!=8) { // if not VFLAT Turn on the QTH6V
+	      }
+	      else {
+		// This is one of the flat-field lamps (QTH1, QTH2, and VFLAT)
+		if (i!=8) {
+		  // one if the QTH lamps, turn on the QTH 6V power supply first
 		  if(shm_addr->MODS.lamps.lamp_state[5]==0) {
 		    shm_addr->MODS.lamps.lamplaser_all[0] |= 32;
 		    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 		    shm_addr->MODS.lamps.lamp_state[5]=1;
 		  }
-
 		  shm_addr->MODS.lamps.lamplaser_all[0] |= (k*16);
-		  ierr=wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-				  &shm_addr->MODS.lamps.lamplaser_all[0],1);
+		  ierr=wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 		  shm_addr->MODS.lamps.lamp_state[i]=1;
-		} else {  // VFLAT lamp
-
+		}
+		else {
+		  // This is the VFLAT lamp
 		  shm_addr->MODS.lamps.lamplaser_all[0] |= (k*16);
-		  ierr=wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-				  &shm_addr->MODS.lamps.lamplaser_all[0],1);
+		  ierr=wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 		  shm_addr->MODS.lamps.lamp_state[i]=1;
-
 		}
 	      }
-	    } else if(!strcasecmp(temp[nc],"OFF")) {
-	      if(i<6) {
+	    }
+	    else if (!strcasecmp(temp[nc],"OFF")) {
+	      // Turn the lamp OFF
+	      if (i<6) {
+		// This is one of the spectral (pen-ray) lamps:
 		shm_addr->MODS.lamps.lamplaser_all[0] &= (0x1FFF-k);
-		ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-				  &shm_addr->MODS.lamps.lamplaser_all[0],1);
+		ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 
-		/* 6V power supply is turned *OFF*, Turn *OFF* all flats */
-		if(k==32) {
+		// 6V power supply is turned *OFF*, Turn *OFF* all flats
+		if (k==32) {
 		  shm_addr->MODS.lamps.lamplaser_all[0] &= (0x1FFF-0x1C00);
-		  ierr=wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-				    &shm_addr->MODS.lamps.lamplaser_all[0],1);
-
+		  ierr=wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 		  for(int l=5;l<9;l++) {
 		    shm_addr->MODS.lamps.lamp_state[l] = 0;
 		    shm_addr->MODS.lamps.lamp_cycle[l]++;
 		  }
-
-		} else {
+		}
+		else {
 		  shm_addr->MODS.lamps.lamp_state[i] = 0;
 		  shm_addr->MODS.lamps.lamp_cycle[i]++;
 		}
-	      } else { 
-
-		/*
+	      }
+	      else { 
 		// This is for the QTH(s) k needs some adjustment.
 		// first turn off the 6 volt power supply if not on already
-		*/
-		if(i!=8) {
-		  shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1FFF-(k*16);
-		  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-				    &shm_addr->MODS.lamps.lamplaser_all[0],1);
 
+		if (i!=8) {
+		  shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1FFF-(k*16);
+		  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 		  shm_addr->MODS.lamps.lamp_state[i]=0;
 		  shm_addr->MODS.lamps.lamp_cycle[i]++;
 		
-		  if(shm_addr->MODS.lamps.lamp_state[6]==0 &&
-		     shm_addr->MODS.lamps.lamp_state[7]==0) {
+		  if (shm_addr->MODS.lamps.lamp_state[6]==0 && shm_addr->MODS.lamps.lamp_state[7]==0) {
 		    shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1FDF;
-		    ierr=wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-				    &shm_addr->MODS.lamps.lamplaser_all[0],1);
-
+		    ierr=wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 		    shm_addr->MODS.lamps.lamp_state[5]=0;
 		    shm_addr->MODS.lamps.lamp_cycle[5]++;
 		  }
-		} else {
+		}
+		else {
 		  shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1FFF-(k*16);
-		  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-				    &shm_addr->MODS.lamps.lamplaser_all[0],1);
-
+		  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 		  shm_addr->MODS.lamps.lamp_state[i]=0;
 		  shm_addr->MODS.lamps.lamp_cycle[i]++;
 		}
@@ -11468,6 +11498,7 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
   char dummy[PAGE_SIZE];
   int regPSet;
   int regPOut;
+  int ierr;
   int numArgs;
   short vispowerShort;
   float reqRegPOut;
@@ -11488,9 +11519,10 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
     // Query when no command is issued
     // Get value for Visable Laser Power Out
     */
-    regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,devOnOff,1);
+    regPOut = devOnOff[0];
 
-    ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,(short *)1,1);
+    ierr=wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,devOnOff,1);
     if(!ierr) { // Reset Shared Memory if address has been cleared
       if(shm_addr->MODS.lasers.vislaser_state==1)
 	shm_addr->MODS.lasers.vislaser_state=0;
@@ -11504,7 +11536,8 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
     /* 
     // Get value for Visable Laser Power Set Point
     */
-    regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,devOnOff,1);
+    regPSet = devOnOff[0];
     shm_addr->MODS.lasers.vislaser_setpoint = findPoly((float)regPSet, &shm_addr->MODS.lasers.vislaserRegToPSetCoeff[0], shm_addr->MODS.lasers.vislaserRegToPSetNCoeff);
 
     if (shm_addr->MODS.lasers.vislaser_power < 0) shm_addr->MODS.lasers.vislaser_power = 0;
@@ -11564,12 +11597,14 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
 	 // Get the reported POut and PSet from the WAGO and store the returned
 	 // value, converted to physical units, in the shared memory
 	 */
-	 regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,(short *)1,1);
+	 ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,devOnOff,1);
+	 regPOut = devOnOff[0];
 	 shm_addr->MODS.lasers.vislaser_power = findPoly((float)regPOut, &shm_addr->MODS.lasers.vislaserRegToPOutCoeff[0], shm_addr->MODS.lasers.vislaserRegToPOutNCoeff);
 
 	 if (shm_addr->MODS.lasers.vislaser_power < 0) shm_addr->MODS.lasers.vislaser_power = 0;
 
-	 regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,(short *)1,1);
+	 ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,devOnOff,1);
+	 regPSet = devOnOff[0];
 	 shm_addr->MODS.lasers.vislaser_setpoint = findPoly((float)regPSet, &shm_addr->MODS.lasers.vislaserRegToPSetCoeff[0], shm_addr->MODS.lasers.vislaserRegToPSetNCoeff);
 	 
        } else {
@@ -11661,12 +11696,14 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
 	    // Get the reported POut and PSet from the WAGO and store the
 	    // return value, converted to physical units, in the shared memory
 	    */
-	    regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,(short *)1,1);
+	    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,devOnOff,1);
+	    regPOut = devOnOff[0];
 	    shm_addr->MODS.lasers.vislaser_power = findPoly((float)regPOut, &shm_addr->MODS.lasers.vislaserRegToPOutCoeff[0], shm_addr->MODS.lasers.vislaserRegToPOutNCoeff);
 
 	    if (shm_addr->MODS.lasers.vislaser_power < 0) shm_addr->MODS.lasers.vislaser_power = 0;
 
-	    regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,(short *)1,1);
+	    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,devOnOff,1);
+	    regPSet = devOnOff[0];
 	    shm_addr->MODS.lasers.vislaser_setpoint = findPoly((float)regPSet, &shm_addr->MODS.lasers.vislaserRegToPSetCoeff[0], shm_addr->MODS.lasers.vislaserRegToPSetNCoeff);
 
 	  } else {
@@ -11747,10 +11784,12 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
     // Get the reported POut and PSet from the WAGO and store the returned
     // value, converted to physical units, in the shared memory
     */
-    regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,devOnOff,1);
+    regPOut = devOnOff[0];
     shm_addr->MODS.lasers.vislaser_power = findPoly((float)regPOut, &shm_addr->MODS.lasers.vislaserRegToPOutCoeff[0], shm_addr->MODS.lasers.vislaserRegToPOutNCoeff);
     
-    regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,devOnOff,1);
+    regPSet = devOnOff[0];
     shm_addr->MODS.lasers.vislaser_setpoint = findPoly((float)regPSet,	&shm_addr->MODS.lasers.vislaserRegToPSetCoeff[0], shm_addr->MODS.lasers.vislaserRegToPSetNCoeff);
     
     if (shm_addr->MODS.lasers.vislaser_power < 0) shm_addr->MODS.lasers.vislaser_power = 0;
@@ -11770,13 +11809,15 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
       /*
       // Get value for Visable Laser Power Out
       */
-      regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,(short *)1,1);
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,devOnOff,1);
+      regPOut = devOnOff[0];
       shm_addr->MODS.lasers.vislaser_power = findPoly((float)regPOut, &shm_addr->MODS.lasers.vislaserRegToPOutCoeff[0], shm_addr->MODS.lasers.vislaserRegToPOutNCoeff);
 
       /* 
       // Get value for Visable Laser Power Set Point
       */
-      regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,(short *)1,1);
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,devOnOff,1);
+      regPSet = devOnOff[0];
       shm_addr->MODS.lasers.vislaser_setpoint = findPoly((float)regPSet, &shm_addr->MODS.lasers.vislaserRegToPSetCoeff[0], shm_addr->MODS.lasers.vislaserRegToPSetNCoeff);
       
       if (shm_addr->MODS.lasers.vislaser_power < 0) shm_addr->MODS.lasers.vislaser_power = 0;
@@ -11815,10 +11856,12 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
         // Get the reported POut and PSet from the WAGO and store the returned
         // value, converted to physical units, in the shared memory
 	*/
-	regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,(short *)1,1);
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,devOnOff,1);
+	regPOut = devOnOff[0];
 	shm_addr->MODS.lasers.vislaser_power = findPoly((float)regPOut, &shm_addr->MODS.lasers.vislaserRegToPOutCoeff[0], shm_addr->MODS.lasers.vislaserRegToPOutNCoeff);
 
-	regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,(short *)1,1);
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,devOnOff,1);
+	regPSet = devOnOff[0];
 	shm_addr->MODS.lasers.vislaser_setpoint = findPoly((float)regPSet, &shm_addr->MODS.lasers.vislaserRegToPSetCoeff[0], shm_addr->MODS.lasers.vislaserRegToPSetNCoeff);
 
 	if (shm_addr->MODS.lasers.vislaser_power < 0) shm_addr->MODS.lasers.vislaser_power = 0;
@@ -11843,13 +11886,15 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
     /* 
     // Get value for Visable Laser Power Out
     */
-    regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,devOnOff,1);
+    regPOut = devOnOff[0];
     shm_addr->MODS.lasers.vislaser_power = findPoly((float)regPOut, &shm_addr->MODS.lasers.vislaserRegToPOutCoeff[0], shm_addr->MODS.lasers.vislaserRegToPOutNCoeff);
 
     /* 
     // Get value for Visable Laser Power Set Point
     */
-    regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,devOnOff,1);
+    regPSet = devOnOff[0];
     shm_addr->MODS.lasers.vislaser_setpoint = findPoly((float)regPSet,	&shm_addr->MODS.lasers.vislaserRegToPSetCoeff[0], shm_addr->MODS.lasers.vislaserRegToPSetNCoeff);
 
     if (shm_addr->MODS.lasers.vislaser_power < 0) shm_addr->MODS.lasers.vislaser_power = 0;
@@ -11893,10 +11938,12 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
     // Get the reported POut and PSet from the WAGO and store the returned
     // value, converted to physical units, in the shared memory
     */
-    regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPOUTWAGO,devOnOff,1);
+    regPOut = devOnOff[0];
     shm_addr->MODS.lasers.vislaser_power = findPoly((float)regPOut, &shm_addr->MODS.lasers.vislaserRegToPOutCoeff[0], shm_addr->MODS.lasers.vislaserRegToPOutNCoeff);
 
-    regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,devOnOff,1);
+    regPSet = devOnOff[0];
     shm_addr->MODS.lasers.vislaser_setpoint = findPoly((float)regPSet,	&shm_addr->MODS.lasers.vislaserRegToPSetCoeff[0], shm_addr->MODS.lasers.vislaserRegToPSetNCoeff);
  
     if (shm_addr->MODS.lasers.vislaser_power < 0) shm_addr->MODS.lasers.vislaser_power = 0;
@@ -11956,6 +12003,7 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
   char temp[6];
   int regPSet;
   int regPOut;
+  int ierr;
   int numArgs;
   char get_buff[80];
   char who_selected[24];
@@ -11979,12 +12027,12 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
     // Query when no command is issued
     // Get value for IR Laser Temperature Set Point
     */
-    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTSETWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTSETWAGO,devOnOff,1);
 
      /* 
      // Reset Shared Memory if address has been cleared
      */
-     if(!wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,(short *)1,1)){
+     if(!wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,devOnOff,1)){
        if(shm_addr->MODS.lasers.irlaser_state==1)
 	 shm_addr->MODS.lasers.irlaser_state=0;
        if(shm_addr->MODS.lasers.irbeam_state==1)
@@ -11999,19 +12047,21 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
      /* 
      // Get value for IR Laser Temperature Out
      */
-     ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTOUTWAGO,(short* )1,1);
+     ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTOUTWAGO,devOnOff,1);
      shm_addr->MODS.lasers.irlaser_temp = findPoly((float)ierr, &shm_addr->MODS.lasers.irlaserRegToTOutCoeff[0], shm_addr->MODS.lasers.irlaserRegToTOutNCoeff);
 
      /* 
      // Get value for IR Laser Power Set Point
      */
-     regPSet   = (short)wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,(short *)1,1);
+     ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,devOnOff,1);
+     regPSet = devOnOff[0];
      shm_addr->MODS.lasers.irlaser_setpoint = findPoly((float)regPSet,	&shm_addr->MODS.lasers.irlaserRegToPSetCoeff[0], shm_addr->MODS.lasers.irlaserRegToPSetNCoeff);
 
      /* 
      // Get value for IR Laser Power Out
      */	
-     regPOut   = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,(short *)1,1);
+     ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,devOnOff,1);
+     regPOut = devOnOff[0];
      shm_addr->MODS.lasers.irlaser_power = findPoly((float)regPOut, &shm_addr->MODS.lasers.irlaserRegToPOutCoeff[0], shm_addr->MODS.lasers.irlaserRegToPOutNCoeff);
 
      if (shm_addr->MODS.lasers.irlaser_power < 0) shm_addr->MODS.lasers.irlaser_power = 0;
@@ -12071,10 +12121,12 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
 	// Get the reported POut and PSet from the WAGO and store the returned
 	// value, converted to physical units, in the shared memory
 	*/
-	regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,(short *)1,1);
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,devOnOff,1);
+	regPOut = devOnOff[0];
 	shm_addr->MODS.lasers.irlaser_power = findPoly((float)regPOut,	&shm_addr->MODS.lasers.irlaserRegToPOutCoeff[0], shm_addr->MODS.lasers.irlaserRegToPOutNCoeff);
 
-	regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,(short *)1,1);
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,devOnOff,1);
+	regPSet = devOnOff[0];
 	shm_addr->MODS.lasers.irlaser_setpoint = findPoly((float)regPSet, &shm_addr->MODS.lasers.irlaserRegToPSetCoeff[0], shm_addr->MODS.lasers.irlaserRegToPSetNCoeff);
 
       } else {
@@ -12167,12 +12219,14 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
 	  // returned value, converted to physical units, in the shared 
 	  // memory
 	  */
-	  regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,(short *)1,1);
+	  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,devOnOff,1);
+	  regPOut = devOnOff[0];
 	  shm_addr->MODS.lasers.irlaser_power = findPoly((float)regPOut, &shm_addr->MODS.lasers.irlaserRegToPOutCoeff[0], shm_addr->MODS.lasers.irlaserRegToPOutNCoeff);
 	  
 	  if (shm_addr->MODS.lasers.irlaser_power < 0) shm_addr->MODS.lasers.irlaser_power = 0;
 
-	  regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,(short *)1,1);
+	  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,devOnOff,1);
+	  regPSet = devOnOff[0];
 	  shm_addr->MODS.lasers.irlaser_setpoint = findPoly((float)regPSet, &shm_addr->MODS.lasers.irlaserRegToPSetCoeff[0], shm_addr->MODS.lasers.irlaserRegToPSetNCoeff);
 
 	} else {
@@ -12262,10 +12316,12 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
     // Get the reported POut and PSet from the WAGO and store the returned
     // value, converted to physical units, in the shared memory
     */
-    regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,devOnOff,1);
+    regPOut = devOnOff[0];
     shm_addr->MODS.lasers.irlaser_power = findPoly((float)regPOut, &(shm_addr->MODS.lasers.irlaserRegToPOutCoeff[0]), shm_addr->MODS.lasers.irlaserRegToPOutNCoeff);
 
-    regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,devOnOff,1);
+    regPSet = devOnOff[0];
     shm_addr->MODS.lasers.irlaser_setpoint = findPoly((float)regPSet, &(shm_addr->MODS.lasers.irlaserRegToPSetCoeff[0]), shm_addr->MODS.lasers.irlaserRegToPSetNCoeff);
 
     if (shm_addr->MODS.lasers.irlaser_power < 0) shm_addr->MODS.lasers.irlaser_power = 0;
@@ -12288,25 +12344,28 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
       /* 
       // Get value for IR Laser Temperature Set Point
       */
-      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTSETWAGO,(short *)1,1);
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTSETWAGO,devOnOff,1);
       shm_addr->MODS.lasers.irlaser_tempSet = findPoly((float)ierr, &shm_addr->MODS.lasers.irlaserRegToTSetCoeff[0], shm_addr->MODS.lasers.irlaserRegToTSetNCoeff);
 	
       /* 
       // Get value for IR Laser Temperature Out
       */
-      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTOUTWAGO,(short* )1,1);
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTOUTWAGO,devOnOff,1);
       shm_addr->MODS.lasers.irlaser_temp = findPoly((float)ierr, &shm_addr->MODS.lasers.irlaserRegToTOutCoeff[0], shm_addr->MODS.lasers.irlaserRegToTOutNCoeff);
 
       /* 
       // Get value for IR Laser Power Set Point
       */
-      regPSet   = (short)wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,(short *)1,1);
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,devOnOff,1);
+      regPSet = devOnOff[0];
       shm_addr->MODS.lasers.irlaser_setpoint = findPoly((float)regPSet, &shm_addr->MODS.lasers.irlaserRegToPSetCoeff[0], shm_addr->MODS.lasers.irlaserRegToPSetNCoeff);
 
       /* 
       // Get value for IR Laser Power Out
       */	
-      regPOut   = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,(short *)1,1);
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,devOnOff,1);
+      regPOut = devOnOff[0];
+      
       shm_addr->MODS.lasers.irlaser_power = findPoly((float)regPOut,	&shm_addr->MODS.lasers.irlaserRegToPOutCoeff[0], shm_addr->MODS.lasers.irlaserRegToPOutNCoeff);
  
       if (shm_addr->MODS.lasers.irlaser_power < 0) shm_addr->MODS.lasers.irlaser_power = 0;
@@ -12345,10 +12404,12 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
         // Get the reported POut and PSet from the WAGO and store the returned
         // value, converted to physical units, in the shared memory
 	*/
-	regPOut = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,(short *)1,1);
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,devOnOff,1);
+	regPOut = devOnOff[0];
 	shm_addr->MODS.lasers.irlaser_power = findPoly((float)regPOut,	&(shm_addr->MODS.lasers.irlaserRegToPOutCoeff[0]), shm_addr->MODS.lasers.irlaserRegToPOutNCoeff);
 
-	regPSet = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,(short *)1,1);
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,devOnOff,1);
+	regPSet = devOnOff[0];
 	shm_addr->MODS.lasers.irlaser_setpoint = findPoly((float)regPSet, &(shm_addr->MODS.lasers.irlaserRegToPSetCoeff[0]), shm_addr->MODS.lasers.irlaserRegToPSetNCoeff);
  
         if (shm_addr->MODS.lasers.irlaser_power < 0) shm_addr->MODS.lasers.irlaser_power = 0;
@@ -12413,24 +12474,26 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
     // Get everything back and report to the user
     // Get value for IR Laser Temperature Set Point
     */
-    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTSETWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTSETWAGO,devOnOff,1);
     shm_addr->MODS.lasers.irlaser_tempSet = findPoly((float)ierr, &shm_addr->MODS.lasers.irlaserRegToTSetCoeff[0], shm_addr->MODS.lasers.irlaserRegToTSetNCoeff);
     /*    
     // Get value for IR Laser Temperature Out 
     */
-    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTOUTWAGO,(short* )1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRTOUTWAGO,devOnOff,1);
     shm_addr->MODS.lasers.irlaser_temp = findPoly((float)ierr,	&shm_addr->MODS.lasers.irlaserRegToTOutCoeff[0], shm_addr->MODS.lasers.irlaserRegToTOutNCoeff);
 
     /*
     // Get value for IR Laser Power Set Point
     */
-    regPSet   = (short)wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,devOnOff,1);
+    regPSet = devOnOff[0];
     shm_addr->MODS.lasers.irlaser_setpoint = findPoly((float)regPSet, &shm_addr->MODS.lasers.irlaserRegToPSetCoeff[0], shm_addr->MODS.lasers.irlaserRegToPSetNCoeff);
 
     /*
     // Get value for IR Laser Power Out
     */
-    regPOut   = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,(short *)1,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,IRPOUTWAGO,devOnOff,1);
+    regPOut = devOnOff[0];
     shm_addr->MODS.lasers.irlaser_power = findPoly((float)regPOut, &shm_addr->MODS.lasers.irlaserRegToPOutCoeff[0], shm_addr->MODS.lasers.irlaserRegToPOutNCoeff);
 
     if (shm_addr->MODS.lasers.irlaser_power < 0) shm_addr->MODS.lasers.irlaser_power = 0;
@@ -12566,7 +12629,7 @@ cmd_power65(char *args, MsgType msgtype, char *reply)
   GetArg(args,1,argbuf);
   
   if(!strcasecmp(argbuf,"READ")) {
-    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb1ID],1,514,(short *)0,1);
+    ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb1ID],1,513,devOnOff,1);
     if(!ierr)
       sprintf(reply,"65 DVC power supply is ON, POWER65=ON");
     else {
@@ -12575,12 +12638,12 @@ cmd_power65(char *args, MsgType msgtype, char *reply)
     }
 
   } else if(!strcasecmp(argbuf,"OFF")) {
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb1ID],1,514,(short *)1,1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb1ID],1,513,(short *)1,1);
 
     sprintf(reply,"[%d]65 DVC power supply is OFF",ierr);
 
   } else if(!strcasecmp(argbuf,"ON")) {
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb1ID],1,514,(short *)0,1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb1ID],1,513,(short *)0,1);
     sprintf(reply,"[%d]65 DVC power supply is ON",ierr);
 
   } else {
@@ -12649,6 +12712,10 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
   int bits[17]={0,1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768};
   short int bitval;
   char who_selected[24];
+
+  float vdrive;
+  float idrive;
+  float vcontrol;
 
   memset(cmd_instruction,0,sizeof(cmd_instruction));
   strcpy(who_selected,cmdtab[commandID].cmd);
@@ -12794,24 +12861,27 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
       GetArg(args,1,&iebID);
       iebID = toupper(iebID);
       ieb_id=iebIDval-1;
-      sprintf(reply,"%s %s_%c=%0.3f",who_selected,argbuf,iebID,
-	      (((float)wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,1,0,1)/pow(2,15)*10)*9.28));
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,0,devOnOff,1);
+      vdrive = ((float)(devOnOff[0])/pow(2,15)*10)*9.28;
+      sprintf(reply,"%s %s_%c=%0.3f",who_selected,argbuf,iebID,vdrive);
       return CMD_OK;
 
     } else if(!strcasecmp(argbuf,"IDRIVE")) {
       GetArg(args,1,&iebID);
       iebID = toupper(iebID);
       ieb_id=iebIDval-1;
-      sprintf(reply,"%s %s_%c=%0.3f",who_selected,argbuf,iebID,
-	      (((float)wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,3,0,1)/pow(2,15)*10)*1.25));
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,2,devOnOff,1);
+      idrive = ((float)(devOnOff[0])/pow(2,15)*10)*1.25;
+      sprintf(reply,"%s %s_%c=%0.3f",who_selected,argbuf,iebID,idrive);
       return CMD_OK;
 
     } else if(!strcasecmp(argbuf,"VCONTROL")) {
       GetArg(args,1,&iebID);
       iebID = toupper(iebID);
       ieb_id=iebIDval-1;
-      sprintf(reply,"%s %s_%c=%0.3f",who_selected,argbuf,iebID,
-	      (((float)wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],2,1,0,1)/pow(2,15)*10)*3.12));
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],2,0,devOnOff,1);
+      vcontrol = ((float)(devOnOff[0])/pow(2,15)*10)*3.12;
+      sprintf(reply,"%s %s_%c=%0.3f",who_selected,argbuf,iebID,vcontrol);
       return CMD_OK;
 
     } else if(!strcasecmp(argbuf,"MLC")) {
@@ -12850,18 +12920,24 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 
       if(!strcasecmp(argbuf,"RESET")) {
 	/* Turn it off */
-	onoff[0] = (short)wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)0,1);
-	onoff[0]|=(short )bits[cmd];
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,513,onoff,1);
+
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,512,devOnOff,1);
+	onoff[0] = devOnOff[0];
+	onoff[0] |= (short )bits[cmd];
+
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
 
 	MilliSleep(500); // Wait 500ms and let it adjust
 
 	/*	
 	// Now Turn it on 
 	*/
-	onoff[0] = (short)wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)0,1);
+
+	
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,512,devOnOff,1);
+	onoff[0] = devOnOff[0];
 	onoff[0]&=onoff[0] ^ (short)bits[cmd];
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,513,onoff,1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
 
 	if(cmd==0 || cmd>18) {
 	  sprintf(reply,"%s",who_selected);
@@ -12873,7 +12949,7 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 
       } else if(!strcasecmp(argbuf,"STATUS") || cmd==0) {
 
-	if(wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1)) {
+	if (wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1)) {
 	  sprintf(reply,"%s IEB_%c=OFF",who_selected,iebID);
 	  return CMD_ERR;
 	}
@@ -12890,21 +12966,22 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 
       } else if(!strcasecmp(argbuf,"ON")) {
 	if(cmd>18) cmd+=18; // BLUE IEB starts at 18-33 in Shared Memory
-	
-	onoff[0] = (short )wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)0,1);
 
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,512,devOnOff,1);
+	onoff[0] = devOnOff[0];
 	onoff[0]&=onoff[0] ^ (short)bits[cmd];
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,513,onoff,1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
 
 	sprintf(reply,"IEB MLC%d_%c=ON",cmd,iebID);
 	
       } else if(!strcasecmp(argbuf,"OFF")) {
 	if(cmd>18) cmd+=18; // BLUE IEB starts at 18-33 in Shared Memory
 
-	onoff[0] = (short)wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)0,1);
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,512,devOnOff,1);
+	onoff[0] = devOnOff[0];
 
 	onoff[0]|=(short)bits[cmd];
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,513,onoff,1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
 
 	sprintf(reply,"IEB MLC%d_%c=OFF",cmd,iebID);
 	

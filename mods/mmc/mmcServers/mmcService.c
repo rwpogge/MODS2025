@@ -42,6 +42,9 @@
   2009 Sept 17 - rework of the listen(), and accept() protocols. accept(fd) 
 		re-transmit didn't seem to work with threads [rdg]
   </pre>
+
+  2025 Aug 8 - Port to AlmaLinux 9.x [rwp/osu]
+
 */
 
 #include <iostream>
@@ -485,7 +488,6 @@ int main(int argc, char *argv[])
     fprintf(stderr,"Loading config file: %s\n",argv[1]);
   } else n = LoadConfig(DEFAULT_RCFILE);
 
-
   memset(shm_addr->MODS.LLOG,0,79); // Setup logging file
   sprintf(shm_addr->MODS.LLOG,client.logFile);
   chmod(shm_addr->MODS.LLOG,0666);  // Give permissions to default logging file
@@ -544,8 +546,11 @@ int main(int argc, char *argv[])
 	 << client.useISIS << endl;
   }
 
+  mmcLOGGER(shm_addr->MODS.LLOG,(char*)"started ISIS client instance");
+ 
   // Broadcast a PING to the ISIS server, if enabled.  If it fails,
   // we'll have to do the ping by hand after the comm loop starts.
+  
   if (client.useISIS) {
     memset(buf,0,sizeof(buf));
     sprintf(buf,"%s>AL ping\r",client.ID); 
@@ -559,11 +564,11 @@ int main(int argc, char *argv[])
   memset(temp,0,sizeof(temp));
 
   utilID=getWagoID((char*)"util",temp); // Get Utility Box ID
-  if(utilID==-1) {
+  if (utilID==-1) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcService: Utility Box (UTIL) Identification not found");
   }
 
-  allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,513,(short *)1,1);
+  allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,513,onoff,1);
 
   if(allPower<0) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"UTIL UTIL=OFF Utility Box OFF");
@@ -580,7 +585,7 @@ int main(int argc, char *argv[])
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcService: Lamp/Laser Box (LLB) Identification not found");
   }
 
-  allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,515,(short *)1,1);
+  allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,515,onoff,1);
 
   if(allPower<0) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"LLB LLB=OFF Lamp Laser Box OFF");
@@ -601,7 +606,7 @@ int main(int argc, char *argv[])
     return -1;
   }
 
-  allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb1ID],1,514,(short *)1,1);
+  allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb1ID],1,514,onoff,1);
   if(allPower<0) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"IEB IEB_B=OFF Blue IEB is OFF");
     isisStatusMsg((char*)"IEB IEB_B=OFF Blue IEB Box is OFF");
@@ -620,7 +625,7 @@ int main(int argc, char *argv[])
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcService: Red Instrument Electronics Box (IEB_R) Identification not found");
   }
 
-  allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb2ID],1,514,(short *)1,1);
+  allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb2ID],1,514,onoff,1);
   if(allPower<0) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"IEB IEB_R=OFF Red IEB is OFF");
     isisStatusMsg((char*)"IEB IEB_R=OFF Red IEB Box is OFF");
@@ -701,7 +706,7 @@ int main(int argc, char *argv[])
   // create threads
   for(i = 0; i < MAX_THREAD; i++) {
     //pthread_create(&threads[i].tid, NULL, &thread_init_func, (void *)i);
-    pthread_create(&threads[i].tid, NULL, &thread_init_func, (void *)(unsigned long long)(i));
+    pthread_create(&threads[i].tid, NULL, &thread_init_func, (void *)(long long)(i));
     threads[i].client_count = 0;
   }
 
