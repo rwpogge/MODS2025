@@ -1751,9 +1751,6 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       sprintf(lampMsg, "CALLAMPS=FAULT");
     } else {
       for ( i = 0 ; i < 9; i++ ) shm_addr->MODS.lamps.lamp_state[i] = 0;
-      // Do not, under any circumstances, ever change the IMCS laser power! [rwp/osu - 2012 Feb 23]
-      //ierr = wagoSetGet(1, shm_addr->MODS.WAGOIP[llbID], 1, 513, &shm_addr->MODS.lamps.lamplaser_all[0], 1);
-      //ierr = wagoSetGet(1, shm_addr->MODS.WAGOIP[llbID], 1, 514, &shm_addr->MODS.lamps.lamplaser_all[0], 1);
       sprintf(statusMsg,"%s CALLAMPS='None' All lamps have been turned OFF",who_selected);
       sprintf(lampMsg, "CALLAMPS='None' ");
     }      
@@ -11559,8 +11556,7 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
     */
     if (shm_addr->MODS.lasers.vislaser_state == 0) {
       shm_addr->MODS.lamps.lamplaser_all[0] |=  64;
-      ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-			&shm_addr->MODS.lamps.lamplaser_all[0],1);
+      ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
       
       shm_addr->MODS.lasers.vislaser_state=1;
       shm_addr->MODS.lasers.visbeam_state=0;
@@ -11626,8 +11622,7 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
      
   } else if(!strcasecmp(temp,"OFF")) {
     shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1EBF;
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-		      &shm_addr->MODS.lamps.lamplaser_all[0],1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 
     shm_addr->MODS.lasers.vislaser_state=0;
     shm_addr->MODS.lasers.visbeam_state=0;
@@ -11650,8 +11645,7 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
 	  // 'Press' the enable/disable switch
 	  */
 	  shm_addr->MODS.lamps.lamplaser_all[0] |= 256;
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-			    &shm_addr->MODS.lamps.lamplaser_all[0],1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 	  
 	  MilliSleep(500); // Hold the switch down for 0.5 sec 
 
@@ -11659,8 +11653,7 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
 	  // 'Release' the enable/disable switch
 	  */
 	  shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1EFF;
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-			    &shm_addr->MODS.lamps.lamplaser_all[0],1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 	  /*
 	  // Set the Visible Laser Enable/Disable state variable in shared 
 	  // memory
@@ -11688,8 +11681,7 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
 	    // and then send the value to WAGO
 	    */
 	    vispowerShort = (short)reqRegPOut;
-	    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,
-			      &vispowerShort,1);
+	    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,&vispowerShort,1);
 	    sleep(2);
 	    /*
 	    // Get the reported POut and PSet from the WAGO and store the
@@ -11739,16 +11731,14 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
 	// 'Press' the enable/disable switch
 	*/
 	shm_addr->MODS.lamps.lamplaser_all[0] |= 256;
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-			  &shm_addr->MODS.lamps.lamplaser_all[0],1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 
 	MilliSleep(500); // Hold the switch down for 0.5 sec 
 	/*
 	// 'Release' the enable/disable switch
 	*/
 	shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1EFF;
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-			  &shm_addr->MODS.lamps.lamplaser_all[0],1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 	/*
 	// Set the Visible Laser Enable/Disable state variable in shared memory
 	*/
@@ -11775,8 +11765,7 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
 
   } else if(!strcasecmp(temp,"RAWPOWER") && numArgs == 2) {
     vispowerShort = (short)vispower;
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,
-		      &vispowerShort,1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,&vispowerShort,1);
     
     sleep(2);
     /*
@@ -11846,8 +11835,7 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
         // and then send the value to WAGO
 	*/
 	vispowerShort = (short)reqRegPOut;
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,
-			  &vispowerShort,1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,&vispowerShort,1);
 
 	sleep(2);
 
@@ -11910,8 +11898,7 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
     
   } else if(!strcasecmp(temp,"RESET")) {
     shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1EBF; // Turn the laser off
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-		      &shm_addr->MODS.lamps.lamplaser_all[0],1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 
     shm_addr->MODS.lasers.vislaser_state=0;
     shm_addr->MODS.lasers.visbeam_state=0;
@@ -11920,16 +11907,14 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
     sleep(2);
 
     shm_addr->MODS.lamps.lamplaser_all[0] |=  64; // Turn the laser on
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-   		      &shm_addr->MODS.lamps.lamplaser_all[0],1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 
     shm_addr->MODS.lasers.vislaser_state=1;
     shm_addr->MODS.lasers.visbeam_state=0;
  
     vispower = 0; // Set the power setpoint to zero
     vispowerShort = (short)vispower;
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,
-    		  &vispowerShort,1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,VISPSETWAGO,&vispowerShort,1);
 
     sleep(2);
 
@@ -12087,8 +12072,7 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
   if(!strcasecmp(temp,"ON")) { // if the laser is off, turn it on
     if (shm_addr->MODS.lasers.irlaser_state == 0) {
         shm_addr->MODS.lamps.lamplaser_all[0] |=  128;
-        ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-            	      &shm_addr->MODS.lamps.lamplaser_all[0],1);
+        ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 
         shm_addr->MODS.lasers.irlaser_state=1;
         shm_addr->MODS.lasers.irbeam_state=0;
@@ -12112,8 +12096,7 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
 	// and then send the value to WAGO
 	*/
 	irpowerShort = (short)reqRegPOut;
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,
-			  &irpowerShort,1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,&irpowerShort,1);
 
 	sleep(2);
 	/*
@@ -12149,8 +12132,7 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
 
   } else if(!strcasecmp(temp,"OFF")) {
     shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1D7F;
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-		      &shm_addr->MODS.lamps.lamplaser_all[0],1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 
     shm_addr->MODS.lasers.irlaser_state=0;
     shm_addr->MODS.lasers.irbeam_state=0;
@@ -12174,16 +12156,14 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
 	// 'Press' the enable/disable switch
 	*/
 	shm_addr->MODS.lamps.lamplaser_all[0] |= 512;
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-			  &shm_addr->MODS.lamps.lamplaser_all[0],1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 	
 	MilliSleep(500); // Hold the switch down for 0.5 sec 
 	/*
 	// 'Release' the enable/disable switch
 	*/
 	shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1DFF;
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-			  &shm_addr->MODS.lamps.lamplaser_all[0],1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 
 	/*
 	// Set the IR Laser Enable/Disable state variable in shared memory
@@ -12210,8 +12190,7 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
 	  // and then send the value to WAGO
 	  */
 	  irpowerShort = (short)reqRegPOut;
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,
-			    &irpowerShort,1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,&irpowerShort,1);
 	  sleep(2);
 	  /*
 	  // Get the reported POut and PSet from the WAGO and store the
@@ -12264,16 +12243,14 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
 	// 'Press' the enable/disable switch
 	*/
 	shm_addr->MODS.lamps.lamplaser_all[0] |= 512;
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-			  &shm_addr->MODS.lamps.lamplaser_all[0],1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 
 	MilliSleep(500); // Hold the switch down for 0.5 sec 
 	/*
 	// 'Release' the enable/disable switch
 	*/
 	shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1DFF;
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-			  &shm_addr->MODS.lamps.lamplaser_all[0],1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 	/*
 	// Set the IR Laser Enable/Disable state variable in shared memory
 	*/
@@ -12307,8 +12284,7 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
     // and then send the value to WAGO
     */
     irpowerShort = (short)irpower;
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,
-		      &irpowerShort,1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,&irpowerShort,1);
 
     sleep(2);
     /*
@@ -12395,8 +12371,7 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
         // and then send the value to WAGO
 	*/
 	irpowerShort = (short)irpower;
-	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,
-			  &irpowerShort,1);
+	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,&irpowerShort,1);
 	sleep(2);
 
 	/*
@@ -12447,8 +12422,7 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
     
   } else if(!strcasecmp(temp,"RESET")) { 
     shm_addr->MODS.lamps.lamplaser_all[0] &= 0x1D7F; // Turn the laser off
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-		      &shm_addr->MODS.lamps.lamplaser_all[0],1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 
     shm_addr->MODS.lasers.irlaser_state=0;
     shm_addr->MODS.lasers.irbeam_state=0;
@@ -12457,16 +12431,14 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
     sleep(2);
     
     shm_addr->MODS.lamps.lamplaser_all[0] |=  128; // Turn the laser on
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,
-        	      &shm_addr->MODS.lamps.lamplaser_all[0],1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,&shm_addr->MODS.lamps.lamplaser_all[0],1);
 
     shm_addr->MODS.lasers.irlaser_state=1;
     shm_addr->MODS.lasers.irbeam_state=0;
     
     
     irpowerShort = (short)irpower; // Set the power setpoint to zero
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,
-		      &irpowerShort,1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[llbID],1,IRPSETWAGO,&irpowerShort,1);
     sleep(2);
 
     /*
