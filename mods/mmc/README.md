@@ -2,7 +2,7 @@
  
 **Version 3.1**
 
-**Updated: 2025 July 3 [rwp/osu]**
+**Updated: 2025 Aug 8 [rwp/osu]**
 
 Ported to AlmaLinux 9.x in 2025 for the MODS2025 CCD controller and system upgrade.
 
