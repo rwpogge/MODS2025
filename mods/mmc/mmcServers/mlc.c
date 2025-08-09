@@ -1871,38 +1871,45 @@ int
 wagoRW(int iebID, char who[], int what, int value,char dummy[])
 {
   int i;
-  int ierr,cmd,ieb_id;
+  int ierr;
+  int cmd;
+  int ieb_id;
   short onoff[1];
+  short regData[1];
   char temp[512];
   int blueIndex;
   float temperature[5];
+  float vdrive;
+  float idrive;
+  float vcontrol;
   
   memset(dummy,0,sizeof(dummy));
   memset(temp,0,sizeof(temp));
 
   ieb_id=iebID-1;
 
-  if(!strcasecmp(who,"IEBS")) {
-    if(what) {
+  if (!strcasecmp(who,"IEBS")) {
+    if (what) {
       onoff[0]=(short)value; // Turn off the 65V power supply
       onoff[1]=(short)value;
-      ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,514,&onoff[0],1);
-      if(!ierr)	sprintf(dummy,"IEB_%c=ON MPOWER_%c=ON",
+      ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,513,&onoff[0],1);
+      if (!ierr)	sprintf(dummy,"IEB_%c=ON MPOWER_%c=ON",
 			(iebID==1 ? 'R' : 'B'),
 			(iebID==1 ? 'R' : 'B'));
-      else if(ierr==-1)
+      else if (ierr==-1)
 	sprintf(dummy,"IEB_%c=OFF",(iebID==1 ? 'R' : 'B'));
       else 
 	sprintf(dummy,"IEB_%c=UNKNOWN",(iebID==1 ? 'R' : 'B'));
       return ierr;
 
-    } else {
-      ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
-      if(!ierr)
+    }
+    else {
+      ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+      if (!ierr)
 	sprintf(dummy,"IEB_%c=ON MPOWER_%c=ON",
 		(iebID==1 ? 'R' : 'B'),
 		(iebID==1 ? 'R' : 'B'));
-      else if(ierr==-1)
+      else if (ierr==-1)
 	sprintf(dummy,"IEB_%c=OFF MPOWER_%c=OFF",
 		(iebID==1 ? 'R' : 'B'),
 		(iebID==1 ? 'R' : 'B'));
@@ -1912,50 +1919,56 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
       return ierr;
     }
     return CMD_OK;
-  } else if(!strcasecmp(who,"BYNAME")) {
-    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+  }
+  else if (!strcasecmp(who,"BYNAME")) {
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
     MilliSleep(100);
-    onoff[0] = (short )wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)0,1);
-    if(iebID==1) blueIndex=-1;
-    else blueIndex=17;
 
-    if(value==0 || value>16) {
-      if(ierr==-1) {
-	for(i=1,ierr=1;ierr<=16;i+=i,ierr++) 
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
+    if (iebID==1)
+      blueIndex=-1;
+    else
+      blueIndex=17;
+
+    if (value==0 || value>16) {
+      if (ierr==-1) {
+	for (i=1,ierr=1;ierr<=16;i+=i,ierr++) 
 	  sprintf(dummy,"%s %s_%s=OFF",dummy,
 		  makeUpper(shm_addr->MODS.who[ierr+blueIndex]),
 		  (iebID==1 ? "R" : "B"));
       } else {
- 	for(i=1,ierr=1;ierr<=16;i+=i,ierr++) {
-	  //for(i=1,ierr=1;ierr<=18;i+=i,ierr++) {
+ 	for (i=1,ierr=1;ierr<=16;i+=i,ierr++) {
 	  sprintf(dummy,"%s %s_%s=%s",dummy,
 		  makeUpper(shm_addr->MODS.who[ierr+blueIndex]),
 		  (iebID==1 ? "R" : "B"),(!(i&onoff[0]) ? "ON" : "OFF"));
 	}
       }
     } else {
-      for(i=1,ierr=1;ierr<=value-1;i+=i,ierr++);
+      for (i=1,ierr=1;ierr<=value-1;i+=i,ierr++);
       sprintf(dummy,"%s_%s=%s",makeUpper(shm_addr->MODS.who[ierr+blueIndex]),
 	      (iebID==1 ? "R" : "B"),
 	      (!(i&onoff[0]) ? "ON" : "OFF"));
     }
-  } else if(!strcasecmp(who,"MLCS")) {
-    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+  }
+  else if (!strcasecmp(who,"MLCS")) {
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
     MilliSleep(100);
-    onoff[0] = (short )wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)0,1);
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
 
-    if(value==0 || value>16) {
-      if(ierr==-1) {
+    if (value==0 || value>16) {
+      if (ierr==-1) {
 	for(i=1,ierr=1;ierr<=16;i+=i,ierr++) 
 	  sprintf(dummy,"%s MLC%d_%s=OFF",dummy,ierr,
 		  (iebID==1 ? "R" : "B"));
-      } else {
+      }
+      else {
  	for(i=1,ierr=1;ierr<=16;i+=i,ierr++) {
 	  sprintf(dummy,"%s MLC%d_%s=%s",dummy,ierr,
 		  (iebID==1 ? "R" : "B"),(!(i&onoff[0]) ? "ON" : "OFF"));
 	}
       }
-    } else {
+    }
+    else {
       if(value>18) value-=18; // This is for the BLUE IEB set 18-34
 
       for(i=1,ierr=1;ierr<=value-1;i+=i,ierr++);
@@ -1963,76 +1976,63 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
 	      (!(i&onoff[0]) ? "ON" : "OFF"));
     }
 
-  } else if(!strcasecmp(who,"TEMPS")) {
+  }
+  else if (!strcasecmp(who,"TEMPS")) {
+
     char tempRMonitor[4][9] = {"IEBTEMPR","IEBGRT_R","TAIRTOP","TAIRBOT" };
     char tempBMonitor[4][9] = {"IEBTEMPB","IEBGRT_B","TCOLLTOP","TCOLLBOT"};
-    if(!value) {
-      for(i=5,ierr=0;i<9;i++,ierr++) {
-	temperature[ierr]=((float)wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,i,0,1)/10.0);
-	if(iebID==1) {
-	  (temperature[ierr]>=850.0 ? 
-	   sprintf(dummy,"%s %s=NOCOMM",dummy,tempRMonitor[ierr]) : 
-	   sprintf(dummy,"%s %s=%0.1f",dummy,tempRMonitor[ierr],temperature[ierr]));
-	} else {
-	  (temperature[ierr]>=850.0 ? 
-	   sprintf(dummy,"%s %s=NOCOMM",dummy,tempBMonitor[ierr]) : 
-	   sprintf(dummy,"%s %s=%0.1f",dummy,tempBMonitor[ierr],temperature[ierr]));
+    
+    if (!value) {
+      for (i=4,ierr=0;i<8;i++,ierr++) {
+	ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,i,regData,1);
+	temperature[ierr]=(float)(regData[0])/10.0;
+	if (iebID==1) {
+	  sprintf(dummy,"%s %s=%0.1f",dummy,tempRMonitor[ierr],temperature[ierr]);
+	}
+	else {
+	  sprintf(dummy,"%s %s=%0.1f",dummy,tempBMonitor[ierr],temperature[ierr]);
 	}
       }
     } else {
-      temperature[value-1]=((float)wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,value+4,0,1)/10.0);
-      if(iebID==1) {
-	(temperature[value-1]>=850.0 ? 
-	 sprintf(dummy,"%s %s=NOCOMM",dummy,tempRMonitor[value-1]) : 
-	 sprintf(dummy,"%s %s=%0.1f",dummy,tempRMonitor[value-1],temperature[value-1]));
-      } else {
-	(temperature[value-1]>=850.0 ? 
-	 sprintf(dummy,"%s %s=NOCOMM",dummy,tempBMonitor[value-1]) : 
-	 sprintf(dummy,"%s %s=%0.1f",dummy,tempBMonitor[value-1],temperature[value-1]));
-      }
+      ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,value+3,regData,1);
+      temperature[value-1]=(float)(regData)/10.0;
+      if (iebID==1)
+	sprintf(dummy,"%s %s=%0.1f",dummy,tempRMonitor[value-1],temperature[value-1]);
+      else
+	sprintf(dummy,"%s %s=%0.1f",dummy,tempBMonitor[value-1],temperature[value-1]);
     }
-    /*
-    if(!value) {
-      for(i=5,ierr=0;i<9;i++,ierr++) {
-	if(iebID==1) {
-	  sprintf(dummy,"%s %s=%0.1f",dummy,tempRMonitor[ierr],
-		  ((float)wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,i,0,1)/10.0));
-	} else {
-	  sprintf(dummy,"%s %s=%0.1f",dummy,tempBMonitor[ierr],
-		  ((float)wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,i,0,1)/10.0));
-	}
-      }
-    } else {
-      if(iebID==1) {
-	sprintf(dummy,"%s=%0.1f",tempRMonitor[value-1],
-		((float)wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,value+4,0,1)/10.0));
-      } else {
-	sprintf(dummy,"%s=%0.1f",tempBMonitor[value-1],
-		((float)wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,value+4,0,1)/10.0));
-      }
-    }
-    */
-  } else if(!strcasecmp(who,"MPOWER")) {
+  }
+  else if(!strcasecmp(who,"MPOWER")) {
 
-      ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+    sprintf(dummy,"%s MPOWER_%c=%s ",dummy,(iebID==1 ? 'R' : 'B'),( !ierr ? "ON" : "OFF"));
 
-      sprintf(dummy,"%s MPOWER_%c=%s ",dummy,
-	      (iebID==1 ? 'R' : 'B'),( !ierr ? "ON" : "OFF"));
-    sprintf(dummy,"%s VDRIVE_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),
-	      (((float)wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,1,0,1)/pow(2,15)*10)*9.28));
-    sprintf(dummy,"%s IDRIVE_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),
-	    (((float)wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,3,0,1)/pow(2,15)*10)*1.25));
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,0,regData,1);
+    vdrive = ((float)(regData[0])/pow(2,15)*10)*9.28;
+    sprintf(dummy,"%s VDRIVE_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),vdrive);
 
-  } else if(!strcasecmp(who,"IVS")) {
-    sprintf(dummy,"%s VDRIVE_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),
-	      (((float)wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,1,0,1)/pow(2,15)*10)*9.28));
-    sprintf(dummy,"%s IDRIVE_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),
-	    (((float)wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,3,0,1)/pow(2,15)*10)*1.25));
-    sprintf(dummy,"%s VCONTROL_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),
-	    (((float)wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,2,0,1)/pow(2,15)*10)*3.12));
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,2,regData,1);
+    idrive = ((float)(regData[0])/pow(2,15)*10)*1.25;
+    sprintf(dummy,"%s IDRIVE_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),idrive);
 
   }
+  else if(!strcasecmp(who,"IVS")) {
+
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,0,regData,1);
+    vdrive = ((float)(regData[0])/pow(2,15)*10)*9.28;
+    sprintf(dummy,"%s VDRIVE_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),vdrive);
+
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,2,regData,1);
+    idrive = ((float)(regData[0])/pow(2,15)*10)*1.25;
+    sprintf(dummy,"%s IDRIVE_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),idrive);
+
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,1,regData,1);
+    vcontrol = ((float)(regData[0])/pow(2,15)*10)*3.12;
+    sprintf(dummy,"%s VCONTROL_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),vcontrol);
+  }
+
   return CMD_OK;
+
 }
 
 //---------------------------------------------------------------------------
@@ -2150,12 +2150,12 @@ mlcPANIC(int device, char who [], char dummy[])
   if(!strcasecmp(who,"MODS1")) {
     devOnOff[0]=0;
     devOnOff[1]=0;
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[device],1,513,devOnOff,1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[device],1,512,devOnOff,1);
     
   } else if(!strcasecmp(who,"MODS2")) {
     devOnOff[0]=0;
     devOnOff[1]=0;
-    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[device],1,513,devOnOff,1);
+    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[device],1,512,devOnOff,1);
 
   } else {
     sprintf(dummy,"Invalid '%s' command",argbuf); 
