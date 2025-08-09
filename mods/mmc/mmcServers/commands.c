@@ -3079,11 +3079,11 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	allHEBPower = devOnOff[0];
 	if (!strcasecmp(argbuf,"ON")) {
-	  devOnOff[0]=(short)(allHEBPower|1);
+	  devOnOff[0]=(short)(allHEBPower | 1);
 	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	}
 	else if (!strcasecmp(argbuf,"OFF")) {
-	  devOnOff[0]=(short)(allHEBPower^1);
+	  devOnOff[0]=(short)(allHEBPower ^ 1);
 	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	}
 	else {
@@ -3119,19 +3119,18 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       
       sprintf(reply,"%s",who_selected);
 
-      // If no additional arguments, implicit power status query
-      // otherwise ON or OFF allowed
+      // If no additional arguments, implicit power status query otherwise ON or OFF allowed
       
       if (strlen(args) > 2) {
 	GetArg(args,3,argbuf);
 	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	allHEBPower = devOnOff[0];
 	if (!strcasecmp(argbuf,"ON")) {
-	  devOnOff[0]=(short)(allHEBPower|2);
+	  devOnOff[0]=(short)(allHEBPower | 2);
 	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	}
 	else if (!strcasecmp(argbuf,"OFF")) {
-	  devOnOff[0]=(short)(allHEBPower^2);
+	  devOnOff[0]=(short)(allHEBPower ^ 2);
 	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	}
 	else {
@@ -3176,7 +3175,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       return CMD_OK;
 
     } else {
-      sprintf(reply,"%s unrecognized directive '%s'",who_selected,argbuf); 
+      sprintf(reply,"%s invalid option '%s': usage: HEB R|B [[archon|ipower] on|off]",who_selected,argbuf); 
       return CMD_ERR;
       
     }
