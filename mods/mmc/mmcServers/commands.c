@@ -2986,7 +2986,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     archonPower  = allHEBPower & 1;
     ionGaugePower = allHEBPower & 2;
 
-    printf("allHEBPower=%d archonPower=%d, ionGaugePower=%d\n",allHEBPower,archonPower,ionGaugePower);
+    // printf("allHEBPower=%d archonPower=%d, ionGaugePower=%d\n",allHEBPower,archonPower,ionGaugePower);
     
     // Temperatures (readout at the top of the command tree)
 
@@ -3031,8 +3031,6 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	  shm_addr->MODS.blueArchonState = 0;
       }
 
-      printf("reply=%s\n",reply);
-
       // Ion Gauge power relay is normally open
       
       if (ionGaugePower == 2) {
@@ -3050,16 +3048,12 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	  shm_addr->MODS.blueIonGaugeState = 0;
       }
       
-      printf("reply=%s\n",reply);
-
       (hebAirTemp>=850.0 ? sprintf(reply,"%s %cHEBTEMP=NOCOMM",reply,hebChan) : 
        sprintf(reply,"%s HEBTEMP_%c=%0.1f",reply,hebChan,hebAirTemp));
 
       (dewarTemp>=850.0 ? sprintf(reply,"%s %cDEWTEMP=NOCOMM",reply,hebChan) : 
        sprintf(reply,"%s DEWTEMP_%c=%0.1f",reply,hebChan,dewarTemp));
       
-      printf("reply=%s\n",reply);
-
       return CMD_OK;
       
     } else if (!strcasecmp(argbuf,"ARCHON")) {
