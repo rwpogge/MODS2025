@@ -1995,7 +1995,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
       }
     } else {
       ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,value+3,regData,1);
-      temperature[value-1]=(float)(regData)/10.0;
+      temperature[value-1]=(float)(regData[0])/10.0;
       if (iebID==1)
 	sprintf(dummy,"%s %s=%0.1f",dummy,tempRMonitor[value-1],temperature[value-1]);
       else
