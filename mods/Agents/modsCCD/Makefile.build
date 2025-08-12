@@ -40,5 +40,5 @@ clean:
 	    /bin/rm -f modsCCD *.o
 
 install:
-	    \cp modsCCD ../bin/
+	    \cp modsCCD $(ROOTDIR)/bin/
 	    /bin/rm -f *.o
