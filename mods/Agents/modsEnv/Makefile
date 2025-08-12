@@ -29,7 +29,7 @@ TELEMDIR    = /usr/include/lbto/lib-telemetry
 
 # keep binaries local during development
 
-BINDIR      = ./
+BINDIR      = $(HOMEDIR)/mods/bin/
 
 INCLUDES    = -I$(ISISLIB) -I/usr/include/modbus -I$(HOMEDIR)/include -I$(TELEMDIR)
 LIBRARIES   = -L$(ISISLIB) 
