@@ -38,6 +38,7 @@ all:        modsalloc
 modsalloc:	$(OBJS) modsalloc.c
 	$(CC) $(LFLAGS) $(VFLAGS) modsalloc.c $(OBJS) $(LIBS)
 	\cp modsalloc $(ROOTDIR)/bin/
+	\cp modsalloc.sh $(ROOTDIR)/bin/
 	/bin/rm -f modsalloc *.o
 clean:
 	    /bin/rm -f $(ROOTDIR)/bin/modsalloc
