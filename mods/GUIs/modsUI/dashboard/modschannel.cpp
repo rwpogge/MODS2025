@@ -70,7 +70,7 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   chFormLayout->setFormAlignment(Qt::AlignCenter);  
   chFormLayout->setLabelAlignment(Qt::AlignRight);
 
-  // Instrument Mode Setup: 4 buttons: Imaging Grating Prism [HiRes] + Clear & Commit
+  // Instrument Mode Setup: 4 buttons: Imaging Grating Prism + Clear & Commit
 
   // Preset instrument modes
 
@@ -89,13 +89,6 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   connect(prismButton,SIGNAL(clicked()),this,SLOT(reqPrismMode()));
   mbw = qMax((int)(prismButton->minimumSizeHint().width()),mbw);
 
-  /*
-  // Future 2nd grating the "Hi-Res Grating"
-  hiresButton = new ActionButton(tr("Grating2"),this);
-  connect(hiresButton,SIGNAL(clicked()),this,SLOT(setAcquireMode()));
-  mbw = qMax((int)(hiresButton->minimumSizeHint().width()),mbw);
-  */
-
   // Clear Button - Clear any uncommitted configuration requests
 
   clearButton = new ActionButton(tr("Clear"),this);
@@ -108,18 +101,9 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   connect(commitButton,SIGNAL(clicked()),this,SLOT(commitConfig()));
   mbw = qMax((int)(commitButton->minimumSizeHint().width()),mbw);
 
-  /*
-  // Reset Button - really does a refresh/update, resetting the exposure state if idle
-  // and refreshing the instrument configuration information if stale.
-
-  resetButton = new ActionButton(tr("Reset"),this);
-  connect(resetButton,SIGNAL(clicked()),this,SLOT(update()));
-  */
-
   imagingButton->setMinimumWidth(mbw);
   gratingButton->setMinimumWidth(mbw);
   prismButton->setMinimumWidth(mbw);
-  // hiresButton->setMinimumWidth(mbw);
   commitButton->setMinimumWidth(mbw);
   clearButton->setMinimumWidth(mbw);
 
@@ -127,7 +111,6 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   configLayout->addWidget(imagingButton,0,Qt::AlignHCenter);
   configLayout->addWidget(gratingButton,0,Qt::AlignHCenter);
   configLayout->addWidget(prismButton,0,Qt::AlignHCenter);
-  // configLayout->addWidget(hiresButton,0,Qt::AlignHCenter);
   configLayout->addStretch();
   configLayout->addWidget(commitButton,0,Qt::AlignHCenter);
   configLayout->addStretch();
@@ -144,26 +127,8 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
 				 MODS_GRATING_MIN,
 				 MODS_GRATING_MAX,30);
 
-  /*
-  // Grating Select Control widget
-
-  gratingControl = new IndexedSelector(grating,"",this);
-  connect(gratingControl,SIGNAL(cmdReady(const QString &)),
-	  this,SLOT(sendIECommand(const QString &)));
-  */
-
   gratingDisplay = new TextDisplay("Grating ID:","",6,this);
   gratingDisplay->setNormalColors(palette().color(QPalette::Window),Qt::blue);
-
-  /*
-  // Grating tilt selector
-
-  grtiltEntry = new SelectEntry("CenLam:","",this);
-  connect(grtiltEntry,SIGNAL(dataReady(const QString &)),
-	  this,SLOT(setGratingTilt(const QString &)));
-  grtiltEntry->clear();
-  grtiltEntry->disable();
-  */
 
   grtiltDisplay = new TextDisplay("CenLam:","",6,this);
   grtiltDisplay->setNormalColors(palette().color(QPalette::Window),Qt::blue);
@@ -204,12 +169,6 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   camfocDisplay = new TextDisplay("","um",6,this);
   camfocDisplay->setNormalColors(palette().color(QPalette::Window),Qt::blue);
 
-  /*
-  camfocControl = new LinearControl(camfoc,"","um",5,this);
-  connect(camfocControl,SIGNAL(cmdReady(const QString &)),
-	  this,SLOT(sendIECommand(const QString &)));
-  */
-
   // Collimator TTFA/B/C readouts (display only), but keep the mechanisms
   // around as we need these for active control features
 
@@ -236,39 +195,12 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   ttfcDisplay->setNormalColors(palette().color(QPalette::Window),Qt::blue);
  
   QHBoxLayout *focusLayout = new QHBoxLayout;
-  //focusLayout->addWidget(camfocControl);
   focusLayout->addWidget(camfocDisplay);
   focusLayout->addStretch();
   focusLayout->addWidget(ttfaDisplay);
   focusLayout->addWidget(ttfbDisplay);
   focusLayout->addWidget(ttfcDisplay);
   chFormLayout->addRow(tr("Focus:"),focusLayout);
-
-  /*
-  ttfaControl = new LinearControl(colttfa,"TTF A:","",6,this);
-  connect(ttfaControl,SIGNAL(cmdReady(const QString &)),
-	  this,SLOT(sendIECommand(const QString &)));
-
-  ttfbControl = new LinearControl(colttfb,"B:","",6,this);
-  connect(ttfbControl,SIGNAL(cmdReady(const QString &)),
-	  this,SLOT(sendIECommand(const QString &)));
-
-  ttfcControl = new LinearControl(colttfc,"C:","um",6,this);
-  connect(ttfcControl,SIGNAL(cmdReady(const QString &)),
-	  this,SLOT(sendIECommand(const QString &)));
-
-  colPanelButton = new ActionButton(tr("More..."),this);
-  connect(colPanelButton,SIGNAL(clicked()),this,SLOT(launchCollimatorDialog()));
-
-  QHBoxLayout *collimatorLayout = new QHBoxLayout;
-  collimatorLayout->addWidget(colfocControl);
-  collimatorLayout->addWidget(ttfaControl);
-  collimatorLayout->addWidget(ttfbControl);
-  collimatorLayout->addWidget(ttfcControl);
-  collimatorLayout->addStretch();
-
-  chFormLayout->addRow(tr("Collimator"),collimatorLayout);
-  */
 
   // Assembly the channel configuration QGroupBox
 
@@ -361,23 +293,10 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
 
   roiEntry = new SelectEntry("CCD Readout:","",this);
   roiEntry->addItem(MODS_CCD_FORMAT,"ROI OFF");
-  //roiEntry->addItem("Custom","CUSTOM");
   connect(roiEntry,SIGNAL(dataReady(const QString &)),
 	  this,SLOT(ccdROI(const QString &)));
   binLayout->addWidget(roiEntry);
   binLayout->addStretch();
-
-  /*
-  // Readout Speed (future expansion)
-
-  speedEntry = new SelectEntry("","",this);
-  speedEntry->addItem("Slow","ROSPEED SLOW");
-  speedEntry->addItem("Fast","ROSPEED FAST");
-  connect(speedEntry,SIGNAL(dataReady(const QString &)),
-	  this,SLOT(ccdSpeed(const QString &)));
-  speedEntry->disable();  // FUTURE EXPANSION
-  binLayout->addWidget(speedEntry);
-  */
 
   expFormLayout->addRow(tr("Binning"),binLayout);
 
@@ -441,7 +360,6 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
 
   expProgress = new QProgressBar(this);
   expProgress->setFormat("%vs");
-  //expProgress->setStyle(new QPlastiqueStyle);
   expProgress->setStyle(QStyleFactory::create("Fusion"));
   expProgress->setMaximumHeight((int)(0.9*expProgress->minimumSizeHint().height()));
   expProgress->reset();
@@ -449,7 +367,6 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   
   readProgress = new QProgressBar(this);
   readProgress->setFormat("%p%");
-  //readProgress->setStyle(new QPlastiqueStyle);
   readProgress->setStyle(QStyleFactory::create("Fusion"));
   readProgress->setMaximumHeight((int)(0.9*readProgress->minimumSizeHint().height()));
   readProgress->reset();
@@ -548,13 +465,11 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   *mainPalette = mainGroupBox->palette();
   switch (myChannel) {
   case MODSChannel::Blue:
-    //mainPalette->setColor(QPalette::Mid,Qt::darkCyan);
     mainPalette->setColor(QPalette::Mid,Qt::blue);
     mainGroupBox->setPalette(*mainPalette);
     break;
 
   case MODSChannel::Red:
-    //mainPalette->setColor(QPalette::Mid,Qt::darkRed);
     mainPalette->setColor(QPalette::Mid,Qt::red);
     mainGroupBox->setPalette(*mainPalette);
     break;
@@ -693,6 +608,7 @@ void MODSChannel::parse(const QString &cmdStr,
   
   // TODO: Unused cmdWarn flag. Commented out on 2-19-24
   // Our response depends on the type of message we received. 
+
   switch (msgType) {
   case ISISClient::ERROR:
     cmdDone = true;
@@ -760,77 +676,48 @@ void MODSChannel::parse(const QString &cmdStr,
 	  // an active tilt mechanism (currently grating 2 or 4)
 	  switch(ipos) {
 	  case 1:
-	    /*
-	    grtiltEntry->setNormal();
-	    grtiltEntry->clear();
-	    grtiltEntry->disable();
-	    */
 	    grtiltDisplay->setNormal();
 	    grtiltDisplay->clear();
 	    imagingButton->highLight();
 	    gratingButton->setNormal();
 	    prismButton->setNormal();
-	    //hiresButton->setNormal();
 	    commitButton->setNormal();
 	    break;
 
 	  case 2:
 	    grtilt->setPos(gratingTilt[0]);
 	    grtilt->setCommand(QString("%1GRTILT1").arg(channelID));
-	    /*
-	    loadTiltMenu(1);
-	    grtiltEntry->enable();
-	    grtiltEntry->setNormal();
-	    */
 	    grtiltDisplay->setNormal();
 	    grtiltDisplay->clear();
 	    setCurrentTilt(gratingTilt[0],1); // last value we know
 	    imagingButton->setNormal();
 	    gratingButton->highLight();
 	    prismButton->setNormal();
-	    //hiresButton->setNormal();
 	    commitButton->setNormal();
 	    break;
 
 	  case 3:
-	    /*
-	    grtiltEntry->setNormal();
-	    grtiltEntry->clear();
-	    grtiltEntry->disable();
-	    */
 	    grtiltDisplay->setNormal();
 	    grtiltDisplay->clear();
 	    imagingButton->setNormal();
 	    gratingButton->setNormal();
 	    prismButton->highLight();
-	    //hiresButton->setNormal();
 	    commitButton->setNormal();
 	    break;
 
 	  case 4:
 	    grtilt->setPos(gratingTilt[1]);
 	    grtilt->setCommand(QString("%1GRTILT2").arg(channelID));
-	    /*
-	    loadTiltMenu(2);
-	    grtiltEntry->enable();
-	    grtiltEntry->setNormal();
-	    */
 	    grtiltDisplay->setNormal();
 	    grtiltDisplay->clear();
 	    setCurrentTilt(gratingTilt[1],2); // last value we know
 	    imagingButton->setNormal();
 	    gratingButton->setNormal();
 	    prismButton->setNormal();
-	    //hiresButton->highLight();
 	    commitButton->setNormal();
 	    break;
 	    
 	  default:
-	    /*
-	    grtiltEntry->setNormal();
-	    grtiltEntry->clear();
-	    grtiltEntry->disable();
-	    */
 	    grtiltDisplay->setNormal();
 	    grtiltDisplay->clear();
 	    break;
@@ -839,7 +726,6 @@ void MODSChannel::parse(const QString &cmdStr,
 	else {
 	  if (valStr.compare("BUSY",Qt::CaseInsensitive)!=0) {
 	    grating->setErrorStr(msgStr);
-	    //gratingControl->setFault();
 	    gratingDisplay->setFault();
 	  }
 	}
@@ -857,17 +743,12 @@ void MODSChannel::parse(const QString &cmdStr,
 	    grtilt->setPos(ipos);
 	    grtiltDisplay->setNormal();
 	    grtiltDisplay->clear();
-	    /*
-	    grtiltEntry->enable();
-	    grtiltEntry->setNormal();
-	    */
 	    gratingTilt[0]=ipos;
 	    setCurrentTilt(ipos,1);
 	  }
 	}
 	else {
 	  if (grating->pos() == 2 && valStr.compare("BUSY",Qt::CaseInsensitive)!=0)
-	    //grtiltEntry->setFault();
 	    grtiltDisplay->setFault();
 	}
       }
@@ -880,10 +761,6 @@ void MODSChannel::parse(const QString &cmdStr,
 	  gratingTilt[1] = ipos;
 	  if (grating->pos() == 4) {
 	    grtilt->setPos(ipos);
-	    /*
-	    grtiltEntry->enable();
-	    grtiltEntry->setNormal();
-	    */
 	    grtiltDisplay->setNormal();
 	    grtiltDisplay->clear();
 	    gratingTilt[1]=ipos;
@@ -892,7 +769,6 @@ void MODSChannel::parse(const QString &cmdStr,
 	}
 	else {
 	  if (grating->pos() == 4 && valStr.compare("BUSY",Qt::CaseInsensitive)!=0)
-	    //grtiltEntry->setFault();
 	    grtiltDisplay->setFault();
 	}
       }
@@ -912,7 +788,6 @@ void MODSChannel::parse(const QString &cmdStr,
       // Camera Focus
 
       else if (keyStr.compare(camfoc->command(),Qt::CaseInsensitive)==0) {
-	//camfocControl->setISISState(msgType);
 	double pos = valStr.toDouble(&ok);
 	if (ok) {
 	  camfoc->setPos((int)(pos));
@@ -922,7 +797,6 @@ void MODSChannel::parse(const QString &cmdStr,
 	}
 	else
 	  if(valStr.compare("BUSY",Qt::CaseInsensitive)!=0)
-	    //camfocControl->setFault();
 	    camfocDisplay->setFault();
       }
 
@@ -1374,14 +1248,12 @@ void MODSChannel::parse(const QString &cmdStr,
 
   if (cmdFault || cmdDone) {
     if (cmdWord.compare(camfoc->command(),Qt::CaseInsensitive)==0) {
-      // camfocControl->setISISState(msgType);
       if (msgType == ISISClient::ERROR || msgType == ISISClient::FATAL)
 	camfocDisplay->setFault();
       else
 	camfocDisplay->setNormal();
     }
     else if (cmdWord.compare(grating->command(),Qt::CaseInsensitive)==0) {
-      //gratingControl->setISISState(msgType);
       if (msgType == ISISClient::ERROR || msgType == ISISClient::FATAL)
 	gratingDisplay->setFault();
       else
@@ -1554,12 +1426,9 @@ void MODSChannel::update()
 {
   // Reset the control states (free stuck controls)
 
-  //gratingControl->setUnknown();
   gratingDisplay->clear();
-  //grtiltEntry->clear();
   grtiltDisplay->clear();
   filterControl->setUnknown();
-  //camfocControl->setUnknown();
   camfocDisplay->clear();
   ttfaDisplay->clear();
   ttfbDisplay->clear();
@@ -1603,23 +1472,23 @@ void MODSChannel::update()
     acqStatus->clear();
   }
 
-  // Send status commands to the CCD control and data hosts.
+  // Send status commands to the CCD control and data transfer hosts.
 
   sendCmdWait(icHostID,"status",MODS_QUEUE_REQUEST);
   sendCmdWait(icHostID,"nextfile",MODS_QUEUE_REQUEST);
-  sendCmdWait(dmHostID,"lastfile",MODS_QUEUE_REQUEST);
-  sendCmdWait(dmHostID,"+swap",MODS_QUEUE_REQUEST);
+  sendCmdWait(icHostID,"lastfile",MODS_QUEUE_REQUEST);
+  // sendCmdWait(dmHostID,"+swap",MODS_QUEUE_REQUEST);
 
   // And to the main mechanism groups in this channel.  Single
   // queries are needed because ISTATUS can be stale...
 
   emit doCommand(QString("%1GRATING").arg(channelID));
   emit doCommand(QString("%1GRTILT1").arg(channelID));
-  emit doCommand(QString("%1GRTILT2").arg(channelID));
   emit doCommand(QString("%1FILTER").arg(channelID));
   emit doCommand(QString("%1CAMFOC").arg(channelID));
   emit doCommand(QString("%1COLFOC").arg(channelID));
   emit doCommand(QString("%1IMCS").arg(channelID));
+  // emit doCommand(QString("%1GRTILT2").arg(channelID)); // unused mechanism causes timeouts
   
 }
 
@@ -1675,12 +1544,12 @@ void MODSChannel::resetExp()
   else
     sendIECommand(QString("%1IMCS").arg(channelID));
   
-  // Send status commands to the IC and transfer hosts, waiting between queries
+  // Send status commands to the IC and data transfer hosts, waiting between queries
 
   sendCmdWait(icHostID,"status",MODS_QUEUE_REQUEST);
   sendCmdWait(icHostID,"nextfile",MODS_QUEUE_REQUEST);
-  sendCmdWait(dmHostID,"lastfile",MODS_QUEUE_REQUEST);
-  sendCmdWait(dmHostID,"+swap",MODS_QUEUE_REQUEST);
+  sendCmdWait(icHostID,"lastfile",MODS_QUEUE_REQUEST);
+  // sendCmdWait(dmHostID,"+swap",MODS_QUEUE_REQUEST);
 }
 
 // Get the MODS Channel ID prefix (B or R)
@@ -1837,10 +1706,7 @@ void MODSChannel::ccdROI(const QString &cmdStr)
 
 void MODSChannel::ccdSpeed(const QString &cmdStr)
 {
-  emit logMessage(tr("%1 command %2 not yet enabled").arg(channelName).arg(cmdStr));
-  // speedEntry->setCurrentIndex(0);
-  // speedEntry->setChange();
-  // sendICCommand(cmdStr);
+  emit logMessage(tr("%1 command %2 not enabled").arg(channelName).arg(cmdStr));
 }
 
 // Exposure GO/Abort - this slot is triggered when we hit the GO/Abort
@@ -2050,7 +1916,6 @@ bool MODSChannel::execGo()
     msgStr = tr("Starting %1 CCD Exposure...").arg(channelName);
 
   acqStatus->setText(msgStr,Qt::blue);
-  // sendICCommand("GO");  // prompt dispatch
   sendCmdWait(icHostID,"GO",MODS_QUEUE_REQUEST); // queued dispatch, breaks up race conditions
   return true;
 
@@ -2192,10 +2057,6 @@ void MODSChannel::loadROITable(const QString &fileName)
   } while (!line.isNull());
   inFile.close();
 
-  // The last menu item is the Custom entry
-
-  //roiEntry->addItem("Custom","CUSTOM");
-
 }
 
 //
@@ -2331,7 +2192,6 @@ void MODSChannel::setGratingTilt(const QString &grConfig)
 
   // Queue the grating tilt and collimator TTF offset commands
 
-  //grtiltEntry->setChange();
   grtiltDisplay->setChange();
   ttfaDisplay->setChange();
   ttfbDisplay->setChange();
@@ -2404,20 +2264,6 @@ void MODSChannel::loadTiltTable(const QString &fileName, const int &gratNum)
 void MODSChannel::loadTiltMenu(const int &gratNum)
 {
   if (gratNum < 1 || gratNum > 2) return;
-  /*
-  grtiltEntry->clear();  // clear out the current menu
-  int numItems = grtiltTable[gratNum-1]->count();
-  for (int i=0;i<numItems;i++) {
-    QString tiltStr = grtiltTable[gratNum-1]->at(i);
-    grtiltEntry->addItem(tiltStr.section(" ",0,0),
-			 QString("%1 %2").arg(gratNum).arg(tiltStr.section(" ",1,4)));
-  }
-
-  // Final entries are "home" (aka "reset"), and a blank position
-  // reserved for generic position reports
-  grtiltEntry->addItem("Home",QString("%1 0 0 0 0").arg(gratNum));
-  grtiltEntry->addItem("","");
-  */
 }
 
 // Set the current index of the grating tilt menu to the entry
@@ -2432,11 +2278,6 @@ void MODSChannel::setCurrentTilt(const int &ipos, const int &gratNum)
   if (ipos == 0) { // home position
     grtiltDisplay->setText("Home",Qt::blue);
     grtiltDisplay->setNormal();
-    /*
-    int grIndex = grtiltEntry->findText("Home");
-    if (grIndex > -1) 
-      grtiltEntry->setCurrentIndex(grIndex);
-    */
   }
   else {  // iterate over the grating table
     bool inTable = false;
@@ -2446,7 +2287,6 @@ void MODSChannel::setCurrentTilt(const int &ipos, const int &gratNum)
       int tiltPos = tiltVal.section(" ",1,1).toInt(&valOK,10);
       if (valOK) {
 	if ((ipos >= tiltPos-3) && (ipos <= tiltPos+3)) {
-	  //grtiltEntry->setCurrentIndex(i);
 	  grtiltDisplay->setNormal();
 	  grtiltDisplay->setText(tiltVal.section(" ",0,1),Qt::blue);
 	  inTable = true;
@@ -2454,18 +2294,9 @@ void MODSChannel::setCurrentTilt(const int &ipos, const int &gratNum)
       }
     } // end of table iteration
     if (!inTable) { // Not a preset value, just put the number in
-      /*
-      grtiltEntry->setItemText(grtiltEntry->count()-1,QString("%1").arg(ipos));
-      grtiltEntry->setCurrentIndex(grtiltEntry->count()-1);
-      */
       grtiltDisplay->setNormal();
       grtiltDisplay->setText(QString("*%1").arg(ipos),Qt::blue);
     }
-    /*
-    else {
-      grtiltEntry->setItemText(grtiltEntry->count()-1,"");
-    }
-    */
   }
 }
 
@@ -2481,13 +2312,10 @@ void MODSChannel::setChange(const QString &device)
   if (device.compare(filter->command(),Qt::CaseInsensitive)==0)
     filterControl->setChange();
   else if (device.compare(grating->command(),Qt::CaseInsensitive)==0)
-    //gratingControl->setChange();
     gratingDisplay->setChange();
   else if (device.compare(grtilt->command(),Qt::CaseInsensitive)==0)
-    //grtiltEntry->setChange();
     grtiltDisplay->setChange();
   else if (device.compare(camfoc->command(),Qt::CaseInsensitive)==0)
-    //camfocControl->setChange();
     camfocDisplay->setChange();
   else if (device.compare(colttfa->command(),Qt::CaseInsensitive)==0)
     ttfaDisplay->setChange();
@@ -2583,8 +2411,6 @@ void MODSChannel::loadConfigTable(const QString &fileName)
 	      iGrat = 2;
 	    else if (cfgName.compare("Prism",Qt::CaseInsensitive)==0)
 	      iGrat = 3;
-	    else if (cfgName.compare("HiRes",Qt::CaseInsensitive)==0)
-	      iGrat = 4;
 	    else
 	      iGrat = 0;  // means not a reserved preset
 	      
@@ -2629,25 +2455,11 @@ void MODSChannel::loadConfigTable(const QString &fileName)
 		        cmdList.append(QString("%1 ROI OFF").arg(channelName));
 		      else
 		        cmdList.append(QString("%1 ROI %2").arg(channelName).arg(cfgSpec.section(' ',6,6)));
-        }
+	      }
         
 	      // The CCD binning factor - must be defined
 
 	      cmdList.append(QString("%1 CCDBIN %2").arg(channelName).arg(cfgSpec.section(' ',7,8)));
-
-	      // The CCD horizontal (X or columns) and vertical (Y or rows)
-	      // overscan regions in unbinned pixels
-
-	      //int overX = cfgSpec.section(' ',9,9).toInt(&ok,10);
-	      //if (ok && overX > 0) 
-	      //   cmdList.append(QString("%1 OVERX %2").arg(channelName).arg(overX));
-	      //int overY = cfgSpec.section(' ',10,10).toInt(&ok,10);
-	      //if (ok && overY > 0) 
- 	      //   cmdList.append(QString("%1 OVERY %2").arg(channelName).arg(overY));
-
-	      // The CCD readout speed, must be "Fast" or "Slow" (future expansion)
-
-	      //cmdList.append(QString("%1 ROSPEED %2").arg(channelName).arg(cfgSpec.section(' ',11,11)));
 
 	      // Set the image type to OBJECT when changing configurations
 
@@ -2844,7 +2656,6 @@ void MODSChannel::enableCCDControls(const bool &enable)
     yBinEntry->enable();
     roiEntry->enable();
     imcsLockButton->enable();
-    // speedEntry->enable();
   }
   else {
     objNameEntry->disable();
@@ -2855,7 +2666,6 @@ void MODSChannel::enableCCDControls(const bool &enable)
     yBinEntry->disable();
     roiEntry->disable();
     imcsLockButton->disable();
-    // speedEntry->disable();
   }
 }
 
@@ -3068,8 +2878,7 @@ void MODSChannel::forceExpDone()
   // What do we do next, is this it or is there another image to
   // acquire?  We must test kExp>=numExp otherwise there are some rare
   // abort-service race conditions that cause the exposure counter
-  // (kExp) to "jump the fence" and lead to a runaway exposure
-  // sequence.
+  // (kExp) to "jump the fence" and lead to a runaway exposure sequence.
 
   if (kExp >= numExp) {
     if (numExp > 1) 

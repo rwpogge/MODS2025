@@ -1137,8 +1137,8 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
       }
     }
 
-    // The LASTFILE command goes out to the data-manager host for the
-    // specified channel
+    /*
+    // The LASTFILE command goes out to the IC host for the specified channel
 
     else if (chanWord.compare("LASTFILE",Qt::CaseInsensitive)==0) {
       sendToISIS(dmHost,chanCmd);
@@ -1155,7 +1155,8 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
       cmdHost.remove(cmdKey);
       return;
     }
-
+    */
+    
     // IMCSLOCK - request IMCS lock-on for this channel
 
     else if (chanWord.compare("IMCSLOCK",Qt::CaseInsensitive)==0) {
@@ -1525,7 +1526,8 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
 	   cmdWord.compare("comp"    ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("sky"     ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("std"     ,Qt::CaseInsensitive)==0 ||
-	   cmdWord.compare("nextfile",Qt::CaseInsensitive)==0 ||
+ 	   cmdWord.compare("nextfile",Qt::CaseInsensitive)==0 ||
+	   cmdWord.compare("lastfile",Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("observer",Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("partner" ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("propid"  ,Qt::CaseInsensitive)==0 ||
@@ -1635,8 +1637,9 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
 
   }
 
-  // Implicit dual-channel commands for the data managers
+  // Implicit dual-channel commands for the data managers - retired 2025 with Archons
 
+  /*
   else if (cmdWord.compare("LASTFILE",Qt::CaseInsensitive)==0) {
 
     // Set the flag in the dualCmd hash for this command
@@ -1656,9 +1659,12 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
     sendToISIS(modsRDHost[modsID],cmdStr);
 
   }
+  */
+  
+  // Implicit dual FITSFLUSH - fire +SWAP at each data-manager host - retired 2025 with Archons
 
-  // Implicit dual FITSFLUSH - fire +SWAP at each data-manager host
-
+  
+  /*
   else if (cmdWord.compare("FITSFLUSH",Qt::CaseInsensitive)==0) {
     sendToISIS(modsBDHost[modsID],"+SWAP");
     sendToISIS(modsRDHost[modsID],"+SWAP");
@@ -1667,7 +1673,8 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
     cmdHost.remove(cmdKey);
     return;
   }
-
+  */
+  
   // Implicit dual USEIMCS directive
 
   else if (cmdWord.compare("USEIMCS",Qt::CaseInsensitive)==0) {
