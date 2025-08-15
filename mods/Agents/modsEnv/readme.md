@@ -11,7 +11,7 @@ Basic operation is that modsEnv for a MODS instance runs in the background start
 
 The modsEnv agent has two modes
  * If environmental data is requested by another data-taking system process via the ISIS server, it queries the instrument and returns status info and logs the requested info.
- * If no external requests are pending, the agent will automatically query and log environmental sensor and power status on a fixed cadence (default is 5s, but set in the runtime initialization file), then wait for the next query time or request from another data-taking system agent.
+ * If no external requests are pending, the agent will automatically query and log environmental sensor and power status on a fixed cadence (default is 60s, but set in the runtime initialization file), then wait for the next query time or request from another data-taking system agent.
 
 Logs are kept on the local MODSn server machine.
 
