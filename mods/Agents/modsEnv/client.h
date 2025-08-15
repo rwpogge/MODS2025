@@ -177,6 +177,36 @@ typedef struct envData {
   float irlaserTemp;       //!< IR Laser head temperature in degrees C
   float irlaserTempSet;    //!< IR laser head temperature control set point in degrees C
 
+  // Red Head Electronics Box (HEB_R) sensor data
+
+  char  hebR_Addr[64];     //!< IP address of the Red HEB WAGO FieldBus controller
+  float hebR_AirTemp;      //!< Red HEB interior air temperature
+  float redDewTemp;        //!< Red dewar temperature (read by the red HEB)
+  int   redArchon;         //!< Red channel Archon controller power state (1=On/0=Off)
+  int   redIonGauge;       //!< Red dewar ion gauage power state (1=On/0=Off)
+
+  // Blue Head Electronics Box (HEB_B) sensor data
+
+  char  hebB_Addr[64];      //!< IP address of the Blue HEB WAGO FieldBus controller
+  float hebB_AirTemp;       //!< Blue HEB interior air temperature
+  float blueDewTemp;        //!< Blue dewar temperature (read by the red HEB)
+  int   blueArchon;         //!< Blue channel Archon controller power state (1=On/0=Off)
+  int   blueIonGauge;       //!< Blue dewar ion gauage power state (1=On/0=Off)
+
+  // Red dewar inonization gauge
+
+  char  redIG_Addr[64];     //!< Red dewar ionization gauge Comtrol IP address
+  int   redIG_Port;         //!< Red dewar ionization gauge Comtrol port
+  int   redIG_Chan;         //!< Red dewar ionization gauge RS485 channel (usually 5)
+  float redDewPres;         //!< Red dewar pressure in torr
+  
+  // Blue dewar inonization gauge
+
+  char  blueIG_Addr[64];    //!< Blue dewar ionization gauge Comtrol IP address
+  int   blueIG_Port;        //!< Blue dewar ionization gauge Comtrol port
+  int   blueIG_Chan;        //!< Blue dewar ionization gauge RS485 channel (usually 5)
+  float blueDewPres;        //!< Blue dewar pressure in torr
+  
   // Logging information
 
   int  doLogging;                  //!< Is logging enabled?  
@@ -208,6 +238,14 @@ typedef struct envData {
   lbto::tel::float_measure::buf_proxy airBotTempMeasure;        //!< The airBotTemp data in the telemetry stream
   lbto::tel::float_measure::buf_proxy trussTopTempMeasure;      //!< The trussTopTemp data in the telemetry stream
   lbto::tel::float_measure::buf_proxy trussBotTempMeasure;      //!< The trussBotTemp data in the telemetry stream
+  lbto::tel::float_measure::buf_proxy hebBAirTempMeasure;       //!< blueHEBAirTemp data in the telemetry stream
+  lbto::tel::float_measure::buf_proxy hebRAirTempMeasure;       //!< redHEBAirTemp data in the telemetry stream
+  lbto::tel::float_measure::buf_proxy blueDewTempMeasure;       //!< blueDewTemp data in the telemetry stream
+  lbto::tel::float_measure::buf_proxy redDewTempMeasure;        //!< redDewTemp data in the telemetry stream
+  lbto::tel::float_measure::buf_proxy blueDewTempMeasure;       //!< blueDewTemp data in the telemetry stream
+  lbto::tel::float_measure::buf_proxy redDewTempMeasure;        //!< redDewTemp data in the telemetry stream
+  lbto::tel::float_measure::buf_proxy blueDewPresMeasure;       //!< blueDewPres data in the telemetry stream
+  lbto::tel::float_measure::buf_proxy redDewPresMeasure;        //!< redDewPres data in the telemetry stream
 
   std::shared_ptr<lbto::tel::collector> modsCollector;          //!< The telemetry collection interface
 
@@ -251,23 +289,31 @@ public:
 
 //----------------------------------
 //
-// IUB Power/Breaker State Addresses
+// IUB power and breaker state register addresses
+//
+// Updated: 2025 Aug 15 [rwp/osu] for new IUB wiring for HEBs (power changed, breakers the same)
 //
 
 #define IEB_R_POWER   1
-#define IEB_R_BREAKER 1
 #define IEB_B_POWER   2
-#define IEB_B_BREAKER 2
-#define HEB_R_POWER   4
-#define HEB_R_BREAKER 4
-#define HEB_B_POWER   16
-#define HEB_B_BREAKER 8
-#define LLB_POWER     256
-#define LLB_BREAKER   64
+#define HEB_R_POWER   8
+#define HEB_B_POWER   32
 #define WFS_POWER     64
-#define WFS_BREAKER   16
 #define GCAM_POWER    128
+#define LLB_POWER     256
+
+#define IEB_R_BREAKER 1
+#define IEB_B_BREAKER 2
+#define HEB_R_BREAKER 4
+#define HEB_B_BREAKER 8
+#define WFS_BREAKER   16
 #define GCAM_BREAKER  32
+#define LLB_BREAKER   64
+
+// HEB power state register addresses (same for red and blue)
+
+#define ARCHON_POWER  1
+#define IG_POWER      2
 
 // Power State Indicators
 
@@ -280,8 +326,7 @@ public:
 //
 // IEB Temperature SHRMEM variable addresses
 //
-// A kludge to utilize various generic SHRMEM
-// "deposit" arrays
+// A kludge to utilize various generic SHRMEM "deposit" arrays
 //
 
 // MODS Channel Indexes

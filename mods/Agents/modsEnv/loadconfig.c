@@ -4,7 +4,7 @@
 
   ISIS-style runtime configuration files (e.g., named myclient.ini,
   .myclientrc, whatever) contain simple Keyword-Value pairs that are
-  parsed into global-scope variables for the client and its various
+
   subroutines to use.
  
   The # is used as a comment character, making a comment line when it
@@ -326,6 +326,62 @@ loadConfig(char *cfgfile)
       else if (strcasecmp(keyword,"LLB")==0) {
 	GetArg(inStr,2,argStr);
 	strcpy(env.llb_Addr,argStr);
+      }
+
+      // HEB_R: IP address of the Red CCD Head Electronics Box (HEB)
+      //        WAGO FieldBus controller
+
+      else if (strcasecmp(keyword,"HEB_R")==0) {
+	GetArg(inStr,2,argStr);
+	strcpy(env.hebR_Addr,argStr);
+      }
+
+      // HEB_B: IP address of the Blue CCD Head Electronics Box (HEB)
+      //        WAGO FieldBus controller
+
+      else if (strcasecmp(keyword,"HEB_B")==0) {
+	GetArg(inStr,2,argStr);
+	strcpy(env.hebB_Addr,argStr);
+      }
+
+      // Red dewar vacuum ionization gauge, RedIG_xxxx:
+      //   Addr: IP address of the Red dewar ionization gauge comtrol unit
+      //   Port: Comtrol port (usually 8018)
+      //   Chan: RS485 channel (usually 5)
+
+      else if (strcasecmp(keyword,"RedIG_Addr")==0) {
+	GetArg(inStr,2,argStr);
+	strcpy(env.redIG_Addr,argStr);
+      }
+
+      else if (strcasecmp(keyword,"RedIG_Port")==0) {
+	GetArg(inStr,2,argStr);
+	env.redIG_Port = atoi(argStr);
+      }
+
+      else if (strcasecmp(keyword,"RedIG_Chan")==0) {
+	GetArg(inStr,2,argStr);
+	env.redIG_Chan = atoi(argStr);
+      }
+
+      // Blue dewar vacuum ionization gauge, BlueIG_xxxx:
+      //   Addr: IP address of the Blue dewar ionization gauge comtrol unit
+      //   Port: Comtrol port (usually 8018)
+      //   Chan: RS485 channel (usually 5)
+
+      else if (strcasecmp(keyword,"BlueIG_Addr")==0) {
+	GetArg(inStr,2,argStr);
+	strcpy(env.blueIG_Addr,argStr);
+      }
+
+      else if (strcasecmp(keyword,"BlueIG_Port")==0) {
+	GetArg(inStr,2,argStr);
+	env.blueIG_Port = atoi(argStr);
+      }
+
+      else if (strcasecmp(keyword,"BlueIG_Chan")==0) {
+	GetArg(inStr,2,argStr);
+	env.blueIG_Chan = atoi(argStr);
       }
 
       // NoLog: Explicitly disable data logging

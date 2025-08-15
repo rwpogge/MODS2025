@@ -339,8 +339,9 @@ cmd_info(char *args, MsgType msgtype, char *reply)
   // Environmental Monitor information
 
   sprintf(reply,"%s InstID=%s Cadence=%d IUBAddr=%s IEBBAddr=%s IEBRAddr=%s"
-	  " runState=%s Logging=%s logFile=%s HdfLogging=%s HdfLogDir=%s",
-	  reply,env.modsID,env.cadence,env.iub_Addr,env.iebB_Addr,env.iebR_Addr,
+	  " HEBBAddr=%s HEBRAddr=%s B_IGAddr=%s R_IGAddr=%s runState=%s Logging=%s logFile=%s HdfLogging=%s HdfLogDir=%s",
+	  reply,env.modsID,env.cadence,env.iub_Addr,env.iebB_Addr,env.iebR_Addr,env.hebB_Addr,env.hebR_Addr,
+	  env.blueIG_Addr,env.redIG_Addr,
 	  ((env.pause) ? "Paused" : "Active"),
 	  ((env.doLogging) ? "Enabled" : "Disabled"),
 	  env.logFile,
@@ -660,13 +661,15 @@ cmd_estatus(char *args, MsgType msgtype, char *reply)
   sprintf(reply,"IEBTEMPR=%.1f IEBGRT_R=%.1f TAIRTOP=%.1f TAIRBOT=%.1f "
 	  "IEBTEMPB=%.1f IEBGRT_B=%.1f TCOLLTOP=%.1f TCOLLBOT=%.1f "
 	  "GSPRES=%.1f GSTEMP=%.1f GRPRES=%.1f GRTEMP=%.1f IUBTAIR=%.1f "
-	  "AMBTEMP=%.1f AGHSTEMP=%.1f",
+	  "AMBTEMP=%.1f AGHSTEMP=%.1f HEBTEMPR=%.1f HEBTEMPB=%.1f "
+	  "DEWTEMPR=%.1f DEWTEMPB=%.1f",
 	  env.iebR_AirTemp,env.iebR_ReturnTemp,env.airTopTemp,env.airBotTemp,
 	  env.iebB_AirTemp,env.iebB_ReturnTemp,env.trussTopTemp,env.trussBotTemp,
 	  env.glycolSupplyPres,env.glycolSupplyTemp,
 	  env.glycolReturnPres,env.glycolReturnTemp,
-	  env.utilBoxTemp,env.ambientTemp,env.agwHSTemp
-  );
+	  env.utilBoxTemp,env.ambientTemp,env.agwHSTemp,
+	  env.hebR_AirTemp,env.hebB_AirTemp,env.redDewTEmp,env.blueDewTemp
+	  );
 
   // Evaluate the power state by looking at the switch and breaker
   // state info and defining the power states as follows:
@@ -760,6 +763,34 @@ cmd_estatus(char *args, MsgType msgtype, char *reply)
     else
       sprintf(reply,"%s WFS_PWR=OFF",reply);
 
+  // HEB Archon and vacuum ionization gauge power status
+
+  if (env.redArchon)
+    sprintf(reply,"%s R_ARCHON=ON",reply);
+  else
+    sprintf(reply,"%s R_ARCHON=OFF",reply);
+    
+  if (env.redIonGauge)
+    sprintf(reply,"%s R_IGPOWER=ON",reply);
+  else
+    sprintf(reply,"%s R_IGPOWER=OFF",reply);
+    
+  if (env.blueArchon)
+    sprintf(reply,"%s B_ARCHON=ON",reply);
+  else
+    sprintf(reply,"%s B_ARCHON=OFF",reply);
+    
+  if (env.blueIonGauge)
+    sprintf(reply,"%s B_IGPOWER=ON",reply);
+  else
+    sprintf(reply,"%s B_IGPOWER=OFF",reply);
+
+  // Red and Blue dewar pressure when we have it
+
+  sprintf(reply,"%s R_DEWPRES=%8.2e B_DEWPRES=%8.2e",reply,env.redDewPres,env.blueDewPres);
+
+  // All done
+  
   return CMD_OK;
 }
 
