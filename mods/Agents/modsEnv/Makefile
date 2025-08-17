@@ -4,7 +4,7 @@
 # Use "build", not "make" to build the modsenv executable.
 #
 # R. Pogge, OSU Astronomy Dept.
-# pogge@astronomy.ohio-state.edu
+# pogge.1@osu.edu
 # Original 2010 June 21
 #
 # Modification History:
@@ -13,11 +13,13 @@
 #   2024 Feb 18 - Migrating to open source libmodbus [rwp/osu]
 #   2024 May 21 - Moving libmodbus to a standalone interface [xc/osu]
 #   2024 Jul 08 - Adding LBTO's libtelemetry library [xc/osu]
-#-------------------------------------------------------------
+#   2025 Aug 17 - Added Archon HEB data, shmem handling [rwp/osu]
+#
+#----------------------------------------------------------------------
 
 # Version Number: <major>.<minor>.<build>
 
-VERSION     = v3.1.0
+VERSION     = v3.2.0
 
 # Compiler and libary info as required
 
