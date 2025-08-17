@@ -6,9 +6,11 @@
   \file logutils.c
   \brief Functions used to export ASCII and HDF5 log files go here
 
-  \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
-  \author X. Carroll, OSU.
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
+  \author X. Carroll, OSU
   \date 2010 June 21
+  \date 2025 Aug 17 - Archon HEB and LBTO telemetry updates
+  
 */
 
 #include "client.h" // custom client application header 
@@ -40,6 +42,7 @@ int initTelemetryData(envdata_t* envi){
     );
 
     //Adding measures to the telemetry.
+    
     modsDefiner.add_child(lbto::tel::float_measure(
       envi->ambientTempMeasure, 
       lbto::tel::unit::celsius(), 
@@ -131,7 +134,45 @@ int initTelemetryData(envdata_t* envi){
       lbto::tel::description("MODS collimator truss tube Bottom temperature in degrees C")
     ));
 
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->hebBAirTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("hebBAirTemp"),
+      lbto::tel::description("MODS blue CCD head electronics box inside air temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->hebRAirTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("hebRAirTemp"),
+      lbto::tel::description("MODS red CCD head electronics box inside air temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->blueDewTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("blueDewTemp"),
+      lbto::tel::description("MODS blue CCD dewar LN2 reservoir temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->redDewTempMeasure, 
+      lbto::tel::unit::celsius(), 
+      lbto::tel::name("redDewTemp"),
+      lbto::tel::description("MODS red CCD dewar LN2 reservoir temperature in degrees C")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->blueDewPresMeasure, 
+      lbto::tel::unit::torr(), 
+      lbto::tel::name("blueDewPres"),
+      lbto::tel::description("MODS blue CCD dewar vacuum pressure in torr")
+    ));
+    modsDefiner.add_child(lbto::tel::float_measure(
+      envi->redDewPresMeasure, 
+      lbto::tel::unit::torr(), 
+      lbto::tel::name("redDewPres"),
+      lbto::tel::description("MODS red CCD dewar vacuum pressure in torr")
+    ));
+    
     //Adding this definition to the telemetry store.
+
     envi->modsCollector.reset(new lbto::tel::collector(modsDefiner.make_definition(), MAX_TELEMETRY_BUFFER_BYTES, false));
 
 
@@ -221,7 +262,8 @@ int initEnvLog(envdata_t *envi){
 
     memset(logStr,0,sizeof(logStr));
     sprintf(logStr,"# UTC Date/Time      Tamb  Psup  Pret  Tsup  Tret  Tiub"
-	    "  Tagw  Bair  Bret  Rair  Rret  AirT  AirB  ColT  ColB\n"
+	    "  Tagw  Bair  Bret  Rair  Rret  AirT  AirB  ColT  ColB"
+	    "  BheT  BdeT  BdeP  RheT  RdeT  RdeP\n"
     );
     ierr = write(envi->logFD,logStr,strlen(logStr));
   }
@@ -260,7 +302,7 @@ int logEnvData(envdata_t *envi){
   // Append the current enviromental sensor data to the data log
   memset(logStr,0,sizeof(logStr));
   sprintf(logStr,"%s %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f"
-	  " %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f\n",
+	  " %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %5.1f %8.2e %5.1f %5.1f %8.2e\n",
 	  envi->utcDate, envi->ambientTemp,
 	  envi->glycolSupplyPres, envi->glycolReturnPres,
 	  envi->glycolSupplyTemp, envi->glycolReturnTemp,
@@ -268,7 +310,9 @@ int logEnvData(envdata_t *envi){
 	  envi->iebB_AirTemp, envi->iebB_ReturnTemp,
 	  envi->iebR_AirTemp, envi->iebR_ReturnTemp,
 	  envi->airTopTemp, envi->airBotTemp,
-	  envi->trussTopTemp, envi->trussBotTemp
+	  envi->trussTopTemp, envi->trussBotTemp,
+	  envi->hebB_AirTemp, envi->blueDewTemp, envi->blueDewPres,
+	  envi->hebR_AirTemp, envi->redDewTemp, envi->redDewPres
   );
   ierr = write(envi->logFD,logStr,strlen(logStr));
   
@@ -387,7 +431,13 @@ int logTelemetryData(envdata_t *envi){
     envi->airBotTempMeasure.store(envi->airBotTemp);
     envi->trussTopTempMeasure.store(envi->trussTopTemp);
     envi->trussBotTempMeasure.store(envi->trussBotTemp);
-    
+    envi->hebBAirTempMeasure.store(envi->hebBAirTemp);
+    envi->hebRAirTempMeasure.store(envi->hebRAirTemp);
+    envi->blueDewTempMeasure.store(envi->blueDewTemp);
+    envi->redDewTempMeasure.store(envi->redDewTemp);
+    envi->blueDewPresMeasure.store(envi->blueDewPres);
+    envi->redDewPresMeasure.store(envi->redDewPres);
+
     //Commiting the data to the HDF5 file.
     envi->modsCollector->commit_sample(lbto::tel::date::from_posix_utc_s(commitTime));    //TODO: Fix time stamps.
 

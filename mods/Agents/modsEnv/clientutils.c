@@ -6,10 +6,11 @@
   \file clientutils.c
   \brief Client application utility functions
 
-  Because they have to go somewhere...
-
-  \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \date 2010 June 21
+
+  \date 2025 Aug 17 - updates for Archon HEB and LBTO telemetry [rwp/osu]
+  
 */
 
 #include "client.h" // custom client application header 
@@ -205,16 +206,28 @@ int getEnvData(envdata_t *envi) {
   if (ierr != 0) {
     if (useCLI) printf("WARNING: %s IUB WAGO read error",envi->modsID);
     return ierr;
+
+    shm_addr->MODS.utilState = 0;
   }
+  else {
+    envi->glycolSupplyPres = (float)iubData[0]/327.64;
+    envi->glycolReturnPres = (float)iubData[1]/327.64;
+    envi->glycolSupplyTemp = (float)iubData[4]/10.0;
+    envi->glycolReturnTemp = (float)iubData[5]/10.0;
+    envi->agwHSTemp   = (float)iubData[6]/10.0;
+    envi->utilBoxTemp = (float)iubData[7]/10.0;
+    envi->ambientTemp = (float)iubData[8]/10.0;
 
-  envi->glycolSupplyPres = (float)iubData[0]/327.64;
-  envi->glycolReturnPres = (float)iubData[1]/327.64;
-  envi->glycolSupplyTemp = (float)iubData[4]/10.0;
-  envi->glycolReturnTemp = (float)iubData[5]/10.0;
-  envi->agwHSTemp   = (float)iubData[6]/10.0;
-  envi->utilBoxTemp = (float)iubData[7]/10.0;
-  envi->ambientTemp = (float)iubData[8]/10.0;
-
+    shm_addr->MODS.utilState = 1;
+    shm_addr->MODS.glycolSupplyPressure = envi->glycolSupplyPres;
+    shm_addr->MODS.glycolReturnPressure = envi->glycolReturnPres;
+    shm_addr->MODS.glycolSupplyTemperature = envi->glycolSupplyTemp;
+    shm_addr->MODS.glycolReturnTemperature = envi->glycolReturnTemp;
+    shm_addr->MODS.utilBoxAirTemperature = envi->utilBoxTemp;
+    shm_addr->MODS.outsideAirTemparature = envi->ambientTemp;
+    shm_addr->MODS.agwHeatSinkTemperature = envi->agwHSTemp;
+  }
+  
   // Get the IUB AC power control status data
 
   ierr = wagoSetGet(0,envi->iub_Addr,512,1,iubData);
@@ -234,6 +247,15 @@ int getEnvData(envdata_t *envi) {
     envi->gcam_Switch = ((iubPower & GCAM_POWER)  == GCAM_POWER);  // normally OPEN
     envi->wfs_Switch  = ((iubPower & WFS_POWER)   == WFS_POWER);   // normally OPEN
     envi->llb_Switch  = ((iubPower & LLB_POWER)   != LLB_POWER);   // normally closed
+
+    shm_addr->MODS.utilState = 1;
+    shm_addr->MODS.llbState = envi->llb_Switch;
+    shm_addr->MODS.blueIEBState = envi->iebB_Switch;
+    shm_addr->MODS.redIEBState = envi->iebR_Switch;
+    shm_addr->MODS.blueHEBState = envi->hebB_Switch;
+    shm_addr->MODS.redHEBState = envi->hebR_Switch;
+    shm_addr->MODS.guideCamState = envi->gcam_Switch;
+    shm_addr->MODS.wfcCamState = envi->wfs_Switch;
   }
   
   // Get the IUB AC power breaker output side current sensor data
@@ -260,12 +282,20 @@ int getEnvData(envdata_t *envi) {
   ierr = wagoSetGet(0,envi->iebR_Addr,0,10,iebRData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Red IEB WAGO read error",envi->modsID);
+
+    shm_addr->MODS.redIEBState = 0;
   }
   else {
     envi->iebR_AirTemp = (float)iebRData[4]/10.0;
     envi->iebR_ReturnTemp = (float)iebRData[5]/10.0;
     envi->airTopTemp = (float)iebRData[6]/10.0;
     envi->airBotTemp = (float)iebRData[7]/10.0;
+
+    shm_addr->MODS.redIEBState = 1;
+    shm_addr->MODS.redTemperature[0] = envi->iebR_AirTemp;
+    shm_addr->MODS.redTemperature[1] = envi->iebR_ReturnTemp;
+    shm_addr->MODS.redTemperature[2] = envi->airTopTemp;
+    shm_addr->MODS.redTemperature[3] = envi->airBotTemp;
   }
   
   // Get data from the Blue IEB environmental sensors
@@ -273,12 +303,20 @@ int getEnvData(envdata_t *envi) {
   ierr = wagoSetGet(0,envi->iebB_Addr,0,10,iebBData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue IEB WAGO read error",envi->modsID);
+
+    shm_addr->MODS.blueIEBState = 0;
   }
   else {
     envi->iebB_AirTemp = (float)iebBData[4]/10.0;
     envi->iebB_ReturnTemp = (float)iebBData[5]/10.0;
     envi->trussTopTemp = (float)iebBData[6]/10.0;
     envi->trussBotTemp = (float)iebBData[7]/10.0;
+
+    shm_addr->MODS.blueIEBState = 1;
+    shm_addr->MODS.blueTemperature[0] = envi->iebB_AirTemp;
+    shm_addr->MODS.blueTemperature[1] = envi->iebB_ReturnTemp;
+    shm_addr->MODS.blueTemperature[2] = envi->trussTopTemp;
+    shm_addr->MODS.blueTemperature[3] = envi->trussBotTemp;
   }
 
   // Red and Blue HEB power relays and sensor register addresses:
@@ -290,11 +328,17 @@ int getEnvData(envdata_t *envi) {
   ierr = wagoSetGet(0,envi->hebR_Addr,512,1,hebRData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Red HEB WAGO error reading power relay status word",envi->modsID);
+
+    shm_addr->MODS.redHEBState = 0;
   }
   else {
     hebRPower = hebRData[0];
     envi->redArchon = ((hebRPower & ARCHON_POWER) == ARCHON_POWER);
     envi->redIonGauge = ((hebRPower & IG_POWER) == IG_POWER);
+
+    shm_addr->MODS.redHEBState = 1;
+    shm_addr->MODS.redArchonState = envi->redArchon;
+    shm_addr->MODS.redIonGaugeState = envi->redIonGauge;
   }
 
   // Blue HEB power control status - both are normally open relays
@@ -302,11 +346,17 @@ int getEnvData(envdata_t *envi) {
   ierr = wagoSetGet(0,envi->hebR_Addr,512,1,hebBData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue HEB WAGO error reading power relay status word",envi->modsID);
+
+    shm_addr->MODS.blueHEBState = 0;
   }
   else {
     hebBPower = hebBData[0];
     envi->blueArchon = ((hebBPower & ARCHON_POWER) == ARCHON_POWER);
     envi->blueIonGauge = ((hebBPower & IG_POWER) == IG_POWER);
+
+    shm_addr->MODS.blueHEBState = 1;
+    shm_addr->MODS.blueArchonState = envi->blueArchon;
+    shm_addr->MODS.blueIonGaugeState = envi->blueIonGauge;
   }
 
   // Red HEB temperature measurements
@@ -314,10 +364,16 @@ int getEnvData(envdata_t *envi) {
   ierr = wagoSetGet(0,envi->hebR_Addr,4,2,hebRData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Red HEB WAGO RTD sensor read error",envi->modsID);
+
+    shm_addr->MODS.redHEBState = 0;
   }
   else {
     envi->hebR_AirTemp = (float)iebRData[0]/10.0;
     envi->redDewTemp = (float)iebRData[1]/10.0;
+
+    shm_addr->MODS.redHEBState = 1;
+    shm_addr->MODS.redHEBTemperature = envi->hebR_AirTemp;
+    shm_addr->MODS.redDewarTemperature = envi->redDewTemp;
   }
   
   // Blue HEB temperature measurements
@@ -325,13 +381,19 @@ int getEnvData(envdata_t *envi) {
   ierr = wagoSetGet(0,envi->hebB_Addr,4,2,hebBData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue HEB WAGO RTD sensor read error",envi->modsID);
+
+    shm_addr->MODS.blueHEBState = 0;
   }
   else {
     envi->hebB_AirTemp = (float)iebBData[0]/10.0;
     envi->blueDewTemp = (float)iebBData[1]/10.0;
+
+    shm_addr->MODS.blueHEBState = 1;
+    shm_addr->MODS.blueHEBTemperature = envi->hebB_AirTemp;
+    shm_addr->MODS.blueDewarTemperature = envi->blueDewTemp;
   }
 
-  // Read the red and blue ionization gauges here (TCP/IP socket to Comtrols)
+  // Read the red and blue ionization gauges here (TCP/IP socket to IEB 2-channel Comtrols)
 
   //...
   

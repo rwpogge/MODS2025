@@ -9,6 +9,7 @@
   \file client.h
   \brief MODS Environmental Monitor Agent Client Application Header
   \date 2010 June 21
+  \date 2025 Aug 17 - Archon HEB updates [rwp/osu]
 
   ISIS client application header for the modsenv application.
 
@@ -93,27 +94,25 @@
 #include "isisclient.h"     // should be in -I path in Makefile, no paths here!
 extern isisclient_t client; // global client runtime config table
 
-// FieldTalk WAGO communication utilities (in the -I path) - defunct 2024
-/*
-#include "MbusTcpMasterProtocol.hpp" // WAGO FieldTalk Modbus/TCP master protocol header
-*/
+// libmodbus replaces fieldtalk 2025
 
 #include "modbusutils.h"
 
-// MODS Instrument Server Shared Memory
+// MODS shared memory segment
 
-/*
 #include <instrutils.h>
-#include <isl_funcs.h>
+//#include <isl_funcs.h>
 #include <islcommon.h>
 #include <isl_shmaddr.h>
-*/
+
+void setup_ids();  // shmem setup function, do this to not need all of isl_funcs.h
 
 #define DEFAULT_CADENCE  300   //!< default monitoring cadence in seconds
 
 /*!
   \brief A struct which holds all of the enviornment and telemetry data for this modsEnv instance.
 */
+
 typedef struct envData {
 
   char  modsID[8];   //!< MODS instrument ID (MODS1 or MODS2)
@@ -242,8 +241,6 @@ typedef struct envData {
   lbto::tel::float_measure::buf_proxy hebRAirTempMeasure;       //!< redHEBAirTemp data in the telemetry stream
   lbto::tel::float_measure::buf_proxy blueDewTempMeasure;       //!< blueDewTemp data in the telemetry stream
   lbto::tel::float_measure::buf_proxy redDewTempMeasure;        //!< redDewTemp data in the telemetry stream
-  lbto::tel::float_measure::buf_proxy blueDewTempMeasure;       //!< blueDewTemp data in the telemetry stream
-  lbto::tel::float_measure::buf_proxy redDewTempMeasure;        //!< redDewTemp data in the telemetry stream
   lbto::tel::float_measure::buf_proxy blueDewPresMeasure;       //!< blueDewPres data in the telemetry stream
   lbto::tel::float_measure::buf_proxy redDewPresMeasure;        //!< redDewPres data in the telemetry stream
 
@@ -254,11 +251,12 @@ typedef struct envData {
 extern envdata_t env;
 
 /*!
-  \brief A class which provides callback methods for Hdf5 output.
+  \brief A class to provide callback methods for Hdf5 output.
 
-  This class is used to initalize the telemetry library. The telemetry 
+  This class initalizes the LBTO telemetry library. The telemetry 
   library is used to generate Hdf5 output files.
 */
+
 class TelemetryCallback : public lbto::tel::ambassador{
 public:
   TelemetryCallback(){}
@@ -291,7 +289,7 @@ public:
 //
 // IUB power and breaker state register addresses
 //
-// Updated: 2025 Aug 15 [rwp/osu] for new IUB wiring for HEBs (power changed, breakers the same)
+// Updated: 2025 Aug 15 [rwp/osu] for new IUB wiring for the Archon HEBs (power changed, breakers the same)
 //
 
 #define IEB_R_POWER   1
@@ -321,13 +319,6 @@ public:
 #define POWER_ON     1
 #define POWER_MANUAL 2
 #define POWER_FAULT -1
-
-//--------------------------------------------
-//
-// IEB Temperature SHRMEM variable addresses
-//
-// A kludge to utilize various generic SHRMEM "deposit" arrays
-//
 
 // MODS Channel Indexes
 

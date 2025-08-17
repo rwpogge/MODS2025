@@ -41,8 +41,10 @@
   \arg KeyboardCommand() Keyboard command handler (command-line interface)
   \arg SocketCommand() Socket command/message handler (client socket interface)
 
-  \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \date 2010 June 21
+  \date 2025 Aug 17 - Archon HEB updates [rwp/osu]
+  
 */
 
 #include "client.h"     // Custom client application header file

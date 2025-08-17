@@ -1,9 +1,10 @@
 /*!
   \mainpage modsenv - Interactive MODS Enviromental Monitor Agent
 
-  \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \date 2010 June 21
-
+  \date 2025 Aug 17 - Archon HEB updates [rwp/osu]
+  
   \section Usage
 
   Usage: modsenv [rcfile]
@@ -142,7 +143,7 @@ main(int argc, char *argv[])
 
   // Basic initializations
   
-  // setup_ids();  // setup access to the MODS SHRMEM sector
+  setup_ids();  // setup access to the MODS shared memory segment
 
   sel_wid = getdtablesize();
   kbdFD = fileno(stdin);  // file descriptor of stdin, safe definition
