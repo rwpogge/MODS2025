@@ -15,30 +15,26 @@
 #   2024 Jul 08 - Adding LBTO's libtelemetry library [xc/osu]
 #   2025 Aug 17 - Added Archon HEB data, shmem handling [rwp/osu]
 #
-#----------------------------------------------------------------------
 
-# Version Number: <major>.<minor>.<build>
-
+ROOTDIR     = /home/dts/mods
+ISISDIR     = /home/dts/ISIS
+TELEMDIR    = /usr/include/lbto/lib-telemetry
 VERSION     = v3.2.0
-
-# Compiler and libary info as required
-
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
-HOMEDIR     = /home/dts
-ISISLIB     = $(HOMEDIR)/ISIS/lib
-TELEMDIR    = /usr/include/lbto/lib-telemetry
 
 # keep binaries local during development
 
 BINDIR      = $(HOMEDIR)/mods/bin/
 
-INCLUDES    = -I$(ISISLIB) -I/usr/include/modbus -I$(HOMEDIR)/include -I$(TELEMDIR)
-LIBRARIES   = -L$(ISISLIB) 
-CFLAGS      = -w -c $(INCLUDES) 
+INCS        = -I$(ISISLIB)/lib -I$(ROOTDIR)/include -I/usr/include/modbus -I$(TELEMDIR)
+
+CFLAGS      = -w -c $(INCS) 
+
 VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
               -DAPP_COMPTIME='"$(COMPTIME)"'
-LIBS        = $(INCLUDES) $(LIBRARIES) -L/usr/X11R6/lib -lX11 \
+
+LIBS        = -L$(ISISDIR)/lib -L$(ROOTDIR)/ulib -lislutils -linstrutils \
               -lisis -lmodbus -lreadline -lhistory -lncurses -ltelcollection
 
 LFLAGS      = -o modsenv
@@ -54,7 +50,7 @@ all:        modsenv
 # Interactive modsenv agent
 #
 modsenv:    $(OBJS) main.c
-	    $(CC) $(LFLAGS) $(VFLAGS) main.c $(OBJS) $(LIBS)
+	    $(CC) $(LFLAGS) $(VFLAGS) main.c $(OBJS) $(LIBS) $(INCS)
 
 
 clean:
