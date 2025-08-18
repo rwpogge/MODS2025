@@ -1,6 +1,6 @@
 # modsEnv Agent Runtime Configuration Files
 
-**Updated: 2025 July 27 [rwp/osu]**
+**Updated: 2025 Aug 18 [rwp/osu]**
 
 These are files used by modsEnv agents for each of the binocular MODS instruments.
 
@@ -47,8 +47,8 @@ A typical modsEnv runtime config file has the following structure:
 # Version for MODS1 at LBTO
 #
 # R. Pogge, OSU Astronomy Dept.
-# pogge@astronomy.ohio-state.edu
-# 2025 July 27
+# pogge.1@osu.edu
+# 2025 Aug 18
 #
 ################################################################
 
@@ -82,8 +82,18 @@ IUB     192.168.139.122
 IEB_R   192.168.139.100
 IEB_B   192.168.139.101
 LLB     192.168.139.120
-#HEB_R   192.168.139.141
-#HEB_B   192.168.139.142
+HEB_R   192.168.139.141
+HEB_B   192.168.139.142
+
+# Ionization Gauge Comtrol port info
+
+RedIG_Addr 192.168.139.103
+RedIG_Port 8018
+RedIG_Chan 5
+
+BlueIG_Addr 192.168.139.113
+BlueIG_Port 8018
+BlueIG_Chan 5
 
 # Runtime flags 
 #NoLog
