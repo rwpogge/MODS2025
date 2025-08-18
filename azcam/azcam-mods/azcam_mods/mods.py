@@ -740,7 +740,7 @@ class MODS(object):
             ccdTemp = f"{reply[0]:.1f}"
             mountTemp = f"{reply[1]:.1f}"
         except:
-            continue
+            pass
         
         # push ccdTemp to the telescope DD.  No consequence if it fails
 
