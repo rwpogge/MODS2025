@@ -1,6 +1,6 @@
 # AzCam
 
-Updated: 2025 July 25
+Updated: 2025 Aug 18
 
 AzCam is a software framework for the acquisition and analysis of image data from scientific imaging systems as well as the control of instrumentation. It is intended to be customized for specific hardware, observational, and data reduction requirements.
 
