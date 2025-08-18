@@ -587,7 +587,8 @@ uploadFITS(azcam_t *cam, obsPars_t *obs, char *reply)
   setKeyword(cam,"PI_NAME",obs->PIName,"Project PI Name(s)",reply);
   setKeyword(cam,"SUPPORT",obs->Support,"LBT Support Scientist(s)",reply);
   setKeyword(cam,"TELOPS",obs->TelOps,"LBT Telescope Operator(s)",reply);
-
+  // setKeyword(cam,"ARCHTEMP",obs->archonTemp,"Archon controller backplane temperature [deg C]",reply);
+  
   // retrieve and upload ISTATUS info and pass up to azcam (gonna be ugly)
   
   // All done with custom header cards
