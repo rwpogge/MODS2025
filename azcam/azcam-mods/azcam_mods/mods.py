@@ -732,12 +732,15 @@ class MODS(object):
         
         '''
 
-        reply = azcam.db.tools["tempcon"].get_temperatures()
-
-        # translate into strings with 0.1C precision
+        # get temperatures from the Archon.  Won't read temperatures
+        # if the Archon is actively exposing
         
-        ccdTemp = f"{reply[0]:.1f}"
-        mountTemp = f"{reply[1]:.1f}"
+        try:
+            reply = azcam.db.tools["tempcon"].get_temperatures()
+            ccdTemp = f"{reply[0]:.1f}"
+            mountTemp = f"{reply[1]:.1f}"
+        except:
+            continue
         
         # push ccdTemp to the telescope DD.  No consequence if it fails
 
@@ -750,6 +753,38 @@ class MODS(object):
         return ["OK", ccdTemp, mountTemp]
     
     
+    def archonTemp(self):
+        '''
+        Read the Archon controller backplane temperature
+
+        Returns
+        -------
+        archonTemp: float
+            temperature of the Archon controller backplane
+            
+        Description
+        -----------
+        The liquid glycol recirculation cold plate is connected to the
+        backplane of the Archon controller. An RTD on the backplane reports
+        the temperature at the cold plate interface, which is our indication
+        that the cooling is functioning.
+        
+        Sends the Archon controller the STATUS command, then picks out the
+        `BACKPLANE_TEMP=...` keyword/value pair and extracts the temperature
+
+        '''
+        
+        try:
+            statStr = azcam.db.tools["controller"].archon_command("STATUS")
+            statBits = statStr.split(" ")
+            bpt = [statBits.index(ss) for ss in statBits if ss.startswith("BACKPLANE_TEMP")]
+            bpTemp = statBits[bpt[0]].split("=")[1]
+        except:
+            bpTemp = "-999.9" # no-read value
+            
+        return bpTemp
+            
+        
     def set_CCDSetPoint(self,setPoint):
         '''
         Set the CCD temperature control setpoint on the Archon
