@@ -395,10 +395,7 @@ main(int argc, char *argv[])
 /*!
   \brief Service Ctrl+C Interrupts (SIGINT signals)
 
-  SIGINT signal trap for trapping Ctrl+C interrupts.  Calls
-  abortall() to immediately abort all moves in progress.
-
-  \sa abortall()
+  Trap SIGINT (Ctrl+C) interrupt signals
 */
 
 void

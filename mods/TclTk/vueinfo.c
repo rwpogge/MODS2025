@@ -543,14 +543,33 @@ main(int argc, char *argv[])
     }
     exit(0);
 
-  } else if(!strcasecmp(what,"VandC")) {
-    printf("%0.3f\n",ms->MODS.Current[0]);
-    printf("%0.3f\n",ms->MODS.Current[1]);
-    printf("%0.3f\n",ms->MODS.Current[2]);
-    printf("%0.3f\n",ms->MODS.Current[3]);
-    printf("%0.3f\n",ms->MODS.iebTemp[0]);
-    printf("%0.3f\n",ms->MODS.iebTemp[1]);
+    // environmental sensors
+  } else if (!strcasecmp(what,"env")) {
+    printf("Environmental Sensors:\n");
+    printf("  Glycol Supply: P=%.2f psi-g  T=%.1f C\n",ms->MODS.glycolSupplyPressure,ms->MODS.glycolSupplyTemperature);
+    printf("         Return: P=%.2f psi-g  T=%.1f C\n",ms->MODS.glycolReturnPressure,ms->MODS.glycolReturnTemperature);
+    printf("  IUB Inside Air T=%.1f C   Ambient T=%.1f C   HeatSink T=%.1C\n",
+	   ms->MODS.utilBoxAirTemperature,ms->MODS.outsideAirTemperature,ms->MODS.agwHeatSinkTemperature);
+    printf("  Blue IEB Inside Air T=%.1f C  Glycol Return T=%.1f C\n",ms->MODS.blueTemperature[0],ms->MODS.blueTemperature[1]);
+    printf("   Red IEB Inside Air T=%.1f C  Glycol Return T=%.1f C\n",ms->MODS.redTemperature[0],ms->MODS.redTemperature[1]);
+    printf("  MODS Air Top T=%.1f C   Bottom T=%.1fC\n",ms->MODS.redTemperature[2],ms->MODS.redTemperature[3]);
+    printf("       Truss Top T=%.1f C   Bottom T=%.1fC\n",ms->MODS.blueTemperature[2],ms->MODS.blueTemperature[3]);
+    printf("  Blue HEB Inside Air T=%.1f C  Dewar T=%.1f C\n",ms->MODS.blueHEBTemperature,ms->MODS.blueDewarTemperature);
+    printf("   Red HEB Inside Air T=%.1f C  Dewar T=%.1f C\n",ms->MODS.redHEBTemperature,ms->MODS.redDewarTemperature);
     exit(0);
+
+    // IEB currents and temperatures
+  } else if(!strcasecmp(what,"VandC")) {
+    printf("%.3f Amps\n",ms->MODS.Current[0]);
+    printf("%.3f Amps\n",ms->MODS.Current[1]);
+    printf("%.3f Amps\n",ms->MODS.Current[2]);
+    printf("%.3f Amps\n",ms->MODS.Current[3]);
+    printf("%.1f C\n",ms->MODS.iebTemp[0]);
+    printf("%.1f C\n",ms->MODS.iebTemp[1]);
+    printf("%.1f C\n",ms->MODS.iebTemp[2]);
+    printf("%.1f C\n",ms->MODS.iebTemp[3]);
+    exit(0);
+
     // WAGO Monitor and Control registers
   } else if(!strcasecmp(what,"WAGOMC")) {
     printf("WAGO monitor and control sensors\n");
