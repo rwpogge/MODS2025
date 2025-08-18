@@ -75,24 +75,24 @@ void initEnvData(envdata_t *envi){
   envi->irlaserTemp = 0.0;    
   envi->irlaserTempSet = 0.0; 
 
-  strpcy(envi->hebB_Addr,"");
+  strcpy(envi->hebB_Addr,"");
   envi->hebB_Temp = 0.0;
   envi->blueDewTemp = 0.0;
   envi->blueArchon = 0;
   envi->blueIonGauge = 0;
   
-  strpcy(envi->hebR_Addr,"");
+  strcpy(envi->hebR_Addr,"");
   envi->hebR_Temp = 0.0;
   envi->redDewTemp = 0.0;
   envi->redArchon = 0;
   envi->redIonGauge = 0;
 
-  strpcy(envi->blueIG_Addr,"");
+  strcpy(envi->blueIG_Addr,"");
   envi->blueIG_Port = 8018;
   envi->blueIG_Chan = 5;
   envi->blueDewPres = 0.0;
   
-  strpcy(envi->redIG_Addr,"");
+  strcpy(envi->redIG_Addr,"");
   envi->redIG_Port = 8018;
   envi->redIG_Chan = 5;
   envi->redDewPres = 0.0; 
@@ -153,7 +153,7 @@ void printEnvData(envdata_t *envi){
 	 envi->iebR_ReturnTemp, envi->iebB_ReturnTemp);
   printf("  HEB Air: Red=%.1f Blue=%.1f C\n",
 	 envi->hebR_AirTemp, envi->hebB_AirTemp);
-  printf("  Dewar:
+  printf("  Dewar:\n");
   printf("     Red: T=%1.f C  P=%8.2e torr \n",envi->redDewTemp,envi->redDewPres);
   printf("    Blue: T=%1.f C  P=%8.2e torr \n",envi->blueDewTemp,envi->blueDewPres);
   printf("  Instrument:\n");
@@ -224,7 +224,7 @@ int getEnvData(envdata_t *envi) {
     shm_addr->MODS.glycolSupplyTemperature = envi->glycolSupplyTemp;
     shm_addr->MODS.glycolReturnTemperature = envi->glycolReturnTemp;
     shm_addr->MODS.utilBoxAirTemperature = envi->utilBoxTemp;
-    shm_addr->MODS.outsideAirTemparature = envi->ambientTemp;
+    shm_addr->MODS.outsideAirTemperature = envi->ambientTemp;
     shm_addr->MODS.agwHeatSinkTemperature = envi->agwHSTemp;
   }
   
@@ -255,7 +255,7 @@ int getEnvData(envdata_t *envi) {
     shm_addr->MODS.blueHEBState = envi->hebB_Switch;
     shm_addr->MODS.redHEBState = envi->hebR_Switch;
     shm_addr->MODS.guideCamState = envi->gcam_Switch;
-    shm_addr->MODS.wfcCamState = envi->wfs_Switch;
+    shm_addr->MODS.wfsCamState = envi->wfs_Switch;
   }
   
   // Get the IUB AC power breaker output side current sensor data
