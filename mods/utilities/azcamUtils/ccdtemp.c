@@ -16,16 +16,16 @@
 #include "azcam.h" // azcam client API header 
 
 /*!
-  \brief Get the Detector and Dewar temperatures
+  \brief Get the CCD and Archon temperatures
   
   \param cam pointer to an #azcam struct with the server parameters
   \param reply string to contain any reply text
   \return 0 if successful, -1 on errors, with error text in reply.
   Temperature values are in #azcam::CCDTemp and #azcam::DewarTemp.
 
-  Queries the azcam server and readout out the detector and dewar
-  temperatures in degrees C, storing the results in the #azcam::ccdTemp
-  and #azcam::baseTemp data members.
+  Queries the azcam server and readout out the CCD detector and mount
+  base temperature and the controller backplane temperature from the
+  Archon controller.
 
   \sa setTemp(), setTempCal()
 */
@@ -38,6 +38,9 @@ getTemp(azcam_t *cam, char *reply)
   float t1, t2;
 
   memset(cmdStr,0,sizeof(cmdStr));
+
+  // CCD detector and mount (base) temperatures
+  
   strcpy(cmdStr,"mods.ccdTemps");
 
   if (azcamCmd(cam,cmdStr,msgStr)<0) {
@@ -45,18 +48,26 @@ getTemp(azcam_t *cam, char *reply)
     return -1;
   }
 
-  // process the message string
-  
   if (sscanf(msgStr,"%f %f",&t1,&t2) == 2) {
     cam->ccdTemp = t1;
     cam->baseTemp = t2;
-    sprintf(reply,"CCDTEMP=%.1f BASETEMP=%.1f",t1,t2);
-    return 0;
   }
-  else { // got something weird, treat it as an error
+
+  // Archon backplane temperature
+
+  strcpy(cmdStr,"mods.archonTemp");
+  
+  if (azcamCmd(cam,cmdStr,msgStr)<0) {
     strcpy(reply,msgStr);
     return -1;
   }
+
+  if (sscanf(msgStr,"%f",&t1) == 1) cam->archonTemp = t1;
+
+  // reply string
+
+  sprintf(reply,"CCDTEMP=%.1f BASETEMP=%.1f ARCHTEMP=%.2f",cam->ccdTemp,cam->baseTemp,cam->archonTemp);
+  return 0;
 
 }
 
