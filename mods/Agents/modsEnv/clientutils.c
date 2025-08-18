@@ -76,13 +76,13 @@ void initEnvData(envdata_t *envi){
   envi->irlaserTempSet = 0.0; 
 
   strcpy(envi->hebB_Addr,"");
-  envi->hebB_Temp = 0.0;
+  envi->hebB_AirTemp = 0.0;
   envi->blueDewTemp = 0.0;
   envi->blueArchon = 0;
   envi->blueIonGauge = 0;
   
   strcpy(envi->hebR_Addr,"");
-  envi->hebR_Temp = 0.0;
+  envi->hebR_AirTemp = 0.0;
   envi->redDewTemp = 0.0;
   envi->redArchon = 0;
   envi->redIonGauge = 0;

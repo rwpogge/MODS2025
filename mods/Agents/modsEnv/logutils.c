@@ -431,8 +431,8 @@ int logTelemetryData(envdata_t *envi){
     envi->airBotTempMeasure.store(envi->airBotTemp);
     envi->trussTopTempMeasure.store(envi->trussTopTemp);
     envi->trussBotTempMeasure.store(envi->trussBotTemp);
-    envi->hebBAirTempMeasure.store(envi->hebBAirTemp);
-    envi->hebRAirTempMeasure.store(envi->hebRAirTemp);
+    envi->hebBAirTempMeasure.store(envi->hebB_AirTemp);
+    envi->hebRAirTempMeasure.store(envi->hebR_AirTemp);
     envi->blueDewTempMeasure.store(envi->blueDewTemp);
     envi->redDewTempMeasure.store(envi->redDewTemp);
     envi->blueDewPresMeasure.store(envi->blueDewPres);

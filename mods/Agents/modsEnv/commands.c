@@ -670,7 +670,7 @@ cmd_estatus(char *args, MsgType msgtype, char *reply)
 	  env.glycolSupplyPres,env.glycolSupplyTemp,
 	  env.glycolReturnPres,env.glycolReturnTemp,
 	  env.utilBoxTemp,env.ambientTemp,env.agwHSTemp,
-	  env.hebR_AirTemp,env.hebB_AirTemp,env.redDewTEmp,env.blueDewTemp
+	  env.hebR_AirTemp,env.hebB_AirTemp,env.redDewTemp,env.blueDewTemp
 	  );
 
   // Evaluate the power state by looking at the switch and breaker
