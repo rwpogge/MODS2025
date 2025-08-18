@@ -52,7 +52,6 @@ all:        modsenv
 modsenv:    $(OBJS) main.c
 	    $(CC) $(LFLAGS) $(VFLAGS) main.c $(OBJS) $(LIBS) $(INCS)
 
-
 clean:
 	    /bin/rm -f modsenv *.o
 
