@@ -1,6 +1,6 @@
 Proposed New MODS Data Dictionary Names
 
-R. Pogge, OSU Astronomy, 2025 July 20
+R. Pogge, OSU Astronomy, 2025 August 18
 
 MODS instrument configuration data missing from the TCS IIF Data Dictionary table for Build 2024A (version
 on the LBT GitHub (iif/configuration/IIF/DDNames)
@@ -43,5 +43,7 @@ S_MODSIMCSLaserPower             float   mW      IMCS IR Laser emitted beam powe
 S_MODSIMCSLaserTemp              float   C       IMCS IR Laser Head Temperature
 S_MODSTopAirTemp                 float   C       Enclosure Inside Air Temp at Top
 S_MODSBottomAirTemp              float   C       Enclosure Inside Air Temp at Bottom
-S_MODSTrussTopTemp               float   C       Collimator Mirror Truss Tube Top Temp
-S_MODSTrussBottomTemp            float   C       Collimator Mirror Truss Tube Bottom Temp
+S_MODSTrussTopTemp               float   C       Collimator Mirror Truss Tube Top Temperature
+S_MODSTrussBottomTemp            float   C       Collimator Mirror Truss Tube Bottom Temperature
+S_MODSBlueArchonTemp             float   C       Blue Archon CCD Controller Backplane Temperature
+S_MODSRedArchonTemp              float   C       Red Archon CCD Controller Backplane Temperature
