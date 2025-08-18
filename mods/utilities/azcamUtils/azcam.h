@@ -77,7 +77,8 @@ typedef struct azcam {
   float setPoint;    //!< CCD detector temperature set point in degrees C
   float ccdTemp;     //!< CCD detector temperature in degrees C
   float baseTemp;    //!< CCD mount base temperature in degrees C
-
+  float archonTemp;  //!< Archon controller backplane temperature in degrees C
+  
   // Detector Region of Interest (ROI) Parameters
 
   int firstCol;   //!< first column to be read in unbinned pixels

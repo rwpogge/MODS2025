@@ -738,19 +738,19 @@ class MODS(object):
         try:
             reply = azcam.db.tools["tempcon"].get_temperatures()
             ccdTemp = f"{reply[0]:.1f}"
-            mountTemp = f"{reply[1]:.1f}"
+            baseTemp = f"{reply[1]:.1f}"
         except:
-            pass
+            return ["OK","-999.9","-999.9"] # no-read placeholders
         
-        # push ccdTemp to the telescope DD.  No consequence if it fails
+        # If a good read, push ccdTemp to the telescope DD.
 
-        temps = {f"{self.ddSide}_MODS{self.modsChan}CCDTemp":ccdTemp}
+        setTemp = {f"{self.ddSide}_MODS{self.modsChan}CCDTemp":ccdTemp}
         try:
-            azcam.db.tools["telescope"].set_parameter(temps)
+            azcam.db.tools["telescope"].set_parameter(setTemp)
         except:
             pass
         
-        return ["OK", ccdTemp, mountTemp]
+        return ["OK", ccdTemp, baseTemp]
     
     
     def archonTemp(self):
@@ -780,8 +780,16 @@ class MODS(object):
             bpt = [statBits.index(ss) for ss in statBits if ss.startswith("BACKPLANE_TEMP")]
             bpTemp = statBits[bpt[0]].split("=")[1]
         except:
-            bpTemp = "-999.9" # no-read value
+            return "-999.9" # no-read value
             
+        # If a good read, push archonTemp to the telescope DD.
+
+        #setTemp = {f"{self.ddSide}_MODS{self.modsChan}ArchonTemp":bpTemp}
+        #try:
+        #    azcam.db.tools["telescope"].set_parameter(setTemp)
+        #except:
+        #    pass
+        
         return bpTemp
             
         
