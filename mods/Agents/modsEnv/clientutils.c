@@ -141,15 +141,15 @@ void printEnvData(envdata_t *envi){
   printf("\nMost Recent Sensor Data:\n");
   printf("  Date/Time: UTC %s\n",envi->utcDate);
   printf("  Ambient Temp: %.1f C\n",envi->ambientTemp);
-  printf("  Glycol Supply: P=%.1f psi-g  T=%.1f C\n",
+  printf("  Glycol Supply: P=%.2f psi-g  T=%.1f C\n",
 	 envi->glycolSupplyPres,envi->glycolSupplyTemp);
-  printf("         Return: P=%.1f psi-g  T=%.1f C\n",
+  printf("         Return: P=%.2f psi-g  T=%.1f C\n",
 	 envi->glycolReturnPres,envi->glycolReturnTemp);
   printf("  IUB Air: %.1f C   HeatSink: %.1f C\n",
 	 envi->utilBoxTemp, envi->agwHSTemp);
   printf("  IEB Air: Red=%.1f Blue=%.1f C\n",
 	 envi->iebR_AirTemp, envi->iebB_AirTemp);
-  printf("   Glycol: Red=%.1f Blue_B=%.1f C\n",
+  printf("   Glycol: Red=%.1f Blue=%.1f C\n",
 	 envi->iebR_ReturnTemp, envi->iebB_ReturnTemp);
   printf("  HEB Air: Red=%.1f Blue=%.1f C\n",
 	 envi->hebR_AirTemp, envi->hebB_AirTemp);
