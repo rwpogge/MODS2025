@@ -368,8 +368,8 @@ int getEnvData(envdata_t *envi) {
     shm_addr->MODS.redHEBState = 0;
   }
   else {
-    envi->hebR_AirTemp = (float)iebRData[0]/10.0;
-    envi->redDewTemp = (float)iebRData[1]/10.0;
+    envi->hebR_AirTemp = (float)hebRData[0]/10.0;
+    envi->redDewTemp = (float)hebRData[1]/10.0;
 
     shm_addr->MODS.redHEBState = 1;
     shm_addr->MODS.redHEBTemperature = envi->hebR_AirTemp;
@@ -385,8 +385,8 @@ int getEnvData(envdata_t *envi) {
     shm_addr->MODS.blueHEBState = 0;
   }
   else {
-    envi->hebB_AirTemp = (float)iebBData[0]/10.0;
-    envi->blueDewTemp = (float)iebBData[1]/10.0;
+    envi->hebB_AirTemp = (float)hebBData[0]/10.0;
+    envi->blueDewTemp = (float)hebBData[1]/10.0;
 
     shm_addr->MODS.blueHEBState = 1;
     shm_addr->MODS.blueHEBTemperature = envi->hebB_AirTemp;
