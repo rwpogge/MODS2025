@@ -8,6 +8,9 @@ Changes after field test with live MODS1 on its cart in the LBTO high-bay area. 
 one RTD in the MODS1 IUB is faulty (AGHSTEMP reads -184C), and we have not yet implemented reading out the ionization
 gauges to get dewar pressure. ASCII text logging works, but HDF5 logging is not quite there.
 
+Converting raw RTD data from the WAGO to temperature using the correct formula that wraps for negative temps
+(copied the `ptRTD2C()` function from the mmcServer).
+
 ## Version 3.2.0
 2025 Aug 17
 
