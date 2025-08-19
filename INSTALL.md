@@ -84,7 +84,6 @@ cp isis isisd ~/bin/
 ### MODS agw and mmc Servers
 ```shell
 cd ~/mods
-chmod +x build */build */*/build
 ./build
 ```
 Remember to follow the instructions for implementing the 
@@ -93,7 +92,6 @@ shared memory sector (`modsalloc` README)
 ### MODS Agents
 ```shell
 cd ~/mods/Agents
-chmod +x */build
 cd lbttcs
 ./build
 cp lbttcs ~/bin/
