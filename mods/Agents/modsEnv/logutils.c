@@ -57,7 +57,7 @@ int initTelemetryData(envdata_t* envi){
     ));
     modsDefiner.add_child(lbto::tel::float_measure(
       envi->glycolReturnPresMeasure, 
-      lbto::tel::unit::pount_per_square_inch(), 
+      lbto::tel::unit::pound_per_square_inch(), 
       lbto::tel::name("glycolReturnPres"),
       lbto::tel::description("Instrument glycol return pressure in psi-g")
     ));
