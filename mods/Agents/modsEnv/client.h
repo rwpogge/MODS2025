@@ -363,9 +363,10 @@ void SocketCommand(char *);   // process messages from the client socket (see co
 
 // Client utility routines (defined in clientutils.c)
 
-void initEnvData(envdata_t *);                                    // initialize the envdata_t struct
-void printEnvData(envdata_t *);                                   // print the contents of the envdata_t struct (engineering)
-int  getEnvData(envdata_t *);                                     // get environmental data from the sensor WAGOs
+void initEnvData(envdata_t *);   // initialize the envdata_t struct
+void printEnvData(envdata_t *);  // print the contents of the envdata_t struct (engineering)
+int  getEnvData(envdata_t *);    // get environmental data from the sensor WAGOs
+float ptRTD2C(short);            // convert WAGO Pt RTD raw sensor data to degrees C
 
 // Log utility routines (defined in logutils.c)
 

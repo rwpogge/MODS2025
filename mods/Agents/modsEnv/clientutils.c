@@ -212,11 +212,11 @@ int getEnvData(envdata_t *envi) {
   else {
     envi->glycolSupplyPres = (float)iubData[0]/327.64;
     envi->glycolReturnPres = (float)iubData[1]/327.64;
-    envi->glycolSupplyTemp = (float)iubData[4]/10.0;
-    envi->glycolReturnTemp = (float)iubData[5]/10.0;
-    envi->agwHSTemp   = (float)iubData[6]/10.0;
-    envi->utilBoxTemp = (float)iubData[7]/10.0;
-    envi->ambientTemp = (float)iubData[8]/10.0;
+    envi->glycolSupplyTemp = ptRTD2C(iubData[4]);
+    envi->glycolReturnTemp = ptRTD2C(iubData[5]);
+    envi->agwHSTemp   = ptRTD2C(iubData[6]);
+    envi->utilBoxTemp = ptRTD2C(iubData[7]);
+    envi->ambientTemp = ptRTD2C(iubData[8]);
 
     shm_addr->MODS.utilState = 1;
     shm_addr->MODS.glycolSupplyPressure = envi->glycolSupplyPres;
@@ -286,10 +286,10 @@ int getEnvData(envdata_t *envi) {
     shm_addr->MODS.redIEBState = 0;
   }
   else {
-    envi->iebR_AirTemp = (float)iebRData[4]/10.0;
-    envi->iebR_ReturnTemp = (float)iebRData[5]/10.0;
-    envi->airTopTemp = (float)iebRData[6]/10.0;
-    envi->airBotTemp = (float)iebRData[7]/10.0;
+    envi->iebR_AirTemp = ptRTD2C(iebRData[4]);
+    envi->iebR_ReturnTemp = ptRTD2C(iebRData[5]);
+    envi->airTopTemp = ptRTD2C(iebRData[6]);
+    envi->airBotTemp = ptRTD2C(iebRData[7]);
 
     shm_addr->MODS.redIEBState = 1;
     shm_addr->MODS.redTemperature[0] = envi->iebR_AirTemp;
@@ -307,10 +307,10 @@ int getEnvData(envdata_t *envi) {
     shm_addr->MODS.blueIEBState = 0;
   }
   else {
-    envi->iebB_AirTemp = (float)iebBData[4]/10.0;
-    envi->iebB_ReturnTemp = (float)iebBData[5]/10.0;
-    envi->trussTopTemp = (float)iebBData[6]/10.0;
-    envi->trussBotTemp = (float)iebBData[7]/10.0;
+    envi->iebB_AirTemp = ptRTD2C(iebBData[4]);
+    envi->iebB_ReturnTemp = ptRTD2C(iebBData[5]);
+    envi->trussTopTemp = ptRTD2C(iebBData[6]);
+    envi->trussBotTemp = ptRTD2C(iebBData[7]);
 
     shm_addr->MODS.blueIEBState = 1;
     shm_addr->MODS.blueTemperature[0] = envi->iebB_AirTemp;
@@ -368,8 +368,8 @@ int getEnvData(envdata_t *envi) {
     shm_addr->MODS.redHEBState = 0;
   }
   else {
-    envi->hebR_AirTemp = (float)hebRData[0]/10.0;
-    envi->redDewTemp = (float)hebRData[1]/10.0;
+    envi->hebR_AirTemp = ptRTD2C(hebRData[0]);
+    envi->redDewTemp = ptRTD2C(hebRData[1]);
 
     shm_addr->MODS.redHEBState = 1;
     shm_addr->MODS.redHEBTemperature = envi->hebR_AirTemp;
@@ -385,8 +385,8 @@ int getEnvData(envdata_t *envi) {
     shm_addr->MODS.blueHEBState = 0;
   }
   else {
-    envi->hebB_AirTemp = (float)hebBData[0]/10.0;
-    envi->blueDewTemp = (float)hebBData[1]/10.0;
+    envi->hebB_AirTemp = ptRTD2C(hebBData[0]);
+    envi->blueDewTemp = ptRTD2C(hebBData[1]);
 
     shm_addr->MODS.blueHEBState = 1;
     shm_addr->MODS.blueHEBTemperature = envi->hebB_AirTemp;
@@ -406,4 +406,41 @@ int getEnvData(envdata_t *envi) {
   // All done (logging is done by the calling program)
 
   return 0;
+}
+
+//---------------------------------------------------------------------------
+//
+// ptRTD2C() - convert WAGO Pt RTD sensor raw data to degrees C
+//
+// Arguments:
+//   short rawRTD - raw RTD datum
+//
+// Description:
+//   Converts WAGO RTD module raw integer datum into degrees C float.
+//
+//   The WAGO module has a temperature resolution of 0.1C and a temperature
+//   range of -273 to 850C. If temp in >850.0, short integer raw data are
+//   wrapped on 2^16-1 ADU.  This is how it reports negative temperatures
+//   with a 16-bit unsigned integer.
+//
+//   Author:
+//     R. Pogge, OSU Astronomy Dept
+//     pogge.1@osu.edu
+//     2025 July 17
+//
+//---------------------------------------------------------------------------
+
+float
+ptRTD2C(short rawData)
+{
+  float tempMax = 850.0; // max temperature reported
+  float tempRes = 0.1;   // temperature resolution 0.1C
+  float temp, wrapT;
+  
+  wrapT = tempRes*(pow(2.0,16)-1);
+  temp = tempRes*(float)rawData;
+  if (temp > tempMax)
+    temp -= wrapT;
+
+  return temp;
 }
