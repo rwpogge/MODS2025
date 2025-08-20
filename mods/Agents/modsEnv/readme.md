@@ -62,11 +62,11 @@ Subsystems: instruments, mods1 or mods2
 
 Under each instrument a date: ccyy/mm/dd
 
-For each day:  ccyymmddHHMM.modsl.env.h5  or ccyymmddHHMM.modsr.env.h5
+telemeter name: env
 ```
 A long example, the environmental sensor log for MODS1 for 2025 Aug 20 UTC would be
 ```
-    /lbt/data/telemetry/instruments/modsl/2025/08/20/202508201213.modsl.env.h
+    /lbt/data/telemetry/instruments/modsl/2025/08/20/202508201213.modsl.env.h5
 ```
 
 ## Usage Instructions
