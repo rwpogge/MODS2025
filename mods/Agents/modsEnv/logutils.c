@@ -45,10 +45,9 @@ initTelemetryData(envdata_t* envi){
     std::shared_ptr<lbto::tel::ambassador> callBack(new TelemetryCallback());
     lbto::tel::collection_manager::init(callBack);
 
-    // Defining a telemetry stream with system name "telemetry", subsystems
-    // subsystems "instruments" and "modsl" or "modsr", and stream name "env".
+    // Define a MODS env telemetry stream
     lbto::tel::telemeter_definer modsDefiner = lbto::tel::collection_manager::instance().make_telemeter_definer(
-	lbto::tel::system(lbto::tel::name("telemetry")).subsystem(lbto::tel::name("instruments")).subsystem(lbto::tel::name(instID)),
+	lbto::tel::system(lbto::tel::name(instID)),
 	lbto::tel::name("env"),
 	lbto::tel::description("MODS environmental sensors")
     );
