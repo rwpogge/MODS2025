@@ -54,15 +54,20 @@ the leap-seconds file is not found, then the fallback leap-seconds.list file con
 
 It looks like the standard path for LBTO telemetry for instruments will look something like this:
 ```
-Base path: /lbt/data/telemetry/instruments/
+Base path: /lbt/data/
 
-In that the instrument instance: mods1/ and mods2 (though could be modsl and modsr, left/right)
+System: telemetry
+
+Subsystems: instruments, mods1 or mods2
 
 Under each instrument a date: ccyy/mm/dd
 
 For each day:  ccyymmddHHMM.modsl.env.h5  or ccyymmddHHMM.modsr.env.h5
 ```
-
+A long example, the environmental sensor log for MODS1 for 2025 Aug 20 UTC would be
+```
+    /lbt/data/telemetry/instruments/modsl/2025/08/20/202508201213.modsl.env.h
+```
 
 ## Usage Instructions
 Run the executable with the following optional command line arguments.
