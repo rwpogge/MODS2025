@@ -69,6 +69,10 @@ A long example, the environmental sensor log for MODS1 for 2025 Aug 20 UTC would
 ```
     /lbt/data/telemetry/instruments/modsl/2025/08/20/202508201618.modsl.env.h5
 ```
+If not already done, you do need to install the mounts for the telemetry nfs mount:
+```
+sudo dnf install lbto-nfs-mountain-telemetry
+```
 
 ### Run as root
 
