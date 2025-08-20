@@ -27,18 +27,30 @@
   If HDF5 is activated, then this function is called.
 
 */
-int initTelemetryData(envdata_t* envi){
-  if(envi->hdfInitalized) return 0;
+int 
+initTelemetryData(envdata_t* envi){
+
+  char instID[8];
+
+  if (envi->hdfInitalized) return 0;
   envi->hdfInitalized = 1;
+
+  if (!strcasecmp(envi->modsID,"MODS1")) 
+    strcpy(instID,"modsl");
+  else 
+    strcpy(instID,"modsr");
 
   try{
     //Initalizing telemetry.
     std::shared_ptr<lbto::tel::ambassador> callBack(new TelemetryCallback());
     lbto::tel::collection_manager::init(callBack);
 
-    //Defining a telemetry stream with module name "tel" and stream name "modsenv".
+    // Defining a telemetry stream with system name "telemetry", subsystems
+    // subsystems "instruments" and "modsl" or "modsr", and stream name "env".
     lbto::tel::telemeter_definer modsDefiner = lbto::tel::collection_manager::instance().make_telemeter_definer(
-      lbto::tel::system(lbto::tel::name("tel")), lbto::tel::name("modsenv")
+	lbto::tel::system(lbto::tel::name("telemetry")).subsystem(lbto::tel::name("instruments")).subsystem(lbto::tel::name(instID)),
+	lbto::tel::name("env"),
+	lbto::tel::description("MODS environmental sensors")
     );
 
     //Adding measures to the telemetry.
@@ -174,8 +186,8 @@ int initTelemetryData(envdata_t* envi){
 
     envi->modsCollector.reset(new lbto::tel::collector(modsDefiner.make_definition(), MAX_TELEMETRY_BUFFER_BYTES, false));
 
-
   //Catching exceptions thrown while initalizing lib-telemetry data.
+
   }catch(std::exception const& exn){
       printf("initTelemetryData() exception: %s\n", exn.what());
       return -1;
