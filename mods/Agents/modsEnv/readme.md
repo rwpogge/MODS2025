@@ -1,5 +1,5 @@
 # modsenv - MODS environmental sensor monitor agent
-Version: 3.2.1 (2025 Aug 19)
+Version: 3.2.2 (2025 Aug 20)
 
 Authors: R. Pogge & X. Carroll, OSU Astronomy
 

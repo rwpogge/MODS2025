@@ -1,5 +1,14 @@
 # modsenv Release Notes
-Last Build: 2024 Aug 19
+Last Build: 2024 Aug 20
+
+## Version 3.2.2
+2025 Aug 20
+
+HDF5 logging enabled and tested both in-situ and with the nfs-mounted telemetry drive at LBTO.
+Required code in logutils.c and updated .ini files to clear up details of how the LBT lib-telemetry
+code created the directories.  For HDF5 to work, modsenv must be executed as root or sudo. Most
+likely mode is to run as a systemd service.
+
 
 ## Version 3.2.1
 2025 Aug 19
