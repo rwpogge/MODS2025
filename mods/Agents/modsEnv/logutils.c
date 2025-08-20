@@ -31,14 +31,17 @@ int
 initTelemetryData(envdata_t* envi){
 
   char instID[8];
+  char descStr[40];
 
   if (envi->hdfInitalized) return 0;
   envi->hdfInitalized = 1;
 
   if (!strcasecmp(envi->modsID,"MODS1")) 
-    strcpy(instID,"modsl");
+    strcpy(instID,"mods1");
   else 
-    strcpy(instID,"modsr");
+    strcpy(instID,"mods2");
+
+  sprintf(descStr,"%s environmental sensors",envi->modsID);
 
   try{
     //Initalizing telemetry.
@@ -49,7 +52,7 @@ initTelemetryData(envdata_t* envi){
     lbto::tel::telemeter_definer modsDefiner = lbto::tel::collection_manager::instance().make_telemeter_definer(
 	lbto::tel::system(lbto::tel::name(instID)),
 	lbto::tel::name("env"),
-	lbto::tel::description("MODS environmental sensors")
+	lbto::tel::description(descStr)
     );
 
     //Adding measures to the telemetry.
