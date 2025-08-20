@@ -67,7 +67,7 @@ to the current active HDF5 stream.
 
 A long example, the environmental sensor log for MODS1 for 2025 Aug 20 UTC would be
 ```
-    /lbt/data/telemetry/instruments/modsl/2025/08/20/202508201213.modsl.env.h5
+    /lbt/data/telemetry/instruments/modsl/2025/08/20/202508201618.modsl.env.h5
 ```
 
 ### Run as root
