@@ -52,6 +52,8 @@ the leap-seconds file is not found, then the fallback leap-seconds.list file con
 
 ## LBTO telemetry
 
+### Directory Structure
+
 To create telemetry files with a path and name for LBTO telemetry, it would be setup like this:
 ```
 base path: /lbt/data/telemetry/instruments/
@@ -67,6 +69,10 @@ A long example, the environmental sensor log for MODS1 for 2025 Aug 20 UTC would
 ```
     /lbt/data/telemetry/instruments/modsl/2025/08/20/202508201213.modsl.env.h5
 ```
+
+### Run as root
+
+For HDF5 files to be created, `modsenv` needs to be run as root.  We will probably do this by running it as a systemd service.
 
 ## Usage Instructions
 Run the executable with the following optional command line arguments.
