@@ -50,6 +50,25 @@ December and June) and the most recent version can be downloaded here (https://d
 expected to be located at `/usr/share/lbto/UT/leap-seconds.list`, but this location can be changed at run time using the *ini file. If 
 the leap-seconds file is not found, then the fallback leap-seconds.list file contained with this repository will be used instead.
 
+## LBTO telemetry
+
+It looks like the standard path for LBTO telemetry for instruments will look something like this:
+```
+Base path: /lbt/data/
+
+System: telemetry
+
+Subsystems: instruments, mods1 or mods2
+
+Under each instrument a date: ccyy/mm/dd
+
+telemeter name: env
+```
+A long example, the environmental sensor log for MODS1 for 2025 Aug 20 UTC would be
+```
+    /lbt/data/telemetry/instruments/modsl/2025/08/20/202508201213.modsl.env.h5
+```
+
 ## Usage Instructions
 Run the executable with the following optional command line arguments.
 - `./modsenv <rcfile>`
