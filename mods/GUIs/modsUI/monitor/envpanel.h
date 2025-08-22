@@ -29,10 +29,10 @@ public:
   EnvPanel(const int &myMODS,  QWidget *parent = 0);
   void enable();  //!< Enable the instrument sensor monitor panel
   void disable(); //!< Disable the instrument sensor monitor panel
-  void logging(const bool &); //!< enable/disable logging
-  bool setAlarm(const int &);    //!< Set an alarm condition - return true if send message, false if throttle message
-  void clearAlarm(const int &);  //!< Clear an alarm condition
-  void clearAll();               //!< Clear all alarm conditions
+  void logging(const bool &);   //!< enable/disable logging
+  bool setAlarm(const int &);   //!< Set an alarm condition - return true if send message, false if throttle message
+  void clearAlarm(const int &); //!< Clear an alarm condition
+  void clearAll();              //!< Clear all alarm conditions
 
   // Enum with the instrument sensor list - make sure you count and update NUMSENSORS correctly!
 
@@ -57,28 +57,22 @@ public:
     BotTrussTemp,   //!< Instrument Bottom Collimator Truss Temperature Sensor (deg C)
     DTTruss,        //!< Instrument Collimator Truss temperature difference (Top-Bottom, deg C)
     HEB_B_AirTemp,  //!< Blue HEB Inside Air Temperature Sensor (deg C)
-    HEB_B_HSTemp,   //!< Blue HEB Heat Sink Temperature Sensor (deg C)
-    HEB_B_DTAir,    //!< Blue HEB Air temperature difference (HS-Air, deg C)
-    HEB_B_GSTemp,   //!< Blue HEB Glycol Supply Temperature Sensor (deg C)
-    HEB_B_GRTemp,   //!< Blue HEB Glycol Return Temperature Sensor (deg C)
-    HEB_B_DTGlycol, //!< Blue HEB Glycol temperature difference (Return-Supply, deg C)
+    HEB_B_Archon,   //!< Blue Archon AC power state (on/off)
+    HEB_B_IGPower,  //!< Blue Ion Gauge power state (on/off)
     HEB_R_AirTemp,  //!< Red HEB Inside Air Temperature Sensor (deg C)
-    HEB_R_HSTemp,   //!< Red HEB Heat Sink Temperature Sensor (deg C)
-    HEB_R_DTAir,    //!< Blue HEB Air temperature difference (HS-Air, deg C)
-    HEB_R_GSTemp,   //!< Red HEB Glycol Supply Temperature Sensor (deg C)
-    HEB_R_GRTemp,   //!< Red HEB Glycol Return Temperature Sensor (deg C)
-    HEB_R_DTGlycol, //!< Blue HEB Glycol temperature difference (Return-Supply, deg C)
-    Blue_DewPres,   //!< Blue CCD Dewar Pressure Gauge (torr)
-    Blue_CCDTemp,   //!< Blue CCD Detector Mount Temperature Sensor (deg C)
-    Blue_DewTemp,   //!< Blue CCD Dewar Tank Temperature Sensor (deg C)
-    Blue_TEDPower,  //!< Blue HEB ThermoElectricDevice Power (On/Off)
-    Blue_Sequencer, //!< Blue CCD controller sequencer state (online/offline)
-    Red_DewPres,    //!< Red CCD Dewar Pressure Gauge (torr)
-    Red_CCDTemp,    //!< Red CCD Detector Mount Temperature Sensor (deg C)
-    Red_DewTemp,    //!< Red CCD Dewar Tank Temperature Sensor (deg C)
-    Red_TEDPower,   //!< Red HEB ThermoElectricDevice Power (On/Off)
-    Red_Sequencer,  //!< Red CCD controller sequencer state (online/offline)
-    IEB_B_ACPower,  //!< Blue IEB AC power state (On/Off/Fault)
+    HEB_R_Archon,   //!< Red Archon AC power state (on/off)
+    HEB_R_IGPower,  //!< Blue Ion Gauge power state (on/off)
+    Blue_DewPres,   //!< Blue CCD Dewar Pressure Gauge (torr) - read through Comtrol
+    Blue_CCDTemp,   //!< Blue CCD Detector Temperature Sensor (deg C) - read through Archon
+    Blue_BaseTemp,  //!< Blue CCD Mount Base Temperature Sensor (deg C) - read through Archon
+    Blue_DewTemp,   //!< Blue CCD Dewar Tank Temperature Sensor (deg C) - read through HEB
+    Blue_ArchonTemp,//!< Blue Archon backplane temperature sensor (deg C) - read through Archon
+    Red_DewPres,    //!< Red CCD Dewar Pressure Gauge (torr) - read through Comtrol
+    Red_CCDTemp,    //!< Red CCD Detector Temperature Sensor (deg C) - read through Archon
+    Red_BaseTemp,   //!< Red CCD Mount Base Temperature Sensor (deg C) - read through Archon
+    Red_DewTemp,    //!< Red CCD Dewar Tank Temperature Sensor (deg C) - read through HEB
+    Red_ArchonTemp, //!< Red Archon backplane temperature sensor (deg C) - read through Archon
+    IEB_B_ACPower,  //!< Blue IEB AC power state (On/Off/Fault) - all read at the utility box
     IEB_R_ACPower,  //!< Red IEB AC Power state (On/Off/Fault)
     HEB_B_ACPower,  //!< Blue HEB AC Power state (On/Off/Fault)
     HEB_R_ACPower,  //!< Red HEB AC Power state (On/Off/Fault)
@@ -87,7 +81,7 @@ public:
     WFS_ACPower     //!< AGw WFS Camera AC Power state (On/Off/Fault)
   };
 
-#define NUMSENSORS 48 //!< Number of sensors and indicators
+#define NUMSENSORS 42 //!< Number of sensors and indicators - updated 2025 Aug 14 [rwp/osu]
 
 
 public slots:

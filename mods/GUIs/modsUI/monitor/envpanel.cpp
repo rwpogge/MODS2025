@@ -183,7 +183,7 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   // Middle Panel: Blue CCD, HEB, and IEB Monitors
   //
 
-  // Blue CCD vacuum and temperatures
+  // Blue CCD detector temp, CCD mount temp, and dewar pressure
 
   QFormLayout *blueCCDPTLayout = new QFormLayout;
   blueCCDPTLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
@@ -191,21 +191,19 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   blueCCDPTLayout->setLabelAlignment(Qt::AlignRight);
   blueCCDPTLayout->setVerticalSpacing(0);
 
-  sensorDisplay[Blue_DewPres] = new TextDisplay("","torr",8,this);
-  blueCCDPTLayout->addRow(tr("Vacuum"),sensorDisplay[Blue_DewPres]);
-
   sensorDisplay[Blue_CCDTemp] = new TextDisplay("","C",8,this);
   blueCCDPTLayout->addRow(tr("CCD"),sensorDisplay[Blue_CCDTemp]);
 
-  sensorDisplay[Blue_DewTemp] = new TextDisplay("","C",8,this);
-  blueCCDPTLayout->addRow(tr("LN2 Tank"),sensorDisplay[Blue_DewTemp]);
+  sensorDisplay[Blue_BaseTemp] = new TextDisplay("","C",8,this);
+  blueCCDPTLayout->addRow(tr("Mount"),sensorDisplay[Blue_BaseTemp]);
+
+  sensorDisplay[Blue_DewPres] = new TextDisplay("","torr",8,this);
+  blueCCDPTLayout->addRow(tr("Vacuum"),sensorDisplay[Blue_DewPres]);
 
   QGroupBox *blueCCDGroupBox = new QGroupBox(tr("Blue CCD"));
   blueCCDGroupBox->setLayout(blueCCDPTLayout);
 
-  // Blue HEB status
-
-  // This column has AC power, Glycol Supply, and Heat Sink Temp
+  // Blue HEB AC power (at IUB), Archon power, and ion gauge power status
 
   QFormLayout *blueHEBInLayout = new QFormLayout;
   blueHEBInLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
@@ -216,13 +214,13 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   sensorDisplay[HEB_B_ACPower] = new TextDisplay("","",5,this);
   blueHEBInLayout->addRow(tr("AC Power"),sensorDisplay[HEB_B_ACPower]);
 
-  sensorDisplay[HEB_B_GSTemp] = new TextDisplay("","C",5,this);
-  blueHEBInLayout->addRow(tr("Glycol In"),sensorDisplay[HEB_B_GSTemp]);
+  sensorDisplay[HEB_B_Archon] = new TextDisplay("","",5,this);
+  blueHEBInLayout->addRow(tr("Archon"),sensorDisplay[HEB_B_Archon]);
 
-  sensorDisplay[HEB_B_HSTemp] = new TextDisplay("","C",5,this);
-  blueHEBInLayout->addRow(tr("Heat Sink"),sensorDisplay[HEB_B_HSTemp]);
+  sensorDisplay[HEB_B_IGPower] = new TextDisplay("","",5,this);
+  blueHEBInLayout->addRow(tr("Ion Gauge"),sensorDisplay[HEB_B_IGPower]);
 
-  // This column as the sequencer, glycol return, and air temp
+  // Blue HEB air temp, Archon backplane temp, and LN2 tank temp
 
   QFormLayout *blueHEBOutLayout = new QFormLayout;
   blueHEBOutLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
@@ -230,31 +228,14 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   blueHEBOutLayout->setLabelAlignment(Qt::AlignRight);
   blueHEBOutLayout->setVerticalSpacing(0);
 
-  sensorDisplay[Blue_Sequencer] = new TextDisplay("","",5,this);
-  blueHEBOutLayout->addRow(tr("SEQ"),sensorDisplay[Blue_Sequencer]);
-
-  sensorDisplay[HEB_B_GRTemp] = new TextDisplay("","C",5,this);
-  blueHEBOutLayout->addRow(tr("Out"),sensorDisplay[HEB_B_GRTemp]);
-
   sensorDisplay[HEB_B_AirTemp] = new TextDisplay("","C",5,this);
-  blueHEBOutLayout->addRow(tr("Air"),sensorDisplay[HEB_B_AirTemp]);
+  blueHEBOutLayout->addRow(tr("HEB Air"),sensorDisplay[HEB_B_AirTemp]);
 
-  // This column has TEC power, and delta-T for glycol and air
+  sensorDisplay[Blue_ArchonTemp] = new TextDisplay("","C",5,this);
+  blueHEBOutLayout->addRow(tr("Archon"),sensorDisplay[Blue_ArchonTemp]);
 
-  QFormLayout *blueHEBDTLayout = new QFormLayout;
-  blueHEBDTLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
-  blueHEBDTLayout->setFormAlignment(Qt::AlignCenter);  
-  blueHEBDTLayout->setLabelAlignment(Qt::AlignRight);
-  blueHEBDTLayout->setVerticalSpacing(0);
-
-  sensorDisplay[Blue_TEDPower] = new TextDisplay("","",5,this);
-  blueHEBDTLayout->addRow(tr("TEC"),sensorDisplay[Blue_TEDPower]);
-
-  sensorDisplay[HEB_B_DTGlycol] = new TextDisplay("","C",5,this);
-  blueHEBDTLayout->addRow(tr("dT"),sensorDisplay[HEB_B_DTGlycol]);
-
-  sensorDisplay[HEB_B_DTAir] = new TextDisplay("","C",5,this);
-  blueHEBDTLayout->addRow(tr("dT"),sensorDisplay[HEB_B_DTAir]);
+  sensorDisplay[Blue_DewTemp] = new TextDisplay("","C",8,this);
+  blueCCDPTLayout->addRow(tr("LN2 Tank"),sensorDisplay[Blue_DewTemp]);
 
   // Layout horizontally in a group box
 
@@ -263,8 +244,6 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   blueHEBLayout->addLayout(blueHEBInLayout);
   blueHEBLayout->addStretch();
   blueHEBLayout->addLayout(blueHEBOutLayout);
-  blueHEBLayout->addStretch();
-  blueHEBLayout->addLayout(blueHEBDTLayout);
   blueHEBGroupBox->setLayout(blueHEBLayout);
 
   // Blue IEB temperature and power state
@@ -310,7 +289,7 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   // Bottom Panel: Red CCD, HEB, and IEB Monitors
   //
 
-  // Red CCD vacuum and temperature
+  // Red CCD detector and mount temperaturess and dewar vacuum pressure
 
   QFormLayout *redCCDPTLayout = new QFormLayout;
   redCCDPTLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
@@ -318,21 +297,21 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   redCCDPTLayout->setLabelAlignment(Qt::AlignRight);
   redCCDPTLayout->setVerticalSpacing(0);
 
-  sensorDisplay[Red_DewPres] = new TextDisplay("","torr",8,this);
-  redCCDPTLayout->addRow(tr("Vacuum"),sensorDisplay[Red_DewPres]);
-
   sensorDisplay[Red_CCDTemp] = new TextDisplay("","C",8,this);
   redCCDPTLayout->addRow(tr("CCD"),sensorDisplay[Red_CCDTemp]);
 
-  sensorDisplay[Red_DewTemp] = new TextDisplay("","C",8,this);
-  redCCDPTLayout->addRow(tr("LN2 Tank"),sensorDisplay[Red_DewTemp]);
+  sensorDisplay[Red_BaseTemp] = new TextDisplay("","C",8,this);
+  redCCDPTLayout->addRow(tr("Mount"),sensorDisplay[Red_BaseTemp]);
+
+  sensorDisplay[Red_DewPres] = new TextDisplay("","torr",8,this);
+  redCCDPTLayout->addRow(tr("Vacuum"),sensorDisplay[Red_DewPres]);
 
   QGroupBox *redCCDGroupBox = new QGroupBox(tr("Red CCD"));
   redCCDGroupBox->setLayout(redCCDPTLayout);
 
   // Red HEB states
 
-  // This column has AC power, glycol supply and heat sink temperatures
+  // This column has AC power (at IUB), Archon power, and ion gauge power states
 
   QFormLayout *redHEBInLayout = new QFormLayout;
   redHEBInLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
@@ -343,13 +322,13 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   sensorDisplay[HEB_R_ACPower] = new TextDisplay("","",5,this);
   redHEBInLayout->addRow(tr("AC Power"),sensorDisplay[HEB_R_ACPower]);
 
-  sensorDisplay[HEB_R_GSTemp] = new TextDisplay("","C",5,this);
-  redHEBInLayout->addRow(tr("Glycol In"),sensorDisplay[HEB_R_GSTemp]);
+  sensorDisplay[HEB_R_Archon] = new TextDisplay("","",5,this);
+  redHEBInLayout->addRow(tr("Archon"),sensorDisplay[HEB_R_Archon]);
 
-  sensorDisplay[HEB_R_HSTemp] = new TextDisplay("","C",5,this);
-  redHEBInLayout->addRow(tr("Heat Sink"),sensorDisplay[HEB_R_HSTemp]);
+  sensorDisplay[HEB_R_IGPower] = new TextDisplay("","",5,this);
+  redHEBInLayout->addRow(tr("AC Power"),sensorDisplay[HEB_R_IGPower]);
 
-  // This column has sequencer state, glycol return, and air temperatures
+  // This column has HEB air temp, Archon backplane temp, and LN2 tank temp
 
   QFormLayout *redHEBOutLayout = new QFormLayout;
   redHEBOutLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
@@ -357,31 +336,14 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   redHEBOutLayout->setLabelAlignment(Qt::AlignRight);
   redHEBOutLayout->setVerticalSpacing(0);
 
-  sensorDisplay[Red_Sequencer] = new TextDisplay("","",5,this);
-  redHEBOutLayout->addRow(tr("SEQ"),sensorDisplay[Red_Sequencer]);
-
-  sensorDisplay[HEB_R_GRTemp] = new TextDisplay("","C",5,this);
-  redHEBOutLayout->addRow(tr("Out"),sensorDisplay[HEB_R_GRTemp]);
-
   sensorDisplay[HEB_R_AirTemp] = new TextDisplay("","C",5,this);
-  redHEBOutLayout->addRow(tr("Air"),sensorDisplay[HEB_R_AirTemp]);
+  redHEBOutLayout->addRow(tr("HEB Air"),sensorDisplay[HEB_R_AirTemp]);
 
-  // This column has TEC power, and delta-T for glycol and air
+  sensorDisplay[Red_ArchonTemp] = new TextDisplay("","C",5,this);
+  redHEBOutLayout->addRow(tr("Archon"),sensorDisplay[Red_ArchonTemp]);
 
-  QFormLayout *redHEBDTLayout = new QFormLayout;
-  redHEBDTLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
-  redHEBDTLayout->setFormAlignment(Qt::AlignCenter);  
-  redHEBDTLayout->setLabelAlignment(Qt::AlignRight);
-  redHEBDTLayout->setVerticalSpacing(0);
-
-  sensorDisplay[Red_TEDPower] = new TextDisplay("","",5,this);
-  redHEBDTLayout->addRow(tr("TEC"),sensorDisplay[Red_TEDPower]);
-
-  sensorDisplay[HEB_R_DTGlycol] = new TextDisplay("","C",5,this);
-  redHEBDTLayout->addRow(tr("dT"),sensorDisplay[HEB_R_DTGlycol]);
-
-  sensorDisplay[HEB_R_DTAir] = new TextDisplay("","C",5,this);
-  redHEBDTLayout->addRow(tr("dT"),sensorDisplay[HEB_R_DTAir]);
+  sensorDisplay[Red_DewTemp] = new TextDisplay("","C",8,this);
+  redHEBOutLayout->addRow(tr("LN2 Tank"),sensorDisplay[Red_DewTemp]);
 
   // Layout horizontally in a group box
 
@@ -390,8 +352,6 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   redHEBLayout->addLayout(redHEBInLayout);
   redHEBLayout->addStretch();
   redHEBLayout->addLayout(redHEBOutLayout);
-  redHEBLayout->addStretch();
-  redHEBLayout->addLayout(redHEBDTLayout);
   redHEBGroupBox->setLayout(redHEBLayout);
 
   // Red IEB temperature and power state
@@ -514,7 +474,7 @@ void EnvPanel::parse(const QString &remHost,
 		     const int &msgType, 
 		     const QHash<QString,QString> &keyDict)
 {
-	// TODO: Unused flags. Commented out on 2-19-24
+// TODO: Unused flags. Commented out on 2-19-24
 //   bool cmdDone = false;   // Flag: message is a command completion
 //   bool cmdFault = false;  // Flag: command completed with a fault
   bool ok;
@@ -574,6 +534,7 @@ void EnvPanel::parse(const QString &remHost,
   QString cmdWord = msgStr.section(" ",0,0);
   if (cmdWord.compare("UTIL",   Qt::CaseInsensitive)!=0 &&
       cmdWord.compare("IEB",    Qt::CaseInsensitive)!=0 &&
+      cmdWord.compare("HEB",    Qt::CaseInsensitive)!=0 &&
       cmdWord.compare("ESTATUS",Qt::CaseInsensitive)!=0 &&
       cmdWord.compare("STATUS", Qt::CaseInsensitive)!=0 &&
       cmdWord.compare("UNABLE", Qt::CaseInsensitive)!=0) return;
@@ -849,6 +810,108 @@ void EnvPanel::parse(const QString &remHost,
 	numUpdated++;
       }
 
+      // Blue HEB Temperature Sensors
+      
+      else if (keyStr.compare("HEBTEMPB",Qt::CaseInsensitive)==0) {
+	double dtmp = valStr.toDouble(&ok);
+	if (ok && dtmp < 200.0) {
+	  sensorData[HEB_B_AirTemp] = dtmp;
+	  sensorDisplay[HEB_B_AirTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
+	  if (dtmp > MODS_MAX_BOXTEMP) {
+	    sensorDisplay[HEB_B_AirTemp]->setFault();
+	    if (setAlarm(HEB_B_AirTemp))
+	      emit alert(tr("%1 Blue HEB inside air temperature of %2C exceeds %3C").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_BOXTEMP));
+	  }
+	  else {
+	    sensorDisplay[HEB_B_AirTemp]->setNormal();
+	    if (sensorAlarm[HEB_B_AirTemp]) // about to clear an active alarm
+	      emit alertMsg(tr("%1 Blue HEB inside air temperature is back in normal range.").arg(panelName),Qt::blue);
+	    clearAlarm(HEB_B_AirTemp);
+	  }
+	}
+	else {
+	  sensorDisplay[HEB_B_AirTemp]->clear();
+	  clearAlarm(HEB_B_AirTemp);
+	}
+	numUpdated++;
+      }
+      
+      else if (keyStr.compare("DEWTEMPB",Qt::CaseInsensitive)==0) {
+	double dtmp = valStr.toDouble(&ok);
+	if (ok && dtmp < 200.0) {
+	  sensorData[Blue_DewTemp] = dtmp;
+	  sensorDisplay[Blue_DewTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
+	  sensorDisplay[Blue_DewTemp]->setNormal();
+	  if (dtmp > MODS_MAX_DEWTEMP) {
+	    sensorDisplay[Blue_DewTemp]->setFault();
+	    if (setAlarm(Blue_DewTemp))
+	      emit alert(tr("%1 Blue Dewar temperature of %2C exceeds %3C - is dewar out of LN2?").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_DEWTEMP));
+	  }
+	  else {
+	    sensorDisplay[Blue_DewTemp]->setNormal();
+	    if (sensorAlarm[Blue_DewTemp]) // about to clear an active alarm
+	      emit alertMsg(tr("%1 Blue Dewar temperature is back in normal range").arg(panelName),Qt::blue);
+	    clearAlarm(Blue_DewTemp);
+	  }
+	}
+	else {
+	  sensorDisplay[Blue_DewTemp]->clear();
+	  clearAlarm(Blue_DewTemp);
+	}
+	numUpdated++;
+      }
+      
+      // Red HEB Temperature Sensors
+      
+      else if (keyStr.compare("HEBTEMPR",Qt::CaseInsensitive)==0) {
+	double dtmp = valStr.toDouble(&ok);
+	if (ok && dtmp < 200.0) {
+	  sensorData[HEB_R_AirTemp] = dtmp;
+	  sensorDisplay[HEB_R_AirTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
+	  if (dtmp > MODS_MAX_BOXTEMP) {
+ 	    sensorDisplay[HEB_R_AirTemp]->setFault();
+	    if (setAlarm(HEB_R_AirTemp))
+	      emit alert(tr("%1 Red HEB inside air temperature of %2C exceeds %3C").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_BOXTEMP));
+	  }
+	  else {
+ 	    sensorDisplay[HEB_R_AirTemp]->setNormal();
+	    if (sensorAlarm[HEB_R_AirTemp]) // about to clear an active alarm
+	      emit alertMsg(tr("%1 Red HEB inside air temperature is back in normal range").arg(panelName),Qt::blue);
+	    clearAlarm(HEB_R_AirTemp);
+	  }
+	}
+	else {
+	  sensorDisplay[HEB_R_AirTemp]->clear();
+	  clearAlarm(HEB_R_AirTemp);
+	}
+	numUpdated++;
+      }
+
+      else if (keyStr.compare("DEWTEMPR",Qt::CaseInsensitive)==0) {
+	double dtmp = valStr.toDouble(&ok);
+	if (ok && dtmp < 200.0) {
+	  sensorData[Red_DewTemp] = dtmp;
+	  sensorDisplay[Red_DewTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
+	  sensorDisplay[Red_DewTemp]->setNormal();
+	  if (dtmp > MODS_MAX_DEWTEMP) {
+	    sensorDisplay[Red_DewTemp]->setFault();
+	    if (setAlarm(Red_DewTemp))
+	      emit alert(tr("%1 Red Dewar temperature of %2C exceeds %3C - is dewar out of LN2?").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_DEWTEMP));
+	  }
+	  else {
+	    sensorDisplay[Red_DewTemp]->setNormal();
+	    if (sensorAlarm[Red_DewTemp]) // about to clear an active alarm
+	      emit alertMsg(tr("%1 Red Dewar temperature is back in normal range").arg(panelName),Qt::blue);
+	    clearAlarm(Red_DewTemp);
+	  }
+	}
+	else {
+	  sensorDisplay[Red_DewTemp]->clear();
+	  clearAlarm(Red_DewTemp);
+	}
+	numUpdated++;
+      }
+      
       // Instrument Inside Air top and bottom temperature sensors
 
       else if (keyStr.compare("TAIRTOP",Qt::CaseInsensitive)==0) {
@@ -1176,8 +1239,120 @@ void EnvPanel::parse(const QString &remHost,
 	}
 	numUpdated++;
       }
+
+      // Blue Channel Archon power
+
+      else if (keyStr.compare("B_ARCHON",Qt::CaseInsensitive)==0) {
+	if (valStr.compare("ON",Qt::CaseInsensitive)==0 || valStr.compare("OK",Qt::CaseInsensitive)==0) {
+	  sensorData[HEB_B_Archon] = 1;
+	  sensorDisplay[HEB_B_Archon]->setNormal();
+	  sensorDisplay[HEB_B_Archon]->setText("ON",Qt::green);
+	}
+	else (valStr.compare("OFF",Qt::CaseInsensitive)==0) {
+	  sensorData[HEB_B_Archon] = 0;
+	  sensorDisplay[HEB_B_Archon]->setNormal();
+	  sensorDisplay[HEB_B_Archon]->setText("OFF",Qt::white);
+	}
+	numUpdated++;
+      }
+
+      // Red Channel Archon power
+
+      else if (keyStr.compare("R_ARCHON",Qt::CaseInsensitive)==0) {
+	if (valStr.compare("ON",Qt::CaseInsensitive)==0 || valStr.compare("OK",Qt::CaseInsensitive)==0) {
+	  sensorData[HEB_R_Archon] = 1;
+	  sensorDisplay[HEB_R_Archon]->setNormal();
+	  sensorDisplay[HEB_R_Archon]->setText("ON",Qt::green);
+	}
+	else (valStr.compare("OFF",Qt::CaseInsensitive)==0) {
+	  sensorData[HEB_R_Archon] = 0;
+	  sensorDisplay[HEB_R_Archon]->setNormal();
+	  sensorDisplay[HEB_R_Archon]->setText("OFF",Qt::white);
+	}
+	numUpdated++;
+      }
+
+      // Blue Channel vacuum ionization gauge power
+
+      else if (keyStr.compare("B_IGPOWER",Qt::CaseInsensitive)==0) {
+	if (valStr.compare("ON",Qt::CaseInsensitive)==0 || valStr.compare("OK",Qt::CaseInsensitive)==0) {
+	  sensorData[HEB_B_IGPOWER] = 1;
+	  sensorDisplay[HEB_B_IGPOWER]->setNormal();
+	  sensorDisplay[HEB_B_IGPOWER]->setText("ON",Qt::green);
+	}
+	else (valStr.compare("OFF",Qt::CaseInsensitive)==0) {
+	  sensorData[HEB_B_IGPOWER] = 0;
+	  sensorDisplay[HEB_B_IGPOWER]->setNormal();
+	  sensorDisplay[HEB_B_IGPOWER]->setText("OFF",Qt::white);
+	}
+	numUpdated++;
+      }
+
+      // Red Channel vacuum ionization gauge power
+
+      else if (keyStr.compare("R_IGPOWER",Qt::CaseInsensitive)==0) {
+	if (valStr.compare("ON",Qt::CaseInsensitive)==0 || valStr.compare("OK",Qt::CaseInsensitive)==0) {
+	  sensorData[HEB_R_IGPOWER] = 1;
+	  sensorDisplay[HEB_R_IGPOWER]->setNormal();
+	  sensorDisplay[HEB_R_IGPOWER]->setText("ON",Qt::green);
+	}
+	else (valStr.compare("OFF",Qt::CaseInsensitive)==0) {
+	  sensorData[HEB_R_IGPOWER] = 0;
+	  sensorDisplay[HEB_R_IGPOWER]->setNormal();
+	  sensorDisplay[HEB_R_IGPOWER]->setText("OFF",Qt::white);
+	}
+	numUpdated++;
+      }
+
+      // Blue CCD dewar pressure
+
+      else if (keyStr.compare("B_DEWPRES",Qt::CaseInsensitive)==0) {
+	sensorData[Blue_DewPres] = dtmp;
+	sensorDisplay[Blue_DewPres]->setText(QString::number(dtmp,'E',2),Qt::green);
+	if (ok) {
+	  if (dtmp > MODS_MAX_DEWPRES) {
+	    sensorDisplay[Blue_DewPres]->setFault();
+	    if (setAlarm(Blue_DewPres))
+	      emit alert(tr("%1 Blue CCD dewar pressure of %2 torr exceeds %3 torr").arg(panelName).arg(QString::number(dtmp,'E',2)).arg(MODS_MAX_DEWPRES));
+	  }
+	  else {
+	    sensorDisplay[Blue_DewPres]->setNormal();
+	    if (sensorAlarm[Blue_DewPres]) // about to clear an active alarm
+	      emit alertMsg(tr("%1 Blue CCD dewar pressure is back in normal range").arg(panelName),Qt::blue);
+	    clearAlarm(Blue_DewPres);
+	  }
+	}
+	else {
+	  sensorDisplay[Blue_DewPres]->clear();
+	  clearAlarm(Blue_DewPres);
+	}
+      }
       
-      // Future Expansion: add other instrument sensors would go here
+      // Red CCD dewar pressure
+
+      else if (keyStr.compare("R_DEWPRES",Qt::CaseInsensitive)==0) {
+	sensorData[Red_DewPres] = dtmp;
+	sensorDisplay[Red_DewPres]->setText(QString::number(dtmp,'E',2),Qt::green);
+	if (ok) {
+	  if (dtmp > MODS_MAX_DEWPRES) {
+	    sensorDisplay[Red_DewPres]->setFault();
+	    if (setAlarm(Red_DewPres))
+	      emit alert(tr("%1 Red CCD dewar pressure of %2 torr exceeds %3 torr").arg(panelName).arg(QString::number(dtmp,'E',2)).arg(MODS_MAX_DEWPRES));
+	  }
+	  else {
+	    sensorDisplay[Red_DewPres]->setNormal();
+	    if (sensorAlarm[Red_DewPres]) // about to clear an active alarm
+	      emit alertMsg(tr("%1 Red CCD dewar pressure is back in normal range").arg(panelName),Qt::blue);
+	    clearAlarm(Red_DewPres);
+	  }
+	}
+	else {
+	  sensorDisplay[Red_DewPres]->clear();
+	  clearAlarm(Red_DewPres);
+	}
+      }
+      
+      // Future Expansion: other instrument power states and sensors read by modsEnv go here
 
       else {
 	// unrecognized keyword, move along...
@@ -1185,248 +1360,10 @@ void EnvPanel::parse(const QString &remHost,
       
     }
     else { // Message is from one of the ICs
-      
-      // HEB glycol return temperature
 
-      if (keyStr.compare("CTEMPOUT",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
-	if (isRed) {
-	  if (ok && dtmp < 200.0) {
-	    sensorData[HEB_R_GRTemp] = dtmp;
-	    sensorDisplay[HEB_R_GRTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
-	    sensorDisplay[HEB_R_GRTemp]->setNormal();
-	    sensorData[HEB_R_DTGlycol] = sensorData[HEB_R_GRTemp]-sensorData[HEB_R_GSTemp];
-	    sensorDisplay[HEB_R_DTGlycol]->setText(QString::number(sensorData[HEB_R_DTGlycol],
-								   'f',1),Qt::green);
-	    sensorDisplay[HEB_R_DTGlycol]->setNormal();
-	  }
-	  else {
-	    sensorDisplay[HEB_R_GRTemp]->clear();
-	    sensorDisplay[HEB_R_DTGlycol]->clear();
-	  }
-	}
-	else {
-	  if (ok && dtmp < 200.0) {
-	    sensorData[HEB_B_GRTemp] = dtmp;
-	    sensorDisplay[HEB_B_GRTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
-	    sensorDisplay[HEB_B_GRTemp]->setNormal();
-	    sensorData[HEB_B_DTGlycol] = sensorData[HEB_B_GRTemp]-sensorData[HEB_B_GSTemp];
-	    sensorDisplay[HEB_B_DTGlycol]->setText(QString::number(sensorData[HEB_B_DTGlycol],
-								   'f',1),Qt::green);
-	    sensorDisplay[HEB_B_DTGlycol]->setNormal();
-	  }
-	  else {
-	    sensorDisplay[HEB_B_GRTemp]->clear();
-	    sensorDisplay[HEB_B_DTGlycol]->clear();
-	  }
-	}
-	numUpdated++;
-      }
+      // The sensor suite on the 2025 HEB+Archon system is smaller
       
-      else if (keyStr.compare("CTEMPIN",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
-	if (isRed) {
-	  if (ok && dtmp < 200.0) {
-	    sensorData[HEB_R_GSTemp] = dtmp;
-	    sensorDisplay[HEB_R_GSTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
-	    sensorDisplay[HEB_R_GSTemp]->setNormal();
-	    sensorData[HEB_R_DTGlycol] = sensorData[HEB_R_GRTemp]-sensorData[HEB_R_GSTemp];
-	    sensorDisplay[HEB_R_DTGlycol]->setText(QString::number(sensorData[HEB_R_DTGlycol],
-								   'f',1),Qt::green);
-	    sensorDisplay[HEB_R_DTGlycol]->setNormal();
-	  }
-	  else {
-	    sensorDisplay[HEB_R_GSTemp]->clear();
-	    sensorDisplay[HEB_R_DTGlycol]->clear();
-	  }
-	}
-	else {
-	  if (ok && dtmp < 200.0) {
-	    sensorData[HEB_B_GSTemp] = dtmp;
-	    sensorDisplay[HEB_B_GSTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
-	    sensorDisplay[HEB_B_GSTemp]->setNormal();
-	    sensorData[HEB_B_DTGlycol] = sensorData[HEB_B_GRTemp]-sensorData[HEB_B_GSTemp];
-	    sensorDisplay[HEB_B_DTGlycol]->setText(QString::number(sensorData[HEB_B_DTGlycol],
-								   'f',1),Qt::green);
-	    sensorDisplay[HEB_B_DTGlycol]->setNormal();
-	  }
-	  else {
-	    sensorDisplay[HEB_B_GSTemp]->clear();
-	    sensorDisplay[HEB_B_DTGlycol]->clear();
-	  }
-	}
-	numUpdated++;
-      }
-      
-      // HEB pre-heat sink Air temperature
-      
-      else if (keyStr.compare("HEBTEMP",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
-	if (isRed) {
-	  if (ok && dtmp < 200.0) {
-	    sensorData[HEB_R_AirTemp] = dtmp;
-	    sensorDisplay[HEB_R_AirTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
-	    sensorDisplay[HEB_R_AirTemp]->setNormal();
-	    sensorData[HEB_R_DTAir] = sensorData[HEB_R_HSTemp]-sensorData[HEB_R_AirTemp];
-	    sensorDisplay[HEB_R_DTAir]->setText(QString::number(sensorData[HEB_R_DTAir],
-								   'f',1),Qt::green);
-	    if (dtmp > MODS_MAX_BOXTEMP) {
-	      sensorDisplay[HEB_R_AirTemp]->setFault();
-	      if (setAlarm(HEB_R_AirTemp))
-		emit alert(tr("%1 Red HEB inside air temperature of %2C exceeds %3C").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_BOXTEMP));
-	    }
-	    else {
-	      sensorDisplay[HEB_R_AirTemp]->setNormal();
-	      if (sensorAlarm[HEB_R_AirTemp]) // about to clear an active alarm
-		emit alertMsg(tr("%1 Red HEB air temperature is back in normal range").arg(panelName),Qt::blue);
-	      clearAlarm(HEB_R_AirTemp);
-	    }
-	  }
-	  else {
-	    sensorDisplay[HEB_R_AirTemp]->clear();
-	    sensorDisplay[HEB_R_DTAir]->clear();
-	    clearAlarm(HEB_R_AirTemp);
-	  }
-	}
-	else {
-	  if (ok && dtmp < 200.0) {
-	    sensorData[HEB_B_AirTemp] = dtmp;
-	    sensorDisplay[HEB_B_AirTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
-	    sensorDisplay[HEB_B_AirTemp]->setNormal();
-	    sensorData[HEB_B_DTAir] = sensorData[HEB_B_HSTemp]-sensorData[HEB_B_AirTemp];
-	    sensorDisplay[HEB_B_DTAir]->setText(QString::number(sensorData[HEB_B_DTAir],
-								   'f',1),Qt::green);
-	    if (dtmp > MODS_MAX_BOXTEMP) {
-	      sensorDisplay[HEB_B_AirTemp]->setFault();
-	      if (setAlarm(HEB_B_AirTemp))
-		emit alert(tr("%1 Blue HEB inside air temperature of %2C exceeds %3C").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_BOXTEMP));
-	    }
-	    else {
-	      sensorDisplay[HEB_B_AirTemp]->setNormal();
-	      if (sensorAlarm[HEB_B_AirTemp]) // about to clear an active alarm
-		emit alertMsg(tr("%1 Blue HEB air temperature is back in normal range").arg(panelName),Qt::blue);
-	      clearAlarm(HEB_B_AirTemp);
-	    }
-	  }
-	  else {
-	    sensorDisplay[HEB_B_AirTemp]->clear();
-	    sensorDisplay[HEB_B_DTAir]->clear();
-	    clearAlarm(HEB_B_AirTemp);
-	  }
-	}
-	numUpdated++;
-      }
-      
-      // HEB post-heat sink Air temperature
-      
-      else if (keyStr.compare("HSTEMP",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
-	if (isRed) {
-	  if (ok && dtmp < 200.0) {
-	    sensorData[HEB_R_HSTemp] = dtmp;
-	    sensorDisplay[HEB_R_HSTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
-	    sensorDisplay[HEB_R_HSTemp]->setNormal();
-	    sensorData[HEB_R_DTAir] = sensorData[HEB_R_HSTemp]-sensorData[HEB_R_AirTemp];
-	    sensorDisplay[HEB_R_DTAir]->setText(QString::number(sensorData[HEB_R_DTAir],
-								   'f',1),Qt::green);
-	    if (dtmp > MODS_MAX_BOXTEMP) {
-	      sensorDisplay[HEB_R_HSTemp]->setFault();
-	      if (setAlarm(HEB_R_HSTemp))
-		emit alert(tr("%1 Red HEB heat sink temperature of %2C exceeds %3C").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_BOXTEMP));
-	    }
-	    else {
-	      sensorDisplay[HEB_R_HSTemp]->setNormal();
-	      if (sensorAlarm[HEB_R_HSTemp]) // about to clear an active alarm
-		emit alertMsg(tr("%1 Red HEB heat sink temperature is back in normal range").arg(panelName),Qt::blue);
-	      clearAlarm(HEB_R_HSTemp);
-	    }
-	  }
-	  else {
-	    sensorDisplay[HEB_R_HSTemp]->clear();
-	    sensorDisplay[HEB_R_DTAir]->clear();
-	    clearAlarm(HEB_R_HSTemp);
-	  }
-	}
-	else {
-	  if (ok && dtmp < 200.0) {
-	    sensorData[HEB_B_HSTemp] = dtmp;
-	    sensorDisplay[HEB_B_HSTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
-	    sensorDisplay[HEB_B_HSTemp]->setNormal();
-	    sensorData[HEB_B_DTAir] = sensorData[HEB_B_HSTemp]-sensorData[HEB_B_AirTemp];
-	    sensorDisplay[HEB_B_DTAir]->setText(QString::number(sensorData[HEB_B_DTAir],
-								   'f',1),Qt::green);
-	    if (dtmp > MODS_MAX_BOXTEMP) {
-	      sensorDisplay[HEB_B_HSTemp]->setFault();
-	      if (setAlarm(HEB_B_HSTemp))
-		emit alert(tr("%1 Blue HEB heat sink temperature of %2C exceeds %3C").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_BOXTEMP));
-	    }
-	    else {
-	      sensorDisplay[HEB_B_HSTemp]->setNormal();
-	      if (sensorAlarm[HEB_B_HSTemp]) // about to clear an active alarm
-		emit alertMsg(tr("%1 Blue HEB heat sink temperature is back in normal range").arg(panelName),Qt::blue);
-	      clearAlarm(HEB_B_HSTemp);
-	    }
-	  }
-	  else {
-	    sensorDisplay[HEB_B_HSTemp]->clear();
-	    sensorDisplay[HEB_B_DTAir]->clear();
-	    clearAlarm(HEB_B_HSTemp);
-	  }
-	}
-	numUpdated++;
-      }
-      
-      // CCD Dewar Pressure in torr, display in scientific notation as x.yzE-ab
-      
-      else if (keyStr.compare("DEWPRES",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
-	if (isRed) {
-	  if (ok) {
-	    sensorData[Red_DewPres] = dtmp;
-	    sensorDisplay[Red_DewPres]->setText(QString::number(dtmp,'E',2),Qt::green);
-	    if (dtmp > MODS_MAX_DEWPRES) {
-	      sensorDisplay[Red_DewPres]->setFault();
-	      if (setAlarm(Red_DewPres))
-		emit alert(tr("%1 Red CCD dewar pressure of %2 torr exceeds %3 torr").arg(panelName).arg(QString::number(dtmp,'E',2)).arg(MODS_MAX_DEWPRES));
-	    }
-	    else {
-	      sensorDisplay[Red_DewPres]->setNormal();
-	      if (sensorAlarm[Red_DewPres]) // about to clear an active alarm
-		emit alertMsg(tr("%1 Red CCD dewar pressure is back in normal range").arg(panelName),Qt::blue);
-	      clearAlarm(Red_DewPres);
-	    }
-	  }
-	  else {
-	    sensorDisplay[Red_DewPres]->clear();
-	    clearAlarm(Red_DewPres);
-	  }
-	}
-	else {
-	  if (ok) {
-	    sensorData[Blue_DewPres] = dtmp;
-	    sensorDisplay[Blue_DewPres]->setText(QString::number(dtmp,'E',2),Qt::green);
-	    sensorDisplay[Blue_DewPres]->setNormal();
-	    if (dtmp > MODS_MAX_DEWPRES) {
-	      sensorDisplay[Blue_DewPres]->setFault();
-	      if (setAlarm(Blue_DewPres))
-		emit alert(tr("%1 Blue CCD dewar pressure of %2 torr exceeds %3 torr").arg(panelName).arg(QString::number(dtmp,'E',2)).arg(MODS_MAX_DEWPRES));
-	    }
-	    else {
-	      sensorDisplay[Blue_DewPres]->setNormal();
-	      if (sensorAlarm[Blue_DewPres]) // about to clear an active alarm
-		emit alertMsg(tr("%1 Blue CCD dewar pressure is back in normal range").arg(panelName),Qt::blue);
-	      clearAlarm(Blue_DewPres);
-	    }
-	  }
-	  else {
-	    sensorDisplay[Blue_DewPres]->clear();
-	    clearAlarm(Blue_DewPres);
-	  }
-	}
-	numUpdated++;
-      }
-
-      // CCD Detector working plate temperature
+      // CCD Detector temperature
       
       else if (keyStr.compare("CCDTEMP",Qt::CaseInsensitive)==0) {
 	double dtmp = valStr.toDouble(&ok);
@@ -1477,144 +1414,109 @@ void EnvPanel::parse(const QString &remHost,
 	}
       }
 
-      // CCD Dewar LN2 Tank temperature
+      // CCD Mount Base temperature
       
-      else if (keyStr.compare("DEWTEMP",Qt::CaseInsensitive)==0) {
+      else if (keyStr.compare("BASETEMP",Qt::CaseInsensitive)==0) {
 	double dtmp = valStr.toDouble(&ok);
 	if (isRed) {
 	  if (ok) {
-	    sensorData[Red_DewTemp] = dtmp;
-	    sensorDisplay[Red_DewTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
-	    sensorDisplay[Red_DewTemp]->setNormal();
+	    sensorData[Red_BaseTemp] = dtmp;
+	    sensorDisplay[Red_BaseTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
+	    sensorDisplay[Red_BaseTemp]->setNormal();
 	    if (dtmp > MODS_MAX_DEWTEMP) {
-	      sensorDisplay[Red_DewTemp]->setFault();
-	      if (setAlarm(Red_DewTemp))
-		emit alert(tr("%1 Red Dewar temperature of %2C exceeds %3C - is dewar out of LN2?").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_DEWTEMP));
+	      sensorDisplay[Red_BaseTemp]->setFault();
+	      if (setAlarm(Red_BaseTemp))
+		emit alert(tr("%1 Red CCD Mount Base temperature of %2C exceeds %3C - is dewar out of LN2?").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_DEWTEMP));
 	    }
 	    else {
-	      sensorDisplay[Red_DewTemp]->setNormal();
-	      if (sensorAlarm[Red_DewTemp]) // about to clear an active alarm
-		emit alertMsg(tr("%1 Red Dewar temperature is back in normal range").arg(panelName),Qt::blue);
-	      clearAlarm(Red_DewTemp);
+	      sensorDisplay[Red_BaseTemp]->setNormal();
+	      if (sensorAlarm[Red_BaseTemp]) // about to clear an active alarm
+		emit alertMsg(tr("%1 Red CCD Mount Base temperature is back in normal range").arg(panelName),Qt::blue);
+	      clearAlarm(Red_BaseTemp);
 	    }
 	  }
 	  else {
-	    sensorDisplay[Red_DewTemp]->clear();
-	    clearAlarm(Red_DewTemp);
+	    sensorDisplay[Red_BaseTemp]->clear();
+	    clearAlarm(Red_BaseTemp);
 	  }
 	  numUpdated++;
 	}
 	else {
 	  if (ok) {
-	    sensorData[Blue_DewTemp] = dtmp;
-	    sensorDisplay[Blue_DewTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
-	    sensorDisplay[Blue_DewTemp]->setNormal();
+	    sensorData[Blue_BaseTemp] = dtmp;
+	    sensorDisplay[Blue_BaseTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
+	    sensorDisplay[Blue_BaseTemp]->setNormal();
 	    if (dtmp > MODS_MAX_DEWTEMP) {
-	      sensorDisplay[Blue_DewTemp]->setFault();
-	      if (setAlarm(Blue_DewTemp))
-		emit alert(tr("%1 Blue Dewar temperature of %2C exceeds %3C - is dewar out of LN2?").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_DEWTEMP));
+	      sensorDisplay[Blue_BaseTemp]->setFault();
+	      if (setAlarm(Blue_BaseTemp))
+		emit alert(tr("%1 Blue CCD Mount Base temperature of %2C exceeds %3C - is dewar out of LN2?").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_DEWTEMP));
 	    }
 	    else {
-	      sensorDisplay[Blue_DewTemp]->setNormal();
-	      if (sensorAlarm[Blue_DewTemp]) // about to clear an active alarm
-		emit alertMsg(tr("%1 Blue Dewar temperature is back in normal range").arg(panelName),Qt::blue);
-	      clearAlarm(Blue_DewTemp);
+	      sensorDisplay[Blue_BaseTemp]->setNormal();
+	      if (sensorAlarm[Blue_BaseTemp]) // about to clear an active alarm
+		emit alertMsg(tr("%1 Blue CCD Mount Base temperature is back in normal range").arg(panelName),Qt::blue);
+	      clearAlarm(Blue_BaseTemp);
 	    }
 	  }
 	  else {
-	    sensorDisplay[Blue_DewTemp]->clear();
-	    clearAlarm(Blue_DewTemp);
+	    sensorDisplay[Blue_BaseTemp]->clear();
+	    clearAlarm(Blue_BaseTemp);
 	  }
 	  numUpdated++;
 	}
       }
      
-      // Thermo-Electric Device (aka Cooler) Power State
-
-      else if (keyStr.compare("TEDPOWER",Qt::CaseInsensitive)==0) {
+      // CCD Detector temperature
+      
+      else if (keyStr.compare("CCDTEMP",Qt::CaseInsensitive)==0) {
+	double dtmp = valStr.toDouble(&ok);
 	if (isRed) {
-	  if (valStr.compare("ON",Qt::CaseInsensitive)==0) {
-	    sensorData[Red_TEDPower] = 1;
-	    sensorDisplay[Red_TEDPower]->setNormal();
-	    sensorDisplay[Red_TEDPower]->setText("ON",Qt::green);
-	    clearAlarm(Red_TEDPower);
-	  }
-	  else if (valStr.compare("OFF",Qt::CaseInsensitive)==0) {
-	    sensorData[Red_TEDPower] = 0;
-	    sensorDisplay[Red_TEDPower]->setNormal();
-	    sensorDisplay[Red_TEDPower]->setText("OFF",QColor(255,126,0,255));
-	    clearAlarm(Red_TEDPower);
-	  }
-	  else {	
-	    sensorData[Red_TEDPower] = -1;
-	    sensorDisplay[Red_TEDPower]->clear();
-	    clearAlarm(Red_TEDPower);
-	  }
-	  numUpdated++;
-	}
-	else {
-	  if (valStr.compare("ON",Qt::CaseInsensitive)==0) {
-	    sensorData[Blue_TEDPower] = 1;
-	    sensorDisplay[Blue_TEDPower]->setNormal();
-	    sensorDisplay[Blue_TEDPower]->setText("ON",Qt::green);
-	    clearAlarm(Blue_TEDPower);
-	  }
-	  else if (valStr.compare("OFF",Qt::CaseInsensitive)==0) {
-	    sensorData[Blue_TEDPower] = 0;
-	    sensorDisplay[Blue_TEDPower]->setNormal();
-	    sensorDisplay[Blue_TEDPower]->setText("OFF",QColor(255,126,0,255));
-	    clearAlarm(Blue_TEDPower);
+	  if (ok) {
+	    sensorData[Red_CCDTemp] = dtmp;
+	    sensorDisplay[Red_CCDTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
+	    sensorDisplay[Red_CCDTemp]->setNormal();
+	    if (dtmp > MODS_MAX_CCDTEMP) {
+	      sensorDisplay[Red_CCDTemp]->setFault();
+	      if (setAlarm(Red_CCDTemp))
+		emit alert(tr("%1 Red CCD temperature of %2C exceeds %3C - detector warming up!").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_CCDTEMP));
+	    }
+	    else {
+	      sensorDisplay[Red_CCDTemp]->setNormal();
+	      if (sensorAlarm[Red_CCDTemp]) // about to clear an active alarm
+		emit alertMsg(tr("%1 Red CCD temperature is back in normal range").arg(panelName),Qt::blue);
+	      clearAlarm(Red_CCDTemp);
+	    }
 	  }
 	  else {
-	    sensorData[Blue_TEDPower] = -1;
-	    sensorDisplay[Blue_TEDPower]->clear();
-	    clearAlarm(Blue_TEDPower);
-	  }
-	  numUpdated++;
-	}
-      }
-     
-      // CCD controller sequencer state (T=online/F=offline)
-
-      else if (keyStr.compare("SEQ",Qt::CaseInsensitive)==0) {
-	if (isRed) {
-	  if (valStr.compare("T",Qt::CaseInsensitive)==0) {
-	    sensorData[Red_Sequencer] = 1;
-	    sensorDisplay[Red_Sequencer]->setNormal();
-	    sensorDisplay[Red_Sequencer]->setText("ON",Qt::green);
-	    if (sensorAlarm[Red_Sequencer]) // about to clear an active alarm
-		emit alertMsg(tr("%1 Red CCD Sequencer is back online.").arg(panelName),Qt::blue);
-	    clearAlarm(Red_Sequencer);
-	  }
-	  else if (valStr.compare("F",Qt::CaseInsensitive)==0) {
-	    sensorData[Red_Sequencer] = 0;
-	    sensorDisplay[Red_Sequencer]->setFault();
-	    sensorDisplay[Red_Sequencer]->setText("OFF",Qt::red);
-	    if (setAlarm(Red_Sequencer))
-	      emit alert(tr("%1 Red CCD Sequencer is offline.").arg(panelName));
+	    sensorDisplay[Red_CCDTemp]->clear();
+	    clearAlarm(Red_CCDTemp);
 	  }
 	  numUpdated++;
 	}
 	else {
-	  if (valStr.compare("T",Qt::CaseInsensitive)==0) {
-	    sensorData[Blue_Sequencer] = 1;
-	    sensorDisplay[Blue_Sequencer]->setNormal();
-	    sensorDisplay[Blue_Sequencer]->setText("ON",Qt::green);
-	    if (sensorAlarm[Blue_Sequencer]) // about to clear an active alarm
-		emit alertMsg(tr("%1 Blue CCD Sequencer is back online.").arg(panelName),Qt::blue);
-	    clearAlarm(Blue_Sequencer);
+	  if (ok) {
+	    sensorData[Blue_CCDTemp] = dtmp;
+	    sensorDisplay[Blue_CCDTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
+	    if (dtmp > MODS_MAX_CCDTEMP) {
+	      sensorDisplay[Blue_CCDTemp]->setFault();
+	      if (setAlarm(Blue_CCDTemp))
+		emit alert(tr("%1 Blue CCD temperature of %2C exceeds %3C - detector warming up!").arg(panelName).arg(QString::number(dtmp,'f',1)).arg(MODS_MAX_CCDTEMP));
+	    }
+	    else {
+	      sensorDisplay[Blue_CCDTemp]->setNormal();
+	      if (sensorAlarm[Blue_CCDTemp]) // about to clear an active alarm
+		emit alertMsg(tr("%1 Blue CCD temperature is back in normal range").arg(panelName),Qt::blue);
+	      clearAlarm(Blue_CCDTemp);
+	    }
 	  }
-	  else if (valStr.compare("F",Qt::CaseInsensitive)==0) {
-	    sensorData[Blue_Sequencer] = 0;
-	    sensorDisplay[Blue_Sequencer]->setFault();
-	    sensorDisplay[Blue_Sequencer]->setText("OFF",Qt::red);
-	    if (setAlarm(Blue_Sequencer))
-	      emit alert(tr("%1 Blue CCD Sequencer is offline.").arg(panelName));
+	  else {
+	    sensorDisplay[Blue_CCDTemp]->clear();
+	    clearAlarm(Blue_CCDTemp);
 	  }
 	  numUpdated++;
 	}
       }
-     
+
       else {
 	// unrecognized keyword, move along...
       }
