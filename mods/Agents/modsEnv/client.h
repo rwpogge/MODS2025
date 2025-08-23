@@ -370,13 +370,18 @@ float ptRTD2C(short);            // convert WAGO Pt RTD raw sensor data to degre
 
 // Log utility routines (defined in logutils.c)
 
-int  initTelemetryData(envdata_t *);    // initlaize the telemetry structures in envdata_t if HDF5 will be used
+int  initTelemetryData(envdata_t *);    // initialize the telemetry structures in envdata_t if HDF5 will be used
 void closeTelemetryData(envdata_t *);   // cleanly closes the telemetry structures in envdata_t if HDF5 was used
 int  logTelemetryData(envdata_t *);     // append data to the telemetry stream for the HDF5 file. 
 int  initEnvLog(envdata_t *);           // initialize the enviromental data log
 int  logEnvData(envdata_t *);           // append data to the environmental data log
 int  logMessage(envdata_t *, char *);   // append a message (comment) to the data log
 int  fileExists(char *);                // test to see if a file exists
+
+// Ion gauge I/O routines (defined in iongauge.c)
+
+int initIonSocket(int *, char *, int, int); // initialize ion gauge TCP socket
+int sendIonCommand(int, char*, char*);      // send command to the ion gauge and report response
 
 // Signal Handlers
 
