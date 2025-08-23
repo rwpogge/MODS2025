@@ -193,6 +193,11 @@ int getEnvData(envdata_t *envi) {
   int hebRPower = 0;      // Red HEB power relay status word
   int hebBPower = 0;      // Blue HEB power relay status word
   
+  int igSock;      // ion gauge socket file descriptor
+  char igCmd[64];  // ion gauge command string
+  char igResp[64]; // ion gauge command response
+  int igTimeout = 5; // ion gauge comm timeout in seconds
+
   //
   // IUB WAGO register addresses - Aug 2025
   //   IUB pressure and temperature sensors: 0
@@ -394,6 +399,40 @@ int getEnvData(envdata_t *envi) {
   }
 
   // Read the red and blue ionization gauges here (TCP/IP socket to IEB 2-channel Comtrols)
+
+  // Red dewar ion gauge
+
+  ierr = initIonSocket(&igSock,envi->redIG_Addr,envi->redIG_Port,igTimeout);
+  if (ierr < 0) {
+    if (useCLI) printf("WARNING: %s could not connect to red ion gauge",envi->modsID);
+    shm_addr->MODS.redDewarPressure = 0.0;
+  }
+  else {
+    sprintf(igCmd,"#%02dRD\r",envi->redIG_Chan);
+    if (sendIonCommand(igSock,igCmd,igResp) == 0)
+      envi->redDewPres = atof(igResp);
+    else 
+      envi->redDewPres = 0.0;
+    shm_addr->MODS.redDewarPressure = envi->redDewPres;
+  }   
+  close(igSock);
+
+  // Blue dewar ion gauge
+
+  ierr = initIonSocket(&igSock,envi->blueIG_Addr,envi->bueIG_Port,igTimeout);
+  if (ierr < 0) {
+    if (useCLI) printf("WARNING: %s could not connect to blue ion gauge",envi->modsID);
+    shm_addr->MODS.blueDewarPressure = 0.0;
+  }
+  else {
+    sprintf(igCmd,"#%02dRD\r",envi->blueIG_Chan);
+    if (sendIonCommand(igSock,igCmd,igResp) == 0)
+      envi->blueDewPres = atof(igResp);
+    else 
+      envi->blueDewPres = 0.0;
+    shm_addr->MODS.blueDewarPressure = envi->blueDewPres;
+  }   
+  close(igSock);
 
   //...
   
