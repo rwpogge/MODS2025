@@ -419,7 +419,7 @@ int getEnvData(envdata_t *envi) {
 
   // Blue dewar ion gauge
 
-  ierr = initIonSocket(&igSock,envi->blueIG_Addr,envi->bueIG_Port,igTimeout);
+  ierr = initIonSocket(&igSock,envi->blueIG_Addr,envi->blueIG_Port,igTimeout);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s could not connect to blue ion gauge",envi->modsID);
     shm_addr->MODS.blueDewarPressure = 0.0;
