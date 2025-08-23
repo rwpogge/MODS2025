@@ -159,7 +159,7 @@ initIonSocket(int* sock, char* address, int port, int timeout){
     
     char response[MESSAGE_SIZE];
 
-    if (sendIonCommand((*sock), response, "#05VER\r") < 0) {
+    if (sendIonCommand((*sock), "#05VER\r", response) < 0) {
       close(*sock);
       return -1;
     }
