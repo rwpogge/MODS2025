@@ -480,7 +480,8 @@ void EnvPanel::parse(const QString &remHost,
   bool ok;
   bool fromIE = false; 
   bool isRed = false;
-
+  double dtmp;
+  
   QString msgStr = cmdStr;
   msgStr = msgStr.simplified(); // TODO: Evaluate this line. Why is it here? 
 
@@ -581,7 +582,7 @@ void EnvPanel::parse(const QString &remHost,
       // Glycol Supply in-line pressure sensor
       
       if (keyStr.compare("GSPRES",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok) {
 	  sensorDisplay[GSPres]->setText(QString::number(dtmp,'f',1),Qt::green);
 	  sensorDisplay[GSPres]->setNormal();
@@ -611,7 +612,7 @@ void EnvPanel::parse(const QString &remHost,
       // Main Glycol Supply in-line temperature sensor
       
       else if (keyStr.compare("GSTEMP",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok) {
 	  sensorDisplay[GSTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
 	  sensorDisplay[GSTemp]->setNormal();
@@ -630,7 +631,7 @@ void EnvPanel::parse(const QString &remHost,
       // Main Glycol Return in-line pressure sensor
       
       else if (keyStr.compare("GRPRES",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok) {
 	  sensorDisplay[GRPres]->setText(QString::number(dtmp,'f',1),Qt::green);
 	  sensorDisplay[GRPres]->setNormal();
@@ -661,7 +662,7 @@ void EnvPanel::parse(const QString &remHost,
       // Main Glycol Return in-line temperature sensor
       
       else if (keyStr.compare("GRTEMP",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok) {
 	  sensorDisplay[GRTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
 	  sensorDisplay[GRTemp]->setNormal();
@@ -680,7 +681,7 @@ void EnvPanel::parse(const QString &remHost,
       // Outside-Instrument ambient air temperature near the IUB
       
       else if (keyStr.compare("AMBTEMP",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[AmbientTemp] = dtmp;
 	  sensorDisplay[AmbientTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -694,7 +695,7 @@ void EnvPanel::parse(const QString &remHost,
       // Air temperature inside the IUB
       
       else if (keyStr.compare("IUBTAIR",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[IUB_AirTemp] = dtmp;
 	  sensorDisplay[IUB_AirTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -720,7 +721,7 @@ void EnvPanel::parse(const QString &remHost,
       // Temperature of the AGw controller heat sink
       
       else if (keyStr.compare("AGHSTEMP",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[IUB_AGwTemp] = dtmp;
 	  sensorDisplay[IUB_AGwTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -737,7 +738,7 @@ void EnvPanel::parse(const QString &remHost,
       // Blue IEB Temperature Sensors
       
       else if (keyStr.compare("IEBTEMPB",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[IEB_B_AirTemp] = dtmp;
 	  sensorDisplay[IEB_B_AirTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -761,7 +762,7 @@ void EnvPanel::parse(const QString &remHost,
       }
       
       else if (keyStr.compare("IEBGRT_B",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[IEB_B_GRTemp] = dtmp;
 	  sensorDisplay[IEB_B_GRTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -775,7 +776,7 @@ void EnvPanel::parse(const QString &remHost,
       // Red IEB Temperature Sensors
       
       else if (keyStr.compare("IEBTEMPR",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[IEB_R_AirTemp] = dtmp;
 	  sensorDisplay[IEB_R_AirTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -799,7 +800,7 @@ void EnvPanel::parse(const QString &remHost,
       }
       
       else if (keyStr.compare("IEBGRT_R",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[IEB_R_GRTemp] = dtmp;
 	  sensorDisplay[IEB_R_GRTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -813,7 +814,7 @@ void EnvPanel::parse(const QString &remHost,
       // Blue HEB Temperature Sensors
       
       else if (keyStr.compare("HEBTEMPB",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[HEB_B_AirTemp] = dtmp;
 	  sensorDisplay[HEB_B_AirTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -837,7 +838,7 @@ void EnvPanel::parse(const QString &remHost,
       }
       
       else if (keyStr.compare("DEWTEMPB",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[Blue_DewTemp] = dtmp;
 	  sensorDisplay[Blue_DewTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -864,7 +865,7 @@ void EnvPanel::parse(const QString &remHost,
       // Red HEB Temperature Sensors
       
       else if (keyStr.compare("HEBTEMPR",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[HEB_R_AirTemp] = dtmp;
 	  sensorDisplay[HEB_R_AirTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -888,7 +889,7 @@ void EnvPanel::parse(const QString &remHost,
       }
 
       else if (keyStr.compare("DEWTEMPR",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[Red_DewTemp] = dtmp;
 	  sensorDisplay[Red_DewTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -915,7 +916,7 @@ void EnvPanel::parse(const QString &remHost,
       // Instrument Inside Air top and bottom temperature sensors
 
       else if (keyStr.compare("TAIRTOP",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[TopAirTemp] = dtmp;
 	  sensorDisplay[TopAirTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -933,7 +934,7 @@ void EnvPanel::parse(const QString &remHost,
       }
       
       else if (keyStr.compare("TAIRBOT",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[BotAirTemp] = dtmp;
 	  sensorDisplay[BotAirTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -953,7 +954,7 @@ void EnvPanel::parse(const QString &remHost,
       // Instrument Collimator Truss top and bottom temperature sensors
 
       else if (keyStr.compare("TCOLLTOP",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[TopTrussTemp] = dtmp;
 	  sensorDisplay[TopTrussTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -971,7 +972,7 @@ void EnvPanel::parse(const QString &remHost,
       }
       
       else if (keyStr.compare("TCOLLBOT",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok && dtmp < 200.0) {
 	  sensorData[BotTrussTemp] = dtmp;
 	  sensorDisplay[BotTrussTemp]->setText(QString::number(dtmp,'f',1),Qt::green);
@@ -1248,7 +1249,7 @@ void EnvPanel::parse(const QString &remHost,
 	  sensorDisplay[HEB_B_Archon]->setNormal();
 	  sensorDisplay[HEB_B_Archon]->setText("ON",Qt::green);
 	}
-	else (valStr.compare("OFF",Qt::CaseInsensitive)==0) {
+	else {
 	  sensorData[HEB_B_Archon] = 0;
 	  sensorDisplay[HEB_B_Archon]->setNormal();
 	  sensorDisplay[HEB_B_Archon]->setText("OFF",Qt::white);
@@ -1264,7 +1265,7 @@ void EnvPanel::parse(const QString &remHost,
 	  sensorDisplay[HEB_R_Archon]->setNormal();
 	  sensorDisplay[HEB_R_Archon]->setText("ON",Qt::green);
 	}
-	else (valStr.compare("OFF",Qt::CaseInsensitive)==0) {
+	else {
 	  sensorData[HEB_R_Archon] = 0;
 	  sensorDisplay[HEB_R_Archon]->setNormal();
 	  sensorDisplay[HEB_R_Archon]->setText("OFF",Qt::white);
@@ -1274,16 +1275,16 @@ void EnvPanel::parse(const QString &remHost,
 
       // Blue Channel vacuum ionization gauge power
 
-      else if (keyStr.compare("B_IGPOWER",Qt::CaseInsensitive)==0) {
+      else if (keyStr.compare("B_IGPOWER,Qt::CaseInsensitive)==0) {
 	if (valStr.compare("ON",Qt::CaseInsensitive)==0 || valStr.compare("OK",Qt::CaseInsensitive)==0) {
-	  sensorData[HEB_B_IGPOWER] = 1;
-	  sensorDisplay[HEB_B_IGPOWER]->setNormal();
-	  sensorDisplay[HEB_B_IGPOWER]->setText("ON",Qt::green);
+	  sensorData[HEB_B_IGPower] = 1;
+	  sensorDisplay[HEB_B_IGPower]->setNormal();
+	  sensorDisplay[HEB_B_IGPower]->setText("ON",Qt::green);
 	}
-	else (valStr.compare("OFF",Qt::CaseInsensitive)==0) {
-	  sensorData[HEB_B_IGPOWER] = 0;
-	  sensorDisplay[HEB_B_IGPOWER]->setNormal();
-	  sensorDisplay[HEB_B_IGPOWER]->setText("OFF",Qt::white);
+	else {
+	  sensorData[HEB_B_IGPower] = 0;
+	  sensorDisplay[HEB_B_IGPower]->setNormal();
+	  sensorDisplay[HEB_B_IGPower]->setText("OFF",Qt::white);
 	}
 	numUpdated++;
       }
@@ -1296,7 +1297,7 @@ void EnvPanel::parse(const QString &remHost,
 	  sensorDisplay[HEB_R_IGPOWER]->setNormal();
 	  sensorDisplay[HEB_R_IGPOWER]->setText("ON",Qt::green);
 	}
-	else (valStr.compare("OFF",Qt::CaseInsensitive)==0) {
+	else {
 	  sensorData[HEB_R_IGPOWER] = 0;
 	  sensorDisplay[HEB_R_IGPOWER]->setNormal();
 	  sensorDisplay[HEB_R_IGPOWER]->setText("OFF",Qt::white);
@@ -1366,7 +1367,7 @@ void EnvPanel::parse(const QString &remHost,
       // CCD Detector temperature
       
       else if (keyStr.compare("CCDTEMP",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (isRed) {
 	  if (ok) {
 	    sensorData[Red_CCDTemp] = dtmp;
@@ -1417,7 +1418,7 @@ void EnvPanel::parse(const QString &remHost,
       // CCD Mount Base temperature
       
       else if (keyStr.compare("BASETEMP",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (isRed) {
 	  if (ok) {
 	    sensorData[Red_BaseTemp] = dtmp;
@@ -1469,7 +1470,7 @@ void EnvPanel::parse(const QString &remHost,
       // CCD Detector temperature
       
       else if (keyStr.compare("CCDTEMP",Qt::CaseInsensitive)==0) {
-	double dtmp = valStr.toDouble(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (isRed) {
 	  if (ok) {
 	    sensorData[Red_CCDTemp] = dtmp;
