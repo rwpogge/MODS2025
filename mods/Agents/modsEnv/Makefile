@@ -39,9 +39,9 @@ LIBS        = -L$(ISISDIR)/lib -L$(ROOTDIR)/ulib -lislutils -linstrutils \
 
 LFLAGS      = -o modsenv
 
-OBJS        = clientutils.o loadconfig.o commands.o modbusutils.o logutils.o iongauge.o
+OBJS        = clientutils.o loadconfig.o commands.o modbusutils.o logutils.o ionutils.o
 
-%.o : %.c client.h commands.h modbusutils.h
+%.o : %.c client.h commands.h modbusutils.h ionutils.h
 	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
 
 all:        modsenv
