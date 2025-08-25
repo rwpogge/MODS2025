@@ -160,7 +160,8 @@ initIonSocket(int* sock, char* address, int port, int timeout)
     Opens a connection to the ion gauge, reads the pressure, returns it as a float, and closes the ion connection.
 */
 
-float getIonPressure(char* address, int port, int channel, int timeout)
+float 
+getIonPressure(char* address, int port, int channel, int timeout)
 {
     char responseMessage[ION_MESSAGE_SIZE];     //The ion response message will be collected in this variable.
     char commandMessage[ION_MESSAGE_SIZE];      //The ion command message will be sent to the ion
@@ -177,7 +178,7 @@ float getIonPressure(char* address, int port, int channel, int timeout)
     //Get the current pressure reading (returned as a string).
     snprintf(commandMessage, ION_MESSAGE_SIZE, "#%02dRD\r", channel);
     if (sendIonCommand(sock, commandMessage, responseMessage) != 0){
-        printf("ERROR: Could not send command.\n");
+        printf("ERROR: Could not send command (gauge off?).\n");
         close(sock);
         return 0.0;
     }

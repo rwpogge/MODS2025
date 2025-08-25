@@ -260,7 +260,7 @@ int initEnvLog(envdata_t *envi){
   // If this is the first time the file has been opened, print the
   // log header, otherwise just note the log has been restarted
   if (exists)
-    logMessage(envi,"Monitor agent re-started");
+    logMessage(envi,"modsEnv agent re-started");
   else {
     // This is the first time we've had this file open, write the
     // detailed file header.
