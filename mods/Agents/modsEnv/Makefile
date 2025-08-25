@@ -14,12 +14,13 @@
 #   2024 May 21 - Moving libmodbus to a standalone interface [xc/osu]
 #   2024 Jul 08 - Adding LBTO's libtelemetry library [xc/osu]
 #   2025 Aug 17 - Added Archon HEB data, shmem handling [rwp/osu]
+#   2025 Aug 25 - Added ionization gauge interface [xc/osu]
 #
 
 ROOTDIR     = /home/dts/mods
 ISISDIR     = /home/dts/ISIS
 TELEMDIR    = /usr/include/lbto/lib-telemetry
-VERSION     = v3.2.2
+VERSION     = v3.3.1
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 

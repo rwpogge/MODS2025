@@ -1,5 +1,10 @@
 # modsenv Release Notes
-Last Build: 2024 Aug 20
+Last Build: 2024 Aug 25
+
+## Version 3.3.1
+2025 Aug 25
+
+Red and blue dewar vacuum ionization gauge I/O integration, ready for testing.
 
 ## Version 3.2.2
 2025 Aug 20
