@@ -17,14 +17,17 @@
   \brief Send a command and recieve a response from the ion gauge.
     
   \param socket TCP socket connected to the ion gauge
-  \param response string where the response data will be written.
   \param command string with the command to send.
+  \param response string where the response data will be written.
     
   \return 0 on success, -1 on errors.  
     
   Sends the given command to the ion gauge, and stores the response.
 */
-int sendIonCommand(int socket, char* command, char* response){
+
+int 
+sendIonCommand(int socket, char* command, char* response)
+{
   // Clear the response string.
   memset(response, '\0', ION_MESSAGE_SIZE);
 
@@ -45,7 +48,10 @@ int sendIonCommand(int socket, char* command, char* response){
     
   \return 0 on success, -1 on errors.  
 */
-int initIonSocket(int* sock, char* address, int port, int timeout){
+
+int 
+initIonSocket(int* sock, char* address, int port, int timeout)
+{
   // Create the TCP socket
   (*sock) = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -142,7 +148,7 @@ int initIonSocket(int* sock, char* address, int port, int timeout){
 //// Wrapper Functions for Common Ion Operations.
 
 /*!
-    \brief Connectes to an ion gauge and reads the pressure.
+    \brief Connects to an ion gauge and reads the pressure.
     
     \param address string with the IP address to connect to.
     \param port the port to connect to.
@@ -153,7 +159,9 @@ int initIonSocket(int* sock, char* address, int port, int timeout){
     
     Opens a connection to the ion gauge, reads the pressure, returns it as a float, and closes the ion connection.
 */
-float getIonPressure(char* address, int port, int channel, int timeout){
+
+float getIonPressure(char* address, int port, int channel, int timeout)
+{
     char responseMessage[ION_MESSAGE_SIZE];     //The ion response message will be collected in this variable.
     char commandMessage[ION_MESSAGE_SIZE];      //The ion command message will be sent to the ion
 
@@ -168,7 +176,7 @@ float getIonPressure(char* address, int port, int channel, int timeout){
 
     //Get the current pressure reading (returned as a string).
     snprintf(commandMessage, ION_MESSAGE_SIZE, "#%02dRD\r", channel);
-    if(sendIonCommand(sock, responseMessage, commandMessage) != 0){
+    if (sendIonCommand(sock, commandMessage, responseMessage) != 0){
         printf("ERROR: Could not send command.\n");
         close(sock);
         return 0.0;
