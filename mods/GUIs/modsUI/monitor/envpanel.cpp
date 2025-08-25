@@ -1275,7 +1275,7 @@ void EnvPanel::parse(const QString &remHost,
 
       // Blue Channel vacuum ionization gauge power
 
-      else if (keyStr.compare("B_IGPOWER,Qt::CaseInsensitive)==0) {
+      else if (keyStr.compare("B_IGPOWER",Qt::CaseInsensitive)==0) {
 	if (valStr.compare("ON",Qt::CaseInsensitive)==0 || valStr.compare("OK",Qt::CaseInsensitive)==0) {
 	  sensorData[HEB_B_IGPower] = 1;
 	  sensorDisplay[HEB_B_IGPower]->setNormal();
@@ -1293,14 +1293,14 @@ void EnvPanel::parse(const QString &remHost,
 
       else if (keyStr.compare("R_IGPOWER",Qt::CaseInsensitive)==0) {
 	if (valStr.compare("ON",Qt::CaseInsensitive)==0 || valStr.compare("OK",Qt::CaseInsensitive)==0) {
-	  sensorData[HEB_R_IGPOWER] = 1;
-	  sensorDisplay[HEB_R_IGPOWER]->setNormal();
-	  sensorDisplay[HEB_R_IGPOWER]->setText("ON",Qt::green);
+	  sensorData[HEB_R_IGPower] = 1;
+	  sensorDisplay[HEB_R_IGPower]->setNormal();
+	  sensorDisplay[HEB_R_IGPower]->setText("ON",Qt::green);
 	}
 	else {
-	  sensorData[HEB_R_IGPOWER] = 0;
-	  sensorDisplay[HEB_R_IGPOWER]->setNormal();
-	  sensorDisplay[HEB_R_IGPOWER]->setText("OFF",Qt::white);
+	  sensorData[HEB_R_IGPower] = 0;
+	  sensorDisplay[HEB_R_IGPower]->setNormal();
+	  sensorDisplay[HEB_R_IGPower]->setText("OFF",Qt::white);
 	}
 	numUpdated++;
       }
@@ -1308,9 +1308,10 @@ void EnvPanel::parse(const QString &remHost,
       // Blue CCD dewar pressure
 
       else if (keyStr.compare("B_DEWPRES",Qt::CaseInsensitive)==0) {
-	sensorData[Blue_DewPres] = dtmp;
-	sensorDisplay[Blue_DewPres]->setText(QString::number(dtmp,'E',2),Qt::green);
+	dtmp = valStr.toDobule(&ok);
 	if (ok) {
+	  sensorData[Blue_DewPres] = dtmp;
+	  sensorDisplay[Blue_DewPres]->setText(QString::number(dtmp,'E',2),Qt::green);
 	  if (dtmp > MODS_MAX_DEWPRES) {
 	    sensorDisplay[Blue_DewPres]->setFault();
 	    if (setAlarm(Blue_DewPres))
@@ -1332,9 +1333,10 @@ void EnvPanel::parse(const QString &remHost,
       // Red CCD dewar pressure
 
       else if (keyStr.compare("R_DEWPRES",Qt::CaseInsensitive)==0) {
-	sensorData[Red_DewPres] = dtmp;
-	sensorDisplay[Red_DewPres]->setText(QString::number(dtmp,'E',2),Qt::green);
+	dtmp = valStr.toDobule(&ok);
 	if (ok) {
+	  sensorData[Red_DewPres] = dtmp;
+	  sensorDisplay[Red_DewPres]->setText(QString::number(dtmp,'E',2),Qt::green);
 	  if (dtmp > MODS_MAX_DEWPRES) {
 	    sensorDisplay[Red_DewPres]->setFault();
 	    if (setAlarm(Red_DewPres))
@@ -1366,7 +1368,7 @@ void EnvPanel::parse(const QString &remHost,
       
       // CCD Detector temperature
       
-      else if (keyStr.compare("CCDTEMP",Qt::CaseInsensitive)==0) {
+      if (keyStr.compare("CCDTEMP",Qt::CaseInsensitive)==0) {
 	dtmp = valStr.toDouble(&ok);
 	if (isRed) {
 	  if (ok) {
