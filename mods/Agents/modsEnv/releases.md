@@ -18,7 +18,7 @@ likely mode is to run as a systemd service.
 ## Version 3.2.1
 2025 Aug 19
 
-Changes after field test with live MODS1 on its cart in the LBTO high-bay area. Numerous bugs squashed, clearly a
+Changes after field test with live MODS1 on its cart in the LBTO high-bay area. Numerous bugs squashed, clearly 
 one RTD in the MODS1 IUB is faulty (AGHSTEMP reads -184C), and we have not yet implemented reading out the ionization
 gauges to get dewar pressure. ASCII text logging works, but HDF5 logging is not quite there.
 

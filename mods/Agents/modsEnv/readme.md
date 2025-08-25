@@ -58,7 +58,7 @@ To create telemetry files with a path and name for LBTO telemetry, it would be s
 ```
 base path: /lbt/data/telemetry/instruments/
 
-system name: modsl (MODS1) or modsr (MODS2)
+system names: mods1 or mods2
 
 telemeter name: env
 ```
@@ -67,7 +67,7 @@ to the current active HDF5 stream.
 
 A long example, the environmental sensor log for MODS1 for 2025 Aug 20 UTC would be
 ```
-    /lbt/data/telemetry/instruments/modsl/2025/08/20/202508201618.modsl.env.h5
+    /lbt/data/telemetry/instruments/mods1/2025/08/20/202508201618.modsl.env.h5
 ```
 If not already done, you do need to install the mounts for the telemetry nfs mount:
 ```
