@@ -98,7 +98,7 @@ void initEnvData(envdata_t *envi){
   envi->redDewPres = 0.0; 
   
   envi->doLogging = 1;                      // enable enviromental data logging by default
-  envi->useHdf5 = 0;                        // default: do not output environmental data to Hdf5
+  envi->useHdf5 = 1;                        // default: output environmental data to Hdf5
   envi->hdfInitalized = 0;
   strcpy(envi->logRoot,ENV_LOGS);
   strcpy(envi->hdfRoot,HDF_LOGS);
@@ -193,11 +193,6 @@ int getEnvData(envdata_t *envi) {
   int hebRPower = 0;      // Red HEB power relay status word
   int hebBPower = 0;      // Blue HEB power relay status word
   
-  int igSock;      // ion gauge socket file descriptor
-  char igCmd[64];  // ion gauge command string
-  char igResp[64]; // ion gauge command response
-  int igTimeout = 5; // ion gauge comm timeout in seconds
-
   //
   // IUB WAGO register addresses - Aug 2025
   //   IUB pressure and temperature sensors: 0
@@ -207,7 +202,7 @@ int getEnvData(envdata_t *envi) {
   
   // Get data from the IUB environmental sensors
 
-  ierr = wagoSetGet(0,envi->iub_Addr,0,10,iubData);
+  ierr = wagoSetGetRegisters(0,envi->iub_Addr,0,10,iubData);
   if (ierr != 0) {
     if (useCLI) printf("WARNING: %s IUB WAGO read error",envi->modsID);
     return ierr;
@@ -235,7 +230,7 @@ int getEnvData(envdata_t *envi) {
   
   // Get the IUB AC power control status data
 
-  ierr = wagoSetGet(0,envi->iub_Addr,512,1,iubData);
+  ierr = wagoSetGetRegisters(0,envi->iub_Addr,512,1,iubData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s IUB WAGO error reading power status word",envi->modsID);
   }
@@ -265,7 +260,7 @@ int getEnvData(envdata_t *envi) {
   
   // Get the IUB AC power breaker output side current sensor data
   
-  ierr = wagoSetGet(0,envi->iub_Addr,10,1,iubData);
+  ierr = wagoSetGetRegisters(0,envi->iub_Addr,10,1,iubData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s cannot read IUB breaker output status",envi->modsID);
   }
@@ -284,7 +279,7 @@ int getEnvData(envdata_t *envi) {
 
   // Get data from the Red IEB environmental sensors
   
-  ierr = wagoSetGet(0,envi->iebR_Addr,0,10,iebRData);
+  ierr = wagoSetGetRegisters(0,envi->iebR_Addr,0,10,iebRData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Red IEB WAGO read error",envi->modsID);
 
@@ -305,7 +300,7 @@ int getEnvData(envdata_t *envi) {
   
   // Get data from the Blue IEB environmental sensors
   
-  ierr = wagoSetGet(0,envi->iebB_Addr,0,10,iebBData);
+  ierr = wagoSetGetRegisters(0,envi->iebB_Addr,0,10,iebBData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue IEB WAGO read error",envi->modsID);
 
@@ -330,7 +325,7 @@ int getEnvData(envdata_t *envi) {
 
   // Red HEB power control status - both are normally open relays
 
-  ierr = wagoSetGet(0,envi->hebR_Addr,512,1,hebRData);
+  ierr = wagoSetGetRegisters(0,envi->hebR_Addr,512,1,hebRData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Red HEB WAGO error reading power relay status word",envi->modsID);
 
@@ -348,7 +343,7 @@ int getEnvData(envdata_t *envi) {
 
   // Blue HEB power control status - both are normally open relays
 
-  ierr = wagoSetGet(0,envi->hebR_Addr,512,1,hebBData);
+  ierr = wagoSetGetRegisters(0,envi->hebR_Addr,512,1,hebBData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue HEB WAGO error reading power relay status word",envi->modsID);
 
@@ -366,7 +361,7 @@ int getEnvData(envdata_t *envi) {
 
   // Red HEB temperature measurements
 
-  ierr = wagoSetGet(0,envi->hebR_Addr,4,2,hebRData);
+  ierr = wagoSetGetRegisters(0,envi->hebR_Addr,4,2,hebRData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Red HEB WAGO RTD sensor read error",envi->modsID);
 
@@ -383,7 +378,7 @@ int getEnvData(envdata_t *envi) {
   
   // Blue HEB temperature measurements
 
-  ierr = wagoSetGet(0,envi->hebB_Addr,4,2,hebBData);
+  ierr = wagoSetGetRegisters(0,envi->hebB_Addr,4,2,hebBData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue HEB WAGO RTD sensor read error",envi->modsID);
 
@@ -401,38 +396,12 @@ int getEnvData(envdata_t *envi) {
   // Read the red and blue ionization gauges here (TCP/IP socket to IEB 2-channel Comtrols)
 
   // Red dewar ion gauge
-
-  ierr = initIonSocket(&igSock,envi->redIG_Addr,envi->redIG_Port,igTimeout);
-  if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s could not connect to red ion gauge",envi->modsID);
-    shm_addr->MODS.redDewarPressure = 0.0;
-  }
-  else {
-    sprintf(igCmd,"#%02dRD\r",envi->redIG_Chan);
-    if (sendIonCommand(igSock,igCmd,igResp) == 0)
-      envi->redDewPres = atof(igResp);
-    else 
-      envi->redDewPres = 0.0;
-    shm_addr->MODS.redDewarPressure = envi->redDewPres;
-  }   
-  close(igSock);
+  envi->redDewPres = getIonPressure(envi->redIG_Addr, envi->redIG_Port, envi->redIG_Chan, ION_TIMEOUT_LENGTH);
+  shm_addr->MODS.redDewarPressure = envi->redDewPres;
 
   // Blue dewar ion gauge
-
-  ierr = initIonSocket(&igSock,envi->blueIG_Addr,envi->blueIG_Port,igTimeout);
-  if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s could not connect to blue ion gauge",envi->modsID);
-    shm_addr->MODS.blueDewarPressure = 0.0;
-  }
-  else {
-    sprintf(igCmd,"#%02dRD\r",envi->blueIG_Chan);
-    if (sendIonCommand(igSock,igCmd,igResp) == 0)
-      envi->blueDewPres = atof(igResp);
-    else 
-      envi->blueDewPres = 0.0;
-    shm_addr->MODS.blueDewarPressure = envi->blueDewPres;
-  }   
-  close(igSock);
+  envi->blueDewPres = getIonPressure(envi->blueIG_Addr, envi->blueIG_Port, envi->blueIG_Chan, ION_TIMEOUT_LENGTH);
+  shm_addr->MODS.blueDewarPressure = envi->blueDewPres;
 
   //...
   

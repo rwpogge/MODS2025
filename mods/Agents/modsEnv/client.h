@@ -98,6 +98,10 @@ extern isisclient_t client; // global client runtime config table
 
 #include "modbusutils.h"
 
+// ion gauge
+#include "ionutils.h"
+
+
 // MODS shared memory segment
 
 #include <instrutils.h>
@@ -377,11 +381,6 @@ int  initEnvLog(envdata_t *);           // initialize the enviromental data log
 int  logEnvData(envdata_t *);           // append data to the environmental data log
 int  logMessage(envdata_t *, char *);   // append a message (comment) to the data log
 int  fileExists(char *);                // test to see if a file exists
-
-// Ion gauge I/O routines (defined in iongauge.c)
-
-int initIonSocket(int *, char *, int, int); // initialize ion gauge TCP socket
-int sendIonCommand(int, char*, char*);      // send command to the ion gauge and report response
 
 // Signal Handlers
 
