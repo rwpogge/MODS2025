@@ -1308,7 +1308,7 @@ void EnvPanel::parse(const QString &remHost,
       // Blue CCD dewar pressure
 
       else if (keyStr.compare("B_DEWPRES",Qt::CaseInsensitive)==0) {
-	dtmp = valStr.toDobule(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok) {
 	  sensorData[Blue_DewPres] = dtmp;
 	  sensorDisplay[Blue_DewPres]->setText(QString::number(dtmp,'E',2),Qt::green);
@@ -1333,7 +1333,7 @@ void EnvPanel::parse(const QString &remHost,
       // Red CCD dewar pressure
 
       else if (keyStr.compare("R_DEWPRES",Qt::CaseInsensitive)==0) {
-	dtmp = valStr.toDobule(&ok);
+	dtmp = valStr.toDouble(&ok);
 	if (ok) {
 	  sensorData[Red_DewPres] = dtmp;
 	  sensorDisplay[Red_DewPres]->setText(QString::number(dtmp,'E',2),Qt::green);
