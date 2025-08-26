@@ -1,5 +1,5 @@
 # modsheb - MODS Head Electronics Box Monitor Agent
-Version: 1.0.0
+Version: 1.0.1
 
 Author: X. Carroll, OSU Astronomy (carroll.892@osu.edu)
 
@@ -21,14 +21,19 @@ The modsHeb agent has two modes
 Run the `build` script in the modsHeb directory.
 
 ## Maintaining
-The `libtelemetry` dependency requires an updated version of the `leap-seconds.list` file to function. This file is updated every six months (in December and June) and the most recent version can be downloaded here (https://data.iana.org/time-zones/data/leap-seconds.list). The file is expected to be located at `/usr/share/lbto/UT/leap-seconds.list`, but this location can be changed at run time using the *ini file. If the leap-seconds file is not found, then the fallback leap-seconds.list file contained with this repository will be used instead.
+The `libtelemetry` dependency requires an updated version of the `leap-seconds.list` file to function. This file is updated every six months (in
+December and June) and the most recent version can be downloaded here (https://data.iana.org/time-zones/data/leap-seconds.list). The file is expected
+to be located at `/usr/share/lbto/UT/leap-seconds.list`, but this location can be changed at run time using the *ini file. If the leap-seconds file 
+is not found, then the fallback leap-seconds.list file contained with this repository will be used instead.
 
 ## Usage Instructions
 Run the executable with the following optional command line arguments.
 - `./modsheb <rcfile>`
 - `./modsheb`
 
-If Hdf5 logging will be used, then the user running the executable must be in a usergroup named `telemetry`.
+If Hdf5 logging will be used, then the user running the executable must be in a usergroup named `telemetry`. This will not be done in
+practice since we've vested the environmental sensor logging functions in the `modsEnv` agent and only use `modsHEB` for engineering 
+purposes to work with the HEBs without having to fire up the entire instrument control and data-taking system.
 
 ## Doxygen Documentation
 Generate the documentation by running the `doxygen` command from the modsHeb directory.
