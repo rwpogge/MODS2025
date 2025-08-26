@@ -125,7 +125,7 @@ int initEnvLog(envdata_t *envi){
   envi->logFD = open(envi->logFile,(O_WRONLY|O_CREAT|O_APPEND));
 
   if (envi->logFD == -1) {
-    printf("ERROR: cannot open environmental data log file %s - %s\n",
+    printf("ERROR: cannot open HEB data log file %s - %s\n",
 	    envi->logFile,strerror(errno));
     envi->doLogging = 0; // disable logging to prevent noise...
     return -1;
@@ -135,12 +135,12 @@ int initEnvLog(envdata_t *envi){
   // If this is the first time the file has been opened, print the
   // log header, otherwise just note the log has been restarted
   if (exists)
-    logMessage(envi,"Monitor agent re-started");
+    logMessage(envi,"HEB agent re-started");
   else {
     // This is the first time we've had this file open, write the
     // detailed file header.
     memset(logStr,0,sizeof(logStr));
-    sprintf(logStr,"#\n# Environmental Sensor Data Log\n#\n");
+    sprintf(logStr,"#\n# HEB Sensor Data Log\n#\n");
     ierr = write(envi->logFD,logStr,strlen(logStr));
 
     memset(logStr,0,sizeof(logStr));

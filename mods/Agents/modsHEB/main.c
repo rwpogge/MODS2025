@@ -248,7 +248,7 @@ int main(int argc, char *argv[]){
 //---------------------------------------------------------------------------
 
 void CleanExit(){
-  printf("\nMODS Enviromental Monitor Agent Shutting Down...\n");
+  printf("\nMODS HEB agent shutting down...\n");
   
   // Tear down the application's client socket
   CloseClientSocket(&client);
