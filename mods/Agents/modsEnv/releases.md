@@ -2,9 +2,14 @@
 Last Build: 2024 Aug 25
 
 ## Version 3.3.1
-2025 Aug 25
+2025 Aug 25/26
 
-Added `ionutils.c` and `ionutils.h` for dewar vacuum ionization gauge I/O integration.
+Added `ionutils.c` and `ionutils.h` for dewar vacuum ionization gauge I/O integration.  Tested on
+MODS1 at LBTO in the highbay on the cart on Aug 26, confirmed ion gauge operation.  Time to readout
+the pressure was timed at 0.20+/0.02 sec, so reduced the default comm timeout from 5 seconds to 1
+(~5x margin) and recompiled.  timing hooks are in clientutil.c and commented out unless needed
+for diagnostics.  Will go back and put that under the debug flag.  Still need to remove error
+messages embedded inside `ionutils.c` for the next, we hope operational, release.
 
 ## Version 3.2.2
 2025 Aug 20

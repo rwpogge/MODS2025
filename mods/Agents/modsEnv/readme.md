@@ -1,5 +1,5 @@
 # modsenv - MODS environmental sensor monitor agent
-Version: 3.3.1 (2025 Aug 25)
+Version: 3.3.1 (2025 Aug 26)
 
 Authors: R. Pogge & X. Carroll, OSU Astronomy
 
@@ -83,7 +83,9 @@ Run the executable with the following optional command line arguments.
 - `./modsenv <rcfile>`
 - `./modsenv`
 
-If hdf5 logging will be used, then the user running the executable must be in a usergroup named `telemetry`.
+If hdf5 logging will be used, then the user running the executable must be in a usergroup named `telemetry` or it must
+be run as root/sudo.  The latter is actually the most practical option, and it may be best to run `modsenv` as a systemd
+service.
 
 ## Doxygen Documentation
 Generate the documentation by running the `doxygen` command from the modsEnv directory.
