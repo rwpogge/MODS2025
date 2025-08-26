@@ -14,11 +14,11 @@
 // Default client application values (override/set in loadconfig.c)
 #define DEFAULT_MYID      "ENV"                     //!< default client ISIS node name
 #define DEFAULT_MYPORT    10901                     //!< default client socket port   
-#define DEFAULT_RCFILE    (char *)"./modsheb.ini"   //!< default client runtime config file
+#define DEFAULT_RCFILE    (char *)"/home/dts/Config/modsheb.ini"   //!< default client runtime config file
 
 
-#define ENV_LOGS "/home/dts/Logs/Env/modsheb"       //!< Default enviromental log file path and rootname
-#define HDF_LOGS "/home/dts/Logs/Env/modsheb-hdf5"  //!< Default hdf5 telemetry log file path
+#define ENV_LOGS "/home/Logs/Env/modsheb"       //!< Default enviromental log file path and rootname
+#define HDF_LOGS "/home/Logs/Env/modsheb-hdf5"  //!< Default hdf5 telemetry log file path
 
 // Default ISIS server information (see loadconfig.c if used)
 #define DEFAULT_ISISID   "IS"        //!< default ISIS server node name
