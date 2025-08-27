@@ -36,12 +36,12 @@
     /*!
         \brief Send a command and recieve a response from the ion gauge.
         \param socket TCP socket connected to the ion gauge
-        \param response string where the response data will be written.
         \param command string with the command to send.
+        \param response string where the response data will be written.
         \return 0 on success, -1 on errors.  
         Sends the given command to the ion gauge, and stores the response.
     */
-    int sendIonCommand(int socket, char* response, char* command);
+    int sendIonCommand(int socket, char* command, char* response);
 
     /*!
         \brief Create a TCP socket which is connected to an ion-gauge at the given address:port.
