@@ -554,8 +554,10 @@ main(int argc, char *argv[])
     printf("   Red IEB Inside Air T=%.1f C  Glycol Return T=%.1f C\n",ms->MODS.redTemperature[0],ms->MODS.redTemperature[1]);
     printf("  MODS Air Top T=%.1f C   Bottom T=%.1fC\n",ms->MODS.redTemperature[2],ms->MODS.redTemperature[3]);
     printf("       Truss Top T=%.1f C   Bottom T=%.1fC\n",ms->MODS.blueTemperature[2],ms->MODS.blueTemperature[3]);
-    printf("  Blue HEB Inside Air T=%.1f C  Dewar T=%.1f C\n",ms->MODS.blueHEBTemperature,ms->MODS.blueDewarTemperature);
-    printf("   Red HEB Inside Air T=%.1f C  Dewar T=%.1f C\n",ms->MODS.redHEBTemperature,ms->MODS.redDewarTemperature);
+    printf("  Blue HEB Inside Air T=%.1f C  Dewar T=%.1f C P=%8.2e torr\n",ms->MODS.blueHEBTemperature,ms->MODS.blueDewarTemperature,
+		    ms->MODS.blueDewarPressure);
+    printf("   Red HEB Inside Air T=%.1f C  Dewar T=%.1f C P=%8.2e torr\n",ms->MODS.redHEBTemperature,ms->MODS.redDewarTemperature,
+		    ms->MODS.redDewarPressure);
     exit(0);
 
     // IEB currents and temperatures
