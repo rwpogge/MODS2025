@@ -17,6 +17,20 @@ The modsEnv agent has two modes
 
 Logs are kept on the local MODSn server machine in `/home/Logs/Env`.
 
+## LBTO Telemetry System Integration 
+
+With version 3 of `modsEnv` for the summer 2025 MODS detector controller upgrade to Archons and new head electronics boxes, we will
+use `modsEnv` to integrate MODS environmental sensor data into the LBTO telemetry system. Log files will be created using 
+HDF5 file streams with the `lbto-libtelemetry` libraries to store all MODS environmental sensor and power status data in the standard 
+LBTO shared instrument telemetry folders (`/lbt/data/telemetry/instruments/') mounted using nfs.  We will likely phase out the ASCII text 
+log files after we recommission MODS with the Archons and shake out the bugs.
+
+In addition, with this version we are also putting all MODS environmental sensor data in the MODS shared memory segment (created at boottime
+by the `modsalloc` systemd service).  This will allow injection of MODS sensor data of particular interest, for example for alarm monitors
+for dewar health (LN2 reservoir temperature and vacuum pressure) into the observatory data dictionary.  Observatory alarm monitors will
+be able to get current data by interrogating the data dictionary, avoiding problems of having to interrogate the instrument systems 
+piecemeal, with attendant risk to interrupt real-time data acquisition.
+
 ## Dependencies
  * `isisClient` - ISIS client library (`libisis`) on the same machine.
  * `libmodbus` - open source libmodbus libraries (http://libmodbus.org) - verified with v3.1.7 (needs `libmodbus` and `libmodbus-devel`).
