@@ -4,9 +4,13 @@
   \author Xander Carroll
 
   \date 2025 May 7
+
+  Modification History:
+    2025 Aug 28 - added client.h and useCLI for print statements
 */
 
 #include "modbusutils.h"
+#include "client.h"
 
   /*!
     \brief Write (set) or read (get) data from WAGO modbus registers/coils
@@ -23,7 +27,9 @@
     This version rewritten for libmodbus to replace defunct and unsupported proprietary 
     FieldTalk code. [rwp/osu - 2024 Feb 20]
   */
-int wagoSetGet(int setGet, int isRegister, char *wagoAddr, int addr, int len, void* data){
+int
+wagoSetGet(int setGet, int isRegister, char *wagoAddr, int addr, int len, void* data)
+{
   // using libmodbus
   modbus_t *modbus;
   int result;
@@ -31,7 +37,7 @@ int wagoSetGet(int setGet, int isRegister, char *wagoAddr, int addr, int len, vo
   // Open a Modbus/TCP connection to the WAGO
   modbus = modbus_new_tcp(wagoAddr,502);
   if (modbus_connect(modbus) == -1) {
-    printf("ERROR: Cannot connect to WAGO host %s: %s\n",wagoAddr,modbus_strerror(errno));
+    if (useCLI) printf("ERROR: Cannot connect to WAGO host %s: %s\n",wagoAddr,modbus_strerror(errno));
     modbus_free(modbus);
     return -1;
   }
@@ -60,10 +66,14 @@ int wagoSetGet(int setGet, int isRegister, char *wagoAddr, int addr, int len, vo
   return 0;
 }
 
-int wagoSetGetCoils(int setGet, char *wagoAddr, int coilAddr, int coilLen, uint8_t coilData[]){
+int
+wagoSetGetCoils(int setGet, char *wagoAddr, int coilAddr, int coilLen, uint8_t coilData[])
+{
   return wagoSetGet(setGet, 0, wagoAddr, coilAddr, coilLen, coilData);
 }
 
-int wagoSetGetRegisters(int setGet, char *wagoAddr, int regAddr, int regLen, uint16_t regData[]){
+int
+wagoSetGetRegisters(int setGet, char *wagoAddr, int regAddr, int regLen, uint16_t regData[])
+{
   return wagoSetGet(setGet, 1, wagoAddr, regAddr, regLen, regData);
 }

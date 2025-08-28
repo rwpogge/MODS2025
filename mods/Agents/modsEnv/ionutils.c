@@ -12,6 +12,7 @@
 */
 
 #include "ionutils.h"
+#include "client.h"
 
 /*!
   \brief Send a command and recieve a response from the ion gauge.
@@ -159,43 +160,47 @@ initIonSocket(int* sock, char* address, int port, int timeout)
     
     Opens a connection to the ion gauge, reads the pressure, returns it as a float, and closes the ion connection.
 
-    Note: throttled printf() diagnostics, later need to enable under client.Debug...
 */
 
 float 
 getIonPressure(char* address, int port, int channel, int timeout)
 {
-    char responseMessage[ION_MESSAGE_SIZE];     //The ion response message will be collected in this variable.
-    char commandMessage[ION_MESSAGE_SIZE];      //The ion command message will be sent to the ion
+  char responseMessage[ION_MESSAGE_SIZE];     //The ion response message will be collected in this variable.
+  char commandMessage[ION_MESSAGE_SIZE];      //The ion command message will be sent to the ion
 
-    int sock;           //The TCP socket with a connection to the ion.
-    float response;     //The parsed reponse from the ion gauge.
+  int sock;           //The TCP socket with a connection to the ion.
+  float response;     //The parsed reponse from the ion gauge.
 
-    //Form a TCP connection with the ion.
-    if (initIonSocket(&sock, address, port, timeout) < 0){
-        //printf("ERROR: Could not connect to ion-gauge %s:%d.\n", address, port);
-        return 0.0;
-    }
+  // TCP connection with the ion gauge comtrol
+  
+  if (initIonSocket(&sock, address, port, timeout) < 0){
+    if (useCLI) printf("ERROR: Could not connect to ion-gauge %s:%d.\n", address, port);
+    return 0.0;
+  }
 
-    //Get the current pressure reading (returned as a string).
-    snprintf(commandMessage, ION_MESSAGE_SIZE, "#%02dRD\r", channel);
-    if (sendIonCommand(sock, commandMessage, responseMessage) != 0){
-        //printf("ERROR: Could not send command (gauge off?).\n");
-        close(sock);
-        return 0.0;
-    }
+  // Get the current pressure reading (returned as a string)
 
-    //Convert the response to a float. (Note: there will be four characters before the desired float).
-    response = strtof(responseMessage+4, NULL);
-    if(response == 0.0f){
-        //printf("ERROR: Could not parse ion response.\n");
-        close(sock);
-        return 0.0;
-    }
-
-    //Close the socket.
+  snprintf(commandMessage, ION_MESSAGE_SIZE, "#%02dRD\r", channel);
+  if (sendIonCommand(sock, commandMessage, responseMessage) != 0){
+    if (useCLI) printf("ERROR: Could not send command (gauge off?).\n");
     close(sock);
+    return 0.0;
+  }
+  
+  // Convert the response to a float (Note: there will be four characters before the desired float)
+  
+  response = strtof(responseMessage+4, NULL);
+  if(response == 0.0f){
+    if (useCLI) printf("ERROR: Could not parse ion response.\n");
+    close(sock);
+    return 0.0;
+  }
 
-    //Return success.
-    return response;
+  // Close the socket.
+  
+  close(sock);
+
+  // Return success.
+  
+  return response;
 }

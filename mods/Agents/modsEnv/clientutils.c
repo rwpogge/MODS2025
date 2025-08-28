@@ -27,7 +27,9 @@
   structures with delinquent information.
 
 */
-void initEnvData(envdata_t *envi){
+void
+initEnvData(envdata_t *envi)
+{
   strcpy(envi->modsID,"None");
   envi->cadence = DEFAULT_CADENCE;  // default monitoring cadence (see client.h)
   envi->pause = 0;                  // start running (no pause)
@@ -120,7 +122,9 @@ void initEnvData(envdata_t *envi){
   the query occurred.  
 
 */
-void printEnvData(envdata_t *envi){
+void
+printEnvData(envdata_t *envi)
+{
   if (!useCLI) return;
 
   printf("Environmental Monitor Agent Info:\n");
@@ -179,7 +183,9 @@ void printEnvData(envdata_t *envi){
   the results into the enviromental data structure
 
 */
-int getEnvData(envdata_t *envi) {
+int
+getEnvData(envdata_t *envi)
+{
   int ierr;
   uint16_t iubData[10];   // raw IUB WAGO data array
   uint16_t iebRData[10];  // raw Red IEB WAGO data array
