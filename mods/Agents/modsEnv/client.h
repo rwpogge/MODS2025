@@ -88,7 +88,6 @@
 
 #define MAX_TELEMETRY_BUFFER_BYTES 12000000 //!< Maximum number of bytes that the lbt telemetry collector can use to store samples.
 
-
 // ISIS common client utilties library header
 
 #include "isisclient.h"     // should be in -I path in Makefile, no paths here!
@@ -99,13 +98,12 @@ extern isisclient_t client; // global client runtime config table
 #include "modbusutils.h"
 
 // ion gauge
-#include "ionutils.h"
 
+#include "ionutils.h"
 
 // MODS shared memory segment
 
 #include <instrutils.h>
-//#include <isl_funcs.h>
 #include <islcommon.h>
 #include <isl_shmaddr.h>
 
@@ -332,7 +330,6 @@ public:
 // Mappings for IEB temperatures into iebTemp[4]
 //
 // index = MODS_<Chan> + 2*MODS_<Param>
-//
 
 #define MODS_IEBTEMP 0
 #define MODS_IEBGRT  1
@@ -342,11 +339,10 @@ public:
 #define MODS_GCAMPOWER 0
 #define MODS_WFSPOWER  1
 
-// ... more as needed ...
+// HDF5 telemetry leap seconds file and fallback version
 
 #define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"  //!< Default path to the leap-seconds.list file.
 #define FALLBACK_LEAP_SECONDS_FILE "./leap-seconds.list"          //!< If the leap-seconds file can't be found at the path above, this one is tried next.
-
 
 //------------------------------
 // Globals - use very sparingly
