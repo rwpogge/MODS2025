@@ -12,5 +12,5 @@ dmPort = 10301
 def sendToDM(msg):
     s.sendto(msg.encode('utf-8'),(dmHost,dmPort))
 
-sendToDM("process /home/data/mods1b.20250727.0021.fits")
+sendToDM("proc /home/data/mods1b.20250727.0021.fits")
 
