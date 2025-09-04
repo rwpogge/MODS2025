@@ -132,14 +132,14 @@ writing `python --version` should report `Python 3.12.2`.
 
 Note we do not install the imsTool GUI in a public-facing directory as this is for engineering use only.
 
-## Shared Memory (`modsalloc`)
+## Post-Build Installation
+
+### modsalloc systemd service
 
 For the server machines (mods1 and mods2) you need to install and start the `modsalloc` service
 to run at boot-time using systemd.
 
 Because the LBTO mountain machines are configured to use SELinux in enforcing mode, we have to take extra installation steps.
-
-### modsalloc systemd service
 
 After the initial build, go to `/home/dts/mods/malloc` and copy these files to `/usr/local/bin` as root or sudo:
 ```
@@ -159,14 +159,12 @@ Created symlink /etc/systemd/system/multi-user.target.wants/modsalloc.service â†
 ```
 After the next reboot the `modsalloc` service will be started automatically. 
 
-### First restart
-
 Before the first reboot, you will need to start the service for the first time:
 ```
 % sudo systemctl restart modsalloc
 ```
 
-## Other programs
+### Other programs
 
 These programs need to be installed in `/usr/local/bin` for use by common data-taking services.  This install step
 makes the "release" versions, allowing us to recompile and test new versions without interrupting programs critical
