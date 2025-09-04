@@ -176,3 +176,18 @@ sudo cp vueinfo /usr/local/bin
 sudo cp mlcRecover /usr/local/bin
 ```
 (more coming as we converge)
+
+## Python
+
+Currently we are using Anaconda Python 3.12 (latest release is 3.12.11 at this writing), and conda 24.11.3
+
+Python modules we need to add for MODS:
+```
+    pip install pymodbus
+```
+Zero-C ICE and the LBTO IIF modules:
+```
+% conda activate /usr/local/conda/envs/py312
+% conda install conda-forge::zeroc-ice
+% pip install --trusted-host yumsrv.tucson.lbto.org --extra-index-url http://yumsrv.tucson.lbto.org/pip/repo lbto-iif
+```
