@@ -177,6 +177,19 @@ sudo cp mlcRecover /usr/local/bin
 ```
 (more coming as we converge)
 
+## Data and Telemetry NFS mounts
+
+MODS machines NFS mount two remote observatory drives
+ * `/lbt/data/new` - newdata repository
+ * `/lbt/data/telemetry` - observatory HDF5 telemetry streams
+
+Two rpms are setup to do this for us, need to be run one-time when a machine is setup
+```
+sudo dnf install lbto-nfs-mountain-newdata lbto-nfs-mountain-telemetry
+```
+
+`modsEnv` writes environmental sensor logs in `/lbt/data/telemetry/instruments/mods#/...` (#=1,2)
+
 ## Python
 
 Currently we are using Anaconda Python 3.12 (latest release is 3.12.11 at this writing), and conda 24.11.3
