@@ -181,13 +181,15 @@ sudo cp mlcRecover /usr/local/bin
 
 Currently we are using Anaconda Python 3.12 (latest release is 3.12.11 at this writing), and conda 24.11.3
 
+This is done was root (sudo won't give you the right conda environment with `conda activate`)
+
 Python modules we need to add for MODS:
 ```
-    pip install pymodbus
+pip install pymodbus
 ```
 Zero-C ICE and the LBTO IIF modules:
 ```
-% conda activate /usr/local/conda/envs/py312
-% conda install conda-forge::zeroc-ice
-% pip install --trusted-host yumsrv.tucson.lbto.org --extra-index-url http://yumsrv.tucson.lbto.org/pip/repo lbto-iif
+conda activate /usr/local/conda/envs/py312
+conda install conda-forge::zeroc-ice
+pip install --trusted-host yumsrv.tucson.lbto.org --extra-index-url http://yumsrv.tucson.lbto.org/pip/repo lbto-iif
 ```
