@@ -50,7 +50,7 @@ dnf install ${FLAGS} readline readline-devel ;
 
 # Other stuff: doxygen, tk, tcsh, etc.
 
-dnf install ${FLAGS} doxygen tk tcsh emacs dnstools wget ;
+dnf install ${FLAGS} doxygen tk tcsh emacs dnsutils wget ;
 
 # Zero-C Ice install
 
