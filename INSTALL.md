@@ -7,17 +7,22 @@ Needs good installation instructions.  This is a stub to build on
 ### Make sure you have all ancillary packages, compilers, and libraries ready
 
 ```shell
-dnf -y install tk tcsh emacs doxygen
-dnf -y install readline readline-devel
-dnf -y install libmodbus libmodbus-devel
-dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
-dnf -y install libice3.7-c++ libice-c++-devel python3-ice
-...
-dnf -y install dnstools wget (nice, but not required)
-...
+sudo dnf -y install tk tcsh emacs doxygen
+sudo dnf -y install readline readline-devel
+sudo dnf -y install libmodbus libmodbus-devel
+sudo dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
+sudo dnf -y install dnstools wget (nice, but not required)
 ```
 Also need the local LBTO versions of hdf5 and lbto-libtelemetry, build from local rpms
+or the copies in ~/Libs/ in a properly-configured account on the mods machines.
 
+For ICE, follow the instructions at https://www.zeroc.com/ice/downloads/3.7/cpp
+```
+sudo dnf -y install https://download.zeroc.com/ice/3.7/el9/ice-repo-3.7.el9.noarch.rpm
+
+sudo dnf -y install libice-c++-devel libice3.7-c++ python3-ice
+sudo dnf -y install icebox
+```
 ### Create directories we need
 
 In the dts account, make sure that these directories are all present with the correct permission
