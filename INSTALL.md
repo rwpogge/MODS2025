@@ -147,6 +147,7 @@ After the initial build, go to `/home/dts/mods/malloc` and copy these files to `
 ```
 Then
 ```
+% cd ../modsalloc
 % sudo cp modsalloc.service /usr/lib/systemd/system/
 ```
 and enable for boot-time execution:
