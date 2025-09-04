@@ -11,7 +11,7 @@ sudo dnf -y install tk tcsh emacs doxygen
 sudo dnf -y install readline readline-devel
 sudo dnf -y install libmodbus libmodbus-devel
 sudo dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
-sudo dnf -y install dnstools wget (nice, but not required)
+sudo dnf -y install dnsutils wget (nice, but not required)
 ```
 Also need the local LBTO versions of hdf5 and lbto-libtelemetry, build from local rpms
 or the copies in ~/Libs/ in a properly-configured account on the mods machines.
