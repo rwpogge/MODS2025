@@ -333,14 +333,23 @@ loadConfig(char *cfgfile)
 //---------------------------------------------------------------------------
 
 /*!
-  \brief Save the runtime configuration
+  \brief Save the runtime aconfiguration
   
   \param cfgfile name of the configuration file to save
   \return 0 on success, -1 on failure
 
-  Saves the current runtime configuration to the named file.  This
-  file can be used for subsequent sessions to restart the modsCCD
-  agent from a known state.
+  Save a subset of runtime parameters that allow restarting the
+  modsCCD agent from a known state. These are stored in
+  a .modsCCD file in the user's home directory
+
+  Parameters stored are in the obsPars struct
+    obsPars.Observer
+    obsPars.Partner
+    obsPars.PropID
+    obsPars.PIName
+    obsPars.Support
+    obsPars.TelOps
+    ...
 
   \sa loadConfig()
 */
