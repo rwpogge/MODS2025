@@ -35,7 +35,7 @@ for example, to setup that machine's `iTerm` GUI to talk to the MODS1 system.
 
 ## Configuration File Structure
 A typical runtime config file has the following structure:
-
+```
 #
 # ITerm Runtime Configuration File
 #
