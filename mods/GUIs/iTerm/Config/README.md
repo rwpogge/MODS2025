@@ -22,11 +22,10 @@ That way when the iTerm instance is launched, it will always come up as the corr
 Copy the contents of this `Config/` folder into a subfolder in the public `/home/dts/Config` directory:
 ```shell
   cd /home/dts/Config
-  cp ~/MODS2025/mods/GUIs/iTerm/Config/iterm_MODS*.ini .
-  mv iterm_MODS1.ini MODS1/
-  mv iterm_MODS2.ini MODS2/
+  cp ~/MODS2025/mods/GUIs/iTerm/Config/iterm_MODS1.ini MODS1/
+  cp ~/MODS2025/mods/GUIs/iTerm/Config/iterm_MODS2.ini MODS2/
 ```
-Then make a link pointing to the correct file for the particular MODS channel:
+Then make a link pointing to the correct file for the particular MODS instance:
 ```
   cd /home/dts/Config
   ln -s MODS1/iterm_MODS1.ini iterm.ini
