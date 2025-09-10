@@ -1,6 +1,6 @@
 # ISIS server Runtime Configuration Files
 
-**Updated: 2025 July 27 [rwp/osu]**
+**Updated: 2025 Sept 10 [rwp/osu]**
 
 These are files used by the ISIS message-passing servers for each of the binocular MODS instruments.
 
@@ -18,27 +18,24 @@ This is the same as the way ISIS was run on the pre-Archon MODS data-taking syst
 ### ISIS server Runtime Configuration Files:
 
  * `isis_MODS1.ini` - MODS1
- * `isisd_MODS1.ini` - MODS1 "daemon" mode
  * `isis_MODS2.ini` - MODS2
- * `isisd_MODS2.ini` - MODS2 "daemon" mode
 
 ## Installation
 
-Copy the contents of this `Config/` folder into a subfolder in the public `/home/dts/Config` directory
-name `ISIS`:
+Copy the contents of this `Config/` folder into the MODS1 and MODS2 subfolders in the 
+public `/home/dts/Config` folder:
 ```shell
   cd /home/dts/Config
-  mkdir ISIS  (if it does not already exist)
-  cd ISIS
-  cp MODS2025/mods/Agents/ISIS/Config/isis_MODS*.ini .
+  cp MODS2025/mods/Agents/ISIS/Config/isis_MODS1.ini MODS1/
+  cp MODS2025/mods/Agents/ISIS/Config/isis_MODS2.ini MODS2/
   cd ..
 ```
-Then make a link pointing to the correct file for the particular MODS channel:
+Then make a link pointing to the correct file for the particular MODS instance:
 ```
   cd /home/dts/Config
-  ln -s ISIS/isis_MODS2.ini isis.ini
+  ln -s MODS2/isis_MODS2.ini isis.ini
 ```
-for example, to setup the `mods2` instrument server machine's `ISIS` server for MODS2.
+This example sets up the `mods2` instrument server machine's `ISIS` server for MODS2.
   
 ## Configuration File Structure
 A typical ISIS runtime config file has the following structure:
@@ -58,7 +55,7 @@ A typical ISIS runtime config file has the following structure:
 
 ServerID   IS
 ServerPort 6600
-ServerLog  /home/dts/Logs/ISIS/isis
+ServerLog  /home/Logs/ISIS/isis
 LogDate    UTC
 
 # List all serial ports we might use here, max 8
@@ -77,8 +74,8 @@ LogDate    UTC
 #  M1.ENV lbtEnv agent: .130 port 10901
 #  M1.RC  modsCCD agent: .131 port 10402
 #  M1.BC  modsCCD agent: .132 port 10401
-#  M1.RHE modsHEB agent: .131 port 10502
-#  M1.BHE modsHEB agent: .132 port 10501
+#  M1.RHE modsHEB agent: .131 port 10502 - optional
+#  M1.BHE modsHEB agent: .132 port 10501 - optional
 #  modsUI GUI .130, ports 20800 and 20801 (dashboard)
 
 UDPPort 192.168.139.130 10700
@@ -86,8 +83,8 @@ UDPPort 192.168.139.130 10801
 UDPPort 192.168.139.130 10901
 UDPPort 192.168.139.131 10402
 UDPPort 192.168.139.132 10401
-UDPPort 192.168.139.131 10502
-UDPPort 192.168.139.132 10501
+#UDPPort 192.168.139.131 10502
+#UDPPort 192.168.139.132 10501
 UDPPort 192.168.139.130 20801
 
 # Runtime Flags
