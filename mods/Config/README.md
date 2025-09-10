@@ -14,13 +14,9 @@ in the code tree instead of the /home/mods/ support directory
       prompt% sudo changeConfig
       prompt% Change mechanisms.ini link to: osu1, osu2, lbt1, lbt2: osu1
 
-   mechanisms.ini - Link for MODS microlynx mechanism controller (mmc) agent
-   mechanisms_MODS1.ini - MODS1 mechanism table
-   mechanisms_MODS2.ini - MODS2 mechanism table
+   MODS1/ - folder with the MODS1 mechanism config and tables
+   MODS2/ - folder with the MODS2 mechanism config and tables
 </pre>
-
-The MODS1/ and MODS2/ directories have the configuration files for
-each MODS instrument.
 
 IIF/ contains copies of the files needed by the lbttcs and other IIF client 
 programs that rely on the ICE version of the IIF provided by LBTO. 
