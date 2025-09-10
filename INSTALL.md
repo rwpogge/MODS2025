@@ -64,7 +64,11 @@ public space.  Once we're past the development phases this will be a much cleane
 cp -r MODS2025/mods .
 cp -r MODS2025/ISIS .
 cp -r MODS2025/Config .
+cp -r MODS2025/modsPerl .
 ```
+
+Note that we are temporarily overriding the `modsPerl` distribution on the LBTO GitHub repository
+while we test and verify updates needed for the Archon controllers.
 
 #### MODS azcam server (e.g., mods1b)
 
@@ -131,6 +135,7 @@ Remember to do `conda activate` to restore the anaconda environment. For LBT at 
 writing `python --version` should report `Python 3.12.2`.
 
 Note we do not install the imsTool GUI in a public-facing directory as this is for engineering use only.
+
 
 ## Post-Build Installation
 
