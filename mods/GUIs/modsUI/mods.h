@@ -12,7 +12,7 @@
 // Runtime files and paths
 
 #define MODS_BASE_PATH    "/home/dts/"     //!< Runtime base path
-#define MODS_INI_FILE     "modsUI.ini"     //!< default MODS ini file in MODS_BASE_PATH
+#define MODS_INI_FILE     "modsUI.ini"     //!< default MODS ini file in MODS_BASE_PATH/Config/
 
 // MODS dual-instrument array-indexes (convenience parameters)
 
@@ -33,7 +33,7 @@
 // ISIS Server and Client info defaults
 
 #define MODS_ISIS_SERVER_ID     "IS" //!< Default ISIS server ID
-#define MODS_ISIS_SERVER_HOST "192.168.139.131" //!< Default ISIS server Host (mods1data)
+#define MODS_ISIS_SERVER_HOST "192.168.139.130" //!< Default ISIS server Host (mods1)
 #define MODS_ISIS_SERVER_PORT   6600 //!< Default ISIS server Port
 #define MODS_BASEPORT          10901 //!< Base port (will use BASEPORT+x, x=0..n-1
 
