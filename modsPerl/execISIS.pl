@@ -45,7 +45,7 @@
 #
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
-#   pogge@astronomy.ohio-state.edu
+#   pogge.1@osu.edu
 #   2011 May 5
 #
 # Modification History:
@@ -54,6 +54,7 @@
 #   2012 Oct 13 - Aggressive whitespace abatement [rwp/osu]
 #   2014 Apr 18 - Updates for two MODS at the LBT [rwp/osu]
 #   2016 Aug 01 - Binocular operations release for 2016B [rwp/osu]
+#   2025 Sep 10 - Archon CCD controller updates [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -61,7 +62,6 @@
 # LBT and OSU lab systems
 
 use lib "/home/modseng/modsPerl";
-use lib "/lhome/dts/modsUI/modsPerl";
 use lib "/home/dts/modsPerl";
 
 use ISIS;
@@ -73,8 +73,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date in ISO8601 format
 
-$verNum  = "v2.1.0";
-$verDate = "2016-08-01";
+$verNum  = "v2.2.0";
+$verDate = "2025-09-10";
 
 # Make sure text reverts to normal on using color
 
@@ -82,7 +82,7 @@ $Term::ANSIColor::AUTORESET = 1;
 
 # Lists of MODS1/2 ISIS server and client information
 
-@isisHosts = ("192.168.139.131","192.168.139.231");  # modsNdata server IP Addrs
+@isisHosts = ("192.168.139.130","192.168.139.230");  # modsN server IP Addrs
 @isisPorts = (6600,6600);     # modsNdata server socket ports
 @isisIDs   = ("IS","IS");     # MODSn ISIS Host ID
 @myIDs     = ("ISS1","ISS2"); # Our ID: ISSn = MODSn ISIS Script

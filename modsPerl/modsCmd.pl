@@ -22,7 +22,7 @@
 #
 # Author:
 #    R. Pogge, OSU Astronomy Dept.
-#    pogge@astronomy.ohio-state.edu
+#    pogge.1@osu.edu
 #    2009 Aug 28
 #
 # ToDo:
@@ -35,14 +35,14 @@
 #   2012 Oct 13 - Aggressive whitespace abatement [rwp/osu]
 #   2014 Apr 14 - Changes for MODS1 and MODS2 at LBT [rwp/osu]
 #   2016 Jun 14 - Binocular Release for 2016B [rwp/osu]
-#  
+#   2025 Sep 10 - Archon CCD controller system updates [rwp/osu]
+#
 #---------------------------------------------------------------------------
 
 # Custom ISIS module, kept in a private directory.  This is all the
 # places this can live at LBT and the OSU labs.
 
 use lib "/home/modseng/modsPerl";
-use lib "/lhome/dts/modsUI/modsPerl";
 use lib "/home/dts/modsPerl";
 
 use ISIS;
@@ -56,12 +56,12 @@ $Term::ANSIColor::AUTORESET = 1;     # revert to normal after using color
 
 # Version number.  Date should be ISO8601 format
 
-$verNum = "2.1.1";
-$verDate = "2016-06-14"; 
+$verNum = "2.2.0";
+$verDate = "2025-09-10"; 
 
 # ISIS network and host IDs for MODS1 and MODS2 instances
 
-@modsHosts = ("192.168.139.131","192.168.139.231");
+@modsHosts = ("192.168.139.130","192.168.139.230");
 @modsPorts = (6600,6600);
 @modsIDs = ("IS","IS");
 @uiHosts = ("MC1","MC2");

@@ -9,7 +9,13 @@ Modifications to modsPerl and associated scripts for the Archon CCD
 controller update during summer shutdown 2025.
 
 Changes:
- * ...
+ * Server IP addresses for new system (.130 and .230, for mods1 and mods2)
+ * `modsPerl` path must be `/home/dts/modsPerl/` or `/home/modseng/modsPerl`
+
+Advanced versions as follows:
+ * `acqMODS.pl` and `execMODS.pl` - 2.5.0-bino
+ * `execISIS`, `isisCmd`, `modsCmd` - 2.2.0
+
 
 ## 2024 Jun 13: offset and offsetxy timeout
 

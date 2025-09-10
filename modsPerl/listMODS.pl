@@ -21,7 +21,7 @@
 #
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
-#   pogge@astronomy.ohio-state.edu
+#   pogge.1@osu.edu
 #   2010 Dec 18
 #
 # Modification History:
@@ -33,13 +33,14 @@
 #   2012 Oct 13 - Aggressive whitespace abatement [rwp/osu]
 #   2014 Apr 18 - MODS1+2 version [rwp/osu]
 #   2016 Jun 18 - Binocular operations release for 2016B [rwp/osu]
+#   2025 Sep 10 - Archon CCD controller updates [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
 # Version number and date - date in ISO8601 format 
 
-$verNum  = "v2.1.0";
-$verDate = "2016-06-18";
+$verNum  = "v2.2.0";
+$verDate = "2025-09-10";
 
 # Standard modules we use
 

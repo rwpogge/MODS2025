@@ -32,7 +32,7 @@
 #
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
-#   pogge@astronomy.ohio-state.edu
+#   pogge.1@osu.edu
 #   2011 Nov 1
 #
 # Modification History:
@@ -40,15 +40,14 @@
 #   2013 Jan 19 - Added MODS2 support [rwp/osu]
 #   2014 Apr 18 - Formal release with modsPerl v2 upon MODS2 installation
 #                  at LBT [rwp/osu]
+#   2025 Sep 10 - Archon CCD controller system updates [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
 # Custom ISIS module - these are all the places it could be on machines
 # at LBT and the OSU instrument lab
 
-use lib "/lhome/dts/modsUI/modsPerl";
 use lib "/home/dts/modsPerl";
-use lib "/home/MODSeng/modsPerl";
 
 use ISIS;
 
@@ -59,13 +58,13 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date, date in ISO8601 format
 
-$verNum = "2.0.1";
-$verDate = "2014-04-18";
+$verNum = "2.1.0";
+$verDate = "2025-09-10";
 
 # Local ISIS server and IE server info for MODS1 and MODS2
 
-@isisID   = ("IS","M2.ISIS");
-@isisHost = ("192.168.139.131","192.168.139.231");
+@isisID   = ("IS","IS");
+@isisHost = ("192.168.139.130","192.168.139.230");
 @isisPort = (6600,6600);
 @ieHost   = ("M1.IE","M2.IE");
 @redHost  = ("M1.RC","M2.RC");

@@ -96,7 +96,7 @@
 #
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
-#   pogge@astronomy.ohio-state.edu
+#   pogge.1@osu.edu
 #   2010 Dec 8
 #
 # Modification History:
@@ -145,13 +145,13 @@
 #                 for large offsets outside the co-point (treat like a 
 #                 mini-preset) [rwp/osu]
 #   2024 Jun 13 - Change offset/offsetxy timeout to presetTO [rwp/osu]
+#   2025 Sep 10 - Archon CCD controller update changes [rwp/osu]
 #---------------------------------------------------------------------------
 
 # Custom ISIS perl module.  These are all the places it can live on
 # the machines at LBT and the OSU instrument lab
 
 use lib "/home/modseng/modsPerl";
-use lib "/lhome/dts/modsUI/modsPerl";
 use lib "/home/dts/modsPerl";
 
 use ISIS;
@@ -163,7 +163,7 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - dates in ISO8601 format, please.
 
-$verNum  = "v2.4.4-bino";
+$verNum  = "v2.5.0-bino";
 $verDate = "2024-06-13";
 
 # Make sure text reverts to normal on using color
@@ -172,7 +172,7 @@ $Term::ANSIColor::AUTORESET = 1;
 
 # Lists of MODS1/2 ISIS server and client information
 
-@isisHosts = ("192.168.139.131","192.168.139.231");  # modsNdata server IP Addrs
+@isisHosts = ("192.168.139.130","192.168.139.230");  # modsN server IP Addrs
 @isisPorts = (6600,6600);     # modsNdata server socket ports
 @isisIDs   = ("IS","IS");     # MODSn ISIS Host ID
 @myIDs     = ("OBS1","OBS2"); # Our ID: OBSn = MODSn Observing Script

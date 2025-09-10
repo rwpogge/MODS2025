@@ -76,7 +76,7 @@
 #
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
-#   pogge@astronomy.ohio-state.edu
+#   pogge.1@osu.edu
 #   2010 Feb 20
 #
 # ToDo:
@@ -124,15 +124,15 @@
 #   2021 Mar 16 - fixed problem of not aborting exposure on Ctrl+C [rwp/osu]
 #   2024 Jun 13 - Increased offset/offsetxy timeout to presetTO [rwp/osu]
 #   2024 Jun 14 - Typo at line 715 "$go" --> "go" [rwp/osu]
+#   2025 Sep 10 - Archon CCD controller system updates [rwp/osu]
+#
 #---------------------------------------------------------------------------
 
 # Custom ISIS.pm module.  These are all the places it can be on the
 # LBT and OSU lab systems
 
 use lib "/home/modseng/modsPerl";
-use lib "/lhome/dts/modsUI/modsPerl";
 use lib "/home/dts/modsPerl";
-use lib "/home/darkstar/pogge/MODS/modsPerl";
 
 use ISIS;
 
@@ -143,8 +143,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - date in ISO8601 format
 
-$verNum  = "v2.4.6-bino";
-$verDate = "2024-06-14";
+$verNum  = "v2.5.0-bino";
+$verDate = "2025-09-10";
 
 # Make sure text reverts to normal on using color
 
@@ -152,7 +152,7 @@ $Term::ANSIColor::AUTORESET = 1;
 
 # Lists of MODS1/2 ISIS server and client information
 
-@isisHosts = ("192.168.139.131","192.168.139.231");  # modsNdata server IP Addrs
+@isisHosts = ("192.168.139.130","192.168.139.230");  # modsN server IP Addrs
 @isisPorts = (6600,6600);     # modsNdata server socket ports
 @isisIDs   = ("IS","IS");     # MODSn ISIS Host ID
 @myIDs     = ("ACQ1","ACQ2"); # Our ID: OBSn = MODSn Observing Script
