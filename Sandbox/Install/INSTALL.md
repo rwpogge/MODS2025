@@ -177,7 +177,7 @@ Build
 #### MODS Archon servers (mods1blue, mods1red, mods2blue, mods2red)
 
 Build 
- *iTerm
+ * iTerm
 
 #### pre-install preparation 
 ```shell
