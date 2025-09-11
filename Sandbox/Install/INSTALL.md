@@ -261,12 +261,15 @@ These programs need to be installed in `/usr/local/bin` for use by common data-t
 makes the "release" versions, allowing us to recompile and test new versions without interrupting programs critical
 for observing (why we install "by hand" instead of as part of the make process).
 
+#### MODS instrument servers (mods1 and mods2)
 ```
 cd /home/dts/mods/bin
+sudo cp mmcService /usr/local/bin
+sudo cp agwServer /usr/local/bin
+sudo cp *IMCS /usr/local/bin
 sudo cp vueinfo /usr/local/bin
 sudo cp mlcRecover /usr/local/bin
 ```
-(more coming as we converge)
 
 ## Data and Telemetry NFS mounts
 
