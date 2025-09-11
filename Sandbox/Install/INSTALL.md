@@ -17,8 +17,10 @@ sudo dnf -y install dnsutils wget (nice, but not required)
 The LBTO repository has much we need. This can only be done when on the mountain
 and connected to the internal observatory network
 ```
-dnf install -y http://yumsrv.tucson.lbto.org/rpms/almalinux9/release/lbto-yum-repository-1-1.noarch.rpm
+sudo dnf install -y http://yumsrv.tucson.lbto.org/rpms/almalinux9/release/lbto-yum-repository-1-1.noarch.rpm
 ```
+[Note: it can be done with VPN when not on the mountain, but you have to be physically
+logged in because their VPN prohibits remote mode]
 
 Also need the local LBTO versions of hdf5 and lbto-libtelemetry, build from local rpms
 or the copies in ~/Libs/ in a properly-configured account on the mods machines.
