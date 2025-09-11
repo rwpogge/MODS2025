@@ -133,14 +133,38 @@ Remember to follow the instructions for implementing the
 shared memory sector (`modsalloc` README)
 
 ### MODS Agents
+
+#### MODS instrument server (mods1 or mods2)
+
 ```shell
 cd ~/mods/Agents
 cd lbttcs
 ./build
 cp lbttcs ~/bin/
 cd ../modsEnv
-../
+./build
+cp modsenv ~/bin/
+cd ../modsHEB
+./build
+cp modsheb ~/bin/ 
 ```
+We do not run `modsCCD` (or azcam) on the main instrument servers.  `modsHEB` is only for
+engineering purposes.
+
+### MODS Archon Server (mods1blue, mods1red, mods2blue, mods2red)
+
+```shell
+cd ~/mods/Agents
+cd ../modsCCD
+./build
+cp modsCCD ~/bin/ 
+cd ../modsHEB
+./build
+cp modsheb ~/bin/ 
+```
+We do not run `modsEnv` or `lbttcs` on Archon servers.  `modsHEB` is only used for engineering
+purposes, it is not run during regular observing operations.
+
 ### MODS GUIs
 ```shell
 cd ~/mods/GUIs
