@@ -150,7 +150,7 @@ cp modsheb ~/bin/
 We do not run `modsCCD` (or azcam) on the main instrument servers.  `modsHEB` is only for
 engineering purposes.
 
-### MODS Archon servers (mods1blue, mods1red, mods2blue, mods2red)
+#### MODS Archon servers (mods1blue, mods1red, mods2blue, mods2red)
 
 ```shell
 cd ~/mods/Agents
@@ -165,6 +165,21 @@ We do not run `modsEnv` or `lbttcs` on Archon servers.  `modsHEB` is only used f
 purposes, it is not run during regular observing operations.
 
 ### MODS GUIs
+
+#### MODS instrument servers (mods1 and mods2)
+
+Build
+ * iTerm
+ * imsTool
+ * modsUI
+
+
+#### MODS Archon servers (mods1blue, mods1red, mods2blue, mods2red)
+
+Build 
+ *iTerm
+
+#### Pre-preparation 
 ```shell
 cd ~/mods/GUIs
 qmake --version
@@ -172,24 +187,39 @@ qmake --version
 conda deactivate
 qmake --version 
    -> it should say "Using Qt version 6.6.2 in /usr/lib64", proceed, otherwise "conda deactivate" again
+```
+Remember to do `conda activate` to restore the anaconda environment after building the GUIs for a machine. F
+
+#### iTerm build (all machines)
+
+```
 cd iTerm
 qmake -o Makefile
 make clean
 make
 cp iterm ~/bin/
-cd ../imsTool
-qmake -o Makefile
-make clean
-make
-[No copy to ~/bin/!]
+```
+
+
+#### modsUI build (mods1 and mods2)
+
+```
 cd ../modsUI
 qmake -o Makefile
 make clean
 make
 cp modsUI ~/bin/
 ```
-Remember to do `conda activate` to restore the anaconda environment. For LBT at this 
-writing `python --version` should report `Python 3.12.2`.
+
+#### imsTool build (mods1 and mods2)
+
+```shell
+cd ../imsTool
+qmake -o Makefile
+make clean
+make
+[No copy to ~/bin/!]
+```
 
 Note we do not install the imsTool GUI in a public-facing directory as this is for engineering use only.
 
