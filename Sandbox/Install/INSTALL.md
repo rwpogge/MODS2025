@@ -53,10 +53,11 @@ Then, still as root, activate py312
 conda activate /usr/local/conda/envs/py312
 ```
 Python modules we need to add for MODS:
+#### pymodbus
 ```
 pip install pymodbus
 ```
-Zero-C ICE and the LBTO IIF modules:
+#### Zero-C ICE and the LBTO IIF
 ```
 conda install conda-forge::zeroc-ice
 pip install --trusted-host yumsrv.tucson.lbto.org --extra-index-url http://yumsrv.tucson.lbto.org/pip/repo lbto-iif
