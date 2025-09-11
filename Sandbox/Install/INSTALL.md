@@ -179,7 +179,7 @@ Build
 Build 
  *iTerm
 
-#### Pre-preparation 
+#### pre-install preparation 
 ```shell
 cd ~/mods/GUIs
 qmake --version
