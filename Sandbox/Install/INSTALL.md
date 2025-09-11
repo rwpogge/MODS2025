@@ -129,7 +129,7 @@ cd ~/mods
 ./build
 ```
 Remember to follow the instructions for implementing the 
-shared memory sector (`modsalloc` README)
+shared memory segment (`modsalloc` README)
 
 ### MODS Agents
 
@@ -237,7 +237,6 @@ After the initial build, go to `/home/dts/mods/malloc` and copy these files to `
 ```
 % sudo cp modsalloc /usr/local/bin/
 % sudo cp modsalloc.sh /usr/local/bin/
-% sudo chmod +x /usr/local/bin/modsalloc.sh
 ```
 Then
 ```
