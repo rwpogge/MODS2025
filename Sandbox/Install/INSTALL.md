@@ -93,21 +93,20 @@ to update your local copy.
 Yes, this is sloppy, but this is also development mode.  We copy the code we need out of MODS2025/ into the
 public space.  Once we're past the development phases this will be a much cleaner build, until then...
 
-#### MODS instrument server (e.g., mods1, mods2):
+#### MODS instrument servers (mods1 and mods2):
 ```shell
 cp -r MODS2025/mods .
 cp -r MODS2025/ISIS .
 cp -r MODS2025/Config .
 cp -r MODS2025/modsPerl .
 ```
-
 Note that we are temporarily overriding the `modsPerl` distribution on the LBTO GitHub repository
 while we test and verify updates needed for the Archon controllers.
 
-#### MODS azcam server (e.g., mods1b)
+#### MODS Archon servers (mods1blue, mods1red, mods2blue, mods2red)
 
 ```shell
-cp -r MODS2025/mods/Agents .
+cp -r MODS2025/mods .
 cp -r MODS2025/ISIS .
 cp -r MODS2025/azcam .
 cp -r MODS2025/Config .
@@ -134,7 +133,7 @@ shared memory sector (`modsalloc` README)
 
 ### MODS Agents
 
-#### MODS instrument server (mods1 or mods2)
+#### MODS instrument servers (mods1 or mods2)
 
 ```shell
 cd ~/mods/Agents
@@ -151,7 +150,7 @@ cp modsheb ~/bin/
 We do not run `modsCCD` (or azcam) on the main instrument servers.  `modsHEB` is only for
 engineering purposes.
 
-### MODS Archon Server (mods1blue, mods1red, mods2blue, mods2red)
+### MODS Archon servers (mods1blue, mods1red, mods2blue, mods2red)
 
 ```shell
 cd ~/mods/Agents
