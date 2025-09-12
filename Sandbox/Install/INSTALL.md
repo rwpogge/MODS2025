@@ -40,12 +40,12 @@ mkdir bin
 mkdir Logs
 chmod 777 Logs
 ```
-And in /home
+And in /home, login as root (direct or `sudo su -`):
 ```shell
 cd /home
-sudo mkdir data
+mkdir data
 chmod 777 data
-sudo mkdir Logs
+mkdir Logs
 chmod 777 Logs
 ```
 
@@ -53,7 +53,7 @@ chmod 777 Logs
 
 Currently we are using Anaconda Python 3.12 (latest release is 3.12.11 at this writing), and conda 24.9.2
 
-Install of the standard LBTO py312 environment (as root)
+Install of the standard LBTO py312 environment (as root, via direct login or `sudo su -`)
 ```
 conda create -y --prefix /usr/local/conda/envs/py312 python=3.12 astropy numpy scipy matplotlib jupyterlab pandas conda-build requests msgpack-python lz4 pymongo colorama
 ```
@@ -200,7 +200,6 @@ make
 cp iterm ~/bin/
 ```
 
-
 #### modsUI build (mods1 and mods2)
 
 ```
@@ -220,9 +219,7 @@ make clean
 make
 [No copy to ~/bin/!]
 ```
-
-Note we do not install the imsTool GUI in a public-facing directory as this is for engineering use only.
-
+**NOTE: do not install the imsTool GUI in a public-facing directory**.  This tool is for engineering use only.
 
 ## Post-Build Installation
 
