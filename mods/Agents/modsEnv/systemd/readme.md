@@ -51,5 +51,28 @@ Check to see if modsenv started OK:
 
 ## Testing
 
-Coming soon...
+`vueinfo` is a custom program we use to interrogate the MODS shared memory segment.  
 
+If the shared memory segment is active, you'll see the last read of environmental data:
+```shell
+% vueinfo env
+Environmental Sensors:
+  Glycol Supply: P=100.01 psi-g  T=13.0 C
+         Return: P=18.22 psi-g  T=15.0 C
+  IUB Inside Air T=16.0 C   Ambient T=12.7 C   HeatSink T=15.8 C
+  Blue IEB Inside Air T=16.1 C  Glycol Return T=13.1 C
+   Red IEB Inside Air T=16.0 C  Glycol Return T=13.0 C
+  MODS Air Top T=12.3 C   Bottom T=11.6C
+       Truss Top T=12.0 C   Bottom T=12.3C
+  Blue HEB Inside Air T=18.8 C  Dewar T=11.8 C P=0.00e+00 torr
+   Red HEB Inside Air T=17.9 C  Dewar T=11.2 C P=0.00e+00 torr
+```
+You can also look at the running telemetry file.  For example,
+to see what modsenv is doing on mods2:
+```
+% ls -l /lbt/data/telemetry/instruments/mods2/
+total 4
+drwxrwxr-x. 1 root  4 Sep 12 14:21 2025/
+lrwxrwxrwx. 1 root 74 Sep 12 14:21 current.mods2.env.h5 -> /lbt/data/telemetry/instruments/mods2/2025/09/12/202509121821.mods2.env.h5
+```
+The date on the `current.mods2.env.h5` file, and the symlink at right should be for the current date if it is running.
