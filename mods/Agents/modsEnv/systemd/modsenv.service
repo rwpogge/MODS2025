@@ -1,0 +1,33 @@
+################################################################################
+# modsenv.service
+#
+# This service unit is for the MODS data-taking system environmental
+# sensor montoring agent (modsenv).
+#
+# The modsenv service must start after modsalloc (shared memory segment
+# initialization), and autorestart after a 30s delay.
+#
+# R. Pogge, OSU Astronomy
+# pogge.1@osu.edu
+# 2025 Sept 12
+#
+################################################################################
+# This program should be placed in /usr/lib/systemd/system/
+#
+# For SELinux running in enforcing mode, modsenv.sh and modsenv must
+# be in /usr/local/bin, copied using sudo
+################################################################################
+
+[Unit]
+Description=Runs the modsEnv MODS environmental sensor monitoring agent
+Requires=modsalloc.service
+After=modsalloc.service
+
+[Service]
+User=dts
+ExecStart=/usr/local/bin/modsenv.sh
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
