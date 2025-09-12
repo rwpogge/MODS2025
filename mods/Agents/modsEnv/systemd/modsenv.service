@@ -24,7 +24,6 @@ Requires=modsalloc.service
 After=modsalloc.service
 
 [Service]
-User=dts
 ExecStart=/usr/local/bin/modsenv.sh
 Restart=always
 RestartSec=10s
