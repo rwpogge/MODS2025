@@ -1,4 +1,4 @@
-# modsEnv - systemd service
+# modsEnv systemd service
 
 **Updated: 2025 Sept 12 [rwp/osu]**
 
