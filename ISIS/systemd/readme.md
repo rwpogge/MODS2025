@@ -21,9 +21,9 @@ counted on one hand and have plenty of fingers left.
 
 Because the LBTO mountain machines are configured to use SELinux in enforcing mode, we have to take extra installation steps.
 
-After the initial build, go to `/home/dts/mods/Agents/isis` and copy these files to `/usr/local/bin` as root or sudo:
+After the initial build, go to `/home/dts/ISIS` and copy these files to `/usr/local/bin` as root or sudo:
 ```
-% sudo cp isis /usr/local/bin/
+% sudo cp isisServer/isis /usr/local/bin/
 % sudo cp systemd/isis.sh /usr/local/bin/
 % sudo chmod +x /usr/local/bin/isis.sh
 ```
