@@ -52,6 +52,8 @@ automatically every time the system reboots.
 
 Check to see if modsalloc started OK:
 ```
+% systemctl status modsalloc
+
 ○ modsalloc.service - Runs the MODS data-taking system shared memory allocator (modsalloc)
      Loaded: loaded (/usr/lib/systemd/system/modsalloc.service; disabled; preset: disabled)
      Active: inactive (dead)
