@@ -175,6 +175,7 @@ getIonPressure(char* address, int port, int channel, int timeout)
   
   if (initIonSocket(&sock, address, port, timeout) < 0){
     if (useCLI) printf("ERROR: Could not connect to ion-gauge %s:%d.\n", address, port);
+    close(sock);
     return 0.0;
   }
 
