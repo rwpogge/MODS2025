@@ -20,7 +20,7 @@
 ROOTDIR     = /home/dts/mods
 ISISDIR     = /home/dts/ISIS
 TELEMDIR    = /usr/include/lbto/lib-telemetry
-VERSION     = v3.3.1
+VERSION     = v3.3.2
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 
