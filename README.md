@@ -1,7 +1,7 @@
 # MODS2025
 Version 1.2.1
 
-Last Update: 2025 Aug 26 [rwp/osu]
+Last Update: 2025 Sept 14 [rwp/osu]
 
 Lead: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
@@ -22,26 +22,9 @@ However, it is taking on many of the structures of the real thing, so not totall
   * `Scripts` - Startup and status scripts (coming soon...)
   * `Sandbox` - place to put test codes and other bits we are using, the action is in the subfolders
 
-## Installation
+## Installation and dependencies
 
-See the INSTALL.md file in this repository. 
-
-## Package dependencies
-
-This is a running list during development phase as we discover what is missing from the 
-AlmaLinux 9.x systems we're setting up.
-
-```shell
-dnf -y install tk tcsh emacs doxygen
-dnf -y install readline readline-devel
-dnf -y install libmodbus libmodbus-devel
-dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
-dnf -y install libice3.7-c++ libice-c++-devel python3-ice
-...
-dnf -y install dnsutils wget (nice, but not required)
-...
-Also need the local LBTO versions of hdf5 and lbto-libtelemetry, build from local rpms
-```
+See the [installation instructions](INSTALL.md) in this repository. 
 
 ## Authors and Contributors
 
