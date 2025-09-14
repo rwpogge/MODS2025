@@ -210,7 +210,7 @@ getEnvData(envdata_t *envi)
 
   ierr = wagoSetGetRegisters(0,envi->iub_Addr,0,10,iubData);
   if (ierr != 0) {
-    if (useCLI) printf("WARNING: %s IUB WAGO read error",envi->modsID);
+    if (useCLI) printf("WARNING: %s IUB WAGO read error\n",envi->modsID);
     return ierr;
 
     shm_addr->MODS.utilState = 0;
@@ -238,7 +238,7 @@ getEnvData(envdata_t *envi)
 
   ierr = wagoSetGetRegisters(0,envi->iub_Addr,512,1,iubData);
   if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s IUB WAGO error reading power status word",envi->modsID);
+    if (useCLI) printf("WARNING: %s IUB WAGO error reading power status word\n",envi->modsID);
   }
   else {
     iubPower = iubData[0];
@@ -268,7 +268,7 @@ getEnvData(envdata_t *envi)
   
   ierr = wagoSetGetRegisters(0,envi->iub_Addr,10,1,iubData);
   if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s cannot read IUB breaker output status",envi->modsID);
+    if (useCLI) printf("WARNING: %s cannot read IUB breaker output status\n",envi->modsID);
   }
   else {
     iubBreaker = iubData[0];
@@ -287,7 +287,7 @@ getEnvData(envdata_t *envi)
   
   ierr = wagoSetGetRegisters(0,envi->iebR_Addr,0,10,iebRData);
   if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s Red IEB WAGO read error",envi->modsID);
+    if (useCLI) printf("WARNING: %s Red IEB WAGO read error\n",envi->modsID);
 
     shm_addr->MODS.redIEBState = 0;
   }
@@ -308,7 +308,7 @@ getEnvData(envdata_t *envi)
   
   ierr = wagoSetGetRegisters(0,envi->iebB_Addr,0,10,iebBData);
   if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s Blue IEB WAGO read error",envi->modsID);
+    if (useCLI) printf("WARNING: %s Blue IEB WAGO read error\n",envi->modsID);
 
     shm_addr->MODS.blueIEBState = 0;
   }
@@ -333,7 +333,7 @@ getEnvData(envdata_t *envi)
 
   ierr = wagoSetGetRegisters(0,envi->hebR_Addr,512,1,hebRData);
   if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s Red HEB WAGO error reading power relay status word",envi->modsID);
+    if (useCLI) printf("WARNING: %s Red HEB WAGO error reading power relay status word\n",envi->modsID);
 
     shm_addr->MODS.redHEBState = 0;
   }
@@ -351,7 +351,7 @@ getEnvData(envdata_t *envi)
 
   ierr = wagoSetGetRegisters(0,envi->hebR_Addr,512,1,hebBData);
   if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s Blue HEB WAGO error reading power relay status word",envi->modsID);
+    if (useCLI) printf("WARNING: %s Blue HEB WAGO error reading power relay status word\n",envi->modsID);
 
     shm_addr->MODS.blueHEBState = 0;
   }
@@ -369,7 +369,7 @@ getEnvData(envdata_t *envi)
 
   ierr = wagoSetGetRegisters(0,envi->hebR_Addr,4,2,hebRData);
   if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s Red HEB WAGO RTD sensor read error",envi->modsID);
+    if (useCLI) printf("WARNING: %s Red HEB WAGO RTD sensor read error\n",envi->modsID);
 
     shm_addr->MODS.redHEBState = 0;
   }
@@ -386,7 +386,7 @@ getEnvData(envdata_t *envi)
 
   ierr = wagoSetGetRegisters(0,envi->hebB_Addr,4,2,hebBData);
   if (ierr < 0) {
-    if (useCLI) printf("WARNING: %s Blue HEB WAGO RTD sensor read error",envi->modsID);
+    if (useCLI) printf("WARNING: %s Blue HEB WAGO RTD sensor read error\n",envi->modsID);
 
     shm_addr->MODS.blueHEBState = 0;
   }
