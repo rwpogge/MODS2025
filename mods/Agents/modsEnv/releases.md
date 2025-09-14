@@ -1,5 +1,15 @@
 # modsenv Release Notes
-Last Build: 2024 Aug 25
+Last Build: 2024 Sept 14
+
+## Version 3.3.2
+2025 Sept 14
+
+Fixed bug in `ionutils.c` - `getIonPressure()` was not closing TCP socket on error initializing the socket connection, leading
+to a stale socket deadlocking the Comtrol TCP/RS485 port.
+
+Fixed annoyance in `clientutils.c` in warning messages not including \n so the CLI output was messy, obfuscating warnings 
+during engineering diagnosis of the problem above.
+
 
 ## Version 3.3.1
 2025 Aug 25/26
