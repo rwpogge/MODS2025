@@ -31,7 +31,7 @@
     #include <unistd.h>
 
     #define ION_MESSAGE_SIZE 16   // The maximum size string that the ion gauge can return.
-    #define ION_TIMEOUT_LENGTH 1  // How long to wait on a response from the gauge before timeout.
+    #define ION_TIMEOUT_LENGTH 2  // How long to wait on a response from the gauge before timeout.
 
     /*!
         \brief Send a command and recieve a response from the ion gauge.
