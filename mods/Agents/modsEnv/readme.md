@@ -115,7 +115,7 @@ These are the ion gauge interface settings for each channel on each MODS:
  * RS485 (2-wire) config data are: `baud`, `parity`, `data bits`, `stop bit`
  * All are setup with RS485 channel **5** using the unit front panel rotary switch
 
-| Instrument | Channel | Comtrol Port | RS485 Config |
+| Instrument | Channel | Comtrol ipAddr:Port | RS485 Config |
 |:---:|:---:|:---:|:---:|
 | MODS1 | Red  | 192.168.139.103:8018 | 9600/none/8/1 |
 |       | Blue | 192.168.139.113:8018 | 9600/none/8/1 |
