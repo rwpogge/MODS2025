@@ -102,9 +102,10 @@ be run as root/sudo.  The latter is actually the most practical option, and it m
 service.
 
 ## Doxygen Documentation
+
 Generate the documentation by running the `doxygen` command from the modsEnv directory.
 
-## Dewar Vacuum Ion Gauge configuration
+## Dewar vacuum ion gauge configuration
 
 **Updated/Verified**: 2025 August 6 [rwp/osu]
 
@@ -120,25 +121,6 @@ These are the ion gauge interface settings for each channel on each MODS:
 |       | Blue | 192.168.139.113:8018 | 9600/none/8/1 |
 | MODS2 | Red  | 192.168.139.203:8018 | 9600/none/8/1 |
 |       | Blue | 192.168.139.213:8018 | 19200/none/8/1 |
-
-### MODS1
-
-#### Red Channel
- * Comtrol Device Master: 192.168.139.103:8018
- * RS485 setup: 9600/none/8/1
-
-#### Blue Channel 
- * Comtrol Device Master: 192.168.139.113:8018
- * RS485 setup: 9600/none/8/1
-### MODS2
-
-#### Red Channel
- * Comtrol Device Master: 192.168.139.203:8018
- * RS485 setup: 9600/none/8/1
-
-#### Blue Channel 
- * Comtrol Device Master: 192.168.139.213:8018
- * RS485 setup: **19200**/none/8/1
 
 **NOTE**: The MODS2 blue dewar ion gauge is the oddball: it was never reconfigured to our standard 9600 baud because a field repair was
 rushed and it fell off the to-do list (setting is non-trivial: it is made through firmware, not a front-panel setting).
