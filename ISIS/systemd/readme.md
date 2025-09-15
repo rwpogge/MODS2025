@@ -50,10 +50,41 @@ Check to see if isis started OK:
 ```
 % systemctl status isis
 
-...
+● isis.service - ISIS server for a MODS instrument
+     Loaded: loaded (/usr/lib/systemd/system/isis.service; disabled; preset: disabled)
+     Active: active (running) since Mon 2025-09-15 14:03:22 EDT; 1min 37s ago
+   Main PID: 67884 (isis.sh)
+      Tasks: 2 (limit: 99329)
+     Memory: 780.0K
+        CPU: 3ms
+     CGroup: /system.slice/isis.service
+             ├─67884 /bin/sh /usr/local/bin/isis.sh
+             └─67885 /usr/local/bin/isis -d
 
+Sep 15 14:03:22 mods1 systemd[1]: Started ISIS server for a MODS instrument.
 ```
 
 ## Testing
 
-...
+A few things to check that ISIS is running
+
+### Use `isisCmd`
+
+Use the `isisCmd` script to query the status of the ISIS server.  For the
+ISIS server running on `mods1`, try
+```
+% isisCmd --mods1 is status
+DONE: STATUS HostName=IS HostAddr=mods1:6600 rcFile=/home/dts/Config/isis.ini logFile=/home/Logs/ISIS/isis.20250915.log numClients=2 Concise +LOG +HANDSHAKE -CLI
+```
+This correctly reports info on the current ISIS server.
+
+You should also be able to communicate with ISIS clients through the server
+```
+% ./isisCmd --mods1 is hosts
+DONE: HOST numHosts=2 maxHosts=32 host0=M1.ENV host1=IPC1
+
+% ./isisCmd --mods1 m1.env info
+DONE: info HostID=M1.ENV HostAddr=mods1:10901 Mode=ISISClient ISIS=IS ISISHost=192.168.139.130:6600 InstID=MODS1 Cadence=60 IUBAddr=192.168.139.122 IEBBAddr=192.168.139.110 IEBRAddr=192.168.139.100 HEBBAddr=192.168.139.142 HEBRAddr=192.168.139.141 B_IGAddr=192.168.139.113 R_IGAddr=192.168.139.103 runState=Active Logging=Enabled logFile=/home/Logs/Env/mods1.20250915.log HdfLogging=Enabled HdfLogDir=/lbt/data/telemetry/instruments/ Verbose -DEBUG rcfile=/home/dts/Config/modsenv.ini
+```
+Here we looked at what clients are attached to ISIS, see `M1.ENV`, then ask `M1.ENV` for its configuration via the ISIS server.
+
