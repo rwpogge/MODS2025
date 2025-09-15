@@ -1,7 +1,9 @@
 # modsenv - MODS environmental sensor monitor agent
-Version: 3.3.1 (2025 Aug 26)
+Version: 3.3.2 (2025 Sept 14)
 
 Authors: R. Pogge & X. Carroll, OSU Astronomy
+
+See [release notes](release.md) for current version details.
 
 ## Overview
 modsEnv collects and logs MODS instrument environmental and power-status data as an autonomous background process. Environmental sensors and 
