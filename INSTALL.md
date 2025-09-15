@@ -6,6 +6,8 @@ Needs good installation instructions.  This is a stub to build on
 
 ### Make sure you have all ancillary packages, compilers, and libraries ready
 
+#### Packages from public repositories:
+
 ```shell
 sudo dnf -y install tk tcsh emacs doxygen
 sudo dnf -y install readline readline-devel
@@ -14,16 +16,32 @@ sudo dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
 sudo dnf -y install dnsutils wget (nice, but not required)
 ```
 
-The LBTO repository has much we need. This can only be done when on the mountain
-and connected to the internal observatory network
+#### Packages from the LBTO respository
+
+The LBTO repository has packages we need unique to LBTO as well as observatory standard
+versions of packages that, while available elsewhere, have features needed at LBTO.
+
+Installing packages on the LBTO repository can only be done when on the mountain
+and connected to the internal observatory network.
+
+First, install the LBTO repository config:
 ```
 sudo dnf install -y http://yumsrv.tucson.lbto.org/rpms/almalinux9/release/lbto-yum-repository-1-1.noarch.rpm
 ```
 [Note: it can be done with VPN when not on the mountain, but you have to be physically
 logged in because their VPN prohibits remote mode]
 
+Next, we get LBTO versions of packages we need:
+
+**SAOImage ds9**:
+```
+sudo dnf -y install --refresh ds9
+```
+
 Also need the local LBTO versions of hdf5 and lbto-libtelemetry, build from local rpms
 or the copies in ~/Libs/ in a properly-configured account on the mods machines.
+
+#### ZeroC ICE
 
 For ICE, follow the instructions at https://www.zeroc.com/ice/downloads/3.7/cpp
 ```
