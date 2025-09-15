@@ -10,6 +10,9 @@ to a stale socket deadlocking the Comtrol TCP/RS485 port.
 Fixed annoyance in `clientutils.c` in warning messages not including \n so the CLI output was messy, obfuscating warnings 
 during engineering diagnosis of the problem above.
 
+Increased `ION_TIMEOUT_LENGTH` in `ionutils.h` from 1 to 2 seconds. This is to address timeouts on the MODS2 red dewar ion
+gauge resulting in occasional read faults.
+
 
 ## Version 3.3.1
 2025 Aug 25/26
