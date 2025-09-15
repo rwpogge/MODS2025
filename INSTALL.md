@@ -16,6 +16,15 @@ sudo dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
 sudo dnf -y install dnsutils wget (nice, but not required)
 ```
 
+Other things to take care of
+```shell
+sudo systemctl disable firewalld
+```
+This makes sure that we are not running a redundant firewall whose rules work
+to block interprocess communications between MODS data-taking system components
+on the MODS VLAN. If `firewalld` is running, it blocks UDP ports between
+computers that are critical to the data-taking system.
+
 #### Packages from the LBTO respository
 
 The LBTO repository has packages we need unique to LBTO as well as observatory standard
