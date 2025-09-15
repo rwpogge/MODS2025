@@ -21,6 +21,7 @@ Description=Runs the ISIS server for a MODS instrument
 ExecStart=/usr/local/bin/isis.sh
 Restart=always
 RestartSec=10s
+Environment="USER=systemd"
 
 [Install]
 WantedBy=multi-user.target
