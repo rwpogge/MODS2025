@@ -25,7 +25,6 @@ After the initial build, go to `/home/dts/ISIS` and copy these files to `/usr/lo
 ```
 % sudo cp isisServer/isis /usr/local/bin/
 % sudo cp systemd/isis.sh /usr/local/bin/
-% sudo chmod +x /usr/local/bin/isis.sh
 ```
 Then, logged in as root (or sudo):
 ```
