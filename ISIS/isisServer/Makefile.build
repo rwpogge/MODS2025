@@ -13,7 +13,7 @@
 # Notes:
 #   Version 3 was started 2024 Feb 2 - Migration to Alma 9.3 and modern systems[rwp/osu] 
 #       
-VERSION     = 3.0.1
+VERSION     = 3.0.2
 # MODS root directory
 ROOTDIR = /home/dts
 # Directory for installed "public" binaries

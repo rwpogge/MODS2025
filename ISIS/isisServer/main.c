@@ -192,8 +192,7 @@ main(int argc, char *argv[])
   // Initialize the server system table 
 
   strcpy(isis.exeFile,argv[0]);         // how this executable was invoked 
-  strcpy(isis.userID,getenv("USER"));   // and by whom                     
-  strcpy(isis.iniFile,ISIS_CONFIG); // default INI file if no -f flag  
+  strcpy(isis.iniFile,ISIS_CONFIG);     // default INI file if no -f flag  
   isis.useCLI = isis_TRUE;              // interactive by default
 
   // Process the command line arguments if any 
@@ -243,13 +242,15 @@ main(int argc, char *argv[])
     
     printf("   Version %s (%s %s)\n",ISIS_VERSION,ISIS_COMPDATE,ISIS_COMPTIME);
     printf("  ------------------------------------------------\n");
-    printf("\n");
-  }
+    printf("\n"); 
+    strcpy(isis.userID,getenv("USER"));
+ }
   else {
+    strcpy(isis.userID,"systemd");
     printf("%s %s: isis version %s started in daemon mode\n",
 	   getDateTime(),isis.exeFile,ISIS_VERSION);
   }
-
+ 
   // Open and parse the initialization file 
 
   if (loadConfig(isis.iniFile) < 0) {
