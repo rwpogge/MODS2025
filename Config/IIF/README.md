@@ -41,13 +41,16 @@ These are selected by setting the `PropFile` parameter (without .client) in the 
 ### azcam server FITS header tables
 
 The `azcam-mods` server uses YAML files to tell it which data dictionary (DD) data are to be
-retrieved and stored in the FITS headers for telescope and instrument configuration state.  These
-are in 4 files:
+retrieved and stored in the FITS headers to record telescope and instrument configuration state.  
+
+These are in 4 files:
  * `modsTCS_left.txt` - TCS state FITS headers for MODS1 at SX (left) direct gregorian
  * `modsTCS_right.txt` - TCS state FITS headers for MODS2 at DX (right) direct gregorian
  * `modsInst_left.txt` - Instrument state FITS data for MODS1 at SX (left) direct gregorian
  * `modsInst_right.txt` - Instrument state FITS data for MODS2 at DX (right) direct gregorian
 
+These need to be moved into the relevant `azcam/system/<modsID>/template/` folders for the
+active azcam server instance.
 
 ### LBT Data Dictionary Tables:
 
