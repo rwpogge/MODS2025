@@ -37,7 +37,7 @@ mods_IIFClose()
 
   if (iif>0) {
      factory->destroy(iif);
-     communicator->destroy(iif);
+     communicator->destroy();
   }
  
   sprintf(iifmsgs[0],"Closing proxy '%s' for '%s' on '%s'", 
