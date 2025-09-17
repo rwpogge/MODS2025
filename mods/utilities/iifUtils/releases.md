@@ -2,7 +2,10 @@
 
 Original Build: 2014 July 1
 
-Last Build: 2025 Jul 4
+Last Build: 2025 Sept 17
+
+## Version 2.1.1 - 2025 Sept 17
+ * Added `communicator->destroy()` to `mods_IIFClose()` in `modsIIFUtils.cpp` to get rid of exception cast on exiting 
 
 ## Version 2.1.0 - 2025 July 4
  * Port to AlmaLinux 9 for the MODS2025 updates

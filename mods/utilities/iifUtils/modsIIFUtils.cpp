@@ -35,7 +35,10 @@ mods_IIFClose()
 
   if (!factory) throw "Invalid proxy: IIF Server not found.";
 
-  if (iif>0) factory->destroy(iif);
+  if (iif>0) {
+     factory->destroy(iif);
+     communicator->destroy(iif);
+  }
  
   sprintf(iifmsgs[0],"Closing proxy '%s' for '%s' on '%s'", 
 	  clientProxy_Name, focalStation_Name, instrument_Name);

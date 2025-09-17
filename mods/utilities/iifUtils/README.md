@@ -1,5 +1,11 @@
 # iifUtils
 
+Updated: 2025 Sept 17
+
+See the [Release Notes](releases.md) for details
+
+## Overview
+
 Interface between the ZeroC Ice IIF for the LBT and the MODS `lbttcs` interface agent.  The `lbttcs` agent 
 is an ISIS client that connects all MODS instrument services to the LBT TCS system.  All the interactions
 with Ice/IIF are contained in the `iifUtils` library functions.

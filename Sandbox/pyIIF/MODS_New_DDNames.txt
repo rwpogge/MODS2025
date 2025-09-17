@@ -3,7 +3,7 @@ Proposed New MODS Data Dictionary Names
 R. Pogge, OSU Astronomy, 2025 August 18
 
 MODS instrument configuration data missing from the TCS IIF Data Dictionary table for Build 2024A (version
-on the LBT GitHub (iif/configuration/IIF/DDNames)
+on the LBT GitHub (tcs/iif/configuration/IIF/DDNames)
 
 
 Name                             Type    Units   Description

@@ -14,7 +14,7 @@
 #
 ROOTDIR     = /home/dts/mods
 ISISDIR     = /home/dts/ISIS
-VERSION     = v2.1.0
+VERSION     = v2.1.1
 CC          = /usr/bin/g++ -I.
 AR          = /usr/bin/ar
 LIBDIR      = $(ROOTDIR)/ulib
