@@ -8,8 +8,8 @@ These files are used by the lbttcs agent and the IIF ICE utilities to
 communicate with the LBT TCS, and list of parameters to retrieve
 telescope and observatory information from the LBT Data Dictionary.
 
-These need to be copied into the relevant /home/lbt/Config/IIF/
-folder, and setup as either MODS1 or MODS2 as needed in the lbttcs.ini
+These need to be copied into the relevant `/home/lbt/Config/IIF/`
+folder, and setup as either MODS1 or MODS2 as needed in the `lbttcs.ini`
 runtime configuration file.
 
 For a complete current list of public Data Dictionary entries
@@ -28,9 +28,8 @@ Always avoid editing the files if possible.
 
 ### lbttcs Agent Runtime Configuration Files:
 
- * `lbttcs.ini` - runtime configuration file for the `lbttcs`. Two versions are provided for MODS1 and MODS2
-   * `lbttcs_MODS1.ini` - MODS1 installed at SX direct gregorian
-   * `lbttcs_MODS2.ini` - MODS2 installed at DX direct gregorianf
+ * `lbttcs_MODS1.ini` - MODS1 installed at SX direct gregorian
+ * `lbttcs_MODS2.ini` - MODS2 installed at DX direct gregorianf
   
 ### IIF client Configuration Files:
 
