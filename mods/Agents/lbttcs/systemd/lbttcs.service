@@ -1,27 +1,27 @@
 ################################################################################
-# isis.service
+# lbttcs.service
 #
-# This service unit is runs the ISIS server for a MODS instrument at LBTO
+# This service unit is runs lbttcs, the MODS TCS/IIF interface agent server
+# for a MODS instrument at LBTO
 #
 # R. Pogge, OSU Astronomy
 # pogge.1@osu.edu
-# 2025 Sept 12
+# 2025 Sept 17
 #
 ################################################################################
 # This program should be placed in /usr/lib/systemd/system/
 #
-# For SELinux running in enforcing mode, isis.sh and isis must
+# For SELinux running in enforcing mode, lbttcs.sh and lbttcs must
 # be in /usr/local/bin, copied using sudo
 ################################################################################
 
 [Unit]
-Description=ISIS server for a MODS instrument
+Description=MODS LBT TCS/IIF interface agent
 
 [Service]
-ExecStart=/usr/local/bin/isis.sh
+ExecStart=/usr/local/bin/lbttcs.sh
 Restart=always
 RestartSec=10s
-Environment="USER=systemd"
 
 [Install]
 WantedBy=multi-user.target
