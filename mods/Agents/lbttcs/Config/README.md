@@ -2,14 +2,14 @@
 
 **Original: 2014 July 1 [rwp/osu]**
 
-**Updated: 2025 July 9 [rwp/osu]**
+**Updated: 2025 Sept 17 [rwp/osu]**
 
 These files are used by the lbttcs agent and the IIF ICE utilities to communicate with the LBT TCS, and list of parameters to retrieve telescope and observatory information from the LBT Data Dictionary.
 
-These need to be copied into the relevant /home/lbt/Config/IIF/ folder, and setup as either MODS1 or MODS2 as needed in the lbttcs.ini runtime
+These need to be copied into the relevant `/home/lbt/Config/IIF/` folder, and setup as either MODS1 or MODS2 as needed in the lbttcs.ini runtime
 configuration file.
 
-For a complete current list of public Data Dictionary entries available, see https://github.com/LBTO/ in tcs/iif/configuration/IIF/DDNames
+For a complete current list of public Data Dictionary entries available, see https://github.com/LBTO/ in `tcs/iif/configuration/IIF/DDNames`
 
 ## Config directory
 
