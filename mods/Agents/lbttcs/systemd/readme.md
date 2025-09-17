@@ -50,7 +50,6 @@ automatically every time the system reboots.
 Check to see if lbttcs started OK:
 ```
 % systemctl status lbttcs
-
 ```
 
 ## Testing
