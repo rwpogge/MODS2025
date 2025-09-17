@@ -51,7 +51,7 @@ Check to see if modsenv started OK:
 ```
 % systemctl status modsenv
 
-● modsenv.service - Runs the modsEnv MODS environmental sensor monitoring agent
+● modsenv.service - MODS environmental sensor monitoring agent
      Loaded: loaded (/usr/lib/systemd/system/modsenv.service; enabled; preset: disabled)
      Active: active (running) since Fri 2025-09-12 15:02:37 EDT; 5s ago
    Main PID: 13755 (modsenv.sh)
@@ -62,7 +62,7 @@ Check to see if modsenv started OK:
              ├─13755 /bin/sh /usr/local/bin/modsenv.sh
              └─13757 /usr/local/bin/modsenv
 
-Sep 12 15:02:37 mods1 systemd[1]: Started Runs the modsEnv MODS environmental sensor monitoring agent.
+Sep 12 15:02:37 mods1 systemd[1]: Started MODS environmental sensor monitoring agent.
 Sep 12 15:02:37 mods1 modsenv.sh[13757]: Ignoring unrecognized config file entry - UseHdf5
 Sep 12 15:02:37 mods1 modsenv.sh[13757]: Started modsenv as ISIS client node M1.ENV on mods1 port 10901
 Sep 12 15:02:38 mods1 modsenv.sh[13757]: Telemetry Notice: The leap-seconds.list file is expired. Will check again in an h…nds file.
