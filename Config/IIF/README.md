@@ -38,6 +38,8 @@ These are selected by setting the `PropFile` parameter (without .client) in the 
  * `lbtIIF_MODS2.client` - for MODS2 installed at DX direct gregorian
  * `tcsSim.client` - LBTO telescope simulator (obtained from LBTO), for example running at OSU
 
+### azcam server FITS header tables
+
 The `azcam-mods` server uses YAML files to tell it which data dictionary (DD) data are to be
 retrieved and stored in the FITS headers for telescope and instrument configuration state.  These
 are in 4 files:
