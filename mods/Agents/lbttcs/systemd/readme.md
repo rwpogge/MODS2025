@@ -50,6 +50,21 @@ automatically every time the system reboots.
 Check to see if lbttcs started OK:
 ```
 % systemctl status lbttcs
+
+● lbttcs.service - MODS LBT TCS/IIF interface agent
+     Loaded: loaded (/usr/lib/systemd/system/lbttcs.service; enabled; preset: disabled)
+     Active: active (running) since Wed 2025-09-17 14:10:53 EDT; 8s ago
+   Main PID: 71072 (lbttcs.sh)
+      Tasks: 9 (limit: 99329)
+     Memory: 4.1M
+        CPU: 6ms
+     CGroup: /system.slice/lbttcs.service
+             ├─71072 /bin/sh /usr/local/bin/lbttcs.sh
+             └─71073 /usr/local/bin/lbttcs
+
+Sep 17 14:10:53 mods1 systemd[1]: Started MODS LBT TCS/IIF interface agent.
+Sep 17 14:10:53 mods1 lbttcs.sh[71073]: Started lbttcs as ISIS client node M1.TC on mods1 port 10801
+Sep 17 14:10:53 mods1 lbttcs.sh[71073]: -! 09/17/25 14:10:53.951 warning: deprecated property: Ice.ACM.Client
 ```
 
 ## Testing
@@ -62,13 +77,13 @@ Use the `isisCmd` script to query the lbttcs through ISIS.  For MODS1, this
 command would be:
 ```
 % isisCmd --mods1 m1.tc status
-
+DONE: status TCSLINK=UP TCSMODE=Live TELESCOPE=LBT-SX OBSERVAT='MGIO-LBT' IIFProxy=MODS1 InstID=MODS LBTFocus=directGregorian LBTSide=left
 ```
-This correctly reports info on the current `lbttcs` agent instance.
+This correctly reports that the MODS1 lbttcs is running on the SX focal station and that the TCS link is active.
 
 You should also see the `lbttcs` info in the ISIS host table
 ```
 % ./isisCmd --mods1 is hosts
-
+DONE: HOST numHosts=4 maxHosts=32 host0=M1.ENV host1=IPC1 host2=M1.HEB host3=M1.TC
 ```
-
+Showing an active `M1.TC` client (lbttcs ID on MODS1)

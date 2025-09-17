@@ -52,16 +52,16 @@ Check to see if isis started OK:
 
 ● isis.service - ISIS server for a MODS instrument
      Loaded: loaded (/usr/lib/systemd/system/isis.service; disabled; preset: disabled)
-     Active: active (running) since Mon 2025-09-15 14:03:22 EDT; 1min 37s ago
-   Main PID: 67884 (isis.sh)
+     Active: active (running) since Wed 2025-09-17 14:16:56 EDT; 19s ago
+   Main PID: 71205 (isis.sh)
       Tasks: 2 (limit: 99329)
-     Memory: 780.0K
+     Memory: 792.0K
         CPU: 3ms
      CGroup: /system.slice/isis.service
-             ├─67884 /bin/sh /usr/local/bin/isis.sh
-             └─67885 /usr/local/bin/isis -d
+             ├─71205 /bin/sh /usr/local/bin/isis.sh
+             └─71207 /usr/local/bin/isis -d
 
-Sep 15 14:03:22 mods1 systemd[1]: Started ISIS server for a MODS instrument.
+Sep 17 14:16:56 mods1 systemd[1]: Started ISIS server for a MODS instrument.
 ```
 
 ## Testing
