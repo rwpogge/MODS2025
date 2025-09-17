@@ -19,7 +19,7 @@
 ################################################################################
 
 [Unit]
-Description=Runs the modsEnv MODS environmental sensor monitoring agent
+Description=MODS environmental sensor monitoring agent
 Requires=modsalloc.service
 After=modsalloc.service
 
