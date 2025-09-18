@@ -35,10 +35,8 @@ main(int argc, char* argv[])
   int status = EXIT_SUCCESS;
   int updateCadence = 10; // DD update cadence in seconds
 
-  string side;
-  string ddVal;
+  string side = LBT_SIDE;
 
-  side = LBT_SIDE;
   if (side[0]=="l")
     side = "L";
   else
