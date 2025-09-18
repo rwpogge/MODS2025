@@ -1,5 +1,5 @@
 //
-// Synchronous IIF client example from the manual section 9.1
+// Based on a synchronous IIF client example from the IIF user manual section 9.1
 //
 
 #include <unistd.h>
