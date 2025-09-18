@@ -1,5 +1,9 @@
 # MODS DD Agent - Sandbox
 
+**Updated: 2025 Sept 18 [rwp/osu]**
+
+**Status: development, pre-alpha testing**
+
 `modsDD` is a standalone (non-client) program that interrogates the MODS shared memory
 segment on an active MODS instrument server machine (`mods1` or `mods2`) and uploads
 relevant MODS instrument state information into the observatory
@@ -10,10 +14,9 @@ MODS data dictionary entries.
 
 This provides LBTO with full-time updates of instantaneous instrument status 
 info that may be used by observatory dashboards or alarm state monitoring 
-system without needing to directly interrogate the MODS instrument systems.
-This should eliminate risks of status queris interrupting real-time instrument 
-control and data-acqusition systems.
+systems without their needing to directly interrogate the MODS instrument systems.
+This should eliminate risks associated with asynchronous status queries 
+interrupting real-time instrument control and data-acqusition systems.
 
 The code is designed to be run non-interactively as a systemd service.
 
-Check that it is properly sending the DD info by interrogating the DD.
