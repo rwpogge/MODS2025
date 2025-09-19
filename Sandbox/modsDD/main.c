@@ -1,6 +1,56 @@
-//
-// Based on a synchronous IIF client example from the IIF user manual section 9.1
-//
+/*!
+  \mainpage modsDD - MODS data dictionary agent
+
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
+  \date 2025 Sept 19 - first version
+
+  \section Usage
+
+  Usage: modsDD [rcfile]
+
+  Where: \c rcfile is an optional runtime config file to load.  
+
+  By default, modsDD uses the runtime config file defined by
+  #DEFAULT_RCFILE in the client.h header.
+
+  \section Overview
+
+  modsDD is a standalone (non-client) program that interrogates the
+  MODS shared memory segment on an active MODS instrument server
+  machine (mods1 or mods2) and uploads relevant MODS instrument state
+  information into the observatory IIF data dictionary (DD) at a set
+  cadence (notionally 5-10 seconds).
+
+  This program requires IIF Build 2025A or greater which has the
+  extended MODS data dictionary entries.
+
+  modsDD pprovides LBTO with full-time updates of instantaneous
+  instrument status info that may be used by observatory dashboards or
+  alarm state monitoring systems without their needing to directly
+  interrogate the MODS instrument systems. This should eliminate risks
+  associated with asynchronous third-party status queries interrupting
+  real-time instrument control and data-acqusition systems.
+
+  The code is designed to be run non-interactively as a systemd service.
+
+  \section Modification History
+
+ <pre>
+ 2025 Sept 19 - new application based on lbttcs [rwp/osu]
+ </pre>
+
+*/
+
+/*!
+  \file main.c
+  \brief modsDD main program and DD SetParameter loop
+*/
+
+// client application header
+
+#include "client.h"
+
+// all the includes we need
 
 #include <unistd.h>
 
@@ -8,27 +58,30 @@
 #include <fstream>
 #include <sstream>
 
+// Ice/IIF implementation
+
 #include <Ice/Ice.h>
 #include <Factory.h>
 #include <IIFServer.h>
 
-#include "client.h"
+// MODS shared memory segment
 
-#include "instrutils.h"  // ISL instrument header
-#include "islcommon.h"   // shred memory segment layout (Islcommon struct)
+#include "instrutils.h"  // instrument utilities
+#include "islcommon.h"   // shared memory segment layout (Islcommon struct)
 #include "isl_shmaddr.h" // declares pointer to islcommon
 
+// About time
+
 #include <time.h>
+
+// internal defaults (mostly from testing)
 
 #define INST_ID "MODS"
 #define FOCSTATION "directGregorian left"
 #define LBT_SIDE "left"
+#define CLIENT_PROXYNAME "MODS1_DD"
 
 #define MODS_NAME "MODS1"
-
-// Just to identify the clients.
-
-#define CLIENT_PROXYNAME "MODS1_DD"
 
 // namespaces used by the LBTO software
 
@@ -49,18 +102,16 @@ char focalStation_Name[80];
 char iifmsgs[200][100];
 int iifcount;
 
-// Print result messages coming from the TCS
-
-void showResults(const lbto::iifres _res, const string _cmd);
-
 // Shared memory segment setup
 
 void setup_ids();
 
-// isisclient bits we use, even if we're not a full ISIS client
+// isisclient bits we use, even though we're not a full ISIS client
 
 #include "isisclient.h"
 isisclient_t client;
+
+lbtinfo_t lbt;  // LBT IIF info data structure (read from loadconfig)
 
 // main() program
 
@@ -206,7 +257,6 @@ main(int argc, char* argv[])
     // send it!
     
     res = iif->SetParameter(ddList);
-    showResults(res,"SetParameter");
     if (res.rescode != EXIT_SUCCESS) {
       keepGoing = 0;
     }
@@ -234,10 +284,3 @@ main(int argc, char* argv[])
   return status;
 }
 
-void
-showResults(const lbto::iifres _res, const string _cmd)
-{
-  if (_res.rescode == 0) cout << _cmd << " command status: SUCCESS" << endl;
-  for ( unsigned int i=0; i< _res.resmsg.size(); i++)
-    cout << _res.resmsg[i] << endl;
-}
