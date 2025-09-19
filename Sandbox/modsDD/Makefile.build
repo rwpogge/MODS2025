@@ -1,12 +1,12 @@
 #
-# Makefile for lbttcs - the LBT MODS IIF interface and simulator
+# Makefile for modsDD - the LBT MODS IIF interface and simulator
 #
-# lbttcs has two modes: connect to the ICE/IIF interface and
+# modsDD has two modes: connect to the ICE/IIF interface and
 # talk to a live IIF, or a simulation mode that creates plausible 
 # looking FITS header info for replies to a lab data-acquisition system
 # like the IC.
 #
-# Use "build", not "make" to build the lbttcs executable.
+# Use "build", not "make" to build the modsDD executable.
 #
 # R. Pogge, OSU Astronomy Dept.
 # pogge@astronomy.ohio-state.edu
@@ -16,7 +16,7 @@
 #   2011 Aug 12 - fixed HA calculation and M2CTEMP [rwp/osu]
 #   2012 May 15 - added test for warning in offsets [rwp/osu]
 #   2012 Sep 16 - updated exit() status codes.  See the tables
-#                 in doc/lbttcs_ExitStatus.txt for details [rwp/osu]
+#                 in doc/modsDD_ExitStatus.txt for details [rwp/osu]
 #   2013 Sep 23 - recompile with changes to iifUtils library to
 #                 fix a new requirement for no-value for the filter
 #                 type and color type in SetStars() [rwp/osu]
@@ -32,7 +32,7 @@
 
 # Version Number: <major>.<minor>.<build>
 
-VERSION     = v3.1.0-bino
+VERSION     = v0.1.0
 
 # Compiler and libary info as required
 
@@ -46,26 +46,24 @@ BINDIR      = $(ROOTDIR)/bin
 INCPATHS    = -I$(ISISDIR)/lib -I$(ROOTDIR)/include 
 LIBPATHS    = -L$(ISISDIR)/lib -L$(ROOTDIR)/ulib
 CFLAGS      = -w -c $(INCPATHS) 
-VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
-              -DAPP_COMPTIME='"$(COMPTIME)"'
-LIBS        = $(INCPATHS) $(LIBPATHS) \
-              -lisis -lskyutils -liifutils $(ICELIBS) -lreadline -lhistory -lncurses
-LFLAGS      = -o lbttcs
+VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' -DAPP_COMPTIME='"$(COMPTIME)"'
+LIBS        = $(INCPATHS) $(LIBPATHS) -lisis -liifutils $(ICELIBS)
+LFLAGS      = -o modsDD
 
-OBJS        = clientutils.o loadconfig.o commands.o 
+OBJS        = clientutils.o loadconfig.o
 
-.c.o:       client.h commands.h
+.c.o:       client.h
 	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
 
-all:        lbttcs
+all:        modsDD
 
-lbttcs:     $(OBJS) main.c
+modsDD:     $(OBJS) main.c
 	    $(CC) $(LFLAGS) $(VFLAGS) main.c $(OBJS) $(LIBS)
 	    /bin/rm -f *.o
 
 clean:
-	    /bin/rm -f lbttcs *.o
+	    /bin/rm -f modsDD *.o
 
 install:
-	    \cp lbttcs $(ROOTDIR)/bin/
+	    \cp modsDD $(ROOTDIR)/bin/
 	    /bin/rm -f *.o

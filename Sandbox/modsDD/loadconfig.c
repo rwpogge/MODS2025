@@ -23,64 +23,13 @@
   used here is from isisutils.c, with the prototype defined in the
   isisclient.h header.
  
-  A typical runtime config file has the following structure:
-  \code 
-   #
-   # lbttcs client runtime config file
-   #
-   # R. Pogge, OSU Astronomy Dept.
-   # pogge@astronomy.ohio-state.edu
-   # 2005 May 13
-   #
-   ################################################################
-
-   # lbttcs ISIS client info (Host=localhost is implicit)
-
-   ID   TC
-   Port 10701
-
-   # Application Mode: either STANDALONE or ISISclient
-
-   Mode Standalone
-   #Mode ISISclient
-
-   # ISIS Server Info - only releveant if Mode=ISISclient
-
-   ISISID   IS
-   ISISHost 172.16.1.3
-   ISISPort 6600
-
-   # Default IIF instance information
-
-   TELESCOPE LBT-SX
-   PROXY MODS1_Test
-   INSTID MODS
-   FOCSTATION directGregorian
-   SIDE left
-
-   # Runtime flags 
-
-   VERBOSE
-   #nolog
-   #debug
-   opMode Live
-  \endcode
  
-  As this example shows, the goal is that runtime configuration files
-  are easily read and created by humans.  A common syntax makes
-  maintenance of many clients easier.
- 
-  \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
-  \date 2003 September 14 (original version based on the ISIS server ParseIniFile())
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
+  \date 2025 Sept 19 (based on lbttcs)
 
   \par Mods Modification History:
 <pre>  
-2005 Jul 28 - new application
-2007 Jul 02 - added opMode parameter (LIVE or SIM)
-2009 Dec 19 - start of rewrite to handle new ICE hooks following 481s013c
-2010 Jan 20 - near-final command set for the ICE version of the IIF
-2010 March  - remote testing with a live LBT
-2010 Dec - modifications on-site, live LBT+MOD1 [rwp/osu]
+2025 Sept 19d - new application
 </pre>
  
 */
@@ -125,15 +74,6 @@ loadConfig(char *cfgfile)
   client.isisPort = DEFAULT_ISISPORT;       
   strcpy(client.isisID,DEFAULT_ISISID);     
 
-  // Client information (defaults in client.h):
-
-  strcpy(client.ID,DEFAULT_MYID);     // client default ISIS node name
-  client.Port = DEFAULT_MYPORT;       // client default port number
-
-  gethostname(client.Host,sizeof(client.Host));   // client hostname
-
-  // Client runtime parameters
-
   client.doLogging = 0;                   // default: runtime logging enabled 
   strcpy(client.logFile,DEFAULT_LOGFILE); // default client runtime log filename
 
@@ -143,8 +83,6 @@ loadConfig(char *cfgfile)
   // Reset the client global data structures
 
   initLBTInfo(&lbt);
-
-  useCLI = 1; // default: interactive shell enabled, but config can override
 
   // Now open the config file, if not, gripe and return -1.  Opening the
   // file here ensures that sensible defaults are set even if the config
@@ -176,50 +114,12 @@ loadConfig(char *cfgfile)
       // Keywords:
       //
 
-      // Mode: the application's operating mode.  2 options:
-      //       STANDALONE: no ISIS server present
-      //       ISISClient: we're an ISIS client
-      //
-
-      if (strcasecmp(keyword,"MODE")==0) {
-	GetArg(inStr,2,argStr);
-	if (strcasecmp(argStr,"STANDALONE")==0) {
-	  client.useISIS = 0;
-	}
-	else if (strcasecmp(argStr,"ISISCLIENT")==0) {
-	  client.useISIS = 1;
-	}
-	else {
-	  printf("ERROR: Mode option '%s' unrecognized\n",argStr);
-	  printf("       Must be STANDALONE or ISISCLIENT\n");
-	  printf("Aborting - fix the config file (%s) and try again\n",
-		 client.rcFile);
-	  if (cfgFP !=0) fclose(cfgFP);
-	  return -1;
-	}
-      }
-
-      // ID: node name of this client 
-
-      else if (strcasecmp(keyword,"ID")==0) {
-	GetArg(inStr,2,argStr);
-	strcpy(client.ID,argStr);
-      }
-
-      // PORT: network socket port number of this client.  Host is
-      //       assumed to be localhost (since it can't be anything else)
-
-      else if (strcasecmp(keyword,"PORT")==0) {
-	GetArg(inStr, 2, argStr);
-	client.Port = atoi(argStr);
-      }
-
       // ISISID: Node name of the ISIS server.
       // 
       // Only meaningful if MODE ISISCLIENT has been set.
       //
 
-      else if (strcasecmp(keyword,"ISISID")==0) {
+      if (strcasecmp(keyword,"ISISID")==0) {
 	GetArg(inStr, 2, argStr);
 	strcpy(client.isisID, argStr);
       }
@@ -238,21 +138,6 @@ loadConfig(char *cfgfile)
       else if (strcasecmp(keyword,"ISISPORT")==0) {
 	GetArg(inStr, 2, argStr);
 	client.isisPort = atoi(argStr);
-      }
-
-       // UseTTY: enable/disable the interactive command shell
-      //
-      // Usage: UseTTY [T|F]  --> recognizes aliases T=Y and F=N
-      //
-
-      else if (strcasecmp(keyword,"USETTY")==0) {
-        GetArg(inStr,2,argStr);
-        if (strcasecmp(argStr,"T")==0 || strcasecmp(argStr,"Y")==0) {
-          useCLI = 1;
-        }
-        else if (strcasecmp(argStr,"F")==0 || strcasecmp(argStr,"N")==0) {
-          useCLI = 0;
-        }
       }
 
       // Telescope: formal telescope ID for FITS headers (e.g., LBT-SX)
