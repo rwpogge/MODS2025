@@ -148,7 +148,7 @@ main(int argc, char* argv[])
     exit(11);
   }
 
-  sprintf(iceFile,"%s/%s",DEFAULT_IIFDIR,lbt.iceProps);
+  sprintf(iceFile,"%s/%s.client",DEFAULT_IIFDIR,lbt.iceProps);
 
   // which side of LBT are we on?
   
