@@ -115,12 +115,8 @@ main(int argc, char* argv[])
 
   int keepGoing = 1;
 
-  float dewPred = 8.67e-5;
-  float dewTred = -97.3;
+  // sim mechanisms
   
-  float dewPblue = 2.34e-5;
-  float dewTblue = -95.8;  
-
   int redGrating = 1;
   int blueGrating = 2;
   
@@ -134,19 +130,19 @@ main(int argc, char* argv[])
     ddList.push_back(dd);
 
     dd.DDname = side + "_MODSRedDewPres";
-    dd.DDkey = (string)sprintf("%8.2e",dewPred);
+    dd.DDkey = (string)sprintf("%8.2e",shm_addr->MODS.redDewarPressure);
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSBlueDewPres";
-    dd.DDkey = (string)sprintf("%8.2e",dewPblue);
+    dd.DDkey = (string)sprintf("%8.2e",shm_addr->MODS.blueDewarPressure);
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSRedDewTemp";
-    dd.DDkey = (string)sprintf("%.1f",dewTred);
+    dd.DDkey = (string)sprintf("%.1f",shm_addr->MODS.redDewarTemperature);
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSBlueDewTemp";
-    dd.DDkey = (string)sprintf("%.1f",dewTblue);
+    dd.DDkey = (string)sprintf("%.1f",shm_addr->MODS.blueDewarTemperature);
     ddList.push_back(dd);
 
     dd.DDname = side + "_MODSBlueGratingPosition";
@@ -165,6 +161,8 @@ main(int argc, char* argv[])
     dd.DDkey = "Flat";
     ddList.push_back(dd);
 
+    // send it!
+    
     res = iif->SetParameter(ddList);
     showResults(res,"SetParameter");
     if (res.rescode != EXIT_SUCCESS) {
