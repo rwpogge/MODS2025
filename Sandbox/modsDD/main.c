@@ -53,6 +53,7 @@ main(int argc, char* argv[])
   int status = EXIT_SUCCESS;
   int updateCadence = 10; // DD update cadence in seconds
   char varStr[64];
+
   
   string side = LBT_SIDE;
 
@@ -69,12 +70,14 @@ main(int argc, char* argv[])
   
   Ice::CommunicatorPtr communicator; // Ice communicator
   lbto::iifres res;
-
+  lbto::IIFServerPrx iif;
+  FactoryPrx factory;
+  
   // Establish a connection to the IIF
   
   try {
     communicator = Ice::initialize(argc, argv);
-    FactoryPrx factory = FactoryPrx::checkedCast(communicator->stringToProxy("Factory:tcp -p 10000"));
+    factory = FactoryPrx::checkedCast(communicator->stringToProxy("Factory:tcp -p 10000"));
 
     if (!factory)
       throw "Invalid proxy: IIF Server not found.";
@@ -83,7 +86,7 @@ main(int argc, char* argv[])
     // link the proper IIF instance with it, otherwise it will create a new IIF instance for this
     // client.
       
-    lbto::IIFServerPrx iif = factory->create(CLIENT_PROXYNAME, FOCSTATION, INST_ID);
+    factory->create(CLIENT_PROXYNAME, FOCSTATION, INST_ID);
 
     if (!iif)
       throw "Invalid proxy: Invalid instrument/focal station combination or invalid side.";
@@ -173,8 +176,6 @@ main(int argc, char* argv[])
     res = iif->SetParameter(ddList);
     showResults(res,"SetParameter");
     if (res.rescode != EXIT_SUCCESS) {
-      if (iifcount == 0) 
-	strcpy(iifmsgs[0],"Error: mods_SetParameter Failed");
       keepGoing = 0;
     }
 
