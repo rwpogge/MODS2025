@@ -25,6 +25,10 @@
 #define DEFAULT_ISISHOST "localhost" //!< default ISIS server host
 #define DEFAULT_ISISPORT 6600        //!< default ISIS server port number
 
+// IIF client info
+
+#define DEFAULT_IIFDIR (char*)"/home/dts/Config/IIF" //<! default path to IIF client props files
+
 //
 // END of Site-Dependent Setup
 // 
@@ -161,5 +165,9 @@ int  loadConfig(char *);      // Load/parse the agent runtime config file (see l
 
 void initLBTInfo(lbtinfo_t *);
 void getUTCTime(utcinfo_t *);
+
+// Signal Handlers
+
+void HandleKill(int); // SIGKILL handler
 
 #endif  // CLIENT_H

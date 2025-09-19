@@ -37,9 +37,9 @@ initLBTInfo(lbtinfo_t *lbti)
   strcpy(lbti->telescope,"LBT-SX");
   strcpy(lbti->iceProps,"config");  // default ICE properties file root name
   strcpy(lbti->proxy,"MODS_DD");
-  strcpy(lbti->instID,"MODS");
+  strcpy(lbti->instID,"MODS1");
   strcpy(lbti->focStation,"directGregorian");
-  strcpy(lbti->side,"LEFT");
+  strcpy(lbti->side,"left");
 }
 
 /*!

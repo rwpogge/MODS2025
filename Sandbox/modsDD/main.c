@@ -112,6 +112,7 @@ void setup_ids();
 isisclient_t client;
 
 lbtinfo_t lbt;  // LBT IIF info data structure (read from loadconfig)
+utcinfo_t utc;  // UTC date/time handling
 
 // main() program
 
@@ -121,42 +122,58 @@ main(int argc, char* argv[])
   int status = EXIT_SUCCESS;
   int updateCadence = 10; // DD update cadence in seconds
   char varStr[64];
-
-  // IIF configuration file, usually lbtIIF.client, etc.
+  int n;
   
-  char cfgFile[256];  // full qualified configuration file
-
-  sprintf(cfgFile,"/home/dts/Config/IIF/lbtIIF.client");
-
-  // load the ice properties
+  // Ice client properties file, usually lbtIIF.client, etc.
   
-  Ice::PropertiesPtr props = Ice::createProperties();
-  props->load(cfgFile);
-  Ice::InitializationData id;
-  id.properties = props;
+  char iceFile[256]; 
 
-  // which side of LBT are we on?
-  
-  string side = LBT_SIDE;
-
-  if (side == "left")
-    side = "L";
-  else
-    side = "R";
-
-  // Shared memory segment attachment
+  // Attach the shared memory segment
 
   setup_ids();
   
+  // Load and parse the runtime configuration file
+
+  if (argc == 2) {
+    n = loadConfig(argv[1]);
+    argc--;
+  }
+  else
+    n = loadConfig(DEFAULT_RCFILE);
+    
+  if (n!=0) {
+    printf("\nUnable to load config file %s - modsDD aborting n=%d\n\n",
+	   client.rcFile,n);
+    exit(11);
+  }
+
+  sprintf(iceFile,"%s/%s",DEFAULT_IIFDIR,lbt.iceProps);
+
+  // which side of LBT are we on?
+  
+  if (!strncpy(lbt.side,"left"))
+    side = "L";
+  else
+    side = "R";
+  
+  // Load the ice properties
+  
+  Ice::PropertiesPtr props = Ice::createProperties();
+  props->load(iceFile);
+  Ice::InitializationData id;
+  id.properties = props;
+
   // Establish a connection to the IIF
   
   communicator = Ice::initialize(argc, argv, id);
+
   factory = FactoryPrx::checkedCast(communicator->propertyToProxy("Factory.Proxy"));
-  string proxyName = props->getPropertyWithDefault("MODS.ProxyName","MODS1");
-  string instrumentID = props->getPropertyWithDefault("MODS.InstrumentID","MODS");
+
+  string proxyName = props->getPropertyWithDefault("MODS.ProxyName",lbt.proxy);
+  string instrumentID = props->getPropertyWithDefault("MODS.InstrumentID","MODS"); // no 1 or 2!
   string focalStation = props->getPropertyWithDefault("MODS.FocalStation","directGregorian left");
 
-  strcpy(clientProxy_Name,&proxyName[0]);
+  strcpy(clientProxy_Name,lbt.proxy); 
   strcpy(focalStation_Name,&focalStation[0]);
   strcpy(instrument_Name,&instrumentID[0]);
 
@@ -209,11 +226,17 @@ main(int argc, char* argv[])
   
   while (keepGoing) {
 
+    getUTCTime(&utc);
+
     DDstruct dd;
     SeqDD ddList;
 
     dd.DDname = side + "_MODSName";
-    dd.DDkey = MODS_NAME;
+    dd.DDkey = (string)lbt.instID;
+    ddList.push_back(dd);
+
+    dd.DDname = side + "_MODSUpdateTime";
+    dd.DDkey = (string)utc.ISO;
     ddList.push_back(dd);
 
     dd.DDname = side + "_MODSRedDewPres";
@@ -284,3 +307,15 @@ main(int argc, char* argv[])
   return status;
 }
 
+//---------------------------------------------------------------------------
+//
+// HandleKill() - SIGKILL signal handler to make sure we don't leave
+//                delinquent ICE proxies behind.
+//
+
+void
+HandleKill(int signalValue)
+{
+  if (factory) factory-destroy(iif);
+  if (communicator) communicator->destroy();
+}
