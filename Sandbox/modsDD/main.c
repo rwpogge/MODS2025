@@ -317,6 +317,6 @@ main(int argc, char* argv[])
 void
 HandleKill(int signalValue)
 {
-  if (factory) factory-destroy(iif);
+  if (factory) factory->destroy(iif);
   if (communicator) communicator->destroy();
 }
