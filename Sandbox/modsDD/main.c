@@ -152,7 +152,7 @@ main(int argc, char* argv[])
 
   // which side of LBT are we on?
   
-  if (!strncasecmp(lbt.side,"left"))
+  if (!strcasecmp(lbt.side,"left"))
     side = "L";
   else
     side = "R";
