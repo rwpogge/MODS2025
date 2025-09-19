@@ -52,7 +52,8 @@ main(int argc, char* argv[])
 {
   int status = EXIT_SUCCESS;
   int updateCadence = 10; // DD update cadence in seconds
-
+  char varStr[64];
+  
   string side = LBT_SIDE;
 
   if (side[0]=="l")
@@ -130,23 +131,28 @@ main(int argc, char* argv[])
     ddList.push_back(dd);
 
     dd.DDname = side + "_MODSRedDewPres";
-    dd.DDkey = (string)sprintf("%8.2e",shm_addr->MODS.redDewarPressure);
+    sprintf(varStr,"%8.2e",shm_addr->MODS.redDewarPressure);
+    dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSBlueDewPres";
-    dd.DDkey = (string)sprintf("%8.2e",shm_addr->MODS.blueDewarPressure);
+    sprintf(varStr,"%8.2e",shm_addr->MODS.blueDewarPressure);
+    dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSRedDewTemp";
-    dd.DDkey = (string)sprintf("%.1f",shm_addr->MODS.redDewarTemperature);
+    sprintf(varStr,"%.1f",shm_addr->MODS.redDewarTemperature);
+    dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSBlueDewTemp";
-    dd.DDkey = (string)sprintf("%.1f",shm_addr->MODS.blueDewarTemperature);
+    sprintf(varStr,"%.1f",shm_addr->MODS.blueDewarTemperature);
+    dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
     dd.DDname = side + "_MODSBlueGratingPosition";
-    dd.DDkey = (string)sprintf("%d",blueGrating);
+    sprintf(varStr,"%d",blueGrating);
+    dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
     dd.DDname = side + "_MODSBlueGrating";
@@ -154,7 +160,8 @@ main(int argc, char* argv[])
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSRedGratingPosition";
-    dd.DDkey = (string)sprintf("%d",redGrating);
+    sprintf(varStr,"%d",redGrating);
+    dd.DDkey = (string)varStr
     ddList.push_back(dd);
 
     dd.DDname = side + "_MODSRedGrating";
