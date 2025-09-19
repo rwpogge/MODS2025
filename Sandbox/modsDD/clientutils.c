@@ -35,7 +35,7 @@ initLBTInfo(lbtinfo_t *lbti)
   lbti->opMode = LABSIM;
   lbti->Turbo = 0; 
   strcpy(lbti->telescope,"LBT-SX");
-  strcpy(lbti->iceProps,"config");  // default ICE properties file root name
+  strcpy(lbti->iceProps,"lbtIIF");  // default ICE properties file root name
   strcpy(lbti->proxy,"MODS_DD");
   strcpy(lbti->instID,"MODS1");
   strcpy(lbti->focStation,"directGregorian");
