@@ -47,7 +47,7 @@ INCPATHS    = -I$(ISISDIR)/lib -I$(ROOTDIR)/include
 LIBPATHS    = -L$(ISISDIR)/lib -L$(ROOTDIR)/ulib
 CFLAGS      = -w -c $(INCPATHS) 
 VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' -DAPP_COMPTIME='"$(COMPTIME)"'
-LIBS        = $(INCPATHS) $(LIBPATHS) -lisis -liifutils $(ICELIBS)
+LIBS        = $(INCPATHS) $(LIBPATHS) -lisis $(ICELIBS) -lislutils -linstrutils 
 LFLAGS      = -o modsDD
 
 OBJS        = clientutils.o loadconfig.o
