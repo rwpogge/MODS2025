@@ -10,6 +10,7 @@
 #include <Ice/Ice.h>
 #include <Factory.h>
 
+#include "client.h"
 
 #include "instrutils.h"  // ISL instrument header
 #include "islcommon.h"   // shred memory segment layout (Islcommon struct)
@@ -45,6 +46,20 @@ void setup_ids();
 #include "isisclient.h"
 isisclient_t client;
 
+// ICE/ICF Globals
+
+Ice::CommunicatorPtr communicator; // Ice communicator
+lbto::iifres res;                  // IIF result object
+lbto::IIFServerPrx iif;            // IIF server proxy
+lbto::FactoryPrx factory;          // IIF factory proxy
+
+char clientProxy_Name[80];
+char instrument_Name[80];
+char focalStation_Name[80];
+
+char iifmsgs[200][100];
+int iifcount;
+
 // main() program
 
 int
@@ -54,10 +69,24 @@ main(int argc, char* argv[])
   int updateCadence = 10; // DD update cadence in seconds
   char varStr[64];
 
+  // IIF configuration file, usually lbtIIF.client, etc.
+  
+  char cfgFile[256];  // full qualified configuration file
+
+  sprintf(cfgFile,"/home/dts/Config/IIF/lbtIIF.client");
+
+  // load the ice properties
+  
+  Ice::PropertiesPtr props = Ice::createProperties();
+  props->load(cfgFile);
+  Ice::InitializationData id;
+  id.properties = props;
+
+  // which side of LBT are we on?
   
   string side = LBT_SIDE;
 
-  if (side[0]=="l")
+  if (side == "left")
     side = "L";
   else
     side = "R";
@@ -66,19 +95,19 @@ main(int argc, char* argv[])
 
   setup_ids();
   
-  // Ice communicator and results object (note iifres for C++ starting w/Ice v3.7)
-  
-  Ice::CommunicatorPtr communicator; // Ice communicator
-  lbto::iifres res;
-  lbto::IIFServerPrx iif;
-  FactoryPrx factory;
-  
   // Establish a connection to the IIF
   
-  try {
-    communicator = Ice::initialize(argc, argv);
-    factory = FactoryPrx::checkedCast(communicator->stringToProxy("Factory:tcp -p 10000"));
+  communicator = Ice::initialize(argc, argv, id);
+  factory = FactoryPrx::checkedCast(communicator->propertyToProxy("Factory.Proxy"));
+  string proxyName = props->getPropertyWithDefault("MODS.ProxyName","MODS1");
+  string instrumentID = props->getPropertyWithDefault("MODS.InstrumentID","MODS");
+  string focalStation = props->getPropertyWithDefault("MODS.FocalStation","directGregorian left");
 
+  strcpy(clientProxy_Name,&proxyName[0]);
+  strcpy(focalStation_Name,&focalStation[0]);
+  strcpy(instrument_Name,&instrumentID[0]);
+
+  try {
     if (!factory)
       throw "Invalid proxy: IIF Server not found.";
       
@@ -86,11 +115,12 @@ main(int argc, char* argv[])
     // link the proper IIF instance with it, otherwise it will create a new IIF instance for this
     // client.
       
-    factory->create(CLIENT_PROXYNAME, FOCSTATION, INST_ID);
+    iif = factory->create(clientProxy_name,focalStation_Name,instrument_Name);
 
     if (!iif)
       throw "Invalid proxy: Invalid instrument/focal station combination or invalid side.";
-
+    else
+      res.resmsg.clear();
   }
   catch(const Ice::Exception& ex) {
     cerr << ex << endl;
