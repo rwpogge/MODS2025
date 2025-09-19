@@ -7,7 +7,7 @@
   parsed into global-scope variables for the client and its various
   subroutines to use.
  
-  The # is used as a comment character, making a comment line when it
+  We use # as a comment character, making a comment line when it
   appears as the first character in a line by itself.  Inline comments
   are not supported by this simple parser, but are generally ignored
   since it assumes (again for simplicity) that value arguments are
@@ -16,61 +16,8 @@
   convention that keywords and values are case insensitive, to remove
   any ambiguity.
   
-  This template provides a good example of common client initialiation
-  file parameters and syntax.  The idea is to make the runtime config
-  files for all ISIS clients look pretty much the same in terms of
-  having a common syntax as appearance.  The utility function GetArg()
-  used here is from isisutils.c, with the prototype defined in the
-  isisclient.h header.
  
-  A typical runtime config file has the following structure:
-  \code 
-   #
-   # lbttcs client runtime config file
-   #
-   # R. Pogge, OSU Astronomy Dept.
-   # pogge@astronomy.ohio-state.edu
-   # 2005 May 13
-   #
-   ################################################################
-
-   # lbttcs ISIS client info (Host=localhost is implicit)
-
-   ID   TC
-   Port 10701
-
-   # Application Mode: either STANDALONE or ISISclient
-
-   Mode Standalone
-   #Mode ISISclient
-
-   # ISIS Server Info - only releveant if Mode=ISISclient
-
-   ISISID   IS
-   ISISHost 172.16.1.3
-   ISISPort 6600
-
-   # Default IIF instance information
-
-   TELESCOPE LBT-SX
-   PROXY MODS1_Test
-   INSTID MODS
-   FOCSTATION directGregorian
-   SIDE left
-
-   # Runtime flags 
-
-   VERBOSE
-   #nolog
-   #debug
-   opMode Live
-  \endcode
- 
-  As this example shows, the goal is that runtime configuration files
-  are easily read and created by humans.  A common syntax makes
-  maintenance of many clients easier.
- 
-  \author R. Pogge, OSU Astronomy Dept. (pogge@astronomy.ohio-state.edu)
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \date 2003 September 14 (original version based on the ISIS server ParseIniFile())
 
   \par Mods Modification History:
@@ -81,6 +28,8 @@
 2010 Jan 20 - near-final command set for the ICE version of the IIF
 2010 March  - remote testing with a live LBT
 2010 Dec - modifications on-site, live LBT+MOD1 [rwp/osu]
+2014 Dec - LBT binocular operation updates [rwp/osu]
+2025 Aug - MODS Archon CCD controller updates [rwp/osu]
 </pre>
  
 */
