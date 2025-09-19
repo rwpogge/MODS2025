@@ -120,7 +120,6 @@ int
 main(int argc, char* argv[])
 {
   int status = EXIT_SUCCESS;
-  int updateCadence = 10; // DD update cadence in seconds
   char varStr[64];
   int n;
   string side;
@@ -214,7 +213,7 @@ main(int argc, char* argv[])
   // exception - usually happens when the proxy dies when the IIF server
   // goes down.
   //
-  // Update MODS instance DD data of interest then sleep for updateCadence
+  // Update MODS instance DD data of interest then sleep for lbt.cadence
   // seconds.
   //
 
@@ -285,9 +284,9 @@ main(int argc, char* argv[])
       keepGoing = 0;
     }
 
-    // sleep for updateCadence if we didn't get an error
+    // sleep for lbt.cadence if we didn't get an error
 
-    if (keepGoing) sleep(updateCadence);
+    if (keepGoing) sleep(lbt.cadence);
     
   }
   

@@ -29,7 +29,7 @@
 
   \par Mods Modification History:
 <pre>  
-2025 Sept 19d - new application
+2025 Sept 19 - new application
 </pre>
  
 */
@@ -182,6 +182,17 @@ loadConfig(char *cfgfile)
 	strcpy(lbt.side,argStr);
       }
 
+      // Cadence: DD update cadence in seconds
+
+      else if (strcasecmp(keyword,"CADENCE")==0) { 
+	GetArg(inStr, 2, argStr);
+	int dt = atoi(argStr);
+	if (dt <= 0)
+	  lbt.cadence = DEFAULT_CADENCE;
+	else
+	  lbt.cadence = dt;
+      }
+      
       // LogFile: Runtime log file rootname (including path) 
       //
       // The .log extension will be appended to this rootname. 

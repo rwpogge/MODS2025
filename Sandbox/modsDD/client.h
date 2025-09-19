@@ -29,6 +29,8 @@
 
 #define DEFAULT_IIFDIR (char*)"/home/dts/Config/IIF" //<! default path to IIF client props files
 
+#define DEFAULT_CADENCE 10 //!< default DD update cadence in seconds
+
 //
 // END of Site-Dependent Setup
 // 
@@ -114,6 +116,10 @@ typedef struct lbtinfo {
   char side[SHORT_STR_SIZE];       //!< Instrument telescope side (left|right|both)
   char telescope[SHORT_STR_SIZE];  //!< Telescope Name
 
+  // DD update cadence
+
+  long cadence; //!< Data dictionary update cadence in seconds
+  
 } lbtinfo_t;
 
 extern lbtinfo_t lbt;

@@ -40,6 +40,7 @@ initLBTInfo(lbtinfo_t *lbti)
   strcpy(lbti->instID,"MODS1");
   strcpy(lbti->focStation,"directGregorian");
   strcpy(lbti->side,"left");
+  lbti->cadence = DEFAULT_CADENCE;
 }
 
 /*!
