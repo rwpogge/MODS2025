@@ -161,7 +161,7 @@ main(int argc, char* argv[])
     
     dd.DDname = side + "_MODSRedGratingPosition";
     sprintf(varStr,"%d",redGrating);
-    dd.DDkey = (string)varStr
+    dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
     dd.DDname = side + "_MODSRedGrating";
