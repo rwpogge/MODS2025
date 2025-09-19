@@ -123,6 +123,7 @@ main(int argc, char* argv[])
   int updateCadence = 10; // DD update cadence in seconds
   char varStr[64];
   int n;
+  string side;
   
   // Ice client properties file, usually lbtIIF.client, etc.
   
@@ -151,7 +152,7 @@ main(int argc, char* argv[])
 
   // which side of LBT are we on?
   
-  if (!strncpy(lbt.side,"left"))
+  if (!strncasecomp(lbt.side,"left"))
     side = "L";
   else
     side = "R";
