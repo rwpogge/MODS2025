@@ -7,8 +7,10 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 #include <Ice/Ice.h>
 #include <Factory.h>
+#include <IIFServer.h>
 
 #include "client.h"
 
@@ -28,23 +30,10 @@
 
 #define CLIENT_PROXYNAME "MODS1_DD"
 
-// commands
+// namespaces used by the LBTO software
 
 using namespace std;
 using namespace lbto;
-
-// Print result messages coming from the TCS
-
-void showResults(const lbto::iifres _res, const string _cmd);
-
-// Shared memory segment setup
-
-void setup_ids();
-
-// isisclient bits we use, even if we're not a full ISIS client
-
-#include "isisclient.h"
-isisclient_t client;
 
 // ICE/ICF Globals
 
@@ -59,6 +48,19 @@ char focalStation_Name[80];
 
 char iifmsgs[200][100];
 int iifcount;
+
+// Print result messages coming from the TCS
+
+void showResults(const lbto::iifres _res, const string _cmd);
+
+// Shared memory segment setup
+
+void setup_ids();
+
+// isisclient bits we use, even if we're not a full ISIS client
+
+#include "isisclient.h"
+isisclient_t client;
 
 // main() program
 
@@ -115,7 +117,7 @@ main(int argc, char* argv[])
     // link the proper IIF instance with it, otherwise it will create a new IIF instance for this
     // client.
       
-    iif = factory->create(clientProxy_name,focalStation_Name,instrument_Name);
+    iif = factory->create(clientProxy_Name,focalStation_Name,instrument_Name);
 
     if (!iif)
       throw "Invalid proxy: Invalid instrument/focal station combination or invalid side.";
