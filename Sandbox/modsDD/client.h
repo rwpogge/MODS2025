@@ -175,6 +175,6 @@ int getMechID(char []);
 
 // Signal Handlers
 
-void HandleKill(int); // SIGKILL handler
+void HandleExit(int); // SIGKILL/SIGINT exit handler
 
 #endif  // CLIENT_H

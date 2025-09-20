@@ -211,8 +211,8 @@ main(int argc, char* argv[])
 
   // Set signal traps
 
-  signal(SIGING,HandleKill);   // Trap Ctrl+C, exit and close Ice proxy
-  signal(SIGKILL,HandleKill); // Trap kill and close Ice proxy
+  signal(SIGINT,HandleExit);   // Trap Ctrl+C, exit and close Ice proxy
+  signal(SIGKILL,HandleExit); // Trap kill and close Ice proxy
 
   //---------------------------------------------------------------------------
   //
@@ -318,12 +318,17 @@ main(int argc, char* argv[])
 
 //---------------------------------------------------------------------------
 //
-// HandleKill() - SIGKILL signal handler to make sure we don't leave
-//                delinquent ICE proxies behind.
+// HandleExit() - SIGKILL/SIGINT signal handler to exit gracefully
+//
+// This ensures SIGINT or SIGKILL signals close any open Ice proxies
+// for a clean shutdown.
+//
+// SIGINT would be seen if testing by hand and stopping with Ctrl+C
+// SIGKILL is how it terminates when run as a systemd service
 //
 
 void
-HandleKill(int signalValue)
+HandleExit(int signalValue)
 {
   if (factory) factory->destroy(iif);
   if (communicator) communicator->destroy();
