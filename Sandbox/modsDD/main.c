@@ -463,31 +463,31 @@ main(int argc, char* argv[])
     
     // Mechanism states (positions, element names, etc.)
 
-    idev = getMechID("hatch");
+    idev = getMechID((char*)"hatch");
     dd.DDname = side + "_MODSHatch";
     dd.DDkey = (string)shm_addr->MODS.state_word[idev];
     ddList.push_back(dd);
 
-    idev = getMechID("calib");
+    idev = getMechID((char*)"calib");
     dd.DDname = side + "_MODSCalibTower";
     dd.DDkey = (string)shm_addr->MODS.state_word[idev];
     ddList.push_back(dd);
 
     // scaled positions
     
-    idev = getMechID("agwx");
+    idev = getMechID((char*)"agwx");
     dd.DDname = side + "_MODSAGWXPos";
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
-    idev = getMechID("agwy");
+    idev = getMechID((char*)"agwy");
     dd.DDname = side + "_MODSAGWYPos";
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
-    idev = getMechID("agwfoc");
+    idev = getMechID((char*)"agwfoc");
     dd.DDname = side + "_MODSAGWFPos";
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
@@ -495,59 +495,59 @@ main(int argc, char* argv[])
 
     float colFoc;
     
-    idev = getMechID("bcolttfa");
+    idev = getMechID((char*)"bcolttfa");
     dd.DDname = side + "_MODSBlueCollTTFA";
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc = shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
     
-    idev = getMechID("bcolttfb");
+    idev = getMechID((char*)"bcolttfb");
     dd.DDname = side + "_MODSBlueCollTTFB";
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
-    idev = getMechID("bcolttfc");
+    idev = getMechID((char*)"bcolttfc");
     dd.DDname = side + "_MODSBlueCollTTFC";
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
-    dd.DDName = side + "_MODSBlueCollFocus;
+    dd.DDname = side + "_MODSBlueCollFocus;
     sprintf(varStr,"%.3f",colFoc);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
-    idev = getMechID("rcolttfa");
+    idev = getMechID((char*)"rcolttfa");
     dd.DDname = side + "_MODSRedCollTTFA";
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc = shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
-    idev = getMechID("rcolttfb");
+    idev = getMechID((char*)"rcolttfb");
     dd.DDname = side + "_MODSRedCollTTFB";
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
-    idev = getMechID("rcolttfc");
+    idev = getMechID((char*)"rcolttfc");
     dd.DDname = side + "_MODSRedCollTTFC";
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
-    dd.DDName = side + "_MODSRedCollFocus;
+    dd.DDname = side + "_MODSRedCollFocus;
     sprintf(varStr,"%.3f",colFoc);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
-    idev = getMechID("rcamfoc");
+    idev = getMechID((char*)"rcamfoc");
     dd.DDname = side + "_MODSRedCameraFocus";
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
@@ -555,13 +555,13 @@ main(int argc, char* argv[])
 
     // named numerical positions
 
-    idev = getMechID("agwfilt");
+    idev = getMechID((char*)"agwfilt");
     ipos = int(shm_addr->MODS.pos[idev]);
     dd.DDname = side + "_MODSAGWFilterName";
     dd.DDkey = (string)shm_addr->MODS.agwfilter[ipos];
     ddList.push_back(dd);
     
-    idev = getMechID("dichroic");
+    idev = getMechID((char*)"dichroic");
     ipos = int(shm_addr->MODS.pos[idev]);
     dd.DDname = side + "_MODSDichroicPosition";
     sprintf(varStr,"%d",ipos);
@@ -572,7 +572,7 @@ main(int argc, char* argv[])
     dd.DDkey = (string)shm_addr->MODS.dichroicName[ipos];
     ddList.push_back(dd);
 
-    idev = getMechID("bgrating");
+    idev = getMechID((char*)"bgrating");
     ipos = int(shm_addr->MODS.pos[idev]);
     dd.DDname = side + "_MODSBlueGratingPosition";
     sprintf(varStr,"%d",ipos);
@@ -583,7 +583,7 @@ main(int argc, char* argv[])
     dd.DDkey = (string)shm_addr->MODS.bgrating[ipos];
     ddList.push_back(dd);
 
-    idev = getMechID("rgrating");
+    idev = getMechID((char*)"rgrating");
     ipos = int(shm_addr->MODS.pos[idev]);
     dd.DDname = side + "_MODSRedGratingPosition";
     sprintf(varStr,"%d",ipos);
@@ -594,7 +594,7 @@ main(int argc, char* argv[])
     dd.DDkey = (string)shm_addr->MODS.rgrating[ipos];
     ddList.push_back(dd);
 
-    idev = getMechID("bfilter");
+    idev = getMechID((char*)"bfilter");
     ipos = int(shm_addr->MODS.pos[idev]);
     dd.DDname = side + "_MODSBlueFilterPosition";
     sprintf(varStr,"%d",ipos);
@@ -605,7 +605,7 @@ main(int argc, char* argv[])
     dd.DDkey = (string)shm_addr->MODS.bcamfilters[ipos];
     ddList.push_back(dd);
 
-    idev = getMechID("rfilter");
+    idev = getMechID((char*)"rfilter");
     ipos = int(shm_addr->MODS.pos[idev]);
     dd.DDname = side + "_MODSRedFilterPosition";
     sprintf(varStr,"%d",ipos);
