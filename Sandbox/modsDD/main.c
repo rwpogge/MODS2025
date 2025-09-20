@@ -252,9 +252,9 @@ main(int argc, char* argv[])
     // MODS instrument configuration: CALMODE, OBSMODE, or UNKNOWN
 
     dd.DDname = side + "_MODSInstConfig";
-    if (shm_addr->MODS.MODS.instrMode == 0)
+    if (shm_addr->MODS.instrMode == 0)
       dd.DDkey = "OBSMODE";
-    else if (shm_addr->instrMode == 1)
+    else if (shm_addr->MODS.instrMode == 1)
       dd.DDkey = "CALMODE";
     else
       dd.DDkey = "UNKNOWN";
