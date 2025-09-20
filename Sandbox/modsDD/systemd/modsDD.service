@@ -5,7 +5,7 @@
 # agent (modsDD)
 #
 # The modsDD service must start after modsalloc (shared memory segment
-# initialization), and autorestart after a 30s delay.
+# initialization), and autorestart after a delay.
 #
 # R. Pogge, OSU Astronomy
 # pogge.1@osu.edu

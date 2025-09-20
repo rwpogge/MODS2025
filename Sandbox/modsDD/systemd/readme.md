@@ -24,7 +24,7 @@ or control operations.
 
 If `modsDD` is stopped, either because of errors or because the IIF
 server goes down and raises fatal exceptions on live client proxies,
-it will restart automatically in about 30s.
+it will restart automatically after a brief delay (usually 10s).
 
 
 ## Install the service
