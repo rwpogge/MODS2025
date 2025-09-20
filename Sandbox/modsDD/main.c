@@ -124,6 +124,7 @@ main(int argc, char* argv[])
   double t0, dt;
   int idev;
   int ipos;
+  float colFoc;
   
   // Ice client properties file, usually lbtIIF.client, etc.
   
@@ -231,6 +232,7 @@ main(int argc, char* argv[])
   while (keepGoing) {
 
     getUTCTime(&utc);
+
     t0 = SysTimestamp();
 
     DDstruct dd;
@@ -492,8 +494,6 @@ main(int argc, char* argv[])
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
-
-    float colFoc;
     
     idev = getMechID((char*)"bcolttfa");
     dd.DDname = side + "_MODSBlueCollTTFA";
@@ -521,6 +521,12 @@ main(int argc, char* argv[])
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
+    idev = getMechID((char*)"bcamfoc");
+    dd.DDname = side + "_MODSBlueCameraFocus";
+    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
     idev = getMechID((char*)"rcolttfa");
     dd.DDname = side + "_MODSRedCollTTFA";
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
