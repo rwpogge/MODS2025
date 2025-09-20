@@ -325,57 +325,57 @@ main(int argc, char* argv[])
     // MODS environmental sensor data (temperature and pressure)
 
     dd.DDname = side + "_MODSIUBTemp";
-    sprintf(varStr,".1f",shm_addr->MODS.utilBoxAirTemperature);
+    sprintf(varStr,"%.1f",shm_addr->MODS.utilBoxAirTemperature);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSGlycolSupplyTemp";
-    sprintf(varStr,".2f",shm_addr->MODS.glycolSupplyTemperature);
+    sprintf(varStr,"%.2f",shm_addr->MODS.glycolSupplyTemperature);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSGlycolSupplyPres";
-    sprintf(varStr,".2f",shm_addr->MODS.glycolSupplyPressure);
+    sprintf(varStr,"%.2f",shm_addr->MODS.glycolSupplyPressure);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSGlycolReturnTemp";
-    sprintf(varStr,".2f",shm_addr->MODS.glycolReturnTemperature);
+    sprintf(varStr,"%.2f",shm_addr->MODS.glycolReturnTemperature);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSGlycolReturnPres";
-    sprintf(varStr,".2f",shm_addr->MODS.glycolReturnPressure);
+    sprintf(varStr,"%.2f",shm_addr->MODS.glycolReturnPressure);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSBlueIEBTemp";
-    sprintf(varStr,".1f",shm_addr->MODS.blueTemperature[0]);
+    sprintf(varStr,"%.1f",shm_addr->MODS.blueTemperature[0]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSCollTempTop";
-    sprintf(varStr,".1f",shm_addr->MODS.blueTemperature[2]); // note: blueTemperature[1] is not reported
+    sprintf(varStr,"%.1f",shm_addr->MODS.blueTemperature[2]); // note: blueTemperature[1] is not reported
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSCollTempBottom";
-    sprintf(varStr,".1f",shm_addr->MODS.blueTemperature[3]); 
+    sprintf(varStr,"%.1f",shm_addr->MODS.blueTemperature[3]); 
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSRedIEBTemp";
-    sprintf(varStr,".1f",shm_addr->MODS.redTemperature[0]);
+    sprintf(varStr,"%.1f",shm_addr->MODS.redTemperature[0]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSAirTempTop";
-    sprintf(varStr,".1f",shm_addr->MODS.redTemperature[2]); // note: redTemperature[1] is not reported
+    sprintf(varStr,"%.1f",shm_addr->MODS.redTemperature[2]); // note: redTemperature[1] is not reported
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSAirTempBottom";
-    sprintf(varStr,".1f",shm_addr->MODS.redTemperature[3]); 
+    sprintf(varStr,"%.1f",shm_addr->MODS.redTemperature[3]); 
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
@@ -448,7 +448,10 @@ main(int argc, char* argv[])
     if (shm_addr->MODS.lamps.lamp_state[8]) sprintf(varStr,"%sVFLAT ",varStr);
 
     dd.DDname = side + "_MODSCalibLamps";
-    dd.DDkey = (string)varStr;
+    if (len(varStr) > 0)
+      dd.DDkey = (string)varStr;
+    else
+      dd.DDkey = "None";
     ddList.push_back(dd);
     
     dd.DDname = side + "_MODSVFLATIntensity";
