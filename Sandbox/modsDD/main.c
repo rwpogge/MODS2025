@@ -444,14 +444,14 @@ main(int argc, char* argv[])
     // Calibration Lamp states
 
     sprintf(varStr,"");
-    if (shm_addr->MODS.lamps.lamp_state[0]) {sprintf(varStr,"%sAr ",varStr); ierr++;}
-    if (shm_addr->MODS.lamps.lamp_state[1]) {sprintf(varStr,"%sXe ",varStr); ierr++;}
-    if (shm_addr->MODS.lamps.lamp_state[2]) {sprintf(varStr,"%sNe ",varStr); ierr++;}
-    if (shm_addr->MODS.lamps.lamp_state[3]) {sprintf(varStr,"%sHg ",varStr); ierr++;}
-    if (shm_addr->MODS.lamps.lamp_state[4]) {sprintf(varStr,"%sKr ",varStr); ierr++;}
-    if (shm_addr->MODS.lamps.lamp_state[6]) {sprintf(varStr,"%sQTH1 ",varStr); ierr++;}
-    if (shm_addr->MODS.lamps.lamp_state[7]) {sprintf(varStr,"%sQTH2 ",varStr); ierr++;}
-    if (shm_addr->MODS.lamps.lamp_state[8]) {sprintf(varStr,"%sVFLAT ",varStr); ierr++;}   
+    if (shm_addr->MODS.lamps.lamp_state[0]) sprintf(varStr,"%sAr ",varStr);
+    if (shm_addr->MODS.lamps.lamp_state[1]) sprintf(varStr,"%sXe ",varStr);
+    if (shm_addr->MODS.lamps.lamp_state[2]) sprintf(varStr,"%sNe ",varStr);
+    if (shm_addr->MODS.lamps.lamp_state[3]) sprintf(varStr,"%sHg ",varStr);
+    if (shm_addr->MODS.lamps.lamp_state[4]) sprintf(varStr,"%sKr ",varStr);
+    if (shm_addr->MODS.lamps.lamp_state[6]) sprintf(varStr,"%sQTH1 ",varStr);
+    if (shm_addr->MODS.lamps.lamp_state[7]) sprintf(varStr,"%sQTH2 ",varStr);
+    if (shm_addr->MODS.lamps.lamp_state[8]) sprintf(varStr,"%sVFLAT ",varStr);
 
     dd.DDname = side + "_MODSCalibLamps";
     dd.DDkey = (string)varStr;
