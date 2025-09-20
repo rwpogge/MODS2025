@@ -516,7 +516,7 @@ main(int argc, char* argv[])
     ddList.push_back(dd);
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
-    dd.DDname = side + "_MODSBlueCollFocus;
+    dd.DDname = side + "_MODSBlueCollFocus";
     sprintf(varStr,"%.3f",colFoc);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
@@ -542,7 +542,7 @@ main(int argc, char* argv[])
     ddList.push_back(dd);
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
-    dd.DDname = side + "_MODSRedCollFocus;
+    dd.DDname = side + "_MODSRedCollFocus";
     sprintf(varStr,"%.3f",colFoc);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
@@ -558,7 +558,7 @@ main(int argc, char* argv[])
     idev = getMechID((char*)"agwfilt");
     ipos = int(shm_addr->MODS.pos[idev]);
     dd.DDname = side + "_MODSAGWFilterName";
-    dd.DDkey = (string)shm_addr->MODS.agwfilter[ipos];
+    dd.DDkey = (string)shm_addr->MODS.agwfilters[ipos];
     ddList.push_back(dd);
     
     idev = getMechID((char*)"dichroic");
