@@ -91,6 +91,12 @@ extern isisclient_t client; // global client runtime config table
 extern lbtData_t modsDD;   // global LBT telescope data structure
 extern modsData_t mods;    // global MODS status data structure
 
+// MODS shared memory segment
+
+#include "instrutils.h"  // instrument utilities
+#include "islcommon.h"   // shared memory segment layout (Islcommon struct)
+#include "isl_shmaddr.h" // declares pointer to islcommon
+
 /*!
   \brief LBT telescope info data structure
 

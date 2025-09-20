@@ -64,12 +64,6 @@
 #include <Factory.h>
 #include <IIFServer.h>
 
-// MODS shared memory segment
-
-#include "instrutils.h"  // instrument utilities
-#include "islcommon.h"   // shared memory segment layout (Islcommon struct)
-#include "isl_shmaddr.h" // declares pointer to islcommon
-
 // About time
 
 #include <time.h>
