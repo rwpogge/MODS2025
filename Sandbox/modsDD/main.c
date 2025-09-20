@@ -448,7 +448,7 @@ main(int argc, char* argv[])
     if (shm_addr->MODS.lamps.lamp_state[8]) sprintf(varStr,"%sVFLAT ",varStr);
 
     dd.DDname = side + "_MODSCalibLamps";
-    if (len(varStr) > 0)
+    if (strlen(varStr) > 0)
       dd.DDkey = (string)varStr;
     else
       dd.DDkey = "None";
