@@ -106,6 +106,10 @@ int iifcount;
 
 void setup_ids();
 
+// DD update loop keep-going flag
+
+int keepGoing = 1;
+
 // isisclient bits we use, even though we're not a full ISIS client
 
 #include "isisclient.h"
@@ -205,6 +209,11 @@ main(int argc, char* argv[])
     status = EXIT_FAILURE;
   }
 
+  // Set signal traps
+
+  signal(SIGING,HandleKill);   // Trap Ctrl+C, exit and close Ice proxy
+  signal(SIGKILL,HandleKill); // Trap kill and close Ice proxy
+
   //---------------------------------------------------------------------------
   //
   // DD Update Loop
@@ -217,7 +226,7 @@ main(int argc, char* argv[])
   // seconds.
   //
 
-  int keepGoing = 1;
+  keepGoing = 1;
 
   // sim mechanisms
   
@@ -319,3 +328,4 @@ HandleKill(int signalValue)
   if (factory) factory->destroy(iif);
   if (communicator) communicator->destroy();
 }
+

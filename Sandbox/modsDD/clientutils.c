@@ -93,3 +93,28 @@ getUTCTime(utcinfo_t *utci)
   utday = (double)(utci->Day) + (utci->dtime/24.0);
 
 }
+
+/*!
+  \brief Get the mechanism ID from Shared Memory
+
+  \param mechName name of the mechanism (lowercase)
+  \return mechID  or -1
+
+  Get the mechanism ID index in shared memory for a named mechanism
+
+*/
+
+int 
+getMechID(char mechName[])
+{
+  int dev;
+  
+  for (dev=0;
+       !strstr(mechName,shm_addr->MODS.who[dev]) && dev<=MAX_ML;
+       dev++);
+
+  if (dev<0 || dev>=MAX_ML-1)
+    return -1;
+
+  return dev;
+}
