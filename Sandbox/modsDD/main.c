@@ -122,6 +122,8 @@ main(int argc, char* argv[])
   int n;
   string side;
   double t0, dt;
+  int idev;
+  int ipos;
   
   // Ice client properties file, usually lbtIIF.client, etc.
   
@@ -461,8 +463,174 @@ main(int argc, char* argv[])
     
     // Mechanism states (positions, element names, etc.)
 
-    // ...
+    idev = getMechID("hatch");
+    dd.DDname = side + "_MODSHatch";
+    dd.DDkey = (string)shm_addr->MODS.state_word[idev];
+    ddList.push_back(dd);
+
+    idev = getMechID("calib");
+    dd.DDname = side + "_MODSCalibTower";
+    dd.DDkey = (string)shm_addr->MODS.state_word[idev];
+    ddList.push_back(dd);
+
+    // scaled positions
     
+    idev = getMechID("agwx");
+    dd.DDname = side + "_MODSAGWXPos";
+    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    idev = getMechID("agwy");
+    dd.DDname = side + "_MODSAGWYPos";
+    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    idev = getMechID("agwfoc");
+    dd.DDname = side + "_MODSAGWFPos";
+    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    float colFoc;
+    
+    idev = getMechID("bcolttfa");
+    dd.DDname = side + "_MODSBlueCollTTFA";
+    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    colFoc = shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
+    
+    idev = getMechID("bcolttfb");
+    dd.DDname = side + "_MODSBlueCollTTFB";
+    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
+
+    idev = getMechID("bcolttfc");
+    dd.DDname = side + "_MODSBlueCollTTFC";
+    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
+
+    dd.DDName = side + "_MODSBlueCollFocus;
+    sprintf(varStr,"%.3f",colFoc);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    idev = getMechID("rcolttfa");
+    dd.DDname = side + "_MODSRedCollTTFA";
+    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    colFoc = shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
+
+    idev = getMechID("rcolttfb");
+    dd.DDname = side + "_MODSRedCollTTFB";
+    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
+
+    idev = getMechID("rcolttfc");
+    dd.DDname = side + "_MODSRedCollTTFC";
+    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
+
+    dd.DDName = side + "_MODSRedCollFocus;
+    sprintf(varStr,"%.3f",colFoc);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    idev = getMechID("rcamfoc");
+    dd.DDname = side + "_MODSRedCameraFocus";
+    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    // named numerical positions
+
+    idev = getMechID("agwfilt");
+    ipos = int(shm_addr->MODS.pos[idev]);
+    dd.DDname = side + "_MODSAGWFilterName";
+    dd.DDkey = (string)shm_addr->MODS.agwfilter[ipos];
+    ddList.push_back(dd);
+    
+    idev = getMechID("dichroic");
+    ipos = int(shm_addr->MODS.pos[idev]);
+    dd.DDname = side + "_MODSDichroicPosition";
+    sprintf(varStr,"%d",ipos);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSDichroicName";
+    dd.DDkey = (string)shm_addr->MODS.dichroicName[ipos];
+    ddList.push_back(dd);
+
+    idev = getMechID("bgrating");
+    ipos = int(shm_addr->MODS.pos[idev]);
+    dd.DDname = side + "_MODSBlueGratingPosition";
+    sprintf(varStr,"%d",ipos);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSBlueGrating";
+    dd.DDkey = (string)shm_addr->MODS.bgrating[ipos];
+    ddList.push_back(dd);
+
+    idev = getMechID("rgrating");
+    ipos = int(shm_addr->MODS.pos[idev]);
+    dd.DDname = side + "_MODSRedGratingPosition";
+    sprintf(varStr,"%d",ipos);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSRedGrating";
+    dd.DDkey = (string)shm_addr->MODS.rgrating[ipos];
+    ddList.push_back(dd);
+
+    idev = getMechID("bfilter");
+    ipos = int(shm_addr->MODS.pos[idev]);
+    dd.DDname = side + "_MODSBlueFilterPosition";
+    sprintf(varStr,"%d",ipos);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSBlueFilter";
+    dd.DDkey = (string)shm_addr->MODS.bcamfilters[ipos];
+    ddList.push_back(dd);
+
+    idev = getMechID("rfilter");
+    ipos = int(shm_addr->MODS.pos[idev]);
+    dd.DDname = side + "_MODSRedFilterPosition";
+    sprintf(varStr,"%d",ipos);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSRedFilter";
+    dd.DDkey = (string)shm_addr->MODS.rcamfilters[ipos];
+    ddList.push_back(dd);
+
+    // Slitmask system (mask number, ID, and minsert position)
+
+    dd.DDname = side + "_MODSMaskSelected";
+    sprintf(varStr,"%d",shm_addr->MODS.active_smask);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    dd.DDname = side + "_MODSMaskID";
+    dd.DDkey = (string)shm_addr->MODS.slitmaskName[shm_addr->MODS.active_smask];
+    ddList.push_back(dd);
+
+    dd.DDname = side + "_MODSMaskPosition";
+    dd.DDkey = (string)shm_addr->MODS.maskpos;
+    ddList.push_back(dd);
+
     // Set the DD parameters
     
     res = iif->SetParameter(ddList);
