@@ -245,7 +245,7 @@ main(int argc, char* argv[])
     ddList.push_back(dd);
 
     dd.DDname = side + "_MODSTimeStamp";
-    sprintf(varStr,"%d",t0);
+    sprintf(varStr,"%ld",int(t0));
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
@@ -468,7 +468,8 @@ main(int argc, char* argv[])
     }
 
     dt = SysTimestamp() - t0;
-    
+    printf("%s Updated DD: time=%.4f sec\n",utc.ISO,dt);
+ 
     // sleep for lbt.cadence if we didn't get an error
 
     if (keepGoing) sleep(lbt.cadence);
