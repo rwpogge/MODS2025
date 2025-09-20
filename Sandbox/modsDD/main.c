@@ -517,7 +517,7 @@ main(int argc, char* argv[])
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
     dd.DDname = side + "_MODSBlueCollFocus";
-    sprintf(varStr,"%.3f",colFoc);
+    sprintf(varStr,"%.3f",(colFoc/3.0));
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
@@ -549,7 +549,7 @@ main(int argc, char* argv[])
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
     dd.DDname = side + "_MODSRedCollFocus";
-    sprintf(varStr,"%.3f",colFoc);
+    sprintf(varStr,"%.3f",(colFoc/3.0));
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
