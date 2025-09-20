@@ -14,7 +14,7 @@
 
 # Version Number: <major>.<minor>.<build>
 
-VERSION     = v0.2.0
+VERSION     = v0.3.0
 
 # Compiler and libary info as required
 
