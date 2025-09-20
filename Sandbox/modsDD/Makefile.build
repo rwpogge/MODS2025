@@ -50,8 +50,7 @@ VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' -DAPP_
 LIBS        = $(INCPATHS) $(LIBPATHS) -lisis $(ICELIBS) -lislutils -linstrutils -liifutils
 LFLAGS      = -o modsDD
 
-OBJS        = 
-#OBJS        = clientutils.o loadconfig.o
+OBJS        = clientutils.o loadconfig.o
 
 .c.o:       client.h
 	    $(CC) $(CFLAGS) $(VFLAGS) $*.c

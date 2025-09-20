@@ -113,8 +113,7 @@ getMechID(char mechName[])
        !strstr(mechName,shm_addr->MODS.who[dev]) && dev<=MAX_ML;
        dev++);
 
-  if (dev<0 || dev>=MAX_ML-1)
-    return -1;
+  if (dev<0 || dev>=MAX_ML-1) return -1;
 
   return dev;
 }
