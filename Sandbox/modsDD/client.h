@@ -172,6 +172,7 @@ int  loadConfig(char *);      // Load/parse the agent runtime config file (see l
 void initLBTInfo(lbtinfo_t *);
 void getUTCTime(utcinfo_t *);
 int getMechID(char []);
+int powerState(int, char *);
 
 // Signal Handlers
 

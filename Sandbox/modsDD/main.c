@@ -127,6 +127,7 @@ main(int argc, char* argv[])
   char varStr[64];
   int n;
   string side;
+  double t0, dt;
   
   // Ice client properties file, usually lbtIIF.client, etc.
   
@@ -228,18 +229,19 @@ main(int argc, char* argv[])
 
   keepGoing = 1;
 
-  // sim mechanisms
-  
   int redGrating = 1;
   int blueGrating = 2;
   
   while (keepGoing) {
 
     getUTCTime(&utc);
+    t0 = SysTimestamp();
 
     DDstruct dd;
     SeqDD ddList;
 
+    // MODS name and update time stamps (text and integer)
+    
     dd.DDname = side + "_MODSName";
     dd.DDkey = (string)lbt.instID;
     ddList.push_back(dd);
@@ -248,18 +250,143 @@ main(int argc, char* argv[])
     dd.DDkey = (string)utc.ISO;
     ddList.push_back(dd);
 
-    dd.DDname = side + "_MODSRedDewPres";
-    sprintf(varStr,"%8.2e",shm_addr->MODS.redDewarPressure);
+    dd.DDname = side + "_MODSTimeStamp";
+    sprintf(varStr,"%d",t0);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    // MODS instrument configuration: CALMODE, OBSMODE, or UNKNOWN
+
+    dd.DDname = side + "_MODSInstConfig";
+    if (shm_addr->instrMode == 0)
+      dd.DDkey = "OBSMODE";
+    else if (shm_addr->instrMode == 1)
+      dd.DDkey = "CALMODE";
+    else
+      dd.DDkey = "UNKNOWN";
+    ddList.push_back(dd);
+
+    // MODS subsystem power states (On/Off/Fault)
+
+    powerState(shm_addr->MODS.utilState,varStr); // If the utility box is off, all of MODS is off
+    dd.DDname = side + "_MODSPowerState"; 
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    powerState(shm_addr->MODS.blueIEBState,varStr);
+    dd.DDname = side + "_MODSBlueIEBPower";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    powerState(shm_addr->MODS.redIEBState,varStr);
+    dd.DDname = side + "_MODSRedIEBPower";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    powerState(shm_addr->MODS.blueHEBState,varStr);
+    dd.DDname = side + "_MODSBlueHEBPower";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    powerState(shm_addr->MODS.redHEBState,varStr);
+    dd.DDname = side + "_MODSRedHEBPower";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    powerState(shm_addr->MODS.blueArchonState,varStr);
+    dd.DDname = side + "_MODSBlueArchonPower";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    powerState(shm_addr->MODS.redArchonState,varStr);
+    dd.DDname = side + "_MODSRedArchonPower";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    powerState(shm_addr->MODS.blueIonGaugeState,varStr);
+    dd.DDname = side + "_MODSBlueVacuumGaugePower";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    powerState(shm_addr->MODS.redIonGaugeState,varStr);
+    dd.DDname = side + "_MODSRedVacuumGaugePower";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    powerState(shm_addr->MODS.guideCamState,varStr);
+    dd.DDname = side + "_MODSGuideCamPower";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    powerState(shm_addr->MODS.wfsCamState,varStr);
+    dd.DDname = side + "_MODSWFSCamPower";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    powerState(shm_addr->MODS.llbState,varStr);
+    dd.DDname = side + "_MODSLLBPower";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    // MODS environmental sensor data (temperature and pressure)
+
+    dd.DDname = side + "_MODSIUBTemp";
+    sprintf(varStr,".1f",shm_addr->MODS.utilBoxAirTemperature);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
+    dd.DDname = side + "_MODSGlycolSupplyTemp";
+    sprintf(varStr,".2f",shm_addr->MODS.glycolSupplyTemperature);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSGlycolSupplyPres";
+    sprintf(varStr,".2f",shm_addr->MODS.glycolSupplyPressure);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSGlycolReturnTemp";
+    sprintf(varStr,".2f",shm_addr->MODS.glycolReturnTemperature);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSGlycolReturnPres";
+    sprintf(varStr,".2f",shm_addr->MODS.glycolReturnPressure);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSBlueIEBTemp";
+    sprintf(varStr,".1f",shm_addr->MODS.blueTemperature[0]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSCollTempTop";
+    sprintf(varStr,".1f",shm_addr->MODS.blueTemperature[2]); // note: blueTemperature[1] is not reported
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSCollTempBottom";
+    sprintf(varStr,".1f",shm_addr->MODS.blueTemperature[3]); 
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSRedIEBTemp";
+    sprintf(varStr,".1f",shm_addr->MODS.redTemperature[0]);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSAirTempTop";
+    sprintf(varStr,".1f",shm_addr->MODS.redTemperature[2]); // note: redTemperature[1] is not reported
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSAirTempBottom";
+    sprintf(varStr,".1f",shm_addr->MODS.redTemperature[3]); 
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
     dd.DDname = side + "_MODSBlueDewPres";
     sprintf(varStr,"%8.2e",shm_addr->MODS.blueDewarPressure);
-    dd.DDkey = (string)varStr;
-    ddList.push_back(dd);
-    
-    dd.DDname = side + "_MODSRedDewTemp";
-    sprintf(varStr,"%.1f",shm_addr->MODS.redDewarTemperature);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
@@ -268,31 +395,86 @@ main(int argc, char* argv[])
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
-    dd.DDname = side + "_MODSBlueGratingPosition";
-    sprintf(varStr,"%d",blueGrating);
+    dd.DDname = side + "_MODSBlueHEBTemp";
+    sprintf(varStr,"%.1f",shm_addr->MODS.blueHEBTemperature);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
-    dd.DDname = side + "_MODSBlueGrating";
-    dd.DDkey = "G400L";
+    dd.DDname = side + "_MODSRedDewPres";
+    sprintf(varStr,"%8.2e",shm_addr->MODS.redDewarPressure);
+    dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
-    dd.DDname = side + "_MODSRedGratingPosition";
-    sprintf(varStr,"%d",redGrating);
+    dd.DDname = side + "_MODSRedDewTemp";
+    sprintf(varStr,"%.1f",shm_addr->MODS.redDewarTemperature);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSRedHEBTemp";
+    sprintf(varStr,"%.1f",shm_addr->MODS.redHEBTemperature);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
-    dd.DDname = side + "_MODSRedGrating";
-    dd.DDkey = "Flat";
+    // IMCS IR laser state
+
+    dd.DDname = side + "_MODSIMCSLaser";
+    if (shm_addr->MODS.lasers.irlaser_state == 0)
+      dd.DDkey = "OFF";
+    else
+      dd.DDkey = "ON";
     ddList.push_back(dd);
 
-    // send it!
+    dd.DDname = side + "_MODSIMCSLaserBeam";
+    if (shm_addr->MODS.lasers.irbeam_state == 0)
+      dd.DDkey = "DISABLED";
+    else
+      dd.DDkey = "ENABLED";
+    ddList.push_back(dd);
+
+    dd.DDname = side + "_MODSIMCSLaserPower";
+    sprintf(varStr,"%.3f",shm_addr->MODS.lasers.irlaser_power);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSIMCSLaserTemp";
+    sprintf(varStr,"%.1f",shm_addr->MODS.lasers.irlaser_temp);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    // Calibration Lamp states
+
+    sprintf(varStr,"");
+    if (shm_addr->MODS.lamps.lamp_state[0]) {sprintf(varStr,"%sAr ",varStr); ierr++;}
+    if (shm_addr->MODS.lamps.lamp_state[1]) {sprintf(varStr,"%sXe ",varStr); ierr++;}
+    if (shm_addr->MODS.lamps.lamp_state[2]) {sprintf(varStr,"%sNe ",varStr); ierr++;}
+    if (shm_addr->MODS.lamps.lamp_state[3]) {sprintf(varStr,"%sHg ",varStr); ierr++;}
+    if (shm_addr->MODS.lamps.lamp_state[4]) {sprintf(varStr,"%sKr ",varStr); ierr++;}
+    if (shm_addr->MODS.lamps.lamp_state[6]) {sprintf(varStr,"%sQTH1 ",varStr); ierr++;}
+    if (shm_addr->MODS.lamps.lamp_state[7]) {sprintf(varStr,"%sQTH2 ",varStr); ierr++;}
+    if (shm_addr->MODS.lamps.lamp_state[8]) {sprintf(varStr,"%sVFLAT ",varStr); ierr++;}   
+
+    dd.DDname = side + "_MODSCalibLamps";
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    dd.DDname = side + "_MODSVFLATIntensity";
+    sprintf(varStr,"%.2f",shm_addr->MODS.vflat_power);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+    
+    // Mechanism states (positions, element names, etc.)
+
+    // ...
+    
+    // Set the DD parameters
     
     res = iif->SetParameter(ddList);
     if (res.rescode != EXIT_SUCCESS) {
       keepGoing = 0;
     }
 
+    dt = SysTimestamp() - t0;
+    
     // sleep for lbt.cadence if we didn't get an error
 
     if (keepGoing) sleep(lbt.cadence);

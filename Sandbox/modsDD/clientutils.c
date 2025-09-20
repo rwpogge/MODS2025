@@ -118,3 +118,37 @@ getMechID(char mechName[])
 
   return dev;
 }
+
+/*!
+  \brief Translate power state code to text
+
+  \param ipwr (int) - power state, values 0,1,-1
+  \param stateStr (char) - power state string
+
+  \return 0 if OK, -1 if unrecognized value if ipwr
+  
+  Translation:
+  <pre>
+    0 = OFF
+    1 = ON
+    -1 = FAULT (breaker)
+  </pre>
+  If ipwr is not a known power code, returns -1 and blank in stateStr
+  
+*/
+
+int
+powerState(int ipwr, char *stateStr)
+{
+  if (ipwr == 0)
+    sprintf(stateStr,"OFF");
+  else if (ipwr == 1)
+    sprintf(stateStr,"ON");
+  else if (ipwr == -1)
+    sprintf(stateStr,"FAULT");
+  else {
+    sprintf(stateStr,"");
+    return -1;
+  }
+  return 0;
+}
