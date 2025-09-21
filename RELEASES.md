@@ -17,6 +17,20 @@ The python `azcam` and `azcam-mods` modules to communicate with the Archon contr
 
 On the to-do list is a replacement for the Caliban data-transfer agents (alpha testing in progress), new instrument startup scripts.
 
+## Version 1.2.2 - 2025 Aug
+
+Incorporated many changes following live tests at LBTO during the Archon+HEB installation and MODS modifications. Too many changes to recount, most data-taking sub 
+systems advanced to release versions, but still many to-do items coming out of the engineering run
+
+## Version 1.2.1 - 2025 July
+
+A mix of tested beta code and developmental alpha code, including a version of the `azcam-mods` module ready for lab testing in Tucson when we go out
+end of the month for Archon installation.  
+ * First builds on the new mods flight Linux workstations running AlmaLinux 9.5, pre-shipped with the last build
+ * Tested lbttcs against the TCS simulator provided by LBTO
+ * Final assembly and pre-ship tests all of the Archon HEB boxes to be sent to LBTO using both the Jupyter notebook and the beta `modsHEB` code on the lab LBT MODS VLAN.
+ * All ported code ready for live testing with MODS1 and MODS2 on their carts in the highbay when the team arrives at LBTO later this month
+
 ## Version 1.2.0 - 2025 June
  * Start of AlmaLinux 9 port in earnest
  * Porting MODS agw and mmc (IE) server codes
@@ -25,31 +39,28 @@ On the to-do list is a replacement for the Caliban data-transfer agents (alpha t
  * Replacing proprietary fieldtalk libraries for modbus/tcp interaction with WAGO with open-source libmodbus
  * Major overhaul of code trees and preparing to migrate into GitHub for future revision control and handover to LBTO
 
-## Version 1.1.2
-Wednesday, August 14th, 2024
+## Version 1.1.2 - 2024 Aug 14
 
-- ModsEnv 3.1.0 -> ModsEnv 3.1.1
+- modsEnv 3.1.0 -> ModsEnv 3.1.1
     - Added a fallback leap-seconds file.
-- IonGuage 1.0.0
+- test Ion Gauge I/O through Comtrol
     - C and Python code for interacting with the Micro-Ion Plus Vacuum Guage Module.
 
-## Version 1.1.1
-Tuesday, July 16th, 2024
+## Version 1.1.1 - 2024 Jul 16
 
-- ModsEnv 3.0 -> ModsEnv 3.1.0
-    - Enviornmental sensing data can now be logged to Hdf5 files in the LBTO telemetry format.
+- modsEnv 3.0 -> modsEnv 3.1.0
+    - Environmental sensing data can now be logged to HDF5 files in the LBTO telemetry format.
 
-## Version 1.1.0
-Friday, July 8th, 2024
+## Version 1.1.0 - 2024 Jul 8
 
 - Qt 5.X -> Qt 6.X
     - imsTool, iTerm, and modsUI should all be compiled using Qt 6.
 
-## Version 1.0.0
-Friday, February 23rd, 2024
+## Version 1.0.0 - 2024 Feb 23
 
 - Qt 4.X -> Qt 5.X
     - imsTool, iTerm, and modsUI should all be compiled using Qt 5.
 
 ## Version 0.0.0
+
 This was the first version committed to the repository.
