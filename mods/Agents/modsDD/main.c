@@ -645,8 +645,8 @@ main(int argc, char* argv[])
       keepGoing = 0;
     }
 
-    dt = SysTimestamp() - t0;
-    printf("%s Updated DD: time=%.4f sec\n",utc.ISO,dt);
+    //dt = SysTimestamp() - t0;
+    //printf("%s Updated DD: time=%.4f sec\n",utc.ISO,dt);
  
     // sleep for lbt.cadence if we didn't get an error
 
