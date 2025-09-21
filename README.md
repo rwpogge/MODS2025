@@ -38,3 +38,9 @@ See the [installation instructions](INSTALL.md) in this repository.
 - Matthieu Bec (LBTO) mbec@lbto.org
 - Glenn Eychaner (LBTO) geychaner@lbto.org
 - Ray Gonzalez (OSU Retired)
+
+## Whiteboard Status
+
+MP4067 whiteboard as of 2025 Sept 21:
+
+![MP4067 Whiteboard](MODS_dts_Status_2025Sept21.jpg)
