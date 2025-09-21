@@ -19,8 +19,9 @@ However, it is taking on many of the structures of the real thing, so not totall
   * `ISIS` - ISIS message-passing server and client
   * `azcam` - AzCam server for the MODS Archon CCD controllers
   * `Config` - MODS instance runtime configuration files released for observing operations
-  * `Scripts` - Startup and status scripts (coming soon...)
-  * `Sandbox` - place to put test codes and other bits we are using, the action is in the subfolders
+  * `modsPerl` - MODS perl scripts for target acquisition and data taking and related tasks.
+  * `Scripts` - MODS system startup and status scripts (coming soon...)
+  * `Sandbox` - place to work on test codes and other bits we are using, the action is in the subfolders but read before you use
 
 ## Installation and dependencies
 
