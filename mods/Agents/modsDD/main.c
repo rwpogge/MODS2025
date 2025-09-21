@@ -497,65 +497,65 @@ main(int argc, char* argv[])
     
     idev = getMechID((char*)"bcolttfa");
     dd.DDname = side + "_MODSBlueCollTTFA";
-    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    sprintf(varStr,"%.1f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc = shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
     
     idev = getMechID((char*)"bcolttfb");
     dd.DDname = side + "_MODSBlueCollTTFB";
-    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    sprintf(varStr,"%.1f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
     idev = getMechID((char*)"bcolttfc");
     dd.DDname = side + "_MODSBlueCollTTFC";
-    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    sprintf(varStr,"%.1f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
     dd.DDname = side + "_MODSBlueCollFocus";
-    sprintf(varStr,"%.3f",(colFoc/3.0));
+    sprintf(varStr,"%.1f",(colFoc/3.0));
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     idev = getMechID((char*)"bcamfoc");
     dd.DDname = side + "_MODSBlueCameraFocus";
-    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    sprintf(varStr,"%.1f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
     idev = getMechID((char*)"rcolttfa");
     dd.DDname = side + "_MODSRedCollTTFA";
-    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    sprintf(varStr,"%.1f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc = shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
     idev = getMechID((char*)"rcolttfb");
     dd.DDname = side + "_MODSRedCollTTFB";
-    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    sprintf(varStr,"%.1f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
     idev = getMechID((char*)"rcolttfc");
     dd.DDname = side + "_MODSRedCollTTFC";
-    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    sprintf(varStr,"%.1f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     colFoc += shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev];
 
     dd.DDname = side + "_MODSRedCollFocus";
-    sprintf(varStr,"%.3f",(colFoc/3.0));
+    sprintf(varStr,"%.1f",(colFoc/3.0));
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
     
     idev = getMechID((char*)"rcamfoc");
     dd.DDname = side + "_MODSRedCameraFocus";
-    sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
+    sprintf(varStr,"%.1f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
@@ -640,6 +640,7 @@ main(int argc, char* argv[])
     // Set the DD parameters
     
     res = iif->SetParameter(ddList);
+
     if (res.rescode != EXIT_SUCCESS) {
       keepGoing = 0;
     }
@@ -686,5 +687,5 @@ HandleExit(int signalValue)
 {
   if (factory) factory->destroy(iif);
   if (communicator) communicator->destroy();
+  exit(1);
 }
-
