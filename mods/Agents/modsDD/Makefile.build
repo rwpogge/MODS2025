@@ -1,0 +1,52 @@
+#
+# Makefile for modsDD 
+#
+# Use "build", not "make" to build the modsDD executable.
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge@astronomy.ohio-state.edu
+# Original 2025 Sept 18
+#
+# Last Modification:
+#   2025 Sep 20 - Updates after first live tests [rwp/osu]
+#   2025 Sep 21 - Beta release as v1.0.1 [rwp/osu]
+#
+#-------------------------------------------------------------------------
+
+# Version Number: <major>.<minor>.<build>
+
+VERSION     = v1.0.1
+
+# Compiler and libary info as required
+
+CC          = /usr/bin/g++
+AR          = /usr/bin/ar
+ROOTDIR     = /home/dts/mods
+ISISDIR     = /home/dts/ISIS
+ICELIBS     = -I/lib64 -lIce
+BINDIR      = $(ROOTDIR)/bin
+
+INCPATHS    = -I$(ISISDIR)/lib -I$(ROOTDIR)/include 
+LIBPATHS    = -L$(ISISDIR)/lib -L$(ROOTDIR)/ulib
+CFLAGS      = -w -c $(INCPATHS) 
+VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' -DAPP_COMPTIME='"$(COMPTIME)"'
+LIBS        = $(INCPATHS) $(LIBPATHS) -lisis $(ICELIBS) -lislutils -linstrutils -liifutils
+LFLAGS      = -o modsDD
+
+OBJS        = clientutils.o loadconfig.o
+
+.c.o:       client.h
+	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
+
+all:        modsDD
+
+modsDD:     $(OBJS) main.c
+	    $(CC) $(LFLAGS) $(VFLAGS) main.c $(OBJS) $(LIBS)
+	    /bin/rm -f *.o
+
+clean:
+	    /bin/rm -f modsDD *.o
+
+install:
+	    \cp modsDD $(ROOTDIR)/bin/
+	    /bin/rm -f *.o

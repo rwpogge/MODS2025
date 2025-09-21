@@ -1,0 +1,795 @@
+Data Dictionary names available in the Instrument Interface (Build 2025X)
+
+Format:
+Name                             Type    Units   Description
+
+If Name starts with 'S_' it means there are two names, one for the left side, and
+one for the right side. The left side name will start with 'L_' and the right side
+name with 'R_'. For example
+
+S_MODSBlueCCDTemp                float   C       Blue camera CCD detector mount temperature
+
+means there are two names, one for each side:
+
+L_MODSBlueCCDTemp                float   C       Blue camera CCD detector mount temperature
+R_MODSBlueCCDTemp                float   C       Blue camera CCD detector mount temperature
+
+        [Telescope temperature sensors]
+Temp201                          float   C       C ring middle steel temperature
+Temp202                          float   C       C ring middle air temperature
+Temp203                          float   C       C ring upper steel temperature
+Temp204                          float   C       C ring upper air temperature
+Temp205                          float   C       C ring lower steel temperature
+Temp206                          float   C       C ring lower air temperature
+Temp207                          float   C       Wind bracing lower right steel temperature
+Temp208                          float   C       Wind bracing lower right air temperature
+Temp209                          float   C       Mirror cell lower right steel temperature
+Temp210                          float   C       Mirror cell lower right air temperature
+Temp301                          float   C       C ring right extension steel temperature
+Temp302                          float   C       C ring right extension air temperature
+Temp303                          float   C       C ring left extension steel temperature
+Temp304                          float   C       C ring left extension air temperature
+Temp305                          float   C       Wind bracing upper steel temperature
+Temp306                          float   C       Wind bracing upper air temperature
+Temp307                          float   C       Wind bracing middle right steel temperature
+Temp308                          float   C       Wind bracing middle right air temperature
+Temp309                          float   C       Wind bracing middle left steel temperature
+Temp310                          float   C       Wind bracing middle left air temperature
+Temp401                          float   C       right primary swing arm steel temperature 1
+Temp402                          float   C       right primary swing arm steel temperature 2
+Temp403                          float   C       left primary swing arm steel temperature 1
+Temp404                          float   C       left primary swing arm steel temperature 2
+Temp405                          float   C       right secondary swing arm steel temperature 1
+Temp406                          float   C       right secondary swing arm steel temperature 2
+Temp407                          float   C       left secondary swing arm steel temperature 1
+Temp408                          float   C       left secondary swing arm steel temperature 2
+ChamberTemp                      float   C       Chamber temperature
+ChamberDewPoint                  float   C       Chamber dewpoint
+HBPumpOffWarning                 bool    ---     True if HBS pump is off (not running)
+HBTempOutOfRangeWarning          bool    ---     True if difference of 5 degC between return and setpoint oil temperature occurs after five minutes
+HBTempOutOfRangeAlarm            bool    ---     True if difference of 10 degC between return and setpoint oil temperature occurs
+
+        [LBT weather data]
+LBTWeatherAlive                  bool    ---     True if data current
+LBTWeatherAliveFront             bool    ---     True if front data current
+LBTDewPoint                      float   C       Dew point
+LBTHumidity                      float   %       Relative humidity
+LBTPressure                      float   hPa     Pressure
+LBTRain                          bool    ---     True if raining
+LBTTemp                          float   C       Air temperature
+LBTTimeStamp                     long    sec     Time of data collection in seconds from epoch
+LBTWindDir                       float   deg     Wind direction
+LBTWindDirRaw                    float   deg     Raw wind direction
+LBTWindSpeed                     float   m/s     Wind speed
+LBTWindDirFront                  float   deg     Front wind direction
+LBTWindDirFrontRaw               float   deg     Raw front wind direction
+LBTWindSpeedFront                float   m/s     Front wind speed
+
+        [Sky Quality data]
+SQMAlive                         bool    ---     True if data current
+SQMTimeStamp                     long    sec     Time of data collection in seconds from epoch
+SQMBrightness                    float   mag     Brightness
+
+        [SMT weather data]
+SMTWeatherAlive                  bool    ---     True if data current
+SMTDewPoint                      float   C       Dew point
+SMTHumidity                      float   %       Relative humidity
+SMTPressure                      float   hPa     Pressure
+SMTRain                          float   ---     Less than 50.0 if raining
+SMTTemp                          float   C       Air temperature
+SMTPeakWindDir1m                 float   deg     Direction of peak wind gust in last min
+SMTPeakWindSpeed1m               float   m/s     Speed of peak wind gust in last min
+SMTTimeStamp                     long    sec     Time of data collection in seconds from epoch
+SMTWindDir                       float   deg     Wind direction
+SMTWindSpeed                     float   m/s     Wind speed
+SMTTau                           float   ---     SMT Tau
+SMTTauSigma                      float   ---     SMT Tau sigma
+SMTTauZenith                     float   ---     SMT zenith Tau
+SMTZenithOpacity                 float   ---     SMT zenith opacity
+
+        [DDS data]
+ETwilight                        double  MJD     Evening 12 deg twilight
+MoonAlt                          double  deg     Current moon altitude
+MoonAz                           double  deg     Current moon azimuth
+MoonLit                          double  %       Current moon lit percentage
+MoonRise                         double  MJD     Moon rise time
+MoonSet                          double  MJD     Moon set time
+MTwilight                        double  MJD     Morning 12 deg twilight
+SecondHalf                       double  MJD     Second half of night
+SunAlt                           double  deg     Current sun altitude
+SunAz                            double  deg     Current sun azimuth
+SunRise                          double  MJD     Sunrise
+SunSet                           double  MJD     Sunset
+AlmanacTime                      double  MJD     Almanac time
+
+        [DIMM data]
+DIMMElevation                    float   deg     DIMM elevation angle
+DIMMSeeing                       float   arcsec  DIMM seeing value
+DIMMSeeingZenith                 float   arcsec  DIMM seeing value corected to zenith
+DIMMSeeingElevation              float   arcsec  DIMM seeing value corrected to LBT elevation
+DIMMR0                           float   cm      DIMM R0 value
+DIMMMessage                      string  ---     DIMM message
+DIMMStatus                       int     ---     DIMM status
+DIMMTimeStamp                    long    sec     Time of data measurement in seconds from epoch
+DIMMMeanFlux                     float   ---     DIMM flux measurement
+
+        [IIF data]
+Build                            string  ---     IIF build string
+S_FocalStation                   string  ---     Authorized Focal Station
+S_Instrument                     string  ---     Authorized Instrument
+IIFRunning                       bool    ---     IIF subsystem running
+DDSRunning                       bool    ---     DDS subsystem running
+LSSRunning                       bool    ---     LSS subsystem running
+ECSRunning                       bool    ---     ECS subsystem running
+ENVRunning                       bool    ---     ENV subsystem running
+PCSRunning                       bool    ---     PCS subsystem running
+MCSRunning                       bool    ---     MCS subsystem running
+OSSRunning                       bool    ---     OSS subsystem running
+S_PMCRunning                     bool    ---     PMC subsystem running
+S_PSFRunning                     bool    ---     PSF subsystem running
+S_GCSRunning                     bool    ---     GCS subsystem running
+S_AOSRunning                     bool    ---     AOS subsystem running
+IIFOnSource                      bool    ---     Mount is onSource
+iif.onSource                     bool    ---     Mount is onSource
+IIFAzOnSource                    bool    ---     Azimuth is onSource
+IIFElOnSource                    bool    ---     Elevation is onSource
+IIFAllOnSource                   bool    ---     Mount and all rotators are onSource
+S_IIFOnSource                    bool    ---     Mount and rotator are onSource
+S_PresetMode                     string  ---     Preset mode
+S_EffectiveMode                  string  ---     Effective Preset mode
+S_PseudoMonocular                bool    ---     Pseudo-monocular flag
+S_ShutterOpen                    bool    ---     Shutter door is open
+S_FrontRotatorReady              bool    ---     Front rotator and cable chain are ready
+S_DirectRotatorReady             bool    ---     Direct rotator and cable chain are ready
+S_OffsetApplied                  bool    ---     An offset was applied by the PCS
+
+         requested by SHARK-NIR 2024.05.13
+S_AOReferenceRA                  float   rad     AO reference star RA
+S_AOReferenceDEC                 float   rad     AO reference star DEC
+S_AOReferenceMag                 double  ---     AO Reference Magnitude
+S_AOReferencePMRA                double  rad     AO Reference PM RA Coordinate
+S_AOReferencePMDEC               double  rad     AO Reference PM DEC Coordinate
+S_TargetInputRA                  double  rad     Target Input RA Coordinate
+S_TargetInputDEC                 double  rad     Target Input DEC Coordinate
+S_TargetMag                      double  ---     Target Magnitude
+S_TargetPMRA                     double  rad     Target PM RA Coordinate
+S_TargetPMDEC                    double  rad     Target PM DEC Coordinate
+
+
+
+        [GCS data]
+S_AGWFilter                      string  ---     Name of the selected AGw filter
+S_AGWFilterPos                   int     ---     Position of the selected AGw filter
+S_AGWFocus                       double  mm      AGw focus
+S_AGWHappy                       bool    ---     True if AGw happy
+S_AGWPosX                        double  mm      Achieved X position of the AGw probe
+S_AGWReqX                        double  mm      Requested X position of the AGw probe
+S_AGWPosY                        double  mm      Achieved Y position of the AGw probe
+S_AGWReqY                        double  mm      Requested Y position of the AGw probe
+S_AGWKFPPosX                     double  mm      Achieved PCS X position
+S_AGWKFPPosY                     double  mm      Achieved PCS Y position
+S_AGWKFPReqX                     double  mm      Requested PCS X position
+S_AGWKFPReqY                     double  mm      Requested PCS Y position
+S_AGWState                       string  ---     
+S_GuideBadCount                  int     count   Count of guide star not found
+S_GuideExpTime                   int     msec    Eposure time for guiding
+S_GuideDEC                       double  rad     Guide star DEC
+S_GuideRA                        double  rad     Guide start RA
+S_GuideHotspotX                  double  pix     X coordinate of the CCD's hotspot
+S_GuideHotspotY                  double  pix     Y coordinate of CCD's hotspot
+S_GuideIntTime                   int     msec    Integration time for guiding
+S_GuideFlag                      bool    ---     True if the GCS is calculating centroids
+S_GuideAcquisition               bool    ---     True if in acquisition process
+S_GuideActive                    bool    ---     True if guiding but not in acquisition
+S_GuideAcquireImage              bool    ---     True if guider acquiring an image
+S_GuideBinning                   int     pixel   Guide camera bin factor
+S_GuideFreq                      float   Hz      Guiding frequency
+S_GuideSeeing                    double  arcsec  Guider seeing
+S_GuideSeeingValid               bool    ---     True if guider seeing has meaning
+S_GuideImageTime                 string  ---     Date of last guide image
+S_GuideImageTimeStamp            long    sec     Time stamp of last guide image in seconds from epoch
+S_GuideStarLost                  bool    ---     Guide star lost
+S_GuidingStatus                  string  ---     Guiding status
+S_WFSCycleTime                   int     sec     Cycle time for WFS
+S_WFSExpTime                     int     msec    Exposure time for WFS
+S_WFSHotspotX                    double  pix     X coordinate of the CCD's hotspot
+S_WFSHotspotY                    double  pix     Y coordinate of CCD's hotspot
+S_WFSIntTime                     int     sec     Integration time for WFS
+S_WFSCounter                     int     ---     Number of requested images
+S_WFSFilename                    string  ---     Filename of the last saved image
+S_WFSFWHMMean                    double  arcsec  Mean of FWHM for WFS spots
+S_WFSFWHMSigma                   double  arcsec  Sigma of FWHM for WFS spots
+S_WFSPath                        string  ---     Pathname to the saved WFS images
+S_WFSFlag                        bool    ---     True if the GCS is calculating Zernikes
+S_WFSAcquireImage                bool    ---     True if WFS acquiring an image
+S_WFSStatusValue                 long    ---     0 OK, 1 warning, 2 error
+S_WFSRMS                         double  nm      RMS of PSF-transferred Zernikes
+S_WFSRMShex                      double  nm      RMS of Z4, Z5, Z6
+S_WFSRMSlow                      double  nm      RMS of Z4 through Z11
+S_WFSIsCollimated                bool    ---     True if Zernike RMS below limit
+S_WFSZ2                          float   nm      Z2 coefficient as reported to PSF
+S_WFSZ3                          float   nm      Z3 coefficient as reported to PSF
+S_WFSZ4                          float   nm      Z4 coefficient as reported to PSF
+S_WFSZ5                          float   nm      Z5 coefficient as reported to PSF
+S_WFSZ6                          float   nm      Z6 coefficient as reported to PSF
+S_WFSZ7                          float   nm      Z7 coefficient as reported to PSF
+S_WFSZ8                          float   nm      Z8 coefficient as reported to PSF
+S_WFSZ9                          float   nm      Z9 coefficient as reported to PSF
+S_WFSZ10                         float   nm      Z10 coefficient as reported to PSF
+S_WFSZ11                         float   nm      Z11 coefficient as reported to PSF
+S_WFSZ12                         float   nm      Z12 coefficient as reported to PSF
+S_WFSZ13                         float   nm      Z13 coefficient as reported to PSF
+S_WFSZ14                         float   nm      Z14 coefficient as reported to PSF
+S_WFSZ15                         float   nm      Z15 coefficient as reported to PSF
+S_WFSZ16                         float   nm      Z16 coefficient as reported to PSF
+S_WFSZ17                         float   nm      Z17 coefficient as reported to PSF
+S_WFSZ18                         float   nm      Z18 coefficient as reported to PSF
+S_WFSZ19                         float   nm      Z19 coefficient as reported to PSF
+S_WFSZ20                         float   nm      Z20 coefficient as reported to PSF
+S_WFSZ21                         float   nm      Z21 coefficient as reported to PSF
+S_WFSZ22                         float   nm      Z22 coefficient as reported to PSF
+
+        [MCS data]
+AZPosition                       double  arcsec  Azimuth position
+AZTarget                         double  arcsec  Commanded azimuth position
+AZTrackingState                  string  ---     Azimuth tracking mode
+AZServoMode                      string  ---     Azimuth servo mode
+AZVelocity                       double  asec/s  Azimuth velocity
+AZTimeStamp                      long    sec     Azimuth timestamp
+ELPosition                       double  arcsec  Elevation position
+ELTarget                         double  arcsec  Commanded elevation position
+ELTrackingState                  string  ---     Elevation tracking state
+ELServoMode                      string  ---     Elevation servo mode
+ELVelocity                       double  asec/s  Elevation velocity
+ELTimeStamp                      long    sec     Elevation timestamp
+S_FBGRPosition                   float   arcsec  FBG rotator position
+S_FBGRVelocity                   float   asec/s  FBG rotator velocity
+S_FBGRTimeToLimit                float   sec     FBG rotator time to limit
+S_RBGRPosition                   float   arcsec  RBG rotator position
+S_RBGRVelocity                   float   asec/s  RBG rotator velocity
+S_RBGRTimeToLimit                float   sec     RBG rotator time to limit
+S_DGRPosition                    float   arcsec  DG rotator position
+S_DGRVelocity                    float   asec/s  DG rotator velocity
+S_DGRTimeToLimit                 float   sec     DG rotator time to limit
+
+        [OSS data]
+S_M2X                            float   mm      Secondary mirror X position
+S_M2Y                            float   mm      Secondary mirror y position
+S_M2Z                            float   mm      Secondary mirror Z position
+S_M2Rx                           float   arcsec  Secondary mirror RX position
+S_M2Ry                           float   arcsec  Secondary mirror RY position
+S_M2Rz                           float   arcsec  Secondary mirror RZ position
+S_M2StateMsg                     string  ---     Secondary mirror state
+S_M3Tip                          float   arcsec  Tertiary mirror tip position
+S_M3Tilt                         float   arcsec  Tertiary mirror tilt position
+S_M3Piston                       float   mm      Tertiary mirror piston position
+S_M3Sel                          float   deg     Tertiary mirror selector position
+S_M3StateMsg                     string  ---     Tertiary mirror state
+         allows shark-nir differentiate the argos cal vs bariloto (mounted on m2 swa), swa id=3 is argos cal swa
+S_SWA_Argos_Deployed             bool    ---     Argos cal unit swing arm deployed state
+S_SWA_Argos_Retracted            bool    ---     Argos cal unit swing arm retracted state
+
+         same as L_ although not used (by shark-vis) yet
+
+
+        [PCS data]
+         Azimuth and elevation/altitude coefficients and timestamp of the demand trajectories
+PCSTimeStamp                     long    sec     PCS time stamp
+AZDemandTimeStamp                double  days    Azimuth polynomial timestamp MJD(TAI)
+AZDemandPosition                 double  rad     Azimuth position polynomial coefficient
+AZDemandVelocity                 double  rad/s   Azimuth velocity polynomial coefficient
+AZDemandAcceleration             double  rad/s/s Azimuth acceleration polynomial coefficient
+ELDemandTimeStamp                double  days    Elevation/Altitude polynomial timestamp MJD(TAI)
+ELDemandPosition                 double  rad     Elevation/Altitude position polynomial coefficient
+ELDemandVelocity                 double  rad/s   Elevation/Altitude velocity polynomial coefficient
+ELDemandAcceleration             double  rad/s/s Elevation/Altitude acceleration polynomial coefficient
+         Mount achieved positions
+MountAchievedRAHMS               string  HMS     Mount achieved RA
+MountAchievedHAHMS               string  HMS     Mount achieved HA
+MountAchievedDECDMS              string  DMS     Mount achieved DEC
+MountAchievedAZDMS               string  DMS     Mount achieved AZ
+MountAchievedALTDMS              string  DMS     Mount achieved ALT
+MountAchievedRA                  double  rad     Mount achieved RA
+MountAchievedHA                  double  rad     Mount achieved HA
+MountAchievedDEC                 double  rad     Mount achieved DEC
+MountAchievedAZ                  double  rad     Mount achieved AZ
+MountAchievedALT                 double  rad     Mount achieved ALT
+         Mount midpoint position for ARGOS
+MountMidPtRA                     double  rad     On-sky mount midpoint RA position
+MountMidPtDEC                    double  rad     On-sky mount midpoint DEC position
+MountMidPtRAHMS                  string  ---     On-sky mount midpoint RA position (sexagesimal)
+MountMidPtDECDMS                 string  ---     On-sky mount midpoint DEC position (sexagesimal)
+         Time
+UTC                              string  HMS     Coordinated Universal Time
+LST                              string  HMS     Local Sidereal Time
+MJDUTC                           double  MJD     Modified Julian Day UTC
+Epoch                            double  years   Epoch of today (UTC)
+         Astronomical parallactic angle
+ParAngle                         double  deg     Parallactic angle
+AirMass                          double  ---     Air mass
+AZTimeToLimit                    double  MJD     Azimuth time to limit
+ELTimeToLimit                    double  MJD     Elevation time to limit
+         Sided data dictionary items
+S_AchievedDECDMS                 string  DMS     Target Dec (sexagesimal)
+S_AchievedDEC                    double  rad     Target Dec
+S_AchievedRAHMS                  string  HMS     Target RA (sexagesimal)
+S_AchievedRA                     double  rad     Target RA
+S_AchievedAZDMS                  string  DMS     Target AZ (sexagesimal)
+S_AchievedAZ                     double  rad     Target AZ
+S_AchievedALTDMS                 string  DMS     Target ALT (sexagesimal)
+S_AchievedALT                    double  rad     Target ALT
+S_AchievedGALLDeg                double  deg     Target L (degrees)
+S_AchievedGALBDeg                double  deg     Target B (degrees)
+S_AZGain                         double  ---     Azimuth gain (proportional coeff) for filtering guide centroids
+S_CA                             double  arcsec  Pointing Model coeff CA - nonperpendicularity of EL and pointing axes
+S_DECOffset                      double  rad     Current offset of Dec in focal plane, depends on ABS/REL offset
+S_ELGain                         double  ---     Elevation/Altitude gain (proportional coeff) for filter guide centroids
+S_GSCumXPredmMeas                double  mm      Cumulative(predicted-measured) KFP guide star X positions
+S_GSCumYPredmMeas                double  mm      Cumulative(predicted-measured) KFP guide star Y positions
+S_GSPresetDECDMS                 string  DMS     Guide Star Dec (sexagesimal)
+S_GSPresetRAHMS                  string  HMS     Guide Star RA (sexagesimal)
+S_GSXMeasured                    double  mm      Measured guide star KFP X position
+S_GSXPredicted                   double  mm      Predicted guide star KFP X postion
+S_GSYMeasured                    double  mm      Measured guide star KFP Y position
+S_GSYPredicted                   double  mm      Predicted guide star KFP Y postion
+S_IA                             double  arcsec  Pointing Model coeff IA - index error in AZ
+S_IE                             double  arcsec  Pointing Model coeff IE - index error in EL
+S_PointingModel                  string  ---     Pointing Model Filename
+S_PosAngle                       double  rad     If POSITION mode: rotation offset angle. Else position on sky
+S_ParAngle                       double  rad     If PARALLACTIC mode: rotational offset angle. Else position on sky
+S_POXBase                        double  mm      Base Pointing Origin X KFP coordinate
+S_POXOffset                      double  mm      Accumulated X offset in KFP, depends on ABS/REL offset
+S_POXCurrent                     double  mm      Current X pointing origin including base in KFP, depends on ABS/REL offset
+S_POYBase                        double  mm      Base Pointing Origin Y KFP coordinate
+S_POYOffset                      double  mm      Accumulated Y offset in KFP, depends on ABS/REL offset
+S_POYCurrent                     double  mm      Current Y pointing origin including base in KFP, depends on ABS/REL offset
+S_PORABase                       double  rad     Base Pointing Origin RA coordinate
+S_PODecBase                      double  rad     Base Pointing Origin DEC coordinate
+S_PORABaseHMS                    string  ---     Base Pointing Origin RA (sexagesimal) coordinate
+S_PODecBaseDMS                   string  ---     Base Pointing Origin DEC (sexagesimal) coordinate
+S_PORACurrent                    double  rad     RA associated with the current pointing origin
+S_PODECCurrent                   double  rad     DEC associated with the current pointing origin
+S_PORACurrentHMS                 string  ---     RA (sexagesimal) associated with the current pointing origin
+S_PODECCurrentDMS                string  ---     DEC (sexagesimal) associated with the current pointing origin
+S_PresetParAngle                 float   rad     Preset requested base angle for rotator mode = PARALLACTIC
+S_PresetPosAngle                 double  rad     Preset requested base angle for rotator mode = POSITION
+S_PresetRotMode                  string  ---     Preset Rotator Mode (POSITION | PARALLACTIC | IDLE)
+S_PresetTargetDECDMS             string  DMS     Target Dec based on Preset input (sexagesimal)
+S_PresetTargetRAHMS              string  HMS     Target RA based on Preset input (sexagesimal)
+S_PresetTargetAZDMS              string  DMS     Target AZ based on Preset input (sexagesimal)
+S_PresetTargetALTDMS             string  DMS     Target ALT based on Preset input (sexagesimal)
+S_PresetTargetGALLDeg            double  deg     Target L based on Preset input (degrees)
+S_PresetTargetGALBDeg            double  deg     Target B based on Preset input (degrees)
+S_RAOffset                       double  rad     Current offset of RA in focal plane, depends on ABS/REL offset
+S_RotAngle                       double  rad     Rotator angle - same as the rotator position polynomial coefficient
+S_RotCenterDECDMS                string  DMS     Current Dec of rotator center based on Preset/Offset input (sexagesimal)
+S_RotCenterDEC                   double  rad     Current Dec of rotator center based on Preset/Offset input
+S_RotCenterRAHMS                 string  HMS     Current RA rotator center based on Preset/Offset input (sexagesimal)
+S_RotCenterRA                    double  rad     Current RA rotator center based on Preset/Offset input
+S_TimeToLimit                    double  MJD     Rotator time to limit
+S_RotDemandPosition              double  rad     Rotator position polynomial coefficient
+S_RotMode                        string  ---     Rotator mode (POSITION | PARALLACTIC | IDLE)
+S_TargetDEC                      double  rad     Target Dec based on Preset/Offset input
+S_TargetParAngle                 double  deg     Predicted target parallactic angle based on Preset/Offset input
+S_TargetRA                       double  rad     Target RA based on Preset/Offset input
+S_TargetRABase                   double  rad     Base Target RA coordinate
+S_TargetDecBase                  double  rad     Base Target DEC coordinate
+S_TargetRABaseHMS                string  ---     Base Target RA (sexagesimal) coordinate
+S_TargetDecBaseDMS               string  ---     Base Target DEC (sexagesimal) coordinate
+S_FocalLength                    double  mm      Focal length of authorized focal station
+         non-sidereal target
+NonSiderealTarget                bool    ---     True if target non-sidereal
+S_NSRATRKRate                    double  asec/hr Differential tracking rate for RA
+S_NSDECTRKRate                   double  asec/hr Differential tracking rate for Dec
+S_NSTRKEpoch                     double  MJD     Differential tracking reference epoch (UTC days)
+S_NSTRKEquinox                   string  ---     Tracking equinox
+S_NSTRKFrame                     string  ---     Tracking coordinate frame
+S_NSEphemerisName                string  ---     Ephemeris file name
+S_NSType                         string  ---     Type of target
+
+        [PMC data]
+S_M1X                            float   mm      Primary mirror X position
+S_M1Y                            float   mm      Primary mirror Y position
+S_M1Z                            float   mm      Primary mirror Z position
+S_M1Rx                           float   arcsec  Primary mirror RX position
+S_M1Ry                           float   arcsec  Primary mirror RY position
+S_M1Rz                           float   arcsec  Primary mirror RZ position
+S_M1AirTemp                      float   C       Primary mirror air temperature
+S_M1GlassTemp                    float   C       Primary mirror glass temperature
+S_M1TargetTemp                   float   C       Primary mirror ventilation target temperature
+
+        [PSF data]
+S_M1CollX                        float   mm      Primary mirror collimation position
+S_M1CollY                        float   mm      Primary mirror collimation position
+S_M1CollZ                        float   mm      Primary mirror collimation position
+S_M1CollRx                       float   arcsec  Primary mirror collimation position
+S_M1CollRy                       float   arcsec  Primary mirror collimation position
+S_M1CollRz                       float   arcsec  Primary mirror collimation position
+S_M1CollTemp                     float   C       Primary mirror collimation temperature 1
+S_M1CollTemp2                    float   C       Primary mirror collimation temperature 2
+S_M1ActOptX                      float   mm      Primary mirror collimation active optics correction
+S_M1ActOptY                      float   mm      Primary mirror collimation active optics correction
+S_M1ActOptZ                      float   mm      Primary mirror collimation active optics correction
+S_M1ActOptRx                     float   arcsec  Primary mirror collimation active optics correction
+S_M1ActOptRy                     float   arcsec  Primary mirror collimation active optics correction
+S_M1ActOptRz                     float   arcsec  Primary mirror collimation active optics correction
+S_M1Mode1OffX                    float   mm      Primary mirror collimation mode1 pointing offset
+S_M1Mode1OffY                    float   mm      Primary mirror collimation mode1 pointing offset
+S_M1Mode1OffZ                    float   mm      Primary mirror collimation mode1 pointing offset
+S_M1Mode1OffRx                   float   arcsec  Primary mirror collimation mode1 pointing offset
+S_M1Mode1OffRy                   float   arcsec  Primary mirror collimation mode1 pointing offset
+S_M1Mode1OffRz                   float   arcsec  Primary mirror collimation mode1 pointing offset
+S_M1Mode1ManX                    float   mm      Primary mirror collimation mode1 manual pointing offset
+S_M1Mode1ManY                    float   mm      Primary mirror collimation mode1 manual pointing offset
+S_M1Mode1ManZ                    float   mm      Primary mirror collimation mode1 manual pointing offset
+S_M1Mode1ManRx                   float   arcsec  Primary mirror collimation mode1 manual pointing offset
+S_M1Mode1ManRy                   float   arcsec  Primary mirror collimation mode1 manual pointing offset
+S_M1Mode1ManRz                   float   arcsec  Primary mirror collimation mode1 manual pointing offset
+S_M1Mode3OffX                    float   mm      Primary mirror collimation mode1 pointing offset
+S_M1Mode3OffY                    float   mm      Primary mirror collimation mode1 pointing offset
+S_M1Mode3OffZ                    float   mm      Primary mirror collimation mode1 pointing offset
+S_M1Mode3OffRx                   float   arcsec  Primary mirror collimation mode1 pointing offset
+S_M1Mode3OffRy                   float   arcsec  Primary mirror collimation mode1 pointing offset
+S_M1Mode3OffRz                   float   arcsec  Primary mirror collimation mode1 pointing offset
+S_M1Z2                           float   nm      Primary mirror Z2
+S_M1Z3                           float   nm      Primary mirror Z3
+S_M1Z4                           float   nm      Primary mirror Z4
+S_M1Z5                           float   nm      Primary mirror Z5
+S_M1Z6                           float   nm      Primary mirror Z6
+S_M1Z7                           float   nm      Primary mirror Z7
+S_M1Z8                           float   nm      Primary mirror Z8
+S_M1Z9                           float   nm      Primary mirror Z9
+S_M1Z10                          float   nm      Primary mirror Z10
+S_M1Z11                          float   nm      Primary mirror Z11
+S_M1Z12                          float   nm      Primary mirror Z12
+S_M1Z13                          float   nm      Primary mirror Z13
+S_M1Z14                          float   nm      Primary mirror Z14
+S_M1Z15                          float   nm      Primary mirror Z15
+S_M1Z16                          float   nm      Primary mirror Z16
+S_M1Z17                          float   nm      Primary mirror Z17
+S_M1Z18                          float   nm      Primary mirror Z18
+S_M1Z19                          float   nm      Primary mirror Z19
+S_M1Z20                          float   nm      Primary mirror Z20
+S_M1Z21                          float   nm      Primary mirror Z21
+S_M1Z22                          float   nm      Primary mirror Z22
+S_M2CollX                        float   mm      Secondary mirror collimation position
+S_M2CollY                        float   mm      Secondary mirror collimation position
+S_M2CollZ                        float   mm      Secondary mirror collimation position
+S_M2CollRx                       float   arcsec  Secondary mirror collimation position
+S_M2CollRy                       float   arcsec  Secondary mirror collimation position
+S_M2CollRz                       float   arcsec  Secondary mirror collimation position
+S_M2CollTemp                     float   C       Secondary mirror collimation temperature
+S_M2ActOptX                      float   mm      Secondary mirror collimation active optics correction
+S_M2ActOptY                      float   mm      Secondary mirror collimation active optics correction
+S_M2ActOptZ                      float   mm      Secondary mirror collimation active optics correction
+S_M2ActOptRx                     float   arcsec  Secondary mirror collimation active optics correction
+S_M2ActOptRy                     float   arcsec  Secondary mirror collimation active optics correction
+S_M2ActOptRz                     float   arcsec  Secondary mirror collimation active optics correction
+S_M2Mode1OffX                    float   mm      Secondary mirror collimation mode1 pointing offset
+S_M2Mode1OffY                    float   mm      Secondary mirror collimation mode1 pointing offset
+S_M2Mode1OffZ                    float   mm      Secondary mirror collimation mode1 pointing offset
+S_M2Mode1OffRx                   float   arcsec  Secondary mirror collimation mode1 pointing offset
+S_M2Mode1OffRy                   float   arcsec  Secondary mirror collimation mode1 pointing offset
+S_M2Mode1OffRz                   float   arcsec  Secondary mirror collimation mode1 pointing offset
+S_M2Mode1ManX                    float   mm      Secondary mirror collimation mode1 manual pointing offset
+S_M2Mode1ManY                    float   mm      Secondary mirror collimation mode1 manual pointing offset
+S_M2Mode1ManZ                    float   mm      Secondary mirror collimation mode1 manual pointing offset
+S_M2Mode1ManRx                   float   arcsec  Secondary mirror collimation mode1 manual pointing offset
+S_M2Mode1ManRy                   float   arcsec  Secondary mirror collimation mode1 manual pointing offset
+S_M2Mode1ManRz                   float   arcsec  Secondary mirror collimation mode1 manual pointing offset
+S_M3CollTip                      float   arcsec  Tertiary mirror collimation position
+S_M3CollTilt                     float   arcsec  Tertiary mirror collimation position
+S_M3CollPiston                   float   mm      Tertiary mirror collimation position
+S_M3CollSel                      float   deg     Tertiary mirror collimation position
+S_M3CollTemp                     float   C       Tertiary mirror collimation temperature
+S_M1InstOffX                     float   mm      Primary mirror instrument collimation offset
+S_M1InstOffY                     float   mm      Primary mirror instrument collimation offset
+S_M1InstOffZ                     float   mm      Primary mirror instrument collimation offset
+S_M1InstOffRx                    float   arcsec  Primary mirror instrument collimation offset
+S_M1InstOffRy                    float   arcsec  Primary mirror instrument collimation offset
+S_M1InstOffRz                    float   arcsec  Primary mirror instrument collimation offset
+S_M1GrpRotX                      float   mm      Primary mirror group rotation position
+S_M1GrpRotY                      float   mm      Primary mirror group rotation position
+S_M1GrpRotZ                      float   mm      Primary mirror group rotation position
+S_M1GrpRotRx                     float   arcsec  Primary mirror group rotation position
+S_M1GrpRotRy                     float   arcsec  Primary mirror group rotation position
+S_M1GrpRotRz                     float   arcsec  Primary mirror group rotation position
+S_M1GlobOffX                     float   mm      Primary mirror global collimation offset
+S_M1GlobOffY                     float   mm      Primary mirror global collimation offset
+S_M1GlobOffZ                     float   mm      Primary mirror global collimation offset
+S_M1GlobOffRx                    float   arcsec  Primary mirror global collimation offset
+S_M1GlobOffRy                    float   arcsec  Primary mirror global collimation offset
+S_M1GlobOffRz                    float   arcsec  Primary mirror global collimation offset
+
+        [AOS data]
+S_AOBadSeeing                    int     ---     AO bad seeing flag
+S_AOShape                        string  ---     AO secondary shape
+S_AOOffsetX                      double  ---     AO X offset
+S_AOOffsetY                      double  ---     AO Y offset
+S_AOOffsetZ                      double  ---     AO Z offset
+S_AOmode                         string  ---     AO mode
+S_AORefMag                       double  ---     AO reference star magnitude
+S_AORefCindex                    double  ---     AO reference star color index
+S_AORefX                         double  ---     AO reference star X
+S_AORefY                         double  ---     AO reference star Y
+S_AOdx                           double  ---     AO pyramid X displacement
+S_AOdy                           double  ---     AO pyramid Y displacement
+S_AOfreq                         double  ---     AO CCD frequency
+S_AOgain                         double  ---     AO loop gain
+S_AOmag                          double  ---     AO measured magnitude
+S_AOnbins                        int     ---     AO number of bins
+S_AOnmodes                       int     ---     AO number of modes
+S_AOr0                           double  ---     AO evualted R0
+S_AOslnull                       string  ---     AO slope null
+S_AOsnmode                       double  ---     AO S/N per mode
+S_AOttmodul                      double  ---     AO tip-tilt modulation
+S_AOStatus                       string  ---     AO adsec status
+S_AOCorrectedModes               int     ---     AO number of corrected modes
+S_AOMode                         string  ---     AO mode
+S_AOslReady                      int     ---     AO seeing limited ready
+S_AOaoReady                      int     ---     AO adaptive ready
+S_AOLoopOn                       int     ---     AO loop on flag
+S_AOStrehl                       double  ---     AO estimated Strehl ratio
+S_AOFLAOWccdBin                  int     ---     AO FLAO CCD binning
+S_AOFLAOWccdFreq                 double  Hz      AO FLAO CCD loop frequency
+S_AOFLAOWmodAmp                  double  ---     AO FLAO modulation amplitude
+S_AOFLAOWcounts                  int     c/sa    AO FLAO counts per subaperture
+S_AOLBTIWccdBin                  int     ---     AO LBTI CCD binning
+S_AOLBTIWccdFreq                 double  Hz      AO LBTI CCD loop frequency
+S_AOLBTIWmodAmp                  double  ---     AO LBTI modulation amplitude
+S_AOLBTIWcounts                  int     c/sa    AO LBTI counts per subaperture
+S_AOLBTIWbaysidex                double  mm      AO LBTI bayside stage x position
+S_AOLBTIWbaysidey                double  mm      AO LBTI bayside stage y position
+S_AOLBTIWbaysidez                double  mm      AO LBTI bayside stage z position
+S_AOOffloadY                     double  arcsec  AO Y tip/tilt offload
+S_AOOffloadX                     double  arcsec  AO X tip/tilt offload
+S_AOOffloadZ                     double  mm      AO Z offload
+S_AnemTimeStamp                  long    sec     AO anemometer time stamp seconds from epoch
+S_AnemWindAvg1s                  double  m/s     AO anemometer 1 second average speed
+S_AnemWindAvg10s                 double  m/s     AO anemometer 10 seconds average speed
+S_AnemWindAvg1m                  double  m/s     AO anemometer 1 minute average speed
+S_ARGOSStatus                    string  ---     ARGOS state
+S_ARGOSNModes                    int     ---     ARGOS number of corrected modes
+S_ARGOSMode                      string  ---     ARGOS mode
+S_ARGOSFrequency                 int     Hz      ARGOS loop frequency
+S_ARGOSRadius                    int     arcmin  ARGOS constellation radius
+
+        [ECS data]
+S_MirrorVentOn                   bool    ---     Left mirror ventilation blower on
+S_MirrorVentDuctTemp             float   C       Left mirror ventilation duct temperature
+S_MirrorVentDuctRH               float   %       Left mirror ventilation duct relative humidity
+
+        [IRTC data]
+S_IRTCSpareBool                  bool    ---     IRTC spare bool
+S_IRTCSpareDouble                double  ---     IRTC spare double
+S_IRTCSpareFloat                 float   ---     IRTC spare float
+S_IRTCSpareInt                   int     ---     IRTC spare int
+S_IRTCSpareLong                  long    ---     IRTC spare long
+S_IRTCSpareString                string  ---     IRTC spare string
+
+        [LBC data]
+LBCOBProgress                    string  ---     OB status (ready/running)
+LBCSwProcess                     int     ---     Instrument software process state
+S_LBCFilter                      string  ---     Filter name
+S_LBCShutterState                string  ---     N/A/enabled/disabled/not commanded/open/closed
+S_LBCDetectorState               string  ---     ready/setup/flushing/hard flushing/exposure/saving readout/passive/preset
+S_LBCGuidingState                string  ---     processing/failed/not required/delaying/starting/exposing/ready/..
+S_LBCRotatorAngle                float   deg     Rotator angle
+S_LBCPositionAngle               float   deg     Position angle
+S_LBCCCDTemp                     float   K       CCD detector temperature
+S_LBCDewarPres                   float   mbar    CCD dewar vacuum pressure
+S_LBCDewarTemp                   float   K       CCD dewar LN reservoir temperature
+S_LBCFWHM                        float   arcsec  Calculated full width at half max for the guide image
+S_LBCSeeing                      float   arcsec  Averaged seeing for the guide image
+S_LBCPowerState                  int     ---     Power state
+S_LBCSetupState                  int     ---     Configuration state
+S_LBCHealthState                 int     ---     Health state
+S_LBCHeartbeatTime               string  HMS     When the last data item was sent to DD from LBC
+S_LBCExposureSeq                 string  sec     Exposure time n of m [sec] elapsed
+S_LBCImageSeq                    string  ---     Image m of n in the sequence
+S_LBCFilterSeq                   string  ---     Filter change m of n in the sequence
+S_LBCUpdateTime                  long    sec     Houskeeping update time in seconds from epoch
+S_LBCCameraError                 int     ---     Science camera error state
+S_LBCChannelError                int     ---     Overall channel error state
+S_LBCFilterError                 int     ---     Filter error state
+S_LBCHKProcess                   int     ---     Housekeeping process state
+S_LBCOBError                     int     ---     OB processing error state
+S_LBCProfibusError               int     ---     Profibus error state
+S_LBCPowerError                  int     ---     Power error state
+S_LBCRotatorError                int     ---     Rotator error state
+S_LBCTCSError                    int     ---     TCS error state
+S_LBCTrackerError                int     ---     Tech camera error state
+S_LBCUploadError                 int     ---     Upload error state
+S_LBCSpareError1                 int     ---     Spare error
+S_LBCSpareError2                 int     ---     Spare error
+S_LBCSpareError3                 int     ---     Spare error
+S_LBCSpareError4                 int     ---     Spare error
+S_LBCSpareError5                 int     ---     Spare error
+S_LBCSpareError6                 int     ---     Spare error
+S_LBCSpareError7                 int     ---     Spare error
+S_LBCSpareError8                 int     ---     Spare error
+S_LBCSpareError9                 int     ---     Spare error
+S_LBCSpareError10                int     ---     Spare error
+S_LBCErrorMessage                string  ---     Error message associated with any of the error states
+S_LBCChannelState                string  ---     enabled/ready/preset-expose-save/stop/parking/warning/error/inhibited/deactivated/disabled
+S_LBCGuideImagePath              string  ---     Path for guide image
+S_LBCGuideImageFilename          string  ---     Name of guide image
+S_LBCLastGuideImageTaken         long    sec     Guide image timestamp in seconds from epoch
+
+        [LUCIFER data]
+S_LUCIDDUpdateTime               long    sec     Time in seconds from epoch
+S_LUCIFilterWheel1Position       int     ---     Filter wheel 1 number
+S_LUCIFilterWheel1Status         int     ---     Filter wheel 1 status (0=OK, 1=active, 2=idle, 3=engineering, 4=warning, 5=error, 6=panic)
+S_LUCIFilterWheel2Position       int     ---     Filter wheel 2 number
+S_LUCIFilterWheel2Status         int     ---     Filter wheel 2 status (0=OK, 1=active, 2=idle, 3=engineering, 4=warning, 5=error, 6=panic)
+S_LUCIGratingSelected            string  ---     Grating name
+S_LUCIGratingStatus              int     ---     Grating status (0=OK, 1=active, 2=idle, 3=engineering, 4=warning, 5=error, 6=panic)
+S_LUCICameraName                 string  ---     Name of selected camera
+S_LUCICameraUnitStatus           int     ---     Camera status (0=OK 1=active, 2=idle, 3=engineering, 4=warning, 5=error, 6=panic)
+S_LUCIPupilViewerPosition        int     ---     Pupil viewer position (0 in, 1 out, -1 unknown)
+S_LUCIPupilViewerStatus          int     ---     Pupil viewer status (0=OK, 1=active, 2=idle, 3=engineering, 4=warning, 5=error, 6=panic)
+S_LUCICalibrationUnitPosition    int     ---     Calibration unit position (0 out, 1 in, -1 inknown)
+S_LUCICalibrationUnitStatus      int     ---     Calibration unit status (0=OK, 1=active, 2=idle, 3=engineering, 4=warning, 5=error, 6=panic)
+S_LUCIReadoutStatus              int     ---     Readout status (0=OK, 1=active, 2=idle, 3=engineering, 4=warning, 5=error, 6=panic)
+S_LUCITemperatureAlarm           bool    ---     True if temperature in alarm
+S_LUCITemperatures[0]            float   K       Structure bottom temperature
+S_LUCITemperatures[1]            float   K       Focal plane unit temperature
+S_LUCITemperatures[2]            float   K       Getter unit temperature
+S_LUCITemperatures[3]            float   K       Structure top temperature
+S_LUCITemperatures[4]            float   K       Camera unit temperature
+S_LUCITemperatures[5]            float   K       Grating unit temperature
+S_LUCITemperatures[6]            float   K       MOS unit temperature
+S_LUCITemperatures[7]            float   K       MOS unit temperature
+S_LUCITemperatures[8]            float   K       Electronic rack temperature
+S_LUCITemperatures[9]            float   K       Electronic rack temperature
+S_LUCITemperatures[10]           float   K       Electronic rack temperature
+S_LUCITemperatures[11]           float   K       Electronic rack temperature
+S_LUCITemperatures[12]           float   K       Measured temperature
+S_LUCITemperatures[13]           float   K       Measured temperature
+S_LUCIPressures[0]               float   mbar    Measured pressure
+S_LUCIPressures[1]               float   mbar    Measured pressure
+S_LUCIPressureStatus[0]          int     ---     Pressure status (0=OK, 1=underRange, 2=overRange, 3=sensorError, 4=sensorOff, 5=noSensor, 6=IDerror)
+S_LUCIPressureStatus[1]          int     ---     Pressure status (0=OK, 1=underRange, 2=overRange, 3=sensorError, 4=sensorOff, 5=noSensor, 6=IDerror)
+S_LUCIExpTimeRemaining           float   sec     Exposure time remaining
+S_LUCINumberExposures            int     ---     Number of exposures remaining
+S_LUCIDetectorState              string  ---     Detector state (Integrating, stopped, flushing, etc)
+S_LUCIDetectorStatus             int     ---     Detector status (0=OK, 1=active, 2=idle, 3=engineering, 4=warning, 5=error, 6=panic)
+S_LUCIMOSUnitStatus              int     ---     MOS unit status (0=OK, 1=active, 2=idle, 3=engineering, 4=warning, 5=error, 6=panic)
+S_LUCIMaskID                     string  ---     ID of mask in use
+S_LUCIShutterState               string  ---     open/closed
+S_LUCIPowerOn[0]                 bool    ---     Power for MCE, ROE, coldHead1, coldHead2
+S_LUCIPowerOn[1]                 bool    ---     Power for MCE, ROE, coldHead1, coldHead2
+S_LUCIPowerOn[2]                 bool    ---     Power for MCE, ROE, coldHead1, coldHead2
+S_LUCIPowerOn[3]                 bool    ---     Power for MCE, ROE, coldHead1, coldHead2
+S_LUCIPower[0]                   float   volt    Voltages for MCE, ROE, coldHead1, coldHead2
+S_LUCIPower[1]                   float   volt    Voltages for MCE, ROE, coldHead1, coldHead2
+S_LUCIPower[2]                   float   volt    Voltages for MCE, ROE, coldHead1, coldHead2
+S_LUCIPower[3]                   float   volt    Voltages for MCE, ROE, coldHead1, coldHead2
+S_LUCIExposureState              string  ---     UNKNOWN, READY, RUNNING, ERROR
+S_LUCISaveState                  string  ---     UNKNOWN, READY, SAVING, ERROR
+S_LUCIExposureCounts             string  ---     Exposures remaining/total exposures
+S_LUCISpareString1               string  ---     Exposures remaining/total exposures
+S_LUCIExposureRemaining          string  sec     Time remaining/total time
+S_LUCISpareString2               string  sec     Time remaining/total time
+S_LUCITurnoutWarning             bool    ---     Mask in turnout longer than 15 minutes
+S_LUCISpareInt1                  bool    ---     Mask in turnout longer than 15 minutes
+
+        [MODS data]
+S_MODSLLBPower                   string  ---     Lamp/laser box AC power state (ON/OFF/FAULT)
+S_MODSInstConfig                 string  ---     Instrument configuration (Dual/Red/Blue Imaging/Grating/Prism)
+S_MODSBlueCCDTemp                float   C       Blue CCD detector mount temperature
+S_MODSBlueDewPres                float   torr    Blue CCD dewar vacuum pressure
+S_MODSBlueDewTemp                float   C       Blue CCD dewar LN reservoir temperature
+S_MODSBlueHEBTemp                float   C       Blue CCD Head Electronics Box internal air temperature
+S_MODSBlueHEBPower               string  ---     Blue CCD Head Electronics Box AC power state (ON/OFF/FAULT/MANUAL)
+S_MODSBlueIEBTemp                float   C       Blue Instrument Electronics Box internal air temperature
+S_MODSBlueIEBPower               string  ---     Blue Instrument Electronics Box AC power state (ON/OFF/FAULT)
+S_MODSGlycolReturnPres           float   psi-g   Glycol-coolant return-line pressure
+S_MODSGlycolReturnTemp           float   C       Glycol-coolant return-line temperature
+S_MODSGlycolSupplyPres           float   psi-g   Glycol-coolant supply-line pressure
+S_MODSGlycolSupplyTemp           float   C       Glycol-coolant supply-line temperature
+S_MODSHatch                      string  ---     Dark hatch state
+S_MODSIMCSLaser                  string  ---     IMCS IR laser power state
+S_MODSName                       string  ---     Attached MODS unit name (MODS1 or MODS2)
+S_MODSPowerState                 string  ---     Power state (ON/OFF/FAULT)
+S_MODSRedCCDTemp                 float   C       Red CCD detector mount temperature
+S_MODSRedDewPres                 float   torr    Red CCD dewar vacuum pressure
+S_MODSRedDewTemp                 float   C       Red CCD dewar LN reservoir temperature
+S_MODSRedHEBTemp                 float   C       Red CCD Head Electronics Box internal air temperature
+S_MODSRedHEBPower                string  ---     Red CCD Head Electronics Box AC power state (ON/OFF/FAULT/MANUAL)
+S_MODSRedIEBTemp                 float   C       Red Instrument Electronics Box internal air temperature
+S_MODSRedIEBPower                string  ---     Red Instrument Electronics Box AC power state (ON/OFF/FAULT)
+S_MODSTimeStamp                  long    sec     Time of data measurement in seconds from epoch
+S_MODSUpdateTime                 string  HMS     Date/time string UTC ISO-8601 format
+S_MODSIUBTemp                    float   C       Utility distribution box internal air temperature
+S_MODSCalibTower                 string  ---     IN/OUT position of the calibration tower
+S_MODSMaskID                     string  ---     Mask identifier
+S_MODSBlueImageQuality           float   TBD     Blue image quality metric
+S_MODSBlueFilter                 string  ---     Blue filter name
+S_MODSBlueGrating                string  ---     Blue grating name
+S_MODSBlueCCDState               string  ---     Blue CCD exposure state (IDLE/ERASING/EXPOSING/READOUT)
+S_MODSBlueSetupState             int     ---     Blue configuration state
+S_MODSBlueShutterState           string  ---     Blue CCD shutter state
+S_MODSRedImageQuality            float   TBD     Red image quality metric
+S_MODSRedFilter                  string  ---     Red filter name
+S_MODSRedGrating                 string  ---     Red grating name
+S_MODSRedCCDState                string  ---     Red CCD exposure state (IDLE/ERASING/EXPOSING/READOUT)
+S_MODSRedSetupState              int     ---     Red configuration state
+S_MODSRedShutterState            string  ---     Red CCD shutter state
+S_MODSGuideCamPower              string  ---     AGw unit guide camera controller AC power state (ON/OFF/FAULT/MANUAL)
+S_MODSWFSCamPower                string  ---     AGw unit wavefront sensor camera AC power state (ON/OFF/FAULT/MANUAL)
+S_MODSAGWXPos                    float   mm      AGW Stage X actuator position
+S_MODSAGWYPos                    float   mm      AGW Stage Y actuator position
+S_MODSAGWFPos                    float   mm      AGW Stage Focus actuator position
+S_MODSAGWFilterName              string  ---     AGW Guide Camera Filter Name
+S_MODSMaskSelected               int     ---     Slit Mask Cassette mask slot position selected
+S_MODSMaskPosition               string  ---     Slit Mask position relative to the MODS focal plane (In/Out)
+S_MODSDichroicPosition           int     ---     Dichroic Turret Position selected
+S_MODSDichroicName               string  ---     Dichroic Turret Optic Name (Dichroic/Red Fold/Open)
+S_MODSBlueCollTTFA               int     micron  Blue Collimator Mirror Tip/Tilt/Focus actuator A position
+S_MODSBlueCollTTFB               int     micron  Blue Collimator Mirror Tip/Tilt/Focus actuator B position
+S_MODSBlueCollTTFC               int     micron  Blue Collimator Mirror Tip/Tilt/Focus actuator C position
+S_MODSBlueCollFocus              int     micron  Blue Collimator Focus position (TTFA+TTFB+TTFC)
+S_MODSBlueGratingPosition        int     ---     Blue Grating Turret position (number 1..4)
+S_MODSBlueCameraFocus            int     micron  Blue Camera Focus [microns]
+S_MODSBlueFilterPosition         int     ---     Blue Camera Filter Wheel position (number 1..8)
+S_MODSBlueVacuumGaugePower       string  ---     Blue Dewar Vacuum Ionization Gauge DC Power (on/off)
+S_MODSBlueArchonPower            string  ---     Blue Archon CCD Controller AC Power (on/off)
+S_MODSRedCollTTFA                int     micron  Red Collimator Mirror Tip/Tilt/Focus actuator A position
+S_MODSRedCollTTFB                int     micron  Red Collimator Mirror Tip/Tilt/Focus actuator B position
+S_MODSRedCollTTFC                int     micron  Red Collimator Mirror Tip/Tilt/Focus actuator C position
+S_MODSRedCollFocus               int     micron  Red Collimator Focus position (TTFA+TTFB+TTFC)
+S_MODSRedGratingPosition         int     ---     Red Grating Turret position (number 1..4)
+S_MODSRedCameraFocus             int     micron  Red Camera Focus [microns]
+S_MODSRedFilterPosition          int     ---     Red Camera Filter Wheel position (number 1..8)
+S_MODSRedVacuumGaugePower        string  ---     Red Dewar Vacuum Ionization Gauge DC Power (on/off)
+S_MODSRedArchonPower             string  ---     Red Archon CCD Controller AC Power (on/off)
+S_MODSCalibLamps                 string  ---     Calibration lamps turned ON (None if all off)
+S_MODSVFLATIntensity             float   ---     Variable Intensity Flat Field Lamp Intensity
+S_MODSIMCSLaserBeam              string  ---     IMCS IR Laser beam output state (enabled/disabled)
+S_MODSIMCSLaserPower             float   mW      IMCS IR Laser emitted beam power
+S_MODSIMCSLaserTemp              float   C       IMCS IR Laser Head Temperature
+S_MODSAirTempTop                 float   C       Enclosure Inside Air Temp at Top
+S_MODSAirTempBottom              float   C       Enclosure Inside Air Temp at Bottom
+S_MODSCollTempTop                float   C       Collimator Mirror Truss Tube Top Temp
+S_MODSCollTempBottom             float   C       Collimator Mirror Truss Tube Bottom Temp
+
+        [LBTI data]
+
+        [PEPSIPFU data]
+
+        XXX pepsi common, revisit
+PEPSIChamberRedCCDTemperatureA   float   K       PEPSI chamber red CCD temperature sensor A
+PEPSIChamberBlueCCDTemperatureB  float   K       PEPSI chamber blue CCD temperature sensor B
+PEPSIChamberRedCCDTemperatureC   float   K       PEPSI chamber red CCD temperature sensor C
+PEPSIChamberRedCCDDewarTemperaturfloat   K       PEPSI chamber red CCD dewar temperature
+PEPSIChamberBlueCCDDewarTemperatufloat   K       PEPSI chamber blue CCD dewar temperature
+PEPSIChamberRedCCDPressure       float   mbar    PEPSI chamber red CCD pressure
+PEPSIChamberBlueCCDPressure      float   mbar    PEPSI chamber blue CCD pressure
+PEPSIChamberRedCCDHeater         float   %       PEPSI chamber red CCD heater rate
+PEPSIChamberBlueCCDHeater        float   %       PEPSI chamber blue CCD heater rate
+PEPSIChamberRedCCDCryoSupply     float   psi     PEPSI chamber red CCD Cryotiger supply
+PEPSIChamberBlueCCDCryoSupply    float   psi     PEPSI chamber blue CCD Cryotiger supply
+PEPSIChamberRedCCDCryoReturn     float   psi     PEPSI chamber red CCD Cryotiger return
+PEPSIChamberBlueCCDCryoReturn    float   psi     PEPSI chamber blue CCD Cryotiger return
+PEPSIBridgeStop                  bool    N/A     PEPSI bridge cabinet emergency stop
+PEPSIChamberStop                 bool    N/A     PEPSI chamber emergency stop
+PEPSIBridgeWaterTankLeak         bool    N/A     PEPSI bridge water tank leak
+PEPSIBridgeCabinetPumpLeak       bool    N/A     PEPSI bridge cabinet pump leak
+PEPSIBridgeCryotigerLeak         bool    N/A     PEPSI bridge Cryotiger leak
+PEPSIChamberSupplyBoxLeak        bool    N/A     PEPSI chamber Supply Box leak
+        XXX
+
+         sided pepsipfu
+S_PEPSIPFUGlycol                 float   C       PEPSI PFU Glycol Temperature SX
+S_PEPSIPFUHeater                 float   C       PEPSI PFU Heater Rate SX
+S_PEPSIPFUTemperature            float   C       PEPSI PFU Temperature SX
+S_PEPSIPFUUMAC                   float   C       PEPSI PFU UMAC Temperature SX
+        [PEPSIPOL data]
+        sided pepsipol
+S_PEPSIPOLGlycol                 float   C       PEPSI POL Glycol Temperature SX
+S_PEPSIPOLHeater                 float   C       PEPSI POL Heater Rate SX
+S_PEPSIPOLTemperature            float   C       PEPSI POL Temperature SX
+S_PEPSIPOLUMAC                   float   C       PEPSI POL UMAC Temperature SX
+
+        [LINC data]

@@ -1,0 +1,153 @@
+//
+// clientutils - client app utilities go here
+//
+
+/*!
+  \file clientutils.c
+  \brief Client application utility functions
+
+  Because they have to go somewhere...
+
+  \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
+  \date 2025 Sept 19
+*/
+
+#include "client.h" // custom client application header 
+
+//---------------------------------------------------------------------------
+
+/*!
+  \brief Initialize an LBT information data structure
+
+  \param lbti pointer to an #lbtinfo data structure
+
+  Initializes the LBT telescope information data structure
+  with sensible defaults/null values.  This ensures that
+  we have some way to avoid data structures with delinquent
+  information.
+
+*/
+
+void
+initLBTInfo(lbtinfo_t *lbti) 
+{
+  lbti->Link = 0;    
+  lbti->opMode = LABSIM;
+  lbti->Turbo = 0; 
+  strcpy(lbti->telescope,"LBT-SX");
+  strcpy(lbti->iceProps,"lbtIIF");  // default ICE properties file root name
+  strcpy(lbti->proxy,"MODS_DD");
+  strcpy(lbti->instID,"MODS1");
+  strcpy(lbti->focStation,"directGregorian");
+  strcpy(lbti->side,"left");
+  lbti->cadence = DEFAULT_CADENCE;
+}
+
+/*!
+  \brief Return UTC system time to usec precision in a utcinfo_t struct
+
+  \param utci pointer to a utcinfo_t data structure
+
+  Reads the system's UTC time clock and fills the utcinfo_t struct
+  with all the time info we need.
+
+  Based on gf_time() from Stevens, W.R., 1998, Unix Network Programming,
+  Vol 2, Prentice Hall, Figure 15.6. 
+
+*/
+
+void
+getUTCTime(utcinfo_t *utci)
+{
+  struct timeval tv;
+  struct tm *gmt;
+  double utday;
+  double mjd;
+  int msec;
+  int sec;
+
+  gettimeofday(&tv,NULL);
+  gmt = gmtime(&tv.tv_sec);
+
+  // UTC date and time components
+
+  utci->Year = 1900 + gmt->tm_year;
+  utci->Month = 1 + gmt->tm_mon;
+  utci->Day = gmt->tm_mday;
+  utci->Hour = gmt->tm_hour;
+  utci->Min = gmt->tm_min;
+  sec = gmt->tm_sec;
+  msec = (int)(tv.tv_usec/1000);
+  utci->Sec = (double)(sec) + ((double)(tv.tv_usec)/1000000.0);
+
+  // UTC data and time string representations (ISO8601)
+
+  sprintf(utci->Date,"%.4i-%.2i-%.2i",utci->Year,utci->Month,utci->Day);
+  sprintf(utci->Time,"%.2i:%.2i:%06.3f",utci->Hour,utci->Min,utci->Sec);
+  sprintf(utci->ISO,"%sT%s",utci->Date,utci->Time);
+
+  // Decimal time values
+
+  utci->dtime = double(utci->Hour) + ((double)(utci->Min)/60.0) + (utci->Sec/3600.0);
+
+  utday = (double)(utci->Day) + (utci->dtime/24.0);
+
+}
+
+/*!
+  \brief Get the mechanism ID from Shared Memory
+
+  \param mechName name of the mechanism (lowercase)
+  \return mechID  or -1
+
+  Get the mechanism ID index in shared memory for a named mechanism
+
+*/
+
+int 
+getMechID(char mechName[])
+{
+  int dev;
+  
+  for (dev=0;
+       !strstr(mechName,shm_addr->MODS.who[dev]) && dev<=MAX_ML;
+       dev++);
+
+  if (dev<0 || dev>=MAX_ML-1) return -1;
+
+  return dev;
+}
+
+/*!
+  \brief Translate power state code to text
+
+  \param ipwr (int) - power state, values 0,1,-1
+  \param stateStr (char) - power state string
+
+  \return 0 if OK, -1 if unrecognized value if ipwr
+  
+  Translation:
+  <pre>
+    0 = OFF
+    1 = ON
+    -1 = FAULT (breaker)
+  </pre>
+  If ipwr is not a known power code, returns -1 and blank in stateStr
+  
+*/
+
+int
+powerState(int ipwr, char *stateStr)
+{
+  if (ipwr == 0)
+    sprintf(stateStr,"OFF");
+  else if (ipwr == 1)
+    sprintf(stateStr,"ON");
+  else if (ipwr == -1)
+    sprintf(stateStr,"FAULT");
+  else {
+    sprintf(stateStr,"");
+    return -1;
+  }
+  return 0;
+}

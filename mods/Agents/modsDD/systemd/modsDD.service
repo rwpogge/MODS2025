@@ -1,0 +1,32 @@
+################################################################################
+# modsDD.service
+#
+# This service unit is for the MODS data-taking system data dictionary
+# agent (modsDD)
+#
+# The modsDD service must start after modsalloc (shared memory segment
+# initialization), and autorestart after a delay.
+#
+# R. Pogge, OSU Astronomy
+# pogge.1@osu.edu
+# 2025 Sept 20
+#
+################################################################################
+# This program should be placed in /usr/lib/systemd/system/
+#
+# For SELinux running in enforcing mode, modsDD.sh and modsDD must
+# be in /usr/local/bin, copied using sudo
+################################################################################
+
+[Unit]
+Description=MODS Data Dictionary agent
+Requires=modsalloc.service
+After=modsalloc.service
+
+[Service]
+ExecStart=/usr/local/bin/modsDD.sh
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
