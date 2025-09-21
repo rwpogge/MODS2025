@@ -1,4 +1,4 @@
-# modsDD Release Notes
+# modsDD agent release notes
 Last Build: 2025 Sept 21
 
 ## Version 1.0.1
