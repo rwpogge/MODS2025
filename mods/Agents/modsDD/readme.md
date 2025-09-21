@@ -1,4 +1,4 @@
-# MODS DD Agent - Sandbox
+# MODS Data Dictionary Agent
 
 **Version: 1.0.1 - 2025 Sept 21**
 
