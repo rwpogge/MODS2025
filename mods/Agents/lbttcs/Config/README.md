@@ -37,3 +37,24 @@ These are selected by setting the `Side` parameter in the `lbttcs.ini` file to e
  * `iifDD.left` - DD variable for Left (SX) Direct Gregorian focal station (MODS1)
  * `iifDD.right` - DD variables for Right (DX) Direct Gregorian focal station (MODS2)This is a collection of runtine configuration files for the `lbttcs` agent for
 the MODS data-taking system
+
+## Installation
+
+Copy the contents of this `Config/` folder into the MODS1 and MODS2 subfolders in the 
+public `/home/dts/Config/IIF` folder:
+```shell
+  cd /home/dts/Config/IIF
+  cp MODS2025/mods/Agents/lbttcs/Config/*_MODS1.* MODS1/
+  cp MODS2025/mods/Agents/lbttcs/Config/*_MODS2.* MODS2/
+  cp MODS2025/mods/Agents/lbttcs/Config/iifDD.* .
+  cp MODS2025/mods/Agents/lbttcs/Config/tcsSim.client .
+  cd ..
+```
+Then make symbolic links pointing to the correct files for the particular MODS instance:
+```
+  cd /home/dts/Config/IIF
+  ln -s MODS1/lbttcs_MODS1.ini lbttcs.ini
+  ln -s MODS1/lbtIIF_MODS1.client lbtIIF.client
+```
+This example sets up `lbttcs` on the `mods1` instrument server.
+  

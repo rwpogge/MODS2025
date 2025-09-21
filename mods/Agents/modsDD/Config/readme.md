@@ -1,10 +1,10 @@
 # modsDD Agent Runtime Configuration Files
 
-**Updated: 2025 Sept 19 [rwp/osu]**
+**Updated: 2025 Sept 21 [rwp/osu]**
 
 These files are used by the modsDD agent and the IIF ICE utilities to communicate with the LBT TCS, and list of parameters to retrieve telescope and observatory information from the LBT Data Dictionary.
 
-These need to be copied into the relevant `/home/lbt/Config/IIF/` folder, and setup as either MODS1 or MODS2 as needed in the modsDD.ini runtime
+These need to be copied into the `/home/lbt/Config/` folder, and setup as either MODS1 or MODS2 as needed in the modsDD.ini runtime
 configuration file.
 
 For a complete current list of public Data Dictionary entries available, see https://github.com/LBTO/ in `tcs/iif/configuration/IIF/DDNames`
@@ -22,16 +22,20 @@ Always avoid editing the files if possible.
  * `modsDD_MODS1.ini` - MODS1 installed at SX direct gregorian
  * `modsDD_MODS2.ini` - MODS2 installed at DX direct gregorian
   
-### IIF client Configuration Files:
+## Installation
 
-These are selected by setting the `PropFile` parameter (without .client) in the `modsDD.ini` file
- * `lbtIIF_MODS1.client` - for MODS1 installed at SX direct gregorian
- * `lbtIIF_MODS2.client` - for MODS2 installed at DX direct gregorian
- * `tcsSim.client` - LBTO telescope simulator (obtained from LBTO), for example running at OSU
-     
-### LBT Data Dictionary Tables:
-
-These are selected by setting the `Side` parameter in the `modsDD.ini` file to either "left" or "right"
- * `iifDD.left` - DD variable for Left (SX) Direct Gregorian focal station (MODS1)
- * `iifDD.right` - DD variables for Right (DX) Direct Gregorian focal station (MODS2)This is a collection of runtine configuration files for the `modsDD` agent for
-the MODS data-taking system
+Copy the contents of this `Config/` folder into the MODS1 and MODS2 subfolders in the 
+public `/home/dts/Config` folder:
+```shell
+  cd /home/dts/Config
+  cp MODS2025/mods/Agents/modsDD/Config/modsDD_MODS1.ini MODS1/
+  cp MODS2025/mods/Agents/modsDD/Config/modsDD_MODS2.ini MODS2/
+  cd ..
+```
+Then make a link pointing to the correct file for the particular MODS instance:
+```
+  cd /home/dts/Config
+  ln -s MODS1/modsDD_MODS1.ini modsDD.ini
+```
+This example sets up `modsDD` on the `mods1` instrument server.
+  

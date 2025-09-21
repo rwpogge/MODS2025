@@ -31,83 +31,17 @@ machine for each MODS channel.
 
 ## Installation
 
-Copy the contents of this `Config/` folder into a subfolder in the public `/home/dts/Config` directory
-name `modsHEB`:
+Copy the contents of this `Config/` folder into the MODS1 and MODS2 subfolders in the 
+public `/home/dts/Config` folder:
 ```shell
   cd /home/dts/Config
-  mkdir modsHEB  (if it does not already exist)
-  cd modsHEB
-  cp MODS2025/mods/Agents/modsHEB/Config/modsheb_MODS*.ini .
+  cp MODS2025/mods/Agents/modsHEB/Config/modsheb_MODS1*.ini MODS1/
+  cp MODS2025/mods/Agents/modsHEB/Config/modsheb_MODS2*.ini MODS2/
   cd ..
 ```
-Then make a link pointing to the correct file for the particular MODS channel:
+Then make a link pointing to the correct file for the particular MODS instance:
 ```
   cd /home/dts/Config
-  ln -s modsHEB/modsheb_MODS2R.ini modsheb.ini
+  ln -s MODS1/modsheb_MODS1B.ini modsheb.ini
 ```
-for example, to setup that machine's `modsHEB` agent to run the MODS2 red channel archon controller.
-
-  
-## Configuration File Structure
-A typical modsHEB runtime config file has the following structure:
-```
-#
-# modsheb agent runtime configuration file
-#
-# Version for MODS1 Blue channel at LBTO
-#
-# R. Pogge, OSU Astronomy Dept (pogge.1@osu.edu)
-# 2025 July 27
-#
-################################################################
-
-# modsheb's ISIS client info (Host=localhost is implicit)
-
-ID   M1.HEB
-Port 10501
-
-# Application Mode: either STANDALONE or ISISclient
-
-Mode ISISclient
-
-# ISIS Server Info - only releveant if Mode=ISISclient
-
-ISISID   IS
-ISISHost 192.168.139.130
-ISISPort 6600
-
-# Environmental Monitor Parameters
-
-UseTTY T
-Cadence 60
-DataLog /home/Logs/HEB
-HdfLog  /home/Logs/HEB
-
-# WAGO Address 
-
-WAGOIP 192.168.139.142 
-
-# Runtime flags 
-#NoLog
-#NoHDF
-#Debug
-#Verbose
-
-# Devices (See the documentation for device formatting rules.)
-
-WAGO Power DO 512 2
-    DEVICE archon  0 no N
-    DEVICE ion     1 no N
-
-WAGO QCell AI 0 4
-    DEVICE qc1 0 Y
-    DEVICE qc2 1 Y
-    DEVICE qc3 2 Y
-    DEVICE qc4 3 Y
-
-WAGO Temp RTD 4 2
-    DEVICE hebTemp 0 Y
-    DEVICE dewTemp 1 Y
-
-```
-
+This example sets up `modsHEB` for the MODS1 Blue channel Archon HEB.

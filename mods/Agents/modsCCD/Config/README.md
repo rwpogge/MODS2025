@@ -28,74 +28,20 @@ machine for each MODS channel.
  * `modsccd_MODS1R.ini` - MODS1R
  * `modsccd_MODS2B.ini` - MODS2B
  * `modsccd_MODS2R.ini` - MODS2R
- * `modsccd.ini` - OSU lab testing file
 
 ## Installation
 
-Copy the contents of this `Config/` folder into a subfolder in the public `/home/dts/Config` directory
-name `modsCCD`:
+Copy the contents of this `Config/` folder into the MODS1 and MODS2 subfolders in the 
+public `/home/dts/Config` folder:
 ```shell
   cd /home/dts/Config
-  mkdir modsCCD  (if it does not already exist)
-  cd modsCCD
-  cp MODS2025/mods/Agents/modsCCD/Config/modsccd_MODS*.ini .
+  cp MODS2025/mods/Agents/modsCCD/Config/modsccd_MODS1*.ini MODS1/
+  cp MODS2025/mods/Agents/modsCCD/Config/modsccd_MODS2*.ini MODS2/
   cd ..
 ```
-Then make a link pointing to the correct file for the particular MODS channel:
+Then make a link pointing to the correct file for the particular MODS instance:
 ```
   cd /home/dts/Config
-  ln -s modsCCD/modsccd_MODS2R.ini modsccd.ini
+  ln -s MODS1/modsccd_MODS1B.ini modsccd.ini
 ```
-for example, to setup that machine's `modsCCD` agent to run the MODS2 red channel archon controller.
-
-  
-## Configuration File Structure
-A typical runtime config file has the following structure:
-```
-#
-# modsCCD client runtime config file
-#
-# R. Pogge, OSU Astronomy Dept.
-# pogge.1@osu.edu
-# Updated: 2025 July 24 [rwp/osu]
-#
-# MODS1B LBTO Archon system
-#
-################################################################
-
-# modsCCD's ISIS client info (Host=localhost is implicit)
-
-ID   M1.BC
-Port 10401
-
-# Application Mode: either STANDALONE or ISISclient
-
-#Mode Standalone
-Mode ISISclient
-
-# Instrument Name
-
-Instrument MODS1B
-
-# azcam server info
-
-AzCamHost 192.168.139.132
-AzCamPort 2402
-TimeOut 10
-   
-# ISIS server info - only used if Mode=ISISclient
-
-ISISID   IS
-ISISHost 192.168.139.130
-ISISPort 6600
-
-# Runtime flags 
-
-VERBOSE
-#nolog
-#debug
-```
-As this example shows, the goal is that runtime configuration files
-are easily read and created by humans.  A common syntax makes
-maintenance of many clients easier.
-
+This example sets up `modsCCD` for the MODS1 Blue channel Archon CCD on `mods1blue`.
