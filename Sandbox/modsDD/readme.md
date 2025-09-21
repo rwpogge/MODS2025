@@ -2,7 +2,7 @@
 
 **Version: 0.2.0 - 2025 Sept 20**
 
-**Status: development, alpha testing**
+**Status: beta release moved to mods/Agents/ - do not use this version**
 
 `modsDD` is a standalone (non-client) program that interrogates the MODS shared memory
 segment on an active MODS instrument server machine (`mods1` or `mods2`) and uploads
