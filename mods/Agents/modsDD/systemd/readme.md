@@ -60,13 +60,33 @@ automatically every time the system reboots.
 Check to see if modsDD started OK:
 ```
 % systemctl status modsDD
+● modsDD.service - MODS Data Dictionary agent
+     Loaded: loaded (/usr/lib/systemd/system/modsDD.service; enabled; preset: disabled)
+     Active: active (running) since Mon 2025-09-22 15:56:39 EDT; 4s ago
+   Main PID: 77864 (modsDD.sh)
+      Tasks: 9 (limit: 99329)
+     Memory: 4.1M
+        CPU: 5ms
+     CGroup: /system.slice/modsDD.service
+             ├─77864 /bin/sh /usr/local/bin/modsDD.sh
+             └─77866 /usr/local/bin/modsDD
 
-...
-
+Sep 22 15:56:39 mods1 systemd[1]: Started MODS Data Dictionary agent.
+Sep 22 15:56:39 mods1 modsDD.sh[77866]: -! 09/22/25 15:56:39.957 warning: deprecated property: Ice.ACM.Client
 ```
 This shows what you'd see for starting the `modsDD` service on `mods1`.
 
 ## Testing
 
-check contents of the MODS DD using commands to an active lbttcs agent, or
-using the DMS?
+Check contents of the MODS DD by using an active lbttcs agent to query the DD, for example
+```
+isisCmd --mods1 m1.tc getparam L_MODSUpdateTime
+DONE: getparam L_MODSUpdateTime=2025-09-22T19:59:44.627
+
+% isisCmd --mods1 m1.tc getparam L_MODSBlueDewTemp
+DONE: getparam L_MODSBlueDewTemp=1.2600000e+01
+```
+The first line checks the update time (should be in the last 5-10 seconds), the second reads out the
+MODS1 (L_MODS) blue dewar tempreature. 
+
+The other test is to use the DMS and watch keywords of interest.
