@@ -15,16 +15,16 @@
 
   \section Overview
 
-  modsDD is a standalone (non-client) program that interrogates the
-  MODS shared memory segment on an active MODS instrument server
-  machine (mods1 or mods2) and uploads relevant MODS instrument state
-  information into the observatory IIF data dictionary (DD) at a set
-  cadence (notionally 5-10 seconds).
+  modsDD is a standalone program that interrogates the MODS shared
+  memory segment on an active MODS instrument server machine
+  (mods1 or mods2) and uploads relevant MODS instrument state
+  information into the observatory IIF data dictionary (DD) on a
+  regular cadence (notionally 5-10 seconds).
 
-  This program requires IIF Build 2025A or greater which has the
-  extended MODS data dictionary entries.
+  This program requires IIF Build 2025A or greater that uses the
+  extended set of MODS data dictionary entries.
 
-  modsDD pprovides LBTO with full-time updates of instantaneous
+  modsDD provides LBTO with full-time updates of instantaneous
   instrument status info that may be used by observatory dashboards or
   alarm state monitoring systems without their needing to directly
   interrogate the MODS instrument systems. This should eliminate risks
@@ -37,6 +37,7 @@
 
  <pre>
  2025 Sept 19 - new application based on lbttcs [rwp/osu]
+ 2025 Sept 21 - beta release after live testing at LBTO [rwp/osu]
  </pre>
 
 */
@@ -68,13 +69,13 @@
 
 #include <time.h>
 
-// internal defaults (mostly from testing)
+// internal defaults (mostly for testing), runtime values
+// are read from the .ini file at startup
 
 #define INST_ID "MODS"
 #define FOCSTATION "directGregorian left"
 #define LBT_SIDE "left"
 #define CLIENT_PROXYNAME "MODS1_DD"
-
 #define MODS_NAME "MODS1"
 
 // namespaces used by the LBTO software
