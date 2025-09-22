@@ -151,7 +151,7 @@ sudo cp isis /usr/local/bin/
 ```
 
 Note that after building `isis` and copying the executable to `/usr/local/bin` there
-are additional steps to run it as a systemd service.  See [isisServer systemd service](../ISIS/systemd/readme.md) for details.
+are additional steps to run it as a systemd service.  See [isisServer systemd service](../ISIS/systemd/README.md) for details.
 
 ### MODS agw and mmc Servers
 ```shell
