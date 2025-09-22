@@ -1,10 +1,9 @@
 # MODS data-taking system agents
 
-This folder contains versions of the MODS data-taking system agents ported to AlmaLinux 9
-for the MODS2025 update.  
+**Updated: 2025 Sept 22 [rwp/osu]**
 
-This is a start on the "installation and re-commissioning" repository at OSU that will
-migrate to the LBTO GitHub as final "flight" repository after recommissioning.
+This folder contains versions of the MODS data-taking system agents ported to AlmaLinux 9
+for the MODS2025 update and new agents written for the Archon update project.  
 
 ## Contents
 
