@@ -1,6 +1,6 @@
 # MODS Instrument Control and Data-Taking System Installation
 
-Needs good installation instructions.  This is a stub to build on
+**Updated: 2025 Sept 22 [rwp/osu]**
 
 ## Preparations
 
@@ -147,8 +147,11 @@ cd ~/ISIS/isisClient
 ./build
 cd ../isisServer
 ./build
-cp isis isisd ~/bin/
+sudo cp isis /usr/local/bin/
 ```
+
+Note that after building `isis` and copying the executable to `/usr/local/bin` there
+are additional steps to run it as a systemd service.  See [isisServer systemd service](../ISIS/systemd/readme.md) for details.
 
 ### MODS agw and mmc Servers
 ```shell
@@ -164,26 +167,38 @@ shared memory segment (`modsalloc` README)
 
 ```shell
 cd ~/mods/Agents
+
 cd lbttcs
 ./build
-cp lbttcs ~/bin/
+sudo cp lbttcs /usr/local/bin/
+
 cd ../modsEnv
 ./build
-cp modsenv ~/bin/
+sudo cp modsenv /usr/local/bin/
+
+cd ../modsDD
+./build
+sudo cp modsDD /usr/local/bin/
+
 cd ../modsHEB
 ./build
-cp modsheb ~/bin/ 
+cp modsheb ~/bin/
 ```
 We do not run `modsCCD` (or azcam) on the main instrument servers.  `modsHEB` is only for
 engineering purposes.
+
+Note that `lbttcs`, `modsEnv`, and `modsDD` are run as `systemd` services.  See the
+separate systemd installation instructions in each sub-folder.
 
 #### MODS Archon servers (mods1blue, mods1red, mods2blue, mods2red)
 
 ```shell
 cd ~/mods/Agents
+
 cd ../modsCCD
 ./build
 cp modsCCD ~/bin/ 
+
 cd ../modsHEB
 ./build
 cp modsheb ~/bin/ 
