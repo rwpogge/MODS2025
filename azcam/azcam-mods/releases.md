@@ -13,7 +13,7 @@ block.
  * In `telescope_lbto.py renamed `LBTTCS()` to `LBTTelescope()` to make its heritage from the azcam `Telescope()` base class explicit. Also made minor tweaks to `telescope_lbt.py` to fix a few typos in error message.
  * Updated `server.py` to use this new `Instrument()` class instead of the default azcam instance, and to implement changes in the LBTTelescope() class.
  * Moved release notes from README.md into this file to match the convention for the other parts of the MODS code repository.
-
+ * Created `instHdr_MODS<num><chan>.txt` yaml-format header config files for the new instrument header bits above.  These are based on the similar yaml files for telescope headers.  
 
 ### Version 1.0.7 - 2025 Aug 7
 
