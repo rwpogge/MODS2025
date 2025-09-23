@@ -27,24 +27,24 @@ class LBTTelescope(Telescope):
     Updated: 2025 Sept 23 [rwp/osu]
     '''
     
-    def __init__(self, tool_id="telescope", description="Large Binocular Telescope",instID="mods",side="left"):
+    def __init__(self, tool_id="telescope", description="Large Binocular Telescope",iifInst="mods",side="left"):
         super().__init__(tool_id, description)
 
         self.lbtSide = side
-        self.instID = instID
+        self.iifInst = iifInst
 
         self.initialized = 0
         
         # tcs and proxy info
         
         self.tcs = None
-        self.proxy = iif.model['PROXIES'].get(self.instID)
+        self.proxy = iif.model['PROXIES'].get(self.iifInst)
 
         # header file is in the systemfolder/template directory
         
         self.hdrFile = os.path.join(azcam.db.systemfolder, 
                                     "templates", 
-                                    f"{self.instID}TCS_{self.lbtSide}.txt"
+                                    f"{self.iifInst}TCS_{self.lbtSide}.txt"
                                     )
 
         # This uses the configuration file to build other information
@@ -82,7 +82,7 @@ class LBTTelescope(Telescope):
         
         self.hdrFile = os.path.join(azcam.db.systemfolder, 
                                     "templates", 
-                                    f"{self.instID}TCS_{self.lbtSide}.txt"
+                                    f"{self.iifInst}TCS_{self.lbtSide}.txt"
                                     )
 
         # add keywords
@@ -370,12 +370,12 @@ class LBTTelescope(Telescope):
         # Get the IIF configuration info
         
         try:
-            self.instID = self.cfgData["IIFConfig"]["instID"]
+            self.iifInst = self.cfgData["IIFConfig"]["inst"]
             self.lbtSide = self.cfgData["IIFConfig"]["side"]
             self.clientFile =self.cfgData["IIFConfig"]["client_config"]
-            self.proxyName = f"py_{self.instID}_{self.lbtSide}"
+            self.proxyName = f"py_{self.iifInst}_{self.lbtSide}"
         except Exception as exp:
-            self.instID = None
+            self.iifInst = None
             self.lbtSide = None
             self.clientFile = None
             self.proxyName = None

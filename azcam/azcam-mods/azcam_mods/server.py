@@ -210,12 +210,10 @@ def setup():
         
         # instrument information header template
         # name is instHdr_<systemname>.txt in the system templates folder
-        # We use this when are using the azcam base Instrument() class
-        # before the custom MODSInstrument() class is ready
         
-        #instTemplate = os.path.join(azcam.db.systemfolder,
-        #                            "templates",
-        #                            f"instHdr_{azcam.db.systemname}.txt")
+        instTemplate = os.path.join(azcam.db.systemfolder,
+                                    "templates",
+                                    f"instHdr_{azcam.db.systemname}.txt")
 
         # server mode and port
         
@@ -261,8 +259,6 @@ def setup():
     controller.verbosity = 2
 
     # tempcon
-    
-#    tempcon = TempConArchon(description="MODS Archon")
     
     tempcon = TempConMODS(description="MODS Archon")
     tempcon.temperature_ids = [0, 1]  # ccdtemp, basetemp
@@ -359,11 +355,11 @@ def setup():
        
     # Instantiate the MODSInstrument() class for instrument interaction
     
-    instrument = MODSInstrument(instID="mods",side=mods.lbtSide)
+    instrument = MODSInstrument(modsID=azcam.db.systemname,side=mods.lbtSide)
 
     # Instantiate the LBTTelescope() class for LBT TCS interaction
 
-    telescope = LBTTelescope(instID="mods",side=mods.lbtSide)
+    telescope = LBTTelescope(iifInst="mods",side=mods.lbtSide)
         
     # command server
 

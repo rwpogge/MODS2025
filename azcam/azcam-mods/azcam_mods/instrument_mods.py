@@ -41,25 +41,26 @@ class MODSInstrument(Instrument):
     Updated: 2025 September 23 [rwp/osu]
     '''
     
-    def __init__(self, tool_id="instrument", description="Multi-Object Double Spectrograph (MODS)",instID="mods",side="left"):
+    def __init__(self, tool_id="instrument", description="Multi-Object Double Spectrograph (MODS)",modsID="MODS1B",side="left"):
         super().__init__(tool_id, description)
 
-        self.lbtSide = side
-        self.instID = instID
+        self.modsID = modsID  # MODS instrument + channel ID (example: MODS1B)
+        self.lbtSide = side   # LBT telescope side (left or right)
+        self.iifID = "mods"   # instrument ID for the IIF ("mods whole MODS)
 
         self.initialized = 0
         
         # IIF instance and proxy info
         
         self.modsIIF = None
-        self.proxy = iif.model['PROXIES'].get(self.instID)
+        self.proxy = iif.model['PROXIES'].get(self.iifID)
 
         # header configuration file is in the systemfolder/template directory
-        # named "modsInst_left.txt" or "modsInst_right.txt"
+        # with names like "instHdr_MODS1B.txt"
         
         self.cfgFile = os.path.join(azcam.db.systemfolder, 
                                     "templates", 
-                                    f"{self.instID}Inst_{self.lbtSide}.txt"
+                                    f"instHdr_{self.modsID}.txt"
                                     )
 
         # This uses the configuration file to build other information we'll need.  
@@ -96,7 +97,7 @@ class MODSInstrument(Instrument):
         
         self.cfgFile = os.path.join(azcam.db.systemfolder, 
                                     "templates", 
-                                    f"{self.instID}Inst_{self.lbtSide}.txt"
+                                    f"instHdr_{self.modsID}.txt"
                                     )
 
         # add keywords
@@ -382,12 +383,12 @@ class MODSInstrument(Instrument):
         # Get the IIF configuration info
         
         try:
-            self.instID = self.cfgData["IIFConfig"]["instID"]
+            self.iifID = self.cfgData["IIFConfig"]["instID"]
             self.lbtSide = self.cfgData["IIFConfig"]["side"]
             self.clientFile =self.cfgData["IIFConfig"]["client_config"]
-            self.proxyName = f"py_{self.instID}_{self.lbtSide}"
+            self.proxyName = f"py_{self.iifID}_{self.lbtSide}"
         except Exception as exp:
-            self.instID = None
+            self.iifID = None
             self.lbtSide = None
             self.clientFile = None
             self.proxyName = None
