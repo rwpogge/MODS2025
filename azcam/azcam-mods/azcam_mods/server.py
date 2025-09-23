@@ -27,16 +27,17 @@ from azcam.tools.archon.controller_archon import ControllerArchon
 from azcam.tools.archon.exposure_archon import ExposureArchon
 
 # azcam_mods classes
-#   These overload Telescope, TempCon, and Instrument
-#   classes to provide function for the MODS instrumentsa
 
 from azcam_mods.mods import MODS
 
 from azcam_mods.detector_mods import detector_mods
 
+# These overload Telescope, TempCon, and Instrument classes 
+# with functions needed for MODS and Archon
+
 from azcam_mods.telescope_lbt import LBTTelescope
-from azcam_mods.tempcon_mods import TempConMODS
 from azcam_mods.instrument_mods import MODSInstrument
+from azcam_mods.tempcon_mods import TempConMODS
 
 # other stuff
 
