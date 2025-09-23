@@ -10,10 +10,9 @@ LBT TCS Build 2025A incorporates new data dictionary keywords for MODS instrumen
 info. This is how we are going to get instrument information into FITS headers. 
  * Added `instrument_mods.py`, an azcam `Instrument()` class instance to create the instrument FITS header
 block.
- * In `telescope_lbto.py renamed `LBTTCS()` to `LBTTelescope()` to make the relation to the azcam `Telescope()` base class explicit. Included minor tweaks to `telescope_lbt.py` to fix a few typos in error message.
- * Modified `server.py` to use this new `Instrument()` class instead of the default azcam instance, and to incorporate change in the telescope interface.
-
-Moved release notes from README.md into this file to match the convention for the other parts of the MODS code repository.
+ * In `telescope_lbto.py renamed `LBTTCS()` to `LBTTelescope()` to make its heritage from the azcam `Telescope()` base class explicit. Also made minor tweaks to `telescope_lbt.py` to fix a few typos in error message.
+ * Updated `server.py` to use this new `Instrument()` class instead of the default azcam instance, and to implement changes in the LBTTelescope() class.
+ * Moved release notes from README.md into this file to match the convention for the other parts of the MODS code repository.
 
 
 ### Version 1.0.7 - 2025 Aug 7
