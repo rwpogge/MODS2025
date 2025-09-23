@@ -1,6 +1,6 @@
 # MODS AzCam Server
 
-Updated: 2025 August 7
+Updated: 2025 Sept 23
 
 ## Overview
 
