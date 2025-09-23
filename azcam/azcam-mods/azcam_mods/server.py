@@ -353,18 +353,16 @@ def setup():
         nextNum = 1
     exposure.sequence_number = nextNum
        
-    # direct instrument methods (none yet, maybe later?)
+    # direct instrument methods (placeholder until MODSInst() class)
     
     instrument = Instrument()
 
-    # load the instrument header template if it exists
+    # load the instrument header template if it exists (will be done by MODSInst() class)
     
     if len(instTemplate) and os.path.exists(instTemplate):
         azcam.db.tools["instrument"].header.read_file(instTemplate)
 
-
-    # instantiate a MODS LBT TCS interface class near the end, it
-    # needs information from above.
+    # instantiate a MODS LBT TCS interface class here (needs info above).
 
     telescope = LBTTCS(instID="mods",side=mods.lbtSide)
         

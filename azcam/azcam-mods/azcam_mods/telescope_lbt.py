@@ -7,7 +7,7 @@ import yaml
 import os
 import math
 
-# import time - use if we need to run timing experiments
+# import time # uncomment if we need to run timing experiments
 
 import azcam
 import azcam.utils
