@@ -1,5 +1,5 @@
 #
-# MODS1B instrument header template entries for MODS1 at left (SX) direct Gregorian
+# MODS1R instrument header template entries for MODS1 at left (SX) direct Gregorian
 #
 # Updated: 2025 Sept 23 [rwp/osu]
 #
@@ -44,17 +44,17 @@ DDEntries:
   L_MODSDichroicPosition:      ["DICHROIC","int","Dichroic Turret Position"]
   L_MODSDichroicName:          ["DICHNAME","str","Dichroic Beam Selector Name"]
   #
-  # Blue Channel Mechanisms
+  # Red Channel Mechanisms 
   #
-  L_MODSBlueCollTTFA:          ["COLTTFA","float","Blue Collimator TTFA [microns]"]
-  L_MODSBlueCollTTFB:          ["COLTTFB","float","Blue Collimator TTFB [microns]"]
-  L_MODSBlueCollTTFC:          ["COLTTFC","float","Blue Collimator TTFC [microns]"]
-  L_MODSBlueCollFocus:         ["COLFOCUS","float","Blue Collimator Focus [microns]"]
-  L_MODSBlueGratingPosition:   ["GRATING","int","Blue Grating Turret Position"]
-  L_MODSBlueGrating:           ["GRATNAME","str","Blue Grating Turret Disperser Name"]
-  L_MODSBlueCameraFocus:       ["CAMFOCUS","float","Blue Camera Focus [microns]"]
-  L_MODSBlueFilterPosition:    ["FILTER","int","Blue Camera Filter Wheel Position"]
-  L_MODSBlueFilter:            ["FILTNAME","str","Blue Camera Filter Name"]
+  L_MODSRedCollTTFA:           ["COLTTFA","float","Red Collimator TTFA [microns]"]
+  L_MODSRedCollTTFB:           ["COLTTFB","float","Red Collimator TTFB [microns]"]
+  L_MODSRedCollTTFC:           ["COLTTFC","float","Red Collimator TTFC [microns]"]
+  L_MODSRedCollFocus:          ["COLFOCUS","float","Red Collimator Focus [microns]"]
+  L_MODSRedGratingPosition:    ["GRATING","int","Red Grating Turret Position"]
+  L_MODSRedGrating:            ["GRATNAME","str","Red Grating Turret Disperser Name"]
+  L_MODSRedCameraFocus:        ["CAMFOCUS","float","Red Camera Focus [microns]"]
+  L_MODSRedFilterPosition:     ["FILTER","int","Red Camera Filter Wheel Position"]
+  L_MODSRedFilter:             ["FILTNAME","str","Red Camera Filter Name"]
   #
   # IMCS IR Laser 
   #
@@ -90,11 +90,11 @@ DDEntries:
   L_MODSWFSCamPower:           ["WFSPWR","str","AGw WFS camera power"]
   L_MODSGuideCamPower:         ["AGCPWR","str","AGw guide camera Power"]
   #
-  # Blue HEB
+  # Red HEB
   #
-  L_MODSBlueHEBPower:          ["HEBPOWER","str","Blue HEB Power"]
-  L_MODSBlueHEBTemp:           ["HEBTEMP","float","Blue HEB air temperature [deg C]"]
-  L_MODSBlueVacuumGaugePower:  ["IGPOWER","str","Blue Dewar Ion Gauge Power"]
-  L_MODSBlueArchonPower:       ["ARPOWER","str","Blue Archon Controller Power"]
-  L_MODSBlueDewPres:           ["DEWPRES","float","Blue CCD Dewar Pressure [torr]"]
-  L_MODSBlueDewTemp:           ["DEWTEMP","float","Blue CCD Dewar Temperature [deg C]"]
+  L_MODSRedHEBPower:           ["HEBPOWER","str","Red HEB Power"]
+  L_MODSRedHEBTemp:            ["HEBTEMP","float","Red HEB air temperature [deg C]"]
+  L_MODSRedVacuumGaugePower:   ["IGPOWER","str","Red Dewar Ion Gauge Power"]
+  L_MODSRedArchonPower:        ["ARPOWER","str","Red Archon Controller Power"]
+  L_MODSRedDewPres:            ["DEWPRES","float","Red CCD Dewar Pressure [torr]"]
+  L_MODSRedDewTemp:            ["DEWTEMP","float","Red CCD Dewar Temperature [deg C]"]

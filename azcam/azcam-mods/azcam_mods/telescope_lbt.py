@@ -370,7 +370,7 @@ class LBTTelescope(Telescope):
         # Get the IIF configuration info
         
         try:
-            self.iifInst = self.cfgData["IIFConfig"]["inst"]
+            self.iifInst = self.cfgData["IIFConfig"]["instID"]
             self.lbtSide = self.cfgData["IIFConfig"]["side"]
             self.clientFile =self.cfgData["IIFConfig"]["client_config"]
             self.proxyName = f"py_{self.iifInst}_{self.lbtSide}"
