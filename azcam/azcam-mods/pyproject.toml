@@ -1,7 +1,7 @@
 [project]
 name = "azcam-mods"
-version = "1.0.7"
-description = "azcam extension for the LBTO MODS camera system"
+version = "1.1.0"
+description = "azcam extension for the LBTO MODS instruments"
 license = { file = "LICENSE" }
 readme = "README.md"
 keywords = ["ccd", "imaging", "astronomy", "sensors"]

@@ -3,8 +3,7 @@ Setup method for LBTO MODS azcamserver
 Usage example:
   python -i -m azcam_mods.server -- -mods1r
   
-  Updated: 2025 Aug 7 [rwp/osu]
-  
+  Updated: 2025 Sept 23[rwp/osu]
 """
 
 import os
@@ -26,18 +25,18 @@ from azcam.tools.telescope import Telescope
 from azcam.tools.instrument import Instrument
 from azcam.tools.archon.controller_archon import ControllerArchon
 from azcam.tools.archon.exposure_archon import ExposureArchon
-#
-# we are using a modified version of TempConArchon called TempConMODS
-#
-#from azcam.tools.archon.tempcon_archon import TempConArchon
 
 # azcam_mods classes
+#   These overload Telescope, TempCon, and Instrument
+#   classes to provide function for the MODS instrumentsa
 
 from azcam_mods.mods import MODS
 
 from azcam_mods.detector_mods import detector_mods
-from azcam_mods.telescope_lbt import LBTTCS
+
+from azcam_mods.telescope_lbt import LBTTelescope
 from azcam_mods.tempcon_mods import TempConMODS
+from azcam_mods.instrument_mods import MODSInstrument
 
 # other stuff
 
@@ -210,10 +209,14 @@ def setup():
         
         # instrument information header template
         # name is instHdr_<systemname>.txt in the system templates folder
+        # We use this when are using the azcam base Instrument() class
+        # before the custom MODSInstrument() class is ready
         
-        instTemplate = os.path.join(azcam.db.systemfolder,
-                                    "templates",
-                                    f"instHdr_{azcam.db.systemname}.txt")
+        #instTemplate = os.path.join(azcam.db.systemfolder,
+        #                            "templates",
+        #                            f"instHdr_{azcam.db.systemname}.txt")
+
+        # server mode and port
         
         azcam.db.servermode = "archon"
         cmdport = 2402
@@ -353,20 +356,13 @@ def setup():
         nextNum = 1
     exposure.sequence_number = nextNum
        
-    # direct instrument methods (none yet, maybe later?)
+    # Instantiate the MODSInstrument() class for instrument interaction
     
-    instrument = Instrument()
+    instrument = MODSInstrument(instID="mods",side=mods.lbtSide)
 
-    # load the instrument header template if it exists
-    
-    if len(instTemplate) and os.path.exists(instTemplate):
-        azcam.db.tools["instrument"].header.read_file(instTemplate)
+    # Instantiate the LBTTelescope() class for LBT TCS interaction
 
-
-    # instantiate a MODS LBT TCS interface class near the end, it
-    # needs information from above.
-
-    telescope = LBTTCS(instID="mods",side=mods.lbtSide)
+    telescope = LBTTelescope(instID="mods",side=mods.lbtSide)
         
     # command server
 

@@ -1,18 +1,19 @@
 # azcam-mods
-Version 1.0.6
+Version 1.1.0
 
-Last Update: 2025 Aug 7
+Last Update: 2025 Sept 23
 
 ## Purpose
 
-This repository contains the *azcam-mods* azcam environment.  It contains code and data files for the Large Binocular Telescope Observatory (LBTO) 
-MODS camera system so we can operate the MODS science CCD detectors with STA Archon controllers.
-
-This is a development project for the MODS2025 upgrade.
+This repository contains the *azcam-mods* azcam environment, consisting of code and data files for the Large Binocular Telescope 
+Observatory (LBTO) to operate the Multi-Object Double Spectrograph (MODS) science CCD detectors with STA Archon controllers.
 
 ## Status
 
-Tested with the lab test dewar and Archon controller in the LBTO Tucson lab, ready for initial deployment at LBTO for the MODS2025 detecctor system upgrade
+Tested with the lab test dewar and Archon controller in the LBTO Tucson lab, ready for initial deployment at LBTO for the 
+MODS2025 detecctor system upgrade. Added Telescope() and Instrument() class instances (derived from the azcam base classes) 
+to access telescope and instrument configuration data stored in the LBT Instrument Interface (IIF) data dictionary for 
+the image FITS headers.
 
 ## Installation
 
@@ -31,46 +32,3 @@ Launch in an ipython interactive shell for code debugging
 ipython -i -m azcam_mods.server -- -mods1b
 ```
 Otherwise, launch as a python program, either foreground or background.
-
-## Development Notes
-
-### 2025 Aug 7
-Changes in code based on results of work with the flight MODS systems at LBTO during Archon/HEB 
-installation and testing in the MODS1 and MODS2 instruments.  Biggest changes are the assignment
-if the in-dewar temperature sensors (CCD and mount base) used by the Archon temperature controller
-(older assignments were incorrect). Changes also made to the .ncf and .acf files for temperature
-control as they had indicated the incorrect sensor type (they are RTD100 - 100-ohm Pt RTDs
-not DT-670 diodes which were common in ARC/Leach controller dewars).  Also created `MODS_Actual.ncf`
-with these changes, and turning continuous readout OFF initially for mountain testing.  We will
-derive the baseline `MODS_Actual.acf` configuration file from this once it is finalized.
-
-### 2025 Aug 3
-Final lab checkout complete, ready to deploy on the mountain computers alongside physical installation
-of the MODS Archon controllers in MODS1 and MODS2
-
-### 2025 Aug 1
-Extensive testing with the live Archon system in the LBTO Tucson lab with the MODS test dewar (3x8K CCD).
-Advanced a working version ready for initial deployment at LBTO with the MODS instruments to prepare for
-re-commissioning in September.  Verified to work with the new `modsCCD` IC emulation agent that will be the
-primary interface between the MODS azcam server and the existing instrument control and data acquisition 
-system.
-
-Remaining issues:
- * No STOP command equivalent in the azcam server, need to research this
- * No instrument status integration yet (no live system to help develop it)
- * If there is a problem on write and the expose1() thread hangs, as yet no obvious way to recover the data from the Archon buffer, but still early days after identifying the issue today.
-
-### 2025 July 26
-Server tested with the `modsCCD` azcam client that will take the place of the DOS "IC" basic program functions.
-Version ready for live testing in the Tucson lab before Archon installation in MODS at LBTO first week of 
-August.
-
-### 2025 July 23
-Multiple updates while developing the C++ client app that will sit between MODS and the azcam server
-
-### 2025 July 18
-Got telescope_mods.py working with the LBT python-iif code to pull TCS info into azcam
-
-### 2025 July 8
-Starting work for the MODS Archon detector upgrade at LBTO in Summer 2025 [rwp/osu]
-

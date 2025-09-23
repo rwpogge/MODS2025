@@ -1,5 +1,7 @@
-# Contains the interface class to the LBT Telescope Control System
-# using the Instrument InterFace (IFF) facility built on ZeroC Ice
+# Contains the interface class to get MODS instrument information stored
+# on the observatory Instrument Interface (IIF) data dictionary.  This
+# adapts code from the custom Telescope() class instance for LBT in
+# this package (telescope_lbt.py)
 
 import lbto.iif as iif
 
@@ -12,22 +14,34 @@ import math
 import azcam
 import azcam.utils
 import azcam.exceptions
-from azcam.tools.telescope import Telescope
+from azcam.tools.instrument import Instrument
 
 
-class LBTTelescope(Telescope):
+class MODSInstrument(Instrument):
     '''
-    Interface to the Large Binocular Telescope TCS server
+    MODS instrument interface 
     
-    Built on the azcam Telescope() base class, which includes
-    hooks for the azcam Header() base class.
+    Built on the azcam Instrument() base class, which includes hooks for
+    the azcam Header() base class.
+    
+    We don't enable active control of a MODS instrument (MODS1 or MODS2)
+    from azcam.  Instead, we use the Instrument tool class to provide access to
+    instrument configuration for building the image FITS headers. We do
+    this by interogating the LBTO Instrument Interface data dictionary (aka DD)
+    where the MODS instrument control and data-acquisition system exports 
+    real-time instrument state information via the `modsDD` agent that runs on
+    the instrument servers as a systemd service.  
+    
+    For that reason, the internals of MODSInstrument look a lot like
+    the LBTTelescope() Telescope tool class instance in telescope_lbt.py in
+    this package.
     
     Author: R. Pogge, OSU Astronomy Dept (pogge.1@osu.edu)
     
-    Updated: 2025 Sept 23 [rwp/osu]
+    Updated: 2025 September 23 [rwp/osu]
     '''
     
-    def __init__(self, tool_id="telescope", description="Large Binocular Telescope",instID="mods",side="left"):
+    def __init__(self, tool_id="instrument", description="Multi-Object Double Spectrograph (MODS)",instID="mods",side="left"):
         super().__init__(tool_id, description)
 
         self.lbtSide = side
@@ -35,25 +49,25 @@ class LBTTelescope(Telescope):
 
         self.initialized = 0
         
-        # tcs and proxy info
+        # IIF instance and proxy info
         
-        self.tcs = None
+        self.modsIIF = None
         self.proxy = iif.model['PROXIES'].get(self.instID)
 
-        # header file is in the systemfolder/template directory
+        # header configuration file is in the systemfolder/template directory
+        # named "modsInst_left.txt" or "modsInst_right.txt"
         
-        self.hdrFile = os.path.join(azcam.db.systemfolder, 
+        self.cfgFile = os.path.join(azcam.db.systemfolder, 
                                     "templates", 
-                                    f"{self.instID}TCS_{self.lbtSide}.txt"
+                                    f"{self.instID}Inst_{self.lbtSide}.txt"
                                     )
 
-        # This uses the configuration file to build other information
-        # we'll need.  
+        # This uses the configuration file to build other information we'll need.  
 
         try:        
-            self.readHeaderConfig(self.hdrFile)
+            self.readHeaderConfig(self.cfgFile)
         except Exception as exp:
-            azcam.log(f"ERROR: LBTTelescope init cannot read {self.hdrFile} - {exp}")
+            azcam.log(f"ERROR: MODSInstrument init cannot read {self.cfgFile} - {exp}")
             return
         
         self.define_keywords()
@@ -63,7 +77,7 @@ class LBTTelescope(Telescope):
 
     def initialize(self):
         '''
-        Initialize the LBT telescope interface
+        Initialize the LBT IIF connection
 
         Returns
         -------
@@ -80,17 +94,17 @@ class LBTTelescope(Telescope):
 
         # header file is in the systemfolder/template directory
         
-        self.hdrFile = os.path.join(azcam.db.systemfolder, 
+        self.cfgFile = os.path.join(azcam.db.systemfolder, 
                                     "templates", 
-                                    f"{self.instID}TCS_{self.lbtSide}.txt"
+                                    f"{self.instID}Inst_{self.lbtSide}.txt"
                                     )
 
         # add keywords
 
         try:        
-            self.readHeaderConfig(self.hdrFile)
+            self.readHeaderConfig(self.cfgFile)
         except Exception as exp:
-            azcam.log(f"ERROR: TCS init failed {exp}")
+            azcam.log(f"ERROR: MODS IIF init failed {exp}")
             self.is_initialized = 0
             return
         
@@ -112,7 +126,7 @@ class LBTTelescope(Telescope):
         '''
 
         if not self.is_enabled:
-            azcam.exceptions.warning(f"{self.description} TCS link is not enabled")
+            azcam.exceptions.warning(f"{self.description} LBT IIF link is not enabled")
 
         if not self.is_initialized:
             self.initialize()
@@ -126,7 +140,7 @@ class LBTTelescope(Telescope):
     def define_keywords(self):
         '''
         Define keywords on the LBT IIF data dictionary (DD) we read to 
-        store telescope status in the image FITS headers
+        store instrument configuration info in the image FITS headers
 
         Returns
         -------
@@ -137,29 +151,29 @@ class LBTTelescope(Telescope):
         The contents of the header are read in from a yaml-format configuration
         file with the readHeaderConfig() method. After we read its contents, 
         we call define_keywords() to populate elements azcan Header() class used 
-        deeper in azcam to build the telescope FITS header block.
+        deeper in azcam to build the instrument FITS header block.
         '''
 
         # add keywords to header
 
         for key in self.fitsList:
-            self.header.keywords[key] = self.iifKeywords[key]
-            self.header.comments[key] = self.iifComments[key]
-            self.header.typestrings[key] = self.iifTypes[key]
+            self.header.keywords[key] = self.modsIIFKeywords[key]
+            self.header.comments[key] = self.modsIIFComments[key]
+            self.header.typestrings[key] = self.modsIIFTypes[key]
             
-        azcam.log("TCS header keywords defined")
+        azcam.log("MODS instrument header keywords defined")
         
         return
     
 
     def get_keyword(self, keyword):
         '''
-        Retrieve a single keyword from the LBT TCS
+        Retrieve a single keyword from the LBT IIF Data Dictionary
 
         Parameters
         ----------
         keyword : string
-            A valid telescope keyword in the fitsList.
+            A valid IIF DD keyword in the fitsList.
 
         Raises
         ------
@@ -184,39 +198,39 @@ class LBTTelescope(Telescope):
         # retrieve just reqKey.  You have to send it a list even if just one...
         
         try:
-            tcsData = self.get_TCSData([self.iifKeywords[reqKey]])
+            instData = self.get_InstData([self.modsIIFKeywords[reqKey]])
         except Exception as exp:
-            azcam.log(f"ERROR: get_keyword() cannot not query TCS DD - {exp}")
+            azcam.log(f"ERROR: get_keyword() Cannot query IIF DD - {exp}")
             return
 
         # see if additional processing is needed
 
         try:
-            ddKey = self.iifKeywords[reqKey]
+            ddKey = self.modsIIFKeywords[reqKey]
             key = reqKey
-            c = self.iifComments[key]
-            t = self.iifTypes[key]
+            c = self.modsIIFComments[key]
+            t = self.modsIIFTypes[key]
             iift = self.ddDict[ddKey][1]
             if iift == 'str':
-                v = tcsData[0]
+                v = instData[0]
             elif iift == 'int':
                 t = 'int'
-                v = int(tcsData[0])
+                v = int(instData[0])
             elif iift == 'float':
                 t = 'float'
-                v = float(tcsData[0])
+                v = float(instData[0])
             elif iift == 'float-as':
                 t = 'float'
-                v = float(tcsData[0])/3600.0
+                v = float(instData[0])/3600.0
             elif iift == 'float-rad':
                 t = 'float'
-                v = math.degrees(float(tcsData[0]))
+                v = math.degrees(float(instData[0]))
             else:
                 t = 'str'
-                v = tcsData[0]
+                v = instData[0]
  
         except Exception as exp:
-            azcam.log(f"ERROR: get_keyword() cannot not procees {key} data - {exp}")
+            azcam.log(f"ERROR: get_keyword() Cannot procees {key} data - {exp}")
             return
                                        
         # store value in Header
@@ -230,7 +244,7 @@ class LBTTelescope(Telescope):
 
     def read_header(self):
         '''
-        Query the LBT TCS and populate the telescope FITS header        
+        Query the LBT IIF data dictionary and populate the instrument FITS header        
 
         Raises
         ------
@@ -246,8 +260,8 @@ class LBTTelescope(Telescope):
         Description
         -----------
         This is called by the data acquisition portions of the azcam
-        server to populate the FITS header database with LBT telescope 
-        information at the start of an exposure.
+        server to populate the FITS header database with the MODS instrument
+        configuration at the start of an exposure.
         
         '''
 
@@ -256,7 +270,7 @@ class LBTTelescope(Telescope):
         header = []
 
         try:
-            tcsData = self.get_TCSData(self.ddList)
+            instData = self.get_InstData(self.ddList)
         except Exception as exp:
             azcam.log(f"ERROR read_header() - {exp}")
             return header
@@ -266,26 +280,26 @@ class LBTTelescope(Telescope):
         for i, ddKey in enumerate(self.ddList):
             try:
                 key = self.fitsList[i]
-                c = self.iifComments[key]
-                t = self.iifTypes[key]
+                c = self.modsIIFComments[key]
+                t = self.modsIIFTypes[key]
                 iift = self.ddDict[ddKey][1]
                 if iift == 'str':
-                    v = tcsData[i]
+                    v = instData[i]
                 elif iift == 'int':
                     t = 'int'
-                    v = int(tcsData[i])
+                    v = int(instData[i])
                 elif iift == 'float':
                     t = 'float'
-                    v = float(tcsData[i])
+                    v = float(instData[i])
                 elif iift == 'float-as':
                     t = 'float'
-                    v = float(tcsData[i])/3600.0
+                    v = float(instData[i])/3600.0
                 elif iift == 'float-rad':
                     t = 'float'
-                    v = math.degrees(float(tcsData[i]))
+                    v = math.degrees(float(instData[i]))
                 else:
                     t = 'str'
-                    v = tcsData[i]
+                    v = instData[i]
                 
                 header.append([key,v,c,t])
                 
@@ -299,17 +313,15 @@ class LBTTelescope(Telescope):
             
         return header
 
-
     ###################################################################
     # methods for loading the TCS header spec from a yaml config file
     # and retrieving data from the IIF
     ###################################################################
-
     
     def readHeaderConfig(self,configFile):
         '''
-        Reads and parses a yaml configuration file that sets up the
-        MODS telescope FITS header keyword dictionaries
+        Read and parse a yaml configuration file to set up the MODS
+        instrument FITS header keyword dictionaries
 
         Parameters
         ----------
@@ -322,11 +334,11 @@ class LBTTelescope(Telescope):
 
         Description
         -----------
-        An LBT TCS header configuration file is a yaml-format file
-        usually named something like "modsTCS_left.txt" that
+        A MODS instrument header configuration file is a yaml-format file
+        named like "modsInst_left.txt" or "modsInst_right.txt" that
         contains two required dictionaries: 
             * IIFConfig: with the setup info (instrument, side, client file)
-            * DDEntires: mapping of IIF data dictionary entries to FITS header entries
+            * DDEntires: mapping of IIF data dictionary entries to instrument FITS header entries
             
         See the offline documentation or worked examples for the format.  The
         format is strict and if badly formatted could break things.
@@ -340,7 +352,7 @@ class LBTTelescope(Telescope):
             try:
                 stream = open(configFile,'r')
             except Exception as exp:
-                raise azcam.exceptions.AzcamError(f"cannot open LBT TCS header config file {configFile} - {exp}")
+                raise azcam.exceptions.AzcamError(f"Cannot open MODS instrument header config file {configFile} - {exp}")
                 return
         
             try:
@@ -348,24 +360,24 @@ class LBTTelescope(Telescope):
             except yaml.YAMLError as exp:
                 stream.close()
                 self.cfgData = None
-                raise RuntimeError(f"ERROR: cannot load LBT TCS header config file {configFile} - {exp}")
+                raise RuntimeError(f"ERROR: Cannot load MODS instrument header config file {configFile} - {exp}")
                 return
     
             if len(self.cfgData)==0:
                 self.cfgData = None
                 stream.close()
-                raise RuntimeError(f"ERROR: LBT TCS header config file {configFile} is empty!")
+                raise RuntimeError(f"ERROR: MODS instrument header config file {configFile} is empty!")
                 return
 
             stream.close()
     
         else:
-            raise ValueError(f"ERROR: LBT TCS header config file {configFile} not found")
+            raise ValueError(f"ERROR: MODS instrument header config file {configFile} not found")
             return
         
         # We have a config file, pick it apart and get what we need
         
-        azcam.log(f"Opened LBT TCS FITS header configuration file {configFile}")
+        azcam.log(f"Opened MODS instrument FITS header configuration file {configFile}")
         
         # Get the IIF configuration info
         
@@ -380,7 +392,7 @@ class LBTTelescope(Telescope):
             self.clientFile = None
             self.proxyName = None
             
-            raise azcam.exceptions.AzcamError(f"cannot read IIFConfig data from {configFile} - {exp}")
+            raise azcam.exceptions.AzcamError(f"Cannot read IIFConfig glock data from {configFile} - {exp}")
         
         # Extract the DD dictionary and list of DD entries.  We use these to load the 
         # the header definition dictionaries (keywords, typestrings, and comments)
@@ -391,7 +403,7 @@ class LBTTelescope(Telescope):
         except Exception as exp:
             self.ddDict = None
             self.ddList = None
-            raise azcam.exceptions.AzcamError(f"cannot read DD entries from {configFile} - {exp}")
+            raise azcam.exceptions.AzcamError(f"Cannot read DD entries from {configFile} - {exp}")
         
         # build the dictionaries that map FITS keywords to IIF DD entries and their attributes: 
         #      fitsList = list of FITS header keywords
@@ -400,27 +412,27 @@ class LBTTelescope(Telescope):
         #   iifComments = dictionary of comments corresponding to IIF DD data
 
         self.fitsList = []
-        self.iifKeywords = {}
-        self.iifComments = {}
-        self.iifTypes = {}
+        self.modsIIFKeywords = {}
+        self.modsIIFComments = {}
+        self.modsIIFTypes = {}
         for key in self.ddList:
             fitsKey = self.ddDict[key][0].upper() # enforce uppercase for FITS keywords
             self.fitsList.append(fitsKey)
-            self.iifKeywords[fitsKey] = key
+            self.modsIIFKeywords[fitsKey] = key
             if self.ddDict[key][1].startswith("float"):
-                self.iifTypes[fitsKey] = "float"
+                self.modsIIFTypes[fitsKey] = "float"
             else:
-                self.iifTypes[fitsKey] = self.ddDict[key][1]
-            self.iifComments[fitsKey] = self.ddDict[key][2]
+                self.modsIIFTypes[fitsKey] = self.ddDict[key][1]
+            self.modsIIFComments[fitsKey] = self.ddDict[key][2]
 
         azcam.log(f"Loaded TCS header configuration from {configFile}")
         
         return
     
         
-    def get_TCSData(self,keyList):
+    def get_InstData(self,keyList):
         '''
-        Get LBT telescope info from the IIF data dictdionary (DD)
+        Get MODS instrument configuration data from the LBT IIF data dictionary
 
         Parameters
         ----------
@@ -433,8 +445,8 @@ class LBTTelescope(Telescope):
 
         Description
         -----------
-        Start the IIF proxy, query the data dictionary, close the proxy.  This way
-        we don't have an active IIF proxy live during long periods of 
+        Start the IIF proxy, query the data dictionary, and close the proxy.  
+        This way we don't have an active IIF proxy live during long periods of 
         idleness.
             
         Experiments show it adds negligibly to the IIF query which 
@@ -442,44 +454,42 @@ class LBTTelescope(Telescope):
         of the proxy setup/teardown overhead.
             
         We intend to only use the IIF interface as an "instantaneous"
-        TCS status query, no active operation of the telescope.  If
-        we ever got it in our heads to do that, we need to investigate
-        async methods in the python ZeroC Ice implementation.
-            
+        instrument status query.
+        
         '''
         
         try:
-            self.tcs.proxy_destroy(self.proxyName)
+            self.modsIIF.proxy_destroy(self.proxyName)
         except:
             pass
         
         try:
-            self.tcs = iif.iifproxy(proxyName=self.proxyName,
+            self.modsIIF = iif.iifproxy(proxyName=self.proxyName,
                                     instrumentID=self.proxy['instrument'],
                                     focalStation=self.proxy['focalstation'],
                                     side=self.lbtSide,
                                     config_client=self.clientFile)
         except Exception as exp:
-            azcam.log(f"ERROR: TCS IIF proxy init failed - cannot start IIF link - {exp}")
+            azcam.log(f"ERROR: IIF proxy init failed - cannot start IIF link - {exp}")
             self.is_initialized = 0
-            self.tcs = None
-            raise azcam.exceptions.AzcamError(f"getTCSData() query failed - {exp}")
+            self.modsIIF = None
+            raise azcam.exceptions.AzcamError(f"get_InstData() query failed - {exp}")
             return
 
         # We have a link, send the request
 
         try:
-            iifData = self.tcs.GetParameter(keyList)
+            iifData = self.modsIIF.GetParameter(keyList)
         except Exception as exp:
-            azcam.log(f"ERROR: TCS IIF GetParameter() query failed - {exp}")
-            self.tcs.proxy_destroy(self.proxyName)
-            raise azcam.exceptions.AzcamError(f"getTCSData() query failed - {exp}")
+            azcam.log(f"ERROR: IIF GetParameter() query failed - {exp}")
+            self.modsIIF.proxy_destroy(self.proxyName)
+            raise azcam.exceptions.AzcamError(f"get_InstData() query failed - {exp}")
             return
             
         # all done, close the proxy and return the data
             
         try:
-            self.tcs.proxy_destroy(self.proxyName)
+            self.modsIIF.proxy_destroy(self.proxyName)
         except:
             pass
             
@@ -491,7 +501,7 @@ class LBTTelescope(Telescope):
     
     def set_parameter(self,ddDict):
         '''
-        Set data dictionary parameters on the LBT TCS        
+        Set data dictionary parameters in the LBT IIF        
 
         Parameters
         ----------
@@ -520,42 +530,42 @@ class LBTTelescope(Telescope):
         the keyword is unknown to the DD.
         
         This is exposed to other parts of the azcam server as
-        `telescope.set_parameter()`
+        `instrument.set_parameter()`
         
         '''
         
         try:
-            self.tcs.proxy_destroy(self.proxyName)
+            self.modsIIF.proxy_destroy(self.proxyName)
         except:
             pass
         
         try:
-            self.tcs = iif.iifproxy(proxyName=self.proxyName,
+            self.modsIIF = iif.iifproxy(proxyName=self.proxyName,
                                     instrumentID=self.proxy['instrument'],
                                     focalStation=self.proxy['focalstation'],
                                     side=self.lbtSide,
                                     config_client=self.clientFile)
         except Exception as exp:
-            azcam.log(f"ERROR: TCS IIF proxy init failed - cannot start IIF link - {exp}")
+            azcam.log(f"ERROR: IIF proxy init failed - cannot start IIF link - {exp}")
             self.is_initialized = 0
-            self.tcs = None
-            raise azcam.exceptions.AzcamError(f"telescope set_parameter() failed - {exp}")
+            self.modsIIF = None
+            raise azcam.exceptions.AzcamError(f"instrument set_parameter() failed - {exp}")
             return
 
         # We have a link, send the parameter
         
         try:
-            self.tcs.SetParameter(ddDict)
+            self.modsIIF.SetParameter(ddDict)
         except Exception as exp:
-            azcam.log(f"ERROR: TCS IIF SetParameter() failed - {exp}")
-            self.tcs.proxy_destroy(self.proxyName)
-            raise azcam.exceptions.AzcamError(f"telescope set_parameter() query failed - {exp}")
+            azcam.log(f"ERROR: IIF SetParameter() failed - {exp}")
+            self.modsIIF.proxy_destroy(self.proxyName)
+            raise azcam.exceptions.AzcamError(f"instrument set_parameter() query failed - {exp}")
             return
             
         # all done, close the proxy and return the data
             
         try:
-            self.tcs.proxy_destroy(self.proxyName)
+            self.modsIIF.proxy_destroy(self.proxyName)
         except:
             pass
             
@@ -565,7 +575,7 @@ class LBTTelescope(Telescope):
     
     def get_parameter(self,ddKey: str):
         '''
-        Get a data dictionary parameter from the LBT TCS        
+        Get a data dictionary parameter from the LBT IIF
 
         Parameters
         ----------
@@ -584,44 +594,45 @@ class LBTTelescope(Telescope):
             
         Description
         -----------
-        Start the IIF proxy, get the DD parameter, close the proxy. This way we
-        don't have an active IIF proxy live during long periods of idleness.
+        Start the IIF proxy, get the parameter, close the proxy. This way we 
+        don't have an active IIF proxy live during long periods of 
+        idleness.
             
         Somewhat inefficient, but we aren't doing this very often.            
         '''
         
         try:
-            self.tcs.proxy_destroy(self.proxyName)
+            self.modsIIF.proxy_destroy(self.proxyName)
         except:
             pass
         
         try:
-            self.tcs = iif.iifproxy(proxyName=self.proxyName,
+            self.modsIIF = iif.iifproxy(proxyName=self.proxyName,
                                     instrumentID=self.proxy['instrument'],
                                     focalStation=self.proxy['focalstation'],
                                     side=self.lbtSide,
                                     config_client=self.clientFile)
         except Exception as exp:
-            azcam.log(f"ERROR: TCS IIF proxy init failed - cannot start IIF link - {exp}")
+            azcam.log(f"ERROR: IIF proxy init failed - cannot start IIF link - {exp}")
             self.is_initialized = 0
-            self.tcs = None
-            raise azcam.exceptions.AzcamError(f"telescope get_parameter() failed - {exp}")
+            self.modsIIF = None
+            raise azcam.exceptions.AzcamError(f"instrument get_parameter() failed - {exp}")
             return
 
         # We have a link, get the DD parameter
         
         try:
-            iifData = self.tcs.GetParameter([ddKey])
+            iifData = self.modsIIF.GetParameter([ddKey])
         except Exception as exp:
-            azcam.log(f"ERROR: TCS IIF GetParameter() failed - {exp}")
-            self.tcs.proxy_destroy(self.proxyName)
-            raise azcam.exceptions.AzcamError(f"telescope get_parameter() query failed - {exp}")
+            azcam.log(f"ERROR: IIF GetParameter() failed - {exp}")
+            self.modsIIF.proxy_destroy(self.proxyName)
+            raise azcam.exceptions.AzcamError(f"instrument get_parameter() query failed - {exp}")
             return
             
         # all done, close the proxy and return the data
             
         try:
-            self.tcs.proxy_destroy(self.proxyName)
+            self.modsIIF.proxy_destroy(self.proxyName)
         except:
             pass
             
