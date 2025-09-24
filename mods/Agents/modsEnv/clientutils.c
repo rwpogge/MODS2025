@@ -209,11 +209,24 @@ getEnvData(envdata_t *envi)
   // Get data from the IUB environmental sensors
 
   ierr = wagoSetGetRegisters(0,envi->iub_Addr,0,10,iubData);
+
+  // If we cannot read the IUB, it means probably everything else is off as well.
+  // since all AC power goes through the IUB wago
+  
   if (ierr != 0) {
     if (useCLI) printf("WARNING: %s IUB WAGO read error\n",envi->modsID);
     return ierr;
 
+    // if IUB is off, everything else is also probably off
+    
     shm_addr->MODS.utilState = 0;
+    shm_addr->MODS.llbState = 0;
+    shm_addr->MODS.blueIEBState = 0;
+    shm_addr->MODS.redIEBState = 0;
+    shm_addr->MODS.blueHEBState = 0;
+    shm_addr->MODS.redHEBState = 0;
+    shm_addr->MODS.guideCamState = 0;
+    shm_addr->MODS.wfsCamState = 0;
   }
   else {
     envi->glycolSupplyPres = (float)iubData[0]/327.64;
