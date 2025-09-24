@@ -348,7 +348,11 @@ getEnvData(envdata_t *envi)
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Red HEB WAGO error reading power relay status word\n",envi->modsID);
 
+    // If an HEB is off, so are systems powered through it
+
     shm_addr->MODS.redHEBState = 0;
+    shm_addr->MODS.redArchonState = 0;
+    shm_addr->MODS.redIonGaugeState = 0;
   }
   else {
     hebRPower = hebRData[0];
@@ -366,7 +370,11 @@ getEnvData(envdata_t *envi)
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue HEB WAGO error reading power relay status word\n",envi->modsID);
 
+    // If an HEB is off, so are systems powered through it
+    
     shm_addr->MODS.blueHEBState = 0;
+    shm_addr->MODS.blueArchonState = 0;
+    shm_addr->MODS.blueIonGaugeState = 0;
   }
   else {
     hebBPower = hebBData[0];
@@ -385,6 +393,8 @@ getEnvData(envdata_t *envi)
     if (useCLI) printf("WARNING: %s Red HEB WAGO RTD sensor read error\n",envi->modsID);
 
     shm_addr->MODS.redHEBState = 0;
+    shm_addr->MODS.redHEBTemperature = nanf();
+    shm_addr->MODS.redDewarTemperature = nanf();
   }
   else {
     envi->hebR_AirTemp = ptRTD2C(hebRData[0]);
@@ -402,6 +412,8 @@ getEnvData(envdata_t *envi)
     if (useCLI) printf("WARNING: %s Blue HEB WAGO RTD sensor read error\n",envi->modsID);
 
     shm_addr->MODS.blueHEBState = 0;
+    shm_addr->MODS.blueHEBTemperature = nanf();
+    shm_addr->MODS.blueDewarTemperature = nanf();
   }
   else {
     envi->hebB_AirTemp = ptRTD2C(hebBData[0]);
@@ -415,10 +427,12 @@ getEnvData(envdata_t *envi)
   // Read the red and blue ionization gauges here (TCP/IP socket to IEB 2-channel Comtrols)
 
   // Red dewar ion gauge
+  
   envi->redDewPres = getIonPressure(envi->redIG_Addr, envi->redIG_Port, envi->redIG_Chan, ION_TIMEOUT_LENGTH);
   shm_addr->MODS.redDewarPressure = envi->redDewPres;
 
   // Blue dewar ion gauge
+  
   envi->blueDewPres = getIonPressure(envi->blueIG_Addr, envi->blueIG_Port, envi->blueIG_Chan, ION_TIMEOUT_LENGTH);
   shm_addr->MODS.blueDewarPressure = envi->blueDewPres;
 
