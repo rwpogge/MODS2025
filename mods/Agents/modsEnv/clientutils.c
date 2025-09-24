@@ -393,8 +393,6 @@ getEnvData(envdata_t *envi)
     if (useCLI) printf("WARNING: %s Red HEB WAGO RTD sensor read error\n",envi->modsID);
 
     shm_addr->MODS.redHEBState = 0;
-    shm_addr->MODS.redHEBTemperature = nanf();
-    shm_addr->MODS.redDewarTemperature = nanf();
   }
   else {
     envi->hebR_AirTemp = ptRTD2C(hebRData[0]);
@@ -412,8 +410,6 @@ getEnvData(envdata_t *envi)
     if (useCLI) printf("WARNING: %s Blue HEB WAGO RTD sensor read error\n",envi->modsID);
 
     shm_addr->MODS.blueHEBState = 0;
-    shm_addr->MODS.blueHEBTemperature = nanf();
-    shm_addr->MODS.blueDewarTemperature = nanf();
   }
   else {
     envi->hebB_AirTemp = ptRTD2C(hebBData[0]);
