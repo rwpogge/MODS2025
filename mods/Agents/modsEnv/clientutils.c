@@ -9,8 +9,12 @@
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \date 2010 June 21
 
-  \date 2025 Aug 17 - updates for Archon HEB and LBTO telemetry [rwp/osu]
-  
+<pre>
+Modification History
+  2025 Aug 17 - updates for Archon HEB and LBTO telemetry [rwp/osu]
+  2025 Sep 24 - added ALH_NOTEMP and ALH_NOPRES for magic values if
+                no temperature or pressure read [rwp/osu]
+</pre>  
 */
 
 #include "client.h" // custom client application header 
@@ -26,6 +30,12 @@
   defaults.  This ensures that we have some way to avoid data
   structures with delinquent information.
 
+  For temperatures and pressures, the default values are ALH_NOPRES
+  and ALH_NOTEMP which are no-reading "magic" values recognized by the
+  observatory alarm handler (ALH) server.  These are defined in client.h
+
+  For power states, 0 is default (OFF)
+  
 */
 void
 initEnvData(envdata_t *envi)
@@ -34,13 +44,13 @@ initEnvData(envdata_t *envi)
   envi->cadence = DEFAULT_CADENCE;  // default monitoring cadence (see client.h)
   envi->pause = 0;                  // start running (no pause)
   strcpy(envi->iub_Addr,"");
-  envi->ambientTemp = 0.0;
-  envi->glycolSupplyPres = 0.0;
-  envi->glycolReturnPres = 0.0;
-  envi->glycolSupplyTemp = 0.0;
-  envi->glycolReturnTemp = 0.0;
-  envi->utilBoxTemp = 0.0;     
-  envi->agwHSTemp = 0.0;       
+  envi->ambientTemp = ALH_NOTEMP;
+  envi->glycolSupplyPres = ALH_NOPRES;
+  envi->glycolReturnPres = ALH_NOPRES;
+  envi->glycolSupplyTemp = ALH_NOTEMP;
+  envi->glycolReturnTemp = ALH_NOTEMP;
+  envi->utilBoxTemp = ALH_NOTEMP;     
+  envi->agwHSTemp = ALH_NOTEMP;       
 
   envi->iebB_Switch  = 0;  
   envi->iebB_Breaker = 0;
@@ -58,46 +68,46 @@ initEnvData(envdata_t *envi)
   envi->wfs_Breaker  = 0; 
 
   strcpy(envi->iebR_Addr,"");
-  envi->iebR_AirTemp = 0.0;
-  envi->iebR_ReturnTemp = 0.0;
-  envi->airTopTemp = 0.0; 
-  envi->airBotTemp = 0.0;
+  envi->iebR_AirTemp = ALH_NOTEMP;
+  envi->iebR_ReturnTemp = ALH_NOTEMP;
+  envi->airTopTemp = ALH_NOTEMP; 
+  envi->airBotTemp = ALH_NOTEMP;
 
   strcpy(envi->iebB_Addr,"");
-  envi->iebB_AirTemp = 0.0;
-  envi->iebB_ReturnTemp = 0.0;
-  envi->trussTopTemp = 0.0; 
-  envi->trussBotTemp = 0.0;
+  envi->iebB_AirTemp = ALH_NOTEMP;
+  envi->iebB_ReturnTemp = ALH_NOTEMP;
+  envi->trussTopTemp = ALH_NOTEMP; 
+  envi->trussBotTemp = ALH_NOTEMP;
 
   strcpy(envi->llb_Addr,"");
   envi->irlaserState = 0;   
   envi->irlaserPowerSet = 0.0;
   envi->irlaserPowerOut = 0.0;
   envi->irlaserBeam = 0;    
-  envi->irlaserTemp = 0.0;    
+  envi->irlaserTemp = ALH_NOTEMP;    
   envi->irlaserTempSet = 0.0; 
 
   strcpy(envi->hebB_Addr,"");
-  envi->hebB_AirTemp = 0.0;
-  envi->blueDewTemp = 0.0;
+  envi->hebB_AirTemp = ALH_NOTEMP;
+  envi->blueDewTemp = ALH_NOTEMP;
   envi->blueArchon = 0;
   envi->blueIonGauge = 0;
   
   strcpy(envi->hebR_Addr,"");
-  envi->hebR_AirTemp = 0.0;
-  envi->redDewTemp = 0.0;
+  envi->hebR_AirTemp = ALH_NOTEMP;
+  envi->redDewTemp = ALH_NOTEMP;
   envi->redArchon = 0;
   envi->redIonGauge = 0;
 
   strcpy(envi->blueIG_Addr,"");
   envi->blueIG_Port = 8018;
   envi->blueIG_Chan = 5;
-  envi->blueDewPres = 0.0;
+  envi->blueDewPres = ALH_NOPRES;
   
   strcpy(envi->redIG_Addr,"");
   envi->redIG_Port = 8018;
   envi->redIG_Chan = 5;
-  envi->redDewPres = 0.0; 
+  envi->redDewPres = ALH_NOPRES; 
   
   envi->doLogging = 1;                      // enable enviromental data logging by default
   envi->useHdf5 = 1;                        // default: output environmental data to Hdf5
@@ -227,6 +237,14 @@ getEnvData(envdata_t *envi)
     shm_addr->MODS.redHEBState = 0;
     shm_addr->MODS.guideCamState = 0;
     shm_addr->MODS.wfsCamState = 0;
+
+    shm_addr->MODS.glycolSupplyPressure = ALH_NOPRES;
+    shm_addr->MODS.glycolReturnPressure = ALH_NOPRES;
+    shm_addr->MODS.glycolSupplyTemperature = ALH_NOTEMP;
+    shm_addr->MODS.glycolReturnTemperature = ALH_NOTEMP;
+    shm_addr->MODS.utilBoxAirTemperature = ALH_NOTEMP;
+    shm_addr->MODS.outsideAirTemperature = ALH_NOTEMP;
+    shm_addr->MODS.agwHeatSinkTemperature = ALH_NOTEMP;
   }
   else {
     envi->glycolSupplyPres = (float)iubData[0]/327.64;
@@ -303,6 +321,10 @@ getEnvData(envdata_t *envi)
     if (useCLI) printf("WARNING: %s Red IEB WAGO read error\n",envi->modsID);
 
     shm_addr->MODS.redIEBState = 0;
+    shm_addr->MODS.redTemperature[0] = ALH_NOTEMP;
+    shm_addr->MODS.redTemperature[1] = ALH_NOTEMP;
+    shm_addr->MODS.redTemperature[2] = ALH_NOTEMP;
+    shm_addr->MODS.redTemperature[3] = ALH_NOTEMP;
   }
   else {
     envi->iebR_AirTemp = ptRTD2C(iebRData[4]);
@@ -324,6 +346,10 @@ getEnvData(envdata_t *envi)
     if (useCLI) printf("WARNING: %s Blue IEB WAGO read error\n",envi->modsID);
 
     shm_addr->MODS.blueIEBState = 0;
+    shm_addr->MODS.blueTemperature[0] = ALH_NOTEMP;
+    shm_addr->MODS.blueTemperature[1] = ALH_NOTEMP;
+    shm_addr->MODS.blueTemperature[2] = ALH_NOTEMP;
+    shm_addr->MODS.blueTemperature[3] = ALH_NOTEMP;
   }
   else {
     envi->iebB_AirTemp = ptRTD2C(iebBData[4]);
@@ -358,7 +384,6 @@ getEnvData(envdata_t *envi)
     hebRPower = hebRData[0];
     envi->redArchon = ((hebRPower & ARCHON_POWER) == ARCHON_POWER);
     envi->redIonGauge = ((hebRPower & IG_POWER) == IG_POWER);
-
     shm_addr->MODS.redHEBState = 1;
     shm_addr->MODS.redArchonState = envi->redArchon;
     shm_addr->MODS.redIonGaugeState = envi->redIonGauge;
@@ -386,54 +411,50 @@ getEnvData(envdata_t *envi)
     shm_addr->MODS.blueIonGaugeState = envi->blueIonGauge;
   }
 
-  // Red HEB temperature measurements
+  // Red HEB temperature and pressure measurements
 
   ierr = wagoSetGetRegisters(0,envi->hebR_Addr,4,2,hebRData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Red HEB WAGO RTD sensor read error\n",envi->modsID);
 
     shm_addr->MODS.redHEBState = 0;
+    shm_addr->MODS.redHEBTemperature = ALH_NOTEMP;
+    shm_addr->MODS.redDewarTemperature = ALH_NOTEMP;
+    shm_addr->MODS.redDewarPressure = ALH_NOPRES;
   }
   else {
     envi->hebR_AirTemp = ptRTD2C(hebRData[0]);
     envi->redDewTemp = ptRTD2C(hebRData[1]);
+    envi->redDewPres = getIonPressure(envi->redIG_Addr, envi->redIG_Port, envi->redIG_Chan, ION_TIMEOUT_LENGTH);
 
     shm_addr->MODS.redHEBState = 1;
     shm_addr->MODS.redHEBTemperature = envi->hebR_AirTemp;
     shm_addr->MODS.redDewarTemperature = envi->redDewTemp;
+    shm_addr->MODS.redDewarPressure = envi->redDewPres;
   }
   
-  // Blue HEB temperature measurements
+  // Blue HEB temperature and pressure measurements
 
   ierr = wagoSetGetRegisters(0,envi->hebB_Addr,4,2,hebBData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue HEB WAGO RTD sensor read error\n",envi->modsID);
 
     shm_addr->MODS.blueHEBState = 0;
+    shm_addr->MODS.blueHEBTemperature = ALH_NOTEMP;
+    shm_addr->MODS.blueDewarTemperature = ALH_NOTEMP;
+    shm_addr->MODS.blueDewarPressure = ALH_NOPRES;
   }
   else {
     envi->hebB_AirTemp = ptRTD2C(hebBData[0]);
     envi->blueDewTemp = ptRTD2C(hebBData[1]);
+    envi->blueDewPres = getIonPressure(envi->blueIG_Addr, envi->blueIG_Port, envi->blueIG_Chan, ION_TIMEOUT_LENGTH);
 
     shm_addr->MODS.blueHEBState = 1;
     shm_addr->MODS.blueHEBTemperature = envi->hebB_AirTemp;
     shm_addr->MODS.blueDewarTemperature = envi->blueDewTemp;
+    shm_addr->MODS.blueDewarPressure = envi->blueDewPres;
   }
 
-  // Read the red and blue ionization gauges here (TCP/IP socket to IEB 2-channel Comtrols)
-
-  // Red dewar ion gauge
-  
-  envi->redDewPres = getIonPressure(envi->redIG_Addr, envi->redIG_Port, envi->redIG_Chan, ION_TIMEOUT_LENGTH);
-  shm_addr->MODS.redDewarPressure = envi->redDewPres;
-
-  // Blue dewar ion gauge
-  
-  envi->blueDewPres = getIonPressure(envi->blueIG_Addr, envi->blueIG_Port, envi->blueIG_Chan, ION_TIMEOUT_LENGTH);
-  shm_addr->MODS.blueDewarPressure = envi->blueDewPres;
-
-  //...
-  
   // IR laser power and status complicated, maybe someday...
   
   // Get the UTC date/time of the query (ISIS client utility routine)
@@ -457,8 +478,12 @@ getEnvData(envdata_t *envi)
 //
 //   The WAGO module has a temperature resolution of 0.1C and a temperature
 //   range of -273 to 850C. If temp in >850.0, short integer raw data are
-//   wrapped on 2^16-1 ADU.  This is how it reports negative temperatures
+//   wrapped on 2^16-1 ADU.  This is how it reeports negative temperatures
 //   with a 16-bit unsigned integer.
+//
+//   850.0 C is the "no read" value returned by the WAGO if an RTD gets
+//   disconnected.  Set it to ALH_NOTEMP for use downstream by other
+//   systems (ALH = ALarm Handler)
 //
 //   Author:
 //     R. Pogge, OSU Astronomy Dept
@@ -478,6 +503,9 @@ ptRTD2C(short rawData)
   temp = tempRes*(float)rawData;
   if (temp > tempMax)
     temp -= wrapT;
+
+  if (temp == tempMax)
+    temp = ALH_NOTEMP;
 
   return temp;
 }

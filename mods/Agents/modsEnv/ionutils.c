@@ -156,7 +156,7 @@ initIonSocket(int* sock, char* address, int port, int timeout)
     \param channel the ion gauge channel to read from
     \param timeout the maximum number of seconds that should be spent trying to connect.
     
-    \return the pressure as a float, 0 on errors.  
+    \return the pressure as a float, ALH_NOPRES on errors (defined in client.h)
     
     Opens a connection to the ion gauge, reads the pressure, returns it as a float, and closes the ion connection.
 
@@ -176,7 +176,7 @@ getIonPressure(char* address, int port, int channel, int timeout)
   if (initIonSocket(&sock, address, port, timeout) < 0){
     if (useCLI) printf("ERROR: Could not connect to ion-gauge %s:%d.\n", address, port);
     close(sock);
-    return 0.0;
+    return ALH_NOPRES;
   }
 
   // Get the current pressure reading (returned as a string)
@@ -185,7 +185,7 @@ getIonPressure(char* address, int port, int channel, int timeout)
   if (sendIonCommand(sock, commandMessage, responseMessage) != 0){
     if (useCLI) printf("ERROR: Could not send command (gauge off?).\n");
     close(sock);
-    return 0.0;
+    return ALH_NOPRES;
   }
   
   // Convert the response to a float (Note: there will be four characters before the desired float)
@@ -194,7 +194,7 @@ getIonPressure(char* address, int port, int channel, int timeout)
   if(response == 0.0f){
     if (useCLI) printf("ERROR: Could not parse ion response.\n");
     close(sock);
-    return 0.0;
+    return ALH_NOPRES;
   }
 
   // Close the socket.

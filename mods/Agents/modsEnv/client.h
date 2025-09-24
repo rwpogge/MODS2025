@@ -344,6 +344,11 @@ public:
 #define LEAP_SECONDS_FILE "/usr/share/lbto/UT/leap-seconds.list"  //!< Default path to the leap-seconds.list file.
 #define FALLBACK_LEAP_SECONDS_FILE "./leap-seconds.list"          //!< If the leap-seconds file can't be found at the path above, this one is tried next.
 
+// LBTO Alarm Handler (ALH) no-data "magic" values
+
+#define ALH_NOTEMP -999.0
+#define ALH_NOPRES -1.0
+
 //------------------------------
 // Globals - use very sparingly
 //
