@@ -1198,7 +1198,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
   shm_addr->MODS.blueDewarTemperature = blueDewarTemperature;
 
   sprintf(reply,"%s BHEBTEMP=%.1f",reply,blueHEBTemperature);
-  sprintf(reply,"%s BDEWTEMP=%.1f",reply,blueDewarTemperature));
+  sprintf(reply,"%s BDEWTEMP=%.1f",reply,blueDewarTemperature);
 
   
   return CMD_OK;
