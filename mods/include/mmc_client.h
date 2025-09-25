@@ -1,17 +1,20 @@
-#ifndef ICS_CLIENT_H
-#define ICS_CLIENT_H
+#ifndef MMC_CLIENT_H
+#define MMC_CLIENT_H
 
 //
-// ics_client.h - Custom client application header
+// mmc_client.h - Custom client application header
 //
 
 /*!
-  \file ics_client.h
-  \brief ICS Application Header
+  \file mmc_client.h
+  \brief MODS Mechanism Control (MMC) Application Header
 
-  header for the ics application.
+  Header for the mmcService application.
 
   \date 2005 May 05
+
+  Modified 2025 Jun 18 et seq. for AlmaLinux 9 [rwp/osu]
+
 */
 
 // Various site-dependent but system-independent default values 
@@ -20,7 +23,7 @@
 
 #define DEFAULT_MYID      "M1.IE"  //!< default client ISIS node name
 #define DEFAULT_MYPORT    7101   //!< default client socket port   
-#define DEFAULT_RCFILE    (char*)"/home/dts/mods/Config/mechanisms.ini" //!< default client runtime config file
+#define DEFAULT_RCFILE    (char*)"/home/dts/mods/Config/MODS/mechanisms.ini" //!< default client runtime config file
 #define DEFAULT_LOGFILE   (char*)"/home/dts/Logs/MMC/mmc.log" //!< default client runtime log file (unimplemented)
 #define DEFAULT_AGWLOG    (char*)"/home/dts/Logs/AGW/agw.log" //!< default client runtime log file (unimplemented)
 
@@ -34,7 +37,7 @@
 // at compilation, put in some placeholders to prevent code barfing
 
 #ifndef APP_VERSION
-#define APP_VERSION "1.0 Beta" //!< placeholder version number, set in Makefile
+#define APP_VERSION "3.0.2" //!< placeholder version number, set in Makefile
 #endif
 
 #ifndef APP_COMPDATE
@@ -96,7 +99,6 @@ long rte_secs();
 void skd_run(char*, char, long[]);
 int nsem_test(char []);
 extern int MilliSleep(long msec);
-extern int SCLOpenPort(char*);
 
 // Signal Handlers
 

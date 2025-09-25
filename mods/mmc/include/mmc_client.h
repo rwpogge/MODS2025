@@ -23,7 +23,7 @@
 
 #define DEFAULT_MYID      "M1.IE"  //!< default client ISIS node name
 #define DEFAULT_MYPORT    7101   //!< default client socket port   
-#define DEFAULT_RCFILE    (char*)"/home/dts/mods/Config/mechanisms.ini" //!< default client runtime config file
+#define DEFAULT_RCFILE    (char*)"/home/dts/mods/Config/MODS/mechanisms.ini" //!< default client runtime config file
 #define DEFAULT_LOGFILE   (char*)"/home/dts/Logs/MMC/mmc.log" //!< default client runtime log file (unimplemented)
 #define DEFAULT_AGWLOG    (char*)"/home/dts/Logs/AGW/agw.log" //!< default client runtime log file (unimplemented)
 
@@ -53,6 +53,12 @@
 #include "isisclient.h"  // should be in -I path in Makefile, no paths here!
 
 extern isisclient_t client;  // global client runtime config table
+
+// LBTO Alarm Handler (ALH) subsystem "magic numbers" for "no data"
+// conditions for temperature and pressure sensors
+
+#define ALH_NOTEMP -999.0
+#define ALH_NOPRES -1.0
 
 //----------------------------------------------------------------
 //
