@@ -771,7 +771,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     
     if(!shm_addr->MODS.host[device1]) {
       ttfa=0.0;
-      sprintf(ttfKeeper,"%s COLTTFA=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s COLTTFA=-99",ttfKeeper);
     } else {
       ttfa=shm_addr->MODS.pos[device1]*shm_addr->MODS.convf[device1];
       sprintf(ttfKeeper,"%s COLTTFA=%0.0f",ttfKeeper,ttfa);
@@ -779,7 +779,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
 
     if(!shm_addr->MODS.host[device2]) {
       ttfb=0.0;
-      sprintf(ttfKeeper,"%s COLTTFB=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s COLTTFB-99",ttfKeeper);
     }  else {
       ttfb=shm_addr->MODS.pos[device2]*shm_addr->MODS.convf[device2];
       sprintf(ttfKeeper,"%s COLTTFB=%0.0f",ttfKeeper,ttfb);
@@ -787,7 +787,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
 
     if(!shm_addr->MODS.host[device3]) {
       ttfc=0.0;
-      sprintf(ttfKeeper,"%s COLTTFC=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s COLTTFC=-99",ttfKeeper);
     } else {
       ttfc=shm_addr->MODS.pos[device3]*shm_addr->MODS.convf[device3];
       sprintf(ttfKeeper,"%s COLTTFC=%0.0f",ttfKeeper,ttfc);
@@ -802,7 +802,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
       device=getMechanismID("bgrating",dummy);
 
     if(!shm_addr->MODS.host[device])
-      sprintf(ttfKeeper,"%s GRATING=NOCOMM GRATNAME='None' GRATINFO='None'",ttfKeeper);
+      sprintf(ttfKeeper,"%s GRATING=0 GRATNAME='None' GRATINFO='None'",ttfKeeper);
     else
       sprintf(ttfKeeper,"%s GRATING=%d GRATNAME='%s' GRATINFO='%s'",ttfKeeper,
 	      atoi(shm_addr->MODS.state_word[device]),
@@ -819,7 +819,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
       device=getMechanismID("bgrtilt1",dummy);
 
     if(!shm_addr->MODS.host[device])
-      sprintf(ttfKeeper,"%s GRATTILT=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s GRATTILT=-1",ttfKeeper);
     else
       sprintf(ttfKeeper,"%s GRATTILT=%d",ttfKeeper,
 	      (int)(shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]));
@@ -829,7 +829,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     else device=getMechanismID("bcamfoc",dummy);
 
     if(!shm_addr->MODS.host[device])
-      sprintf(ttfKeeper,"%s CAMFOCUS=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s CAMFOCUS=-1",ttfKeeper);
     else
       sprintf(ttfKeeper,"%s CAMFOCUS=%0.0f",ttfKeeper,
 	      shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
@@ -839,7 +839,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     else device=getMechanismID("bfilter",dummy);
 
     if(!shm_addr->MODS.host[device]) {
-      sprintf(ttfKeeper,"%s FILTER=NOCOMM FILTNAME='None' FILTINFO='None'",
+      sprintf(ttfKeeper,"%s FILTER=0 FILTNAME='None' FILTINFO='None'",
 	      ttfKeeper);
     } else {
       if(shm_addr->MODS.pos[device]<=0) {
@@ -865,7 +865,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("bcolttfa",dummy); // TTFA
     if(!shm_addr->MODS.host[device]) {
       ttfa=0.0;
-      sprintf(ttfKeeper,"BCOLTTFA=NOCOMM");
+      sprintf(ttfKeeper,"BCOLTTFA=-99");
     } else {
       ttfa=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"BCOLTTFA=%0.0f",ttfa);
@@ -874,7 +874,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("bcolttfb",dummy); // TTFB
     if(!shm_addr->MODS.host[device]) {
       ttfb=0.0;
-      sprintf(ttfKeeper,"%s BCOLTTFB=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s BCOLTTFB=-99",ttfKeeper);
     }  else {
       ttfb=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"%s BCOLTTFB=%0.0f",ttfKeeper,ttfb);
@@ -883,7 +883,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("bcolttfc",dummy); // TTFC
     if(!shm_addr->MODS.host[device]) {
       ttfc=0.0;
-      sprintf(ttfKeeper,"%s BCOLTTFC=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s BCOLTTFC=-99",ttfKeeper);
     } else {
       ttfc=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"%s BCOLTTFC=%0.0f",ttfKeeper,ttfc);
@@ -895,7 +895,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("bgrating",dummy);
     
     if(!shm_addr->MODS.host[device])
-      sprintf(ttfKeeper,"%s BGRATING=NOCOMM BGRATID=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s BGRATING=0 BGRATID=None",ttfKeeper);
     else
       sprintf(ttfKeeper,"%s BGRATING=%d BGRATID='%s'",ttfKeeper,
 	      atoi(shm_addr->MODS.state_word[device]),
@@ -903,21 +903,21 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
 
     device=getMechanismID("bgrtilt1",dummy);
     if(!shm_addr->MODS.host[device])
-      sprintf(ttfKeeper,"%s BGRTILT1=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s BGRTILT1=-1",ttfKeeper);
     else
       sprintf(ttfKeeper,"%s BGRTILT1=%d",ttfKeeper,
 	      (int)(shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]));
     
     device=getMechanismID("bcamfoc",dummy);
     if(!shm_addr->MODS.host[device])
-      sprintf(ttfKeeper,"%s BCAMFOC=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s BCAMFOC=-1",ttfKeeper);
     else
       sprintf(ttfKeeper,"%s BCAMFOC=%0.0f",ttfKeeper,
 	      shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
     
     device=getMechanismID("bfilter",dummy);
     if(!shm_addr->MODS.host[device]) {
-      sprintf(ttfKeeper,"%s BFILTER=NOCOMM BFILTID'NOCOMM'",ttfKeeper);
+      sprintf(ttfKeeper,"%s BFILTER=0 BFILTID='None'",ttfKeeper);
     } else {
       if(shm_addr->MODS.pos[device]<=0) {
 	sprintf(ttfKeeper,"%s BFILTER=UNKNOWN, BFILTID='None'",ttfKeeper);
@@ -933,7 +933,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("rcolttfa",dummy); // TTFA
     if(!shm_addr->MODS.host[device]) {
       ttfa=0.0;
-      sprintf(ttfKeeper,"%s RCOLTTFA=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s RCOLTTFA=-99",ttfKeeper);
     } else {
       ttfa=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"%s RCOLTTFA=%0.0f",ttfKeeper,ttfa);
@@ -942,7 +942,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("rcolttfb",dummy); // TTFB
     if(!shm_addr->MODS.host[device]) {
       ttfb=0.0;
-      sprintf(ttfKeeper,"%s RCOLTTFA=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s RCOLTTFA=-99",ttfKeeper);
     }  else {
       ttfb=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"%s RCOLTTFB=%0.0f",ttfKeeper,ttfb);
@@ -951,7 +951,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("rcolttfc",dummy); // TTFC
     if(!shm_addr->MODS.host[device]) {
       ttfc=0.0;
-      sprintf(ttfKeeper,"%s RCOLTTFC=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s RCOLTTFC=-99",ttfKeeper);
     } else {
       ttfc=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"%s RCOLTTFC=%0.0f",ttfKeeper,ttfc);
@@ -963,7 +963,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("rgrating",dummy);
     
     if(!shm_addr->MODS.host[device])
-      sprintf(ttfKeeper,"%s RGRATING=NOCOMM RGRATID=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s RGRATING=0 RGRATID=None",ttfKeeper);
     else 
       sprintf(ttfKeeper,"%s RGRATING=%d RGRATID='%s'",ttfKeeper,
 	      atoi(shm_addr->MODS.state_word[device]),
@@ -971,21 +971,21 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     
     device=getMechanismID("rgrtilt1",dummy);
     if(!shm_addr->MODS.host[device]) 
-      sprintf(ttfKeeper,"%s RGRTILT1=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s RGRTILT1=-1",ttfKeeper);
     else
       sprintf(ttfKeeper,"%s RGRTILT1=%d",ttfKeeper,
 	      (int)(shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]));
     
     device=getMechanismID("rcamfoc",dummy);
     if(!shm_addr->MODS.host[device])
-      sprintf(ttfKeeper,"%s RCAMFOC=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s RCAMFOC=-1",ttfKeeper);
     else
       sprintf(ttfKeeper,"%s RCAMFOC=%0.0f",ttfKeeper,
 	      shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
     
     device=getMechanismID("rfilter",dummy);
     if(!shm_addr->MODS.host[device]) {
-      sprintf(ttfKeeper,"%s RFILTER=NOCOMM RFILTID=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s RFILTER=0 RFILTID=NOCOMM",ttfKeeper);
     } else {
       if(shm_addr->MODS.pos[device]<=0) {
 	sprintf(ttfKeeper,"%s RFILTER=UNKNOWN RFILTID=NOCOMM",ttfKeeper);
@@ -1041,9 +1041,9 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
   if(shm_addr->MODS.lamps.lamp_state[8]) {sprintf(reply,"%sVFLAT ",reply); ierr++;}
 
   if(!ierr)
-    sprintf(reply,"%sNone' VFLAT=%0.1f",reply,shm_addr->MODS.vflat_power);
+    sprintf(reply,"%sNone' VFLAT=%.1f",reply,shm_addr->MODS.vflat_power);
   else
-    sprintf(reply,"%s' VFLAT=%0.1f",reply,shm_addr->MODS.vflat_power);
+    sprintf(reply,"%s' VFLAT=%.1f",reply,shm_addr->MODS.vflat_power);
 
   // Slitmask (select and insert/retract)
   
@@ -1052,7 +1052,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
   if(cmd_instruction[0]=='R' || cmd_instruction[0]=='B') {
     if(!shm_addr->MODS.host[device])
 
-      sprintf(reply,"%s SLITMASK=NOCOMM MASKPOS=NOCOMM MASKNAME='NOCOMM' MASKINFO='None'",reply);
+      sprintf(reply,"%s SLITMASK=0 MASKPOS=NOCOMM MASKNAME='NOCOMM' MASKINFO='None'",reply);
     else {
       sprintf(reply,"%s SLITMASK=%d MASKPOS=%s MASKNAME='%s' MASKINFO='%s'",reply,
 	      shm_addr->MODS.active_smask,
@@ -1062,7 +1062,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     }
   } else {
     if(!shm_addr->MODS.host[device])
-      sprintf(reply,"%s SLITMASK=NOCOMM MASKPOS=NOCOMM",reply);
+      sprintf(reply,"%s SLITMASK=0 MASKPOS=NOCOMM",reply);
     else {
       sprintf(reply,"%s SLITMASK=%d MASKPOS=%s",reply,
 	      shm_addr->MODS.active_smask,
@@ -1092,27 +1092,27 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
 
   if(cmd_instruction[0]=='R' || cmd_instruction[0]=='B') {
     if(!shm_addr->MODS.host[device])
-      sprintf(reply,"%s DICHROIC=NOCOMM DICHNAME='None' DICHINFO='None'",reply);
+      sprintf(reply,"%s DICHROIC=0 DICHNAME='None' DICHINFO='None'",reply);
     else {
       if(shm_addr->MODS.pos[device] < 1.0 || 
 	 shm_addr->MODS.pos[device] > 3.0)  
 	sprintf(reply,"%s DICHROIC=UNKNOWN DICHNAME='None' DICHINFO='None'",reply);
       else {
-	sprintf(reply,"%s DICHROIC=%0.0f DICHNAME='%s' DICHINFO='%s'",reply,
-		shm_addr->MODS.pos[device],
+	sprintf(reply,"%s DICHROIC=%d DICHNAME='%s' DICHINFO='%s'",reply,
+		int(shm_addr->MODS.pos[device]),
 		shm_addr->MODS.dichroicName[(int)shm_addr->MODS.pos[device]],
 		shm_addr->MODS.dichroicInfo[(int)shm_addr->MODS.pos[device]]);
       }
     }
   } else {
     if(!shm_addr->MODS.host[device])
-      sprintf(reply,"%s DICHROIC=NOCOMM DICHNAME=NOCOMM",reply);
+      sprintf(reply,"%s DICHROIC=0 DICHNAME=NOCOMM",reply);
     else {
       if(shm_addr->MODS.pos[device] < 1.0 ||shm_addr->MODS.pos[device] > 3.0)
 	sprintf(reply,"%s DICHROIC=UNKNOWN DICHNAME=UNKNOWN",reply);
       else
-	sprintf(reply,"%s DICHROIC=%0.0f DICHNAME='%s'",reply,
-		shm_addr->MODS.pos[device],shm_addr->MODS.dichroicName[device]);
+	sprintf(reply,"%s DICHROIC=%d DICHNAME='%s'",reply,
+		int(shm_addr->MODS.pos[device]),shm_addr->MODS.dichroicName[device]);
     }
   }
 
@@ -1122,7 +1122,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
   if(ierr==-1) {
     sprintf(reply,"%s IRLASER=OFF",reply);
   } else {
-    sprintf(reply,"%s IRLASER=%s IRBEAM=%s IRPSET=%0.1f IRPOUT=%0.1f IRTSET=%0.1f IRTEMP=%0.1f",reply,
+    sprintf(reply,"%s IRLASER=%s IRBEAM=%s IRPSET=%.1f IRPOUT=%.1f IRTSET=%.1f IRTEMP=%.1f",reply,
 	    (shm_addr->MODS.lasers.irlaser_state==1 ? "ON" : "OFF"),
 	    (shm_addr->MODS.lasers.irbeam_state==1 ? "ENABLED" : "DISABLED"),
 	    shm_addr->MODS.lasers.irlaser_setpoint,
@@ -1166,26 +1166,13 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
   shm_addr->MODS.outsideAirTemperature = outsideAirTemperature;
   shm_addr->MODS.agwHeatSinkTemperature = agwHeatSinkTemperature;
   
-  (glycolSupplyPressure>=850.0 ? sprintf(reply,"%s GSPRES=NOCOMM",reply) : 
-   sprintf(reply,"%s GSPRES=%0.1f",reply,glycolSupplyPressure));
-
-  (glycolSupplyTemperature>=850.0 ? sprintf(reply,"%s GSTEMP=NOCOMM",reply) : 
-   sprintf(reply,"%s GSTEMP=%0.1f",reply,glycolSupplyTemperature));
-
-  (glycolReturnPressure>=850.0 ? sprintf(reply,"%s GRPRES=NOCOMM",reply) : 
-   sprintf(reply,"%s GRPRES=%0.1f",reply, glycolReturnPressure));
-
-  (glycolReturnTemperature>=850.0 ? sprintf(reply,"%s GRTEMP=NOCOMM",reply) : 
-   sprintf(reply,"%s GRTEMP=%0.1f",reply,glycolReturnTemperature));
-
-  (utilBoxAirTemperature>=850.0 ? sprintf(reply,"%s IUBTAIR=NOCOMM",reply) :
-   sprintf(reply,"%s IUBTAIR=%0.1f",reply,utilBoxAirTemperature));
-
-  (outsideAirTemperature>=850.0 ? sprintf(reply,"%s AMBTEMP=NOCOMM",reply) : 
-   sprintf(reply,"%s AMBTEMP=%0.1f",reply,outsideAirTemperature));
-
-  (agwHeatSinkTemperature>=850.0 ? sprintf(reply,"%s AGHSTEMP=NOCOMM",reply) : 
-   sprintf(reply,"%s AGHSTEMP=%0.1f",reply,agwHeatSinkTemperature));
+  sprintf(reply,"%s GSPRES=%.1f",reply,glycolSupplyPressure);
+  sprintf(reply,"%s GSTEMP=%.1f",reply,glycolSupplyTemperature);
+  sprintf(reply,"%s GRPRES=%.1f",reply, glycolReturnPressure);
+  sprintf(reply,"%s GRTEMP=%.1f",reply,glycolReturnTemperature);
+  sprintf(reply,"%s IUBTAIR=%.1f",reply,utilBoxAirTemperature);
+  sprintf(reply,"%s AMBTEMP=%.1f",reply,outsideAirTemperature);
+  sprintf(reply,"%s AGHSTEMP=%.1f",reply,agwHeatSinkTemperature);
 
   // WAGO HEB temperature sensors are on WAGO register addr 5 (4-channel RTD)
 
@@ -1198,11 +1185,8 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
   shm_addr->MODS.redHEBTemperature = redHEBTemperature;
   shm_addr->MODS.redDewarTemperature = redDewarTemperature;
 
-  (redHEBTemperature>=850.0 ? sprintf(reply,"%s RHEBTEMP=NOCOMM",reply) : 
-   sprintf(reply,"%s RHEBTEMP=%0.1f",reply,redHEBTemperature));
-
-  (redDewarTemperature>=850.0 ? sprintf(reply,"%s RDEWTEMP=NOCOMM",reply) : 
-   sprintf(reply,"%s RDEWTEMP=%0.1f",reply,redDewarTemperature));
+  sprintf(reply,"%s RHEBTEMP=%.1f",reply,redHEBTemperature);
+  sprintf(reply,"%s RDEWTEMP=%.1f",reply,redDewarTemperature);
 
   // Blue HEB
   
@@ -1213,11 +1197,8 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
   shm_addr->MODS.blueHEBTemperature = blueHEBTemperature;
   shm_addr->MODS.blueDewarTemperature = blueDewarTemperature;
 
-  (blueHEBTemperature>=850.0 ? sprintf(reply,"%s BHEBTEMP=NOCOMM",reply) : 
-   sprintf(reply,"%s BHEBTEMP=%0.1f",reply,blueHEBTemperature));
-
-  (blueDewarTemperature>=850.0 ? sprintf(reply,"%s BDEWTEMP=NOCOMM",reply) : 
-   sprintf(reply,"%s BDEWTEMP=%0.1f",reply,blueDewarTemperature));
+  sprintf(reply,"%s BHEBTEMP=%.1f",reply,blueHEBTemperature);
+  sprintf(reply,"%s BDEWTEMP=%.1f",reply,blueDewarTemperature));
 
   
   return CMD_OK;
@@ -2317,61 +2298,33 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       
       // Glycol supply and return pressures and temperatures
 	
-      (glycolSupplyPressure>=850.0 ? sprintf(reply,"%s GSPRES=NOCOMM",reply) : 
-       sprintf(reply,"%s GSPRES=%0.1f",reply,glycolSupplyPressure));
-      
-      (glycolReturnPressure>=850.0 ? sprintf(reply,"%s GRPRES=NOCOMM",reply) : 
-       sprintf(reply,"%s GRPRES=%0.1f",reply, glycolReturnPressure));
-      
-      (glycolSupplyTemperature>=850.0 ? sprintf(reply,"%s GSTEMP=NOCOMM",reply) : 
-       sprintf(reply,"%s GSTEMP=%0.1f",reply,glycolSupplyTemperature));
-      
-      (glycolReturnTemperature>=850.0 ? sprintf(reply,"%s GRTEMP=NOCOMM",reply) : 
-       sprintf(reply,"%s GRTEMP=%0.1f",reply,glycolReturnTemperature));
+      sprintf(reply,"%s GSPRES=%.1f",reply,glycolSupplyPressure);
+      sprintf(reply,"%s GRPRES=%.1f",reply, glycolReturnPressure);
+      sprintf(reply,"%s GSTEMP=%.1f",reply,glycolSupplyTemperature);
+      sprintf(reply,"%s GRTEMP=%.1f",reply,glycolReturnTemperature);
       
       // Utility box temperature sensors 
 
-      (utilBoxAirTemperature>=850.0 ? sprintf(reply,"%s IUBTAIR=NOCOMM",reply) :
-       sprintf(reply,"%s IUBTAIR=%0.1f",reply,utilBoxAirTemperature));
-      
-      (outsideAirTemperature>=850.0 ? sprintf(reply,"%s AMBTEMP=NOCOMM",reply) : 
-       sprintf(reply,"%s AMBTEMP=%0.1f",reply,outsideAirTemperature));
-      
-      (agwHeatSinkTemperature>=850.0 ? sprintf(reply,"%s AGHSTEMP=NOCOMM",reply) : 
-       sprintf(reply,"%s AGHSTEMP=%0.1f",reply,agwHeatSinkTemperature));
+      sprintf(reply,"%s IUBTAIR=%.1f",reply,utilBoxAirTemperature);
+      sprintf(reply,"%s AMBTEMP=%.1f",reply,outsideAirTemperature);
+      sprintf(reply,"%s AGHSTEMP=%.1f",reply,agwHeatSinkTemperature);
       
     } else if(!strcasecmp(argbuf,"GLYCOL")) {
       
-      (glycolSupplyPressure>=850.0 ?  sprintf(reply,"%s GSPRES=NOCOMM",who_selected) : 
-       sprintf(reply,"%s GSPRES=%0.1f",who_selected,glycolSupplyPressure));
-	
-      (glycolSupplyTemperature>=850.0 ? sprintf(reply,"%s GSTEMP=NOCOMM",reply) : 
-       sprintf(reply,"%s GSTEMP=%0.1f",reply,glycolSupplyTemperature));
-	
-      (glycolReturnPressure>=850.0 ? sprintf(reply,"%s GRPRES=NOCOMM",reply) : 
-       sprintf(reply,"%s GRPRES=%0.1f",reply, glycolReturnPressure));
-	
-      (glycolReturnTemperature>=850.0 ? sprintf(reply,"%s GRTEMP=NOCOMM",reply) : 
-       sprintf(reply,"%s GRTEMP=%0.1f",reply,glycolReturnTemperature));
+      sprintf(reply,"%s GSPRES=%.1f",who_selected,glycolSupplyPressure);
+      sprintf(reply,"%s GSTEMP=%.1f",reply,glycolSupplyTemperature);
+      sprintf(reply,"%s GRPRES=%.1f",reply, glycolReturnPressure);
+      sprintf(reply,"%s GRTEMP=%.1f",reply,glycolReturnTemperature);
 
       return CMD_OK;
 
     } else if(!strcasecmp(argbuf,"TEMP")) {
 
-	(glycolSupplyTemperature>=850.0 ? sprintf(reply,"%s GSTEMP=NOCOMM",who_selected) : 
-	 sprintf(reply,"%s GSTEMP=%0.1f",who_selected,glycolSupplyTemperature));
-	
-	(glycolReturnTemperature>=850.0 ? sprintf(reply,"%s GRTEMP=NOCOMM",reply) : 
-	 sprintf(reply,"%s GRTEMP=%0.1f",reply,glycolReturnTemperature));
-
-	(utilBoxAirTemperature>=850.0 ? sprintf(reply,"%s IUBTAIR=NOCOMM",reply) :
-	 sprintf(reply,"%s IUBTAIR=%0.1f",reply,utilBoxAirTemperature));
-	
-	(outsideAirTemperature>=850.0 ? sprintf(reply,"%s AMBTEMP=NOCOMM",reply) : 
-	 sprintf(reply,"%s AMBTEMP=%0.1f",reply,outsideAirTemperature));
-	
-	(agwHeatSinkTemperature>=850.0 ? sprintf(reply,"%s AGHSTEMP=NOCOMM",reply) : 
-	 sprintf(reply,"%s AGHSTEMP=%0.1f",reply,agwHeatSinkTemperature));
+      sprintf(reply,"%s GSTEMP=%.1f",who_selected,glycolSupplyTemperature);
+      sprintf(reply,"%s GRTEMP=%.1f",reply,glycolReturnTemperature);
+      sprintf(reply,"%s IUBTAIR=%.1f",reply,utilBoxAirTemperature);
+      sprintf(reply,"%s AMBTEMP=%.1f",reply,outsideAirTemperature);
+      sprintf(reply,"%s AGHSTEMP=%.1f",reply,agwHeatSinkTemperature);
 
       return CMD_OK;
 
@@ -2881,66 +2834,31 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
     // IEB temperature sensors
 
-    (redIEBAirTemperature>=850.0 ? sprintf(reply,"%s IEBTEMPR=NOCOMM",reply) : 
-     sprintf(reply,"%s IEBTEMPR=%0.1f",reply,redIEBAirTemperature));
-
-    (redIEBReturnTemperature>=850.0 ? sprintf(reply,"%s IEBGRT_R=NOCOMM",reply) : 
-     sprintf(reply,"%s IEBGRT_R=%0.1f",reply,redIEBReturnTemperature));
-
-    (blueIEBAirTemperature>=850.0 ? sprintf(reply,"%s IEBTEMPB=NOCOMM",reply) : 
-     sprintf(reply,"%s IEBTEMPB=%0.1f",reply,blueIEBAirTemperature));
-
-    (blueIEBReturnTemperature>=850.0 ? sprintf(reply,"%s IEBGRT_B=NOCOMM",reply) : 
-     sprintf(reply,"%s IEBGRT_B=%0.1f",reply,blueIEBReturnTemperature));
-
-    (TrussTopAirTemperature>=850.0 ? sprintf(reply,"%s TAIRTOP=NOCOMM",reply) : 
-     sprintf(reply,"%s TAIRTOP=%0.1f",reply,TrussTopAirTemperature));
-
-    (TrussBottomAirTemperature>=850.0 ? sprintf(reply,"%s TAIRBOT=NOCOMM",reply) : 
-     sprintf(reply,"%s TAIRBOT=%0.1f",reply,TrussBottomAirTemperature));
-
-    (TrussTopTemperature>=850.0 ? sprintf(reply,"%s TCOLLTOP=NOCOMM",reply) : 
-     sprintf(reply,"%s TCOLLTOP=%0.1f",reply,TrussTopTemperature));
-
-    (TrussBottomTemperature>=850.0 ? sprintf(reply,"%s TCOLLBOT=NOCOMM",reply) : 
-     sprintf(reply,"%s TCOLLBOT=%0.1f",reply,TrussBottomTemperature));
+    sprintf(reply,"%s IEBTEMPR=%.1f",reply,redIEBAirTemperature);
+    sprintf(reply,"%s IEBGRT_R=%.1f",reply,redIEBReturnTemperature);
+    sprintf(reply,"%s IEBTEMPB=%.1f",reply,blueIEBAirTemperature);
+    sprintf(reply,"%s IEBGRT_B=%.1f",reply,blueIEBReturnTemperature);
+    sprintf(reply,"%s TAIRTOP=%.1f",reply,TrussTopAirTemperature);
+    sprintf(reply,"%s TAIRBOT=%.1f",reply,TrussBottomAirTemperature);
+    sprintf(reply,"%s TCOLLTOP=%.1f",reply,TrussTopTemperature);
+    sprintf(reply,"%s TCOLLBOT=%.1f",reply,TrussBottomTemperature);
 
     // Utility Box Temperatures and pressures (readout above)
 
-    (glycolSupplyPressure>=850.0 ? sprintf(reply,"%s GSPRES=NOCOMM",reply) : 
-     sprintf(reply,"%s GSPRES=%0.1f",reply,glycolSupplyPressure));
-    
-    (glycolSupplyTemperature>=850.0 ? sprintf(reply,"%s GSTEMP=NOCOMM",reply) : 
-     sprintf(reply,"%s GSTEMP=%0.1f",reply,glycolSupplyTemperature));
-    
-    (glycolReturnPressure>=850.0 ? sprintf(reply,"%s GRPRES=NOCOMM",reply) : 
-     sprintf(reply,"%s GRPRES=%0.1f",reply, glycolReturnPressure));
-    
-    (glycolReturnTemperature>=850.0 ? sprintf(reply,"%s GRTEMP=NOCOMM",reply) : 
-     sprintf(reply,"%s GRTEMP=%0.1f",reply,glycolReturnTemperature));
-
-    (utilBoxAirTemperature>=850.0 ? sprintf(reply,"%s IUBTAIR=NOCOMM",reply) :
-     sprintf(reply,"%s IUBTAIR=%0.1f",reply,utilBoxAirTemperature));
-    
-    (outsideAirTemperature>=850.0 ? sprintf(reply,"%s AMBTEMP=NOCOMM",reply) : 
-     sprintf(reply,"%s AMBTEMP=%0.1f",reply,outsideAirTemperature));
-    
-    (agwHeatSinkTemperature>=850.0 ? sprintf(reply,"%s AGHSTEMP=NOCOMM",reply) : 
-     sprintf(reply,"%s AGHSTEMP=%0.1f",reply,agwHeatSinkTemperature));
+    sprintf(reply,"%s GSPRES=%.1f",reply,glycolSupplyPressure);
+    sprintf(reply,"%s GSTEMP=%.1f",reply,glycolSupplyTemperature);
+    sprintf(reply,"%s GRPRES=%.1f",reply, glycolReturnPressure);
+    sprintf(reply,"%s GRTEMP=%.1f",reply,glycolReturnTemperature);
+    sprintf(reply,"%s IUBTAIR=%.1f",reply,utilBoxAirTemperature);
+    sprintf(reply,"%s AMBTEMP=%.1f",reply,outsideAirTemperature);
+    sprintf(reply,"%s AGHSTEMP=%.1f",reply,agwHeatSinkTemperature);
 
     // WAGO HEB temperature sensors are on WAGO register addr 5 (4-channel RTD)
 
-    (redHEBTemperature>=850.0 ? sprintf(reply,"%s RHEBTEMP=NOCOMM",reply) : 
-     sprintf(reply,"%s RHEBTEMP=%0.1f",reply,redHEBTemperature));
-
-    (redDewarTemperature>=850.0 ? sprintf(reply,"%s RDEWTEMP=NOCOMM",reply) : 
-     sprintf(reply,"%s RDEWTEMP=%0.1f",reply,redDewarTemperature));
-
-    (blueHEBTemperature>=850.0 ? sprintf(reply,"%s BHEBTEMP=NOCOMM",reply) : 
-     sprintf(reply,"%s BHEBTEMP=%0.1f",reply,blueHEBTemperature));
-
-    (blueDewarTemperature>=850.0 ? sprintf(reply,"%s BDEWTEMP=NOCOMM",reply) : 
-     sprintf(reply,"%s BDEWTEMP=%0.1f",reply,blueDewarTemperature));
+    sprintf(reply,"%s RHEBTEMP=%.1f",reply,redHEBTemperature);
+    sprintf(reply,"%s RDEWTEMP=%.1f",reply,redDewarTemperature);
+    sprintf(reply,"%s BHEBTEMP=%.1f",reply,blueHEBTemperature);
+    sprintf(reply,"%s BDEWTEMP=%.1f",reply,blueDewarTemperature);
 
   } else if (!strcasecmp(who_selected,"HEB")) {
 
@@ -3047,13 +2965,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	else
 	  shm_addr->MODS.blueIonGaugeState = 0;
       }
-      
-      (hebAirTemp>=850.0 ? sprintf(reply,"%s %cHEBTEMP=NOCOMM",reply,hebChan) : 
-       sprintf(reply,"%s HEBTEMP_%c=%0.1f",reply,hebChan,hebAirTemp));
-
-      (dewarTemp>=850.0 ? sprintf(reply,"%s %cDEWTEMP=NOCOMM",reply,hebChan) : 
-       sprintf(reply,"%s DEWTEMP_%c=%0.1f",reply,hebChan,dewarTemp));
-      
+      sprintf(reply,"%s HEBTEMP_%c=%.1f",reply,hebChan,hebAirTemp);
+      sprintf(reply,"%s DEWTEMP_%c=%.1f",reply,hebChan,dewarTemp);
       return CMD_OK;
       
     } else if (!strcasecmp(argbuf,"ARCHON")) {
@@ -3154,15 +3067,9 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       return CMD_OK;
 
     } else if (!strcasecmp(argbuf,"TEMP") || !strcasecmp(argbuf,"TEMPS")) {
-
       sprintf(reply,"%s",who_selected);
-      
-      (hebAirTemp>=850.0 ? sprintf(reply,"%s %cHEBTEMP=NOCOMM",reply,hebChan) : 
-       sprintf(reply,"%s HEBTEMP_%c=%0.1f",reply,hebChan,hebAirTemp));
-
-      (dewarTemp>=850.0 ? sprintf(reply,"%s %cDEWTEMP=NOCOMM",reply,hebChan) : 
-       sprintf(reply,"%s DEWTEMP_%c=%0.1f",reply,hebChan,dewarTemp));
-
+      sprintf(reply,"%s HEBTEMP_%c=%.1f",reply,hebChan,hebAirTemp);
+      sprintf(reply,"%s DEWTEMP_%c=%.1f",reply,hebChan,dewarTemp);
       return CMD_OK;
 
     } else {
@@ -7914,7 +7821,7 @@ cmd_gpoffset(char *args, MsgType msgtype, char *reply)
 
   } else if(ierr==2) {
 
-    sprintf(get_buff,"movr %0.1f",atof(xoff));
+    sprintf(get_buff,"movr %.1f",atof(xoff));
     ierr=agwcu("localhost",0,"mmcIC 1 ",get_buff);
     if(ierr!=0) {
       sprintf(reply,"%s %s", who_selected, get_buff);
@@ -7922,7 +7829,7 @@ cmd_gpoffset(char *args, MsgType msgtype, char *reply)
     }
 
     memset(get_buff,0,sizeof(get_buff));
-    sprintf(get_buff,"movr %0.1f",atof(yoff));
+    sprintf(get_buff,"movr %.1f",atof(yoff));
     ierr=agwcu("localhost",0,"mmcIC 2 ",get_buff);
 
     if(ierr!=0) {
@@ -8369,7 +8276,7 @@ cmd_colttf(char *args, MsgType msgtype, char *reply)
 
     shm_addr->MODS.pos[device] = fabs(atof(dummy));
 
-    sprintf(reply,"%s %s=%0.1f actuator %s completed",
+    sprintf(reply,"%s %s=%.1f actuator %s completed",
 	    who_selected,who_selected,
 	    shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device],
 	    cmd_instruction);
@@ -8395,7 +8302,7 @@ cmd_colttf(char *args, MsgType msgtype, char *reply)
 
     rawCommand(device,"PRINT POS",dummy);
     shm_addr->MODS.pos[device]=fabs(atof(dummy));
-    sprintf(reply,"%s %s=%0.1f",who_selected,who_selected,
+    sprintf(reply,"%s %s=%.1f",who_selected,who_selected,
 	    shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
 
   } else if(!strcasecmp(cmd_instruction,"STEP")) { // STEP keyword 
@@ -8405,7 +8312,7 @@ cmd_colttf(char *args, MsgType msgtype, char *reply)
     if(validMove < shm_addr->MODS.min[device] || 
        validMove > shm_addr->MODS.max[device]) {
 
-      sprintf(reply,"%s %s=%0.1f Request '%0.1f', will exceed actuator range. %d..%d[%0.1f]", who_selected,who_selected,
+      sprintf(reply,"%s %s=%.1f Request '%.1f', will exceed actuator range. %d..%d[%.1f]", who_selected,who_selected,
 	      shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device],
 	      ttfval,
 	      (int)(shm_addr->MODS.min[device]),
@@ -8434,25 +8341,25 @@ cmd_colttf(char *args, MsgType msgtype, char *reply)
     // Test to see if we smacked into a limit switch
 
     if(mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy)==1) {
-      sprintf(reply,"%s %s=%0.1f actuator relative move asserted CW limit",
+      sprintf(reply,"%s %s=%.1f actuator relative move asserted CW limit",
 	      who_selected,who_selected,
 	      shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
       return CMD_ERR;
 
     } else if(mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy)==2) {
-      sprintf(reply,"%s %s=%0.1f actuator relative move asserted CCW limit",
+      sprintf(reply,"%s %s=%.1f actuator relative move asserted CCW limit",
 	      who_selected,who_selected,
 	      shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
       return CMD_ERR;
 
     } else if(mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy)==3) {
-      sprintf(reply,"%s %s=%0.1f Sensor Fault, both limits asserted",
+      sprintf(reply,"%s %s=%.1f Sensor Fault, both limits asserted",
 	      who_selected,who_selected,
 	      shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
       return CMD_ERR;
     }
     */
-    sprintf(reply,"%s %s=%0.1f",who_selected,who_selected,
+    sprintf(reply,"%s %s=%.1f",who_selected,who_selected,
 	    shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
  
   } else if (!strcasecmp(cmd_instruction,"?")) {
@@ -8500,26 +8407,26 @@ cmd_colttf(char *args, MsgType msgtype, char *reply)
 
 
     if(bit2122==1) {
-      sprintf(reply,"%s %s=%0.1f CW limit asserted",
+      sprintf(reply,"%s %s=%.1f CW limit asserted",
 	      who_selected,who_selected,
 	      shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
       return CMD_ERR;
 
     } else if(bit2122==2) {
-      sprintf(reply,"%s %s=%0.1f CCW limit asserted",
+      sprintf(reply,"%s %s=%.1f CCW limit asserted",
 	      who_selected,who_selected,
 	      shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
       return CMD_ERR;
 
     } else if(bit2122==3) {
-      sprintf(reply,"%s %s=%0.1f Sensor Fault, both limits asserted",
+      sprintf(reply,"%s %s=%.1f Sensor Fault, both limits asserted",
 	      who_selected,who_selected,
 	      shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
       return CMD_ERR;
 
     }
     
-    sprintf(reply,"%s %s=%0.1f",who_selected,who_selected,
+    sprintf(reply,"%s %s=%.1f",who_selected,who_selected,
 	    shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device]);
 
   } else {
@@ -8726,7 +8633,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
 
     colFocus = umPerRev*(shm_addr->MODS.pos[ttfA]+shm_addr->MODS.pos[ttfB]+shm_addr->MODS.pos[ttfC])/3.0;
 
-    sprintf(reply,"%s %cCOLFOC=%0.1f %cCOLTTFA=%0.1f %cCOLTTFB=%0.1f %cCOLTTFC=%0.1f One of more mechanism(s) are busy",
+    sprintf(reply,"%s %cCOLFOC=%.1f %cCOLTTFA=%.1f %cCOLTTFB=%.1f %cCOLTTFC=%.1f One of more mechanism(s) are busy",
 	    who_selected,
 	    who_selected[0],
 	    colFocus,  // Total focus "piston" value = A+B+C/3
@@ -8811,7 +8718,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
     colFocus = umPerRev*(shm_addr->MODS.pos[ttfA]+shm_addr->MODS.pos[ttfB]+shm_addr->MODS.pos[ttfC])/3.0;
     
     if(shm_addr->MODS.qued[ttfA]==1) {
-      sprintf(reply,"%s %cCOLFOC=%0.1f %cCOLTTFA=%0.1f %cCOLTTFB=%0.1f %cCOLTTFC=%0.1f %s reset did not complete",
+      sprintf(reply,"%s %cCOLFOC=%.1f %cCOLTTFA=%.1f %cCOLTTFB=%.1f %cCOLTTFC=%.1f %s reset did not complete",
 	      who_selected,
 	      who_selected[0],
 	      colFocus,  // Total focus "piston" value = A+B+C/3
@@ -8823,7 +8730,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
 	      shm_addr->MODS.pos[ttfC]*shm_addr->MODS.convf[ttfC], // TTFC
 	      cmd_instruction); 
     } else {
-      sprintf(reply,"%s %cCOLFOC=%0.1f %cCOLTTFA=%0.1f %cCOLTTFB=%0.1f %cCOLTTFC=%0.1f %s request completed",
+      sprintf(reply,"%s %cCOLFOC=%.1f %cCOLTTFA=%.1f %cCOLTTFB=%.1f %cCOLTTFC=%.1f %s request completed",
 	      who_selected,
 	      who_selected[0],
 	      colFocus,  // Total focus "piston" value = A+B+C/3
@@ -8918,7 +8825,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
 
     colFocus = umPerRev*(shm_addr->MODS.pos[ttfA]+shm_addr->MODS.pos[ttfB]+shm_addr->MODS.pos[ttfC])/3.0;
 
-    sprintf(reply,"%s %cCOLFOC=%0.1f %cCOLTTFA=%0.1f %cCOLTTFB=%0.1f %cCOLTTFC=%0.1f",
+    sprintf(reply,"%s %cCOLFOC=%.1f %cCOLTTFA=%.1f %cCOLTTFB=%.1f %cCOLTTFC=%.1f",
 	    who_selected,
 	    who_selected[0],
 	    colFocus,  // Total focus "piston" value = A+B+C/3
@@ -8951,7 +8858,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
       if(validMoveTTFA < shm_addr->MODS.min[ttfA] || 
 	 validMoveTTFA > shm_addr->MODS.max[ttfA]) {
       
-	sprintf(reply,"%s %cCOLTTFA=%0.1f Request '%0.1f', will exceed actuator range. %d..%d[%0.1f]0", who_selected,who_selected[0],
+	sprintf(reply,"%s %cCOLTTFA=%.1f Request '%.1f', will exceed actuator range. %d..%d[%.1f]0", who_selected,who_selected[0],
 		shm_addr->MODS.pos[ttfA]*shm_addr->MODS.convf[ttfA],
 		ttfvals[0],
 		(int)(shm_addr->MODS.min[ttfA]),
@@ -8966,7 +8873,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
       if(validMoveTTFB < shm_addr->MODS.min[ttfB] ||
 	 validMoveTTFB > shm_addr->MODS.max[ttfB]) {
 	
-	sprintf(reply,"%s %cCOLTTFB=%0.1f Request '%0.1f', will exceed actuator range. %d..%d", who_selected,who_selected[0],
+	sprintf(reply,"%s %cCOLTTFB=%.1f Request '%.1f', will exceed actuator range. %d..%d", who_selected,who_selected[0],
 		shm_addr->MODS.pos[ttfB]*shm_addr->MODS.convf[ttfB],
 		ttfvals[0],
 		(int)(shm_addr->MODS.min[ttfB]),
@@ -8981,7 +8888,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
       if(validMoveTTFC < shm_addr->MODS.min[ttfC] || 
 	 validMoveTTFC > shm_addr->MODS.max[ttfC]) {
 	
-	sprintf(reply,"%s %cCOLTTFC=%0.1f Request '%0.1f', will exceed actuator range. %d..%d", who_selected,who_selected[0],
+	sprintf(reply,"%s %cCOLTTFC=%.1f Request '%.1f', will exceed actuator range. %d..%d", who_selected,who_selected[0],
 		shm_addr->MODS.pos[ttfC]*shm_addr->MODS.convf[ttfC],
 		ttfvals[0],
 		(int)(shm_addr->MODS.min[ttfC]),
@@ -9006,7 +8913,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
       if(validMoveTTFA < shm_addr->MODS.min[ttfA] || 
 	 validMoveTTFA > shm_addr->MODS.max[ttfA]) {
       
-	sprintf(reply,"%s %cCOLTTFA=%0.1f Request '%0.1f', will exceed actuator range. %d..%d[%0.1f]", who_selected,who_selected[0],
+	sprintf(reply,"%s %cCOLTTFA=%.1f Request '%.1f', will exceed actuator range. %d..%d[%.1f]", who_selected,who_selected[0],
 		shm_addr->MODS.pos[ttfA]*shm_addr->MODS.convf[ttfA],
 		ttfvals[0],
 		(int)(shm_addr->MODS.min[ttfA]),
@@ -9021,7 +8928,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
       if(validMoveTTFB < shm_addr->MODS.min[ttfB] || 
 	 validMoveTTFB > shm_addr->MODS.max[ttfB]) {
 	
-	sprintf(reply,"%s %cCOLTTFB=%0.1f Request '%0.1f', will exceed actuator range. %d..%d", who_selected,who_selected[0],
+	sprintf(reply,"%s %cCOLTTFB=%.1f Request '%.1f', will exceed actuator range. %d..%d", who_selected,who_selected[0],
 		shm_addr->MODS.pos[ttfB]*shm_addr->MODS.convf[ttfB],
 		ttfvals[1],
 		(int)(shm_addr->MODS.min[ttfB]),
@@ -9036,7 +8943,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
       if(validMoveTTFC < shm_addr->MODS.min[ttfC] || 
 	 validMoveTTFC > shm_addr->MODS.max[ttfC]) {
 	
-	sprintf(reply,"%s %cCOLTTFC=%0.1f Request '%0.1f', will exceed actuator range. %d..%d", who_selected,who_selected[0],
+	sprintf(reply,"%s %cCOLTTFC=%.1f Request '%.1f', will exceed actuator range. %d..%d", who_selected,who_selected[0],
 		shm_addr->MODS.pos[ttfC]*shm_addr->MODS.convf[ttfC],
 		ttfvals[2],
 		(int)(shm_addr->MODS.min[ttfC]),
@@ -9084,7 +8991,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
     
     colFocus = umPerRev*(shm_addr->MODS.pos[ttfA]+shm_addr->MODS.pos[ttfB]+shm_addr->MODS.pos[ttfC])/3.0;
     
-    sprintf(reply,"%s %cCOLFOC=%0.1f %cCOLTTFA=%0.1f %cCOLTTFB=%0.1f %cCOLTTFC=%0.1f",
+    sprintf(reply,"%s %cCOLFOC=%.1f %cCOLTTFA=%.1f %cCOLTTFB=%.1f %cCOLTTFC=%.1f",
 	    who_selected,
 	    who_selected[0],
 	    colFocus,  // Total focus "piston" value = A+B+C/3
@@ -9158,7 +9065,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
 
     colFocus = umPerRev*(shm_addr->MODS.pos[ttfA]+shm_addr->MODS.pos[ttfB]+shm_addr->MODS.pos[ttfC])/3.0;
 
-    sprintf(reply,"%s %cCOLFOC=%0.1f %cCOLTTFA=%0.1f %cCOLTTFB=%0.1f %cCOLTTFC=%0.1f %s request completed",
+    sprintf(reply,"%s %cCOLFOC=%.1f %cCOLTTFA=%.1f %cCOLTTFB=%.1f %cCOLTTFC=%.1f %s request completed",
 	    who_selected,
 	    who_selected[0],
 	    colFocus,  // Total focus "piston" value = A+B+C/3
@@ -9248,7 +9155,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
 
     colFocus = umPerRev*(shm_addr->MODS.pos[ttfA]+shm_addr->MODS.pos[ttfB]+shm_addr->MODS.pos[ttfC])/3.0;
 
-    sprintf(reply,"%s %cCOLFOC=%0.1f %cCOLTTFA=%0.1f %cCOLTTFB=%0.1f %cCOLTTFC=%0.1f",
+    sprintf(reply,"%s %cCOLFOC=%.1f %cCOLTTFA=%.1f %cCOLTTFB=%.1f %cCOLTTFC=%.1f",
 	    who_selected,
 	    who_selected[0],
 	    colFocus,  // Total focus "piston" value = A+B+C/3
@@ -9348,7 +9255,7 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
 
     colFocus = umPerRev*(shm_addr->MODS.pos[ttfA]+shm_addr->MODS.pos[ttfB]+shm_addr->MODS.pos[ttfC])/3.0;
 
-    sprintf(reply,"%s %cCOLFOC=%0.1f %cCOLTTFA=%0.1f %cCOLTTFB=%0.1f %cCOLTTFC=%0.1f",
+    sprintf(reply,"%s %cCOLFOC=%.1f %cCOLTTFA=%.1f %cCOLTTFB=%.1f %cCOLTTFC=%.1f",
 	    who_selected,
 	    who_selected[0],
 	    colFocus,         // Total focus "piston" value = A+B+C/3
@@ -11107,7 +11014,7 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
 	  shm_addr->MODS.lamps.lamp_cycle[i]++; // increment cycle
 	}
       }
-      sprintf(reply,"%s CALLAMPS='None' VFLAT=%0.1f",who_selected, shm_addr->MODS.vflat_power);
+      sprintf(reply,"%s CALLAMPS='None' VFLAT=%.1f",who_selected, shm_addr->MODS.vflat_power);
       return CMD_OK;
     }      
 
@@ -11121,11 +11028,11 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
       }
 
     if(lampcnt==0) {
-      sprintf(reply,"%s CALLAMPS='None' VFLAT=%0.1f",who_selected,shm_addr->MODS.vflat_power);
+      sprintf(reply,"%s CALLAMPS='None' VFLAT=%.1f",who_selected,shm_addr->MODS.vflat_power);
       return CMD_OK;
     }
 
-    sprintf(reply,"%s' VFLAT=%0.1f",reply,shm_addr->MODS.vflat_power);
+    sprintf(reply,"%s' VFLAT=%.1f",reply,shm_addr->MODS.vflat_power);
     return CMD_OK;
   }
 
@@ -11157,7 +11064,7 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
 
 	  tempVal=atof(dummy);
 	  if (tempVal>11.0 || tempVal < 0.0) {
-	    sprintf(reply,"LAMP invalid VFLAT intensity %.1f, must be 0..11, VFLAT=%0.1f",tempVal, shm_addr->MODS.vflat_power);
+	    sprintf(reply,"LAMP invalid VFLAT intensity %.1f, must be 0..11, VFLAT=%.1f",tempVal, shm_addr->MODS.vflat_power);
 	    return CMD_ERR;
 	  }
 
@@ -11379,11 +11286,11 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
       }
 
       if(lampcnt==0) {
-	sprintf(reply,"%s CALLAMPS='None' VFLAT=%0.1f",who_selected,shm_addr->MODS.vflat_power);
+	sprintf(reply,"%s CALLAMPS='None' VFLAT=%.1f",who_selected,shm_addr->MODS.vflat_power);
 	return CMD_OK;
       }
 
-      sprintf(reply,"%s' VFLAT=%0.1f",reply,shm_addr->MODS.vflat_power);
+      sprintf(reply,"%s' VFLAT=%.1f",reply,shm_addr->MODS.vflat_power);
   }
 
   return CMD_OK;
@@ -13790,10 +13697,15 @@ dfindPoly(double x, double *a, int n)
 //   wrapped on 2^16-1 ADU.  This is how it reports negative temperatures
 //   with a 16-bit unsigned integer.
 //
+//   If the true temperature equals or exceeds 850.0, set to ALH_NOTEMP
+//   to indicate a "not read" condition for the LBTO Alarm Handler (ALH)
+//
 //   Author:
 //     R. Pogge, OSU Astronomy Dept
 //     pogge.1@osu.edu
 //     2025 July 17
+//
+//   Modified: 2025 Sept 25
 //
 //---------------------------------------------------------------------------
 
@@ -13809,5 +13721,8 @@ ptRTD2C(short rawData)
   if (temp > tempMax)
     temp -= wrapT;
 
+  if (temp >= 850.0)
+    temp = ALH_NOTEMP;  // temp>=850 is a no-read condition
+  
   return temp;
 }

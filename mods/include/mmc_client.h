@@ -50,6 +50,13 @@
 #include "isisclient.h"  // should be in -I path in Makefile, no paths here!
 
 extern isisclient_t client;  // global client runtime config table
+
+// LBTO Alarm Handler (ALH) subsystem "magic numbers" for "no data"
+// conditions for temperature and pressure sensors
+
+#define ALH_NOTEMP -999.0
+#define ALH_NOPRES -1.0
+
 //----------------------------------------------------------------
 //
 // Custom client application function prototypes 
