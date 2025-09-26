@@ -302,12 +302,10 @@ for observing (why we install "by hand" instead of as part of the make process).
 #### MODS instrument servers (mods1 and mods2)
 ```
 cd /home/dts/mods/bin
-sudo cp mmcService /usr/local/bin
-sudo cp agwServer /usr/local/bin
-sudo cp *IMCS /usr/local/bin
 sudo cp vueinfo /usr/local/bin
 sudo cp mlcRecover /usr/local/bin
 ```
+**DO NOT** copy `mmcService`, `agwService`, `blueIMCS`, or `redIMCS` to `/usr/local/bin/`!
 
 ## Data and Telemetry NFS mounts
 
