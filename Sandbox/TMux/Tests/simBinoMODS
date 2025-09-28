@@ -1,14 +1,14 @@
 #!/bin/csh
 #
-# acqBinoMODS - execute binocular MODS acqusition
+# simBinoMODS - simulate binocular MODS acqusition
 #
 # Usage:
-#   acqBinoMODS mods.acq
+#   simBinoMODS mods.acq
 # or
-#   acqBinoMODS mods1.acq mods2.acq
+#   simBinoMODS mods1.acq mods2.acq
 #
 # Overview:
-#   Executes a binocular MODS acquisition.  acqBinoMODS takes one or
+#   Simulates binocular MODS acquisition.  simBinoMODS takes one or
 #   two command-line arguments: the name(s) of acquisition script(s) to
 #   execute in binocular context.  
 #
@@ -18,15 +18,42 @@
 #   If two .acq scripts are given, they are executed on MODS1 and
 #   MODS2 in the order MODS1 MODS2.
 #
-#   In either case, acqBinoMODS launches two standalone terminal
-#   windows, and then executes acqMODS with the appropriate
-#   command-line options to execute the acq scripts in binocular
-#   context.
+#   In either case, simBinoMODS is designed to be launched inside
+#   an experimental tmux session named modsTerm configured with
+#   3 window panes
+# 
+#      +---------------------+---------------------+
+#      |        MODS1        |        MODS2        |
+#      |                     |                     |
+#      |                     |                     |
+#      |                     |                     |
+#      |                     |                     |
+#      +---------------------+---------------------+
+#      |                  command                  |
+#      |                                           |
+#      +---------------------+---------------------+
+#
+#   simBinoMODS is started in the "command" pane at the bottom of
+#   the terminal.  It launches the MODS1 ands MODS2 script engines
+#   simulators in the left and right top menus above. Users click
+#   the mouse in the pane of interest to type in that window in 
+#   response to prompts.  The active windows have yellow text on black
+#   inactive windows are white text on black to provide a visual cue
+#   to where the cursor is live.
+#
+#   This system addresses a long-standing complaint from obsevers
+#   and sciops alike that the two separate windows running the
+#   two MODS scripts should be together and not randomly pop up,
+#   something we cannot control the way the mountain windows servers
+#   are configures (xterm -geom directives are basically ignored).
 #
 #   Upon successful completion of script execution or upon faults that
 #   terminate script execution with errors, the terminal windows for
 #   each MODS instance stay up so that the messages may be read by the
-#   observer.  Hitting the Enter key will exit the terminal session.
+#   observer and are persistent, addressing another issue if there are
+#   problems of not being able to go back and capture errors or check
+#   what was done because of the non-persistent way we had to launch
+#   the independent xterms.
 #
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
@@ -35,10 +62,11 @@
 #
 # Modification History:
 #   2016 Oct 17: First full binocular release for 2016B [rwp/osu]
+#   2025 Sep 25: Archon MODS update tests with tmux and modsTerm [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
-setenv binoBin /home/modseng/bin
+setenv binoBin /path/to/common/MODS/bin
 
 if ($#argv == 1) then
    set mods1Script = $1
@@ -48,9 +76,9 @@ else if ($#argv == 2) then
    set mods2Script = $2
 else
    printf "\nUsage:\n"
-   printf "   acqBinoMODS common.acq\n"
+   printf "   simBinoMODS common.acq\n"
    printf "or\n"
-   printf "   acqBinoMODS mods1.acq mods2.acq\n\n"
+   printf "   simBinoMODS mods1.acq mods2.acq\n\n"
    exit 0
 endif
 
@@ -63,8 +91,5 @@ endif
 
 tmux send-keys -t modsTerm:1.0 "/home/dts/bin/simAcq --mods1 --bino ${mods1Script}" C-m
 tmux send-keys -t modsTerm:1.1 "/home/dts/bin/simAcq --mods2 --bino ${mods2Script}" C-m
-
-#xterm -T 'MODS1 Acquire' -fn 9x15 -e ${binoBin}/acqMODS --mods1 --bino ${mods1Script} &
-#xterm -T 'MODS2 Acquire' -fn 9x15 -e ${binoBin}/acqMODS --mods2 --bino ${mods2Script} &
 
 exit 0
