@@ -14,7 +14,7 @@ set -g window-active-style "fg=brightyellow,bg=black"
 set -g status-bg cyan
 set -g status-fg black
 
-set -g status-left "#[noattr][#S]"
+set -g status-left "#[noattr]#S"
 set -g status-right "#[align=absolute-centre] #{window_name} #[align=right]"
 set -ga status-right "#{?window_bigger,[#{window_offset_x}#,#{window_offset_y}] ,}\ %Y-%m-%d %H:%M [#H]"
 set -g status-right-length 65
