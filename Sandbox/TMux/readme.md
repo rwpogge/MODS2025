@@ -9,11 +9,14 @@ sudo dnf -y install `tmux`
 
 ## Useful Docs
 
-RedHat beginner's guide to `tmux`: https://www.redhat.com/en/blog/introduction-`tmux`-linux
+The tmux(1) helpfile: https://man.openbsd.org/tmux (big, bad, useful)
 
-A cheatsheet: https://`tmux`cheatsheet.com/
+RedHat beginner's guide to `tmux`: https://www.redhat.com/en/blog/introduction-tmux-linux
 
-Customization: https://www.baeldung.com/linux/`tmux`-status-bar-customization
+A helpful cheatsheet: https://tmuxcheatsheet.com/
+
+Customization: 
+ * status bar customization - https://www.baeldung.com/linux/tmux-status-bar-customization
 
 ## Development apps
 
@@ -21,7 +24,8 @@ Customization: https://www.baeldung.com/linux/`tmux`-status-bar-customization
 
 ### MODS instrument server apps
 
-These are designed to run on mods1 and mods2
+These are designed to run on the `mods1` and `mods2` instrument server machines, replacing the old
+versions of the same name for the Archon controller MODS.
 
  * `mods1` and `mods2` - `tmux` implementations of the pre-Archon startup and shutdown scripts, derived from `modsTerm`
  * `modsStatus.pl` - perl script using `Curses` that makes a dynamic status display for a modsN server.  Used by `mods1` and `mods2`
