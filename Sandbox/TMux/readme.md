@@ -22,6 +22,9 @@ Customization:
 
  * `modsTerm` - first cut at a 3-pane `tmux` session for MODS admin
 
+An experiment with `modsTerm` used an test scriped named `simBinoMODS` (see Tests/) to see how
+two-frame execution of binary "observing" would go.  (Answer: great, getting to beta testing soon).
+
 ### MODS instrument server apps
 
 These are designed to run on the `mods1` and `mods2` instrument server machines, replacing the old
