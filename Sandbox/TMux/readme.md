@@ -43,3 +43,8 @@ Collection of `.tmux.conf` files for use with MODS custom tmux sessions
 ## Misc
 
 The `Tests/` folder has working files from various tests.  Don't execute.
+
+## Screenshots
+
+![mods1 server admin tmux session live test with MODS1 on 2025 Sept 28](mods1_serverAdmin_2025Sept28.jpg)
+
