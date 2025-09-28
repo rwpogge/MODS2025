@@ -1,4 +1,4 @@
-# `tmux` - terminal multiplexer notes
+# `tmux` - terminal multiplexer notes for MODS2025
 
 <b>started: 2025 Sept 25</b>
 
