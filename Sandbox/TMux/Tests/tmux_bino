@@ -1,0 +1,36 @@
+#!/bin/bash
+
+tmuxID="modsTerm"
+
+# Check if the session already exists
+
+tmux has-session -t $tmuxID 2>/dev/null
+
+if [ $? != 0 ]; then
+  # Create a new detached session
+
+  tmux -f ~/.tmux.conf.red new-session -d -s $tmuxID
+
+  # Create a new window (if needed) and name it
+
+  tmux new-window -t $tmuxID:1 -n "MODS Observing Terminal"
+
+  # Split the window into panes (optional, adjust as needed)
+
+  tmux split-window -v -p 15 # split vertically 85:15
+  tmux split-window -h -p 50 -t $tmuxID:1.0 # Split horizontally
+
+  # Send commands to the panes to start programs
+
+  #tmux send-keys -t $tmuxID:1.0 "isis" C-m # run the ISIS server in the first pane
+  #tmux send-keys -t $tmuxID:1.1 "modsenv" C-m # run modsenv in the second pane
+
+  # Select the pane you want active initially
+
+  tmux select-pane -t $tmuxID:1.2 # attach the command pane
+
+fi
+
+# Attach to the session
+
+tmux attach-session -t $tmuxID

@@ -1,0 +1,131 @@
+#!/bin/csh -f
+#
+# startagent - wrapper used to invoke ISIS client agents safely
+#
+# usage: startagent agentID [int]
+#
+# Starts agentID on the local host.  If the int argument is given, it
+# starts agentID in an interactive xterm, otherwise agentID is started
+# in the background.
+#
+# The script checks the system process table to see if the requested
+# agent is already running.
+#
+# If the agent is running, it does not run a new instance and instead
+# warns the user, suggesting they might want to stop the agent before
+# starting it (do a restart).
+#
+# The agents should reside in a non-public but readable path that is
+# *NOT* in any user default path for executables.
+# 
+# R. Pogge, OSU Astronomy Dept.
+# pogge.1@osu.edu
+# 2010 Sept 22
+#
+# Modification History:
+#   2010 Dec 15: added int option [rwp/osu]
+#   2025 Sep 10: Archon CCD controller system updates [rwp/osu]
+#
+############################################################################
+
+# Local config for the various agents we recognize...
+
+set binDir = /home/dts/mods/bin
+
+# Who invoked this script?
+
+set userID = $USER
+set hostID = $HOSTNAME
+
+# Check for command-line options
+
+if ($#argv == 1) then
+   set agentID = $1
+   set startInt = 0
+else if ($#argv == 2) then
+   set agentID = $1
+   if ($2 == "int") then
+      set startInt = 1
+   else
+      printf "Syntax Error: second argument must be int or nothing\n"
+      printf "Usage: startagent agentID [int]\n";
+      exit 1
+   endif
+else
+   printf "Usage: startagent agentID [int]\n"
+   exit 1
+endif
+
+# We use tmux to ensure that background tasks can be launched by a remote
+# user (e.g., using ssh) and not die when they log off.  We setup a named
+# tmux session for this, named for the instrument (MODS1 or MODS2)
+
+tmux has-session -t $hostID >& /dev/null
+
+if ($status) then
+   tmux new-session -d -s $hostID
+   tmux rename-window -t $hostID "${hostID} Data-Taking System"
+endif
+
+# First make agentID is not already running
+
+ps h -C $agentID >& /dev/null
+if ($status) then
+   set agentUp = 0
+   set agentUser = ${USER}
+else
+   set agentUp = 1
+   set agentUser = `ps eo user h -C $agentID`
+endif
+if (${agentUser} == ${userID}) set isOwner = 1
+
+# what to do?
+
+if ($agentUp) then
+   printf "\n${agentID} is already being run by user ${agentUser} on host ${hostID}\n"
+   printf "You must stop that instance before starting a new one by using the\n"
+   printf "'stopagent $agentID' command when logged in as user ${agentUser}.\n"
+   printf "\nTo join the tmux session, type:\n"
+   printf "   tmux attach-session -t ${hostID}\n"
+   printf "and when finished type:\n"
+   printf "   Ctrl+b d\n"
+   printf "to detach and return to the login shell.\n\n"
+   exit 1
+endif
+
+# agentID is not running, start it in the background in the tmux session
+
+if ($startInt) then
+    tmux send-keys -t $hostID "${binDir}/${agentID}" C-m
+else
+    tmux send-keys -t $hostID "${binDir}/${agentID} &" C-m
+endif
+
+# confirm it is running
+
+sleep 1
+
+ps h -C $agentID >& /dev/null
+if ($status) then
+   set agentUp = 0
+   printf "\n** ERROR: ${agentID} failed to start, type\n"
+   printf "      tmux attach-session -t ${hostID}\n"
+   printf "to join the tmux session and see any error messages printed\n\n"
+   exit 1
+else
+   set agentUp = 1
+   printf "\n${agentID} started in tmux session ${hostID}\n"
+   printf "\nTo join the tmux session, type:\n"
+   printf "   tmux attach-session -t ${hostID}\n"
+   printf "and when finished type:\n"
+   printf "   Ctrl+b d\n"
+   printf "to detach and return to the login shell.\n\n"
+endif
+
+# attach to the tmux session
+
+# tmux attach-session -t $hostID
+
+exit 0
+
+end

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+tmuxID="ccdTerm"
+modsHost="${HOSTNAME^^}"
+modsChan="red"
+modsID="${modsHost} Red"
+
+# Check if the session already exists
+
+tmux has-session -t $tmuxID 2>/dev/null
+
+if [ $? != 0 ]; then
+  # Create a new detached session
+
+  tmux -f ~/.tmux.conf.$modsChan new-session -d -s $tmuxID
+
+  # Create a new window (if needed) and name it
+
+  tmux new-window -t $tmuxID:1 -n "${modsID} CCD Controller Admin"
+
+  # Split the window into panes (optional, adjust as needed)
+
+  tmux split-window -v -p 5  # split bottom pane shorter
+  tmux split-window -h -p 50 -t $tmuxID:1.0 # Split horizontally
+
+  # Pane decor
+
+  tmux set -g pane-border-status top
+  tmux set -g pane-border-format " #{pane_title} "
+
+  tmux select-pane -t $tmuxID:1.0 -T "modsCCD agent"
+  tmux select-pane -t $tmuxID:1.1 -T "azcam server"
+  tmux select-pane -t $tmuxID:1.2 -T "command window"
+
+  # programs to launch in panes...
+
+  # tmux send-keys -t $tmuxID:1.0 "start_modsCCD" C-m # run the modsCCD agent in the top left pane
+  # tmux send-keys -t $tmuxID:1.1 "start_azcam" C-m # run the azcam server in the top right pane
+
+  # Select the pane you want active initially
+
+  tmux select-pane -t $tmuxID:1.2 # attach the command pane
+
+fi
+
+# Attach to the session
+
+tmux attach-session -t $tmuxID

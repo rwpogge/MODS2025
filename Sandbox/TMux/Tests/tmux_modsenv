@@ -1,0 +1,22 @@
+#!/bin/bash
+
+MODS_ID="MODS1"
+
+# Check if the session already exists
+
+tmux has-session -t $MODS_ID 2>/dev/null
+
+if [ $? != 0 ]; then
+  # Create a new detached session
+
+  tmux new-session -d -s $MODS_ID
+
+  # Create a new window (if needed) and name it
+
+  tmux new-window -t $MODS_ID:1 -n "$MODS_ID Instrument Server"
+fi
+
+# launch isis as a background task
+
+tmux send-keys -t $MODS_ID "modsenv &" C-m # run the modsenv client in background
+
