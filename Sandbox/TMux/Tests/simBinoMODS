@@ -1,6 +1,6 @@
 #!/bin/csh
 #
-# simBinoMODS - simulate binocular MODS acqusition
+# simBinoMODS - simulate binocular MODS acquisition
 #
 # Usage:
 #   simBinoMODS mods.acq
