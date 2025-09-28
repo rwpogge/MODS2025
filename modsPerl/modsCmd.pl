@@ -175,7 +175,7 @@ if ($verbose) {
 
 if (sendCommand($uiHost,"$cmdStr",$timeout)) {
     $outStr = stripFirst($ISIS::reply);
-    print BLUE "$modsName>> $outStr\n";
+    print CYAN "$modsName>> $outStr\n";
 }
 else {
     $outStr = stripFirst($ISIS::reply);

@@ -177,7 +177,7 @@ if ($verbose) {
 
 if (sendCommand($hostID,"$cmdStr",$timeout)) {
     $replyStr = stripFirst($ISIS::reply);
-    print BLUE "$replyStr\n";
+    print CYAN "$replyStr\n";
 }
 else {
     $replyStr = stripFirst($ISIS::reply);

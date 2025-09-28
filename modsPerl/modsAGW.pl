@@ -161,7 +161,7 @@ if ($cmdWord eq "status") {
 elsif ($cmdWord eq "home" || $cmdWord eq "reset" || $cmdWord eq "init") {
     $agwCmd = "agw reset";
     $timeOut = 60;
-    print BLUE "** Resetting/Homing the MODS$modsID AGw Stage...\n";
+    print CYAN "** Resetting/Homing the MODS$modsID AGw Stage...\n";
 }
 
 # OPEN - open MODSn to the sky for observing (alias: obsmode)
@@ -169,7 +169,7 @@ elsif ($cmdWord eq "home" || $cmdWord eq "reset" || $cmdWord eq "init") {
 elsif ($cmdWord eq "open" || $cmdWord eq "obsmode") {
     $agwCmd = "obsmode";
     $timeOut = 60;
-    print BLUE "** Opening MODS$modsID to the sky...\n";
+    print CYAN "** Opening MODS$modsID to the sky...\n";
 }
 
 # CLOSE - close MODSn and stow the AGw stage (alias: calmode)
@@ -177,7 +177,7 @@ elsif ($cmdWord eq "open" || $cmdWord eq "obsmode") {
 elsif ($cmdWord eq "close" || $cmdWord eq "calmode") {
     $agwCmd = "calmode";
     $timeOut = 60;
-    print BLUE "** Closing MODS$modsID and stowing the AGw stage...\n";
+    print CYAN "** Closing MODS$modsID and stowing the AGw stage...\n";
 }
 
 # GETXY - get the current XY position of the stage
@@ -328,10 +328,10 @@ if (sendCommand($ieHost[$modsID-1],"$agwCmd",$timeOut)) {
     }
     if ($numVals > 0) {
 	if ($cmdWord eq "getxy" || $cmdWord eq "setxy") {
-	    print BLUE "MODS$modsID guide probe x=$agwData{'AGWXGP'} y=$agwData{'AGWYGP'}\n";
+	    print CYAN "MODS$modsID guide probe x=$agwData{'AGWXGP'} y=$agwData{'AGWYGP'}\n";
 	}
 	elsif ($cmdWord eq "getfilter" || $cmdWord eq "setfilter" || $cmdWord eq "filter") {
-	    print BLUE "MODS$modsID guide camera filter=$agwData{'AGWFNAME'} [position $agwData{'AGWFILT'}]\n";
+	    print CYAN "MODS$modsID guide camera filter=$agwData{'AGWFNAME'} [position $agwData{'AGWFILT'}]\n";
 	}
 	elsif ($cmdWord eq "gcam") {
 #	    print "'$agwData{'AGC'}'\n";
@@ -340,11 +340,11 @@ if (sendCommand($ieHost[$modsID-1],"$agwCmd",$timeOut)) {
 		    print RED "MODS$modsID Guide camera controller circuit breaker is tripped\n";
 		}
 		else {
-		    print BLUE "MODS$modsID Guide camera controller is ON\n";
+		    print CYAN "MODS$modsID Guide camera controller is ON\n";
 		}
 	    }
 	    else {
-		print BLUE "MODS$modsID Guide camera controller is OFF\n";
+		print CYAN "MODS$modsID Guide camera controller is OFF\n";
 	    }
 	}
 	elsif ($cmdWord eq "wfs") {
@@ -353,19 +353,19 @@ if (sendCommand($ieHost[$modsID-1],"$agwCmd",$timeOut)) {
 		    print RED "MODS$modsID WFS camera controller circuit breaker is tripped\n";
 		}
 		else {
-		    print BLUE "MODS$modsID WFS camera controller is ON\n";
+		    print CYAN "MODS$modsID WFS camera controller is ON\n";
 		}
 	    }
 	    else {
-		print BLUE "MODS$modsID WFS camera controller is OFF\n";
+		print CYAN "MODS$modsID WFS camera controller is OFF\n";
 	    }
 	}
 	else {
-	    print BLUE "MODS$modsID - $replyStr\n";
+	    print CYAN "MODS$modsID - $replyStr\n";
 	}
     }
     else {
-	print BLUE "MODS$modsID - $replyStr\n";
+	print CYAN "MODS$modsID - $replyStr\n";
     }
 }
 else {

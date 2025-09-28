@@ -273,9 +273,9 @@ if (! -e $acqFile) {
 # start the ball rolling.
 
 if ($binoACQ) {
-    print BLUE "\n** Starting binocular MODS${useMODS} acquisition script $acqFile\n\n";
+    print CYAN "\n** Starting binocular MODS${useMODS} acquisition script $acqFile\n\n";
 } else {
-    print BLUE "\n** Starting MODS${useMODS} acquisition script $acqFile\n\n";
+    print CYAN "\n** Starting MODS${useMODS} acquisition script $acqFile\n\n";
 }
 
 # Open up a UDP socket channel for communicating with an ISIS server.
@@ -782,8 +782,8 @@ if (!$hasMask) {
 if ($runAcq) {
     if (exists($startBlock{"ACQUIRE"})) { # Do we have an Acquire: block? (fail-safe point)
 	$startCmd = $startBlock{"ACQUIRE"} + 1;
-	print BLUE "** Executing the target acquisition image sequence without presetting\n";
-	print BLUE "** the telescope or configuring the instrument.\n";
+	print CYAN "** Executing the target acquisition image sequence without presetting\n";
+	print CYAN "** the telescope or configuring the instrument.\n";
     }
     else {
 	print RED "** ERROR: -a/--acquire option requested but no Acquire: block\n";
@@ -796,8 +796,8 @@ elsif ($loadOnly) {
     if (exists($startBlock{"TARGET"})) {
 	$startCmd = $startBlock{"TARGET"} + 1;
 	$endCmd = $endBlock{"TARGET"};
-	print BLUE "** Loading target and guide star coordinates into the MODS control panel but\n";
-	print BLUE "** not doing the preset, instrument config, or taking acquisition images.\n";
+	print CYAN "** Loading target and guide star coordinates into the MODS control panel but\n";
+	print CYAN "** not doing the preset, instrument config, or taking acquisition images.\n";
     }
     else {
 	print RED "** ERROR: There is no Target: block in this acquisition script\n";
@@ -809,8 +809,8 @@ elsif ($runPreset) {
     if (exists($startBlock{"TARGET"})) {
 	$startCmd = $startBlock{"TARGET"} + 1;
 	$endCmd = $endBlock{"TARGET"};
-	print BLUE "** Executing the telescope preset without configuring the\n";
-	print BLUE "** instrument or taking acquisition images.\n";
+	print CYAN "** Executing the telescope preset without configuring the\n";
+	print CYAN "** instrument or taking acquisition images.\n";
     }
     else {
 	print RED "** ERROR: There is no Target: block in this acquisition script\n";
@@ -822,8 +822,8 @@ elsif ($runInst) {
     if (exists($startBlock{"INSTRUMENT"})) {
 	$startCmd = $startBlock{"INSTRUMENT"} + 1;
 	$endCmd = $endBlock{"INSTRUMENT"};
-	print BLUE "** Configuring the instrument for target acquisition without doing the\n";
-	print BLUE "** telescope preset or taking acquisition images.\n";
+	print CYAN "** Configuring the instrument for target acquisition without doing the\n";
+	print CYAN "** telescope preset or taking acquisition images.\n";
     }
     else {
 	print RED "** ERROR: There is no Instrument: block in this acquisition script\n";
@@ -863,10 +863,10 @@ if (!exists($startBlock{"ACQUIRE"}) && $acqMode ne "preset") {
 #
 
 if ($dryRun) {
-    print BLUE "\n** Dry-run of MODS${useMODS} acquisition script $acqFile\n\n";
+    print CYAN "\n** Dry-run of MODS${useMODS} acquisition script $acqFile\n\n";
 }
 else {
-    print BLUE "\n** Executing MODS${useMODS} acquisition script $acqFile\n\n";
+    print CYAN "\n** Executing MODS${useMODS} acquisition script $acqFile\n\n";
 }
 
 $execGo = 1;
@@ -875,7 +875,7 @@ $iCmd = $startCmd - 1;
 while ($execGo) {
     if ($iCmd > $endCmd) {
 	closeISIS();
-	print BLUE "\n** MODS${useMODS} Script $acqFile done\n";
+	print CYAN "\n** MODS${useMODS} Script $acqFile done\n";
 	&binoExit(0); # exit 0;
     }
 
@@ -886,7 +886,7 @@ while ($execGo) {
     
     if ($cmdWord eq "end") {
 	closeISIS();
-	print BLUE "\n** MODS${useMODS} Script $acqFile done\n";
+	print CYAN "\n** MODS${useMODS} Script $acqFile done\n";
 	&binoExit(0); # exit 0;
     }
 
@@ -900,11 +900,11 @@ while ($execGo) {
 	    print "\n";
 	    for ($time=$sleepTime;$time>0;$time--) {
 		printf "%c[2K",27;
-		print BLUE "** MODS${useMODS} sleeping for $sleepTime sec, will wake in $time sec...\r";
+		print CYAN "** MODS${useMODS} sleeping for $sleepTime sec, will wake in $time sec...\r";
 		sleep 1;
 	    }
 	    printf "%c[2K",27;
-	    print BLUE "** Sleep done\n\n";
+	    print CYAN "** Sleep done\n\n";
 	}
 	$iCmd++;
     }
@@ -931,7 +931,7 @@ while ($execGo) {
 	    print RED "\n** MODS${useMODS} $acqFile target acquisition aborted after PAUSE.\n\n";
 	    &binoExit(1);
 	}
-	print BLUE "** MODS${useMODS} Target Acquisition Resuming...\n";
+	print CYAN "** MODS${useMODS} Target Acquisition Resuming...\n";
 	$iCmd++;
     }
 
@@ -949,7 +949,7 @@ while ($execGo) {
 	    print RED "\n** MODS${useMODS} $acqFile target acquisition aborted after PAUSE.\n\n";
 	    &binoExit(1);
 	}
-	print BLUE "\n** MODS${useMODS} Target Acquisition Resuming...\n";
+	print CYAN "\n** MODS${useMODS} Target Acquisition Resuming...\n";
 	$iCmd++;
     }
 
@@ -968,7 +968,7 @@ while ($execGo) {
 	    if (sendCommand($uiHost,"$cmd[$iCmd]",$cmdTO[$iCmd])) {
 		printf "%c[2K",27;
 		$outStr = stripFirst($ISIS::reply);
-		print BLUE "$outStr\n";
+		print CYAN "$outStr\n";
 		$iCmd++;
 	    }
 	    else {
@@ -983,10 +983,10 @@ while ($execGo) {
 		    chomp($kbdIn);
 		    $retryOpt = substr($kbdIn,0,1);
 		    if (uc $retryOpt eq "R") {
-			print BLUE "** Attempting retry of $cmd[$iCmd]\n";
+			print CYAN "** Attempting retry of $cmd[$iCmd]\n";
 		    }
 		    elsif (uc $retryOpt eq "I") {
-			print BLUE "** Ignoring error and continuing...\n";
+			print CYAN "** Ignoring error and continuing...\n";
 			$iCmd++;
 		    }
 		    else {
@@ -1010,7 +1010,7 @@ while ($execGo) {
 # All done, close it down
 
 closeISIS();
-print BLUE "** MODS${useMODS} Target Acquisition Script $acqFile done\n";
+print CYAN "** MODS${useMODS} Target Acquisition Script $acqFile done\n";
 &binoExit(0); # exit 0;
 
 #---------------------------------------------------------------------------
@@ -1085,7 +1085,7 @@ sub acqUsage {
 
 sub intHandler {
     print RED "\n** MODS${useMODS} Acquisition script interrupted by Ctrl+C.\n";
-    print BLUE "   Is this what you want to do <Y|N>? ";
+    print CYAN "   Is this what you want to do <Y|N>? ";
     $kbdIn = <STDIN>;
     last unless defined $kbdIn;
     chomp($kbdIn);
@@ -1096,7 +1096,7 @@ sub intHandler {
 	&binoExit(1);
     }
     else {
-	print BLUE "** OK, Ignoring Ctrl+C interrupt and continuing...\n";
+	print CYAN "** OK, Ignoring Ctrl+C interrupt and continuing...\n";
     }
 }
 
@@ -1114,19 +1114,19 @@ sub intHandler {
 #
 
 sub cleanup {
-    print BLUE "** MODS${useMODS} Post-abort clean up...\n";
+    print CYAN "** MODS${useMODS} Post-abort clean up...\n";
 
     $lastCmd = lc $cmd[$iCmd];
 
     if ($lastCmd eq "go" || $lastCmd eq "red go" || $lastCmd eq "blue go") {  # abort exposures
-	print BLUE "   ... aborting acquisition exposure in progress ...\n";
+	print CYAN "   ... aborting acquisition exposure in progress ...\n";
 	$abortCmd = "$acqCamera abort";
     }
     elsif ($lastCmd eq "instconfig") { # clear instconfig state flags
 	$abortCmd = "refresh instconfig";
     }
     elsif ($lastCmd eq "preset" || $lastCmd eq "offsetxy" || $lastCmd eq "offset") { # clear IIF state
-	print BLUE "   ... clearing $lastCmd ...\n";
+	print CYAN "   ... clearing $lastCmd ...\n";
 	$abortCmd = "clearstars";
     }
     else {
@@ -1137,7 +1137,7 @@ sub cleanup {
 	if (sendCommand($uiHost,$abortCmd,30)) {
 	    printf "%c[2K",27;
 	    $outStr = stripFirst($ISIS::reply);
-	    print BLUE "$outStr\n";
+	    print CYAN "$outStr\n";
 	}
 	else {
 	    printf "%c[2K",27;
@@ -1150,7 +1150,7 @@ sub cleanup {
 
     # Anything else?  If not, the abort sequence is complete.
 
-    print BLUE "** MODS${useMODS} Acquisition script abort sequence completed.\n";
+    print CYAN "** MODS${useMODS} Acquisition script abort sequence completed.\n";
 }
 
 #---------------------------------------------------------------------------
@@ -1179,10 +1179,10 @@ sub binoExit {
 	if ($exStatus != 0) {
 	    print RED "\n** Binocular MODS${useMODS} acquisition aborting on fatal error.\n";
 	}
-	print BLUE "\n** Hit the <Enter> key to exit and close this window...";
+	print CYAN "\n** Hit the <Enter> key to exit and close this window...";
 	$kbdIn = <STDIN>;
 	last unless defined $kbdIn;
-	print BLUE "Bye!\n";
+	print CYAN "Bye!\n";
     }
     exit $exStatus;
 }

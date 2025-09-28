@@ -325,10 +325,10 @@ if ($startCmd > $numCmd) {
 #
 
 if ($dryRun) {
-    print BLUE "\n** Dry-run of $scriptFile\n\n";
+    print CYAN "\n** Dry-run of $scriptFile\n\n";
 }
 else {
-    print BLUE "\n** Executing $scriptFile\n\n";
+    print CYAN "\n** Executing $scriptFile\n\n";
 }
 
 $curLoop = -1;
@@ -338,7 +338,7 @@ $iCmd = $startCmd - 1;
 while ($execGo) {
     if ($iCmd > $endCmd) {
 	closeISIS();
-	print BLUE "\n** Script $scriptFile done\n";
+	print CYAN "\n** Script $scriptFile done\n";
 	exit 0;
     }
 
@@ -349,7 +349,7 @@ while ($execGo) {
     
     if ($cmdWord eq "end") {
 	closeISIS();
-	print BLUE "\n** Script $scriptFile done\n";
+	print CYAN "\n** Script $scriptFile done\n";
 	exit 0;
     }
 
@@ -378,11 +378,11 @@ while ($execGo) {
 	    $| = 1;
 	    for ($time=$sleepTime;$time>0;$time--) {
 		printf "%c[2K",27;
-		print BLUE "** Sleeping for $sleepTime sec, will wake in $time sec...\r";
+		print CYAN "** Sleeping for $sleepTime sec, will wake in $time sec...\r";
 		sleep 1;
 	    }
 	    printf "%c[2K",27;
-	    print BLUE "** Sleep done\n\n";
+	    print CYAN "** Sleep done\n\n";
 	}
 	$iCmd++;
     }
@@ -413,7 +413,7 @@ while ($execGo) {
 
     elsif ($cmdWord eq "print") {
 	$prStr = stripFirst($cmd[$iCmd]);
-	print BLUE "$prStr\n";
+	print CYAN "$prStr\n";
         $iCmd++;
     }
 
@@ -430,7 +430,7 @@ while ($execGo) {
 	    print RED "\n** $scriptFile Aborted after PAUSE.\n\n";
 	    exit 1;
 	}
-	print BLUE "Script Execution Resuming...\n\n";
+	print CYAN "Script Execution Resuming...\n\n";
 	$iCmd++;
     }
 
@@ -452,7 +452,7 @@ while ($execGo) {
 	    if (sendCommand($hostID,"$cmdStr",$cmdTO[$iCmd])) {
 		printf "%c[2K",27;
 		$outStr = stripFirst($ISIS::reply);
-		print BLUE "$outStr\n";
+		print CYAN "$outStr\n";
 		$iCmd++;
 	    }
 	    else {
@@ -471,10 +471,10 @@ while ($execGo) {
 		    chomp($kbdIn);
 		    $retryOpt = substr($kbdIn,0,1);
 		    if (uc $retryOpt eq "R") {
-			print BLUE "** Attempting retry of $cmd[$iCmd]\n";
+			print CYAN "** Attempting retry of $cmd[$iCmd]\n";
 		    }
 		    elsif (uc $retryOpt eq "I") {
-			print BLUE "** Ignoring error and continuing...\n";
+			print CYAN "** Ignoring error and continuing...\n";
 			$iCmd++;
 		    }
 		    else {
@@ -494,7 +494,7 @@ while ($execGo) {
 # All done, close it down
 
 closeISIS();
-print BLUE "** Script $scriptFile done\n";
+print CYAN "** Script $scriptFile done\n";
 
 exit 0;
 

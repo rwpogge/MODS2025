@@ -70,7 +70,7 @@ if (! -e $scriptFile) {
 
 open (MSC,"<$scriptFile") || die "\nERROR: cannot open $scriptFile: $!\n";
 
-print BLUE "\n*** Listing of $scriptFile ***\n\n";
+print CYAN "\n*** Listing of $scriptFile ***\n\n";
 $numCmd = 0;
 $numLoops = 0;
 $numLines = 0;
@@ -87,7 +87,7 @@ while (<MSC>) {
 	    @lineBits = split(' ',$cmd);
 	    $cmdWord = lc $lineBits[0];
 	    if (substr($cmdWord,-1) eq ":") { # label, show it
-		print BLUE "$cmd\n";
+		print CYAN "$cmd\n";
 	    }
 	    else {
 		if ($cmdWord eq "acqmode") {

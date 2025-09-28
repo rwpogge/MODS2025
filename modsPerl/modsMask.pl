@@ -145,7 +145,7 @@ if ($cmdWord eq "status") {
 elsif ($cmdWord eq "reset") {
     $maskCmd = "slitmask reset";
     $timeOut = 60;
-    print BLUE "** Resetting the MODS$modsID slit mask system...\n";
+    print CYAN "** Resetting the MODS$modsID slit mask system...\n";
 }
 
 # INSERT - insert the slit mask.  Alias: "IN"
@@ -153,7 +153,7 @@ elsif ($cmdWord eq "reset") {
 elsif ($cmdWord eq "insert" || $cmdWord eq "in") {
     $maskCmd = "slitmask in";
     $timeOut = 20;
-    print BLUE "** Inserting the current MODS$modsID mask into the beam...\n";
+    print CYAN "** Inserting the current MODS$modsID mask into the beam...\n";
 }
 
 # OUT - extract the slit mask.  Alias: "stow"
@@ -161,7 +161,7 @@ elsif ($cmdWord eq "insert" || $cmdWord eq "in") {
 elsif ($cmdWord eq "out" || $cmdWord eq "stow") {
     $maskCmd = "slitmask out";
     $timeOut = 20;
-    print BLUE "** Extracting the current MODS$modsID mask into the storage cassette...\n";
+    print CYAN "** Extracting the current MODS$modsID mask into the storage cassette...\n";
 }
 
 # MASK - mask number follows.  If no argument, queries mask
@@ -179,7 +179,7 @@ elsif ($cmdWord eq "mask") {
 	}
 	$maskCmd = "mselect $cmdArg";
 	$timeOut = 40;
-	print BLUE "** Selecting MODS$modsID mask cassette position ${cmdArg}...\n";
+	print CYAN "** Selecting MODS$modsID mask cassette position ${cmdArg}...\n";
 
     }
 }
@@ -217,7 +217,7 @@ if (!$isOK) {
 
 if (sendCommand($ieHost[$modsID-1],"$maskCmd",$timeOut)) {
     $replyStr = stripFirst($ISIS::reply);
-    print BLUE "MODS$modsID - $replyStr\n";
+    print CYAN "MODS$modsID - $replyStr\n";
 }
 else {
     $replyStr = stripFirst($ISIS::reply);

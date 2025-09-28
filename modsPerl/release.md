@@ -1,7 +1,6 @@
 # modsPerl Release Notes
 
-Last Update: 2025 Sept 10 [rwp/osu]
-
+<b>Last Update: 2025 Sept 10 [rwp/osu]</b>
 
 ## 2025 Sep 10: Archon controller update
 
@@ -15,6 +14,9 @@ Changes:
 Advanced versions as follows:
  * `acqMODS.pl` and `execMODS.pl` - 2.5.0-bino
  * `execISIS`, `isisCmd`, `modsCmd` - 2.2.0
+
+Color scheme used is now more friendly to dark-mode operation, as will be
+the case using the modsTerm for running binocular scripts.
 
 
 ## 2024 Jun 13: offset and offsetxy timeout

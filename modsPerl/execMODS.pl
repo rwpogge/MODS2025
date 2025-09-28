@@ -587,7 +587,7 @@ if (!$hasMode) {
 if ($runExec) {
     if (exists($startBlock{"EXEC"})) { # does the goto has have an EXEC: label?
 	$startCmd = $startBlock{"EXEC"} + 1;
-	print BLUE "** Running from the Exec: block to the end of $scriptFile\n";
+	print CYAN "** Running from the Exec: block to the end of $scriptFile\n";
     }
     else {
 	print RED "** ERROR: exec-only option requested, but no EXEC: label was\n";
@@ -604,7 +604,7 @@ if (length($runBlock) > 0) {
     if (exists($startBlock{$key})) {
 	$startCmd = $startBlock{$key} + 1;
 	$endCmd = $endBlock{$key};
-	print BLUE "** Running only the $runBlock command block of $scriptFile\n";
+	print CYAN "** Running only the $runBlock command block of $scriptFile\n";
     }
     else {
 	print RED "** ERROR: Command block label ${runBlock}: not found in this script.\n";
@@ -619,7 +619,7 @@ elsif (length($fromBlock) > 0) {
     $key = uc $fromBlock;
     if (exists($startBlock{$key})) {
 	$startCmd = $startBlock{$key} + 1;
-	print BLUE "** Running from command block $fromBlock to the end of $scriptFile\n";
+	print CYAN "** Running from command block $fromBlock to the end of $scriptFile\n";
     }
     else {
 	print RED "** ERROR: Command block label ${fromBlock}: not found in this script.\n";
@@ -655,10 +655,10 @@ else {
 }
 
 if ($dryRun) {
-    print BLUE "\n** Dry-run of ${idTag} script ${scriptFile}\n\n";
+    print CYAN "\n** Dry-run of ${idTag} script ${scriptFile}\n\n";
 }
 else {
-    print BLUE "\n** Executing ${idTag} script ${scriptFile}\n\n";
+    print CYAN "\n** Executing ${idTag} script ${scriptFile}\n\n";
 }
 
 $curLoop = -1;
@@ -669,7 +669,7 @@ while ($execGo) {
     if ($iCmd > $endCmd) {
 	$cmd[$iCmd] = "end";
 	if (!$dryRun) { &scriptCleanup; }
-	print BLUE "\n** Script $scriptFile done\n";
+	print CYAN "\n** Script $scriptFile done\n";
 	&binoExit(0); # exit 0;
     }
 
@@ -680,7 +680,7 @@ while ($execGo) {
     
     if ($cmdWord eq "end") {
 	if (!$dryRun) { &scriptCleanup; }	
-	print BLUE "\n** Script $scriptFile done\n";
+	print CYAN "\n** Script $scriptFile done\n";
 	&binoExit(0); # exit 0;
     }
 
@@ -709,11 +709,11 @@ while ($execGo) {
 	    $| = 1;
 	    for ($time=$sleepTime;$time>0;$time--) {
 		printf "%c[2K",27;
-		print BLUE "** Sleeping for $sleepTime sec, will wake in $time sec...\r";
+		print CYAN "** Sleeping for $sleepTime sec, will wake in $time sec...\r";
 		sleep 1;
 	    }
 	    printf "%c[2K",27;
-	    print BLUE "** Sleep done\n\n";
+	    print CYAN "** Sleep done\n\n";
 	}
 	$iCmd++;
     }
@@ -769,7 +769,7 @@ while ($execGo) {
 	    print RED "\n** $scriptFile Aborted after PAUSE.\n\n";
 	    &binoExit(1);
 	}
-	print BLUE "Script Execution Resuming...\n\n";
+	print CYAN "Script Execution Resuming...\n\n";
 	$iCmd++;
     }
 
@@ -787,7 +787,7 @@ while ($execGo) {
 	    print RED "\n** $scriptFile aborted after PAUSE.\n\n";
 	    &binoExit(1);
 	}
-	print BLUE "\n** Target Acquisition Resuming...\n";
+	print CYAN "\n** Target Acquisition Resuming...\n";
 	$iCmd++;
     }
 
@@ -805,7 +805,7 @@ while ($execGo) {
 	    if (sendCommand($uiHost,"$cmd[$iCmd]",$cmdTO[$iCmd])) {
 		printf "%c[2K",27;
 		$outStr = stripFirst($ISIS::reply);
-		print BLUE "$outStr\n";
+		print CYAN "$outStr\n";
 		$iCmd++;
 	    }
 	    else {
@@ -824,10 +824,10 @@ while ($execGo) {
 		    chomp($kbdIn);
 		    $retryOpt = substr($kbdIn,0,1);
 		    if (uc $retryOpt eq "R") {
-			print BLUE "** Retrying command \'$cmd[$iCmd]\'\n";
+			print CYAN "** Retrying command \'$cmd[$iCmd]\'\n";
 		    }
 		    elsif (uc $retryOpt eq "I") {
-			print BLUE "** Ignoring error and continuing...\n";
+			print CYAN "** Ignoring error and continuing...\n";
 			$iCmd++;
 		    }
 		    else {
@@ -846,7 +846,7 @@ while ($execGo) {
 
 # All done, close it down (if somehow we get here)
 
-print BLUE "\n** Script $scriptFile done\n";
+print CYAN "\n** Script $scriptFile done\n";
 if (!$dryRun) { 
     $cmd[$iCmd] = "end";
     &scriptCleanup; 
@@ -931,20 +931,20 @@ sub myUsage {
 
 sub intHandler {
     print RED "** Script interrupted by Ctrl+C during the '$cmd[$iCmd]' command.\n";
-    print BLUE "   Is this what you want to do <Y|N>? ";
+    print CYAN "   Is this what you want to do <Y|N>? ";
     $kbdIn = <STDIN>;
     last unless defined $kbdIn;
     chomp($kbdIn);
     $abortOpt = uc $kbdIn;
     if ($abortOpt eq "Y") {
 	print RED "** Script aborting...\n";
-	print BLUE "** post-abort clean up...\n";
+	print CYAN "** post-abort clean up...\n";
 	&scriptCleanup;
-	print BLUE "** Script abort sequence completed.\n";
+	print CYAN "** Script abort sequence completed.\n";
 	&binoExit(2);
     }
     else {
-	print BLUE "** OK, Ignoring Ctrl+C interrupt and continuing...\n";
+	print CYAN "** OK, Ignoring Ctrl+C interrupt and continuing...\n";
     }
 }
 
@@ -987,18 +987,18 @@ sub scriptCleanup {
 	    else {
 		$abortCmd = "abort";
 	    }
-	    print BLUE "   ... aborting exposure(s) in progress ...\n";
+	    print CYAN "   ... aborting exposure(s) in progress ...\n";
 	}
 	elsif ($lastCmd eq "instconfig") { # clear instconfig state
 	    $abortCmd = "refresh instconfig";
-	    print BLUE "   ... clearing instconfig state flags ...\n";
+	    print CYAN "   ... clearing instconfig state flags ...\n";
 	}
 	elsif ($lastCmd eq "imcslock") { # abort an IMCSLOCK request
 	    $abortCmd = "imcsabort";
-	    print BLUE "   ... aborting IMCS lock request ...\n";
+	    print CYAN "   ... aborting IMCS lock request ...\n";
 	}
 	elsif ($lastCmd eq "preset" || $lastCmd eq "offsetxy" || $lastCmd eq "offset") { # clear IIF state
-	    print BLUE "   ... clearing $lastCmd ...\n";
+	    print CYAN "   ... clearing $lastCmd ...\n";
 	    $abortCmd = "clearstars";
 	}
 	else {
@@ -1008,7 +1008,7 @@ sub scriptCleanup {
 	    if (sendCommand($uiHost,$abortCmd,30)) {
 		printf "%c[2K",27;
 		$outStr = stripFirst($ISIS::reply);
-		print BLUE "$outStr\n";
+		print CYAN "$outStr\n";
 	    }
 	    else {
 		printf "%c[2K",27;
@@ -1054,10 +1054,10 @@ sub binoExit {
 	if ($exStatus != 0) {
 	    print RED "\n** Binocular MODS${useMODS} script aborting on fatal error.\n";
 	}
-	print BLUE "\n** Hit the <Enter> key to exit and close this window...";
+	print CYAN "\n** Hit the <Enter> key to exit and close this window...";
 	$kbdIn = <STDIN>;
 	last unless defined $kbdIn;
-	print BLUE "Bye!\n";
+	print CYAN "Bye!\n";
     }
     exit $exStatus;
 }
