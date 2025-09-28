@@ -1,4 +1,4 @@
-# tmux profile
+# tmux profile for red channel CCD admin sessions
 
 # enable mouse
 
