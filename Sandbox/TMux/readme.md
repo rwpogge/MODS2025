@@ -9,15 +9,18 @@ sudo dnf -y install tmux
 
 ## Useful Docs
 
-The tmux(1) helpfile: https://man.openbsd.org/tmux (big, bad, useful)
+The `tmux(1)` helpfile: https://man.openbsd.org/tmux (big and very useful)
 
-RedHat beginner's guide to `tmux`: https://www.redhat.com/en/blog/introduction-tmux-linux
+### Intros and cheat sheets
 
-A helpful cheatsheet: https://tmuxcheatsheet.com/
+ * RedHat beginner's guide to `tmux`: https://www.redhat.com/en/blog/introduction-tmux-linux
+ * `tmux` GitHub wiki getting started guide: https://github.com/tmux/tmux/wiki/Getting-Started
+ * A helpful cheatsheet: https://tmuxcheatsheet.com/
 
-Customization: 
+### Customization
  * status bar customization - https://www.baeldung.com/linux/tmux-status-bar-customization
-
+ * ...
+ * 
 ## Development apps
 
  * `modsTerm` - first cut at a 3-pane `tmux` session for MODS admin
