@@ -4,7 +4,7 @@
 
 ## Install:
 ```
-sudo dnf -y install `tmux` 
+sudo dnf -y install tmux
 ```
 
 ## Useful Docs
