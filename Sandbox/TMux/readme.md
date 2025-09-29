@@ -20,7 +20,7 @@ The `tmux(1)` helpfile: https://man.openbsd.org/tmux (big and very useful)
 ### Customization
  * status bar customization - https://www.baeldung.com/linux/tmux-status-bar-customization
  * ...
- * 
+
 ## Development apps
 
  * `modsTerm` - first cut at a 3-pane `tmux` session for MODS admin
