@@ -1,5 +1,17 @@
 # modsenv Release Notes
-Last Build: 2024 Sept 14
+Last Build: 2025 Sept 30
+
+## Version 3.3.3
+2025 Sept 30
+
+Added time delay of 10msec in `modbusutils.c` between calls to `modbus_new_tcp()` and `modbus_connect()` to
+break up an apparent race condition when opening a WAGO connection. Error reported was
+<pre>
+   ERROR: Cannot connect to WAGO host 192.168.139.242: Operation now in progress 
+</pre>
+Adding the `usleep()` gave enough of a beat between opening and connecting the WAGO TCP socket.  Live
+test with fast cadence (5s) showed no recurrence.  Before was every dozen connections (or faster).
+
 
 ## Version 3.3.2
 2025 Sept 14
