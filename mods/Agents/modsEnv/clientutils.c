@@ -86,7 +86,7 @@ initEnvData(envdata_t *envi)
 
   // Clear all sensor and power state data
 
-  clearEnvData(&envi);
+  clearEnvData(envi);
   
 }
 
@@ -274,7 +274,7 @@ getEnvData(envdata_t *envi)
   // Start by clearing the environmental data so there
   // stale readings
 
-  clearEnvData(&envi);
+  clearEnvData(envi);
   
   //
   // IUB WAGO register addresses - Aug 2025
