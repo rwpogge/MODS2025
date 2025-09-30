@@ -35,15 +35,88 @@ Modification History
   observatory alarm handler (ALH) server.  These are defined in client.h
 
   For power states, 0 is default (OFF)
+
+  Update for 2025: clear sensor and power state data with clearEnvData()
   
 */
+
 void
 initEnvData(envdata_t *envi)
 {
+
+  // modsEnv agent parameters
+  
   strcpy(envi->modsID,"None");
   envi->cadence = DEFAULT_CADENCE;  // default monitoring cadence (see client.h)
   envi->pause = 0;                  // start running (no pause)
+
+  // WAGO IP addresses
+
   strcpy(envi->iub_Addr,"");
+  strcpy(envi->iebR_Addr,"");
+  strcpy(envi->iebB_Addr,"");
+  strcpy(envi->llb_Addr,"");
+  strcpy(envi->hebB_Addr,"");
+  strcpy(envi->hebR_Addr,"");
+
+  // Dewar vacuum gauge IP address and Port config
+  
+  strcpy(envi->blueIG_Addr,"");
+  envi->blueIG_Port = 8018;
+  envi->blueIG_Chan = 5;
+  
+  strcpy(envi->redIG_Addr,"");
+  envi->redIG_Port = 8018;
+  envi->redIG_Chan = 5;
+
+  // Logging and other initializations
+  
+  envi->doLogging = 1;                      // enable enviromental data logging by default
+  envi->useHdf5 = 1;                        // default: output environmental data to Hdf5
+  envi->hdfInitalized = 0;
+  strcpy(envi->logRoot,ENV_LOGS);
+  strcpy(envi->hdfRoot,HDF_LOGS);
+  strcpy(envi->leapSecondsFile,LEAP_SECONDS_FILE);
+  strcpy(envi->logFile,"");
+  strcpy(envi->lastDate,"");
+  strcpy(envi->utcDate,"");
+
+  if (envi->logFD > 0) close(envi->logFD);
+  envi->logFD = 0;
+
+  // Clear all sensor and power state data
+
+  clearEnvData(&envi);
+  
+}
+
+/*!
+  \brief Clear sensor and state data
+
+  \param envi pointer to an #envdata_t data structure
+
+  Clears (zeros) the enviromental sensor data structure.  Used
+  before reading data so that stale information is not passed
+  into logs or shared memory.
+  
+  For temperatures and pressures, the default values are ALH_NOPRES
+  and ALH_NOTEMP which are no-reading "magic" values recognized by the
+  observatory alarm handler (ALH) server.  These are defined in client.h
+
+  For power states, 0 is default (OFF)
+
+  New for the Archon updates in 2025
+
+  Date: 2025 Sept 30 [rwp/osu]
+  
+ */
+
+void
+clearEnvData(envdata_t *envi)
+{
+
+  // Utility Box sensors and AC power states
+  
   envi->ambientTemp = ALH_NOTEMP;
   envi->glycolSupplyPres = ALH_NOPRES;
   envi->glycolReturnPres = ALH_NOPRES;
@@ -67,19 +140,22 @@ initEnvData(envdata_t *envi)
   envi->wfs_Switch   = 0;   
   envi->wfs_Breaker  = 0; 
 
-  strcpy(envi->iebR_Addr,"");
+  // Red IEB
+  
   envi->iebR_AirTemp = ALH_NOTEMP;
   envi->iebR_ReturnTemp = ALH_NOTEMP;
   envi->airTopTemp = ALH_NOTEMP; 
   envi->airBotTemp = ALH_NOTEMP;
 
-  strcpy(envi->iebB_Addr,"");
+  // Blue IEB
+  
   envi->iebB_AirTemp = ALH_NOTEMP;
   envi->iebB_ReturnTemp = ALH_NOTEMP;
   envi->trussTopTemp = ALH_NOTEMP; 
   envi->trussBotTemp = ALH_NOTEMP;
 
-  strcpy(envi->llb_Addr,"");
+  // Lamp/Laser Box
+  
   envi->irlaserState = 0;   
   envi->irlaserPowerSet = 0.0;
   envi->irlaserPowerOut = 0.0;
@@ -87,39 +163,25 @@ initEnvData(envdata_t *envi)
   envi->irlaserTemp = ALH_NOTEMP;    
   envi->irlaserTempSet = 0.0; 
 
-  strcpy(envi->hebB_Addr,"");
+  // Blue HEB
+  
   envi->hebB_AirTemp = ALH_NOTEMP;
   envi->blueDewTemp = ALH_NOTEMP;
   envi->blueArchon = 0;
   envi->blueIonGauge = 0;
+
+  // Red HEB
   
-  strcpy(envi->hebR_Addr,"");
   envi->hebR_AirTemp = ALH_NOTEMP;
   envi->redDewTemp = ALH_NOTEMP;
   envi->redArchon = 0;
   envi->redIonGauge = 0;
 
-  strcpy(envi->blueIG_Addr,"");
-  envi->blueIG_Port = 8018;
-  envi->blueIG_Chan = 5;
+  // Dewar vacuum gauges
+  
   envi->blueDewPres = ALH_NOPRES;
+  envi->redDewPres = ALH_NOPRES;
   
-  strcpy(envi->redIG_Addr,"");
-  envi->redIG_Port = 8018;
-  envi->redIG_Chan = 5;
-  envi->redDewPres = ALH_NOPRES; 
-  
-  envi->doLogging = 1;                      // enable enviromental data logging by default
-  envi->useHdf5 = 1;                        // default: output environmental data to Hdf5
-  envi->hdfInitalized = 0;
-  strcpy(envi->logRoot,ENV_LOGS);
-  strcpy(envi->hdfRoot,HDF_LOGS);
-  strcpy(envi->leapSecondsFile,LEAP_SECONDS_FILE);
-  strcpy(envi->logFile,"");
-  strcpy(envi->lastDate,"");
-  strcpy(envi->utcDate,"");
-  if (envi->logFD > 0) close(envi->logFD);  // just in case...
-  envi->logFD = 0;
 }
 
 /*!
@@ -208,6 +270,11 @@ getEnvData(envdata_t *envi)
   int iubBreaker = 0;     // IUB AC ciruit breaker status word
   int hebRPower = 0;      // Red HEB power relay status word
   int hebBPower = 0;      // Blue HEB power relay status word
+
+  // Start by clearing the environmental data so there
+  // stale readings
+
+  clearEnvData(&envi);
   
   //
   // IUB WAGO register addresses - Aug 2025
@@ -225,10 +292,9 @@ getEnvData(envdata_t *envi)
   
   if (ierr != 0) {
     if (useCLI) printf("WARNING: %s IUB WAGO read error\n",envi->modsID);
-    return ierr;
 
     // if IUB is off, everything else is also probably off
-    
+
     shm_addr->MODS.utilState = 0;
     shm_addr->MODS.llbState = 0;
     shm_addr->MODS.blueIEBState = 0;
@@ -384,6 +450,7 @@ getEnvData(envdata_t *envi)
     hebRPower = hebRData[0];
     envi->redArchon = ((hebRPower & ARCHON_POWER) == ARCHON_POWER);
     envi->redIonGauge = ((hebRPower & IG_POWER) == IG_POWER);
+
     shm_addr->MODS.redHEBState = 1;
     shm_addr->MODS.redArchonState = envi->redArchon;
     shm_addr->MODS.redIonGaugeState = envi->redIonGauge;
@@ -420,17 +487,15 @@ getEnvData(envdata_t *envi)
     shm_addr->MODS.redHEBState = 0;
     shm_addr->MODS.redHEBTemperature = ALH_NOTEMP;
     shm_addr->MODS.redDewarTemperature = ALH_NOTEMP;
-    shm_addr->MODS.redDewarPressure = ALH_NOPRES;
   }
   else {
     envi->hebR_AirTemp = ptRTD2C(hebRData[0]);
     envi->redDewTemp = ptRTD2C(hebRData[1]);
-    envi->redDewPres = getIonPressure(envi->redIG_Addr, envi->redIG_Port, envi->redIG_Chan, ION_TIMEOUT_LENGTH);
 
     shm_addr->MODS.redHEBState = 1;
     shm_addr->MODS.redHEBTemperature = envi->hebR_AirTemp;
     shm_addr->MODS.redDewarTemperature = envi->redDewTemp;
-    shm_addr->MODS.redDewarPressure = envi->redDewPres;
+
   }
   
   // Blue HEB temperature and pressure measurements
@@ -442,20 +507,28 @@ getEnvData(envdata_t *envi)
     shm_addr->MODS.blueHEBState = 0;
     shm_addr->MODS.blueHEBTemperature = ALH_NOTEMP;
     shm_addr->MODS.blueDewarTemperature = ALH_NOTEMP;
-    shm_addr->MODS.blueDewarPressure = ALH_NOPRES;
   }
   else {
     envi->hebB_AirTemp = ptRTD2C(hebBData[0]);
     envi->blueDewTemp = ptRTD2C(hebBData[1]);
-    envi->blueDewPres = getIonPressure(envi->blueIG_Addr, envi->blueIG_Port, envi->blueIG_Chan, ION_TIMEOUT_LENGTH);
 
     shm_addr->MODS.blueHEBState = 1;
     shm_addr->MODS.blueHEBTemperature = envi->hebB_AirTemp;
     shm_addr->MODS.blueDewarTemperature = envi->blueDewTemp;
-    shm_addr->MODS.blueDewarPressure = envi->blueDewPres;
   }
 
-  // IR laser power and status complicated, maybe someday...
+  // Read the dewar vacuum ion gauges (connected to IEB 2-channel comtrols
+  // but powered up through the HEBs)
+
+  envi->redDewPres = getIonPressure(envi->redIG_Addr, envi->redIG_Port, envi->redIG_Chan, ION_TIMEOUT_LENGTH);
+  shm_addr->MODS.redDewarPressure = envi->redDewPres;
+
+  envi->blueDewPres = getIonPressure(envi->blueIG_Addr, envi->blueIG_Port, envi->blueIG_Chan, ION_TIMEOUT_LENGTH);
+  shm_addr->MODS.blueDewarPressure = envi->blueDewPres;
+
+  // IR laser power and status are acomplicated, maybe someday. IR laser setting
+  // and state info get set by the mmcService (aka IE) so we are covered and this
+  // is very low duty cycle.
   
   // Get the UTC date/time of the query (ISIS client utility routine)
 
