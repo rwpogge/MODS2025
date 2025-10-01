@@ -308,15 +308,25 @@ sudo cp mlcRecover /usr/local/bin
 ```
 **DO NOT** copy `mmcService`, `agwService`, `blueIMCS`, or `redIMCS` to `/usr/local/bin/`!
 
-## Data and Telemetry NFS mounts
+## Observatory NFS mounts
 
-MODS machines NFS mount two remote observatory drives
+MODS machines NFS mounts a subset of relevant shared observatory folders
  * `/lbt/data/new` - newdata repository
  * `/lbt/data/telemetry` - observatory HDF5 telemetry streams
+ * `/lbt/lbto/` - LBTO public NFS mounts
 
-Two rpms are setup to do this for us, need to be run one-time when a machine is setup
+LBTO has rpms are setup to do this for us, need to be run one-time when a machine is setup on the LBTO network
 ```
-sudo dnf install lbto-nfs-mountain-newdata lbto-nfs-mountain-telemetry
+sudo dnf install lbto-nfs-mountain-newdata
+sudo dnf lbto-nfs-mountain-telemetry
+sudo dnf install lbto-nfs-mountain-lbto
 ```
 
 `modsEnv` writes environmental sensor logs in `/lbt/data/telemetry/instruments/mods#/...` (#=1,2)
+
+FITS images are pushed into `/lbt/data/new`
+
+Public versions of MODS observing and operations scripts are "published" on /lbt/lbto/mods/bin/ for use
+on all relevant machines.  Only the safe public subset of scripts are exposed on the shared public path.
+
+
