@@ -56,6 +56,8 @@ void what_help(char *, int , char *, int,int,int);
 // void cnvrt(int,double,double,double*,double*,int [6],double,double);
 void display_it(int , int , char *, char *);
 char *getSensor(int,int);
+char *makeUpper(char *);
+
 extern tc_xy pxy;
 
 //---------------------------------------------------------------------------
@@ -682,6 +684,12 @@ main(int argc, char *argv[])
     }
     exit(0);
 
+    // list mechanisms
+  } else if (!strcasecmp(what,"WHO")) {
+    for (i=0;i<MAX_ML;i++) {
+      printf("Mechanism [%02d]: %s\n",i+1,makeUpper(ms->MODS.who[i]));
+    }
+
     // What mechanism is assign to this ID
   } else if(!strcasecmp(what,"WHOIS")) {
     unit = atoi(cmd);
@@ -1275,4 +1283,31 @@ display_it(int Row, int Col, char *Attrib, char *InLine)
   if (*Attrib!= '\0')
     (void)printf("%c[0m", 27);
   
+}
+
+
+//---------------------------------------------------------------------------
+// makeUpper() - return all characters in a string in uppercase
+//
+ 
+/*!
+  \brief Return uppercase string
+ 
+  \param origStr string remains unchanged.
+
+  \returns pointer to an uppercase string, 
+ 
+  Helper utility will return requested string in uppercase, and leave
+  the requested string unchanged.
+ 
+*/
+ 
+char* makeUpper(char *origStr)
+{
+  char *workStr = origStr;
+  for (int i=0; workStr[i]!='\0'; i++) {
+    if (workStr[i]>='a' && workStr[i]<='z')
+       workStr[i] = workStr[i] - 32;
+  }
+  return workStr;
 }
