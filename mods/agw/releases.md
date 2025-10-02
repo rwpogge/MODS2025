@@ -1,5 +1,11 @@
 # MODS AGw Stage Server release notes
 
+## Version 1.3.1: 2025 Oct 2
+
+Bug fixes from live testing at LBTO
+ * `API/islCnameToComp.c` needed rework to function on a 64-bit architecture.
+ * `agwServer/commands.c` critical bug in cmd_getpos() that would seg-fault and crash the agwServer for command "getposition filter".  Solution is t instead call `cmd_filter()`, which has no such problems, and use its update of the `appAGW.filter` datum. 
+
 ## Version 1.3.0: 2025 July
  * AlmaLinux 9 port and clean-up in advance of the MODS2025 Archon controller and data-taking system overhaul [rwp]
 
