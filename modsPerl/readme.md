@@ -2,7 +2,7 @@
 
 Latest Version: 2025 Sept 10 [rwp/osu]
 
-See [Release Notes](release.md) for the current verison
+See [Release Notes](releases.md) for the current verison
 
 ## Overview
 

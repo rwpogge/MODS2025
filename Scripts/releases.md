@@ -1,0 +1,22 @@
+# mods Scripts Release Notes
+
+<b>Last Update: 2025 Oct 2 [rwp/osu]</b>
+
+## 2025 Oct 2: Archon controller update
+
+New versions of `mods1` and `mods2` scripts for MODS instrument 
+server admin with the Archon CCD controllers, a new `modsUI` script
+and other support files.  
+
+These are only run on the two Linux instrument
+servers with the same names.
+
+Biggest changes from the old versions:
+ * launches and runs in a custom `tmux` session
+ * typed without argument will either start the `modsAdmin` tmux session and attach it, or attach a running `modsAdmin` session.
+ * When in the `tmux` session, typed without argument gives a usage message
+ * Merges MODS instrument server functions that used to be spread across 2 machines, but now a subset of those are started automatically at computer boot time, with auto-restart on failure.  Only those server functions that require manual restart or could give actionable diagnostic info if they stop are available (mmc=ID, agw, and the 2 IMCS agents).
+ * The `modsUI` GUI is now launched usign the `modsUI` script, but its runtime status will be shown
+
+more?...
+
