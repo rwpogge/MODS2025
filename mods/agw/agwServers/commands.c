@@ -3051,28 +3051,26 @@ cmd_getpos(char *args, MsgType msgtype, char *reply)
   /*
   // Live mode queries the individual mechanisms
   */
+
   if (strcasecmp(args,"x")==0) {
     sprintf(reply,"AGWXS=%0.3f",fabs(positionToShrMem(appAGW.XIP,dummy)));
-
-  } else if (strcasecmp(args,"y")==0) {
+  } 
+  else if (strcasecmp(args,"y")==0) {
     sprintf(reply,"AGWYS=%0.3f",fabs(positionToShrMem(appAGW.YIP,dummy)));
-
-  } else if (strcasecmp(args,"focus")==0) {
+  } 
+  else if (strcasecmp(args,"focus")==0) {
     sprintf(reply,"AGWFS=%0.3f",positionToShrMem(appAGW.FIP,dummy)*2.0);
-
-  } else if (strcasecmp(args,"filter")==0) {
-    
-    appAGW.filter=mlcBitsBase10(appAGW.FWIP,"PRINT IO 22,IO 21",dummy)+1;
-
-    sprintf(reply,"AGWFilt=%d",appAGW.filter);
-
-  } else {
+  } 
+  else if (strcasecmp(args,"filter")==0) {
+    cmd_filter("",EXEC,reply);  
+    //appAGW.filter=mlcBitsBase10(appAGW.FWIP,"PRINT IO 22,IO 21",dummy)+1;
+    sprintf(reply,"AGWFILT=%d",appAGW.filter);
+  } 
+  else {
     sprintf(reply,"050 Unrecognized argument '%s', Usage: getposition [x|y|focus|filter]",args);
     return CMD_ERR;
-
   }
   return CMD_OK;
-
 }
 
 //---------------------------------------------------------------------------

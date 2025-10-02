@@ -2,10 +2,15 @@
 
 #include "islapi.h"
 
-/*-----------------------------------------------------------------------
- * islCnameToComp - look up a host by name and return its IP address
- *-----------------------------------------------------------------------
- */
+//-----------------------------------------------------------------------
+//  islCnameToComp - look up a host by name and return its IP address
+//
+//  modified for 64-bit (Archon update)
+//  note that gethostbyname() is deprecated, should replace with 
+//  getaddrinfo() eventually
+//
+//-----------------------------------------------------------------------
+
 islcomp
 islCnameToComp(char *cname)
 {
@@ -21,9 +26,11 @@ islCnameToComp(char *cname)
     pthread_mutex_unlock(&cname_mutex);
     return -1;
   }
-	
-  if (hp->h_addrtype != AF_INET ||
-      hp->h_length != sizeof(islcomp)) {
+
+  // old test of h-addrtype vs. sizeof(islcomp) breaks on 64-bit machines
+  //if (hp->h_addrtype != AF_INET || hp->h_length != sizeof(islcomp)) {
+
+  if (hp->h_addrtype != AF_INET) {
     pthread_mutex_unlock(&cname_mutex);
     return -1;
   }
