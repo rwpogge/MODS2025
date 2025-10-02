@@ -7,12 +7,13 @@
 # rgonzale@astronomy.ohio-state.edu
 # 2008 August 19
 #
-# 2025 June 19 - AlmaLinux 9 port [rwp/osu]
+# 2025 Jun 19 - AlmaLinux 9 port [rwp/osu]
+# 2025 Oct 2 - updates after live testing at LBTO [rwp/osu]
 #
 # 1 for Simulator, 0 for flight
 #
 SIM         = 0
-VERSION     = v1.3.0
+VERSION     = v1.3.1
 #
 ROOTDIR     = /home/dts/mods
 CC          = /usr/bin/g++
