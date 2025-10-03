@@ -12,10 +12,10 @@
 # Usual launch method:
 #   % ssh mods@mods1
 #     ...
-#   % dtsTerm   <--  attach to or launch a dtsTerm
-#   <starts or attaches to a multi-pane tmux session called a "dtsTerm">
-#   in the bottom window
-#   % mods1 start monitor   <-- way we launch modsStatus for a dtsTerm
+#   % mods1 <--  attach to or launch a modsAdmin tmux session
+#
+# mods1 starts the monitor on launch, and makes sure it is running on 
+# re-attaching to an already running modsAdmin tmux session
 #
 # Author:
 #   Rick Pogge, OSU Astronomy Dept
@@ -25,6 +25,7 @@
 #   2025 Sept 26 - new app
 #
 # Modification History:
+#   2025 Oct 3 - first full release [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -77,7 +78,7 @@ my $alertCol = COLOR_PAIR(4); # red on black is alert
 
 # process lists and headers
 
-my $userProcs = ["mmcService","agwServer","redIMCS","blueIMCS","modsUI"]; # unix names
+my $userProcs = ["mmcServer","agwServer","redIMCS","blueIMCS","modsUI"]; # unix names
 my $userHead = ["Process","Status","UserID"];
 
 my $sysdProcs = ["isis","lbttcs","modsenv","modsDD"];
