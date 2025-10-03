@@ -25,9 +25,6 @@
 #    pogge.1@osu.edu
 #    2009 Aug 28
 #
-# ToDo:
-#   Documentation, smarter error handling...
-#
 # Modification History:
 #   2010 Jan 8 - minor rework of the acquisition message handler [rwp/osu]
 #   2011 Feb 11 - renamed modsCmd, rework for general use [rwp/osu]
@@ -36,14 +33,15 @@
 #   2014 Apr 14 - Changes for MODS1 and MODS2 at LBT [rwp/osu]
 #   2016 Jun 14 - Binocular Release for 2016B [rwp/osu]
 #   2025 Sep 10 - Archon CCD controller system updates [rwp/osu]
+#   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
-# Custom ISIS module, kept in a private directory.  This is all the
-# places this can live at LBT and the OSU labs.
+# Custom ISIS.pm module.  These are all the places it can be on the
+# LBTO mountain and OSU VLAN linux systems.
 
-use lib "/home/modseng/modsPerl";
-use lib "/home/dts/modsPerl";
+use lib "/lbt/lbto/mods/lib/modsPerl"; # LBTO mountain network common path
+use lib "/home/dts/modsPerl"; # MODS data-taking system path
 
 use ISIS;
 
@@ -56,8 +54,8 @@ $Term::ANSIColor::AUTORESET = 1;     # revert to normal after using color
 
 # Version number.  Date should be ISO8601 format
 
-$verNum = "2.2.0";
-$verDate = "2025-09-10"; 
+$verNum = "2.2.1";
+$verDate = "2025-10-03"; 
 
 # ISIS network and host IDs for MODS1 and MODS2 instances
 

@@ -146,13 +146,15 @@
 #                 mini-preset) [rwp/osu]
 #   2024 Jun 13 - Change offset/offsetxy timeout to presetTO [rwp/osu]
 #   2025 Sep 10 - Archon CCD controller update changes [rwp/osu]
+#   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
+#
 #---------------------------------------------------------------------------
 
-# Custom ISIS perl module.  These are all the places it can live on
-# the machines at LBT and the OSU instrument lab
+# Custom ISIS.pm module.  These are all the places it can be on the
+# LBTO mountain and OSU VLAN linux systems.
 
-use lib "/home/modseng/modsPerl";
-use lib "/home/dts/modsPerl";
+use lib "/lbt/lbto/mods/lib/modsPerl"; # LBTO mountain network common path
+use lib "/home/dts/modsPerl"; # MODS data-taking system path
 
 use ISIS;
 
@@ -163,8 +165,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - dates in ISO8601 format, please.
 
-$verNum  = "v2.5.0-bino";
-$verDate = "2024-06-13";
+$verNum  = "v2.5.1-bino";
+$verDate = "2025-10-03";
 
 # Make sure text reverts to normal on using color
 

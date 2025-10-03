@@ -1,8 +1,8 @@
 # modsPerl - MODS Scripting Engine and Instrument Support Tools
 
-Latest Version: 2025 Sept 10 [rwp/osu]
+Latest Version: 2025 Oct 3 [rwp/osu]
 
-See [Release Notes](releases.md) for the current verison
+See [Release Notes](releases.md) for details
 
 ## Overview
 
@@ -16,33 +16,66 @@ option.
 ## Installation
 
 To make the MODS scripting tools "public" for observers, copy the
-current executables into /home/modseng/bin/ on one of the obsN
-computers at LBTO, stripping off the .pl extension.
+MODS scripts into the LBTO mountain network's NFS-mounted
+common path for MODS scripts `/lbt/lbto/mods`, as follows.
 
-Make sure you first make backup copies of the current executables in case 
-you need to roll-back a version.  This is operational "flight" software, 
-so committing an edited executable to /home/modseng/bin/ should only be 
-done after the new version is fully tested.
+### `ISIS.pm` module
 
-Note that the main ISIS.pm perl module must be copied into
-/home/modseng/modsPerl and never copied into bin (it is not
-"executable" per-se).
+The `ISIS.pm` module used by these scripts must be copied into the
+common Perl library folder for MODS scripts:
+```
+sudo cp ISIS.pm /lbt/lbto/mods/lib/modsPerl/
+```
+Only do this for a new or updated installation.  Historically
+`ISIS.pm` has been very stable. If in doubt, do a diff:
+```
+diff ISIS.pm /lbt/lbto/mods/lib/modsPerl/ISIS.pm
+```
+If no differences, don't copy.
 
+### User Scripts
+
+Copy this subset of the user scripts into the common path folder, stripping
+away the .pl extension:
+```
+sudo cp acqMODS.pl /lbt/lbto/mods/bin/acqMODS
+sudo cp execMODS.pl /lbt/lbto/mods/bin/execMODS
+sudo cp listMODS.pl /lbt/lbto/mods/bin/listMODS
+sudo cp modsCmd.pl /lbt/lbto/mods/bin/modsCmd
+sudo cp isisCmd.pl /lbt/lbto/mods/bin/isisCmd
+sudo cp modsMask.pl /lbt/lbto/mods/bin/modsMask
+sudo cp modsAGW.pl /lbt/lbto/mods/bin/modsAGW
+```
+Make backup copies of the current executables in case you need to
+roll-back a version.  This is operational "flight" software, so
+committing an edited executable to `/lbto/lbt/mods/bin/` should only
+be done after the new version is fully tested.
+
+### Retired Scripts
+
+With the 2025 Archon CCD controller update, we have retired the
+`modsTemps` to query environmental data (temperatures and pressures).
+All MODS environmental sensor data are now uploaded into the
+observatory Data Dictionary and accessible through observatory tools
+for reading the DD
 
 ## Dependences
 
-The MODS scripting engine was developed in standard Perl 5 and uses no special modules.
-
+The MODS scripting engine was developed in standard Perl 5 and do not
+required installing special modules from the Perl CPAN repository.
 
 ## Runtime Environment
 
 The MODS scripting engine uses no shell environment variables.
 
-By default, it assumes that the system Perl (/usr/bin/perl) is the correct version to use.
+By default, it assumes that the system Perl (/usr/bin/perl) is the
+correct version to use.
 
 ## Documentation
 
-See [www.astronomy.ohio-state.edu/MODS/ObsTools/modsTools/](http://www.astronomy.ohio-state.edu/MODS/ObsTools/modsTools/) for a description of the MODS observing scripting system.
+See
+[www.astronomy.ohio-state.edu/MODS/ObsTools/modsTools/](http://www.astronomy.ohio-state.edu/MODS/ObsTools/modsTools/)
+for a description of the MODS observing scripting system.
 
 ## modsPerl Files
 
@@ -145,16 +178,6 @@ Operate the MODS1 or MODS2 AGw stage system. This gives full access to
 the functions of the AGw stage, primarily for the Telescope Operators
 or persons engaged in AGw/guider engineering observations.  Does not
 require a running MODS control panel GUI.
-
-#### modsTemps
-
-Readout the temperatures and pressures of MODS1 or MODS2 dewars and
-glycol cooling systems.  Works directly with ISIS and the IE/IC
-servers, so no MODS control panel GUI needs to be running.  Intended
-for use by instrument support personnel to make instantaneous readings
-of critical temperatures and pressures in the system (e.g., after
-filling the dewar or checking glycol cooling status).
-
 
 ## Author & History
 

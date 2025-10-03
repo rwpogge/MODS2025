@@ -21,9 +21,6 @@
 #   -V  - print current revision number of the script (alias --version)
 #   -h   - print a brief usage/help message (alias --help)
 #   
-# ToDo:
-#   Document it on the LBTO MODS wiki
-#
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
 #   pogge.1@osu.edu
@@ -32,14 +29,15 @@
 # Modification History:
 #   2014 Apr 18 - Formal v2 for MODS1+2 at LBT [rwp/osu]
 #   2025 Sep 10 - Archon CCD controller system updates [rwp/osu]
+#   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
-# Custom ISIS module - these are all the places it could be on machines
-# at LBT and the OSU instrument lab
+# Custom ISIS.pm module.  These are all the places it can be on the
+# LBTO mountain and OSU VLAN linux systems.
 
-use lib "/home/modseng/modsPerl";
-use lib "/home/dts/modsPerl";
+use lib "/lbt/lbto/mods/lib/modsPerl"; # LBTO mountain network common path
+use lib "/home/dts/modsPerl"; # MODS data-taking system path
 
 use ISIS;
 
@@ -50,8 +48,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date, date in ISO8601 format
 
-$verNum = "2.1.0";
-$verDate = "2025-09-10";
+$verNum = "2.1.1";
+$verDate = "2025-10-03";
 
 # Local ISIS server and IE server info for MODS1 and MODS2
 

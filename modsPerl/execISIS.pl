@@ -40,9 +40,6 @@
 # See Also: 
 #   isisCmd for executing single data-taking system commands
 #
-# ToDo: 
-#   Document it ...
-#
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
 #   pogge.1@osu.edu
@@ -55,14 +52,15 @@
 #   2014 Apr 18 - Updates for two MODS at the LBT [rwp/osu]
 #   2016 Aug 01 - Binocular operations release for 2016B [rwp/osu]
 #   2025 Sep 10 - Archon CCD controller updates [rwp/osu]
+#   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
 # Custom ISIS.pm module.  These are all the places it can be on the
-# LBT and OSU lab systems
+# LBTO mountain and OSU VLAN linux systems.
 
-use lib "/home/modseng/modsPerl";
-use lib "/home/dts/modsPerl";
+use lib "/lbt/lbto/mods/lib/modsPerl"; # LBTO mountain network common path
+use lib "/home/dts/modsPerl"; # MODS data-taking system path
 
 use ISIS;
 
@@ -73,8 +71,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date in ISO8601 format
 
-$verNum  = "v2.2.0";
-$verDate = "2025-09-10";
+$verNum  = "v2.2.1";
+$verDate = "2025-10-03";
 
 # Make sure text reverts to normal on using color
 

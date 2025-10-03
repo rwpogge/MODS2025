@@ -17,6 +17,5 @@ Biggest changes from the old versions:
  * When in the `tmux` session, typed without argument gives a usage message
  * Merges MODS instrument server functions that used to be spread across 2 machines, but now a subset of those are started automatically at computer boot time, with auto-restart on failure.  Only those server functions that require manual restart or could give actionable diagnostic info if they stop are available (mmc=ID, agw, and the 2 IMCS agents).
  * The `modsUI` GUI is now launched usign the `modsUI` script, but its runtime status will be shown
-
-more?...
+ * The `acqBinoMODS` and `execBinoMODS` scripts have been moved from [../modsPerl](modsPerl) as they are being rewritten to use a `modsTerm` tmux session for execution.
 

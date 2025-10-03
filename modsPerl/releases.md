@@ -1,6 +1,12 @@
 # modsPerl Release Notes
 
-<b>Last Update: 2025 Sept 10 [rwp/osu]</b>
+<b>Last Update: 2025 Oct 3 [rwp/osu]</b>
+
+## 2025 Oct 3: Incremental update
+ * Added the LBTO mountain network NSF-mounted common path `/lbt/lbto/mods/lib/modsPerl` to the perl `use lib` path for running these scripts on the mountain network for observations.
+ * Formally retired the `modsTemps.pl` script now that we have all MODS environmental sensor data reported to the observatory Data Dictionary (DD). Third-party applications requiring access to environmental sensor data must query the DD.
+ * Changed blue color text to cyan for better visibility on dark-mode terminals, like those that will be used for running observing scripts.
+ * `acqBinoMODS` and `execBinoMODS` have been "rehomed" to the [../Scripts](Scripts) repository to prepare new versions that use `tmux` sessions to multiplex observing script execution.  They really didn't belong here since they aren't written in perl.
 
 ## 2025 Sep 10: Archon controller update
 

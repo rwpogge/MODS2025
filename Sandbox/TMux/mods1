@@ -16,11 +16,9 @@
 # We run this in a named tmux window so that it can be started remotely
 # and detached and run all the time after the remote ssh session ends.
 #
-# Author:
-#   R. Pogge (pogge.1@osu.edu)
-#   OSU Astronomy Department
-#
-# Date: 2010 June 20  - LBT Version
+# R. Pogge (pogge.1@osu.edu)
+# OSU Astronomy Department
+# 2010 June 20  - LBT Version
 #
 # Modification History:
 #   2012 Oct 9  - version for MODS1 [rwp/osu]
@@ -49,13 +47,14 @@ set svcList = "mmcService agwServer redIMCS blueIMCS modsUI"
 # Usage message
 
 set cmdWord = `echo $modsID | tr '[A-Z]' '[a-z]'`
-set usage = "$cmdWord {start|stop} {ie|agw|imcs|modsUI|blueIMCS|redIMCS}\n       $cmdWord {status}\n"
+set usage = "\n   $cmdWord {start|stop} {ie|agw|imcs|modsUI|blueIMCS|redIMCS}\n   $cmdWord {status}\nType 'detach' or 'quit' to return to the login xterm shell.\n"
 
 # Parse the command-line options
 
 set numArgs = $#argv
 
-if ($numArgs == 0 || $numArgs > 3) then
+#if ($numArgs == 0 || $numArgs > 3) then
+if ($numArgs > 3) then
    printf "Usage: ${usage}\n"
    exit 0
 endif
@@ -87,6 +86,16 @@ if ( ! $?TMUX) then
    tmux select-pane -t ${tmuxID}:1.2
    tmux attach-session -t ${tmuxID}
 endif   
+
+# If given without args, print usage and exit, after attaching 
+# to the tmux session if in a regular shell
+
+if ($numArgs == 0) then
+   if ( $?TMUX) then
+      printf "Usage:${usage}\n"
+   endif
+   exit 0
+endif
 
 # Execute the request
 
@@ -187,7 +196,7 @@ switch ($1)
       if ($numArgs == 2) then
          switch ($2)
          case 'all':
-            printf "Stopping all ${modsID} user-initiated services (except modsUI)...\n"
+            printf "Stopping all ${modsID} user services (except modsUI)...\n"
             killall redIMCS
             killall blueIMCS
             killall -s SIGINT mmcService

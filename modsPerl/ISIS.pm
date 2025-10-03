@@ -2,13 +2,14 @@
 # ISIS.pm - ISIS communications module
 #
 # R. Pogge, OSU Astronomy Dept.
-# pogge@astronomy.ohio-state.edu
+# pogge.1@osu.edu
 # 2009 Aug 20
 #
 # Modification History:
 #   2010 Dec 19: cleaned up the STATUS: printing [rwp/osu]
 #   2011 Apr 14: DONE: et al. tests are now case-insensitive [rwp/osu]
 #   2011 Oct 28: minor tweaks to error reporting [rwp/osu]
+#   2025 Oct 03: Archon CCD controller updates [rwp/osu]
 #
 ###########################################################################
 
@@ -19,7 +20,7 @@ use vars qw(@ISA @EXPORT $VERSION);
 use Socket;
 
 use Exporter;
-$VERSION = 1.1.2;
+$VERSION = 1.2.0;
 @ISA = qw(Exporter);
 
 @EXPORT = qw(openISIS sendCommand sendToISIS closeISIS);
@@ -40,34 +41,34 @@ $ISIS::verbose=0;
 #
 
 sub openISIS {
-  use Socket;
+use Socket;
 
-  my $numArgs = scalar(@_);
+my $numArgs = scalar(@_);
 
-  if ($numArgs != 4) {
-    print "ERROR: openISIS needs 4 args: isisHost,isisPort,isisID,myID\n";
-    return 0;
-  }
-  $ISIS::isisHost = $_[0];
-  $ISIS::isisPort = $_[1];
-  $ISIS::isisID = $_[2];
-  $ISIS::myID = $_[3];
+if ($numArgs != 4) {
+print "ERROR: openISIS needs 4 args: isisHost,isisPort,isisID,myID\n";
+return 0;
+}
+$ISIS::isisHost = $_[0];
+$ISIS::isisPort = $_[1];
+$ISIS::isisID = $_[2];
+$ISIS::myID = $_[3];
 
-  # Open the UDP client socket
+# Open the UDP client socket
 
-  socket(SOCKET,PF_INET,SOCK_DGRAM,getprotobyname("udp"))
-    or die "Error: cannot open socket: $!\n" ;
+socket(SOCKET,PF_INET,SOCK_DGRAM,getprotobyname("udp"))
+or die "Error: cannot open socket: $!\n" ;
 
-  # Setup the sockaddr_in structure for the "server"
+# Setup the sockaddr_in structure for the "server"
 
-  $ISIS::serverAddr = inet_aton($ISIS::isisHost);
-  $ISIS::serverPort = sockaddr_in($ISIS::isisPort,$ISIS::serverAddr);
+$ISIS::serverAddr = inet_aton($ISIS::isisHost);
+$ISIS::serverPort = sockaddr_in($ISIS::isisPort,$ISIS::serverAddr);
 
-  if ($ISIS::verbose) {
-    print "ISIS client socket opened.\n";
-  }
+if ($ISIS::verbose) {
+print "ISIS client socket opened.\n";
+}
 
-  return 1;
+return 1;
 }
 
 #
@@ -86,97 +87,97 @@ sub openISIS {
 #
 
 sub sendCommand {
-  use Socket;
+use Socket;
 
-  my ($portNum, $ipAddr, $portAddr, $hostName);
-  my $numArgs = scalar(@_);
+my ($portNum, $ipAddr, $portAddr, $hostName);
+my $numArgs = scalar(@_);
 
-  my ($hostID, $msgStr, $timeout);
+my ($hostID, $msgStr, $timeout);
 
-  if ($numArgs == 2) {
-      $hostID = $_[0];
-      $msgStr = $_[1];
-      $timeout = 0;
-  }
-  elsif ($numArgs == 3) {
-      $hostID = $_[0];
-      $msgStr = $_[1];
-      $timeout = $_[2];
-  }
-  else {
-    print "ERROR: sytnax error, usage: sendCommand(hostID,\"command string\"[,timeout])\n";
-    return 0;
-  }
+if ($numArgs == 2) {
+$hostID = $_[0];
+$msgStr = $_[1];
+$timeout = 0;
+}
+elsif ($numArgs == 3) {
+$hostID = $_[0];
+$msgStr = $_[1];
+$timeout = $_[2];
+}
+else {
+print "ERROR: sytnax error, usage: sendCommand(hostID,\"command string\"[,timeout])\n";
+return 0;
+}
 
-  my $isisMsg = "$ISIS::myID>$hostID $msgStr\r" ;
+my $isisMsg = "$ISIS::myID>$hostID $msgStr\r" ;
 
-  send(SOCKET,$isisMsg,0,$ISIS::serverPort) == length($isisMsg)
-    or die "ERROR: cannot send to $ISIS::isisHost:$ISIS::isisPort: $!\n" ;
+send(SOCKET,$isisMsg,0,$ISIS::serverPort) == length($isisMsg)
+or die "ERROR: cannot send to $ISIS::isisHost:$ISIS::isisPort: $!\n" ;
 
-  if ($ISIS::verbose) {
-    print ">$hostID $isisMsg\n";
-  }
+if ($ISIS::verbose) {
+print ">$hostID $isisMsg\n";
+}
 
-  # ... and wait for a DONE: or ERROR: message in reply.  If
-  # a STATUS: message, print it and wait more
+# ... and wait for a DONE: or ERROR: message in reply.  If
+# a STATUS: message, print it and wait more
 
-  my $maxLength = 2048;
+my $maxLength = 2048;
 
-  my $isDone = 0;
-  while ($isDone==0) {
-      my $rout = '';
-      my $rin = '';
-      vec($rin,fileno(SOCKET),1)=1;
-      my $nfound = 0;
-      if ($timeout > 0) {
-	  $nfound = select($rout=$rin,undef,undef,$timeout);
+my $isDone = 0;
+while ($isDone==0) {
+my $rout = '';
+my $rin = '';
+vec($rin,fileno(SOCKET),1)=1;
+my $nfound = 0;
+if ($timeout > 0) {
+  $nfound = select($rout=$rin,undef,undef,$timeout);
+}
+else {
+  $nfound = select($rout=$rin,undef,undef,undef);
+}
+if ($nfound == 0) {
+  $ISIS::reply = "$ISIS::myID> ERROR: Command '$msgStr' timed out after $timeout seconds";
+  return 0;
+}
+else {
+  if (vec($rout,fileno(SOCKET),1)) {
+      $portAddr = recv(SOCKET,$ISIS::reply,$maxLength,0) 
+	  or die "ERROR(sendCommand) recv: $!\n"; 
+
+      chop($ISIS::reply); # remove \r from the reply string
+
+      # Who sent it to us?  We only care if debugging
+
+      if ($ISIS::verbose) {
+	  ($portNum, $ipAddr) = sockaddr_in($portAddr);
+	  $hostName = gethostbyaddr($ipAddr,AF_INET);
+	  print "$hostID> $ISIS::reply\n";
       }
-      else {
-	  $nfound = select($rout=$rin,undef,undef,undef);
+      
+      # check the reply string for the words "ERROR:" etc. if badness
+      
+      my @chunk = split(" ",$ISIS::reply);
+      my $msgType = lc $chunk[1];
+      if ($msgType eq "error:" || $msgType eq "fatal:") {
+	  return 0; 
       }
-      if ($nfound == 0) {
-	  $ISIS::reply = "$ISIS::myID> ERROR: Command '$msgStr' timed out after $timeout seconds";
-	  return 0;
+      elsif ($msgType eq "done:") { # command is done
+	  return 1;
       }
-      else {
-	  if (vec($rout,fileno(SOCKET),1)) {
-	      $portAddr = recv(SOCKET,$ISIS::reply,$maxLength,0) 
-		  or die "ERROR(sendCommand) recv: $!\n"; 
-
-	      chop($ISIS::reply); # remove \r from the reply string
-
-	      # Who sent it to us?  We only care if debugging
-
-	      if ($ISIS::verbose) {
-		  ($portNum, $ipAddr) = sockaddr_in($portAddr);
-		  $hostName = gethostbyaddr($ipAddr,AF_INET);
-		  print "$hostID> $ISIS::reply\n";
-	      }
-	      
-	      # check the reply string for the words "ERROR:" etc. if badness
-	      
-	      my @chunk = split(" ",$ISIS::reply);
-              my $msgType = lc $chunk[1];
-	      if ($msgType eq "error:" || $msgType eq "fatal:") {
-		  return 0; 
-	      }
-	      elsif ($msgType eq "done:") { # command is done
-		  return 1;
-	      }
-	      else { # a status or other interim message, print and continue
-		  $| = 1;
+      else { # a status or other interim message, print and continue
+	  $| = 1;
 #		  print "                                                      \r";
- 		  printf "%c[2K",27;
-		  if ($ISIS::verbose) {
-		      print "$ISIS::reply\r";
-		  } else {
-		      my $statStr = stripFirst("$ISIS::reply");
-		      print "$statStr\r";
-		  }
-	      }
+	  printf "%c[2K",27; # 27 is 33 in octal, 0o33[2K is the VT100 escape code to erase the current console line
+	  if ($ISIS::verbose) {
+	      print "$ISIS::reply\r";
+	  } else {
+	      my $statStr = stripFirst("$ISIS::reply");
+	      print "$statStr\r";
 	  }
       }
   }
+}
+}
 }
 
 #

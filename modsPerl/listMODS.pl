@@ -34,13 +34,14 @@
 #   2014 Apr 18 - MODS1+2 version [rwp/osu]
 #   2016 Jun 18 - Binocular operations release for 2016B [rwp/osu]
 #   2025 Sep 10 - Archon CCD controller updates [rwp/osu]
+#   2025 Oct 03 - minor updates [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
 # Version number and date - date in ISO8601 format 
 
-$verNum  = "v2.2.0";
-$verDate = "2025-09-10";
+$verNum  = "v2.2.1";
+$verDate = "2025-10-03";
 
 # Standard modules we use
 

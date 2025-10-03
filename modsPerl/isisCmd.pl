@@ -16,9 +16,6 @@
 # See Also:
 #   execISIS for a way to execute scripts of IMPv2 protocol commands.
 #
-# ToDo:
-#   Document it...
-#
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
 #   pogge.1@osu.edu
@@ -29,14 +26,15 @@
 #   2014 Apr 14 - modifications for MODS1 and MODS2 at LBT [rwp/osu]
 #   2016 Jun 15 - binocular operations release for 2016B [rwp/osu]
 #   2025 Sep 10 - Archon CCD controller system updates [rwp/osu]
+#   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
-# Custom ISIS module - these are all the places it could be on machines
-# at LBT and the OSU instrument lab
+# Custom ISIS.pm module.  These are all the places it can be on the
+# LBTO mountain and OSU VLAN linux systems.
 
-use lib "/home/modseng/modsPerl";
-use lib "/home/dts/modsPerl";
+use lib "/lbt/lbto/mods/lib/modsPerl"; # LBTO mountain network common path
+use lib "/home/dts/modsPerl"; # MODS data-taking system path
 
 use ISIS;
 
@@ -47,8 +45,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date, date in ISO8601 format
 
-$verNum = "2.2.0";
-$verDate = "2025-09-10";
+$verNum = "2.2.1";
+$verDate = "2025-10-03";
 
 # ISIS network and host IDs for MODS1 and MODS2 instances
 
