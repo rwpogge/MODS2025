@@ -1,5 +1,13 @@
 # MODS2025 Release Notes
-Last Release: 2025 Sept 21
+Last Release: 2025 Oct 2
+
+## Version 1.3.1 - 2025 Oct 2
+ * fixed bugs in `agw/API` (also in `mmc/API`) that were preventing the `mmcServer` from communicating with the `agwServer` via the direct TCP port interface.  Traced to a problem with 32-bit vs 64-bit data in the way a key connection init routine (`islCnameToCComp.c`) was implemented.  Fixed and verified AGW comms.
+ * fixed critical bug in the `agwServer` that caused the server to crash with a seg-fault.  Replaced suspect code with a more robust method, verified with both MODS.
+ * New MODS admin interface scripts to replace `mods1` and `mods2` for the new system advanced to beta release.  We have adopted the `tmux` terminal multiplexer to handle terminal-based persistent session attach/detach interactions that is much more efficient over ethernet and does not require desktop sharing with all its attendant problems.  Alpha versions in `Sandbox/TMux`, beta versions migrating into `Scripts`.  Established dependencies on perl `Curses` lib.
+ * Released parts of the `modsPerl` operational scripts (starting with `isisCmd`) into use for instrument testing. More on the way
+ * Iterated with LBTO on environmental telemetry, general DD telemetry, and alarm handling.  Multi-week live tests used to identify and fix remaining issues in `modsEnv`, now getting reliable MODS telemetry into the DD and hdf5 streams.
+ * First cut at `azcam-mods` code `instrument_mods.py` that implements an azcam `Instrument()` class instance tailored for MODS.  Will be used to create the instrument configuration FITS headers by pulling instrument config information from the DD using the IIF interface.  DD is populated by the `modsDD` agent now running as a systemd service on both machines.
 
 ## Version 1.3.0 - 2025 Sept 21
  * Beta release of most subsystems on LBTO machines, start of live testing with MODS1 and MODS2 on the telescope
