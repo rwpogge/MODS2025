@@ -101,7 +101,7 @@ int iifcount;
 // Data needed for instConfig
 
 char dichMode[3][8] = {"Red","Dual","Blue"};
-char gratMode[3][8] = {"Imaging","Grating","Prism"};
+char gratMode[4][8] = {"Imaging","Grating","Prism","Empty"};
 
 // Shared memory segment setup
 
@@ -688,13 +688,13 @@ main(int argc, char* argv[])
       else
 	sprintf(varStr,"Red Unknown");
     }
-    else if (dichPos == 2) {
+    else if (dichPos == 3) {
       if (bgratPos > 0)
 	sprintf(varStr,"Blue %s",gratMode[bgratPos-1]);
       else
 	sprintf(varStr,"Blue Unknown");
     }
-    else if (dichPos == 3) {
+    else if (dichPos == 2) {
       if (bgratPos == rgratPos) {
 	if (bgratPos > 0) 
 	  sprintf(varStr,"Dual %s",gratMode[bgratPos-1]);
