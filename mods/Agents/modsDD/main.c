@@ -705,7 +705,7 @@ main(int argc, char* argv[])
 	if (bgratPos > 0) 
 	  sprintf(varStr,"Dual %s",gratMode[bgratPos-1]);
 	else
-	  sprintf(varstr,"Dual Unknown");
+	  sprintf(varStr,"Dual Unknown");
 	if (rGratPos > 0)
 	  sprintf(varStr,"%s %s",varStr,gratMode[rgratPos-1]);
 	else
@@ -713,7 +713,7 @@ main(int argc, char* argv[])
       }
     }
     else {
-      sprintf(varStar,"Unknown");
+      sprintf(varStr,"Unknown");
     }
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
