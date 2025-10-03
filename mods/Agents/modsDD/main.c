@@ -101,7 +101,7 @@ int iifcount;
 // Data needed for instConfig
 
 char dichMode[3][8] = {"Red","Dual","Blue"};
-char gradMode[3][8] = {"Imaging","Grating","Prism"};
+char gratMode[3][8] = {"Imaging","Grating","Prism"};
 
 // Shared memory segment setup
 
