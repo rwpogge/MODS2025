@@ -1,14 +1,14 @@
 # modsDD agent release notes
 Last Build: 2025 Oct 3
 
-## Version 1.1.0
+## Version 1.1
 2025 Oct 3
  * Updates for IIF Build 2025B
  * added S_MODSBlueGratingtilt and S_MODSRedGratingTilt parameters added to the DD in Build 2025B
  * added S_MODSMode data (OBSMODE/CALMODE) added to the DD in Build 2025B
  * changed value of S_MODSInstConfig to be "Dual/Blue/Red Imaging/Grating/Prism" using captured dichroic and grating turret positions
 
-## Version 1.0.1
+## Version 1.0
 2025 Sept 21
 
 Verified and updated based on live testing at LBTO with MODS1 and IIF Build 2025A. The data
