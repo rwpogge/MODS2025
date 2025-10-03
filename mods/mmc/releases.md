@@ -1,7 +1,16 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2025 July 5
+Last Build: 2025 Oct 3
+
+## Version 3.2.0: 2025 Oct 3
+ * Many updates from live testing at LBTO with MODS1 and MODS2
+ * Deep changes in the APIs and others, some due to 32-bit to 64-bit migration
+
+Rebranded `mmcService` to `mmcServer`, which sounds trivial but is not, it brings its function into alignment with other 
+subsystems called "servers", and it is functionally a server. This also makes a clear distinction between this system
+and actual `systemd` *services* that are part of the MODS2025 updates. The `mmcServer` should not (and probably must not)
+be run as a system "service".
 
 ## Version 3.1.0: 2025 June
  * AlmaLinux 9 port and updates for the MODS2025 Archon CCD controller upgrade started
