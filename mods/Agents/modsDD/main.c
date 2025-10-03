@@ -16,15 +16,15 @@
   \section Overview
 
   modsDD is a standalone program that interrogates the MODS shared
-  memory segment on an active MODS instrument server machine
-  (mods1 or mods2) and uploads relevant MODS instrument state
-  information into the observatory IIF data dictionary (DD) on a
-  regular cadence (notionally 5-10 seconds).
+  memory segment on an active MODS instrument server machine (mods1 or
+  mods2) and uploads relevant MODS instrument state information into
+  the observatory IIF data dictionary (DD) on a regular cadence
+  (notionally 5-10 seconds).
 
   This program requires IIF Build 2025A or greater that uses the
   extended set of MODS data dictionary entries.
 
-  modsDD provides LBTO with full-time updates of instantaneous
+  modsDD provides LBTO with full-time updates of "instantaneous"
   instrument status info that may be used by observatory dashboards or
   alarm state monitoring systems without their needing to directly
   interrogate the MODS instrument systems. This should eliminate risks
@@ -36,8 +36,9 @@
   \section Modification History
 
  <pre>
- 2025 Sept 19 - new application based on lbttcs [rwp/osu]
- 2025 Sept 21 - beta release after live testing at LBTO [rwp/osu]
+ 2025 Sep 19 - new application based on lbttcs [rwp/osu]
+ 2025 Sep 21 - beta release after live testing at LBTO [rwp/osu]
+ 2025 Oct 03 - added missing grating tilt and instrument config [rwp/osu]
  </pre>
 
 */
@@ -96,6 +97,11 @@ char focalStation_Name[80];
 
 char iifmsgs[200][100];
 int iifcount;
+
+// Data needed for instConfig
+
+char dichMode[3][8] = {"Red","Dual","Blue"};
+char gradMode[3][8] = {"Imaging","Grating","Prism"};
 
 // Shared memory segment setup
 
@@ -229,36 +235,29 @@ main(int argc, char* argv[])
 
   while (keepGoing) {
 
-    getUTCTime(&utc);
-
-    t0 = SysTimestamp();
-
+    int dichPos = 0;
+    int bgratPos = 0;
+    int rgratPos = 0;
+    
     DDstruct dd;
     SeqDD ddList;
 
-    // MODS name and update time stamps (text and integer)
+    // MODS name (MODS1 or MODS2)
     
     dd.DDname = side + "_MODSName";
     dd.DDkey = (string)lbt.instID;
     ddList.push_back(dd);
 
-    dd.DDname = side + "_MODSUpdateTime";
-    dd.DDkey = (string)utc.ISO;
-    ddList.push_back(dd);
-
-    dd.DDname = side + "_MODSTimeStamp";
-    sprintf(varStr,"%ld",int(t0));
-    dd.DDkey = (string)varStr;
-    ddList.push_back(dd);
-
+    // Instrument global power state
+    
     powerState(shm_addr->MODS.utilState,varStr);
     dd.DDname = side + "_MODSPowerState"; 
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
-    // MODS instrument configuration: CALMODE, OBSMODE, or UNKNOWN
+    // MODS instrument mode: CALMODE, OBSMODE, or UNKNOWN
 
-    dd.DDname = side + "_MODSInstConfig";
+    dd.DDname = side + "_MODSMode";
     if (shm_addr->MODS.instrMode == 0)
       dd.DDkey = "OBSMODE";
     else if (shm_addr->MODS.instrMode == 1)
@@ -463,17 +462,23 @@ main(int argc, char* argv[])
     
     // Mechanism states (positions, element names, etc.)
 
+    // Instrument dark hatch
+
     idev = getMechID((char*)"hatch");
     dd.DDname = side + "_MODSHatch";
     dd.DDkey = (string)shm_addr->MODS.state_word[idev];
     ddList.push_back(dd);
 
+    // Calibration tower
+    
     idev = getMechID((char*)"calib");
     dd.DDname = side + "_MODSCalibTower";
     dd.DDkey = (string)shm_addr->MODS.state_word[idev];
     ddList.push_back(dd);
 
     // scaled positions
+
+    // AGW stage x, y, and focus actuators
     
     idev = getMechID((char*)"agwx");
     dd.DDname = side + "_MODSAGWXPos";
@@ -492,6 +497,8 @@ main(int argc, char* argv[])
     sprintf(varStr,"%.3f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
+
+    // Blue collimator mirror TTFs
     
     idev = getMechID((char*)"bcolttfa");
     dd.DDname = side + "_MODSBlueCollTTFA";
@@ -518,6 +525,8 @@ main(int argc, char* argv[])
     sprintf(varStr,"%.1f",(colFoc/3.0));
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
+
+    // Blue camera focus
     
     idev = getMechID((char*)"bcamfoc");
     dd.DDname = side + "_MODSBlueCameraFocus";
@@ -525,6 +534,8 @@ main(int argc, char* argv[])
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
 
+    // Red collimator mirror TTFs
+    
     idev = getMechID((char*)"rcolttfa");
     dd.DDname = side + "_MODSRedCollTTFA";
     sprintf(varStr,"%.1f",shm_addr->MODS.pos[idev]*shm_addr->MODS.convf[idev]);
@@ -550,6 +561,8 @@ main(int argc, char* argv[])
     sprintf(varStr,"%.1f",(colFoc/3.0));
     dd.DDkey = (string)varStr;
     ddList.push_back(dd);
+
+    // Red camera focus
     
     idev = getMechID((char*)"rcamfoc");
     dd.DDname = side + "_MODSRedCameraFocus";
@@ -559,14 +572,19 @@ main(int argc, char* argv[])
 
     // named numerical positions
 
+    // AGW guide camera filter wheel
+    
     idev = getMechID((char*)"agwfilt");
     ipos = int(shm_addr->MODS.pos[idev]);
     dd.DDname = side + "_MODSAGWFilterName";
     dd.DDkey = (string)shm_addr->MODS.agwfilters[ipos];
     ddList.push_back(dd);
+
+    // Dichroic
     
     idev = getMechID((char*)"dichroic");
     ipos = int(shm_addr->MODS.pos[idev]);
+    dichPos = ipos;
     dd.DDname = side + "_MODSDichroicPosition";
     sprintf(varStr,"%d",ipos);
     dd.DDkey = (string)varStr;
@@ -576,8 +594,11 @@ main(int argc, char* argv[])
     dd.DDkey = (string)shm_addr->MODS.dichroicName[ipos];
     ddList.push_back(dd);
 
+    // Blue grating
+
     idev = getMechID((char*)"bgrating");
     ipos = int(shm_addr->MODS.pos[idev]);
+    bgratPos = ipos;
     dd.DDname = side + "_MODSBlueGratingPosition";
     sprintf(varStr,"%d",ipos);
     dd.DDkey = (string)varStr;
@@ -587,8 +608,18 @@ main(int argc, char* argv[])
     dd.DDkey = (string)shm_addr->MODS.bgrating[ipos];
     ddList.push_back(dd);
 
+    idev = getMechID((char*)"bgrtilt1");
+    ipos = int(shm_addr->MODS.pos[idev]);
+    dd.DDname = side + "_MODSBlueGratingTilt";
+    sprintf(varStr,"%d",ipos);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    // Red grating
+    
     idev = getMechID((char*)"rgrating");
     ipos = int(shm_addr->MODS.pos[idev]);
+    rgratPos = ipos;
     dd.DDname = side + "_MODSRedGratingPosition";
     sprintf(varStr,"%d",ipos);
     dd.DDkey = (string)varStr;
@@ -598,6 +629,15 @@ main(int argc, char* argv[])
     dd.DDkey = (string)shm_addr->MODS.rgrating[ipos];
     ddList.push_back(dd);
 
+    idev = getMechID((char*)"rgrtilt1");
+    ipos = int(shm_addr->MODS.pos[idev]);
+    dd.DDname = side + "_MODSRedGratingTilt";
+    sprintf(varStr,"%d",ipos);
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    // Blue camera filter wheel
+    
     idev = getMechID((char*)"bfilter");
     ipos = int(shm_addr->MODS.pos[idev]);
     dd.DDname = side + "_MODSBlueFilterPosition";
@@ -609,6 +649,8 @@ main(int argc, char* argv[])
     dd.DDkey = (string)shm_addr->MODS.bcamfilters[ipos];
     ddList.push_back(dd);
 
+    // Red camera filter wheel
+    
     idev = getMechID((char*)"rfilter");
     ipos = int(shm_addr->MODS.pos[idev]);
     dd.DDname = side + "_MODSRedFilterPosition";
@@ -635,6 +677,63 @@ main(int argc, char* argv[])
     dd.DDkey = (string)shm_addr->MODS.maskpos;
     ddList.push_back(dd);
 
+    // MODS Instrument Configuration: (Dual|Blue|Red) (Imaging|Grating|Prism|blueDisp redDisp)
+    //
+    // This requires checking multiple stats
+
+    dd.DDname = side + "_MODSInstConfig";
+    if (dichPos == 1) {
+      if (rgratPos > 0)
+	sprintf(varStr,"Red %s",gratMode[rgratPos-1]);
+      else
+	sprintf(varStr,"Red Unknown");
+    }
+    else if (dichPos == 2) {
+      if (bgratPos > 0)
+	sprintf(varStr,"Blue %s",gratMode[bgratPos-1]);
+      else
+	sprintf(varStr,"Blue Unknown");
+    }
+    else if (dichPos == 3) {
+      if (bgratPos == rgratPos) {
+	if (bgratPos > 0) 
+	  sprintf(varStr,"Dual %s",gratMode[bgratPos-1]);
+	else
+	  sprintf(varStr,"Dual Unknown");
+      }
+      else {
+	if (bgratPos > 0) 
+	  sprintf(varStr,"Dual %s",gratMode[bgratPos-1]);
+	else
+	  sprintf(varstr,"Dual Unknown");
+	if (rGratPos > 0)
+	  sprintf(varStr,"%s %s",varStr,gratMode[rgratPos-1]);
+	else
+	  sprintf(varStr,"%s Unknown",varStr);
+      }
+    }
+    else {
+      sprintf(varStar,"Unknown");
+    }
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
+    // Alarm States [future expansion]
+      
+    // Time stamps
+
+    getUTCTime(&utc);
+    t0 = SysTimestamp();
+
+    dd.DDname = side + "_MODSUpdateTime";
+    dd.DDkey = (string)utc.ISO;
+    ddList.push_back(dd);
+
+    dd.DDname = side + "_MODSTimeStamp";
+    sprintf(varStr,"%ld",int(t0));
+    dd.DDkey = (string)varStr;
+    ddList.push_back(dd);
+
     // Set the DD parameters
     
     res = iif->SetParameter(ddList);
@@ -643,9 +742,6 @@ main(int argc, char* argv[])
       keepGoing = 0;
     }
 
-    //dt = SysTimestamp() - t0;
-    //printf("%s Updated DD: time=%.4f sec\n",utc.ISO,dt);
- 
     // sleep for lbt.cadence if we didn't get an error
 
     if (keepGoing) sleep(lbt.cadence);
