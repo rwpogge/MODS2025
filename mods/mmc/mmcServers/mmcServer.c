@@ -1,7 +1,7 @@
 /*!
-  \mainpage mmcService - Server for Mods Mechanism Controller Service
+  \mainpage mmcServer - MODS Mechanism Control server
  
-  \author Staff, OSU Astronomy Dept. (rgonzale@astronomy.ohio-state.edu)
+  \authors Ray Gonzalez (rgonzale@astronomy.ohio-state.edu, retired), R. Pogge (pogge.1@osu.edu)
   \date 2006 March 16
  
   \section Usage
@@ -16,12 +16,12 @@
             (6) go back to step (1)
 
   Usage: 
-  mmcService &  - Default Port = 10435
-  mmcService [PortNumber] &
+  mmcServer &  - Default Port = 10435
+  mmcServer [PortNumber] &
 
   \section Introduction
  
-  mmcService is a server used by the MODS mechanism clients
+  mmcServer is a server used by the MODS mechanism clients
   It accepts commands from client(s) and moves mechanisms.
   This is for the MODS mechanism interface library.
 
@@ -135,14 +135,14 @@ void nonblock(int sockfd)
   opts = fcntl(sockfd, F_GETFL);
   if(opts < 0)
     {
-      mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcService: fcntl(F_GETFL) failed");
+      mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: fcntl(F_GETFL) failed");
       perror("fcntl(F_GETFL)\n");
       exit(1);
     }
   opts = (opts | O_NONBLOCK);
   if(fcntl(sockfd, F_SETFL, opts) < 0)
     {
-      mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcService: fcntl(F_SETFL) failed");
+      mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: fcntl(F_SETFL) failed");
       perror("fcntl(F_SETFL)\n");
       exit(1);
     }
@@ -281,14 +281,14 @@ void *thread_init_func(void *arg)
 	    }
 
 	    /* 
-	       This is a way of terminating the mmcServices via a client
+	       This is a way of terminating the mmcServers via a client
 	       o close all MicroLynx Controller(MLC) communications(COMM)
-	       o exit the mmcService
+	       o exit the mmcServer
 	    */
 
 	    /* 
 	     * Close all Host to MicroLynx communications 
-	     * and stop the mmcServices except the AGW 
+	     * and stop the mmcServers except the AGW 
 	     */
 	    if(client.KeepGoing==0) { // Close all MLC COMM. except AGW
 	      for(unit=0;unit<MAX_ML-1;unit++) {
@@ -299,10 +299,10 @@ void *thread_init_func(void *arg)
 		  if(unit!=MAX_ML-1)
 		    CloseTTYPort(&shm_addr->MODS.commport[unit]);
 	      }
-	      isisStatusMsg((char*)"mmcService communication closed and mmcService halted");
-	      mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcService communication closed and mmcService halted");
+	      isisStatusMsg((char*)"mmcServer communication closed and mmcServer halted");
+	      mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer communication closed and mmcServer halted");
 	      memset(buf,0,sizeof(buf));
-	      exit(0); // exit mmcService
+	      exit(0); // exit mmcServer
 	    }
 
 	    /* Close all Host to MicroLynx communications except the AGW */
@@ -314,7 +314,7 @@ void *thread_init_func(void *arg)
 		else
 		  CloseTTYPort(&shm_addr->MODS.commport[unit]);
 	      }
-	      isisStatusMsg((char*)"mmcService communication service to mechanisms closed");
+	      isisStatusMsg((char*)"mmcServer communication service to mechanisms closed");
 	      mmcLOGGER(shm_addr->MODS.LLOG,(char*)"agwService communication service to mechanisms closed");
 	      memset(buf,0,sizeof(buf));
 	      appClient.KeepGoing=2; // close AGW comm.
@@ -323,7 +323,7 @@ void *thread_init_func(void *arg)
 	    }
 
 	    /* 
-	     * Open mmcServices restoring communications from Host to
+	     * Open mmcServers restoring communications from Host to
 	     * MicroLynx, except the AGW 
 	     */
 	    if(client.KeepGoing==3) {
@@ -358,7 +358,7 @@ void *thread_init_func(void *arg)
 
 	    }
 
-	    /* Reconfigure mmcServices and restore communications 
+	    /* Reconfigure mmcServers and restore communications 
 	     * except the AGW 
 	     */
 	    if(client.KeepGoing==4) {
@@ -494,7 +494,7 @@ int main(int argc, char *argv[])
 
   mmcLOGGER(shm_addr->MODS.LLOG,(char*)"######");
   mmcLOGGER(shm_addr->MODS.LLOG,(char*)"Mechanism controller services have been (re)started");
-  mmcLOGGER(shm_addr->MODS.LLOG,(char*)"(mmcService and agwServer)"); // now lists services we use at LBTO
+  mmcLOGGER(shm_addr->MODS.LLOG,(char*)"(mmcServer and agwServer)"); // now lists services we use at LBTO
   mmcLOGGER(shm_addr->MODS.LLOG,(char*)"######");
 
   for(unit=0;unit<MAX_ML-1;unit++) { // Make MicroLynx HOST inactive or active!
@@ -537,11 +537,11 @@ int main(int argc, char *argv[])
   }
   
   if (client.useISIS) {
-    cout << "Started mmcService as\nISIS client node " << client.ID 
+    cout << "Started mmcServer as\nISIS client node " << client.ID 
 	 << " on " << client.Host << " port " << client.Port << " Use:" 
 	 << client.useISIS << endl;
   }  else {
-    cout << "Started mmcService as standalone " << client.ID 
+    cout << "Started mmcServer as standalone " << client.ID 
 	 << " on "  << client.Host << " port " << client.Port  << " Use:" 
 	 << client.useISIS << endl;
   }
@@ -565,7 +565,7 @@ int main(int argc, char *argv[])
 
   utilID=getWagoID((char*)"util",temp); // Get Utility Box ID
   if (utilID==-1) {
-    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcService: Utility Box (UTIL) Identification not found");
+    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: Utility Box (UTIL) Identification not found");
   }
 
   allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,513,onoff,1);
@@ -582,7 +582,7 @@ int main(int argc, char *argv[])
 
   llbID=getWagoID((char*)"llb",temp); // Get LLB box ID
   if(llbID==-1) {
-    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcService: Lamp/Laser Box (LLB) Identification not found");
+    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: Lamp/Laser Box (LLB) Identification not found");
   }
 
   allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,515,onoff,1);
@@ -602,7 +602,7 @@ int main(int argc, char *argv[])
   ieb1ID=getWagoID((char*)"ieb2",temp); // Get IEB ID
 
   if(ieb1ID==-1) {
-    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcService: Blue Instrument Electronics Box (IEB_B) Identification not found");
+    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: Blue Instrument Electronics Box (IEB_B) Identification not found");
     return -1;
   }
 
@@ -622,7 +622,7 @@ int main(int argc, char *argv[])
   
   ieb2ID=getWagoID((char*)"ieb1",temp); // Get IEB ID
   if(ieb2ID==-1) {
-    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcService: Red Instrument Electronics Box (IEB_R) Identification not found");
+    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: Red Instrument Electronics Box (IEB_R) Identification not found");
   }
 
   allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb2ID],1,514,onoff,1);
@@ -678,7 +678,7 @@ int main(int argc, char *argv[])
 
   memset(buf,0,sizeof(buf));
   if( (listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-    sprintf(buf,"mmcService: listenfd - Socket failed %s",strerror(errno));
+    sprintf(buf,"mmcServer: listenfd - Socket failed %s",strerror(errno));
     mmcLOGGER(shm_addr->MODS.LLOG,buf);
     perror("sockfd\n");
     exit(1);
@@ -692,9 +692,9 @@ int main(int argc, char *argv[])
   srv.sin_port = htons(PORT);
 
   if( bind(listenfd, (struct sockaddr *) &srv, sizeof(srv)) < 0) {
-    sprintf(buf,"mmcService: Socket binding failed %s",strerror(errno));
+    sprintf(buf,"mmcServer: Socket binding failed %s",strerror(errno));
     mmcLOGGER(shm_addr->MODS.LLOG,buf);
-    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcService: Socket binding failed");
+    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: Socket binding failed");
     perror("bind\n");
     exit(1);
   }
@@ -748,7 +748,7 @@ int main(int argc, char *argv[])
       if (FD_ISSET(client.FD, &read_fd)) {  // Client socket input
 	memset(buf,0,sizeof(buf));
 	if (charReceived=ReadClientSocket(&client,buf)>0) {
-	  if (client.isVerbose) cout << "mmcService: " << buf << endl;
+	  if (client.isVerbose) cout << "mmcServer: " << buf << endl;
 	  readFromListen_port=2;
 	  if(shm_addr->MODS.mmcServerCounter >= MAX_ML-2) {
 	    shm_addr->MODS.mmcServerCounter=0;
@@ -835,16 +835,16 @@ HandleInt(int signalValue)
     else
       if(unit!=MAX_ML-1) {
 	CloseTTYPort(&shm_addr->MODS.commport[unit]);
-	sprintf(dummy,"mmcService %s connection CLOSED",
+	sprintf(dummy,"mmcServer %s connection CLOSED",
 		shm_addr->MODS.who[unit]);
 	mmcLOGGER(shm_addr->MODS.LLOG,dummy);
-	cout << "mmcService " << shm_addr->MODS.who[unit] 
+	cout << "mmcServer " << shm_addr->MODS.who[unit] 
 	     << " CLOSED" << endl;
       }
     MilliSleep(10);
   }
-  mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServices have been halted by a killall");
-  cout << "mmcServices have been halted by a 'killall -s SIGINT mmcService'"
+  mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServers have been halted by a killall");
+  cout << "mmcServers have been halted by a 'killall -s SIGINT mmcServer'"
        << endl;
 
   memset(buf,0,sizeof(buf));
@@ -858,7 +858,7 @@ HandleInt(int signalValue)
 
   client.KeepGoing = 0;
 
-  exit(0); // exit mmcService
+  exit(0); // exit mmcServer
 }
 
 // The use of this functions avoids the generation of "zombie" processes.

@@ -1,12 +1,9 @@
 #
 VERSION = 3
-SUBLEVEL = 1
+SUBLEVEL = 2
 PATCHLEVEL = 0
 MMC_VERSION = $(VERSION).$(SUBLEVEL).$(PATCHLEVEL)
 export VERSION SUBLEVEL PATCHLEVEL MMC_VERSION
-#
-# Mechanism Simulator
-# Real Mechanisms
 #
 # 2025 June 20 - AlmaLinux 9 port [rwp/osu]
 #
@@ -54,7 +51,7 @@ execs:
 	done
 #
 install:
-	\cp -f bin/mmcService /usr/local/bin/.
+	\cp -f bin/mmcServer /usr/local/bin/.
 	\cp -f bin/mmcTimer /usr/local/bin/.
 	\cp -f bin/redIMCS /usr/local/bin/.
 	\cp -f bin/blueIMCS /usr/local/bin/.

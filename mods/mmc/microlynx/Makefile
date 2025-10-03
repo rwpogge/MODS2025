@@ -1,5 +1,7 @@
 # ISL MicroLYNX Client
-# all purpose microLynx client that works with the mmcService
+# all purpose microLynx client that works with the mmcServer
+#
+# 2025 Oct 3 - deprecated [rwp/osu]
 #
 ROOTDIR = /home/dts/mods
 ISISDIR = /home/dts/ISIS

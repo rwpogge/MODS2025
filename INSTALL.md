@@ -1,6 +1,6 @@
 # MODS Instrument Control and Data-Taking System Installation
 
-**Updated: 2025 Sept 22 [rwp/osu]**
+**Updated: 2025 Oct 3 [rwp/osu]**
 
 ## Preparations
 
@@ -249,7 +249,7 @@ cd ../modsUI
 qmake -o Makefile
 make clean
 make
-cp modsUI ~/bin/
+cp modsUI ~/mods/bin/
 ```
 
 #### imsTool build (mods1 and mods2)
@@ -306,7 +306,7 @@ cd /home/dts/mods/bin
 sudo cp vueinfo /usr/local/bin
 sudo cp mlcRecover /usr/local/bin
 ```
-**DO NOT** copy `mmcService`, `agwService`, `blueIMCS`, or `redIMCS` to `/usr/local/bin/`!
+**DO NOT** copy `mmcServer`, `agwService`, `blueIMCS`, or `redIMCS` to `/usr/local/bin/`!
 
 ## Observatory NFS mounts
 

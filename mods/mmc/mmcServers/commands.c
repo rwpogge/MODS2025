@@ -187,7 +187,7 @@ cmd_quit(char *args, MsgType msgtype, char *reply)
 
   if (msgtype == EXEC) {
     client.KeepGoing=0;
-    sprintf(reply,"QUIT mmcService=DISABLED MODE=OFFLINE");
+    sprintf(reply,"QUIT mmcServer=DISABLED MODE=OFFLINE");
   }
   else {
     strcpy(reply,"QUIT Cannot execute quit command - operation not allowed except as EXEC:");
@@ -317,7 +317,7 @@ cmd_version(char *args, MsgType msgtype, char *reply)
     sprintf(reply,"%s agwServer %s",who_selected,&dummy[6]);
 
   } else {
-    sprintf(reply,"%s mmcService Version=%s CompileDate=%s CompileTime=%s",
+    sprintf(reply,"%s mmcServer Version=%s CompileDate=%s CompileTime=%s",
 	    who_selected,APP_VERSION,APP_COMPDATE,APP_COMPTIME);
   }
   return CMD_OK;
@@ -3142,7 +3142,7 @@ cmd_open(char *args, MsgType msgtype, char *reply)
       return CMD_ERR;
     }
 
-    sprintf(reply,"%s All mmcService and agwServer communications are opened",
+    sprintf(reply,"%s All mmcServer and agwServer communications are opened",
 	    who_selected);
 
   } else if(!strcasecmp(argbuf,"MMC")) { // do them all
@@ -3161,7 +3161,7 @@ cmd_open(char *args, MsgType msgtype, char *reply)
 	}
       }
     }
-    sprintf(reply,"%s mmcService communications are opened",who_selected);
+    sprintf(reply,"%s mmcServer communications are opened",who_selected);
 
   } else if(!strcasecmp(argbuf,"AGW")) { // do them all
 
@@ -3257,7 +3257,7 @@ cmd_close(char *args, MsgType msgtype, char *reply)
       return CMD_ERR;
     }
 
-    sprintf(reply,"%s All mmcService communications are closed",who_selected);
+    sprintf(reply,"%s All mmcServer communications are closed",who_selected);
 
   } else {
 

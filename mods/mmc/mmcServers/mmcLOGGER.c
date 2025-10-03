@@ -69,7 +69,7 @@ getDateTime(void)
 }
 
 /*!
-  \brief mmcService Logger
+  \brief mmcServer Logger
 
   Reads system's UTC time with getDataTime() function and logs 
   Service infomation to mmcLogging.log

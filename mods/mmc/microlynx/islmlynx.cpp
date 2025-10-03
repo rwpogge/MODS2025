@@ -1,38 +1,39 @@
 /*!
   \mainpage islmlynx - ISLMicroLYNX All purpose client for MODS 
 
-  \author Staff, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu)
+  \author Ray Gonzalez, OSU Dept. of Astronomy (rgonzale@astronomy.ohio-state.edu), R. Pogge (pogge.1@osu.edu)
   \date 2008 May 01
   \section Usage
 
   Usage: 
   islmlynx ?[IP addr]? ?[Port]? [command|help]
- \c command - is the command used by the Server mmcService to Query/Set
+ \c command - is the command used by the Server mmcServer to Query/Set
  
-  Where: \c IP addr - is the Host IP that the mmcServices run
-         \c Port    - is the Port Number that the mmcServices run
-         \c command - is the command used by the mmcService to Query/Set
+  Where: \c IP addr - is the Host IP that the mmcServers run
+         \c Port    - is the Port Number that the mmcServers run
+         \c command - is the command used by the mmcServer to Query/Set
                       wago/microLynx mechanisms
 	 \c help    - give available commands that can be called.
 
   \section Introduction
-    o islmlynx is a system call for communicating with the mmcService.
-    o mmcService communicates with all MODS mechanisms and WAGOs.
+  * islmlynx is a system call for communicating with the mmcServer.
+  * mmcServer communicates with all MODS mechanisms and WAGOs.
     
-    o islmlynx <-> mmcService <-> microLynx controller <-> mechanism motor
-    o islmlynx <-> mmcService <-> wago <-> WAGO parameters
+  * islmlynx <-> mmcServer <-> microLynx controller <-> mechanism motor
+  * islmlynx <-> mmcServer <-> wago <-> WAGO parameters
 
-    o user and/or script hands a command to islmlynx
-    o islmlynx passes command to the mmcService.
-    o mmcService commands the wago/microLynx controller. 
-    o wago/microLynx controller Query/Set wago parameter/mechanism motor.
-    o wago/microLynx controller returns information to the mmcService.
-    o mmcService returns information to islmlynx.
-    o islmlynx returns information to user and/or script screen.
+  * user and/or script hands a command to islmlynx
+  * islmlynx passes command to the mmcServer.
+  * mmcServer commands the wago/microLynx controller. 
+  * wago/microLynx controller Query/Set wago parameter/mechanism motor.
+  * wago/microLynx controller returns information to the mmcServer.
+  * mmcServer returns information to islmlynx.
+  * islmlynx returns information to user and/or script screen.
 
 
 <pre>
 2008 May 01 - new application [rdg]
+2025 Oct 03 - legacy application, deprecated [rwp/osu]
 </pre>
 
 \todo
@@ -43,7 +44,7 @@
 
 /*!
   \file islmlynx.c
-  \brief islmlynx is an all purpose client that works with mmcService
+  \brief islmlynx is an all purpose client that works with mmcServer
 */
 
 #include "ISLSocket.h"        // For Socket and SocketException
@@ -122,7 +123,7 @@ int main(int argc, char *argv[]) {
     
     if((bytesReceived=(sock.recv(replyBuffer,4096)))<= 0) { // Receive
       cerr << "[" << bytesReceived 
-	   << "]islmlynx, Segmentation Fault from mmcService at "
+	   << "]islmlynx, Segmentation Fault from mmcServer at "
 	   << cmdString
 	   << endl;
       replyBuffer[bytesReceived] = '\0';   // Terminate the string!

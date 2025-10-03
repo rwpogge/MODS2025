@@ -1,10 +1,11 @@
 #
-# Makefile for mmcService
+# Makefile for mmcServer
 #
-# "make" to build the mmcService executable.
+# "make" to build the mmcServer executable.
 #
 # OSU Astronomy Dept.
-# rgonzale@astronomy.ohio-state.edu, pogge.1@osu.edu
+# Ray Gonzalez (rgonzale@astronomy.ohio-state.edu - retired)
+# Rick Pogge (pogge.1@osu.edu)
 # date: 2006 February 9
 #
 # Modification History:
@@ -14,7 +15,7 @@
 #
 ROOTDIR     = /home/dts/mods
 ISISDIR     = /home/dts/ISIS
-VERSION     = mmcService v3.1.0
+VERSION     = mmcServer v3.2.0
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 
@@ -31,7 +32,7 @@ VFLAGS      = -DAPP_VERSION='"$(VERSION)"' -DAPP_COMPDATE='"$(COMPDATE)"' \
 
 LIBS        = -L$(ISISDIR)/lib -L$(ROOTDIR)/ulib -lislutils -linstrutils -lisis -llogutils -lmmcutils -lagwutils -lmodbus -lisltimes -lpthread
 
-LFLAGS      = -o mmcService
+LFLAGS      = -o mmcServer
 RFLAGS      = -o mlcRecover
 QBFLAGS     = -o blueIMCS
 QRFLAGS     = -o redIMCS
@@ -41,10 +42,10 @@ OBJS        = loadconfig.o commands.o checkForError.o mmcLOGGER.o
 .c.o:	
 	    $(CC) $(CFLAGS) $(VFLAGS) $*.c
 
-all:        mmcService mlcRecover blueIMCS redIMCS install clean
+all:        mmcServer mlcRecover blueIMCS redIMCS install clean
 
-mmcService: $(OBJS) mmcService.c
-	    $(CC) $(LFLAGS) $(VFLAGS) mmcService.c $(OBJS) $(LIBS) $(INCS)
+mmcServer: $(OBJS) mmcServer.c
+	    $(CC) $(LFLAGS) $(VFLAGS) mmcServer.c $(OBJS) $(LIBS) $(INCS)
 
 mlcRecover: $(OBJS) mlcRecover.cpp
 	    $(CC) $(RFLAGS) $(VFLAGS) mlcRecover.cpp $(LIBS) $(INCS)
@@ -61,8 +62,8 @@ clean:
 # install copies into local and "public" bin
 
 install:
-	    \cp -f mmcService $(ROOTDIR)/bin
-	    \mv -f mmcService $(BINDIR)
+	    \cp -f mmcServer $(ROOTDIR)/bin
+	    \mv -f mmcServer $(BINDIR)
 	    \cp -f mlcRecover $(ROOTDIR)/bin
 	    \mv -f mlcRecover $(BINDIR)
 	    \cp -f blueIMCS   $(ROOTDIR)/bin
