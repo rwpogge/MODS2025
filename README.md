@@ -1,7 +1,7 @@
 # MODS2025
 Version 1.3.1
 
-Last Update: 2025 Oct 2 [rwp/osu]
+Last Update: 2025 Oct 3 [rwp/osu]
 
 Lead: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
@@ -21,7 +21,7 @@ However, it is taking on many of the structures of the real thing, so not totall
   * `mods` - MODS instrument control and data-acquisition system
   * `azcam` - AzCam server for the MODS Archon CCD controllers
   * `modsPerl` - MODS perl scripts for target acquisition and data taking and related tasks.
-  * `Scripts` - MODS system startup and status scripts (coming soon...)
+  * `Scripts` - MODS system startup and status scripts (work in progress)
   * `Sandbox` - place to work on test codes and other bits we are using, the action is in the subfolders but read before you use
   * `Config` - released runtime configuration files (coming soon...)
 
