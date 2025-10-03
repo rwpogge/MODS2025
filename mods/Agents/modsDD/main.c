@@ -706,7 +706,7 @@ main(int argc, char* argv[])
 	  sprintf(varStr,"Dual %s",gratMode[bgratPos-1]);
 	else
 	  sprintf(varStr,"Dual Unknown");
-	if (rGratPos > 0)
+	if (rgratPos > 0)
 	  sprintf(varStr,"%s %s",varStr,gratMode[rgratPos-1]);
 	else
 	  sprintf(varStr,"%s Unknown",varStr);
