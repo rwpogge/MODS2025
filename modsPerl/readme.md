@@ -57,7 +57,14 @@ With the 2025 Archon CCD controller update, we have retired the
 `modsTemps` to query environmental data (temperatures and pressures).
 All MODS environmental sensor data are now uploaded into the
 observatory Data Dictionary and accessible through observatory tools
-for reading the DD
+for reading the DD.
+
+### acq/execBinoMODS
+
+The `acqBinoMODS` and `execBinoMODS` scripts for executing science target
+acquisition and observation scripts have been moved to the [../Scripts](Scripts)
+folder and are being rewritten.  They really didn't belong in this repository
+as they are not Perl scripts.
 
 ## Dependences
 
