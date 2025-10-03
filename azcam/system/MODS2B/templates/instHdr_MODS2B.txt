@@ -52,6 +52,7 @@ DDEntries:
   R_MODSBlueCollFocus:         ["COLFOCUS","float","Blue Collimator Focus [microns]"]
   R_MODSBlueGratingPosition:   ["GRATING","int","Blue Grating Turret Position"]
   R_MODSBlueGrating:           ["GRATNAME","str","Blue Grating Turret Disperser Name"]
+  R_MODSBlueGratingTilt:       ["GRATTILT","int","Blue Grating Tilt [microns]"]
   R_MODSBlueCameraFocus:       ["CAMFOCUS","float","Blue Camera Focus [microns]"]
   R_MODSBlueFilterPosition:    ["FILTER","int","Blue Camera Filter Wheel Position"]
   R_MODSBlueFilter:            ["FILTNAME","str","Blue Camera Filter Name"]

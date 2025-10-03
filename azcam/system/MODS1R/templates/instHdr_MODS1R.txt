@@ -52,6 +52,7 @@ DDEntries:
   L_MODSRedCollFocus:          ["COLFOCUS","float","Red Collimator Focus [microns]"]
   L_MODSRedGratingPosition:    ["GRATING","int","Red Grating Turret Position"]
   L_MODSRedGrating:            ["GRATNAME","str","Red Grating Turret Disperser Name"]
+  L_MODSRedGratingTilt:        ["GRATTILT","int","Red Grating Tilt [microns]"]
   L_MODSRedCameraFocus:        ["CAMFOCUS","float","Red Camera Focus [microns]"]
   L_MODSRedFilterPosition:     ["FILTER","int","Red Camera Filter Wheel Position"]
   L_MODSRedFilter:             ["FILTNAME","str","Red Camera Filter Name"]

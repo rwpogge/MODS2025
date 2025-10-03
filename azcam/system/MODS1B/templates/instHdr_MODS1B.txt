@@ -1,7 +1,7 @@
 #
 # MODS1B instrument header template entries for MODS1 at left (SX) direct Gregorian
 #
-# Updated: 2025 Sept 23 [rwp/osu]
+# Updated: 2025 Oct 3 [rwp/osu]
 #
 # YAML format
 #
@@ -52,6 +52,7 @@ DDEntries:
   L_MODSBlueCollFocus:         ["COLFOCUS","float","Blue Collimator Focus [microns]"]
   L_MODSBlueGratingPosition:   ["GRATING","int","Blue Grating Turret Position"]
   L_MODSBlueGrating:           ["GRATNAME","str","Blue Grating Turret Disperser Name"]
+  L_MODSBlueGratingTilt:       ["GRATTILT","int","Blue Grating Tilt [microns]"]
   L_MODSBlueCameraFocus:       ["CAMFOCUS","float","Blue Camera Focus [microns]"]
   L_MODSBlueFilterPosition:    ["FILTER","int","Blue Camera Filter Wheel Position"]
   L_MODSBlueFilter:            ["FILTNAME","str","Blue Camera Filter Name"]
