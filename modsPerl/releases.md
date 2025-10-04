@@ -6,6 +6,7 @@
  * Added the LBTO mountain network NSF-mounted common path `/lbt/lbto/mods/lib/modsPerl` to the perl `use lib` path for running these scripts on the mountain network for observations.
  * Formally retired the `modsTemps.pl` script now that we have all MODS environmental sensor data reported to the observatory Data Dictionary (DD). Third-party applications requiring access to environmental sensor data must query the DD.
  * Changed blue color text to cyan for better visibility on dark-mode terminals, like those that will be used for running observing scripts.
+ * `isisCmd` now checks the computer hostname, and if on one of the MODS instrument servers (`mods1` or `mods2`) it sets the default instrument instance appropriately. Convenience as we rarely talk to MODS2 from the MODS1 server.  However, if you use `--mods2` while running on `mods1`, it will override the default and properly route the command.  If the host is neither server, it requires an explicit `--modsN` option.
  * `acqBinoMODS` and `execBinoMODS` have been "rehomed" to the [Scripts](../Scripts) repository to prepare new versions that use `tmux` sessions to multiplex observing script execution.  They really didn't belong here since they aren't written in perl.
 
 ## 2025 Sep 10: Archon controller update
