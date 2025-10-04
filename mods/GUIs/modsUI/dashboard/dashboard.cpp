@@ -682,7 +682,7 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
 	   cmdWord.compare("gprobe"    ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("gpoffset"  ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("gpfocus"   ,Qt::CaseInsensitive)==0 ||
-           cmdWord.compare("slitmask"  ,Qt::CaseInsensitive)==0 ||
+	   cmdWord.compare("slitmask"  ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("mselect"   ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("minsert"   ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("readmask"  ,Qt::CaseInsensitive)==0 ||
@@ -691,6 +691,7 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
 	   cmdWord.compare("irlaser"   ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("vislaser"  ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("ieb"       ,Qt::CaseInsensitive)==0 ||
+	   cmdWord.compare("heb"       ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("llb"       ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("util"      ,Qt::CaseInsensitive)==0 ||
 	   cmdWord.compare("istatus"   ,Qt::CaseInsensitive)==0 ||
