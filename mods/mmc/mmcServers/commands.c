@@ -2860,7 +2860,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     sprintf(reply,"%s BHEBTEMP=%.1f",reply,blueHEBTemperature);
     sprintf(reply,"%s BDEWTEMP=%.1f",reply,blueDewarTemperature);
 
-  } else if (!strcasecmp(who_selected,"HEB")) {
+  }
+  else if (!strcasecmp(who_selected,"HEB")) {
 
     memset(cmd_instruction,0,sizeof(cmd_instruction));
 
@@ -2920,13 +2921,11 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     
     // second argument tells us what to do.  If missing it is an implicit STATUS query
 
-    if (strlen(args) > 1) {
-      GetArg(args,2,argbuf);
+    GetArg(args,2,argbuf);
+    if (strlen(argbuf) > 1)
       StrUpper(argbuf);
-    }
-    else { 
+    else
       strcpy(argbuf,"STATUS");
-    }
     
     if (!strcasecmp(argbuf,"STATUS") || strlen(args) <=1) {
 
@@ -2969,7 +2968,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       sprintf(reply,"%s DEWTEMP_%c=%.1f",reply,hebChan,dewarTemp);
       return CMD_OK;
       
-    } else if (!strcasecmp(argbuf,"ARCHON")) {
+    }
+    else if (!strcasecmp(argbuf,"ARCHON")) {
 
       // Archon power relay is normally open
       
@@ -2978,26 +2978,24 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       // If no additional arguments, implicit power status query
       // otherwise ON or OFF allowed
       
-      if (strlen(args) > 2) {
-	GetArg(args,3,argbuf);
-	if (strlen(argbuf) > 0) {
-	  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	  allHEBPower = devOnOff[0];
-	  if (!strcasecmp(argbuf,"ON")) {
-	    devOnOff[0]=(short)(allHEBPower | 1);
-	    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	  }
-	  else if (!strcasecmp(argbuf,"OFF")) {
-	    devOnOff[0]=(short)(allHEBPower ^ 1);
-	    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	  }
-	  else {
-	    sprintf(reply,"%s unrecognized power state %s - must be ON or OFF",reply,argbuf);
-	    return CMD_ERR;
-	  }
+      GetArg(args,3,argbuf);
+      if (strlen(argbuf) > 0) {
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	allHEBPower = devOnOff[0];
+	if (!strcasecmp(argbuf,"ON")) {
+	  devOnOff[0]=(short)(allHEBPower | 1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	}
-	MilliSleep(200);
+	else if (!strcasecmp(argbuf,"OFF")) {
+	  devOnOff[0]=(short)(allHEBPower ^ 1);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	}
+	else {
+	  sprintf(reply,"%s unrecognized power state %s - must be ON or OFF",reply,argbuf);
+	  return CMD_ERR;
+	}
       }
+      MilliSleep(200);
 
       ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
       allHEBPower = devOnOff[0];
@@ -3019,7 +3017,8 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	  shm_addr->MODS.blueArchonState = 0;
       }
 
-    } else if (!strcasecmp(argbuf,"IGPOWER")) {
+    }
+    else if (!strcasecmp(argbuf,"IGPOWER")) {
       
       // Ionization gauge power relay is normally open
       
@@ -3027,26 +3026,24 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
       // If no additional arguments, implicit power status query otherwise ON or OFF allowed
       
-      if (strlen(args) > 2) {
-	GetArg(args,3,argbuf);
-	if (strlen(argbuf) > 0) {
-	  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	  allHEBPower = devOnOff[0];
-	  if (!strcasecmp(argbuf,"ON")) {
-	    devOnOff[0]=(short)(allHEBPower | 2);
-	    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	  }
-	  else if (!strcasecmp(argbuf,"OFF")) {
-	    devOnOff[0]=(short)(allHEBPower ^ 2);
-	    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	  }
-	  else {
-	    sprintf(reply,"%s unrecognized power state %s - must be ON or OFF",reply,argbuf);
-	    return CMD_ERR;
-	  }
+      GetArg(args,3,argbuf);
+      if (strlen(argbuf) > 0) {
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	allHEBPower = devOnOff[0];
+	if (!strcasecmp(argbuf,"ON")) {
+	  devOnOff[0]=(short)(allHEBPower | 2);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
 	}
-	MilliSleep(200);
+	else if (!strcasecmp(argbuf,"OFF")) {
+	  devOnOff[0]=(short)(allHEBPower ^ 2);
+	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	}
+	else {
+	  sprintf(reply,"%s unrecognized power state %s - must be ON or OFF",reply,argbuf);
+	  return CMD_ERR;
+	}
       }
+      MilliSleep(200);
 
       ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
       allHEBPower = devOnOff[0];
@@ -3079,7 +3076,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
     }
     else {
-      sprintf(reply,"%s invalid option '%s': usage: HEB R|B [[archon|ipower] on|off]",who_selected,argbuf); 
+      sprintf(reply,"%s invalid option '%s': usage: HEB R|B [[archon|igpower] on|off]",who_selected,argbuf); 
       return CMD_ERR;
       
     }
