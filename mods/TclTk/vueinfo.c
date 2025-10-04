@@ -195,7 +195,8 @@ main(int argc, char *argv[])
   tm=gmtime(&ti);
 
   // Look! for HELP
-  if(!strcasecmp(what,"HELP")) {
+  
+  if (!strcasecmp(what,"HELP")) {
     ierr=0;
     strcpy(cnam,argv[2]);
     i=strlen(cnam);
@@ -206,9 +207,10 @@ main(int argc, char *argv[])
     strcat(buff,runstr);
     system(buff);
     exit(0);
-
+  }
   // Load a PLC
-  } else if(!strcasecmp(what,"LOAD")) {
+
+  else if (!strcasecmp(what,"LOAD")) {
     ierr=0;
     strcpy(cnam,argv[2]);
     i=strlen(cnam);
@@ -221,106 +223,10 @@ main(int argc, char *argv[])
     printf("%s\n",buff);
     system(buff);
     exit(0);
+  }
+  // ISL real-time offsets
 
-/*
-    // What source is being tracked
-  } else if(!strcasecmp(what,"SOUR")) {
-    sprintf(buff,"%.10s",shm_addr->lsorna);
-    if(buff[0]==' ')
-      sprintf(buff,"%.10s","NO SOURCE ");
-    buff[strlen(buff)]='\0';
-    printf("%s",buff);
-    exit(0);
-
-    // Source position
-  } else if(!strcasecmp(what,"POS")) {
-    if (memcmp(shm_addr->lsorna,"azel      ",10)==0 ||
-	memcmp(shm_addr->lsorna,"azeluncr  ",10)==0 ) {
-      posdeg = 1; 
-      // Convert az/el in common to actual ra/dec
-      cnvrt(2,shm_addr->radat,shm_addr->decdat,&raxx,&dcxx,it,shm_addr->alat,shm_addr->wlong);
-    } else if (memcmp(shm_addr->lsorna,"stow      ",10)==0 ||
-	       memcmp(shm_addr->lsorna,"service   ",10)==0 ||
-	       memcmp(shm_addr->lsorna,"hold      ",10)==0 ||
-	       memcmp(shm_addr->lsorna,"disable   ",10)==0 ||
-	       memcmp(shm_addr->lsorna,"idle      ",10)==0 ||
-	       memcmp(shm_addr->lsorna,"          ",10)==0)  {
-      posdeg = 1; 
-      raxx = 0.0;
-      dcxx = 0.0;
-    } else if (memcmp(shm_addr->lsorna,"xy        ",10)==0) {
-      posdeg = 1; 
-      // Convert x/y in common to actual ra/dec
-      cnvrt(7,shm_addr->radat,shm_addr->decdat,&raxx,&dcxx,it,
-	    shm_addr->alat,shm_addr->wlong);
-    }
-
-    if(!strcasecmp(what,"POSR")) {
-
-      if (posdeg == 1) 
-	pos_ra = raxx*12.0/M_PI/206265.0;
-      else
-	pos_ra = shm_addr->ra50*12.0/M_PI;
-
-      irah=(int)(pos_ra+.000001);
-      iram=(int)((pos_ra-irah)*60.0);
-      ras=(pos_ra-irah-iram/60.0)*3600.0;
-
-      if (posdeg == 1) {
-	if (dcxx < 0) negpos = 0;
-	else negpos = 1;
-	pos_dec=fabs(dcxx)*180.0/M_PI; 
-      } else {
-	if (dcxx < 0) negpos = 0;
-	else negpos = 1;
-	pos_dec=fabs(shm_addr->dec50)*180.0/M_PI; 
-      }
-
-      idecd=(int)(pos_dec+.00001);
-      idecm=(int)((pos_dec-idecd)*60.0);
-
-      if (shm_addr->dec50 < 0 )
-	if( negpos )
-	  sprintf(buff,"RA=%02dh %02dm %04.1fs, DEC=%02dd %02dm (    )",
-		  irah,iram,ras,idecd,idecm);
-	else
-	  sprintf(buff,"RA=%02dh %02dm %04.1fs, DEC=-%02dd %02dm (    )",
-		  irah,iram,ras,idecd,idecm);
-      else
-	if( negpos )
-	  sprintf(buff,"RA=%02dh %02dm %04.1fs, DEC=%02dd %02dm (%4.0f)",
-		  irah,iram,ras,idecd,idecm,shm_addr->ep1950);
-	else
-	  sprintf(buff,"RA=%02dh %02dm %04.1fs, DEC=-%02dd %02dm (%4.0f)",
-		  irah,iram,ras,idecd,idecm,shm_addr->ep1950);
-
-    } else if(!strcasecmp(what,"POSA")) {
-      cnvrt(4,shm_addr->radat,shm_addr->decdat,&azim,&elev,it,
-	    shm_addr->alat,shm_addr->wlong);
-      if(raxx==0.0 && dcxx ==0.0)
-	sprintf(buff,"STOWED");
-      else
-	sprintf(buff,"AZ=%.0f EL=%.0f ",azim*RAD2DEG,elev*RAD2DEG);
-
-    } else sprintf(buff,"$$$$$$$$ ($)");
-    printf("%s",buff);
-    exit(0);
-
-    // Site where ISL is operating 
-  } else if(!strcasecmp(what,"SITE")) {
-    //    strncpy(site,shm_addr->insttel,8);
-    strncpy(site,"LBTO    ",8);
-    for(i=0; i<BLANK; i++) {
-      if(site[i]==0x20 || i==9) {
-	break;
-      }
-    }
-    site[i]='\0';
-    printf("%s",site);
-    exit(0);
-*/
-    // ISL real-time offsets
-  } else if(!strcasecmp(what,"RTE")) {
+  else if (!strcasecmp(what,"RTE")) {
     printf("%0.4f\n",ms->time.rate[0]);
     printf("%0.4f\n",ms->time.rate[1]);
     printf("%d\n",ms->time.offset[0]);
@@ -338,22 +244,20 @@ main(int argc, char *argv[])
     ms->time.model=' ';
     printf("%c\n",ms->time.model);
     exit(0);
+  }
+  // ISL Date Jday and time UTC
 
-    // ISL Date Jday and time UTC
-  } else if(strstr(what,"TIME")) {
-    if(!strcasecmp(what,"TIMEU"))
+  else if (strstr(what,"TIME")) {
+    if (!strcasecmp(what,"TIMEU"))
       system("date -u +%F\":D%j\"\"%n\"%H:%M:%S\" \"UTC");
-    else if(!strcasecmp(what,"TIMEL"))
+    else if (!strcasecmp(what,"TIMEL"))
       system("date +%F\":D%j\"\"%n\"%T\" \"LOC");
-    else if(!strcasecmp(what,"TIMES")) {
+    else if (!strcasecmp(what,"TIMES")) {
       void getUT(long *,long *,long *,long *,long *,long *);
       void calcLST(double , double , double ,double* , double* );
       double dateToJD(int,int,int);
       void calcGMSTD (double,double,double *,double *);
       void secToTime(double ,char *,short);
-      //      void calcAzEl (double,double,double,double,double *,double *);
-      //      void calcRaDec (double,double,double,double,double *,double *);
-
       double lat = 40.001276, ra, dec, fmins, cmd_azpos, cmd_zagpos,ha;
       double fdecpos, frapos, faoha, aohapos;
       char rapos[18], decpos[18], hapos[18];
@@ -367,7 +271,7 @@ main(int argc, char *argv[])
 
       rte_time(it,&iyear);
       dinyr = 365;
-      if((iyear%400) == 0 ||
+      if ((iyear%400) == 0 ||
 	 ((iyear%4) == 0 &&
 	  (iyear%100)) != 0) dinyr = 366;
       shm_addr->epoch=(iyear + it[4])/float(dinyr);
@@ -383,11 +287,11 @@ main(int argc, char *argv[])
 
       calcLST(GSD, GMST, longit, &lstDay, &lstSecs);  // Local Sidereal Time.
       secToTime(lstSecs, str, 0);
-      if(what[4]=='S') printf("%0.4f\n%s LST\n",jd, str);
+      if (what[4]=='S') printf("%0.4f\n%s LST\n",jd, str);
 
-      if(what[4]=='R') printf("%s\n",ms->targRA);
+      if (what[4]=='R') printf("%s\n",ms->targRA);
       
-      if(what[4]=='D') printf("%s\n",ms->targDec);
+      if (what[4]=='D') printf("%s\n",ms->targDec);
 
       // Hour Angle
       ra=ms->TCSRA*RAD2SEC;
@@ -407,48 +311,52 @@ main(int argc, char *argv[])
       mins = (long)fmins;
       secs = (long)((fmins - mins) * 60.0);
       sprintf(hapos, "%02d:%02d:%02d", hrs, mins, secs);
-      if(what[4]=='H' && what[5] != 'X') printf("%s\n", hapos);
+      if (what[4]=='H' && what[5] != 'X') printf("%s\n", hapos);
       else if (what[5]=='X') printf("%04.1f\n", faoha);
     } else { }
      exit(0);
 
-  } else if(!strcasecmp(what,"SETDATE")) {
+  }
+  else if (!strcasecmp(what,"SETDATE")) {
     system("date +%F\":D%j\"\"%n\"%T\" \"LOC");
     exit(0);
 
-    // Generate a logfile
-  } else if(!strcasecmp(what,"LOGFILE")) {
+  }
+  else if (!strcasecmp(what,"LOGFILE")) {
     strcpy(log_name,ms->MODS.LLOG);
     printf("%s",log_name);
     exit(0);
 
-    // Run MODS.standalone without ISL
-  } else if(!strcasecmp(what,"MODS.STANDALONE")) {
+  }
+  // Run MODS.standalone without ISL
+  else if (!strcasecmp(what,"MODS.STANDALONE")) {
     if (ms->MODS.standalone) ms->MODS.standalone = 1;
     else ms->MODS.standalone = 0;
     exit(0);
 
-    // ISL Mixed Value calculator
-  } else if(!strcasecmp(what,"VUECALQ")) {
+  }
+  // ISL Mixed Value calculator
+  else if (!strcasecmp(what,"VUECALQ")) {
     vuecalq(cmd);
     exit(0);
-
-    // SITE GPS
-  } else if(!strcasecmp(what,"GPSTIM")) {
+  }
+  // SITE GPS
+  else if (!strcasecmp(what,"GPSTIM")) {
     exit(0);
 
-    // mmcService Counter
-  } else if(!strcasecmp(what,"MMCCOUNTER")) {
+  }
+  // mmcServer Counter
+  else if (!strcasecmp(what,"MMCCOUNTER")) {
     //for(i=0;i<MAX_ML-1;i++)
     for(i=0;i<MAX_ML;i++)
-      if(i==ms->MODS.mmcServerCounter)
+      if (i==ms->MODS.mmcServerCounter)
 	printf("->REQ: %s\n",ms->MODS.ieb_msg[i]);
       else
 	printf("%s\n",ms->MODS.ieb_msg[i]);
     exit(0);
-
-    // IMCS parameters
-  } else if (strstr(what,"IMCS")) {
+  }
+  // IMCS parameters
+  else if (strstr(what,"IMCS")) {
     if (strstr(what,"G1")) ms->MODS.blueQC_Gain = atof(cmd);
     else if (strstr(what,"G2")) ms->MODS.redQC_Gain = atof(cmd);
     if (strstr(what,"T1")) ms->MODS.qc_TTPustep = atof(cmd);
@@ -469,7 +377,8 @@ main(int argc, char *argv[])
     else if (strstr(what,"ACC6")) printf("%0.0f\n",ms->MODS.pos[4]*60.0);
     exit(0);
 
-  } else if(!strcasecmp(what,"PARITY_R")) {
+  }
+  else if (!strcasecmp(what,"PARITY_R")) {
     if (cmd[0]=='-') ms->MODS.redQC_Z[0] = -1.0;
     else  ms->MODS.redQC_Z[0] = 1.0;
     if (cmd[1]=='-') ms->MODS.redQC_Z[1] = -1.0;
@@ -477,7 +386,8 @@ main(int argc, char *argv[])
 
     exit(0);
 
-  } else if(!strcasecmp(what,"PPARITY_R")) {
+  }
+  else if (!strcasecmp(what,"PPARITY_R")) {
     if (ms->MODS.redQC_Z[0] == -1.0) printf("-");
     else  printf("+");
     if (ms->MODS.redQC_Z[1] == -1.0) printf("-");
@@ -485,7 +395,8 @@ main(int argc, char *argv[])
 
     exit(0);
 
-  } else if(!strcasecmp(what,"PARITY_B")) {
+  }
+  else if (!strcasecmp(what,"PARITY_B")) {
     if (cmd[0]=='-') ms->MODS.blueQC_Z[0] = -1.0;
     else  ms->MODS.blueQC_Z[0] = 1.0;
     if (cmd[1]=='-') ms->MODS.blueQC_Z[1] = -1.0;
@@ -493,7 +404,8 @@ main(int argc, char *argv[])
 
     exit(0);
 
-  } else if(!strcasecmp(what,"PPARITY_B")) {
+  }
+  else if (!strcasecmp(what,"PPARITY_B")) {
     if (ms->MODS.blueQC_Z[0] == -1.0) printf("-");
     else  printf("+");
     if (ms->MODS.blueQC_Z[1] == -1.0) printf("-");
@@ -501,8 +413,9 @@ main(int argc, char *argv[])
 
     exit(0);
 
-    // IMCS gain parameters
-  } else if (strstr(what,"GAIN")) {
+  }
+  // IMCS gain parameters
+  else if (strstr(what,"GAIN")) {
     if (strstr(what,"G1")) printf("%0.4f\n",ms->MODS.blueQC_Gain);
     else if (strstr(what,"G2")) printf("%0.4f\n",ms->MODS.redQC_Gain);
     else if (strstr(what,"TTP")) printf("%0.4f\n",ms->MODS.qc_TTPustep);
@@ -514,24 +427,32 @@ main(int argc, char *argv[])
 	printf("%0.4f\n",ms->MODS.qc_MAXTTPmove);
     }
     exit(0);
-
-    // IMCS change gain.
-  } else if (strstr(what,"CG")) {
+  }
+  // IMCS change gain.
+  else if (strstr(what,"CG")) {
     if (strstr(what,"1")) ms->MODS.blueQC_Gain = atof(cmd);
     else if (strstr(what,"2")) ms->MODS.redQC_Gain = atof(cmd);
     else printf("%0.1f,%0.1f\n",ms->MODS.blueQC_Gain,ms->MODS.redQC_Gain);
     exit(0);
-
-    // IMCS average quad-cell parameters
-  } else if (strstr(what,"AVERAGE_QCELL")) {
-    if (strstr(what,"1")) printf("%0.3f",ms->MODS.blueQC_Average[0]);
-    else if (strstr(what,"2")) printf("%0.3f",ms->MODS.blueQC_Average[1]);
-    else if (strstr(what,"3")) printf("%0.3f",ms->MODS.blueQC_Average[2]);
-    else if (strstr(what,"4")) printf("%0.3f",ms->MODS.blueQC_Average[3]);
-    else if (strstr(what,"5")) printf("%0.3f",ms->MODS.redQC_Average[0]);
-    else if (strstr(what,"6")) printf("%0.3f",ms->MODS.redQC_Average[1]);
-    else if (strstr(what,"7")) printf("%0.3f",ms->MODS.redQC_Average[2]);
-    else if (strstr(what,"8")) printf("%0.3f",ms->MODS.redQC_Average[3]);
+  }
+  // IMCS average quad-cell parameters
+  else if (strstr(what,"AVERAGE_QCELL")) {
+    if (strstr(what,"1"))
+      printf("%0.3f",ms->MODS.blueQC_Average[0]);
+    else if (strstr(what,"2"))
+      printf("%0.3f",ms->MODS.blueQC_Average[1]);
+    else if (strstr(what,"3"))
+      printf("%0.3f",ms->MODS.blueQC_Average[2]);
+    else if (strstr(what,"4"))
+      printf("%0.3f",ms->MODS.blueQC_Average[3]);
+    else if (strstr(what,"5"))
+      printf("%0.3f",ms->MODS.redQC_Average[0]);
+    else if (strstr(what,"6"))
+      printf("%0.3f",ms->MODS.redQC_Average[1]);
+    else if (strstr(what,"7"))
+      printf("%0.3f",ms->MODS.redQC_Average[2]);
+    else if (strstr(what,"8"))
+      printf("%0.3f",ms->MODS.redQC_Average[3]);
     else {
       printf("Quadcells: %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f",
 	     ms->MODS.blueQC_Average[0],
@@ -544,9 +465,9 @@ main(int argc, char *argv[])
 	     ms->MODS.redQC_Average[3]);
     }
     exit(0);
-
-    // environmental sensors
-  } else if (!strcasecmp(what,"env")) {
+  }
+  // environmental sensors
+  else if (!strcasecmp(what,"env")) {
     printf("Environmental Sensors:\n");
     printf("  Glycol Supply: P=%.2f psi-g  T=%.1f C\n",ms->MODS.glycolSupplyPressure,ms->MODS.glycolSupplyTemperature);
     printf("         Return: P=%.2f psi-g  T=%.1f C\n",ms->MODS.glycolReturnPressure,ms->MODS.glycolReturnTemperature);
@@ -561,9 +482,9 @@ main(int argc, char *argv[])
     printf("   Red HEB Inside Air T=%.1f C  Dewar T=%.1f C P=%8.2e torr\n",ms->MODS.redHEBTemperature,ms->MODS.redDewarTemperature,
 		    ms->MODS.redDewarPressure);
     exit(0);
-
-    // IEB currents and temperatures
-  } else if(!strcasecmp(what,"VandC")) {
+  }
+  // IEB currents and temperatures
+  else if (!strcasecmp(what,"VandC")) {
     printf("%.3f Amps\n",ms->MODS.Current[0]);
     printf("%.3f Amps\n",ms->MODS.Current[1]);
     printf("%.3f Amps\n",ms->MODS.Current[2]);
@@ -573,9 +494,9 @@ main(int argc, char *argv[])
     printf("%.1f C\n",ms->MODS.iebTemp[2]);
     printf("%.1f C\n",ms->MODS.iebTemp[3]);
     exit(0);
-
-    // WAGO Monitor and Control registers
-  } else if(!strcasecmp(what,"WAGOMC")) {
+  }
+  // WAGO Monitor and Control registers
+  else if (!strcasecmp(what,"WAGOMC")) {
     printf("WAGO monitor and control sensors\n");
     for (i=0;i<30;i++) printf("[ %0d ]",ms->MODS.temps[i]);
     for (i=0;i<4;i++) printf("\n[%0.4f]",ms->MODS.blueTemperature[i]);
@@ -588,9 +509,9 @@ main(int argc, char *argv[])
     printf("%0.4f\n",ms->MODS.redQC[2]);
     printf("%0.4f\n",ms->MODS.redQC[3]);
     exit(0);
-
-// IMCS quad-cell parameters
-  } else if (strstr(what,"QCELL")) {
+  }
+  // IMCS quad-cell parameters
+  else if (strstr(what,"QCELL")) {
     if (strstr(what,"1")) printf("%0.3f",ms->MODS.blueQC[0]);
     else if (strstr(what,"2")) printf("%0.3f",ms->MODS.blueQC[1]);
     else if (strstr(what,"3")) printf("%0.3f",ms->MODS.blueQC[2]);
@@ -626,9 +547,9 @@ main(int argc, char *argv[])
 	     ms->MODS.pos[4]);
     }
     exit(0);
-
-// IMCS quad-cell parameters
-  } else if (strstr(what,"HEBQC")) {
+  }
+  // IMCS quad-cell parameters
+  else if (strstr(what,"HEBQC")) {
     if (strstr(what,"1")) printf("%d",ms->MODS.blueQC1);
     else if (strstr(what,"2")) printf("%d",ms->MODS.blueQC2);
     else if (strstr(what,"3")) printf("%d",ms->MODS.blueQC3);
@@ -664,9 +585,9 @@ main(int argc, char *argv[])
 	     ms->MODS.pos[4]);
     }
     exit(0);
-
-    // IMCS X,Y,Z motors
-  } else if (strstr(what,"OSCI")) {
+  }
+  // IMCS X,Y,Z motors
+  else if (strstr(what,"OSCI")) {
     if (strstr(what,"1")) printf("%0.4f",ms->MODS.blueQC_X[0]);
     else if (strstr(what,"2")) printf("%0.4f",ms->MODS.blueQC_Y[0]);
     else if (strstr(what,"3")) printf("%0.4f",ms->MODS.blueQC_Z[0]);
@@ -683,22 +604,22 @@ main(int argc, char *argv[])
 	     ms->MODS.redQC_Z[0]);
     }
     exit(0);
-
-    // list mechanisms
-  } else if (!strcasecmp(what,"WHO")) {
+  }
+  // list mechanisms
+  else if (!strcasecmp(what,"WHO")) {
     for (i=0;i<MAX_ML;i++) {
       printf("Mechanism [%02d]: %s\n",i+1,makeUpper(ms->MODS.who[i]));
     }
-
-    // What mechanism is assign to this ID
-  } else if(!strcasecmp(what,"WHOIS")) {
+  }
+  // What mechanism is assign to this ID
+  else if (!strcasecmp(what,"WHOIS")) {
     unit = atoi(cmd);
     printf("%s\n",ms->MODS.who[unit-1]);
     exit(0);
-
-    // IP addresses
-  } else if(!strcasecmp(what,"IPMAP")) {
-    if(atoi(cmd) == -1)
+  }
+  // IP addresses
+  else if (!strcasecmp(what,"IPMAP")) {
+    if (atoi(cmd) == -1)
       for (i=0;i<MAX_ML-1;i++) { 
 	strcpy(shm_addr->MODS.TTYIP[i],"NONE:NONE");
         strcpy(shm_addr->MODS.commport[i].Port,"NONE:NONE");
@@ -706,20 +627,20 @@ main(int argc, char *argv[])
         shm_addr->MODS.timeout[i]=0;
       }
     for (i=0;i<MAX_ML-1;i++) { 
-      //if(strncasecmp(ms->MODS.TTYIP[i],"NONE",4)) {
-      if(ms->MODS.ieb_i[i]==-1) {
+      //if (strncasecmp(ms->MODS.TTYIP[i],"NONE",4)) {
+      if (ms->MODS.ieb_i[i]==-1) {
 	printf("IEB%d [ML%d]%s,  ",ms->MODS.ieb_i[i],i+1,ms->MODS.who[i]);
 	printf("%s,  ",ms->MODS.TTYIP[i]);
 	printf("BUSY[%d],  ",ms->MODS.busy[i]);
 	printf("HOST[%d])\n",ms->MODS.host[i]);
 
-      } else if(ms->MODS.ieb_i[i]==0) {
+      } else if (ms->MODS.ieb_i[i]==0) {
 	printf("IEB%d [ML%d]%s,  ",ms->MODS.ieb_i[i],i+1,ms->MODS.who[i]);
 	printf("%s,  ",ms->MODS.TTYIP[i]);
 	printf("BUSY[%d],  ",ms->MODS.busy[i]);
 	printf("HOST[%d])\n",ms->MODS.host[i]);
 
-      } else if(ms->MODS.ieb_i[i]==1) {
+      } else if (ms->MODS.ieb_i[i]==1) {
 	printf("IEB%d [ML%d]%s,  ",ms->MODS.ieb_i[i],i+1,ms->MODS.who[i]);
 	printf("%s,  ",ms->MODS.TTYIP[i]);
 	printf("BUSY[%d],  ",ms->MODS.busy[i]);
@@ -753,9 +674,11 @@ main(int argc, char *argv[])
     printf("  AGW=%d, ",ms->MODS.modsPorts[1]);
     printf("  MMC=%d, ",ms->MODS.modsPorts[2]);
     printf("  OTHERS=%d\n",ms->MODS.modsPorts[3]);
-
-    // Power state variables
-  } else if (!strcasecmp(what,"POWER")) {
+    exit(0);
+  }
+  
+  // Power state variables
+  else if (!strcasecmp(what,"POWER")) {
     printf("Power States:\n");
     printf("         IUB: %s\n", (ms->MODS.utilState) ? "On" : "Off");
     printf("         LLB: %s\n", (ms->MODS.llbState) ? "On" : "Off");
@@ -771,86 +694,120 @@ main(int argc, char *argv[])
     printf("       HEB-R: %s\n", (ms->MODS.redHEBState) ? "On" : "Off");
     printf("    Archon-R: %s\n", (ms->MODS.redArchonState) ? "On" : "Off");
     printf("  IonGauge-R: %s\n", (ms->MODS.redIonGaugeState) ? "On" : "Off");
-    
-    // Common
-  } else if(!strcasecmp(what,"ISLCOMMON")) {
+    exit(0);
+  }
+
+  // Concise power status for 3rd party apps
+  //
+  // returns: IUB LLB GCAM WFS IEB_B HEB_B Archon_B IG_B IEB_R HEB_R Archon_R IG_R
+  //
+  else if (!strcasecmp(what,"PSTATUS")) {
+    sprintf(buff,"%s",(ms->MODS.utilState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff, (ms->MODS.llbState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff, (ms->MODS.guideCamState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff, (ms->MODS.wfsCamState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff, (ms->MODS.blueIEBState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff, (ms->MODS.blueHEBState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff, (ms->MODS.blueArchonState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff, (ms->MODS.blueIonGaugeState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff, (ms->MODS.redIEBState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff, (ms->MODS.redHEBState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff, (ms->MODS.redArchonState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff, (ms->MODS.redIonGaugeState) ? "On" : "Off");
+    printf("%s\n",buff);
+    exit(0);
+  }
+  
+  // Common
+  else if (!strcasecmp(what,"ISLCOMMON")) {
     for (i=0;i<MAX_ML-1;i++) {
       printf("[%s {ML%d:%0.4f}]\n",ms->MODS.who[i],i,ms->MODS.pos[i]);
     }
     exit(0);
+  }
 
-  } else if(!strcasecmp(what,"WHOISIT")) {
+  // Mechanism "whois" by number
+  else if (!strcasecmp(what,"WHOISIT")) {
     i=atoi(cmd);
     printf("%s\n", ms->MODS.who[i]);
     exit(0);
-
-    // MOTOR position
-  } else if (!strcasecmp(what,"MPOS")) {
-    if(atoi(cmd)==1) {
+  }
+  // MOTOR position
+  else if (!strcasecmp(what,"MPOS")) {
+    if (atoi(cmd)==1) {
       for (i=0;i<16;i++) {
 	memset(buff,0,sizeof(buff));
-	if(ms->MODS.busy[i]==0)
+	if (ms->MODS.busy[i]==0)
 	  printf("%s[ML%d] %6.1f !IDLE!\n", ms->MODS.who[i],i+1,ms->MODS.pos[i]);
 	else
 	  printf("%s[ML%d] %6.1f @BUSY@\n", ms->MODS.who[i],i+1,ms->MODS.pos[i]);
       }
-    } else if(atoi(cmd)==2) {
+    } else if (atoi(cmd)==2) {
       for (i=16;i<MAX_ML-1;i++) {
 	//for (i=17;i<MAX_ML-1;i++) {
-	if(ms->MODS.busy[i]==0) 
+	if (ms->MODS.busy[i]==0) 
 	  printf("%s[ML%d] %6.1f !IDLE!\n", ms->MODS.who[i],i+1,ms->MODS.pos[i]);
 	else 
 	  printf("%s[ML%d] %6.1f @BUSY@\n", ms->MODS.who[i],i+1,ms->MODS.pos[i]);
       }
     }
     exit(0);
-    // MOTOR requested position
-  } else if(!strcasecmp(what,"RPOS")) {
+  }
+  // MOTOR requested position
+  else if (!strcasecmp(what,"RPOS")) {
     printf("(id) MECHANISM: Request.\n");
        for (i=0;i<MAX_ML-1;i++) printf("[ML%d] %s: %6.1f\n",
 				 i+1,ms->MODS.who[i],ms->MODS.reqpos[i]);
     exit(0);
 
-  } else if(!strcasecmp(what,"BUSY")) {
+  }
+  else if (!strcasecmp(what,"BUSY")) {
     printf("%d", ms->MODS.busy[atoi(cmd)]);
     exit(0);
 
-  } else if(!strcasecmp(what,"QUED")) {
+  }
+  else if (!strcasecmp(what,"QUED")) {
     printf("%d", ms->MODS.qued[atoi(cmd)]);
     exit(0);
 
-  } else if(!strcasecmp(what,"HOST")) {
+  }
+  else if (!strcasecmp(what,"HOST")) {
     printf("%d", ms->MODS.host[atoi(cmd)]);
     exit(0);
 
     // release a semaphore
-  } else if(!strcasecmp(what,"RELSEM")) {
+  }
+  else if (!strcasecmp(what,"RELSEM")) {
     nsem_take((char*)"islctl ",0);
     exit(0);
 
     // Check semaphore
-  } else if(!strcasecmp(what,"CHKSEM")) {
+  }
+  else if (!strcasecmp(what,"CHKSEM")) {
     if ( 1 == nsem_take((char*)"isl    ",1)) {
       printf("isl already running");
     }
     exit(0);
 
     // IMCS frequency info.
-  } else if (strstr(what,"FREQ")) {
+  }
+  else if (strstr(what,"FREQ")) {
     if (strstr(what,"1")) ms->MODS.blueQC_SampleRate = atoi(cmd);
     else if (strstr(what,"2")) ms->MODS.redQC_SampleRate = atoi(cmd);
     else printf("%d,%d\n",ms->MODS.blueQC_SampleRate,ms->MODS.redQC_SampleRate);
     exit(0);
 
     // IMCS data rate info.
-  } else if (strstr(what,"RATE")) {
+  }
+  else if (strstr(what,"RATE")) {
     if (strstr(what,"1")) ms->MODS.blueQC_Samples = atoi(cmd);
     else if (strstr(what,"2")) ms->MODS.redQC_Samples = atoi(cmd);
     else printf("%d,%d\n",ms->MODS.blueQC_Samples,ms->MODS.redQC_Samples);
     exit(0);
 
     // IMCS Loop info.
-  } else  if (strstr(what,"CLOSELOOP")) {
+  }
+  else  if (strstr(what,"CLOSELOOP")) {
     if (!strcasecmp(what,"CLOSELOOPOFF1")) {
       ms->MODS.redCloseLoop = 0;
       ms->MODS.redCloseLoopON = 0;
@@ -873,122 +830,129 @@ main(int argc, char *argv[])
     }
     exit(0);
 
-  } else if(!strcasecmp(what,"TARGETON")) {
+  }
+  else if (!strcasecmp(what,"TARGETON")) {
     ms->MODS.blueQC_TARGET = 1;
     printf("%d\n",ms->MODS.blueQC_TARGET);
     exit(0);
 
-  } else if(!strcasecmp(what,"TARGETOFF")) {
+  }
+  else if (!strcasecmp(what,"TARGETOFF")) {
     ms->MODS.blueQC_TARGET = 0;
     printf("%d\n",ms->MODS.blueQC_TARGET);
     exit(0);
 
-  } else if(!strcasecmp(what,"RTARGETON")) {
+  }
+  else if (!strcasecmp(what,"RTARGETON")) {
     ms->MODS.redQC_TARGET = 1;
     printf("%d\n",ms->MODS.redQC_TARGET);
     exit(0);
 
-  } else if(!strcasecmp(what,"RTARGETOFF")) {
+  }
+  else if (!strcasecmp(what,"RTARGETOFF")) {
     ms->MODS.redQC_TARGET = 0;
     printf("%d\n",ms->MODS.redQC_TARGET);
     exit(0);
 
-    // RED IMCS Target status
-  } else if(!strcasecmp(what,"RTARGETSTATUS")) {
+  }
+  // RED IMCS Target status
+  else if (!strcasecmp(what,"RTARGETSTATUS")) {
     printf("%d\n",ms->MODS.redQC_TARGET);
     exit(0);
-
-    // BLUE IMCS Target status
-  } else if(!strcasecmp(what,"TARGETSTATUS")) {
+  }
+  // BLUE IMCS Target status
+  else if (!strcasecmp(what,"TARGETSTATUS")) {
     printf("%d\n",ms->MODS.blueQC_TARGET);
     exit(0);
-
-    // kill IMCS or other logging
-  } else if(!strcasecmp(what,"KILLLOGGING0")) {
+  }
+  // kill IMCS or other logging
+  else if (!strcasecmp(what,"KILLLOGGING0")) {
     system("killall 'logimcs 10'");
     exit(0);
-
-    // kill IMCS or other logging
-  } else if(!strcasecmp(what,"KILLLOGGING1")) {
+  }
+  // kill IMCS or other logging
+  else if (!strcasecmp(what,"KILLLOGGING1")) {
     system("killall 'logimcs 11'");
     exit(0);
-
-    // IMCS motor thresholds
-  } else if (!strcasecmp(what,"STHRESHOLD")) {
+  }
+  // IMCS motor thresholds
+  else if (!strcasecmp(what,"STHRESHOLD")) {
     if (atoi(cmd)==-1) printf("%0.3f\n",ms->MODS.blueQC_Threshold[0]);
     else  ms->MODS.blueQC_Threshold[0] = atof(cmd);
     exit(0);
 
-  } else if (!strcasecmp(what,"RSTHRESHOLD")) {
+  }
+  else if (!strcasecmp(what,"RSTHRESHOLD")) {
     if (atoi(cmd)==-1) printf("%0.3f\n",ms->MODS.redQC_Threshold[0]);
     else  ms->MODS.redQC_Threshold[0] = atof(cmd);
     exit(0);
-
-    // mechanism position
-  } else if (strstr(what,"MLCDEV")) {
+  }
+  // mechanism position
+  else if (strstr(what,"MLCDEV")) {
     char temp[80];
     i=getMechanismID(cmd,temp); // Get mechanism device ID
-    if(i==-1) printf("[%d]NO_MECH\n",i);
+    if (i==-1) printf("[%d]NO_MECH\n",i);
     else printf("microLynx Controller=%d\n",i);
     exit(0);
-
-    // mechanism position
-  } else if (strstr(what,"MLCPOS")) {
+  }
+  // mechanism position
+  else if (strstr(what,"MLCPOS")) {
     char temp[80];
     i=getMechanismID(cmd,temp); // Get mechanism device ID
-    if(i==-1) printf("[%d]NO_MECH\n",i);
+    if (i==-1) printf("[%d]NO_MECH\n",i);
     else printf("%s=%.0f\n",ms->MODS.who[i],ms->MODS.pos[i]);
     exit(0);
-
-  } else if (strstr(what,"MLC")) {
+  
+  }
+  else if (strstr(what,"MLC")) {
     i=atoi(&what[3]);
     printf("%.0f\n",ms->MODS.pos[i]);
     exit(0);
-
-    // slitmask mechanism position
-  } else if (strstr(what,"MASKSM")) {
+  }
+  // slitmask mechanism position
+  else if (strstr(what,"MASKSM")) {
     if (what[6]=='S') printf("%c\n",ms->MODS.maskselect);
     else if (what[6]=='I') printf("%c\n",ms->MODS.maskinsert);
     else if (what[6]=='A') printf("%d\n",ms->MODS.active_smask);
     exit(0);
-
-    // command mechanism name with an SNTool command
-  } else if(!strcasecmp(what,"SNCMD")) {
+  }
+  // command mechanism name with an SNTool command
+  else if (!strcasecmp(what,"SNCMD")) {
     i = system(cmd);
     exit(0);
-
-    // command Mechanisms with the mmcServer 
-  } else if(!strcasecmp(what,"MMCU")) {
+  }
+  // command Mechanisms with the mmcServer 
+  else if (!strcasecmp(what,"MMCU")) {
     sprintf(ipascii,"%d",shm_addr->MODS.modsPorts[2]);
     memset(buff,0,sizeof(buff));
     i=mmcu((char*)"localhost",ipascii,cmd,buff);
-    if(strstr(cmd,"#")) {
+    if (strstr(cmd,"#")) {
       for(i=0;buff[i]!='=';i++);
       i++;
       printf("%s\n",&buff[i]);
     } else printf("%s\n",buff);
     exit(0);
-
-    // command AGW with the agwServer
-  } else if(!strcasecmp(what,"AGWCU")) {
+  }
+  // command AGW with the agwServer
+  else if (!strcasecmp(what,"AGWCU")) {
     //sprintf(ipascii,"%d",shm_addr->MODS.modsPorts[1]);
     memset(buff,0,sizeof(buff));
     //i=agwcu("localhost",ipascii,cmd,buff);
     i=agwcu((char*)"localhost",0,cmd,buff);
     printf("%s\n",buff);
     exit(0);
-
-    // command TCS with the iifServer
-  } else if(!strcasecmp(what,"TCSCU")) {
+  }
+  // command TCS with the iifServer
+  else if (!strcasecmp(what,"TCSCU")) {
     sprintf(ipascii,"%d",shm_addr->MODS.modsPorts[0]);
     memset(buff,0,sizeof(buff));
     //    fprintf(stderr,"%s, %s, %s",ipascii,cmd,buff);
     //    i=iifcu("localhost",ipascii,cmd,buff);
     printf("%s\n",buff);
     exit(0);
-
-    // Calibration Lamps bits
-  } else if (strstr(what,"LASERS")) {
+  }
+  // Calibration Lamps bits
+  else if (strstr(what,"LASERS")) {
     printf("IR Laser State:%d, BeamState:%d, Power:%f, Setpoint: %d, Temp:%f\n",
 	   ms->MODS.lasers.irlaser_state,
 	   ms->MODS.lasers.irbeam_state,
@@ -1009,8 +973,9 @@ main(int argc, char *argv[])
 	   ms->MODS.lasers.vislaser_age,
 	   ms->MODS.lasers.vislaser_cycle);
     exit(0);
-    // Calibration Lamps bits
-  } else if (strstr(what,"LAMPS")) {
+  }
+  // Calibration Lamps bits
+  else if (strstr(what,"LAMPS")) {
     if (what[5]=='R') {
       for(i=0;i<9;i++) {
 	ms->MODS.lamps.lamp_state[i] = 0;
@@ -1038,83 +1003,86 @@ main(int argc, char *argv[])
       printf("Lamps Register:%d\n", ms->MODS.lamps.lamplaser_all[0]);
     }
     exit(0);
-
-    // Mask and location of Select mechanism
-  } else if(!strcasecmp(what,"MODS.MASKS")) {
+  }
+  // Mask and location of Select mechanism
+  else if (!strcasecmp(what,"MODS.MASKS")) {
     for(i=0;i<13;i++) {
-      if(i==0) { printf("TIME: %s\n",ms->MODS.slitmaskName[i]); i++;}
-      if(ms->MODS.active_smask==i)
+      if (i==0) { printf("TIME: %s\n",ms->MODS.slitmaskName[i]); i++;}
+      if (ms->MODS.active_smask==i)
       	printf("@>MASK %d:%s\t %s\n",i,ms->MODS.slitmaskName[i],ms->MODS.slitmaskInfo[i]);
       else
 	printf("MASK %d:%s\t %s\n",i,ms->MODS.slitmaskName[i],ms->MODS.slitmaskInfo[i]);
     }
-    if(ms->MODS.active_smask==-1)
+    if (ms->MODS.active_smask==-1)
       printf("@>=======:BRACE\n");
     else
       printf("=======:BRACE\n");
 
     for(;i<25;i++) {
-      if(ms->MODS.active_smask==i)
+      if (ms->MODS.active_smask==i)
       	printf("@>MASK %d:%s\t %s\n",i,ms->MODS.slitmaskName[i],ms->MODS.slitmaskInfo[i]);
       else
 	printf("MASK %d:%s\t %s\n",i,ms->MODS.slitmaskName[i],ms->MODS.slitmaskInfo[i]);
     }
     exit(0);
-
-    // Camera and AGw filters
-  } else if(!strcasecmp(what,"MODS.FILTERS")) {
+  }
+  // Camera and AGw filters
+  else if (!strcasecmp(what,"MODS.FILTERS")) {
     for(i=0;i<9;i++) {
-      if(i==0) printf("TIME_Red: %s\n",ms->MODS.rcamfilters[i]);
+      if (i==0) printf("TIME_Red: %s\n",ms->MODS.rcamfilters[i]);
       else printf("RED_FILTERS %d:%s\t %s\n",i,ms->MODS.rcamfilters[i],ms->MODS.rcamfiltInfo[i]);
     }
 
     for(i=0;i<9;i++) {
-      if(i==0) printf("TIME_Blue: %s\n",ms->MODS.bcamfilters[i]);
+      if (i==0) printf("TIME_Blue: %s\n",ms->MODS.bcamfilters[i]);
       else printf("BLUE_FILTERS %d:%s\t %s\n",i,ms->MODS.bcamfilters[i],ms->MODS.rcamfiltInfo[i]);
     }
 
     for(i=0;i<5;i++) {
-      if(i==0) printf("TIME_AGW: %s\n",ms->MODS.agwfilters[i]);
+      if (i==0) printf("TIME_AGW: %s\n",ms->MODS.agwfilters[i]);
       else printf("AGW_FILTERS %d:%s\t %s\n",i,ms->MODS.agwfilters[i],ms->MODS.rcamfiltInfo[i]);
     }
 
     exit(0);
+  }
 
-
-    // Gratings
-  } else if(!strcasecmp(what,"MODS.GRATINGS")) {
+  // Gratings
+  else if (!strcasecmp(what,"MODS.GRATINGS")) {
     for(i=0;i<5;i++) {
-      if(i==0) printf("TIME_Red: %s\n",ms->MODS.rgrating[i]);
+      if (i==0) printf("TIME_Red: %s\n",ms->MODS.rgrating[i]);
       else printf("RED_GRATING %d:%s\t %s\n",i,ms->MODS.rgrating[i],ms->MODS.rgratInfo[i]);
     }
 
     for(i=0;i<5;i++) {
-      if(i==0) printf("TIME_Blue: %s\n",ms->MODS.bgrating[i]);
+      if (i==0) printf("TIME_Blue: %s\n",ms->MODS.bgrating[i]);
       else printf("BLUE_GRATING %d:%s\t %s\n",i,ms->MODS.bgrating[i],ms->MODS.rgratInfo[i]);
     }
     exit(0);
-
-    // Gratings
-  } else if(!strcasecmp(what,"MODS.DICHROIC")) {
+  }
+  // Gratings
+  else if (!strcasecmp(what,"MODS.DICHROIC")) {
     for(i=0;i<4;i++) {
-      if(i==0) printf("TIME: %s\n",ms->MODS.rgrating[i]);
+      if (i==0) printf("TIME: %s\n",ms->MODS.rgrating[i]);
       else printf("DICHROIC %d:%s\t %s\n",i,ms->MODS.dichroicName[i],ms->MODS.dichroicInfo[i]);
     }
     exit(0);
 
-  } else if(!strcasecmp(what,"LOCKS")) {
+  }
+  else if (!strcasecmp(what,"LOCKS")) {
     for(i=0;i<32;i++) {
-      if(ms->MODS.LOCKS[i]==1)
+      if (ms->MODS.LOCKS[i]==1)
       	printf("%s LOCKED OUT\n",ms->MODS.who[i]);
       else 
       	printf("%s UNLOCKED\n",ms->MODS.who[i]);
     }
     exit(0);
 
-  } else if(!strcasecmp(what,"AGWLOCATE")) {
+  }
+  else if (!strcasecmp(what,"AGWLOCATE")) {
     exit(0);
-    // AGW location
-  } else if (strstr(what,"AGWVAL")) {
+  }
+  // AGW location
+  else if (strstr(what,"AGWVAL")) {
     if (strstr(what,"X")) ms->MODS.pos[19] = atoi(cmd);
     else if (strstr(what,"Y")) ms->MODS.pos[18] = atoi(cmd);
     else if (strstr(what,"FP")) ms->MODS.pos[20] = atoi(cmd);
@@ -1129,57 +1097,73 @@ main(int argc, char *argv[])
 	     ms->MODS.pos[20], ms->MODS.pos[21]);
     }
     exit(0);
-  } else if(!strcasecmp(what,"TCSRA")) {
+    
+  }
+  else if (!strcasecmp(what,"TCSRA")) {
     printf("%s\n",ms->targRA);
     exit(0);
-  } else if(!strcasecmp(what,"TCSDEC")) {
+  }
+  else if (!strcasecmp(what,"TCSDEC")) {
     printf("%s\n",ms->targDec);
     exit(0);
-  } else if(!strcasecmp(what,"TCSAZ")) {
+  }
+  else if (!strcasecmp(what,"TCSAZ")) {
     printf("%0.4f\n",ms->targAz);
     exit(0);
-  } else if(!strcasecmp(what,"TCSEL")) {
+  }
+  else if (!strcasecmp(what,"TCSEL")) {
     printf("%0.4f\n",ms->targEl);
     exit(0);
-  } else if(!strcasecmp(what,"GSRA")) {
+  }
+  else if (!strcasecmp(what,"GSRA")) {
     i=atoi(&what[4]);
     printf("%s\n",ms->gsRA[i]);
     exit(0);
-  } else if(!strcasecmp(what,"GSDEC")) {
+  }
+  else if (!strcasecmp(what,"GSDEC")) {
     i=atoi(&what[5]);
     printf("%s\n",ms->gsDec[i]);
     exit(0);
-  } else if(!strcasecmp(what,"GSNUM")) {
+  }
+  else if (!strcasecmp(what,"GSNUM")) {
     printf("%d\n",ms->nGuideStars);
     exit(0);
-  } else if(!strcasecmp(what,"GSMAG")) {
+  }
+  else if (!strcasecmp(what,"GSMAG")) {
     i=atoi(&what[5]);
     printf("%0.4f\n",ms->gsMag[i]);
     exit(0);
-  } else if(!strcasecmp(what,"IIFINIT")) {
+  }
+  else if (!strcasecmp(what,"IIFINIT")) {
     printf("%d\n",ms->Init);
     exit(0);
-  } else if(!strcasecmp(what,"TCSAUTH")) {
+  }
+  else if (!strcasecmp(what,"TCSAUTH")) {
     printf("%d\n",ms->Auth);
     exit(0);
-  } else if(!strcasecmp(what,"TCSCOOR")) {
+  }
+  else if (!strcasecmp(what,"TCSCOOR")) {
     printf("%s\n",ms->targCoord);
     exit(0);
-  } else if(!strcasecmp(what,"TCSEQUINOX")) {
+  }
+  else if (!strcasecmp(what,"TCSEQUINOX")) {
     printf("%s\n",ms->targEquinox);
     exit(0);
-  } else if(!strcasecmp(what,"SHRMEM")) {
+  }
+  else if (!strcasecmp(what,"SHRMEM")) {
     cout << "*NOT* Operational yet!" << endl;
     exit(0);
 
-  } else if(!strcasecmp(what,"AGWFILTERS")) {
+  }
+  else if (!strcasecmp(what,"AGWFILTERS")) {
     printf("AGW FILTERS date:%s\nFilter1=%s, Filter2=%s, Filter3=%s, Filter4=%s\n",
 	   ms->MODS.agwfilters[0], ms->MODS.agwfilters[1],
 	   ms->MODS.agwfilters[2], ms->MODS.agwfilters[3],
 	   ms->MODS.agwfilters[4]);
     exit(0);
 
-  } else if(!strcasecmp(what,"RFILTERS")) {
+  }
+  else if (!strcasecmp(what,"RFILTERS")) {
     printf("RED CAMERA FILTERS date:%s\nFilter1=%s, Filter2=%s, Filter3=%s, Filter4=%s\nFilter5=%s, Filter6=%s, Filter7=%s, Filter8=%s\n",
 	   ms->MODS.rcamfilters[0], ms->MODS.rcamfilters[1],
 	   ms->MODS.rcamfilters[2], ms->MODS.rcamfilters[3],
@@ -1188,7 +1172,8 @@ main(int argc, char *argv[])
 	   ms->MODS.rcamfilters[8]);
     exit(0);
 
-  } else if(!strcasecmp(what,"BFILTERS")) {
+  }
+  else if (!strcasecmp(what,"BFILTERS")) {
     printf("RED CAMERA FILTERS date:%s\nFilter1=%s, Filter2=%s, Filter3=%s, Filter4=%s\nFilter5=%s, Filter6=%s, Filter7=%s, Filter8=%s\n",
 	   ms->MODS.bcamfilters[0], ms->MODS.bcamfilters[1],
 	   ms->MODS.bcamfilters[2], ms->MODS.bcamfilters[3],
@@ -1196,18 +1181,21 @@ main(int argc, char *argv[])
 	   ms->MODS.bcamfilters[6], ms->MODS.bcamfilters[7],
 	   ms->MODS.bcamfilters[8]);
     exit(0);
-
-    // Error messages
-  } else if(!strcasecmp(what,"ERRMSG")) {
+  }
+  // Error messages
+  else if (!strcasecmp(what,"ERRMSG")) {
     for(i=0;i<MAX_ML-1;i++)
-      if(strlen(shm_addr->MODS.ieb_msg[i])>0)
+      if (strlen(shm_addr->MODS.ieb_msg[i])>0)
 	printf("%s\n",shm_addr->MODS.ieb_msg[i]);
     exit(0);
-  } else {
-    printf("vueinfo$NaN$");
+  }
+  
+  else {
+    printf("vueinfo - unrecognized option %s\n",what);
     exit(0);
   }
 }
+
 /*
 #define MAX_LEN 256+1
 
