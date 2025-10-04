@@ -2980,19 +2980,21 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       
       if (strlen(args) > 2) {
 	GetArg(args,3,argbuf);
-	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	allHEBPower = devOnOff[0];
-	if (!strcasecmp(argbuf,"ON")) {
-	  devOnOff[0]=(short)(allHEBPower | 1);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	}
-	else if (!strcasecmp(argbuf,"OFF")) {
-	  devOnOff[0]=(short)(allHEBPower ^ 1);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	}
-	else {
-	  sprintf(reply,"%s unrecognized power state %s - must be ON or OFF",reply,argbuf);
-	  return CMD_ERR;
+	if (strlen(argbuf) > 0) {
+	  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	  allHEBPower = devOnOff[0];
+	  if (!strcasecmp(argbuf,"ON")) {
+	    devOnOff[0]=(short)(allHEBPower | 1);
+	    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	  }
+	  else if (!strcasecmp(argbuf,"OFF")) {
+	    devOnOff[0]=(short)(allHEBPower ^ 1);
+	    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	  }
+	  else {
+	    sprintf(reply,"%s unrecognized power state %s - must be ON or OFF",reply,argbuf);
+	    return CMD_ERR;
+	  }
 	}
 	MilliSleep(200);
       }
@@ -3027,19 +3029,21 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       
       if (strlen(args) > 2) {
 	GetArg(args,3,argbuf);
-	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	allHEBPower = devOnOff[0];
-	if (!strcasecmp(argbuf,"ON")) {
-	  devOnOff[0]=(short)(allHEBPower | 2);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	}
-	else if (!strcasecmp(argbuf,"OFF")) {
-	  devOnOff[0]=(short)(allHEBPower ^ 2);
-	  ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
-	}
-	else {
-	  sprintf(reply,"%s unrecognized power state %s - must be ON or OFF",reply,argbuf);
-	  return CMD_ERR;
+	if (strlen(argbuf) > 0) {
+	  ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	  allHEBPower = devOnOff[0];
+	  if (!strcasecmp(argbuf,"ON")) {
+	    devOnOff[0]=(short)(allHEBPower | 2);
+	    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	  }
+	  else if (!strcasecmp(argbuf,"OFF")) {
+	    devOnOff[0]=(short)(allHEBPower ^ 2);
+	    ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[hebWAGO],1,512,devOnOff,1);
+	  }
+	  else {
+	    sprintf(reply,"%s unrecognized power state %s - must be ON or OFF",reply,argbuf);
+	    return CMD_ERR;
+	  }
 	}
 	MilliSleep(200);
       }
@@ -3066,19 +3070,22 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       
       return CMD_OK;
 
-    } else if (!strcasecmp(argbuf,"TEMP") || !strcasecmp(argbuf,"TEMPS")) {
+    }
+    else if (!strcasecmp(argbuf,"TEMP") || !strcasecmp(argbuf,"TEMPS")) {
       sprintf(reply,"%s",who_selected);
       sprintf(reply,"%s HEBTEMP_%c=%.1f",reply,hebChan,hebAirTemp);
       sprintf(reply,"%s DEWTEMP_%c=%.1f",reply,hebChan,dewarTemp);
       return CMD_OK;
 
-    } else {
+    }
+    else {
       sprintf(reply,"%s invalid option '%s': usage: HEB R|B [[archon|ipower] on|off]",who_selected,argbuf); 
       return CMD_ERR;
       
     }
     
-  } else {
+  }
+  else {
     sprintf(reply,"%s Invalid '%s' command",who_selected,argbuf); 
     return CMD_ERR;
   }
