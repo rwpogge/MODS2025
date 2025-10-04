@@ -1057,8 +1057,33 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
 	blueCP->setChange(chanWord);
       return;
     }
-    // put IGPOWER and ARCHON here, go to IE as "HEB <chan> <cmd>"
 
+    // New commands for 2025: ARCHON and IGPOWER
+    
+    // Red/blue Archon CCD controller power command routed as-is to the IE as "HEB <channel> ARCHON [ON|OFF]"
+
+    else if (chanWord.compare("archon",Qt::CaseInsensitive)==0) {
+      destHost = modsIEHost[modsID];
+      chanCmd = QString("HEB %1 %2").arg(cmdWord).arg(cmdStr.section(" ",1,-1));
+      cmdKey = QString("%1-HEB").arg(destHost);
+      cmdHost.insert(cmdKey,remoteHost);
+      
+      sendIECommand(chanCmd);
+      return;
+    }
+    
+    // Red/blue vacuum ionization gauge power command routed as-is to the IE as "HEB <channel> IGPOWER [ON|OFF]"
+
+    else if (chanWord.compare("igpower",Qt::CaseInsensitive)==0) {
+      destHost = modsIEHost[modsID];
+      chanCmd = QString("HEB %1 %2").arg(cmdWord).arg(cmdStr.section(" ",1,-1));
+      cmdKey = QString("%1-HEB").arg(destHost);
+      cmdHost.insert(cmdKey,remoteHost);
+
+      sendIECommand(chanCmd);
+      return;
+    }
+    
     // CONFIG is a pseudo-local command
 
     else if (chanWord.compare("config",Qt::CaseInsensitive)==0)
@@ -1140,15 +1165,16 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
     }
 
     /*
-    // LASTFILE is now on the CCD host not DM host after the 2025 Archon update [rwp/osu]
+    // LASTFILE is now on the modsCCD host not DM host after the 2025 Archon update [rwp/osu]
 
-    // The LASTFILE command goes out to the IC host for the specified channel
+    // The LASTFILE command goes out to the dmHost for the specified channel
 
     else if (chanWord.compare("LASTFILE",Qt::CaseInsensitive)==0) {
       sendToISIS(dmHost,chanCmd);
 	
     }
     */
+    
     /*
     // FITSFLUSH is retired after the 2025 Archon update [rwp/osu]
 
