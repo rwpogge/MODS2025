@@ -251,7 +251,7 @@ while ($keepGoing) {
     my @now = localtime;
     my $dateNow = strftime "%Y-%m-%d %H:%M:%S", @now;
     attron($headCol);
-    addstr($pwrRow+1, 1, "Updated: $dateNow");
+    addstr($pwfRow+1, 1, "Updated: $dateNow");
     attroff($headCol);
     addstr($pwrRow+2,0,"");
 	
