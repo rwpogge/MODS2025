@@ -84,6 +84,9 @@ my $userHead = ["Process","Status","UserID"];
 my $sysdProcs = ["isis","lbttcs","modsenv","modsDD"];
 my $sysdHead = ["Service","Status","Restart"];
 
+my $subSystems = ["UTIL","LLB","GCAM","WFS","IEB","HEB","Archon","IonGauge","IEB","HEB","Archon","IonGauge"];
+my $pwrHead = ["Inst","Blue","Red"];
+
 # Update cadence
 
 my $cadence = 1; # seconds
@@ -114,7 +117,7 @@ while ($keepGoing) {
     # user services header
 
     my $colNum = 1;
-    $svcRow += 2;
+    $svcRow += 1;
     foreach my $hdrStr (@$userHead) {
         addstr($svcRow,$c0+($colNum-1)*$cpad, $hdrStr);
 	$colNum++;
@@ -156,7 +159,7 @@ while ($keepGoing) {
 
     attron($headCol);
     addstr($sysdRow, 1, "$modsID systemd services:");
-    $sysdRow += 2;
+    $sysdRow += 1;
     $colNum = 1;
     foreach my $hdrStr (@$sysdHead) {
         addstr($sysdRow, $c0+($colNum-1)*$cpad, $hdrStr);
@@ -199,12 +202,58 @@ while ($keepGoing) {
 	$sysdRow++
     }
 
+    # MODS power status
+    #
+    # returned by vueinfo, in order
+    #   iub llb gcam wfs ieb_b heb_b archon_b ig_b ieb_r heb_r archon_r ig_r
+    
+    my $pwrStates = `/usr/local/bin/vueinfo pstatus`;
+    chomp($pwrStates);
+    my @sysPower = split(' ',$pwrStates);
+    
+    # MODS subsystem power status header
+
+    my $pwrRow = $sysdRow + 1;
+
+    attron($headCol);
+    addstr($pwrRow, 1, "$modsID subsystem power:");
+    $pwrRow += 1;
+    $colNum = 1;
+    foreach my $hdrStr (@$pwrHead) {
+        addstr($pwrRow, $c0+($colNum-1)*$cpad, $hdrStr);
+	$colNum++;
+    }
+    attroff($headCol);
+
+    # power status of subsystems
+
+    $pwrRow++;
+
+    my $colPair = $dataCol;
+    foreach my $pCol ((0,1,2)) {
+	foreach my $pRow ((0,1,2,3)) {
+	    my $iPwr = $pRow + 4*$pCol;
+	    if ($sysPower[$iPwr] eq "On") {
+		$colPair = $normCol;
+	    } elsif ($sysPower[$iPwr] eq "Off") {
+		$colPair = $alertCol;
+	    } else {
+		$colPair = $dataCol;
+	    }
+	    attron($colPair);
+	    addStr($pwrRow+$pRow,$c0+$pCol*$cpad,$subSystems[$iPwr]);
+	    attroff($colPair);
+	}
+    }
+
+    # Bottom row: info update date/time
+    
     my @now = localtime;
     my $dateNow = strftime "%Y-%m-%d %H:%M:%S", @now;
     attron($headCol);
-    addstr($sysdRow+1, 1, "Updated: $dateNow");
+    addstr($pwfRow+1, 1, "Updated: $dateNow");
     attroff($headCol);
-    addstr($sysdRow+2,0,"");
+    addstr($pwrRow+2,0,"");
 	
     # update the screen and sleep for $cadence
     
