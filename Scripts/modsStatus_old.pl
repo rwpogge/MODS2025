@@ -26,6 +26,7 @@
 #
 # Modification History:
 #   2025 Oct 3 - first full release [rwp/osu]
+#   2025 Oct 4 - added MODS subsystem power status display [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -84,7 +85,7 @@ my $userHead = ["Process","Status","UserID"];
 my $sysdProcs = ["isis","lbttcs","modsenv","modsDD"];
 my $sysdHead = ["Service","Status","Restart"];
 
-my $subSystems = ["UTIL","LLB","GCAM","WFS","IEB","HEB","Archon","IonGauge","IEB","HEB","Archon","IonGauge"];
+my @subSystems = qw(UTIL LLB GCAM WFS IEB HEB Archon IonGauge IEB HEB Archon IonGauge);
 my $pwrHead = ["Inst","Blue","Red"];
 
 # Update cadence
@@ -241,7 +242,7 @@ while ($keepGoing) {
 		$colPair = $dataCol;
 	    }
 	    attron($colPair);
-	    addStr($pwrRow+$pRow,$c0+$pCol*$cpad,$subSystems[$iPwr]);
+	    addstr($pwrRow+$pRow,$c0+$pCol*$cpad,$subSystems[$iPwr]);
 	    attroff($colPair);
 	}
     }
@@ -251,9 +252,9 @@ while ($keepGoing) {
     my @now = localtime;
     my $dateNow = strftime "%Y-%m-%d %H:%M:%S", @now;
     attron($headCol);
-    addstr($pwfRow+1, 1, "Updated: $dateNow");
+    addstr($pwrRow+5, 1, "Updated: $dateNow");
     attroff($headCol);
-    addstr($pwrRow+2,0,"");
+    addstr($pwrRow+6,0,"");
 	
     # update the screen and sleep for $cadence
     

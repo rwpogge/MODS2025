@@ -139,6 +139,11 @@ main(int argc, char *argv[])
   time_t ti;
   struct tm *tm;
 
+  // Power state words
+
+  char pwrStates[3][6] = {"Fault","Off","On"};
+  int istate;
+  
   //  putpname("vueinfo"); // connect me to the ISL
   setup_ids();         // Give me the shmem, semaphores, and mclass ids.
   ms = shm_addr;       // assign a pointer to shared memory 
@@ -689,19 +694,20 @@ main(int argc, char *argv[])
   
   // Power state variables
   else if (!strcasecmp(what,"POWER")) {
+    
     printf("Power States:\n");
-    printf("         IUB: %s\n", (ms->MODS.utilState) ? "On" : "Off");
-    printf("         LLB: %s\n", (ms->MODS.llbState) ? "On" : "Off");
-    printf("   Guide Cam: %s\n", (ms->MODS.guideCamState) ? "On" : "Off");
-    printf("     WFS Cam: %s\n", (ms->MODS.wfsCamState) ? "On" : "Off");
+    printf("         IUB: %s\n",((ms->MODS.utilState==0) ? "Off" : (ms->MODS.utilState==1) ? "On" : "Fault"));
+    printf("         LLB: %s\n",((ms->MODS.llbState==0) ? "Off" : (ms->MODS.llbState==1) ? "On" : "Fault"));    
+    printf("   Guide Cam: %s\n",((ms->MODS.guideCamState==0) ? "Off" : (ms->MODS.guideCamState==1) ? "On" : "Fault"));    
+    printf("     WFS Cam: %s\n",((ms->MODS.wfsCamState==0) ? "Off" : (ms->MODS.wfsCamState==1) ? "On" : "Fault"));    
     printf(" Blue Channel:\n");
-    printf("       IEB-B: %s\n", (ms->MODS.blueIEBState) ? "On" : "Off");
-    printf("       HEB-B: %s\n", (ms->MODS.blueHEBState) ? "On" : "Off");
+    printf("       IEB-B: %s\n",((ms->MODS.blueIEBState==0) ? "Off" : (ms->MODS.blueIEBState==1) ? "On" : "Fault"));    
+    printf("       HEB-B: %s\n",((ms->MODS.blueHEBState==0) ? "Off" : (ms->MODS.blueHEBState==1) ? "On" : "Fault"));    
     printf("    Archon-B: %s\n", (ms->MODS.blueArchonState) ? "On" : "Off");
     printf("  IonGauge-B: %s\n", (ms->MODS.blueIonGaugeState) ? "On" : "Off");
     printf(" Red Channel:\n");
-    printf("       IEB-R: %s\n", (ms->MODS.redIEBState) ? "On" : "Off");
-    printf("       HEB-R: %s\n", (ms->MODS.redHEBState) ? "On" : "Off");
+    printf("       IEB-R: %s\n",((ms->MODS.redIEBState==0) ? "Off" : (ms->MODS.redIEBState==1) ? "On" : "Fault"));    
+    printf("       HEB-R: %s\n",((ms->MODS.redHEBState==0) ? "Off" : (ms->MODS.redHEBState==1) ? "On" : "Fault"));    
     printf("    Archon-R: %s\n", (ms->MODS.redArchonState) ? "On" : "Off");
     printf("  IonGauge-R: %s\n", (ms->MODS.redIonGaugeState) ? "On" : "Off");
     exit(0);
@@ -712,16 +718,16 @@ main(int argc, char *argv[])
   // returns: IUB LLB GCAM WFS IEB_B HEB_B Archon_B IG_B IEB_R HEB_R Archon_R IG_R
   //
   else if (!strcasecmp(what,"PSTATUS")) {
-    sprintf(buff,"%s",(ms->MODS.utilState) ? "On" : "Off");
-    sprintf(buff,"%s %s",buff, (ms->MODS.llbState) ? "On" : "Off");
-    sprintf(buff,"%s %s",buff, (ms->MODS.guideCamState) ? "On" : "Off");
-    sprintf(buff,"%s %s",buff, (ms->MODS.wfsCamState) ? "On" : "Off");
-    sprintf(buff,"%s %s",buff, (ms->MODS.blueIEBState) ? "On" : "Off");
-    sprintf(buff,"%s %s",buff, (ms->MODS.blueHEBState) ? "On" : "Off");
+    sprintf(buff,"%s",((ms->MODS.utilState==0) ? "Off" : (ms->MODS.utilState==1) ? "On" : "Fault"));
+    sprintf(buff,"%s %s",buff,((ms->MODS.llbState==0) ? "Off" : (ms->MODS.llbState==1) ? "On" : "Fault"));    
+    sprintf(buff,"%s %s",buff,((ms->MODS.guideCamState==0) ? "Off" : (ms->MODS.guideCamState==1) ? "On" : "Fault"));    
+    sprintf(buff,"%s %s",buff,((ms->MODS.wfsCamState==0) ? "Off" : (ms->MODS.wfsCamState==1) ? "On" : "Fault"));    
+    sprintf(buff,"%s %s",buff,((ms->MODS.blueIEBState==0) ? "Off" : (ms->MODS.blueIEBState==1) ? "On" : "Fault"));    
+    sprintf(buff,"%s %s",buff,((ms->MODS.blueHEBState==0) ? "Off" : (ms->MODS.blueHEBState==1) ? "On" : "Fault"));    
     sprintf(buff,"%s %s",buff, (ms->MODS.blueArchonState) ? "On" : "Off");
     sprintf(buff,"%s %s",buff, (ms->MODS.blueIonGaugeState) ? "On" : "Off");
-    sprintf(buff,"%s %s",buff, (ms->MODS.redIEBState) ? "On" : "Off");
-    sprintf(buff,"%s %s",buff, (ms->MODS.redHEBState) ? "On" : "Off");
+    sprintf(buff,"%s %s",buff,((ms->MODS.redIEBState==0) ? "Off" : (ms->MODS.redIEBState==1) ? "On" : "Fault"));     
+    sprintf(buff,"%s %s",buff,((ms->MODS.redHEBState==0) ? "Off" : (ms->MODS.redHEBState==1) ? "On" : "Fault"));     
     sprintf(buff,"%s %s",buff, (ms->MODS.redArchonState) ? "On" : "Off");
     sprintf(buff,"%s %s",buff, (ms->MODS.redIonGaugeState) ? "On" : "Off");
     printf("%s\n",buff);

@@ -14,6 +14,8 @@ Modification History
   2025 Aug 17 - updates for Archon HEB and LBTO telemetry [rwp/osu]
   2025 Sep 24 - added ALH_NOTEMP and ALH_NOPRES for magic values if
                 no temperature or pressure read [rwp/osu]
+  2025 Oct 04 - added logic to properly sense breaker fault states
+                on power states [rwp/osu]
 </pre>  
 */
 
@@ -343,6 +345,7 @@ getEnvData(envdata_t *envi)
     // On/Off state depends on the wiring of the AC power switching
     // relay: normally-open (OFF on mains power up) or normally-closed
     // (ON on mains power up)
+    
     envi->iebR_Switch = ((iubPower & IEB_R_POWER) != IEB_R_POWER); // normally closed
     envi->iebB_Switch = ((iubPower & IEB_B_POWER) != IEB_B_POWER); // normally closed
     envi->hebR_Switch = ((iubPower & HEB_R_POWER) != HEB_R_POWER); // normally closed - changed Aug 2025
@@ -351,14 +354,7 @@ getEnvData(envdata_t *envi)
     envi->wfs_Switch  = ((iubPower & WFS_POWER)   == WFS_POWER);   // normally OPEN
     envi->llb_Switch  = ((iubPower & LLB_POWER)   != LLB_POWER);   // normally closed
 
-    shm_addr->MODS.utilState = 1;
-    shm_addr->MODS.llbState = envi->llb_Switch;
-    shm_addr->MODS.blueIEBState = envi->iebB_Switch;
-    shm_addr->MODS.redIEBState = envi->iebR_Switch;
-    shm_addr->MODS.blueHEBState = envi->hebB_Switch;
-    shm_addr->MODS.redHEBState = envi->hebR_Switch;
-    shm_addr->MODS.guideCamState = envi->gcam_Switch;
-    shm_addr->MODS.wfsCamState = envi->wfs_Switch;
+    shm_addr->MODS.utilState = 1; // If we can read the WAGO, utility box is on
   }
   
   // Get the IUB AC power breaker output side current sensor data
@@ -377,6 +373,70 @@ getEnvData(envdata_t *envi)
     envi->wfs_Breaker  = ((iubBreaker & WFS_BREAKER)   == WFS_BREAKER);
     envi->llb_Breaker  = ((iubBreaker & LLB_BREAKER)   == LLB_BREAKER);
   }
+
+  // Power state depends on switch and breaker state
+  //
+  //   switch   breaker   power
+  //     0         0        0  (Off)
+  //     1         1        1  (On)
+  //     1         0       -1  (Fault)
+  //
+
+  if (env->llb_Switch == 1)
+    if (env->llb_Breaker == 1)
+      shm_addr->MODS.llbState = 1;
+    else
+      shm_addr->MODS.llbState = -1;
+  else
+    shm_addr->MODS.llbState = 0;
+
+  if (env->gcam_Switch == 1)
+    if (env->gcam_Breaker == 1)
+      shm_addr->MODS.guideCamState = 1;
+    else
+      shm_addr->MODS.guideCamState = -1;
+  else
+    shm_addr->MODS.guideCamState = 0;
+      
+  if (env->wfs_Switch == 1)
+    if (env->wfs_Breaker == 1)
+      shm_addr->MODS.wfsCamState = 1;
+    else
+      shm_addr->MODS.wfsCamState = -1;
+  else
+    shm_addr->MODS.wfsCamState = 0;
+      
+  if (env->iebB_Switch == 1)
+    if (env->iebB_Breaker == 1)
+      shm_addr->MODS.blueIEBState = 1;
+    else
+      shm_addr->MODS.blueIEBState = -1;
+  else
+    shm_addr->MODS.blueIEBState = 0;
+      
+  if (env->hebB_Switch == 1)
+    if (env->hebB_Breaker == 1)
+      shm_addr->MODS.blueHEBState = 1;
+    else
+      shm_addr->MODS.blueHEBState = -1;
+  else
+    shm_addr->MODS.blueHEBState = 0;
+      
+  if (env->iebR_Switch == 1)
+    if (env->iebR_Breaker == 1)
+      shm_addr->MODS.redIEBState = 1;
+    else
+      shm_addr->MODS.redIEBState = -1;
+  else
+    shm_addr->MODS.redIEBState = 0;
+      
+  if (env->hebR_Switch == 1)
+    if (env->hebR_Breaker == 1)
+      shm_addr->MODS.redHEBState = 1;
+    else
+      shm_addr->MODS.redHEBState = -1;
+  else
+    shm_addr->MODS.redHEBState = 0;
 
   // Red and Blue IEB WAGO RTD temperature sensor register base address: 0
 
@@ -442,7 +502,6 @@ getEnvData(envdata_t *envi)
 
     // If an HEB is off, so are systems powered through it
 
-    shm_addr->MODS.redHEBState = 0;
     shm_addr->MODS.redArchonState = 0;
     shm_addr->MODS.redIonGaugeState = 0;
   }
@@ -464,7 +523,6 @@ getEnvData(envdata_t *envi)
 
     // If an HEB is off, so are systems powered through it
     
-    shm_addr->MODS.blueHEBState = 0;
     shm_addr->MODS.blueArchonState = 0;
     shm_addr->MODS.blueIonGaugeState = 0;
   }
@@ -484,7 +542,6 @@ getEnvData(envdata_t *envi)
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Red HEB WAGO RTD sensor read error\n",envi->modsID);
 
-    shm_addr->MODS.redHEBState = 0;
     shm_addr->MODS.redHEBTemperature = ALH_NOTEMP;
     shm_addr->MODS.redDewarTemperature = ALH_NOTEMP;
   }
@@ -492,7 +549,6 @@ getEnvData(envdata_t *envi)
     envi->hebR_AirTemp = ptRTD2C(hebRData[0]);
     envi->redDewTemp = ptRTD2C(hebRData[1]);
 
-    shm_addr->MODS.redHEBState = 1;
     shm_addr->MODS.redHEBTemperature = envi->hebR_AirTemp;
     shm_addr->MODS.redDewarTemperature = envi->redDewTemp;
 
@@ -504,7 +560,6 @@ getEnvData(envdata_t *envi)
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue HEB WAGO RTD sensor read error\n",envi->modsID);
 
-    shm_addr->MODS.blueHEBState = 0;
     shm_addr->MODS.blueHEBTemperature = ALH_NOTEMP;
     shm_addr->MODS.blueDewarTemperature = ALH_NOTEMP;
   }
@@ -512,7 +567,6 @@ getEnvData(envdata_t *envi)
     envi->hebB_AirTemp = ptRTD2C(hebBData[0]);
     envi->blueDewTemp = ptRTD2C(hebBData[1]);
 
-    shm_addr->MODS.blueHEBState = 1;
     shm_addr->MODS.blueHEBTemperature = envi->hebB_AirTemp;
     shm_addr->MODS.blueDewarTemperature = envi->blueDewTemp;
   }

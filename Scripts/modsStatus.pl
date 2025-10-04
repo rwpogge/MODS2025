@@ -247,6 +247,16 @@ while ($keepGoing) {
 	}
     }
 
+    # Dewar status: temperature and pressures
+    #
+    # Retrieve using `vueinfo dewars` --> blueTemp bluePres redTemp redPres
+    #
+    
+    my $dewTempPres = `/usr/local/bin/vueinfo dewars`;
+    chomp($dewTempPres);
+    my @dewTP = split(' ',$dewTempPres);
+
+    
     # Bottom row: info update date/time
     
     my @now = localtime;
