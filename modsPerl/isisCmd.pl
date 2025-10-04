@@ -76,13 +76,13 @@ $Term::ANSIColor::AUTORESET = 1;
 
 if ($hostID eq 'mods1') {
     $useMODS = 1;
-    $useMODS1 = 1;
+    $useMODS1 = 0;  # 0 = Perl True
     $useMODS2 = '';
 }
 elsif ($hostID eq 'mods2') {
     $useMODS = 2;
     $useMODS1 = '';
-    $useMODS2 = 1;
+    $useMODS2 = 0;
 }
 else {
     $useMODS = 0;
