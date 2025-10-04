@@ -1056,6 +1056,7 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
 	blueCP->setChange(chanWord);
       return;
     }
+    // put IGPOWER and ARCHON here, go to IE as "HEB <chan> <cmd>"
 
     // CONFIG is a pseudo-local command
 
@@ -1138,12 +1139,17 @@ void DashBoard::doCommand(const QString &cmdStr, QString *replyStr)
     }
 
     /*
+    // LASTFILE is now on the CCD host not DM host after the 2025 Archon update [rwp/osu]
+
     // The LASTFILE command goes out to the IC host for the specified channel
 
     else if (chanWord.compare("LASTFILE",Qt::CaseInsensitive)==0) {
       sendToISIS(dmHost,chanCmd);
 	
     }
+    */
+    /*
+    // FITSFLUSH is retired after the 2025 Archon update [rwp/osu]
 
     // The FITSFLUSH command fires a +SWAP command to the data-manager host for the
     // specified channel
