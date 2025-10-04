@@ -47,13 +47,13 @@
   \date 2009 April/May - refinements during MODS1 lab integration and testing (rdg/tja/rwp)
   \date 2010 & 2011 - bug fixes during MODS1 at LBT commissioning [rwp/rdg]
   \date 2012 Feb - major bug in OBSMODE that zeroed IMCS laser power fixed [rwp]
-
+  
   \date 2025 Jun 20 - AlmaLinux 9 port [rwp/osu]
   \date 2025 Jul 16 - changed HEB power status/on/off logic for new WAGO HEB [rwp/osu]
   \date 2025 Jul 20 - power state code updates and clean up shmem interaction [rwp/osu]
-
   \date 2025 Aug 08 - many changes after live tests with MODS1 at LBT (off telescope) [rwp/osu]
-
+  \date 2025 Oct 04 - bug fixes during live testing of MODS1 and MODS2 on-telescope [rwp/osu]
+  
 */
 #include <iostream>
 #include <string>
