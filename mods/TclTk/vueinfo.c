@@ -483,6 +483,16 @@ main(int argc, char *argv[])
 		    ms->MODS.redDewarPressure);
     exit(0);
   }
+  // MODS dewar pressure and temperature
+  else if (!strcasecmp(what,"dewars")) {
+    sprintf(buff,"%.1f",ms->MODS.blueDewarTemperature);
+    sprintf(buff,"%s %8.2e",buff,ms->MODS.blueDewarPressure);
+    sprintf(buff,"%s %.1f",buff,ms->MODS.redDewarTemperature);
+    sprintf(buff,"%s %8.2e",buff,ms->MODS.redDewarPressure);
+    printf("%s\n",buff);
+    exit(0);
+  }
+ 
   // IEB currents and temperatures
   else if (!strcasecmp(what,"VandC")) {
     printf("%.3f Amps\n",ms->MODS.Current[0]);

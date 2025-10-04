@@ -1,6 +1,11 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2025 Oct 2 [rwp/osu]</b>
+<b>Last Update: 2025 Oct 4 [rwp/osu]</b>
+
+## 2025 Oct 4: modsStatus.pl
+
+Added display of MODS subsystem power status to modsStatus.pl.  Relies on the latest version
+of `vueinfo` which provides the `pstatus` option (terse `vuestatus power`).
 
 ## 2025 Oct 2: Archon controller update
 
