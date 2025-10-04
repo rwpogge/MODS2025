@@ -27,6 +27,8 @@
 #   2016 Jun 15 - binocular operations release for 2016B [rwp/osu]
 #   2025 Sep 10 - Archon CCD controller system updates [rwp/osu]
 #   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
+#   2025 Oct 04 - Allow default mods1 or mods2 if on a MODS instrument server,
+#                 otherwise require explicit --mods1 or --mods2 [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -45,8 +47,15 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date, date in ISO8601 format
 
-$verNum = "2.2.1";
-$verDate = "2025-10-03";
+$verNum = "2.2.2";
+$verDate = "2025-10-04";
+
+# get host ID
+
+$hostID = `hostname`;
+chomp($hostID);
+$modsID = lc($hostID);
+
 
 # ISIS network and host IDs for MODS1 and MODS2 instances
 
@@ -62,12 +71,24 @@ $Term::ANSIColor::AUTORESET = 1;
 
 # Command option defaults
 
-$useMODS = 0;   # Default MODS instance to use, 1 or 2.
-                # Setting useMODS=0 implies neither, thus
-                #   REQUIRING use of  --mods1 or --mods2
+# Default MODS instance to use, 1 or 2.
+#    Setting useMODS=0 implies neither, REQUIRING use of  --mods1 or --mods2
 
-$useMODS1 = ''; # (bool) if true, send commands to MODS1
-$useMODS2 = ''; # (bool) if true, send commands to MODS2
+if ($hostID eq 'mods1') {
+    $useMODS = 1;
+    $useMODS1 = 1;
+    $useMODS2 = '';
+}
+elsif ($hostID eq 'mods2') {
+    $useMODS = 2;
+    $useMODS1 = '';
+    $useMODS2 = 1;
+}
+else {
+    $useMODS = 0;
+    $useMODS1 = '';
+    $useMODS2 = '';
+}
 
 $timeout  = 0;  # no user timeout on commands (block)
 $showHelp = ''; # if true, show help/usage message and exit
