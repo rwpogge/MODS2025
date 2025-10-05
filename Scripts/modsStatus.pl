@@ -26,7 +26,7 @@
 #
 # Modification History:
 #   2025 Oct 3 - first full release [rwp/osu]
-#   2025 Oct 4 - added MODS subsystem power status display [rwp/osu]
+#   2025 Oct 4 - added MODS subsystem power and dewar T/P display [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -58,11 +58,15 @@ if (has_colors()) {
     init_color(COLOR_YELLOW,1000,1000,0);
     init_color(COLOR_RED,1000,0,0);
     init_color(COLOR_GREEN,0,1000,0);
+    init_color(COLOR_CYAN,0,1000,1000);
+    init_color(COLOR_BLUE,0,0,1000);
     # Define color pairs: (pair_id, foreground_color, background_color)
     init_pair(1, COLOR_WHITE, COLOR_BLACK);   # White text on black background
     init_pair(2, COLOR_YELLOW, COLOR_BLACK);  # Yellow text on black background
     init_pair(3, COLOR_GREEN, COLOR_BLACK);   # Green text on black background
     init_pair(4, COLOR_RED, COLOR_BLACK);     # Red text on black background
+    init_pair(5, COLOR_CYAN, COLOR_BLACK);    # Cyan text on black background
+    init_pair(6, COLOR_BLUE, COLOR_BLACK);    # Blue text on black background
 } else {
     addstr("Your terminal does not support colors.\n");
     getch();
@@ -70,12 +74,20 @@ if (has_colors()) {
     exit;
 }
 
-# color states:
+# State Table Colors
 
 my $headCol  = COLOR_PAIR(1); # white on black headings
+
+# server tables
+
 my $dataCol  = COLOR_PAIR(2); # yellow on black is the data ID or warning
 my $normCol  = COLOR_PAIR(3); # green on black is normal
-my $alertCol = COLOR_PAIR(4); # red on black is alert
+my $alertCol = COLOR_PAIR(4); # red on black is alert/fault
+
+# power state table
+
+my $onCol = COLOR_PAIR(3); # green on black is On
+my $offCol = COLOR_PAIR(6); # blue on black is Off (barely visible - no reliable gray in tmux)
 
 # process lists and headers
 
@@ -239,9 +251,9 @@ while ($keepGoing) {
 	foreach my $pRow ((0,1,2,3)) {
 	    my $iPwr = $pRow + 4*$pCol;
 	    if ($sysPower[$iPwr] eq "On") {
-		$colPair = $normCol;
+		$colPair = $onCol;
 	    } elsif ($sysPower[$iPwr] eq "Off") {
-		$colPair = $headCol;
+		$colPair = $offCol;
 	    } elsif ($sysPower[$iPwr] eq "Fault") {
 		$colPair = $alertCol;
 	    } else {
