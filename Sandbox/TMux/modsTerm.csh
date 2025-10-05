@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/csh -f
 #
 # modsTerm - start MODS binocular observing script session
 #
@@ -33,17 +33,17 @@
 #
 #---------------------------------------------------------------------------
 
-tmuxID="modsTerm"
+set tmuxID = "modsTerm"
 
 # LBTO Public executable path
 
-modsDir="/lbt/lbto/mods"
-configDir="/lbt/lbto/mods/.config"
+setenv modsDir /lbt/lbto/mods
+setenv configDir /lbt/lbto/mods/.config
 
 # Parse the command-line options
 
-tmux has-session -t $tmuxID 2> /dev/null
-if [ $? != 0 ]; then
+tmux has-session -t $tmuxID >& /dev/null
+if ($status) then
    tmux -f ${configDir}/tmux_mods.conf new-session -d -s $tmuxID
    tmux new-window -t ${tmuxID}:1 -n "MODS Binocular Observing"
    tmux split-window -v -p 5  
@@ -54,16 +54,14 @@ if [ $? != 0 ]; then
    tmux select-pane -t ${tmuxID}:1.0 -T "MODS1"
    tmux select-pane -t ${tmuxID}:1.1 -T "MODS2"
    tmux select-pane -t ${tmuxID}:1.2 -T "Commands"
-fi
+endif
 
 # If we're already in the expected tmux session, do nothing
 # otherwise attach to the command pane (1.2)
 
-if [ -n "$TMUX" ]; then
-   echo "Currently in the ${tmuxID} session"
-else
+if ( ! $?TMUX) then
    tmux select-pane -t ${tmuxID}:1.2
    tmux attach-session -t ${tmuxID}
-fi
+endif   
 
 exit 0
