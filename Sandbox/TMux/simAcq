@@ -1,0 +1,12 @@
+#!/bin/bash
+
+clear
+echo "Starting simulated acquisition" 
+count=1
+while [ $count -le 10 ]; do
+   echo "  executing acq command $count"
+   count=$((count + 1))
+   sleep 2
+done
+echo "simulted acq done"
+exit 0

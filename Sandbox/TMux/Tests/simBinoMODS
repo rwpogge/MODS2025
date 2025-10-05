@@ -66,7 +66,7 @@
 #
 #---------------------------------------------------------------------------
 
-setenv binoBin /path/to/common/MODS/bin
+setenv binoBin /lbt/lbto/mods/bin
 
 if ($#argv == 1) then
    set mods1Script = $1
@@ -89,7 +89,7 @@ if ($status) then
    exit 1
 endif 
 
-tmux send-keys -t modsTerm:1.0 "/home/dts/bin/simAcq --mods1 --bino ${mods1Script}" C-m
-tmux send-keys -t modsTerm:1.1 "/home/dts/bin/simAcq --mods2 --bino ${mods2Script}" C-m
+tmux send-keys -t modsTerm:1.0 "${binoBin}/simAcq --mods1 --bino ${mods1Script}" C-m
+tmux send-keys -t modsTerm:1.1 "${binoBin}/simAcq --mods2 --bino ${mods2Script}" C-m
 
 exit 0
