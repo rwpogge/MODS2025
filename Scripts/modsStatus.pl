@@ -90,7 +90,7 @@ my $pwrHead = ["Inst","Blue","Red"];
 
 # Update cadence
 
-my $cadence = 1; # seconds
+my $cadence = 2; # seconds
 
 # table column padding
 
@@ -231,7 +231,7 @@ while ($keepGoing) {
     $pwrRow++;
 
     foreach my $clrRow ((0,1,2,3)) {
-	move($clrRow,$c0);
+	move($pwrRow+$clrRow,$c0);
 	clrtoeol();
     }
     my $colPair = $dataCol;
@@ -257,39 +257,49 @@ while ($keepGoing) {
     #
     # Retrieve using `vueinfo dewars` --> blueTemp bluePres redTemp redPres
     #
+    # later we'll introduce alarm states to the color coding...
 
-    my $dewRow = $pwrRow + 2;
+    my $dewRow = $pwrRow + 5;
     my $dewTempPres = `/usr/local/bin/vueinfo dewars`;
     chomp($dewTempPres);
     my @dewTP = split(' ',$dewTempPres);
+
+    # heading and parameters:
+    
     attron($headCol);
-    addstr($dewRow,$c0,"Dewar Temperature:");
-    addstr($dewRow+1,$c0+3,"Dewar Pressure:");
+    addstr($dewRow,1,"$modsID dewars:");
     attroff($headCol);
-    # later we'll introduce alarm states...
+    attron($dataCol);
+    addstr($dewRow+1,$c0,"Temperature:");
+    addstr($dewRow+2,$c0+3,"Pressure:");
+    attroff($dataCol);
+
     # Temperature in C
+
     attron($normCol);
-    move($dewRow,$c0+1*$cpad);
-    clrtoeol();
-    addstr($dewRow,$c0+1*$cpad,"$dewTP[0] C");
-    addstr($dewRow,$c0+2*$cpad,"$dewTP[2] C");
-    #attoff($normCol);
-    # Pressure in torr
-    #attron($normCol);
     move($dewRow+1,$c0+1*$cpad);
     clrtoeol();
-    addstr($dewRow+1,$c0+1*$cpad,"$dewTP[1] torr");
-    addstr($dewRow+1,$c0+2*$cpad,"$dewTP[3] torr");
-    attoff($normCol);
+    addstr($dewRow+1,$c0+1*$cpad,"$dewTP[0] C");
+    addstr($dewRow+1,$c0+2*$cpad,"$dewTP[2] C");
+    attroff($normCol);
+
+    # Pressure in torr
+
+    attron($normCol);
+    move($dewRow+2,$c0+1*$cpad);
+    clrtoeol();
+    addstr($dewRow+2,$c0+1*$cpad,"$dewTP[1] torr");
+    addstr($dewRow+2,$c0+2*$cpad,"$dewTP[3] torr");
+    attroff($normCol);
 	   
     # Bottom row: info update date/time
     
     my @now = localtime;
     my $dateNow = strftime "%Y-%m-%d %H:%M:%S", @now;
     attron($headCol);
-    addstr($dewRow+3, 1, "Updated: $dateNow");
+    addstr($dewRow+4, 1, "Updated: $dateNow");
     attroff($headCol);
-    addstr($dewRow+4,0,"");
+    addstr($dewRow+5,0,"");
 	
     # update the screen and sleep for $cadence
     
