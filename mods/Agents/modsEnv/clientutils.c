@@ -382,56 +382,56 @@ getEnvData(envdata_t *envi)
   //     1         0       -1  (Fault)
   //
 
-  if (env->llb_Switch == 1)
-    if (env->llb_Breaker == 1)
+  if (envi->llb_Switch == 1)
+    if (envi->llb_Breaker == 1)
       shm_addr->MODS.llbState = 1;
     else
       shm_addr->MODS.llbState = -1;
   else
     shm_addr->MODS.llbState = 0;
 
-  if (env->gcam_Switch == 1)
-    if (env->gcam_Breaker == 1)
+  if (envi->gcam_Switch == 1)
+    if (envi->gcam_Breaker == 1)
       shm_addr->MODS.guideCamState = 1;
     else
       shm_addr->MODS.guideCamState = -1;
   else
     shm_addr->MODS.guideCamState = 0;
       
-  if (env->wfs_Switch == 1)
-    if (env->wfs_Breaker == 1)
+  if (envi->wfs_Switch == 1)
+    if (envi->wfs_Breaker == 1)
       shm_addr->MODS.wfsCamState = 1;
     else
       shm_addr->MODS.wfsCamState = -1;
   else
     shm_addr->MODS.wfsCamState = 0;
       
-  if (env->iebB_Switch == 1)
-    if (env->iebB_Breaker == 1)
+  if (envi->iebB_Switch == 1)
+    if (envi->iebB_Breaker == 1)
       shm_addr->MODS.blueIEBState = 1;
     else
       shm_addr->MODS.blueIEBState = -1;
   else
     shm_addr->MODS.blueIEBState = 0;
       
-  if (env->hebB_Switch == 1)
-    if (env->hebB_Breaker == 1)
+  if (envi->hebB_Switch == 1)
+    if (envi->hebB_Breaker == 1)
       shm_addr->MODS.blueHEBState = 1;
     else
       shm_addr->MODS.blueHEBState = -1;
   else
     shm_addr->MODS.blueHEBState = 0;
       
-  if (env->iebR_Switch == 1)
-    if (env->iebR_Breaker == 1)
+  if (envi->iebR_Switch == 1)
+    if (envi->iebR_Breaker == 1)
       shm_addr->MODS.redIEBState = 1;
     else
       shm_addr->MODS.redIEBState = -1;
   else
     shm_addr->MODS.redIEBState = 0;
       
-  if (env->hebR_Switch == 1)
-    if (env->hebR_Breaker == 1)
+  if (envi->hebR_Switch == 1)
+    if (envi->hebR_Breaker == 1)
       shm_addr->MODS.redHEBState = 1;
     else
       shm_addr->MODS.redHEBState = -1;

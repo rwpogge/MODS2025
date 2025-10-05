@@ -230,6 +230,10 @@ while ($keepGoing) {
 
     $pwrRow++;
 
+    foreach my $clrRow ((0,1,2,3)) {
+	move($clrRow,$c0);
+	clrtoeol();
+    }
     my $colPair = $dataCol;
     foreach my $pCol ((0,1,2)) {
 	foreach my $pRow ((0,1,2,3)) {
@@ -237,9 +241,11 @@ while ($keepGoing) {
 	    if ($sysPower[$iPwr] eq "On") {
 		$colPair = $normCol;
 	    } elsif ($sysPower[$iPwr] eq "Off") {
+		$colPair = $headCol;
+	    } elsif ($sysPower[$iPwr] eq "Fault") {
 		$colPair = $alertCol;
 	    } else {
-		$colPair = $dataCol;
+		$colPair = $headCol;
 	    }
 	    attron($colPair);
 	    addstr($pwrRow+$pRow,$c0+$pCol*$cpad,$subSystems[$iPwr]);
@@ -251,20 +257,39 @@ while ($keepGoing) {
     #
     # Retrieve using `vueinfo dewars` --> blueTemp bluePres redTemp redPres
     #
-    
+
+    my $dewRow = $pwrRow + 2;
     my $dewTempPres = `/usr/local/bin/vueinfo dewars`;
     chomp($dewTempPres);
     my @dewTP = split(' ',$dewTempPres);
-
-    
+    attron($headCol);
+    addstr($dewRow,$c0,"Dewar Temperature:");
+    addstr($dewRow+1,$c0+3,"Dewar Pressure:");
+    attroff($headCol);
+    # later we'll introduce alarm states...
+    # Temperature in C
+    attron($normCol);
+    move($dewRow,$c0+1*$cpad);
+    clrtoeol();
+    addStr($dewRow,$c0+1*$cpad,"$dewTP[0] C");
+    addStr($dewRow,$c0+2*$cpad,"$dewTP[2] C");
+    #attoff($normCol);
+    # Pressure in torr
+    #attron($normCol);
+    move($dewRow+1,$c0+1*$cpad);
+    clrtoeol();
+    addStr($dewRow+1,$c0+1*$cpad,"$dewTP[1] torr");
+    addStr($dewRow+1,$c0+2*$cpad,"$dewTP[3] torr");
+    attoff($normCol);
+	   
     # Bottom row: info update date/time
     
     my @now = localtime;
     my $dateNow = strftime "%Y-%m-%d %H:%M:%S", @now;
     attron($headCol);
-    addstr($pwrRow+5, 1, "Updated: $dateNow");
+    addstr($dewRow+3, 1, "Updated: $dateNow");
     attroff($headCol);
-    addstr($pwrRow+6,0,"");
+    addstr($dewRow+4,0,"");
 	
     # update the screen and sleep for $cadence
     
