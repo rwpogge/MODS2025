@@ -17,13 +17,18 @@ However, it is taking on many of the structures of the real thing, so not totall
 
 ## Contents
 
-  * `ISIS` - ISIS message-passing server and client
-  * `mods` - MODS instrument control and data-acquisition system
-  * `azcam` - AzCam server for the MODS Archon CCD controllers
-  * `modsPerl` - MODS perl scripts for target acquisition and data taking and related tasks.
-  * `Scripts` - MODS system startup and status scripts (work in progress)
-  * `Sandbox` - place to work on test codes and other bits we are using, the action is in the subfolders but read before you use
-  * `Config` - released runtime configuration files (coming soon...)
+### Core System
+
+  * [ISIS](ISIS) - ISIS message-passing server and client
+  * [mods](mods) - MODS instrument control and data-acquisition system
+  * [azcam](azcam) - AzCam server for the MODS Archon CCD controllers
+  * [modsPerl](modsPerl) - MODS perl scripts for target acquisition and data taking and related tasks.
+  * [Scripts](Scripts) - MODS system startup and status scripts (work in progress)
+
+### Development and Configuration
+
+  * [Sandbox] - place to work on test codes and other bits we are using, the action is in the subfolders but read before you use
+  * [Config] - released runtime configuration files (coming soon...)
 
 ## Installation and dependencies
 
