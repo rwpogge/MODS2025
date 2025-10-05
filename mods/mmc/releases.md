@@ -1,7 +1,12 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2025 Oct 3
+Last Build: 2025 Oct 4
+
+## Version 3.2.2: 2025 Oct 4
+Two builds running down bugs
+ * Code logic in the `mmcServer` HEB command had bugs that needed fixing. All command combinations confirmed.
+ * Needed to insert a 10ms delay between modbus open/connect methods: `mmc/app/wagoSetGet.c`, same issue as with `modsEnv` and `modsHEB`
 
 ## Version 3.2.0: 2025 Oct 3
  * Many updates from live testing at LBTO with MODS1 and MODS2
