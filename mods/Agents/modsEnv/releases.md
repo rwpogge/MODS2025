@@ -6,9 +6,9 @@ Last Build: 2025 Oct 4
 
 Changed logic for reporting the various power states for subsystems that are controlled by the utility box.
 The actual power state is
-```
+<pre>
    powerState = f(switchState,breakerState)
-```
+</pre>
  * If switch is on and breaker is on, power = 1 (On)
  * If switch is off and breaker is off, power = 0 (Off)
  * If switch is on and breaker is off, power = -1 (Fault)
