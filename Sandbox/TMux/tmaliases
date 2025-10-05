@@ -1,0 +1,14 @@
+# MODS-specific aliases
+
+alias detach="tmux detach"
+alias quit="tmux detach"
+
+function exit {
+  if [ ${TMUX} ]; then
+    tmux detach
+  else
+    builtin exit
+  fi
+}
+
+clear

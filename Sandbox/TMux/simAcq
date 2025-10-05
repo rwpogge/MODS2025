@@ -8,5 +8,5 @@ while [ $count -le 10 ]; do
    count=$((count + 1))
    sleep 2
 done
-echo "simulted acq done"
+echo "simulated acq done"
 exit 0

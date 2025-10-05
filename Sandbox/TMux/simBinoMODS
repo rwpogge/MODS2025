@@ -61,13 +61,11 @@ endif
 
 tmux has-session -t modsTerm >& /dev/null
 if ($status) then
-   printf "acqBinoMODS needs to be run in a modsTerm session - type 'modsTerm' to start one...\n"
-   printf "and then try again.\n"
+   printf "$0 needs to be run in a modsTerm session - type 'modsTerm' to create one\n"
    exit 1
 else
    if ( ! $?TMUX) then
-      printf "acqBinoMODS needs to be run in the modsTerm - type 'modsTerm' to attach to the\n"
-      printf "modsTerm and then try again.\n"
+      printf "$0 needs to be run in a modsTerm - type 'modsTerm' to attach\n"
       exit 1
    endif
 endif

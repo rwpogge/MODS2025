@@ -54,6 +54,10 @@ if [ $? != 0 ]; then
    tmux select-pane -t ${tmuxID}:1.0 -T "MODS1"
    tmux select-pane -t ${tmuxID}:1.1 -T "MODS2"
    tmux select-pane -t ${tmuxID}:1.2 -T "Commands"
+   # aliases
+   tmux send-keys -t ${tmuxID}:1.0 "source /home/dts/bin/tmaliases" C-m
+   tmux send-keys -t ${tmuxID}:1.1 "source /home/dts/bin/tmaliases" C-m
+   tmux send-keys -t ${tmuxID}:1.2 "source /home/dts/bin/tmaliases" C-m
 fi
 
 # If we're already in the expected tmux session, do nothing
