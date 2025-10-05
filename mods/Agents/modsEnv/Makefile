@@ -15,12 +15,14 @@
 #   2024 Jul 08 - Adding LBTO's libtelemetry library [xc/osu]
 #   2025 Aug 17 - Added Archon HEB data, shmem handling [rwp/osu]
 #   2025 Aug 25 - Added ionization gauge interface [xc/osu]
+#   2025 Oct 04 - Logic for powerState=(switch&&breaker) for IUB [rwp/osu]
 #
+#---------------------------------------------------------------------------
 
 ROOTDIR     = /home/dts/mods
 ISISDIR     = /home/dts/ISIS
 TELEMDIR    = /usr/include/lbto/lib-telemetry
-VERSION     = v3.3.3
+VERSION     = v3.3.4
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 

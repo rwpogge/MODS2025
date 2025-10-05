@@ -1,5 +1,19 @@
 # modsenv Release Notes
-Last Build: 2025 Sept 30
+Last Build: 2025 Oct 4
+
+## Version 3.3.4
+2025 Oct 4
+
+Changed logic for reporting the various power states for subsystems that are controlled by the utility box.
+The actual power state is
+```
+   powerState = f(switchState,breakerState)
+```
+ * If switch is on and breaker is on, power = 1 (On)
+ * If switch is off and breaker is off, power = 0 (Off)
+ * If switch is on and breaker is off, power = -1 (Fault)
+ * If switch is off and breaker is on, power = -1 (Fault - probably means power relay fused on)
+
 
 ## Version 3.3.3
 2025 Sept 30
