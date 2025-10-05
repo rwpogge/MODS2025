@@ -1,36 +1,253 @@
-#!/bin/bash
+#!/bin/csh -f
+#
+# modsTerm - start MODS binocular observing script session
+#
+# This script launches a named tmux session that will be used to execute
+# MODS binocular science target acquisition and observation scripts.
+#
+# While it may be invoked by itself, if the session is not running
+# it will be executed by the acqBinoMODS and execBinoMODS scripts.
+#
+# The modsTerm tmux session is configured with 3 window panes
+# 
+#      +---------------------+---------------------+
+#      |        MODS1        |        MODS2        |
+#      |                     |                     |
+#      |                     |                     |
+#      |                     |                     |
+#      |                     |                     |
+#      +---------------------+---------------------+
+#      |                  command                  |
+#      |                                           |
+#      +---------------------+---------------------+
+#
+# Low-level setup is in the $modsDir/Config/tmux_mods.conf file (a non-dot
+# .tmux_conf file)
+#
+# R. Pogge (pogge.1@osu.edu)
+# OSU Astronomy Department
+# 2025 Oct 4 - Alpha version
+#
+# Modification History:
+#
+#---------------------------------------------------------------------------
 
-tmuxID="modsTerm"
-modsHost="${HOSTNAME^^}"
+set tmuxID = "modsTerm"
 
-# Check if the session already exists
+# LBTO Public executable path
 
-tmux has-session -t $tmuxID 2>/dev/null
+setenv modsDir /lbt/lbto/mods
+setenv configDir /lbt/lbto/mods/Config
 
-if [ $? != 0 ]; then
-  # Create a new detached session
+# Parse the command-line options
 
-  tmux -f ~/.tmux.conf.mods new-session -d -s $tmuxID
+tmux has-session -t $tmuxID >& /dev/null
+if ($status) then
+   tmux -f ${configDir)/tmux_mods.conf new-session -d -s $tmuxID
+   tmux new-window -t ${tmuxID}:1 -n "${modsID} Server Admin"
+   tmux split-window -v -p 5  
+   tmux split-window -h -p 50 -t ${tmuxID}:1.0
+   # pane IDs
+   tmux set -g pane-border-status top
+   tmux set -g pane-border-format " #{pane_title} "
+   tmux select-pane -t ${tmuxID}:1.0 -T "Status"
+   tmux select-pane -t ${tmuxID}:1.1 -T "Server"
+   tmux select-pane -t ${tmuxID}:1.2 -T "Commands"
+   # start the status monitor in the upper left pane
+   tmux send-keys -t ${tmuxID}:1.0 "$binDir/modsStatus" C-m
+endif
 
-  # Create a new window (if needed) and name it
+# If we're already in the expected tmux session, do nothing
+# otherwise attach
 
-  tmux new-window -t $tmuxID:1 -n "${modsHost} Server Admin"
+if ( ! $?TMUX) then
+   tmux select-pane -t ${tmuxID}:1.2
+   tmux attach-session -t ${tmuxID}
+endif   
 
-  # Split the window into panes (optional, adjust as needed)
+# If given without args, print usage and exit, after attaching 
+# to the tmux session if in a regular shell
 
-  tmux split-window -v -p 5  # split bottom pane shorter
-  tmux split-window -h -p 50 -t $tmuxID:1.0 # Split horizontally
+if ($numArgs == 0) then
+   if ( $?TMUX) then
+      printf "Usage:${usage}\n"
+   endif
+   exit 0
+endif
 
-  # Send commands to the panes to start programs
+# Execute the request
 
-  # tmux send-keys -t $tmuxID:1.0 "./modsStatus" C-m # run the ISIS server in the first pane
+# all background services are started in the tmux session upper
+# right pane (index 1.1) so that any terminal output is preserved
+# and kept separate from the status and command panes.
 
-  # Select the pane you want active initially
+switch ($1)
+   # Start the named instrument services, either individually or in
+   # functional groups as makes sense.  For some groups the order matters.
+   case 'start':
+      if ($numArgs == 2) then
+         switch ($2)
+         case 'mmc':
+         case 'ie':
+	    # IE = mmcServer
+            ps h -C mmcServer >& /dev/null
+            if ($status) then
+               printf "  Starting ${modsID} mmcServer (IE)...\n"
+               tmux send-keys -t ${tmuxID}:1.1 "${binDir}/mmcServer &" C-m
+            else
+               printf "  ${modsID} IE already running...\n"
+            endif
+            breaksw
 
-  tmux select-pane -t $tmuxID:1.2 # attach the command pane
+         case 'agw':
+            ps h -C agwServer >& /dev/null
+            if ($status) then
+               printf "Starting ${modsID} AGw Server...\n"
+               tmux send-keys -t ${tmuxID}:1.1 "${binDir}/agwServer &" C-m
+            else
+               printf "${modsID} AGw Server already running...\n"
+            endif
+            breaksw
 
-fi
+         case 'gui':
+	 case 'modsUI':
+            ps h -C modsUI >& /dev/null
+            if ($status) then
+               printf "The ${modsID} control panel GUI is now started using 'modsUI start'\n"
+	       exit 1
+            else
+               printf "${modsID} control panel GUI is already running...\n"
+            endif
+            breaksw
 
-# Attach to the session
+         case 'blueIMCS':
+            ps h -C blueIMCS >& /dev/null
+            if ($status) then
+               printf "  Starting ${modsID} blueIMCS agent...\n"
+               tmux send-keys -t ${tmuxID}:1.1 "${binDir}/blueIMCS &" C-m
+            else
+               printf "  ${modsID} blueIMCS agent already running...\n"
+            endif
+            breaksw
 
-tmux attach-session -t $tmuxID
+         case 'redIMCS':
+            ps h -C redIMCS >& /dev/null
+            if ($status) then
+               printf "  Starting ${modsID} redIMCS agent...\n"
+               tmux send-keys -t ${tmuxID}:1.1 "${binDir}/redIMCS &" C-m
+            else
+               printf "  ${modsID} redIMCS agent already running...\n"
+            endif
+            breaksw
+
+         case 'imcs':
+            printf "Starting the ${modsID} Red and Blue IMCS agents...\n"
+	    foreach service (redIMCS blueIMCS)
+               ps h -C $service >& /dev/null
+               if ($status) then
+                  printf "  Starting ${modsID} ${service}...\n"
+                  tmux send-keys -t ${tmuxID}:1.1 "${binDir}/${service} &" C-m
+               else
+                  printf "  ${modsID} ${service} already running...\n"
+               endif
+            end
+            breaksw
+
+         default:
+            printf "ERROR: Unknown ${modsID} instrument service '$2'\n"
+            printf "       No ${modsID} instrument services were started.\n"
+            printf "Usage: ${usage}\n"
+            exit 1
+            breaksw
+           endsw
+      else
+         printf "ERROR: start syntax error - you must specify what to start\n"
+         printf "Usage: $usage\n"
+         exit 1
+      endif
+      breaksw
+
+   # Stop the named instrument services - could make this cleaner by testing
+   # to see if running first, but for now this suffices.
+
+   case 'stop':
+      if ($numArgs == 2) then
+         switch ($2)
+         case 'all':
+            printf "Stopping all ${modsID} user services (except modsUI)...\n"
+            killall redIMCS
+            killall blueIMCS
+            killall -s SIGINT mmcServer
+            killall -s SIGINT agwServer
+            breaksw
+
+         case 'mmc':
+         case 'ie':
+            printf "Stopping the ${modsID} mechanism services...\n"
+	    killall blueIMCS
+	    killall redIMCS
+            killall -s SIGINT mmcServer
+            breaksw
+
+         case 'agw':
+            printf "Stopping the ${modsID} AGw server...\n"
+            killall -s SIGINT agwServer
+            breaksw
+
+         case 'blueIMCS':
+            printf "Stopping the ${modsID} Blue IMCS agent...\n"
+            killall blueIMCS
+            breaksw
+
+         case 'redIMCS':
+            printf "Stopping the ${modsID} Red IMCS agent...\n"
+            killall redIMCS
+            breaksw
+
+         case 'imcs':
+            printf "Stopping the ${modsID} Red and Blue IMCS agents...\n"
+            killall redIMCS
+            killall blueIMCS
+            breaksw
+
+         case 'gui':
+	 case 'modsUI':
+            printf "Stopping the ${modsID} control panel GUI (modsUI)...\n"
+            printf "   (you should really use modsUI stop)\n"
+            killall modsUI
+            breaksw
+
+         default:
+            printf "ERROR: Unknown ${modsID} instrument service '$2'\n"
+            printf "       No ${modsID} instrument services were stopped.\n"
+            printf "Usage: ${usage}\n\n"
+            exit 1
+            breaksw
+
+         endsw
+      else
+         printf "ERROR: stop syntax error - you must specify what to stop\n"
+         printf "Usage: $usage\n"
+         exit 1
+      endif
+
+      breaksw
+
+   # Show the status of all user and systemd services.  It is
+   # harmless if we send the command to start modsStatus over
+   # a running modsStatus
+  
+   case 'show':
+   case 'status':
+      tmux send-keys -t ${tmuxID}:1.0 "$binDir/modsStatus" C-m
+      breaksw
+
+   # Unknown option - squawk and exit
+   default:
+      printf "ERROR: unknown option '$1'\n"
+      printf "Usage: ${usage}\n"
+      exit 1
+      breaksw
+
+endsw
+exit 0
