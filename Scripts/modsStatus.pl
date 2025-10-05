@@ -271,15 +271,15 @@ while ($keepGoing) {
     attron($normCol);
     move($dewRow,$c0+1*$cpad);
     clrtoeol();
-    addStr($dewRow,$c0+1*$cpad,"$dewTP[0] C");
-    addStr($dewRow,$c0+2*$cpad,"$dewTP[2] C");
+    addstr($dewRow,$c0+1*$cpad,"$dewTP[0] C");
+    addstr($dewRow,$c0+2*$cpad,"$dewTP[2] C");
     #attoff($normCol);
     # Pressure in torr
     #attron($normCol);
     move($dewRow+1,$c0+1*$cpad);
     clrtoeol();
-    addStr($dewRow+1,$c0+1*$cpad,"$dewTP[1] torr");
-    addStr($dewRow+1,$c0+2*$cpad,"$dewTP[3] torr");
+    addstr($dewRow+1,$c0+1*$cpad,"$dewTP[1] torr");
+    addstr($dewRow+1,$c0+2*$cpad,"$dewTP[3] torr");
     attoff($normCol);
 	   
     # Bottom row: info update date/time
