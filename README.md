@@ -27,8 +27,8 @@ However, it is taking on many of the structures of the real thing, so not totall
 
 ### Development and Configuration
 
-  * [Sandbox] - place to work on test codes and other bits we are using, the action is in the subfolders but read before you use
-  * [Config] - released runtime configuration files (coming soon...)
+  * [Sandbox](Sandbox) - Test codes and experiments, apps deep in alpha, read carefully before browsing, and don't use if there are analogs in the Core code
+  * [Config](Config) - released runtime configuration files (coming soon...)
 
 ## Installation and dependencies
 
