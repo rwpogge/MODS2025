@@ -60,6 +60,10 @@ if ($numArgs > 3) then
    exit 0
 endif
 
+# A good size for this session
+
+resize -s 42 128 
+
 # See if we are running in the expected server admin tmux session.  If
 # so, attach to the command pane.  If not, start the tmux session,
 # execute the modsStatus monitor in the top left pane
