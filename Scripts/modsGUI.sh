@@ -42,8 +42,6 @@ endif
 # Execute the request
 
 switch ($1)
-    # Start the named instrument services, either individually or in
-    # functional groups as makes sense.  For some groups the order matters.
     case 'start':
 	ps h -C modsUI >& /dev/null
         if ($status) then
@@ -55,9 +53,6 @@ switch ($1)
         endif
 	breaksw
 	
-   # Stop the named instrument services - could make this cleaner by testing
-   # to see if running first, but for now this suffices.
-
     case 'stop':
 	ps h -C modsUI >& /dev/null
         if ($status) then
@@ -78,8 +73,6 @@ switch ($1)
         endif
 	breaksw
 	
-   # Unknown option - squawk and exit
-
    default:
       printf "ERROR: unknown option '$1'\n"
       printf "\nUsage: ${usage}\n"
