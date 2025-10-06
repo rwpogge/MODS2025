@@ -24,7 +24,7 @@
 #   2012 Oct 9  - version for MODS1 [rwp/osu]
 #   2025 Sep 26 - Archon CCD controller version for MODS1 [rwp/osu]
 #   2025 Oct 03 - First full Archon version release [rwp/osu]
-#
+# 
 #---------------------------------------------------------------------------
 
 # We are MODS1
@@ -116,7 +116,7 @@ switch ($1)
          switch ($2)
          case 'mmc':
          case 'ie':
-	    # IE = mmcServer
+            # IE = mmcServer
             ps h -C mmcServer >& /dev/null
             if ($status) then
                printf "  Starting ${modsID} mmcServer (IE)...\n"
@@ -137,11 +137,11 @@ switch ($1)
             breaksw
 
          case 'gui':
-	 case 'modsUI':
+         case 'modsUI':
             ps h -C modsUI >& /dev/null
             if ($status) then
                printf "The ${modsID} control panel GUI is now started using 'modsGUI start'\n"
-	       exit 1
+               exit 1
             else
                printf "${modsID} control panel GUI is already running...\n"
             endif
@@ -169,7 +169,7 @@ switch ($1)
 
          case 'imcs':
             printf "Starting the ${modsID} Red and Blue IMCS agents...\n"
-	    foreach service (redIMCS blueIMCS)
+            foreach service (redIMCS blueIMCS)
                ps h -C $service >& /dev/null
                if ($status) then
                   printf "  Starting ${modsID} ${service}...\n"
@@ -211,8 +211,8 @@ switch ($1)
          case 'mmc':
          case 'ie':
             printf "Stopping the ${modsID} mechanism services...\n"
-	    killall blueIMCS
-	    killall redIMCS
+            killall blueIMCS
+            killall redIMCS
             killall -s SIGINT mmcServer
             breaksw
 
@@ -238,7 +238,7 @@ switch ($1)
             breaksw
 
          case 'gui':
-	 case 'modsUI':
+         case 'modsUI':
             printf "Stopping the ${modsID} control panel GUI (modsUI)...\n"
             printf "   (you should really use modsGUI stop)\n"
             killall modsUI

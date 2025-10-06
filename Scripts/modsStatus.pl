@@ -133,7 +133,7 @@ while ($keepGoing) {
     $svcRow += 1;
     foreach my $hdrStr (@$userHead) {
         addstr($svcRow,$c0+($colNum-1)*$cpad, $hdrStr);
-	$colNum++;
+        $colNum++;
     }
     attroff($headCol);
 
@@ -141,29 +141,29 @@ while ($keepGoing) {
 
     $svcRow++;
     foreach my $procID (@$userProcs) {
-	attron($dataCol);
-	addstr($svcRow,$c0,$procID);
-	attroff($dataCol);
-	
-	my $isUp = `ps h -C $procID`;
-	chomp($isUp);
-	move($svcRow,$c0+1*$cpad);
-	clrtoeol();
-	if (length($isUp) > 0) {
-	    attron($normCol);
-	    addstr($svcRow,$c0+1*$cpad,"running");
-	    attroff($normCol);
-	    my $procUser = `ps eo user h -C $procID`;
-	    chomp($procUser);
-	    attron($dataCol);
-	    addstr($svcRow,$c0+2*$cpad,$procUser);
-	    attroff($dataCol);
-	} else {
-	    attron($alertCol);
-	    addstr($svcRow,$c0+1*$cpad,"stopped");
-	    attroff($alertCol);
-	}
-	$svcRow++;
+        attron($dataCol);
+        addstr($svcRow,$c0,$procID);
+        attroff($dataCol);
+        
+        my $isUp = `ps h -C $procID`;
+        chomp($isUp);
+        move($svcRow,$c0+1*$cpad);
+        clrtoeol();
+        if (length($isUp) > 0) {
+            attron($normCol);
+            addstr($svcRow,$c0+1*$cpad,"running");
+            attroff($normCol);
+            my $procUser = `ps eo user h -C $procID`;
+            chomp($procUser);
+            attron($dataCol);
+            addstr($svcRow,$c0+2*$cpad,$procUser);
+            attroff($dataCol);
+        } else {
+            attron($alertCol);
+            addstr($svcRow,$c0+1*$cpad,"stopped");
+            attroff($alertCol);
+        }
+        $svcRow++;
     }
 
     # systemd services header
@@ -176,7 +176,7 @@ while ($keepGoing) {
     $colNum = 1;
     foreach my $hdrStr (@$sysdHead) {
         addstr($sysdRow, $c0+($colNum-1)*$cpad, $hdrStr);
-	$colNum++;
+        $colNum++;
     }
     attroff($headCol);
 
@@ -185,34 +185,34 @@ while ($keepGoing) {
     $sysdRow++;
     my $colPair = $dataCol;
     foreach my $sysID (@$sysdProcs) {
-	attron($dataCol);
-	addstr($sysdRow,$c0,$sysID);
-	attroff($dataCol);
-	
-	move($sysdRow,$c0+1*$cpad);
-	clrtoeol();
-	my $isActive = `systemctl is-active $sysID`;
-	chomp($isActive);
-	if ($isActive eq "active") {
-	    $colPair = $normCol;
-	} else {
-	    $colPair = $alertCol;
-	}	    
-	attron($colPair);
-	addstr($sysdRow,$c0+1*$cpad,$isActive);
-	attroff($colPair);
+        attron($dataCol);
+        addstr($sysdRow,$c0,$sysID);
+        attroff($dataCol);
+        
+        move($sysdRow,$c0+1*$cpad);
+        clrtoeol();
+        my $isActive = `systemctl is-active $sysID`;
+        chomp($isActive);
+        if ($isActive eq "active") {
+            $colPair = $normCol;
+        } else {
+            $colPair = $alertCol;
+        }           
+        attron($colPair);
+        addstr($sysdRow,$c0+1*$cpad,$isActive);
+        attroff($colPair);
 
-	my $isEnabled = `systemctl is-enabled $sysID`;
-	chomp($isEnabled);
-	if ($isEnabled eq "enabled") {
-	    $colPair = $normCol;
-	} else {
-	    $colPair = $alertCol;
-	}	    
-	attron($colPair);
-	addstr($sysdRow,$c0+2*$cpad,$isEnabled);
-	attroff($colPair);
-	$sysdRow++
+        my $isEnabled = `systemctl is-enabled $sysID`;
+        chomp($isEnabled);
+        if ($isEnabled eq "enabled") {
+            $colPair = $normCol;
+        } else {
+            $colPair = $alertCol;
+        }           
+        attron($colPair);
+        addstr($sysdRow,$c0+2*$cpad,$isEnabled);
+        attroff($colPair);
+        $sysdRow++
     }
 
     # MODS power status
@@ -234,7 +234,7 @@ while ($keepGoing) {
     $colNum = 1;
     foreach my $hdrStr (@$pwrHead) {
         addstr($pwrRow, $c0+($colNum-1)*$cpad, $hdrStr);
-	$colNum++;
+        $colNum++;
     }
     attroff($headCol);
 
@@ -243,26 +243,26 @@ while ($keepGoing) {
     $pwrRow++;
 
     foreach my $clrRow ((0,1,2,3)) {
-	move($pwrRow+$clrRow,$c0);
-	clrtoeol();
+        move($pwrRow+$clrRow,$c0);
+        clrtoeol();
     }
     my $colPair = $dataCol;
     foreach my $pCol ((0,1,2)) {
-	foreach my $pRow ((0,1,2,3)) {
-	    my $iPwr = $pRow + 4*$pCol;
-	    if ($sysPower[$iPwr] eq "On") {
-		$colPair = $onCol;
-	    } elsif ($sysPower[$iPwr] eq "Off") {
-		$colPair = $offCol;
-	    } elsif ($sysPower[$iPwr] eq "Fault") {
-		$colPair = $alertCol;
-	    } else {
-		$colPair = $headCol;
-	    }
-	    attron($colPair);
-	    addstr($pwrRow+$pRow,$c0+$pCol*$cpad,$subSystems[$iPwr]);
-	    attroff($colPair);
-	}
+        foreach my $pRow ((0,1,2,3)) {
+            my $iPwr = $pRow + 4*$pCol;
+            if ($sysPower[$iPwr] eq "On") {
+                $colPair = $onCol;
+            } elsif ($sysPower[$iPwr] eq "Off") {
+                $colPair = $offCol;
+            } elsif ($sysPower[$iPwr] eq "Fault") {
+                $colPair = $alertCol;
+            } else {
+                $colPair = $headCol;
+            }
+            attron($colPair);
+            addstr($pwrRow+$pRow,$c0+$pCol*$cpad,$subSystems[$iPwr]);
+            attroff($colPair);
+        }
     }
 
     # Dewar status: temperature and pressures
@@ -303,7 +303,7 @@ while ($keepGoing) {
     addstr($dewRow+2,$c0+1*$cpad,"$dewTP[1] torr");
     addstr($dewRow+2,$c0+2*$cpad,"$dewTP[3] torr");
     attroff($normCol);
-	   
+           
     # Bottom row: info update date/time
     
     my @now = localtime;
@@ -312,7 +312,7 @@ while ($keepGoing) {
     addstr($dewRow+4, 1, "Updated: $dateNow");
     attroff($headCol);
     addstr($dewRow+5,0,"");
-	
+        
     # update the screen and sleep for $cadence
     
     refresh();
