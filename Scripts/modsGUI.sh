@@ -43,36 +43,36 @@ endif
 
 switch ($1)
     case 'start':
-	ps h -C modsUI >& /dev/null
+        ps h -C modsUI >& /dev/null
         if ($status) then
            printf "\nStarting the MODS GUI...\n"
-	   ${binDir}/modsUI &
+           ${binDir}/modsUI &
         else
-	   set svcUser = `ps eo user h -C ${service}`
+           set svcUser = `ps eo user h -C ${service}`
            printf "\nThe MODS GUI is already running, user: ${svcUser}\n\n"
         endif
-	breaksw
-	
+        breaksw
+        
     case 'stop':
-	ps h -C modsUI >& /dev/null
+        ps h -C modsUI >& /dev/null
         if ($status) then
-	   printf "\nThe MODS GUI is not running, nothing to stop.\n\n"
-	else
-	   printf "\nStopping the MODS GUI...\n"
+           printf "\nThe MODS GUI is not running, nothing to stop.\n\n"
+        else
+           printf "\nStopping the MODS GUI...\n"
            killall modsUI
-	endif
-	breaksw
+        endif
+        breaksw
 
     case 'status':
-	ps h -C modsUI >& /dev/null
+        ps h -C modsUI >& /dev/null
         if ($status) then
-	   printf "\nThe MODS GUI is not running\n\n"
+           printf "\nThe MODS GUI is not running\n\n"
         else
            set svcUser = `ps eo user h -C ${service}`
            printf "\nThe MODS GUI is running, user ${svcUser}\n\n"
         endif
-	breaksw
-	
+        breaksw
+        
    default:
       printf "ERROR: unknown option '$1'\n"
       printf "\nUsage: ${usage}\n"
