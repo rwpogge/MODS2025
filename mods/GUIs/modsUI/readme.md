@@ -1,12 +1,19 @@
 # modsUI - MODS spectrograph user interface
-Version: 2.2.0
+
+Version: 3.1.0
+
+**Updated: 2025 Oct 5**
 
 Author: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
-## Overview
-modsUI is the primary user interface for the MODS spectrograph. It is written in C++ with the Qt6 GUI framework.
+See [release notes](releases.md) for details
 
-Longer description to follow.
+## Overview
+
+modsUI is the primary user interface for the MODS spectrograph. It is
+written in C++ with the Qt6 GUI framework.
+
+Longer description to follow later..
 
 ## Build Instructions
 Run the following commands from the modsUI directory.

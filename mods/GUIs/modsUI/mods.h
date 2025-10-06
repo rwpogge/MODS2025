@@ -5,9 +5,9 @@
 // Parameters of the MODS User Interface
 //
 
-#define MODS_SESSION_NAME "MODS1 Control Panel" //!< Window Name for banner
-#define MODS_REV_NUMBER   "v3.0.0-archon"       //!< MODS UI Revision number
-#define MODS_REV_DATE     "2025 July 9"         //!< Revision date
+#define MODS_SESSION_NAME "MODS Control Panel" //!< Window Name for banner
+#define MODS_REV_NUMBER   "v3.1.0-archon"      //!< MODS UI Revision number
+#define MODS_REV_DATE     "2025 Oct 5"         //!< Revision date
 
 // Runtime files and paths
 
@@ -41,10 +41,10 @@
 
 #define MODS_IE_HOST    "IE"  //!< Instrument Electronics (IE) host ID
 #define MODS_RCCD_HOST  "RC"  //!< Red CCD controller host ID (IC for Red)
-#define MODS_RDM_HOST   "RD"  //!< Red CCD data manager host ID (CB for Red)
 #define MODS_BCCD_HOST  "BC"  //!< Blue CCD controller host ID (IC for Blue)
-#define MODS_BDM_HOST   "BD"  //!< Blue CCD data manager host ID (CB for Blue)
 #define MODS_ENV_HOST   "IM"  //!< Instrument Environmental Monitor host
+#define MODS_RDM_HOST   "RD"  //!< Red CCD data manager host ID (CB for Red)
+#define MODS_BDM_HOST   "BD"  //!< Blue CCD data manager host ID (CB for Blue)
 
 // Default Instrument Services Agent Host Names
 

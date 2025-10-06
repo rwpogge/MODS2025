@@ -1,13 +1,21 @@
 # modsUI Release Notes
 Original Build: 2009 Feb 24
 
-Last Build: 2024 Jul 8
+Last Build: 2025 Oct 3
 
 ### modsUI version numbering
 
- * Version 0.x - lab development version
- * Version 1.x - MODS1 monocular version for commissioning and monocular science with MODS1
- * 
+ * Version 0.x - lab development version using Qt3
+ * Version 1.x - MODS1 monocular version for commissioning and monocular science with MODS1, using Qt4
+ * Version 2.x - MODS1+2 binocular operations version
+ * Version 3.x - MODS Archon CCD controller update version and AlmaLinux Port to Qt6
+
+## Version 3.1.0
+2025 Oct 5
+
+ * Added IGPOWER and ARCHON to the "red/blue" command in modsUI `dashboard/dashboard.cpp` to correctly route commands like `red igpower on` to route correctly to the IE (mmcServer) instead of the ICs for the Archon system (we talk to the Archon HEBs via the mmcServer).
+ * Minor tweak to `mods.h` header for changes in progress.
+
 
 ## Version 3.0.0
 2025 July 9
