@@ -46,7 +46,7 @@ switch ($1)
 	ps h -C modsUI >& /dev/null
         if ($status) then
            printf "\nStarting the MODS GUI...\n"
-	   echo "${binDir}/modsUI &"
+	   ${binDir}/modsUI &
         else
 	   set svcUser = `ps eo user h -C ${service}`
            printf "\nThe MODS GUI is already running, user: ${svcUser}\n\n"
