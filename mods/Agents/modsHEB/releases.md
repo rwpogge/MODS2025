@@ -1,5 +1,13 @@
 # modsHeb Release Notes
-Last Build: 2025 August 26
+Last Build: 2025 Oct 4
+
+## Version 1.0.2
+2025 Oct 4
+
+Updated `modbusutils.c` to include a 10msec pause between `modsbus_new_tcp()` and `modsbus_connect()`
+calls to allow the open to finish before connecting. Was seeing an "operation now in progress" error
+on `modbus_connect()` on the MODS2 red HEB.  Same issue seen in `modsEnv` and `mmcServer`
+read of HEB data.  
 
 ## Version 1.0.1
 2025 August 26

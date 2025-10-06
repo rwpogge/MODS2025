@@ -1,11 +1,16 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2025 Oct 4 [rwp/osu]</b>
+<b>Last Update: 2025 Oct 5 [rwp/osu]</b>
 
-## 2025 Oct 4: modsStatus.pl
+## 2025 Oct 5: updates
 
-Added display of MODS subsystem power status to modsStatus.pl.  Relies on the latest version
-of `vueinfo` which provides the `pstatus` option (terse `vuestatus power`).
+Updates after live testing with MODS1 and MODS2 at LBTO
+ * Added display of MODS subsystem power status to modsStatus.pl.  Relies on the latest version
+of `vueinfo` which provides the `pstatus` option (terse version of `vueinfo power`).
+ * Added display of dewar pressure and temperature data using new `vueinfo dewars` option
+ * Added resize of display as part of `mods1` and `mods2` script launch, currently using 42x128 size, likely to change (needs xterm-resize installed)
+ * Start of work on `modsTerm` and `xxxBinoMODS` scripts in the [TMux Sandbox](../Sandbox/TMux), learning more about `tmux` "features", like how to get aliases we need defined in tmux session launch (tmaliases)
+ * Created `.config/` in `/lbt/lbto/mods` where we will store config files for `tmux` et al. for the new script engines.
 
 ## 2025 Oct 2: Archon controller update
 
