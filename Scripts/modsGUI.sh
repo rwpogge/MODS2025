@@ -41,7 +41,6 @@ endif
 
 # Execute the request
 
-
 switch ($1)
     # Start the named instrument services, either individually or in
     # functional groups as makes sense.  For some groups the order matters.
