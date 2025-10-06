@@ -1,8 +1,8 @@
 #!/bin/csh -f
 #
-# modsUI - start/stop/check MODS user interface (modsUI)
+# modsGUI - start/stop/check MODS graphical user interface (modsUI)
 #
-# usage: modsUI {start|stop|status}
+# usage: modsGUI {start|stop|status}
 #
 # Starts, stops, or shows the status of the MODS graphical user
 # interface, modsUI, to ensure we don't run a duplicate version.
@@ -28,14 +28,14 @@ setenv binDir /home/dts/mods/bin
 
 # Usage message
 
-set usage = "\n   modsUI {start|stop|status}\n"
+set usage = "\n   modsGUI {start|stop|status}\n"
 
 # Parse the command-line options
 
 set numArgs = $#argv
 
 if ($numArgs == 0 || $numArgs > 2) then
-   printf "Usage: ${usage}\n"
+   printf "\nUsage: ${usage}\n"
    exit 0
 endif
 
@@ -48,11 +48,11 @@ switch ($1)
     case 'start':
 	ps h -C modsUI >& /dev/null
         if ($status) then
-           printf "The MODS control panel GUI is now started using 'modsUI start'\n"
-	   exit 1
+           printf "\nStarting the MODS GUI...\n"
+	   echo "${binDir}/modsUI &"
         else
 	   set svcUser = `ps eo user h -C ${service}`
-           printf "The MODS control panel GUI is already running (user $svcUser)\n"
+           printf "\nThe MODS GUI is already running, user: ${svcUser}\n\n"
         endif
 	breaksw
 	
@@ -60,17 +60,22 @@ switch ($1)
    # to see if running first, but for now this suffices.
 
     case 'stop':
-	printf "Stopping the MODS control panel GUI (modsUI)...\n"
-        killall modsUI
+	ps h -C modsUI >& /dev/null
+        if ($status) then
+	   printf "\nThe MODS GUI is not running, nothing to stop.\n\n"
+	else
+	   printf "\nStopping the MODS GUI...\n"
+           killall modsUI
+	endif
 	breaksw
 
     case 'status':
 	ps h -C modsUI >& /dev/null
         if ($status) then
-	   printf "modsUI is not running"
+	   printf "\nThe MODS GUI is not running\n\n"
         else
            set svcUser = `ps eo user h -C ${service}`
-           printf "modsUS is running, user ${svcUser}"
+           printf "\nThe MODS GUI is running, user ${svcUser}\n\n"
         endif
 	breaksw
 	
@@ -78,7 +83,7 @@ switch ($1)
 
    default:
       printf "ERROR: unknown option '$1'\n"
-      printf "Usage: ${usage}\n"
+      printf "\nUsage: ${usage}\n"
       exit 1
       breaksw
 
