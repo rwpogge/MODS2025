@@ -4,7 +4,7 @@ Version: 1.0.0
 Author: X. Carroll
 
 ## Overview
-This project contains C and Python code for interacting with the Micro-Ion Plus Vacuum Guage Module. The `python` folder contains a Jupyter notebook with instructions for interacting with the ion-gauge module. The `src` folder contains the C code.
+This project contains C and Python code for interacting with the mks Granvill-Phillips Micro-Ion 356 Plus Vacuum Guage Module. The `python` folder contains a Jupyter notebook with instructions for interacting with the ion-gauge module. The `src` folder contains the C code.
 
 Both the Jupyter notebook and C libraries provide error handling if the ion module is disconnected or powered off.
 
