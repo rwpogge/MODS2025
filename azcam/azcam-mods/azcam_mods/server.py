@@ -263,7 +263,7 @@ def setup():
     tempcon = TempConMODS(description="MODS Archon")
     tempcon.temperature_ids = [0, 1]  # ccdtemp, basetemp
     tempcon.heaterx_board = "MOD10"
-    tempcon.control_temperature = -95.0
+    tempcon.control_temperature = -100.0
     controller.heater_board_installed = 1
 
     # exposure
