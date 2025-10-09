@@ -1,5 +1,7 @@
 # MODS Archon Configuration Files
 
+**Updated: 2025 Oct 9 [rwp/osu]**
+
 This is where we keep MODS Archon configuration files (acf and ncf)
 developed during lab testing with the Archon and MODS Lab Test
 Dewar in Tucson, and later testing at the LBT with the MODS science
