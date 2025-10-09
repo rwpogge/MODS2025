@@ -93,10 +93,9 @@ MOD10\HEATERUPDATETIME=1000
 
 Heater B is not used.
 
+### The `Old/` folder
 
-### The `Old/` folder:
-
-These are config files of historial interest developed during the early stages
+These are old config files of historial interest developed during the early stages
 of MODS Archon development.  They are kept here in case we need to revisit some of the earlier work.
 
  * `MODS_mode_3k.ncf` and `MODS_mode_3K_1.ncf" are files developed while testing ROI and binning modes. **These are here for historical reference only and are never to be used with a live system**
