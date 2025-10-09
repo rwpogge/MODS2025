@@ -31,7 +31,9 @@ CCD or controller.
 
 ## `MODS_Actual.acf` Archon Configuration File
 
-The general configuration file is `MODS_Actual.acf`.  We start with the same ACF for all 4 sensors, then may modify individually if needed.
+**Updated: 2025 Oct 9 [rwp/osu]**
+
+The MODS common Archon configuration file is `MODS_Actual.acf`.  We start with the same ACF for all 4 sensors, then may modify individually if needed.
 It was derived from NCFs from work with the Lab Test Dewar system in Tucson, and then modified in the Tucson Lab and on the mountain with the
 science CCD systems.
 
@@ -86,6 +88,7 @@ MOD10\HEATERARAMP=0
 MOD10\HEATERARAMPRATE=1
 MOD10\HEATERASENSOR=0
 MOD10\HEATERATARGET=-100
+MOD10\HEATERUPDATETIME=1000
 ```
 
 Heater B is not used.
