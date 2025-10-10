@@ -17,14 +17,22 @@ sudo dnf -y install perl-Curses
 sudo dnf -y install dnsutils wget (nice, but not required)
 ```
 
-Other things to take care of
-```shell
-sudo systemctl disable firewalld
-```
-This makes sure that we are not running a redundant firewall whose rules work
-to block interprocess communications between MODS data-taking system components
-on the MODS VLAN. If `firewalld` is running, it blocks UDP ports between
+#### Disable `firewalld`
+
+The default `firewalld` that comes with the basic AlmaLinux 9 system
+is a redundant firewall whose rules work to block interprocess communications between
+MODS data-taking system components on the MODS VLAN. If `firewalld` is running, it blocks UDP ports between
 computers that are critical to the data-taking system.
+
+We need to disable and uninstall `firewalld` before deploying an AlmaLinux 9 computer on the MODS
+data-taking network:
+```shell
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+sudo dnf remove -y firewalld
+```
+Removing the package from the system should ensures a future sysadmin can't restart `firewalld` without
+having to knowingly re-install it.
 
 #### Packages from the LBTO respository
 
