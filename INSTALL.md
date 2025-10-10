@@ -17,6 +17,24 @@ sudo dnf -y install perl-Curses
 sudo dnf -y install dnsutils wget (nice, but not required)
 ```
 
+#### VNC support
+
+Some of these might already be installed, it is harmless to type if they are
+```shell
+sudo dnf -y install epel-release
+sudo dnf -y install tigervnc-server tigervnc-server-module
+sudo dnf -y groupinstall "Xfce" "base-x"
+```
+we use tigervnc with the lightweight xfce desktop manager to keep thing simple.
+Copy these files from a setup machine if needed
+```
+   cd .vnc
+   scp mods1:.vnc/config .
+   scp mods1:.vnc/xstartup .
+```
+These will ensure you start an `xfce4` desktop in 1920x1200 resolution, big enough
+for running big GUI apps like `archongui` or `modsUI`
+
 #### Disable `firewalld`
 
 The default `firewalld` that comes with the basic AlmaLinux 9 system
