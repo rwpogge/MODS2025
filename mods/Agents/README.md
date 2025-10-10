@@ -1,6 +1,6 @@
 # MODS data-taking system agents
 
-**Updated: 2025 Sept 22 [rwp/osu]**
+**Updated: 2025 Oct 8 [rwp/osu]**
 
 This folder contains versions of the MODS data-taking system agents ported to AlmaLinux 9
 for the MODS2025 update and new agents written for the Archon update project.  
