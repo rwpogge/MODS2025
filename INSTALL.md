@@ -28,9 +28,9 @@ sudo dnf -y groupinstall "Xfce" "base-x"
 we use tigervnc with the lightweight xfce desktop manager to keep thing simple.
 Copy these files from a setup machine if needed
 ```
-   cd .vnc
-   scp mods1:.vnc/config .
-   scp mods1:.vnc/xstartup .
+cd .vnc
+scp mods1:.vnc/config .
+scp mods1:.vnc/xstartup .
 ```
 These will ensure you start an `xfce4` desktop in 1920x1200 resolution, big enough
 for running big GUI apps like `archongui` or `modsUI`
