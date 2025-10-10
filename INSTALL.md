@@ -153,6 +153,7 @@ cp -r MODS2025/mods .
 cp -r MODS2025/ISIS .
 cp -r MODS2025/Config .
 cp -r MODS2025/modsPerl .
+cp -r MODS2025/Scripts .
 ```
 Note that we are temporarily overriding the `modsPerl` distribution on the LBTO GitHub repository
 while we test and verify updates needed for the Archon controllers.
@@ -164,6 +165,8 @@ cp -r MODS2025/mods .
 cp -r MODS2025/ISIS .
 cp -r MODS2025/azcam .
 cp -r MODS2025/Config .
+cp -r MODS2025/modsPerl .
+cp -r MODS2025/Scripts .
 ```
 
 ## Build order
