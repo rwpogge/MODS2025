@@ -2,9 +2,9 @@
 Defines the MODS class for azcam
 
 Initial version by Mike Lesser (UA ITL)
-Later versins by Rick Pogge (OSU Astronomy)
+Later versions by Rick Pogge (OSU Astronomy)
 
-Updated: 2025 Aug 3 [rwp/osu]
+Updated: 2025 Oct 11 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -13,6 +13,8 @@ Additions:
     shclose(): close the shutter
     set/get_exptime(): set/get the exposure time
     ccdTemps(): read the CCD detector temperatures read by Archon
+    archonTemp(): read the Archon backplane temperature
+    heaterData(): read Archon CCD temperature controller data
     abortReadout(): abort readout
     pctRead(): return percentage of CCD readout (inverse of pixels_remaining)
     set/get_roi(): set/get the CCD readout region of interest and binning factor
@@ -792,7 +794,57 @@ class MODS(object):
         
         return bpTemp
             
+
+    def heaterData(self):
+        '''
+        Read the Archon CCD temperature controller (HeaterX board) data
         
+        Returns
+        -------
+        tempA: float
+            temperature sensor A (CCD) in C
+        tempB: float
+            temperature sensor B (Base) in C
+        heaterOut: float
+            heater voltage
+        heaterP: int
+            heater proportional term for the PID loop
+        heaterI: int
+            heater integral term for the PID loop
+        heaterD: int
+            heater derivative term for the PID loop
+            
+        Description
+        -----------
+        Sends the Archon controller the STATUS command, then extracts the data
+        associated with the HeaterX board we need. This command is used to monitor
+        heater performance to tune the PID parameters.
+        
+        For the MODS CCDs we only use Heater A.
+        '''
+        
+        try:
+            statStr = azcam.db.tools["controller"].archon_command("STATUS")
+            statBits = statStr.split(" ")
+            
+            idx = [statBits.index(ss) for ss in statBits if "TEMPA" in ss.upper()]
+            tempA = statBits[idx[0]].split("=")[1]
+            idx = [statBits.index(ss) for ss in statBits if "TEMPB" in ss.upper()]
+            tempB = statBits[idx[0]].split("=")[1]
+            idx = [statBits.index(ss) for ss in statBits if "HEATERAOUTPUT" in ss.upper()]
+            heaterOut = statBits[idx[0]].split("=")[1]
+            idx = [statBits.index(ss) for ss in statBits if "HEATERAP" in ss.upper()]
+            heaterP = statBits[idx[0]].split("=")[1]
+            idx = [statBits.index(ss) for ss in statBits if "HEATERAI" in ss.upper()]
+            heaterI = statBits[idx[0]].split("=")[1]
+            idx = [statBits.index(ss) for ss in statBits if "HEATERAD" in ss.upper()]
+            heaterD = statBits[idx[0]].split("=")[1]
+        except:
+            return ["-999.9","-999.9","-999.9","-999.9","-999.9","-999.9"] # no-read value
+                    
+        return [tempA,tempB,heaterOut,heaterP,heaterI,heaterD]
+        
+
     def set_CCDSetPoint(self,setPoint):
         '''
         Set the CCD temperature control setpoint on the Archon
