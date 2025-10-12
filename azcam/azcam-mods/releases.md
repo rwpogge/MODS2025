@@ -1,8 +1,14 @@
 # azcam-mods Release Notes
 
-**Current Version: 1.1.0**
+**Current Version: 1.1.1**
 
-**Last Update: 2025 Sept 23 [rwp/osu]**
+**Last Update: 2025 Oct 12 [rwp/osu]**
+
+### Version 1.1.1 - 2025 Oct 2
+ * Fixed bugs in `instrument_mods.py` during live testing
+ * Changes to `mods.py` to change how we read status info (using `get_status()` method and picking data out of the returned dict).
+ * Added `heaterData()` method to the `MODS` class to extract heater info (temps, output V, and PID parameters)
+ * Updated ACF files with heater control parameters suggested by Greg Bredthauer, prep for cooling down science dewars
 
 ### Version 1.1.0 - 2025 Sep 23
 

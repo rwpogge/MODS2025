@@ -1,6 +1,6 @@
 # MODS azcam system files
 
-**Updated**: 2025 Oct 3
+**Updated**: 2025 Oct 12
 
 We restructured the configuration for azcam for MODS to segregate system configuration files and logs from raw imaging data.  This is to help
 streamline our configuration management (4 Archon controllers across 2 instruments in the same rack), and to make getting at raw science image
