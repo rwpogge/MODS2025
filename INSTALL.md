@@ -17,14 +17,40 @@ sudo dnf -y install perl-Curses
 sudo dnf -y install dnsutils wget (nice, but not required)
 ```
 
-Other things to take care of
+#### VNC support
+
+Some of these might already be installed, it is harmless to type if they are
 ```shell
-sudo systemctl disable firewalld
+sudo dnf -y install epel-release
+sudo dnf -y install tigervnc-server tigervnc-server-module
+sudo dnf -y groupinstall "Xfce" "base-x"
 ```
-This makes sure that we are not running a redundant firewall whose rules work
-to block interprocess communications between MODS data-taking system components
-on the MODS VLAN. If `firewalld` is running, it blocks UDP ports between
+we use tigervnc with the lightweight xfce desktop manager to keep thing simple.
+Copy these files from a setup machine if needed
+```
+cd .vnc
+scp mods1:.vnc/config .
+scp mods1:.vnc/xstartup .
+```
+These will ensure you start an `xfce4` desktop in 1920x1200 resolution, big enough
+for running big GUI apps like `archongui` or `modsUI`
+
+#### Disable `firewalld`
+
+The default `firewalld` that comes with the basic AlmaLinux 9 system
+is a redundant firewall whose rules work to block interprocess communications between
+MODS data-taking system components on the MODS VLAN. If `firewalld` is running, it blocks UDP ports between
 computers that are critical to the data-taking system.
+
+We need to disable and uninstall `firewalld` before deploying an AlmaLinux 9 computer on the MODS
+data-taking network:
+```shell
+sudo systemctl stop firewalld
+sudo systemctl disable firewalld
+sudo dnf remove -y firewalld
+```
+Removing the package from the system should ensures a future sysadmin can't restart `firewalld` without
+having to knowingly re-install it.
 
 #### Packages from the LBTO respository
 
@@ -127,6 +153,7 @@ cp -r MODS2025/mods .
 cp -r MODS2025/ISIS .
 cp -r MODS2025/Config .
 cp -r MODS2025/modsPerl .
+cp -r MODS2025/Scripts .
 ```
 Note that we are temporarily overriding the `modsPerl` distribution on the LBTO GitHub repository
 while we test and verify updates needed for the Archon controllers.
@@ -138,6 +165,8 @@ cp -r MODS2025/mods .
 cp -r MODS2025/ISIS .
 cp -r MODS2025/azcam .
 cp -r MODS2025/Config .
+cp -r MODS2025/modsPerl .
+cp -r MODS2025/Scripts .
 ```
 
 ## Build order
