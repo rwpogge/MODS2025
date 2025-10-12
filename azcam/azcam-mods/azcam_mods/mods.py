@@ -730,20 +730,29 @@ class MODS(object):
         list of floats: 
             CCD detector and mount temperatures in decimal celsius.
 
-        Temperatures are read to the nearest 0.1C
+        The Archon reads temperatures to the nearest 0.01C
         
         '''
 
-        # get temperatures from the Archon.  Won't read temperatures
+        # Get the detector temperatures from the Archon.  Won't read temperatures
         # if the Archon is actively exposing
-        
+
         try:
-            reply = azcam.db.tools["tempcon"].get_temperatures()
-            ccdTemp = f"{reply[0]:.1f}"
-            baseTemp = f"{reply[1]:.1f}"
+            statDict = azcam.db.tools["controller"].get_status()
+            hxBoard = azcam.db.tools["tempcon"].heaterx_board
+            
+            if f"{hxBoard}/TEMPA" in statDict:
+                ccdTemp = float(statDict[f"{hxBoard}/TEMPA"])
+            else:
+                ccdTemp = "-999.9"
+                
+            if f"{hxBoard}/TEMPB" in statDict:
+                baseTemp = float(statDict[f"{hxBoard}/TEMPB"])
+            else:
+                baseTemp = "-999.9"
         except:
-            return ["OK","-999.9","-999.9"] # no-read placeholders
-        
+            return ["OK","-999.9","-999.9"] # no-read values
+
         # If a good read, push ccdTemp to the telescope DD.
 
         setTemp = {f"{self.ddSide}_MODS{self.modsChan}CCDTemp":ccdTemp}
@@ -771,16 +780,14 @@ class MODS(object):
         the temperature at the cold plate interface, which is our indication
         that the cooling is functioning.
         
-        Sends the Archon controller the STATUS command, then picks out the
-        `BACKPLANE_TEMP=...` keyword/value pair and extracts the temperature
-
         '''
         
         try:
-            statStr = azcam.db.tools["controller"].archon_command("STATUS")
-            statBits = statStr.split(" ")
-            bpt = [statBits.index(ss) for ss in statBits if ss.startswith("BACKPLANE_TEMP")]
-            bpTemp = statBits[bpt[0]].split("=")[1]
+            statDict = azcam.db.tools["controller"].get_status()
+            if "BACKPLANE_TEMP" in statDict:
+                bpTemp = statDict["BACKPLANE_TEMP"]
+            else:
+                bpTemp = "-999.9"
         except:
             return "-999.9" # no-read value
             
@@ -816,33 +823,51 @@ class MODS(object):
             
         Description
         -----------
-        Sends the Archon controller the STATUS command, then extracts the data
-        associated with the HeaterX board we need. This command is used to monitor
+        Reads the Archon controller status and extracts the data associated
+        with the HeaterX board we need. This command is used to monitor
         heater performance to tune the PID parameters.
         
         For the MODS CCDs we only use Heater A.
         '''
         
         try:
-            statStr = azcam.db.tools["controller"].archon_command("STATUS")
-            statBits = statStr.split(" ")
+            statDict = azcam.db.tools["controller"].get_status()
+            hxBoard = azcam.db.tools["tempcon"].heaterx_board
             
-            idx = [statBits.index(ss) for ss in statBits if "TEMPA" in ss.upper()]
-            tempA = statBits[idx[0]].split("=")[1]
-            idx = [statBits.index(ss) for ss in statBits if "TEMPB" in ss.upper()]
-            tempB = statBits[idx[0]].split("=")[1]
-            idx = [statBits.index(ss) for ss in statBits if "HEATERAOUTPUT" in ss.upper()]
-            heaterOut = statBits[idx[0]].split("=")[1]
-            idx = [statBits.index(ss) for ss in statBits if "HEATERAP" in ss.upper()]
-            heaterP = statBits[idx[0]].split("=")[1]
-            idx = [statBits.index(ss) for ss in statBits if "HEATERAI" in ss.upper()]
-            heaterI = statBits[idx[0]].split("=")[1]
-            idx = [statBits.index(ss) for ss in statBits if "HEATERAD" in ss.upper()]
-            heaterD = statBits[idx[0]].split("=")[1]
+            if f"{hxBoard}/TEMPA" in statDict:
+                ccdTemp = float(statDict[f"{hxBoard}/TEMPA"])
+            else:
+                ccdTemp = "-999.9"
+                
+            if f"{hxBoard}/TEMPB" in statDict:
+                baseTemp = float(statDict[f"{hxBoard}/TEMPB"])
+            else:
+                baseTemp = "-999.9"
+
+            if f"{hxBoard}/HEATERAOUTPUT" in statDict:
+                heaterOut = float(statDict["f{hxBoard}/HEATERAOUTPUT"])
+            else:
+                heaterOut = "-999.9"
+
+            if f"{hxBoard}/HEATERAP" in statDict:
+                heaterP = float(statDict["f{hxBoard}/HEATERAP"])
+            else:
+                heaterP = "-999.9"
+            
+            if f"{hxBoard}/HEATERAI" in statDict:
+                heaterI = float(statDict["f{hxBoard}/HEATERAI"])
+            else:
+                heaterI = "-999.9"
+
+            if f"{hxBoard}/HEATERAD" in statDict:
+                heaterD = float(statDict["f{hxBoard}/HEATERAD"])
+            else:
+                heaterD = "-999.9"
+
         except:
-            return ["-999.9","-999.9","-999.9","-999.9","-999.9","-999.9"] # no-read value
+            return ["-999.9","-999.9","-999.9","-999.9","-999.9","-999.9"] # no-read values
                     
-        return [tempA,tempB,heaterOut,heaterP,heaterI,heaterD]
+        return [ccdTemp,baseTemp,heaterOut,heaterP,heaterI,heaterD]
         
 
     def set_CCDSetPoint(self,setPoint):
