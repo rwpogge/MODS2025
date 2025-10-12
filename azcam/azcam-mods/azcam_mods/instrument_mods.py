@@ -339,7 +339,7 @@ class MODSInstrument(Instrument):
         named like "modsInst_left.txt" or "modsInst_right.txt" that
         contains two required dictionaries: 
             * IIFConfig: with the setup info (instrument, side, client file)
-            * DDEntires: mapping of IIF data dictionary entries to instrument FITS header entries
+            * DDEntries: mapping of IIF data dictionary entries to instrument FITS header entries
             
         See the offline documentation or worked examples for the format.  The
         format is strict and if badly formatted could break things.

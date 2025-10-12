@@ -326,7 +326,7 @@ class LBTTelescope(Telescope):
         usually named something like "modsTCS_left.txt" that
         contains two required dictionaries: 
             * IIFConfig: with the setup info (instrument, side, client file)
-            * DDEntires: mapping of IIF data dictionary entries to FITS header entries
+            * DDEntries: mapping of IIF data dictionary entries to FITS header entries
             
         See the offline documentation or worked examples for the format.  The
         format is strict and if badly formatted could break things.
