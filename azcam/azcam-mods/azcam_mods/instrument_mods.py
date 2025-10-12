@@ -393,7 +393,7 @@ class MODSInstrument(Instrument):
             self.clientFile = None
             self.proxyName = None
             
-            raise azcam.exceptions.AzcamError(f"Cannot read IIFConfig glock data from {configFile} - {exp}")
+            raise azcam.exceptions.AzcamError(f"Cannot read IIFConfig block data from {configFile} - {exp}")
         
         # Extract the DD dictionary and list of DD entries.  We use these to load the 
         # the header definition dictionaries (keywords, typestrings, and comments)

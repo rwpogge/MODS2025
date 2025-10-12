@@ -26,7 +26,7 @@
 IIFConfig:
   instID: mods
   side:   right
-  client_config:"/home/dts/Config/IIF/lbtIIF.client"
+  client_config: "/home/dts/Config/IIF/lbtIIF.client"
 
 DDEntries:
   #
