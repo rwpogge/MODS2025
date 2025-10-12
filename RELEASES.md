@@ -1,5 +1,5 @@
 # MODS2025 Release Notes
-Last Release: 2025 Oct 2
+Last Release: 2025 Oct 12
 
 ## Version 1.3.2 - 2025 Oct 12
  * Updated MODS azcam to v1.1.1
