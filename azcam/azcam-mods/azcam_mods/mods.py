@@ -845,27 +845,26 @@ class MODS(object):
                 baseTemp = "-999.9"
 
             if f"{hxBoard}/HEATERAOUTPUT" in statDict:
-                heaterOut = statDict["f{hxBoard}/HEATERAOUTPUT"]
+                heaterOut = statDict[f"{hxBoard}/HEATERAOUTPUT"]
             else:
                 heaterOut = "-999.9"
 
             if f"{hxBoard}/HEATERAP" in statDict:
-                heaterP = statDict["f{hxBoard}/HEATERAP"]
+                heaterP = statDict[f"{hxBoard}/HEATERAP"]
             else:
                 heaterP = "-999.9"
             
             if f"{hxBoard}/HEATERAI" in statDict:
-                heaterI = statDict["f{hxBoard}/HEATERAI"]
+                heaterI = statDict[f"{hxBoard}/HEATERAI"]
             else:
                 heaterI = "-999.9"
 
             if f"{hxBoard}/HEATERAD" in statDict:
-                heaterD = statDict["f{hxBoard}/HEATERAD"]
+                heaterD = statDict[f"{hxBoard}/HEATERAD"]
             else:
                 heaterD = "-999.9"
 
-        except Exception as exp:
-            print(f"got exception: {exp}")
+        except:
             return ["-999.9","-999.9","-999.9","-999.9","-999.9","-999.9"] # no-read values
                     
         return [ccdTemp,baseTemp,heaterOut,heaterP,heaterI,heaterD]
