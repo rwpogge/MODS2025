@@ -1,6 +1,13 @@
 # MODS2025 Release Notes
 Last Release: 2025 Oct 2
 
+## Version 1.3.2 - 2025 Oct 12
+ * Updated MODS azcam to v1.1.1
+   * Added Archon config for the CCD heater controls with help from Greg Bredthauer
+   * Added methods for reading heater PID info for engineering
+   * Fixed bugs in the `MODSInstrument()` class
+   * Changed method used by the `MODS()` class to read Archon status info (found internal azcam method that simplified parsing)
+
 ## Version 1.3.1 - 2025 Oct 2
  * fixed bugs in `agw/API` (also in `mmc/API`) that were preventing the `mmcServer` from communicating with the `agwServer` via the direct TCP port interface.  Traced to a problem with 32-bit vs 64-bit data in the way a key connection init routine (`islCnameToCComp.c`) was implemented.  Fixed and verified AGW comms.
  * fixed critical bug in the `agwServer` that caused the server to crash with a seg-fault.  Replaced suspect code with a more robust method, verified with both MODS.
