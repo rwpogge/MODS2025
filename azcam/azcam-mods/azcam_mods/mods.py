@@ -742,12 +742,12 @@ class MODS(object):
             hxBoard = azcam.db.tools["tempcon"].heaterx_board
             
             if f"{hxBoard}/TEMPA" in statDict:
-                ccdTemp = float(statDict[f"{hxBoard}/TEMPA"])
+                ccdTemp = statDict[f"{hxBoard}/TEMPA"]
             else:
                 ccdTemp = "-999.9"
                 
             if f"{hxBoard}/TEMPB" in statDict:
-                baseTemp = float(statDict[f"{hxBoard}/TEMPB"])
+                baseTemp = statDict[f"{hxBoard}/TEMPB"]
             else:
                 baseTemp = "-999.9"
         except:
@@ -835,32 +835,32 @@ class MODS(object):
             hxBoard = azcam.db.tools["tempcon"].heaterx_board
             
             if f"{hxBoard}/TEMPA" in statDict:
-                ccdTemp = float(statDict[f"{hxBoard}/TEMPA"])
+                ccdTemp = statDict[f"{hxBoard}/TEMPA"]
             else:
                 ccdTemp = "-999.9"
                 
             if f"{hxBoard}/TEMPB" in statDict:
-                baseTemp = float(statDict[f"{hxBoard}/TEMPB"])
+                baseTemp = statDict[f"{hxBoard}/TEMPB"]
             else:
                 baseTemp = "-999.9"
 
             if f"{hxBoard}/HEATERAOUTPUT" in statDict:
-                heaterOut = float(statDict["f{hxBoard}/HEATERAOUTPUT"])
+                heaterOut = statDict["f{hxBoard}/HEATERAOUTPUT"]
             else:
                 heaterOut = "-999.9"
 
             if f"{hxBoard}/HEATERAP" in statDict:
-                heaterP = float(statDict["f{hxBoard}/HEATERAP"])
+                heaterP = statDict["f{hxBoard}/HEATERAP"]
             else:
                 heaterP = "-999.9"
             
             if f"{hxBoard}/HEATERAI" in statDict:
-                heaterI = float(statDict["f{hxBoard}/HEATERAI"])
+                heaterI = statDict["f{hxBoard}/HEATERAI"]
             else:
                 heaterI = "-999.9"
 
             if f"{hxBoard}/HEATERAD" in statDict:
-                heaterD = float(statDict["f{hxBoard}/HEATERAD"])
+                heaterD = statDict["f{hxBoard}/HEATERAD"]
             else:
                 heaterD = "-999.9"
 
