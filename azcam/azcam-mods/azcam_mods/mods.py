@@ -864,7 +864,8 @@ class MODS(object):
             else:
                 heaterD = "-999.9"
 
-        except:
+        except Exception as exp:
+            print(f"got exception: {exp}")
             return ["-999.9","-999.9","-999.9","-999.9","-999.9","-999.9"] # no-read values
                     
         return [ccdTemp,baseTemp,heaterOut,heaterP,heaterI,heaterD]
