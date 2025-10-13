@@ -27,6 +27,7 @@
 # Modification History:
 #   2025 Oct 3 - first full release [rwp/osu]
 #   2025 Oct 4 - added MODS subsystem power and dewar T/P display [rwp/osu]
+#   2025 Oct 13 - check if on a TMUX session [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -246,7 +247,7 @@ while ($keepGoing) {
         move($pwrRow+$clrRow,$c0);
         clrtoeol();
     }
-    my $colPair = $dataCol;
+    $colPair = $dataCol;
     foreach my $pCol ((0,1,2)) {
         foreach my $pRow ((0,1,2,3)) {
             my $iPwr = $pRow + 4*$pCol;
@@ -309,7 +310,12 @@ while ($keepGoing) {
     my @now = localtime;
     my $dateNow = strftime "%Y-%m-%d %H:%M:%S", @now;
     attron($headCol);
-    addstr($dewRow+4, 1, "Updated: $dateNow");
+    if (defined $ENV{'TMUX'}) {
+	addstr($dewRow+4, 1, "Updated: $dateNow");
+    }
+    else {
+	addstr($dewRow+4, 1, "Updated: $dateNow (Ctrl+C to exit status)");
+    }
     attroff($headCol);
     addstr($dewRow+5,0,"");
         
