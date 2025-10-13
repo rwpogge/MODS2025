@@ -1,5 +1,12 @@
-# MODS-specific aliases
-
+# MODS-specific aliases for MODS tmux sessions.
+#
+# These only get defined in the tmux session bash shells
+# to provide graceful exit from the tmux session for users
+# who won't know (or remember) Ctrl+B d to detach
+#
+# R. Pogge, OSU Astronomy
+# 2025 Oct 10
+#
 alias detach="tmux detach"
 alias quit="tmux detach"
 
