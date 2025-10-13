@@ -62,7 +62,7 @@ endif
 
 # A good size for this session
 
-resize -s 42 128 
+resize -s 42 128 >& /dev/null
 
 # See if we are running in the expected server admin tmux session.  If
 # so, attach to the command pane.  If not, start the tmux session,
