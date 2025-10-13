@@ -4,7 +4,7 @@ Defines the MODS class for azcam
 Initial version by Mike Lesser (UA ITL)
 Later versions by Rick Pogge (OSU Astronomy)
 
-Updated: 2025 Oct 11 [rwp/osu]
+Updated: 2025 Oct 13 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -14,7 +14,7 @@ Additions:
     set/get_exptime(): set/get the exposure time
     ccdTemps(): read the CCD detector temperatures read by Archon
     archonTemp(): read the Archon backplane temperature
-    heaterData(): read Archon CCD temperature controller data
+    archonStatus(): read select Archon status info
     abortReadout(): abort readout
     pctRead(): return percentage of CCD readout (inverse of pixels_remaining)
     set/get_roi(): set/get the CCD readout region of interest and binning factor
@@ -802,38 +802,63 @@ class MODS(object):
         return bpTemp
             
 
-    def heaterData(self):
+    def archonStatus(self):
         '''
-        Read the Archon CCD temperature controller (HeaterX board) data
+        Read the Archon controller status
         
         Returns
         -------
-        tempA: float
-            temperature sensor A (CCD) in C
-        tempB: float
-            temperature sensor B (Base) in C
+        ccdPower: int
+            CCD power state (integer code)
+        archonTemp: float
+            Archon backplane temperature in C
+        ccdTemp: float
+            CCD detector temperature in C (TempA)
+        baseTemp: float
+            CCD detector mount base temperature in C (TempB)
         heaterOut: float
-            heater voltage
+            CCD temperature controller output voltage
         heaterP: int
-            heater proportional term for the PID loop
+            CCD temperature controller proportional term for the PID loop
         heaterI: int
-            heater integral term for the PID loop
+            CCD temperature controller integral term for the PID loop
         heaterD: int
-            heater derivative term for the PID loop
+            CCD temperature controller derivative term for the PID loop
             
         Description
         -----------
         Reads the Archon controller status and extracts the data associated
-        with the HeaterX board we need. This command is used to monitor
-        heater performance to tune the PID parameters.
+        with the Archon backplane, and HeaterX board data we need. This command
+        is used to provide essential Archon and CCD temperature controller
+        data for logging.
         
-        For the MODS CCDs we only use Heater A.
+        For the MODS CCD system we only use Heater A.
+        
+        Temperature sensors return -999.9 as the "no-read" datum.
+        
+        The CCD power state (status POWER keyword) is 
+           0 = unknown
+           1 = not configured
+           2 = off
+           3 = intermediate (power-up/down sequence in progress)
+           4 = on
+           5 = standby mode
         '''
         
         try:
             statDict = azcam.db.tools["controller"].get_status()
             hxBoard = azcam.db.tools["tempcon"].heaterx_board
             
+            if "POWER" in statDict:
+                ccdPower = statDict["POWER"]
+            else:
+                ccdPower = "0"
+                
+            if "BACKPLANE_TEMP" in statDict:
+                bpTemp = statDict["BACKPLANE_TEMP"]
+            else:
+                bpTemp = "-999.9"
+                
             if f"{hxBoard}/TEMPA" in statDict:
                 ccdTemp = statDict[f"{hxBoard}/TEMPA"]
             else:
@@ -865,9 +890,9 @@ class MODS(object):
                 heaterD = "-999.9"
 
         except:
-            return ["-999.9","-999.9","-999.9","-999.9","-999.9","-999.9"] # no-read values
+            return ["0","-999.9","-999.9","-999.9","-999.9","-999.9","-999.9","-999.9"] # no-read values
                     
-        return [ccdTemp,baseTemp,heaterOut,heaterP,heaterI,heaterD]
+        return [ccdPower,bpTemp,ccdTemp,baseTemp,heaterOut,heaterP,heaterI,heaterD]
         
 
     def set_CCDSetPoint(self,setPoint):

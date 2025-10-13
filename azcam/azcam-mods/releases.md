@@ -1,8 +1,11 @@
 # azcam-mods Release Notes
 
-**Current Version: 1.1.1**
+**Current Version: 1.1.2**
 
-**Last Update: 2025 Oct 12 [rwp/osu]**
+**Last Update: 2025 Oct 13 [rwp/osu]**
+
+### Version 1.1.1 - 2025 Oct 13
+ * Changed `heaterData()` method in `mods.py` to be `archonStatus()` to make it more general. For now this adds the backplane temperature and the CCD power state code (0..5).
 
 ### Version 1.1.1 - 2025 Oct 2
  * Fixed bugs in `instrument_mods.py` during live testing
