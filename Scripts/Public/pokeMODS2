@@ -1,0 +1,44 @@
+#!/bin/csh
+#
+# Poke (query status of) all MODS2 mechanisms via ISIS and the IE
+# server.  This is a quick way to check for dangling sockets
+#
+# R. Pogge, OSU Astronomy
+#
+# Updated: 2025 Oct 14 - Archon controller updates [rwp/osu]
+#
+
+set errCount = 0
+echo "Poking MODS2 Mechanisms..."
+echo "Common focal plane:"
+isisCmd --mods2 m2.ie hatch
+isisCmd --mods2 m2.ie calib
+isisCmd --mods2 m2.ie agwx
+isisCmd --mods2 m2.ie agwy
+isisCmd --mods2 m2.ie agwfoc
+isisCmd --mods2 m2.ie agwfilt
+isisCmd --mods2 m2.ie mselect
+isisCmd --mods2 m2.ie minsert
+isisCmd --mods2 m2.ie dichroic
+echo "Blue Channel:"
+isisCmd --mods2 m2.ie bcolttfa
+isisCmd --mods2 m2.ie bcolttfb
+isisCmd --mods2 m2.ie bcolttfc
+isisCmd --mods2 m2.ie bgrating
+isisCmd --mods2 m2.ie bgrtilt1
+isisCmd --mods2 m2.ie bcamfoc
+isisCmd --mods2 m2.ie bfilter
+echo "Red Channel:"
+isisCmd --mods2 m2.ie rcolttfa
+isisCmd --mods2 m2.ie rcolttfb
+isisCmd --mods2 m2.ie rcolttfc
+isisCmd --mods2 m2.ie rgrating
+isisCmd --mods2 m2.ie rgrtilt1
+isisCmd --mods2 m2.ie rcamfoc
+isisCmd --mods2 m2.ie rfilter
+
+echo " "
+echo "Done - if any errors or timeouts, correct/reset as needed."
+echo " "
+
+exit 0
