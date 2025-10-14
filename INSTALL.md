@@ -358,4 +358,13 @@ FITS images are pushed into `/lbt/data/new`
 Public versions of MODS observing and operations scripts are "published" on /lbt/lbto/mods/bin/ for use
 on all relevant machines.  Only the safe public subset of scripts are exposed on the shared public path.
 
+## Time, Date, etc.
+
+LBTO computers are set to run on GMT+0 timezone and display time in 
+24-h format:
+```script
+sudo timedatectl set-timezone GMT
+sudo localectl set-locale LC_TIME=C.UTF-8
+```
+
 
