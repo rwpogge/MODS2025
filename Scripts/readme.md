@@ -98,19 +98,30 @@ a non-MODS observatory machine.
 
 #### `acqBinoMODS`
 
-Wrapper shell script to execute a binocular acquisition.  It takes one
-or two .acq scripts on the command liney and executes acqMODS with the
-correct instrument and binocular context options.  If one .acq script
-is given, it executed on both MODS ("twinning").  If two .acq scripts
-are given, they are implicitly executed in the order MODS1 MODS2.
+Wrapper shell script to execute a binocular target acquisition in a
+`modsTerm`.  It takes one or two .acq scripts on the command line and
+executes `acqMODS` with the correct instrument and binocular context
+options.  If one .acq script is given, it executed on both MODS
+("twinning").  If two .acq scripts are given, they are implicitly
+executed in the order MODS1 MODS2.
 
 #### `execBinoMODS`
 
-Wrapper shell script to execute a binocular observation.  It takes one
-or two .obs scripts or 1 or 2 .img scripts on the command line and
-executes execMODS with the correct instrument and binocular context
-options.  Note that you cannot mix .obs and .acq scripts with
-execBinoMODS.  If one .acq script is given, it executed on both MODS
-("twinning").  If two .acq scripts are given, they are implicitly
-executed in the order MODS1 MODS2.
+Wrapper shell script to execute a binocular observation or instrument
+configuration script in a `modsTerm`.  It takes one or two .obs
+scripts or 1 or 2 .img scripts on the command line and executes
+`execMODS` with the correct instrument and binocular context options.
+Note that you cannot mix .obs and .acq scripts with execBinoMODS.  If
+one .acq script is given, it executed on both MODS ("twinning").  If
+two .acq scripts are given, they are implicitly executed in the order
+MODS1 MODS2.
+
+#### `modsTerm`
+
+Launches a multi-pane `modsTerm` tmux session used for running MODS
+scripts with `acqBinoMODS` or `execBinoMODS`. Using a `tmux` session
+keeps the script progress and error messages resident in a persistent
+tmux (terminal multiplexer) session that may be detached and joined as
+needed.
+
 

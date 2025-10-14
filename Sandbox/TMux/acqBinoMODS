@@ -1,6 +1,6 @@
 #!/bin/csh
 #
-# acqBinoMODS - execute a binocular MODS target acquisition
+# acqBinoMODS - binocular MODS target acquisition
 #
 # Usage:
 #   acqBinoMODS mods.acq
@@ -8,9 +8,9 @@
 #   acqBinoMODS mods1.acq mods2.acq
 #
 # Overview:
-#   Executes a binocular MODS target acquisition.  acqBinoMODS takes one
-#   or two command-line arguments: the name(s) of acquisition script(s) to
-#   execute in binocular context.  
+#   Executes a binocular MODS target acquisition.  acqBinoMODS takes
+#   one or two command-line arguments: the name(s) of acquisition
+#   script(s) to execute in binocular context.
 #
 #   If only one .acq script is given, it is executed on both MODS
 #   instruments ("identical twinning").
@@ -18,17 +18,24 @@
 #   If two .acq scripts are given, they are executed on MODS1 and
 #   MODS2 in the order MODS1 MODS2.
 #
-#   This version expects to be launched from the command pane of
-#   a modsTerm tmux session.  This scripts runs in the lower
-#   command pane, while the MODS1 and MODS2 acqMODS scripts
-#   execute in the upper left and upper right panes, respectively.
-#   This new method keeps the command and execution windows together
-#   in a single xterm.
+#   This version expects to be launched from the command pane of a
+#   modsTerm tmux session.  This scripts runs in the lower command
+#   pane, while the MODS1 and MODS2 acqMODS scripts execute in the
+#   upper left and upper right panes, respectively.  This new method
+#   keeps the command and execution windows together in a single tmux
+#   session and nothing disappears when execution is completed. Using
+#   tmux makes execution entirely text based, so it will work with
+#   minimal bandwidth over remote ssh connections.
+#
+#   If you are not in a modsTerm, or none is running, it will give
+#   instructions on what to do.  It resizes the terminal on launch to
+#   a good size for the session, preset below.
 #
 #   Upon successful completion of script execution or upon faults that
-#   terminate script execution with errors, the terminal windows for
-#   each MODS instance stay up so that the messages may be read by the
-#   observer.
+#   terminate script execution with errors, the error messages for
+#   each MODS instance stay resident in their respective modsTerm
+#   panes.  This is a significant departure from the behavior of the
+#   pre-Archon versions of acqBinoMODS.
 #
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
@@ -37,14 +44,16 @@
 #
 # Modification History:
 #   2016 Oct 17: First full binocular release for 2016B [rwp/osu]
-#   2025 OCt 14: tmux version for the MODS Archon control system [rwp/osu]
+#   2025 Oct 14: tmux version for the MODS Archon control system [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
-setenv modsBin /home/dts/bin
+setenv modsBin /lbt/lbto/mods/bin
 setenv configDir /lbt/lbto/mods/.config
 
 set prog=`basename $0`
+
+# process the command line
 
 if ($#argv == 1) then
    set mods1Script = $1
@@ -64,20 +73,25 @@ endif
 
 tmux has-session -t modsTerm >& /dev/null
 if ($status) then
-   printf "${prog} needs to be run in a modsTerm session - type 'modsTerm' to create one\n"
+   # no tmux session named modsTerm...
+   printf "${prog} needs to be run in a modsTerm tmux session but none is running\n"
+   printf "    Type 'modsTerm' to start a new modsTerm tmux session and try again.\n"
    exit 1
 else
-   if ( ! $?TMUX) then
-      printf "${prog} needs to be run in a modsTerm session.\n"
-
-      printf "   either go- type 'modsTerm' to attach\n"
+   # there is a tmux session named modsTerm, are we in it?
+   if ( ! $?TMUX ) then
+      # that would be a no...
+      printf "${prog} needs to be run in a modsTerm tmux session, but you're not in it.\n"
+      printf "   Either go to the active window on the desktop, or\n"
+      printf "   type 'modsTerm' to attach to the current modsTerm session\n"
       exit 1
    endif
 endif
 
-# we are attached, do it
-
-# Where are we?  Make sure all panes are there before we start
+# We are attached to the modsTerm tmux session.
+#
+# Where are we being run from?  Make sure all panes are in the same folder
+# as the command pane before we start
 
 set whereAmI=$cwd
 
@@ -86,7 +100,7 @@ tmux send-keys -t modsTerm:1.1 "cd ${whereAmI}" C-m
 
 # now launch the script engines in each pane
 
-tmux send-keys -t modsTerm:1.0 "${modsBin}/simAcq --mods1 --bino ${mods1Script}" C-m
-tmux send-keys -t modsTerm:1.1 "${modsBin}/simAcq --mods2 --bino ${mods2Script}" C-m
+tmux send-keys -t modsTerm:1.0 "${modsBin}/acqMODS --mods1 --bino ${mods1Script}" C-m
+tmux send-keys -t modsTerm:1.1 "${modsBin}/acqMODS --mods2 --bino ${mods2Script}" C-m
 
 exit 0

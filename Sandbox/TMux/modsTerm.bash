@@ -31,6 +31,7 @@
 #
 # Modification History:
 #   2025 Oct 13 - beta version, put tmaliases in configDir [rwp/osu]
+#   2025 Oct 14 - resize on launch to a good size if needed [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -67,6 +68,7 @@ fi
 if [ -n "$TMUX" ]; then
    echo "Currently in the ${tmuxID} session"
 else
+   resize -2 42 128 &> /dev/null
    tmux select-pane -t ${tmuxID}:1.2
    tmux attach-session -t ${tmuxID}
 fi

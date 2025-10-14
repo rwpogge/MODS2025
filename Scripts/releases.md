@@ -10,7 +10,7 @@ mountain observing machines.
  * Wrote `mtStatus.pl` to provide a text-only presentation of the MODS server status in response to `mods1 status` from the public scripts. Verified from the osurc user account logged in on the summit `obs1` machine.
  * Modified `mods/TclTk/vueinfo.c` to change power and env status for better formatted output for the MODS status 
  * Added "temps" option to `mods1` and `mods2` public scripts to show temperatures, replaces function of `modsTemps.pl` from the pre-Archon system.  This versio is less invasive.
-
+ * First beta versions of `acqBinoMODS` and `execBinoMODS` for tmux, and the `modsTerm` tmux session launch/attach script.
 
 ## 2025 Oct 5: updates
 
