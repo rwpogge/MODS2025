@@ -67,6 +67,7 @@ if ($#argv == 1) then
       breaksw
 
    case 'temps':
+      printf "MODS2 Environmental Sensors:\n"
       ssh -i ${keys} ${user}@${mods2Host} /usr/local/bin/vueinfo env
       breaksw
    
