@@ -59,6 +59,16 @@ All MODS environmental sensor data are now uploaded into the
 observatory Data Dictionary and accessible through observatory tools
 for reading the DD.
 
+A convenience substitute function is using
+```
+mods1 temps
+mods2 temps
+```
+which can be run from any of the observatory obs machines (e.g., obs1)
+that will query temperatures the MODS using `vueinfo env` on the
+servers proper.
+
+
 ### acq/execBinoMODS
 
 The `acqBinoMODS` and `execBinoMODS` scripts for executing science target
