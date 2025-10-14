@@ -49,8 +49,8 @@ sudo systemctl stop firewalld
 sudo systemctl disable firewalld
 sudo dnf remove -y firewalld
 ```
-Removing the package from the system should ensures a future sysadmin can't restart `firewalld` without
-having to knowingly re-install it.
+Removing the package from the system should ensure a future sysadmin doensn't
+restart `firewalld` without having to knowingly re-install it.
 
 #### Packages from the LBTO respository
 
