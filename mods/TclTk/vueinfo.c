@@ -473,7 +473,6 @@ main(int argc, char *argv[])
   }
   // environmental sensors
   else if (!strcasecmp(what,"env")) {
-    printf("%s Environmental Sensors:\n",ms->MODS.instID);
     printf("  Glycol Supply: P=%.2f psi-g  T=%.1f C\n",ms->MODS.glycolSupplyPressure,ms->MODS.glycolSupplyTemperature);
     printf("         Return: P=%.2f psi-g  T=%.1f C\n",ms->MODS.glycolReturnPressure,ms->MODS.glycolReturnTemperature);
     printf("  IUB Inside Air T=%.1f C  Ambient T=%.1f C  HeatSink T=%.1f C\n",
