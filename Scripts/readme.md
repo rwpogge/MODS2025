@@ -88,13 +88,13 @@ server status.  Uses perl `Curses` to provide tabular, color-coded status info.
 This script is usually invoked by the `mods1` or `mods2` admin scripts run on the servers in a
 `modsAdmin` tmux session.
 
-
 #### `mtStatus.pl`
 
 Perl script to provide status information in ASCII text table format.  This version of the script
 is used by remote observers to get a quick status snapshot using the `mods1 status` command on
 a non-MODS observatory machine.
 
+### Observing Scripts
 
 #### `acqBinoMODS`
 
