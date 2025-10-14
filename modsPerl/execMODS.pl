@@ -87,9 +87,6 @@
 #   listMODS, acqMODS, and chkMODS
 #   modsCmd and isisCmd for executing single commands
 #
-# ToDo: 
-#   All the bug fixes and other fun we need as we learn to use these...
-#
 # Documentation:
 #   MODS Scripting Guide (www.astronomy.ohio-state.edu/MODS/ObsTools/Docs/MODSScripts.pdf)
 #   Download and Examples: www.astronomy.ohio-state.edu/MODS/ObsTools/modsTools/

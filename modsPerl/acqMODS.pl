@@ -79,12 +79,6 @@
 #   pogge.1@osu.edu
 #   2010 Feb 20
 #
-# ToDo:
-#   Introduction of auto-retry (up to a maximum number of times) on
-#     certain types of faults to be more tolerant of comm glitches.
-#   Parallelization of the telescope preset and instrument configuration
-#     steps.  This is not currently indicated in practice at the LBT.
-#
 # Modification History:
 #   2011 Feb 20 - Beta version based on execMODS v2.3 [rwp/osu]
 #   2011 Mar 18 - Added color to screen printouts (thanks, Steven!) [rwp/osu]
