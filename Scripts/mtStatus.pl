@@ -37,30 +37,32 @@ my $sysdProcs = ["isis","lbttcs","modsenv","modsDD"];
 
 # Text based status
 
-print "$modsID server status:\n";
+printf("%s server status:\n",$modsID);
 
-print "\nProcess    Status    UserID\n";
+printf("%12s %12s %12s\n","Process","Status","UserID");
 
 foreach my $procID (@$userProcs) {
     my $isUp = `ps h -C $procID`;
     chomp($isUp);
     if (length($isUp) > 0) {
 	my $procUser = `ps eo user h -C $procID`;
-	print "$procID   running   $procUser\n";
+	chomp($procUser);
+	printf("%12s %12s %12s\n",$procID,"running",$procUser);
     } else {
-	print "$procID   stopped   $procUser\n";
+	printf("%12s %12s\n",$procID,"stopped");
     }
-    $svcRow++;
 }
 
-print "$modsID systemd services:\n";
+printf("\n%s systemd services:\n",$modsID);
 
-print "Service   Status   Restart\n";
+printf("%12s %12s %12s\n","Service","Status","Restart");
 
 foreach my $sysID (@$sysdProcs) {
     my $isActive = `systemctl is-active $sysID`;
+    chomp($isActive);
     my $isEnabled = `systemctl is-enabled $sysID`;
-    print "$sysID   $isActive   $isEnabled\n";
+    chomp($isEnabled);
+    printf("%12s %12s %12s\n",$sysID,$isActive,$isEnabled);
 }
 
 `/usr/local/bin/vueinfo power`;
@@ -75,7 +77,7 @@ my $dewTempPres = `/usr/local/bin/vueinfo dewars`;
 chomp($dewTempPres);
 my @dewTP = split(' ',$dewTempPres);
 
-print "$modsID dewars:\n";
+print "\n$modsID dewars:\n";
 print "  Blue: T=$dewTP[0] C  P=$dewTP[1] torr\n";
 print "   Red: T=$dewTP[2] C  P=$dewTP[3] torr\n";
 
