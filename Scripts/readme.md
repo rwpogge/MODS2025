@@ -14,13 +14,20 @@ option.
 
 ## Installation
 
+### MODS Servers
+
+...
+
+### Public SciOps Folder
+
 ...
 
 
 ## Dependences
 
-Requires `tmux` be installed, and the `.tmux.conf.xyz` dot files (in [dotFiles](dotFiles/) folder be
-installed in the login `$HOME` directory of the user.
+Requires
+ * `tmux` for terminal multiplexing for server admin and scripting engines
+ * `xterm-resize` (if absent) for xterm resizing in-situ (helps tmux sessions)
 
 
 ## Runtime Environment
@@ -34,6 +41,32 @@ By default, it assumes that the system Perl (/usr/bin/perl) is the correct versi
 coming soon...
 
 ### `mods1` and `mods2` server admin
+
+There are two versions of these scripts
+
+#### Instrument server admin
+
+These versions run only on the MODS1 and MODS2 instrument servers, and rely on local
+system functions.  They cannot be reaily run remotely, except via a remote login session
+(ssh) by a privileged user (e.g., `mods`).  These run in custom `tmux` sessions
+(`modsAdmin`) that provide basic windowed organization for engineering-level admin
+of instrument server functions.
+
+#### Instrument status updates and user GUI
+
+These are versions that live in the general public SciOps path for MODS (`/lbt/lbto/mods`)
+that provide access to basic status info and the ability of observing users to run
+an instance of the MODS GUI for each MODS.
+
+The public scripts login via ssh to one of the MODS instrument servers to execute programs
+that provide information on the instrument server state (`status`), instrument temperatures
+and pressures (`temps`), and allow the user to start or stop the GUI (`start gui` and `stop gui`).
+
+Unprivileged users are not permitted to execute these functions.
+
+In a departure there are no longer individual LBTO member logins, but instead a single "observer"
+login to handle MODS server functions for observers. SciOps users login to the approriate
+operations account on the servers as before.
 
 ### modsTerm
 
