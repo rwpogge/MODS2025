@@ -1,0 +1,127 @@
+#!/bin/csh
+#
+# Ping MODS1 WAGOs and systems
+#
+# Updated: 2025 Oct 13 for Archon controllers
+#
+# R. Pogge, OSU Astronomy 
+#
+
+set pingTO = 2
+set numPings = 3
+
+set errCount = 0
+echo "Checking MODS1 WAGOs..."
+echo -n "   IUB..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.122 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+echo -n "   Blue IEB..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.110 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+echo -n "   Blue HEB..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.142 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+echo -n "   Red IEB..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.100 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+echo -n "   Red HEB..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.141 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+echo -n "   Lamp/Laser Box..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.120 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+if ($errCount > 0) then
+   echo "ERROR: $errCount MODS1 WAGO units are OFFLINE"
+else
+   echo "DONE: All MODS1 WAGO units are online and responding to PINGs"
+endif
+
+set errCount = 0
+echo " "
+echo "Checking MODS1 COMTROL Servers..."
+echo -n "   Blue IEB Comtrol 1..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.111 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+echo -n "   Blue IEB Comtrol 2..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.112 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+echo -n "   Blue Ion Gauge Comtrol..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.113 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+echo -n "   Red IEB Comtrol 1..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.101 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+echo -n "   Red IEB Comtrol 2..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.102 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+echo -n "   Red Ion Gauge Comtrol..."
+ping -c ${numPings} -W ${pingTO} 192.168.139.103 >& /dev/null
+if ($status) then
+   echo " OFFLINE!"
+   @ errCount ++
+else
+   echo " online"
+endif
+
+if ($errCount > 0) then
+   echo "ERROR: $errCount MODS1 Comtrol units are OFFLINE"
+else
+   echo "DONE: All MODS1 Comtrol units are online and responding to PINGs"
+endif
+
+exit 0

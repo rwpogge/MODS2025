@@ -6,7 +6,7 @@
 #
 # where:
 #    mods# = MODS instrument (1 or 2)
-#    cmdStr = slit mask command string
+#    cmdStr = AGw stage command string
 #
 # Operate the AGw stage in MODS1 or MODS2. Primarily designed
 # for use by the telescope operator in order to readily operate
