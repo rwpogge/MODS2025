@@ -1,14 +1,14 @@
 #!/bin/csh
 #
-# acqBinoMODS - execute binocular MODS acqusition
+# simBinoMODS - execute simulated binocular MODS acqusition
 #
 # Usage:
-#   acqBinoMODS mods.acq
+#   simBinoMODS mods.acq
 # or
-#   acqBinoMODS mods1.acq mods2.acq
+#   simBinoMODS mods1.acq mods2.acq
 #
 # Overview:
-#   Executes a binocular MODS acquisition.  acqBinoMODS takes one or
+#   Executes a binocular MODS acquisition.  simBinoMODS takes one or
 #   two command-line arguments: the name(s) of acquisition script(s) to
 #   execute in binocular context.  
 #
@@ -18,7 +18,7 @@
 #   If two .acq scripts are given, they are executed on MODS1 and
 #   MODS2 in the order MODS1 MODS2.
 #
-#   In either case, acqBinoMODS launches two standalone terminal
+#   In either case, simBinoMODS launches two standalone terminal
 #   windows, and then executes acqMODS with the appropriate
 #   command-line options to execute the acq scripts in binocular
 #   context.
@@ -38,8 +38,11 @@
 #
 #---------------------------------------------------------------------------
 
-# setenv binoBin /lbt/lbto/mods/bin
-setenv binoBin /home/dts/bin
+#setenv modsBin /lbt/lbto/mods/bin
+setenv modsBin /home/dts/bin
+setenv configDir /lbt/lbto/mods/.config
+
+set prog=`basename $0`
 
 if ($#argv == 1) then
    set mods1Script = $1
@@ -49,20 +52,39 @@ else if ($#argv == 2) then
    set mods2Script = $2
 else
    printf "\nUsage:\n"
-   printf "   acqBinoMODS common.acq\n"
+   printf "   simBinoMODS common.acq\n"
    printf "or\n"
-   printf "   acqBinoMODS mods1.acq mods2.acq\n\n"
+   printf "   simBinoMODS mods1.acq mods2.acq\n\n"
    exit 0
 endif
 
+# Do we have a modsTerm tmux session running?
+
 tmux has-session -t modsTerm >& /dev/null
 if ($status) then
-   printf "modsTerm is not running.  Please start modsTerm, then re-run\n"
-   printf "simBinoMODS in the lower modsTerm pane\n"
+   printf "${prog} needs to be run in a modsTerm session - type 'modsTerm' to create one\n"
    exit 1
-endif 
+else
+   if ( ! $?TMUX) then
+      printf "${prog} needs to be run in a modsTerm session.\n"
 
-tmux send-keys -t modsTerm:1.0 "/home/dts/bin/simAcq --mods1 --bino ${mods1Script}" C-m
-tmux send-keys -t modsTerm:1.1 "/home/dts/bin/simAcq --mods2 --bino ${mods2Script}" C-m
+      printf "   either go- type 'modsTerm' to attach\n"
+      exit 1
+   endif
+endif
+
+# we are attached, do it
+
+# Where are we?  Make sure all panes are there before we start
+
+set whereAmI=$cwd
+
+tmux send-keys -t modsTerm:1.0 "cd ${whereAmI}" C-m
+tmux send-keys -t modsTerm:1.1 "cd ${whereAmI}" C-m
+
+# now launch the script engines in each pane
+
+tmux send-keys -t modsTerm:1.0 "${modsBin}/simAcq --mods1 --bino ${mods1Script}" C-m
+tmux send-keys -t modsTerm:1.1 "${modsBin}/simAcq --mods2 --bino ${mods2Script}" C-m
 
 exit 0
