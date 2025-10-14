@@ -476,16 +476,16 @@ main(int argc, char *argv[])
     printf("Environmental Sensors:\n");
     printf("  Glycol Supply: P=%.2f psi-g  T=%.1f C\n",ms->MODS.glycolSupplyPressure,ms->MODS.glycolSupplyTemperature);
     printf("         Return: P=%.2f psi-g  T=%.1f C\n",ms->MODS.glycolReturnPressure,ms->MODS.glycolReturnTemperature);
-    printf("  IUB Inside Air T=%.1f C   Ambient T=%.1f C   HeatSink T=%.1f C\n",
+    printf("  IUB Inside Air T=%.1f C  Ambient T=%.1f C  HeatSink T=%.1f C\n",
 	   ms->MODS.utilBoxAirTemperature,ms->MODS.outsideAirTemperature,ms->MODS.agwHeatSinkTemperature);
     printf("  Blue IEB Inside Air T=%.1f C  Glycol Return T=%.1f C\n",ms->MODS.blueTemperature[0],ms->MODS.blueTemperature[1]);
     printf("   Red IEB Inside Air T=%.1f C  Glycol Return T=%.1f C\n",ms->MODS.redTemperature[0],ms->MODS.redTemperature[1]);
-    printf("  MODS Air Top T=%.1f C   Bottom T=%.1fC\n",ms->MODS.redTemperature[2],ms->MODS.redTemperature[3]);
-    printf("       Truss Top T=%.1f C   Bottom T=%.1fC\n",ms->MODS.blueTemperature[2],ms->MODS.blueTemperature[3]);
     printf("  Blue HEB Inside Air T=%.1f C  Dewar T=%.1f C P=%8.2e torr\n",ms->MODS.blueHEBTemperature,ms->MODS.blueDewarTemperature,
 		    ms->MODS.blueDewarPressure);
     printf("   Red HEB Inside Air T=%.1f C  Dewar T=%.1f C P=%8.2e torr\n",ms->MODS.redHEBTemperature,ms->MODS.redDewarTemperature,
 		    ms->MODS.redDewarPressure);
+    printf("  MODS Air Top T=%.1f C  Bottom T=%.1fC\n",ms->MODS.redTemperature[2],ms->MODS.redTemperature[3]);
+    printf("     Truss Top T=%.1f C  Bottom T=%.1fC\n",ms->MODS.blueTemperature[2],ms->MODS.blueTemperature[3]);
     exit(0);
   }
   // MODS dewar pressure and temperature
