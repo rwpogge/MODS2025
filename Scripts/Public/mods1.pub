@@ -4,6 +4,7 @@
 #
 # usage: mods1 {start|stop} {modsUI|gui}
 #        mods1 {status}
+#        mods1 {temps}
 #
 # This version is for use by partner observing accounts, and allows
 # start/stop access to a limited subset of MODS services.  For access
@@ -25,9 +26,18 @@
 #---------------------------------------------------------------------------
 
 set user=`echo $USER | tr '[:upper:]' '[:lower:]'`
-if ("${user}" == "ao" || "${user}" == "lbti" || "${user}" == "linc" || "${user}" == "queue") then
-  set user="lbto"
+
+if ("${user}" != "mods") then
+  set user="observer"
 endif
+
+#if ("${user}" == "ao" || "${user}" == "lbti" || "${user}" == "linc" || "${user}" == "queue") then
+#  set user="observer"
+#endif
+#
+#if ("${user}" == "az" || "${user}" == "inaf" || "${user}" == "lbtb" || "${user}" == "osurc") then
+#  set user="observer"
+#endif
 
 set keys=`dirname $0`
 set keys=`realpath ${keys}`
@@ -46,7 +56,7 @@ set mods1Host = 192.168.139.130
 
 # Usage message 
 
-set usage = "mods1 {start|stop} {modsUI|gui}\n       mods1 {status}\n"
+set usage = "mods1 {start|stop} {modsUI|gui}\n       mods1 {status}\n       mods1 {temps}\n"
 
 # Process the command-line arguments
 
@@ -56,6 +66,10 @@ if ($#argv == 1) then
       ssh -i ${keys} ${user}@${mods1Host} /home/dts/mods/bin/modsStatus
       breaksw
 
+   case 'temps':
+      ssh -i ${keys} ${user}@${mods1Host} /usr/local/bin/vueinfo env
+      breaksw
+   
    default:
       printf "\nERROR: unrecognized directive ${1}\n"
       printf "Usage: $usage\n"
