@@ -68,7 +68,33 @@ In a departure there are no longer individual LBTO member logins, but instead a 
 login to handle MODS server functions for observers. SciOps users login to the approriate
 operations account on the servers as before.
 
-### modsTerm
+### MODS GUI
+
+To make sure only 1 instance of the `modsUI` MODS instrument GUI is run at a time, we execute `modsUI` using a
+wrapper named `modsGUI.sh`.
+
+Usage Syntax:
+ * `modsGUI start` - start the modsUI for that instrument on the server. Prevents running more than one at a time
+ * `modsGUI stop` - stops a running modsUI on an instrument
+ 
+
+### Status Scripts
+
+#### `modsStatus.pl`
+
+Perl script run on the instruent servers, either in xterm or tmux session, to show running instrument
+server status.  Uses perl `Curses` to provide tabular, color-coded status info.
+
+This script is usually invoked by the `mods1` or `mods2` admin scripts run on the servers in a
+`modsAdmin` tmux session.
+
+
+#### `mtStatus.pl`
+
+Perl script to provide status information in ASCII text table format.  This version of the script
+is used by remote observers to get a quick status snapshot using the `mods1 status` command on
+a non-MODS observatory machine.
+
 
 #### `acqBinoMODS`
 
