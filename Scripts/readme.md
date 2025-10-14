@@ -70,7 +70,7 @@ operations account on the servers as before.
 
 ### modsTerm
 
-#### acqBinoMODS`
+#### `acqBinoMODS`
 
 Wrapper shell script to execute a binocular acquisition.  It takes one
 or two .acq scripts on the command liney and executes acqMODS with the
@@ -78,7 +78,7 @@ correct instrument and binocular context options.  If one .acq script
 is given, it executed on both MODS ("twinning").  If two .acq scripts
 are given, they are implicitly executed in the order MODS1 MODS2.
 
-#### execBinoMODS
+#### `execBinoMODS`
 
 Wrapper shell script to execute a binocular observation.  It takes one
 or two .obs scripts or 1 or 2 .img scripts on the command line and
