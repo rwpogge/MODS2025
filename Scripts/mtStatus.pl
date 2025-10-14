@@ -37,7 +37,7 @@ my $sysdProcs = ["isis","lbttcs","modsenv","modsDD"];
 
 # Text based status
 
-printf("%s server status:\n",$modsID);
+printf("\n%s server status:\n",$modsID);
 
 printf("%12s %12s %12s\n","Process","Status","UserID");
 
@@ -65,7 +65,8 @@ foreach my $sysID (@$sysdProcs) {
     printf("%12s %12s %12s\n",$sysID,$isActive,$isEnabled);
 }
 
-`/usr/local/bin/vueinfo power`;
+my $pwrInfo = `/usr/local/bin/vueinfo power`;
+print "\n$pwrInfo";
 
 #
 # Dewar status: temperature and pressures
