@@ -1,14 +1,14 @@
 #!/bin/csh
 #
-# simBinoMODS - execute simulated binocular MODS acqusition
+# acqBinoMODS - execute binocular MODS acqusition
 #
 # Usage:
-#   simBinoMODS mods.acq
+#   acqBinoMODS mods.acq
 # or
-#   simBinoMODS mods1.acq mods2.acq
+#   acqBinoMODS mods1.acq mods2.acq
 #
 # Overview:
-#   Executes a binocular MODS acquisition.  simBinoMODS takes one or
+#   Executes a binocular MODS acquisition.  acqBinoMODS takes one or
 #   two command-line arguments: the name(s) of acquisition script(s) to
 #   execute in binocular context.  
 #
@@ -18,7 +18,7 @@
 #   If two .acq scripts are given, they are executed on MODS1 and
 #   MODS2 in the order MODS1 MODS2.
 #
-#   In either case, simBinoMODS launches two standalone terminal
+#   In either case, acqBinoMODS launches two standalone terminal
 #   windows, and then executes acqMODS with the appropriate
 #   command-line options to execute the acq scripts in binocular
 #   context.
@@ -38,10 +38,8 @@
 #
 #---------------------------------------------------------------------------
 
-#setenv modsBin /lbt/lbto/mods/bin
-setenv modsBin /home/dts/bin
-setenv configDir /lbt/lbto/mods/.config
-
+# setenv binoBin /lbt/lbto/mods/bin
+setenv binoBin /home/dts/bin
 
 if ($#argv == 1) then
    set mods1Script = $1
@@ -51,31 +49,20 @@ else if ($#argv == 2) then
    set mods2Script = $2
 else
    printf "\nUsage:\n"
-   printf "   simBinoMODS common.acq\n"
+   printf "   acqBinoMODS common.acq\n"
    printf "or\n"
-   printf "   simBinoMODS mods1.acq mods2.acq\n\n"
+   printf "   acqBinoMODS mods1.acq mods2.acq\n\n"
    exit 0
 endif
 
-# do we have a modsTerm tmux session running?
-
 tmux has-session -t modsTerm >& /dev/null
 if ($status) then
-   printf "$0 needs to be run in a modsTerm session - type 'modsTerm' to create one\n"
+   printf "modsTerm is not running.  Please start modsTerm, then re-run\n"
+   printf "simBinoMODS in the lower modsTerm pane\n"
    exit 1
-else
-   if ( ! $?TMUX) then
-      printf "$0 needs to be run in a modsTerm - type 'modsTerm' to attach\n"
-      exit 1
-   endif
-endif
+endif 
 
-# we are attached, do it
-
-tmux send-keys -t modsTerm:1.0 "${modsBin}/simAcq --mods1 --bino ${mods1Script}" C-m
-tmux send-keys -t modsTerm:1.1 "${modsBin}/simAcq --mods2 --bino ${mods2Script}" C-m
-
-#xterm -T 'MODS1 Acquire' -fn 9x15 -e ${modsBin}/acqMODS --mods1 --bino ${mods1Script} &
-#xterm -T 'MODS2 Acquire' -fn 9x15 -e ${modsBin}/acqMODS --mods2 --bino ${mods2Script} &
+tmux send-keys -t modsTerm:1.0 "/home/dts/bin/simAcq --mods1 --bino ${mods1Script}" C-m
+tmux send-keys -t modsTerm:1.1 "/home/dts/bin/simAcq --mods2 --bino ${mods2Script}" C-m
 
 exit 0
