@@ -1,12 +1,21 @@
 #!/bin/csh
 #
 # Poke (query status of) all MODS1 mechanisms via ISIS and the IE
-# server.  This is a quick way to check for dangling sockets
+# server.  This is a quick way to check for dangling sockets.
+#
+# Restrict execution to the ISP user account (lbto)
 #
 # R. Pogge, OSU Astronomy
 #
 # Updated: 2025 Oct 14 - Archon controller updates [rwp/osu]
 #
+
+set user=`echo $USER | tr '[:upper:]' '[:lower:]'`
+if ("${user}" != "lbto") then
+   printf "ERROR: User '${user}' is not permitted to run this program.\n"
+   printf "       Please ask your ISP for assistance.\n"
+   exit 1
+endif
 
 set errCount = 0
 echo "Poking MODS1 Mechanisms..."
