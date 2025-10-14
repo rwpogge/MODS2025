@@ -366,5 +366,6 @@ LBTO computers are set to run on GMT+0 timezone and display time in
 sudo timedatectl set-timezone GMT
 sudo localectl set-locale LC_TIME=C.UTF-8
 ```
-
+Note that you'll have to logout and log back in before you see 24-h 
+format appear.
 
