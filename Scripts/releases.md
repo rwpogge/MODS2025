@@ -1,6 +1,16 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2025 Oct 5 [rwp/osu]</b>
+<b>Last Update: 2025 Oct 14 [rwp/osu]</b>
+
+## 2025 Oct 14: observing scripts
+
+Added the Public/ subfolder with the public scripts we put into `/lbt/lbto/mods/bin` for users on the
+mountain observing machines.
+ * `mods1.pub` and `mods2.pub` which are renamed `mods1` and `mods2` on the public path, these provide access to a safe subset of MODS server status and GUI startup functions limited by userID.  This replicates the analogous scripts from before the Archon updates
+ * Wrote `mtStatus.pl` to provide a text-only presentation of the MODS server status in response to `mods1 status` from the public scripts. Verified from the osurc user account logged in on the summit `obs1` machine.
+ * Modified `mods/TclTk/vueinfo.c` to change power and env status for better formatted output for the MODS status 
+ * Added "temps" option to `mods1` and `mods2` public scripts to show temperatures, replaces function of `modsTemps.pl` from the pre-Archon system.  This versio is less invasive.
+
 
 ## 2025 Oct 5: updates
 

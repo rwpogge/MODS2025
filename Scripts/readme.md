@@ -1,6 +1,6 @@
 # MODS operations scripts
 
-Latest Version: 2025 Oct 2 [rwp/osu]
+Latest Version: 2025 Oct 14 [rwp/osu]
 
 See [Release Notes](releases.md) for the current verison
 
