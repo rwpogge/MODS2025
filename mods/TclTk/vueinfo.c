@@ -693,22 +693,22 @@ main(int argc, char *argv[])
   
   // Power state variables
   else if (!strcasecmp(what,"POWER")) {
-    
     printf("Power States:\n");
-    printf("         IUB: %s\n",((ms->MODS.utilState==0) ? "Off" : (ms->MODS.utilState==1) ? "On" : "Fault"));
-    printf("         LLB: %s\n",((ms->MODS.llbState==0) ? "Off" : (ms->MODS.llbState==1) ? "On" : "Fault"));    
-    printf("   Guide Cam: %s\n",((ms->MODS.guideCamState==0) ? "Off" : (ms->MODS.guideCamState==1) ? "On" : "Fault"));    
-    printf("     WFS Cam: %s\n",((ms->MODS.wfsCamState==0) ? "Off" : (ms->MODS.wfsCamState==1) ? "On" : "Fault"));    
-    printf(" Blue Channel:\n");
-    printf("       IEB-B: %s\n",((ms->MODS.blueIEBState==0) ? "Off" : (ms->MODS.blueIEBState==1) ? "On" : "Fault"));    
-    printf("       HEB-B: %s\n",((ms->MODS.blueHEBState==0) ? "Off" : (ms->MODS.blueHEBState==1) ? "On" : "Fault"));    
-    printf("    Archon-B: %s\n", (ms->MODS.blueArchonState) ? "On" : "Off");
-    printf("  IonGauge-B: %s\n", (ms->MODS.blueIonGaugeState) ? "On" : "Off");
-    printf(" Red Channel:\n");
-    printf("       IEB-R: %s\n",((ms->MODS.redIEBState==0) ? "Off" : (ms->MODS.redIEBState==1) ? "On" : "Fault"));    
-    printf("       HEB-R: %s\n",((ms->MODS.redHEBState==0) ? "Off" : (ms->MODS.redHEBState==1) ? "On" : "Fault"));    
-    printf("    Archon-R: %s\n", (ms->MODS.redArchonState) ? "On" : "Off");
-    printf("  IonGauge-R: %s\n", (ms->MODS.redIonGaugeState) ? "On" : "Off");
+    printf("  Inst: IUB: %s  LLB: %s   GCam: %s    WFSCam: %s\n",
+           ((ms->MODS.llbState==0) ? "Off" : (ms->MODS.llbState==1) ? "On" : "Fault"),
+           ((ms->MODS.guideCamState==0) ? "Off" : (ms->MODS.guideCamState==1) ? "On" : "Fault"),
+           ((ms->MODS.wfsCamState==0) ? "Off" : (ms->MODS.wfsCamState==1) ? "On" : "Fault"),
+	   ((ms->MODS.utilState==0) ? "Off" : (ms->MODS.utilState==1) ? "On" : "Fault"));
+    printf("  Blue: IEB: %s  HEB: %s  Archon: %s  IonGauge: %s\n",
+	   ((ms->MODS.blueIEBState==0) ? "Off" : (ms->MODS.blueIEBState==1) ? "On" : "Fault"),
+           ((ms->MODS.blueHEBState==0) ? "Off" : (ms->MODS.blueHEBState==1) ? "On" : "Fault"),    
+           ((ms->MODS.blueArchonState) ? "On" : "Off"),
+           ((ms->MODS.blueIonGaugeState) ? "On" : "Off"));
+    printf("   Red: IEB: %s  HEB: %s  Archon: %s  IonGauge: %s\n",
+           ((ms->MODS.redIEBState==0) ? "Off" : (ms->MODS.redIEBState==1) ? "On" : "Fault"),    
+           ((ms->MODS.redHEBState==0) ? "Off" : (ms->MODS.redHEBState==1) ? "On" : "Fault"),    
+           ((ms->MODS.redArchonState) ? "On" : "Off"),
+           ((ms->MODS.redIonGaugeState) ? "On" : "Off"));
     exit(0);
   }
 
