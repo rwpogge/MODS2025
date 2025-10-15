@@ -54,8 +54,7 @@ $verDate = "2025-10-04";
 
 $hostID = `hostname`;
 chomp($hostID);
-$modsID = lc($hostID);
-
+$modsID = substr lc($hostID), 0, 5; # lowercase MODS instrument ID (mods1 or mods2)
 
 # ISIS network and host IDs for MODS1 and MODS2 instances
 
@@ -74,12 +73,12 @@ $Term::ANSIColor::AUTORESET = 1;
 # Default MODS instance to use, 1 or 2.
 #    Setting useMODS=0 implies neither, REQUIRING use of  --mods1 or --mods2
 
-if ($hostID eq 'mods1') {
+if ($modsID eq 'mods1') {
     $useMODS = 1;
     $useMODS1 = 0;  # 0 = Perl True
     $useMODS2 = '';
 }
-elsif ($hostID eq 'mods2') {
+elsif ($modsID eq 'mods2') {
     $useMODS = 2;
     $useMODS1 = '';
     $useMODS2 = 0;
