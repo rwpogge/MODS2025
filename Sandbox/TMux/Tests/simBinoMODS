@@ -1,6 +1,6 @@
 #!/bin/csh
 #
-# simBinoMODS - simulate binocular MODS acquisition
+# simBinoMODS - execute simulated binocular MODS acqusition
 #
 # Usage:
 #   simBinoMODS mods.acq
@@ -8,7 +8,7 @@
 #   simBinoMODS mods1.acq mods2.acq
 #
 # Overview:
-#   Simulates binocular MODS acquisition.  simBinoMODS takes one or
+#   Executes a binocular MODS acquisition.  simBinoMODS takes one or
 #   two command-line arguments: the name(s) of acquisition script(s) to
 #   execute in binocular context.  
 #
@@ -18,42 +18,15 @@
 #   If two .acq scripts are given, they are executed on MODS1 and
 #   MODS2 in the order MODS1 MODS2.
 #
-#   In either case, simBinoMODS is designed to be launched inside
-#   an experimental tmux session named modsTerm configured with
-#   3 window panes
-# 
-#      +---------------------+---------------------+
-#      |        MODS1        |        MODS2        |
-#      |                     |                     |
-#      |                     |                     |
-#      |                     |                     |
-#      |                     |                     |
-#      +---------------------+---------------------+
-#      |                  command                  |
-#      |                                           |
-#      +---------------------+---------------------+
-#
-#   simBinoMODS is started in the "command" pane at the bottom of
-#   the terminal.  It launches the MODS1 ands MODS2 script engines
-#   simulators in the left and right top menus above. Users click
-#   the mouse in the pane of interest to type in that window in 
-#   response to prompts.  The active windows have yellow text on black
-#   inactive windows are white text on black to provide a visual cue
-#   to where the cursor is live.
-#
-#   This system addresses a long-standing complaint from obsevers
-#   and sciops alike that the two separate windows running the
-#   two MODS scripts should be together and not randomly pop up,
-#   something we cannot control the way the mountain windows servers
-#   are configures (xterm -geom directives are basically ignored).
+#   In either case, simBinoMODS launches two standalone terminal
+#   windows, and then executes acqMODS with the appropriate
+#   command-line options to execute the acq scripts in binocular
+#   context.
 #
 #   Upon successful completion of script execution or upon faults that
 #   terminate script execution with errors, the terminal windows for
 #   each MODS instance stay up so that the messages may be read by the
-#   observer and are persistent, addressing another issue if there are
-#   problems of not being able to go back and capture errors or check
-#   what was done because of the non-persistent way we had to launch
-#   the independent xterms.
+#   observer.  Hitting the Enter key will exit the terminal session.
 #
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
@@ -62,11 +35,14 @@
 #
 # Modification History:
 #   2016 Oct 17: First full binocular release for 2016B [rwp/osu]
-#   2025 Sep 25: Archon MODS update tests with tmux and modsTerm [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
-setenv binoBin /lbt/lbto/mods/bin
+#setenv modsBin /lbt/lbto/mods/bin
+setenv modsBin /home/dts/bin
+setenv configDir /lbt/lbto/mods/.config
+
+set prog=`basename $0`
 
 if ($#argv == 1) then
    set mods1Script = $1
@@ -82,14 +58,33 @@ else
    exit 0
 endif
 
+# Do we have a modsTerm tmux session running?
+
 tmux has-session -t modsTerm >& /dev/null
 if ($status) then
-   printf "modsTerm is not running.  Please start modsTerm, then re-run\n"
-   printf "simBinoMODS in the lower modsTerm pane\n"
+   printf "${prog} needs to be run in a modsTerm session - type 'modsTerm' to create one\n"
    exit 1
-endif 
+else
+   if ( ! $?TMUX) then
+      printf "${prog} needs to be run in a modsTerm session.\n"
 
-tmux send-keys -t modsTerm:1.0 "${binoBin}/simAcq --mods1 --bino ${mods1Script}" C-m
-tmux send-keys -t modsTerm:1.1 "${binoBin}/simAcq --mods2 --bino ${mods2Script}" C-m
+      printf "   either go- type 'modsTerm' to attach\n"
+      exit 1
+   endif
+endif
+
+# we are attached, do it
+
+# Where are we?  Make sure all panes are there before we start
+
+set whereAmI=$cwd
+
+tmux send-keys -t modsTerm:1.0 "cd ${whereAmI}" C-m
+tmux send-keys -t modsTerm:1.1 "cd ${whereAmI}" C-m
+
+# now launch the script engines in each pane
+
+tmux send-keys -t modsTerm:1.0 "${modsBin}/simAcq --mods1 --bino ${mods1Script}" C-m
+tmux send-keys -t modsTerm:1.1 "${modsBin}/simAcq --mods2 --bino ${mods2Script}" C-m
 
 exit 0
