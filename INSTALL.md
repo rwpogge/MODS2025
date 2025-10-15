@@ -88,29 +88,44 @@ sudo dnf -y install icebox
 ```
 ### Create directories we need
 
+#### `dts` account
+
 In the dts account, make sure that these directories are all present with the correct permission
 ```shell
 mkdir bin
 mkdir Logs
 chmod 777 Logs
 ```
-And in /home, login as root (direct or `sudo su -`):
+
+#### Data and Logs
+
+All machines need open-access `/home/data/` and `/home/Logs/` folder.
 ```shell
 cd /home
 sudo mkdir data
 sudo mkdir Logs
 sudo chmod 777 Logs data
 ```
-Under `/home/Logs/` we need 3 subdirectories with open permissions as log-generated programs may be run
-by different users (usually `mods` in ops, but also `dts` in testing, perhaps `observer` later).
 
-As root or `sudo`
+#### Instrument Server Logs
+
+Under `/home/Logs/`, the instrument servers (`mods1` and `mods2`) need two subdirectories for runtime logs
+from instrument services:
 ```
 cd /home/Logs
 sudo mkdir Env
-sudo mkdir azcam
 sudo mkdir ISIS
-sudo chmod 777 azcam Env ISIS
+sudo chmod 777 Env ISIS
+```
+
+#### Archon Server Logs
+
+Under `/home/Logs/`, the four Archon servers (`mods1blue/red` and `mods2blue/red`) need a subdirectory for
+the azcam server logs:
+```
+cd /home/Logs
+sudo mkdir azcam
+sudo chmod 777 azcam
 ```
 
 ### LBTO conda environment
