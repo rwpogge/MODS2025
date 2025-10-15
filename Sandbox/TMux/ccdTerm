@@ -11,7 +11,7 @@ configDir="/lbt/lbto/mods/.config"
 
 modsHost="${HOSTNAME}"
 
-if [[ "$modsHost" == "mods1blue" || "$modsHost" == "mods1red" || "$modsHost" == "mods2blue" || "$modsHost" == "mods2rede" ]]; then
+if [[ "$modsHost" == "mods1blue" || "$modsHost" == "mods1red" || "$modsHost" == "mods2blue" || "$modsHost" == "mods2red" ]]; then
     modsID=${modsHost:0:6}   # like mods1b, used by azcam
     modsChan=${modsHost:5:${#modsHost}} # blue or red, for config files
     modsInst=${modsHost:0:5} 
@@ -46,7 +46,7 @@ if [ $? != 0 ]; then
   tmux set -g pane-border-status top
   tmux set -g pane-border-format " #{pane_title} "
 
-  tmux select-pane -t $tmuxID:1.0 -T "modsCCD"
+  tmux select-pane -t $tmuxID:1.0 -T "modsCCD Agent"
   tmux select-pane -t $tmuxID:1.1 -T "azcam Server"
   tmux select-pane -t $tmuxID:1.2 -T "Commands"
 
@@ -68,7 +68,7 @@ fi
 if [ -n "$TMUX" ]; then
    echo "Currently in the ${tmuxID} session"
 else
-   resize -s 42 128 &> /dev/null
+   resize -s 42 160 &> /dev/null
    tmux select-pane -t ${tmuxID}:1.2
    tmux attach-session -t ${tmuxID}
 fi
