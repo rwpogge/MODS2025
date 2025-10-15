@@ -10,7 +10,7 @@ cp -r ~/MODS2025/azcam .
 then login as root
 ```
 conda activate /usr/local/conda/envs/py312
-cp /home/dts/azcam
+cd /home/dts/azcam
 python -m pip install -e ./azcam
 python -m pip install -e ./azcam-mods
 ```
