@@ -2,7 +2,7 @@
 
 **Updated: 2025 Oct 15 [rwp/osu]**
 
-Copy from the MODS2025 repository (/make sure there is no existing /home/dts/azcam folder or if so, back it up first:
+Copy the latest repo from the MODS2025 repository (make sure there is no existing /home/dts/azcam folder or if so, back it up first!):
 ```shell
 cd /home/dts
 cp -r ~/MODS2025/azcam .
