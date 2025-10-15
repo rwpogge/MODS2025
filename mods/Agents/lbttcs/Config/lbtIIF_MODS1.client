@@ -20,7 +20,7 @@ MODS.FocalStation=directGregorian left
 #
 # We want a faster ACM for this client.
 #
-Ice.ACM.Client=10
+#Ice.ACM.Client=10
 
 #
 # Multi-threading support
