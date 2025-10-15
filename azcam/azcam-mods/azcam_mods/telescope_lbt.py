@@ -147,7 +147,7 @@ class LBTTelescope(Telescope):
             self.header.comments[key] = self.iifComments[key]
             self.header.typestrings[key] = self.iifTypes[key]
             
-        azcam.log("TCS header keywords defined")
+        azcam.log("LBT TCS header keywords defined")
         
         return
     
