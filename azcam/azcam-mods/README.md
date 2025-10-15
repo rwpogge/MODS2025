@@ -1,7 +1,7 @@
 # azcam-mods
-Version 1.1.2
+Version 1.1.3
 
-Last Update: 2025 Oct 13
+Last Update: 2025 Oct 15
 
 ## Purpose
 
@@ -32,3 +32,9 @@ Launch in an ipython interactive shell for code debugging
 ipython -i -m azcam_mods.server -- -mods1b
 ```
 Otherwise, launch as a python program, either foreground or background.
+
+## Logging
+
+Logging is now in `/home/Logs/azcam/` for all MODS installations.  Permissions
+must be defined to make sure all users able to start the azcam server can
+write logs there.  See the MODS2025 INSTALL.md file for details.

@@ -3,7 +3,7 @@ Setup method for LBTO MODS azcamserver
 Usage example:
   python -i -m azcam_mods.server -- -mods1r
   
-  Updated: 2025 Sept 23[rwp/osu]
+  Updated: 2025 Oct 15 [rwp/osu]
 """
 
 import os
@@ -241,9 +241,9 @@ def setup():
     else:
         raise azcam.exceptions.AzcamError(f"Unknown system configuration '{option}'")
 
-    # logging - in <azcamRoot>/system/logs/server.log for all configurations
+    # logging is now set to /home/Logs/azcam/ for all MODS systems
     
-    logfile = os.path.join(azcamRoot,"system/logs","server.log")
+    logfile = os.path.join("/home/Logs/azcam","server.log")
                            
     azcam.db.logger.start_logging(logfile=logfile)
     azcam.log(f"MODS Channel: {modsID}")
