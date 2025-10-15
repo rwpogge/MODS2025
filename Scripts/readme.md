@@ -124,4 +124,25 @@ keeps the script progress and error messages resident in a persistent
 tmux (terminal multiplexer) session that may be detached and joined as
 needed.
 
+## Screenshots
 
+### `mods1` server admin session
+
+Screenshot of a live test of the MODS1 instrument server admin tmux
+session.  This is the session that is created/attached by the new
+version `mods1` startup script.  It is shown after firing up MODS1's
+mechanism servers.
+
+The upper left panel is running `modsStatus.pl`, a persistent status
+display that updates every 1-2 seconds.  The upper right panel is
+where user processes (except modsUI) are executed, showing whatever
+they print to the screen during startup or shutdown without.  The
+bottom panel is where user's type command (like `mods1` to start/stop
+services, or `isisCmd` to send commands to the data-taking system).
+
+This screenshot was taken of a VPN ssh session from the author's home
+computer logged into the `mods1` server at LBT.  Because it works with
+a terminal, not a screen share, it is fast and sharp.
+
+
+![mods1 server admin tmux session live test with MODS1 on 2025 Oct 15](Screenshots/mods1_agwOff.png)
