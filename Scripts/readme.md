@@ -145,4 +145,4 @@ computer logged into the `mods1` server at LBT.  Because it works with
 a terminal, not a screen share, it is fast and sharp.
 
 
-![mods1 server admin tmux session live test with MODS1 on 2025 Oct 15](Screenshots/mods1_agwOff.png)
+![mods1 server admin tmux session live test with MODS1 on 2025 Oct 15](Screenshots/mods1_agwOn.png)
