@@ -97,10 +97,20 @@ chmod 777 Logs
 And in /home, login as root (direct or `sudo su -`):
 ```shell
 cd /home
-mkdir data
-chmod 777 data
-mkdir Logs
-chmod 777 Logs
+sudo mkdir data
+sudo mkdir Logs
+sudo chmod 777 Logs data
+```
+Under `/home/Logs/` we need 3 subdirectories with open permissions as log-generated programs may be run
+by different users (usually `mods` in ops, but also `dts` in testing, perhaps `observer` later).
+
+As root or `sudo`
+```
+cd /home/Logs
+sudo mkdir Env
+sudo mkdir azcam
+sudo mkdir ISIS
+sudo chmod 777 azcam Env ISIS
 ```
 
 ### LBTO conda environment
