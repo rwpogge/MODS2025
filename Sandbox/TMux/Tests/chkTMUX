@@ -1,0 +1,7 @@
+#!/bin/csh -f
+
+if ( ! $?TMUX) then
+   printf "not in TMUX \n"
+else
+   printf "in TMUX \n"
+endif

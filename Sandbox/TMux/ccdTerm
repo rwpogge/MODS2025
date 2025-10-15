@@ -28,21 +28,29 @@ if [ $? != 0 ]; then
   tmux set -g pane-border-status top
   tmux set -g pane-border-format " #{pane_title} "
 
-  tmux select-pane -t $tmuxID:1.0 -T "modsCCD agent"
-  tmux select-pane -t $tmuxID:1.1 -T "azcam server"
-  tmux select-pane -t $tmuxID:1.2 -T "command window"
+  tmux select-pane -t $tmuxID:1.0 -T "modsCCD"
+  tmux select-pane -t $tmuxID:1.1 -T "azcam Server"
+  tmux select-pane -t $tmuxID:1.2 -T "Commands"
+
+   # aliases
+   tmux send-keys -t ${tmuxID}:1.0 "source ${configDir}/tmaliases" C-m
+   tmux send-keys -t ${tmuxID}:1.1 "source ${configDir}/tmaliases" C-m
+   tmux send-keys -t ${tmuxID}:1.2 "source ${configDir}/tmaliases" C-m
 
   # programs to launch in panes...
 
   # tmux send-keys -t $tmuxID:1.0 "start_modsCCD" C-m # run the modsCCD agent in the top left pane
   # tmux send-keys -t $tmuxID:1.1 "start_azcam" C-m # run the azcam server in the top right pane
 
-  # Select the pane you want active initially
-
-  tmux select-pane -t $tmuxID:1.2 # attach the command pane
-
 fi
 
-# Attach to the session
+# If we're already in the expected tmux session, do nothing
+# otherwise attach to the command pane (1.2)
 
-tmux attach-session -t $tmuxID
+if [ -n "$TMUX" ]; then
+   echo "Currently in the ${tmuxID} session"
+else
+   resize -s 42 128 &> /dev/null
+   tmux select-pane -t ${tmuxID}:1.2
+   tmux attach-session -t ${tmuxID}
+fi

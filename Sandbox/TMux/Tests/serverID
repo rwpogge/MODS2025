@@ -1,0 +1,12 @@
+#!/bin/csh -f
+
+set userID = $USER
+set hostID = $HOSTNAME
+
+set serverID = `echo $hostID | tr "[a-z]" "[A-Z]"`
+
+tmux has-session -t $serverID >& /dev/null
+if ($status) then
+   # tmux session not found, starting one"
+   #
+endif
