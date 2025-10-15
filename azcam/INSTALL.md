@@ -1,6 +1,6 @@
-# azcam server installation
+# MODS azcam server installation
 
-Updated: 2025 Oct 15
+**Updated: 2025 Oct 15 [rwp/osu]**
 
 Copy from the MODS2025 repository (/make sure there is no existing /home/dts/azcam folder or if so, back it up first:
 ```shell
