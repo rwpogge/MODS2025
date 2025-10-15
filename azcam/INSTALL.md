@@ -11,6 +11,6 @@ then login as root
 ```
 conda activate /usr/local/conda/envs/py312
 cp /home/dts/azcam
-python -m pip install -e ./azcam       <- core azcam server
-python -m pip install -e ./azcam-mods  <- custom MODS azcam server
+python -m pip install -e ./azcam
+python -m pip install -e ./azcam-mods
 ```
