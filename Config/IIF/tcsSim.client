@@ -4,7 +4,7 @@
 #
 # This is for the TCS simulator running at OSU.
 #
-Factory.Proxy=Factory:tcp -p 10000 -h 192.168.139.92 #-t timeout(milliseconds)
+Factory.Proxy=Factory:tcp -p 10000 -h 192.168.139.30 #-t timeout(milliseconds)
 
 #
 # Default proxy name, instrument ID (is always MODS), and focal station
