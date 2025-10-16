@@ -24,8 +24,7 @@
   Temperature values are in #azcam::CCDTemp and #azcam::DewarTemp.
 
   Queries the azcam server and readout out the CCD detector and mount
-  base temperature and the controller backplane temperature from the
-  Archon controller.
+  base temperatures from the Archon controller.
 
   \sa setTemp(), setTempCal()
 */
@@ -53,20 +52,9 @@ getTemp(azcam_t *cam, char *reply)
     cam->baseTemp = t2;
   }
 
-  // Archon backplane temperature
-
-  strcpy(cmdStr,"mods.archonTemp");
-  
-  if (azcamCmd(cam,cmdStr,msgStr)<0) {
-    strcpy(reply,msgStr);
-    return -1;
-  }
-
-  if (sscanf(msgStr,"%f",&t1) == 1) cam->archonTemp = t1;
-
   // reply string
 
-  sprintf(reply,"CCDTEMP=%.1f BASETEMP=%.1f ARCHTEMP=%.2f",cam->ccdTemp,cam->baseTemp,cam->archonTemp);
+  sprintf(reply,"CCDTEMP=%.2f BASETEMP=%.2f",cam->ccdTemp,cam->baseTemp);
   return 0;
 
 }
