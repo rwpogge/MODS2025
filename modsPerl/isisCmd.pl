@@ -29,7 +29,8 @@
 #   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
 #   2025 Oct 04 - Allow default mods1 or mods2 if on a MODS instrument server,
 #                 otherwise require explicit --mods1 or --mods2 [rwp/osu]
-#
+#   2025 Oct 15 - extended autodefault to the respective archon server
+#                 machines. [rwp/osu]
 #---------------------------------------------------------------------------
 
 # Custom ISIS.pm module.  These are all the places it can be on the
@@ -38,8 +39,6 @@
 use lib "/lbt/lbto/mods/lib/modsPerl"; # LBTO mountain network common path
 use lib "/home/dts/modsPerl"; # MODS data-taking system path
 
-use ISIS;
-
 # Additional Perl modules we use, part of the standard distribution
 
 use Getopt::Long;  # command-line parsing
@@ -47,8 +46,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date, date in ISO8601 format
 
-$verNum = "2.2.2";
-$verDate = "2025-10-04";
+$verNum = "2.2.3";
+$verDate = "2025-10-15";
 
 # get host ID
 
