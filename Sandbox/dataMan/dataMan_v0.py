@@ -87,7 +87,7 @@ def obsDate():
 # modsFITSProc for threading FITS file process
 #
 
-def modsFITProc(fitsFile,repoDir):
+def modsFITSProc(fitsFile,repoDir):
     """
     Process a MODS FITS image
 
@@ -106,19 +106,21 @@ def modsFITProc(fitsFile,repoDir):
     Processes a raw MODS FITS file and pushes the  processed file into the repository.
     
     """
-    
-    logger.info(f"processing {filename}...")
-    time.sleep(10)
-    logger.info(f"done, {filename} sent to {repoDir}")
 
-
+    if Path(fitsFile).exists():
+        logger.info(f"proc: processing {fitsFile}...")
+        time.sleep(10)
+        logger.info(f"proc done: {fitsFile} sent to {repoDir}")
+    else:
+        logger.error(f"proc: no such file {fitsFile}")
+        
 #---------------------------------------------------------------------------
 #
 # Basic info and defaults
 #
 
 hostname = socket.gethostname()
-modsChan = hostname[:6]
+modsID = hostname[:6]
     
 dmHost = 'localhost'
 dmPort = 10301
@@ -166,7 +168,7 @@ dataDir = Path(cfg["paths"]["dataDir"])
               
 # start logging
 
-logFile = str(Path(logDir) / f"{modsChan}.{obsDate()}.txt")
+logFile = str(Path(logDir) / f"{modsID}.{obsDate()}.txt")
 
 logging.basicConfig(filename=logFile,
                     format="%(asctime)s %(name)s %(levelname)s: %(message)s",
@@ -175,7 +177,7 @@ logging.basicConfig(filename=logFile,
 
 logger = logging.getLogger("dataMan")
 
-logger.info(f"Started dataMan for {modsChan}")
+logger.info(f"Started dataMan for {modsID}")
 
 # Datagram (udp) socket
 
@@ -216,7 +218,7 @@ while 1:
         cmdArgs = ''
         
     if len(cmdStr)>0:
-        print(f">> {cmdStr}")        
+        logger.debug(f">> {cmdStr}")
 
         if cmdWord.lower() == 'quit':
             logger.info(f"Received quit command from remote user")
@@ -225,7 +227,7 @@ while 1:
         elif cmdWord.lower() == 'proc':
             filename = cmdArgs
             logger.info(f"start processing image {filename}")
-            t = threading.Thread(target=modsFITSProc,args=[filename])
+            t = threading.Thread(target=modsFITSProc,args=[filename,repoDir])
             t.start()
             
         else:
