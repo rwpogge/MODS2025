@@ -9,7 +9,7 @@
 #### Packages from public repositories:
 
 ```shell
-sudo dnf -y install tk tcsh emacs doxygen tmux xterm-rsize
+sudo dnf -y install tk tcsh emacs doxygen tmux xterm-resize
 sudo dnf -y install readline readline-devel
 sudo dnf -y install libmodbus libmodbus-devel
 sudo dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
