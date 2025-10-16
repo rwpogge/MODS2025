@@ -1,6 +1,6 @@
 # MODS Instrument Control and Data-Taking System Installation
 
-**Updated: 2025 Oct 3 [rwp/osu]**
+**Updated: 2025 Oct 15 [rwp/osu]**
 
 ## Preparations
 
@@ -131,7 +131,7 @@ sudo chmod 777 azcam
 
 Currently we are using Anaconda Python 3.12 (latest release is 3.12.11 at this writing), and conda 24.9.2
 
-Install of the standard LBTO py312 environment (as root, via direct login or `sudo su -`)
+Install standard LBTO py312 environment (as root, via direct login or `sudo su -`)
 ```
 conda create -y --prefix /usr/local/conda/envs/py312 python=3.12 astropy numpy scipy matplotlib jupyterlab pandas conda-build requests msgpack-python lz4 pymongo colorama
 ```
@@ -142,19 +142,15 @@ conda activate /usr/local/conda/envs/py312
 Python modules we need to add for MODS:
 
 #### pymodbus
-
 ```
 pip install pymodbus
 ```
 
-
 #### Zero-C ICE and the LBTO IIF
-
 ```
 conda install conda-forge::zeroc-ice
 pip install --trusted-host yumsrv.tucson.lbto.org --extra-index-url http://yumsrv.tucson.lbto.org/pip/repo lbto-iif
 ```
-
 All done, ready to go.  This has to be done on all MODS machines to make sure we have the same python
 environment as the rest of the observatory machines.
 
