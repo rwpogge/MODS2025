@@ -1,5 +1,11 @@
 # modsenv Release Notes
-Last Build: 2025 Oct 4
+Last Build: 2025 Oct 16
+
+## Version 3.3.5
+2025 Oct 16
+
+Fixed bug in blue HEB power state WAGO read for archon and ion gauge during
+live testing at LBTO with the Archons.
 
 ## Version 3.3.4
 2025 Oct 4

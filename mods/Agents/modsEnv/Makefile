@@ -16,13 +16,14 @@
 #   2025 Aug 17 - Added Archon HEB data, shmem handling [rwp/osu]
 #   2025 Aug 25 - Added ionization gauge interface [xc/osu]
 #   2025 Oct 04 - Logic for powerState=(switch&&breaker) for IUB [rwp/osu]
+#   2025 Oct 16 - bug in HEB-B power switch state logic fixed [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
 ROOTDIR     = /home/dts/mods
 ISISDIR     = /home/dts/ISIS
 TELEMDIR    = /usr/include/lbto/lib-telemetry
-VERSION     = v3.3.4
+VERSION     = v3.3.5
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 
