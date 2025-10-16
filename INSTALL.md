@@ -14,7 +14,7 @@ sudo dnf -y install readline readline-devel
 sudo dnf -y install libmodbus libmodbus-devel
 sudo dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
 sudo dnf -y install perl-Curses
-sudo dnf -y install dnsutils wget (nice, but not required)
+sudo dnf -y install dnsutils wget
 ```
 
 #### VNC support
@@ -82,7 +82,6 @@ or the copies in ~/Libs/ in a properly-configured account on the mods machines.
 For ICE, follow the instructions at https://www.zeroc.com/ice/downloads/3.7/cpp
 ```
 sudo dnf -y install https://download.zeroc.com/ice/3.7/el9/ice-repo-3.7.el9.noarch.rpm
-
 sudo dnf -y install libice-c++-devel libice3.7-c++ python3-ice
 sudo dnf -y install icebox
 ```
@@ -141,21 +140,28 @@ Then, still as root, activate py312
 conda activate /usr/local/conda/envs/py312
 ```
 Python modules we need to add for MODS:
+
 #### pymodbus
+
 ```
 pip install pymodbus
 ```
+
+
 #### Zero-C ICE and the LBTO IIF
+
 ```
 conda install conda-forge::zeroc-ice
 pip install --trusted-host yumsrv.tucson.lbto.org --extra-index-url http://yumsrv.tucson.lbto.org/pip/repo lbto-iif
 ```
+
 All done, ready to go.  This has to be done on all MODS machines to make sure we have the same python
 environment as the rest of the observatory machines.
 
 ### Get the code repo
 
 Code is installed logged in as user `dts` on the Linux server.
+
 ```shell
 cd ~/
 git clone https://github.com/rwpogge/MODS2025
@@ -238,8 +244,8 @@ cd ../modsHEB
 ./build
 cp modsheb ~/bin/
 ```
-We do not run `modsCCD` (or azcam) on the main instrument servers.  `modsHEB` is only for
-engineering purposes.
+We do not run `modsCCD` or `azcam` on the main instrument servers.  `modsHEB` is only for
+engineering purposes and should not be in a public folder.
 
 Note that `lbttcs`, `modsEnv`, and `modsDD` are run as `systemd` services.  See the
 separate systemd installation instructions in each sub-folder.
@@ -257,8 +263,10 @@ cd ../modsHEB
 ./build
 cp modsheb ~/bin/ 
 ```
-We do not run `modsEnv` or `lbttcs` on Archon servers.  `modsHEB` is only used for engineering
-purposes, it is not run during regular observing operations.
+We do not run `modsEnv` or `lbttcs` on Archon servers, but we do need the IIF configuration
+files for `lbttcs` which are used by the `azcam` server.
+
+`modsHEB` is only used for engineering purposes, it is not run during regular observing operations.
 
 ### MODS GUIs
 
@@ -305,6 +313,8 @@ make clean
 make
 cp modsUI ~/mods/bin/
 ```
+To avoid running multiple instances of `modsUI`, we use the `modsGUI`
+script to run it (`modsGUI start`) at the user level.
 
 #### imsTool build (mods1 and mods2)
 
@@ -355,6 +365,7 @@ makes the "release" versions, allowing us to recompile and test new versions wit
 for observing (why we install "by hand" instead of as part of the make process).
 
 #### MODS instrument servers (mods1 and mods2)
+
 ```
 cd /home/dts/mods/bin
 sudo cp vueinfo /usr/local/bin
