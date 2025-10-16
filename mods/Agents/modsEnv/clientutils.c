@@ -16,6 +16,7 @@ Modification History
                 no temperature or pressure read [rwp/osu]
   2025 Oct 04 - added logic to properly sense breaker fault states
                 on power states [rwp/osu]
+  2025 Oct 16 - bug fixed [rwp/osu]
 </pre>  
 */
 
