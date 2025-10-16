@@ -7,11 +7,11 @@
 # pogge.1@osu.edu
 #
 # First Version: 2005 May 17
-# Updated: 2025 July 26 [rwp/osu]
+# Updated: 2025 Oct 15 [rwp/osu]
 #
 
 ROOTDIR     = /home/dts/mods
-VERSION     = azcamUtils v2.0.1
+VERSION     = azcamUtils v2.0.2
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 
