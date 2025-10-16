@@ -1802,7 +1802,7 @@ cmd_ccdtemp(char *args, MsgType msgtype, char *reply)
 
   // and report te temperatures.
 
-  sprintf(reply,"CCDTemp=%.1f BaseTemp=%.1f",ccd.ccdTemp,ccd.baseTemp);
+  sprintf(reply,"CCDTemp=%.2f BaseTemp=%.2f",ccd.ccdTemp,ccd.baseTemp);
 
   // Compare the CCDTemp to the setPoint, and issue a warm-up
   // warming if CCDTemp is >10C above the setpoint
@@ -1996,7 +1996,7 @@ cmd_status(char *args, MsgType msgtype, char *reply)
   sprintf(reply,"%s XBin=%d YBin=%d ROI=(%d,%d,%d,%d)",reply,ccd.colBin,ccd.rowBin,
 	  ccd.firstCol,ccd.lastCol,ccd.firstRow,ccd.lastRow);
 
-  sprintf(reply,"%s CCDTemp=%.1f BaseTemp=%.1f",reply,ccd.ccdTemp,ccd.baseTemp);
+  sprintf(reply,"%s CCDTemp=%.2f BaseTemp=%.2f",reply,ccd.ccdTemp,ccd.baseTemp);
 
   switch(ccd.State) {
   case SETUP:

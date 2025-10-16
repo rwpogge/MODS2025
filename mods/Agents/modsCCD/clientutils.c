@@ -668,7 +668,7 @@ readTemps(azcam_t *cam, char *reply)
 
   strcpy(reply,"");
 
-  sprintf(reply,"CCDTemp=%.1f BaseTemp=%.1f",cam->ccdTemp,cam->baseTemp);
+  sprintf(reply,"CCDTemp=%.2f BaseTemp=%.2f",cam->ccdTemp,cam->baseTemp);
 
   return 0;
 }
