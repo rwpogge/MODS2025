@@ -517,7 +517,7 @@ getEnvData(envdata_t *envi)
 
   // Blue HEB power control status - both are normally open relays
 
-  ierr = wagoSetGetRegisters(0,envi->hebR_Addr,512,1,hebBData);
+  ierr = wagoSetGetRegisters(0,envi->hebB_Addr,512,1,hebBData);
   if (ierr < 0) {
     if (useCLI) printf("WARNING: %s Blue HEB WAGO error reading power relay status word\n",envi->modsID);
 
