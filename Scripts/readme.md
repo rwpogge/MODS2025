@@ -1,6 +1,6 @@
 # MODS operations scripts
 
-Latest Version: 2025 Oct 14 [rwp/osu]
+Latest Version: 2025 Oct 16 [rwp/osu]
 
 See [Release Notes](releases.md) for the current verison
 
@@ -123,6 +123,15 @@ scripts with `acqBinoMODS` or `execBinoMODS`. Using a `tmux` session
 keeps the script progress and error messages resident in a persistent
 tmux (terminal multiplexer) session that may be detached and joined as
 needed.
+
+#### `ccdTerm`
+
+Launches a multi-pane `ccdTerm` tmux session used for running the MODS
+Archon CCD systems on one of the four Archon servers (`mods1blue` et
+al.).  The upper left panel runs the `modsCCD` interface agent (the
+replacement for the old DOS "IC" program), and the upper right panel
+runs the `azcam-mods` server session.  There is one `ccdTerm` session
+per MODS channel, 4 in total.
 
 ## Screenshots
 

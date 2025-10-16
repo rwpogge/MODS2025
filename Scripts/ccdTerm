@@ -1,0 +1,74 @@
+#!/bin/bash
+
+tmuxID="ccdTerm"
+
+# LBTO Public executable path
+
+modsDir="/lbt/lbto/mods"
+configDir="/lbt/lbto/mods/.config"
+
+# Which MODS ccd host are we running on?
+
+modsHost="${HOSTNAME}"
+
+if [[ "$modsHost" == "mods1blue" || "$modsHost" == "mods1red" || "$modsHost" == "mods2blue" || "$modsHost" == "mods2red" ]]; then
+    modsID=${modsHost:0:6}   # like mods1b, used by azcam
+    modsChan=${modsHost:5:${#modsHost}} # blue or red, for config files
+    modsInst=${modsHost:0:5} 
+    modsInst=${modsInst^^}   # capitalized MODS instance (MODS1 or MODS2)
+    modsName="${modsInst} ${modsChan^}" # for tmux session
+
+else
+    echo "ERROR: you cannot run $tmuxID on host $modsHost"
+    exit 1
+fi
+
+# Check if the session already exists
+
+tmux has-session -t $tmuxID 2>/dev/null
+
+if [ $? != 0 ]; then
+  # Create a new detached session
+
+  tmux -f ${configDir}/tmux_${modsChan}.conf new-session -d -s $tmuxID
+
+  # Create a new window (if needed) and name it
+
+  tmux new-window -t $tmuxID:1 -n "${modsName} CCD Admin"
+
+  # Split the window into panes (optional, adjust as needed)
+
+  tmux split-window -v -p 5  # split bottom pane shorter
+  tmux split-window -h -p 50 -t $tmuxID:1.0 # Split horizontally
+
+  # Pane decor
+
+  tmux set -g pane-border-status top
+  tmux set -g pane-border-format " #{pane_title} "
+
+  tmux select-pane -t $tmuxID:1.0 -T "modsCCD Agent"
+  tmux select-pane -t $tmuxID:1.1 -T "azcam Server"
+  tmux select-pane -t $tmuxID:1.2 -T "Commands"
+
+   # aliases
+   tmux send-keys -t ${tmuxID}:1.0 "source ${configDir}/tmaliases" C-m
+   tmux send-keys -t ${tmuxID}:1.1 "source ${configDir}/tmaliases" C-m
+   tmux send-keys -t ${tmuxID}:1.2 "source ${configDir}/tmaliases" C-m
+
+  # programs to launch in panes...
+
+  # tmux send-keys -t $tmuxID:1.0 "start_modsCCD" C-m # run the modsCCD agent in the top left pane
+  # tmux send-keys -t $tmuxID:1.1 "start_azcam" C-m # run the azcam server in the top right pane
+
+fi
+
+# If we're already in the expected tmux session, do nothing
+# otherwise attach to the command pane (1.2)
+
+if [ -n "$TMUX" ]; then
+   echo "Currently in the ${tmuxID} session"
+else
+   resize -s 42 160 &> /dev/null
+   tmux select-pane -t ${tmuxID}:1.2
+   tmux attach-session -t ${tmuxID}
+fi
