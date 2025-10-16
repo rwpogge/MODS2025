@@ -9,7 +9,7 @@
 #### Packages from public repositories:
 
 ```shell
-sudo dnf -y install tk tcsh emacs doxygen tmux xterm-rsize
+sudo dnf -y install tk tcsh emacs doxygen tmux xterm-resize
 sudo dnf -y install readline readline-devel
 sudo dnf -y install libmodbus libmodbus-devel
 sudo dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
@@ -253,11 +253,11 @@ cd ~/mods/Agents
 
 cd ../modsCCD
 ./build
-cp modsCCD ~/bin/ 
+cp modsCCD ~/mods/bin/ 
 
 cd ../modsHEB
 ./build
-cp modsheb ~/bin/ 
+cp modsheb ~/mods/bin/ 
 ```
 We do not run `modsEnv` or `lbttcs` on Archon servers, but we do need the IIF configuration
 files for `lbttcs` which are used by the `azcam` server.
