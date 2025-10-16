@@ -253,11 +253,11 @@ cd ~/mods/Agents
 
 cd ../modsCCD
 ./build
-cp modsCCD ~/bin/ 
+cp modsCCD ~/mods/bin/ 
 
 cd ../modsHEB
 ./build
-cp modsheb ~/bin/ 
+cp modsheb ~/mods/bin/ 
 ```
 We do not run `modsEnv` or `lbttcs` on Archon servers, but we do need the IIF configuration
 files for `lbttcs` which are used by the `azcam` server.
