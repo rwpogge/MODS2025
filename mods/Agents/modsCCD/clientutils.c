@@ -11,6 +11,8 @@
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \original 2005 May 4
   \date 2025 Aug 3 (last update)
+
+  2025 Oct 15 - updates from live tests at LBTO [rwp/osu]
   
 */
 
