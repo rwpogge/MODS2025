@@ -1,15 +1,24 @@
-#
-# ccdMon - monitor CCD cooldown and temperature control for Archon
-#
-# A simple TCP client to talk to the azcam server on port 2402
-#
-# Use: python ccdMon.py
-#
-# R. Pogge, OSU Astronomy Dept.
-# pogge.1@osu.edu
-#
-# 2025 Oct 17
-#
+'''
+ccdMon - monitor CCD cooldown and temperature control for Archon
+
+A TCP client to talk to the azcam server on port 2402 and collect and
+record Archon status info to monitor CCD cool-down and temperature
+control.
+
+Usage
+-----
+    python ccdMon.py
+
+Author
+------
+    R. Pogge, OSU Astronomy Dept.
+    pogge.1@osu.edu
+
+Modification History
+--------------------
+    2025 Oct 17 - new code
+
+'''
 
 import time
 from datetime import datetime, timezone, date, timedelta
@@ -24,6 +33,9 @@ from pathlib import Path
 #
 
 class AzClient(object):
+    '''
+    AzCam tcp client class
+    '''
 
     def __init__(self):
         self.sock = None
