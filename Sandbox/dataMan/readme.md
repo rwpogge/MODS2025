@@ -1,5 +1,7 @@
 # dataMan - MODS Data Manager
 
+**Updated: 2025 Oct 16 [rwp/osu]##
+
 Development sandbox for a python-based data manager for the Archon MODS 
 system that will post-process raw images taken with MODS.
 
@@ -20,6 +22,7 @@ FITS handling capability gives us many more options.
 
 ## contents
 
+ * `dataMan_vX.py` - development version of `dataMan`.
  * `dataMan_server.py` - simple UDP socket server demo, run as `python dataMan_server.py`
  * `clientDemo.py` - simple dm client - run in ipython shell, and use `sendToDM()` to send messages. `quit` will shutdown the server demo
 
