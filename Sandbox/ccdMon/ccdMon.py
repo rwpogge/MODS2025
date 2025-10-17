@@ -12,7 +12,7 @@
 #
 
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date, timedelta
 
 import socket
 import select
@@ -112,10 +112,10 @@ def obsDate():
     We use obsDate for logs and data files.
     '''
 
-    if float(datetime.datetime.now().strftime("%H")) < 12.0:  # before noon
-        return (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+    if float(datetime.now().strftime("%H")) < 12.0:  # before noon
+        return (date.today() - timedelta(days=1)).strftime("%Y%m%d")
     else:
-        return datetime.date.today().strftime("%Y%m%d")
+        return date.today().strftime("%Y%m%d")
 
 # main
 
@@ -125,15 +125,18 @@ cadence = 10 # seconds
 
 # open logfile and start header
 
-logFile = str(Path() / f"{modsID}_ccd.obsDate().log")
+logFile = str(Path() / f"{modsID}_ccd.{obsDate()}.log")
 
 LF = open(logFile,"a")
 LF.write("#\n")
-LF.write(f"# {modsID.upper} CCD Cooldown Data\n")
+LF.write(f"# {modsID.upper()} CCD Cooldown Data\n")
 LF.write("#\n")
-LF.write("# {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')}\n")
+LF.write(f"# Run started: {datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')}\n")
 LF.write("#\n")
-LF.write("utcTime azcamT ccdT baseT heaterV heaterP heaterI headerD\n")
+hdrStr = "utcTime                    azcamT    ccdT   baseT  pidV  P       I D"
+print(hdrStr)
+LF.write(f"{hdrStr}\n")
+LF.flush()
 
 az = AzClient()
 az.startClient()
@@ -143,9 +146,12 @@ try:
         statStr = az.cmd("mods.archonStatus")
         bits = statStr.split()
         timeTag = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%f')
-        LF.write(f"{timeTag} {bits[2]} {bits[3]} {bits[4]} {bits[5]} {bits[6]} {bits[7]} {bits[8]}\n")
+        dataStr = f"{timeTag} {float(bits[2]):6.3f} {float(bits[3]):7.2f} {float(bits[4]):7.2f} {float(bits[5]):5.2f} {bits[6]} {bits[7]} {bits[8]}"
+        print(dataStr)
+        LF.write(f"{dataStr}\n")
+        LF.flush()
         time.sleep(cadence)
-except KeyboardInterrupt():
+except KeyboardInterrupt:
     LF.close()
     az.sock.close()
     exit(0)            
