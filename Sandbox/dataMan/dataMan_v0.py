@@ -1,7 +1,22 @@
 '''
 dataMan - MODS data post-processor agent
 
-UDP socket server.
+Usage
+-----
+    dataMan [configFile]
+
+Parameters
+----------
+    configFile : string
+        optional configuration file to use instead of the default
+        
+Description
+-----------
+
+This is a receive-only UDP socket server.  It accepts and processes
+commands sent by a client, but makes no reply.  All activities
+are logged.
+
 
 '''
 
@@ -10,6 +25,11 @@ import sys
 import socket
 import threading
 import time
+import datetime
+
+# astropy.io for FITS file handling
+
+from astropy.io import fits
 
 # pathlib for path handling
 
@@ -22,22 +42,35 @@ import logging
 # We use yaml for runtime config
 
 import yaml
-from yaml import load
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
 
-# loadConfig() - load the runtime configuration file
+# shutil for high-level file operations (copy and move)
+
+import shutil
+
+# Methods
 
 def loadConfig(cfgFile):
-    """loadConfig() - load a YAML config file
+    '''
+    Load a YAML format runtime configuration file
 
-    Arguments:
-       cfgFile - YAML runtime configuration file (local or full path)
+    Parameters
+    ----------
+    cfgFile : string
+        Name (including full path) of the YAML runtime config file.
 
-    Returns: dictionary with the YAML contents as dictionaries
-    """
+    Raises
+    ------
+    RuntimeError
+        returned if file could not be opened or loaded.
+    ValueError
+        returned if the file does not exist
+
+    Returns
+    -------
+    config : dict
+        Dictionary with the configuration file contents.
+
+    '''
 
     if os.path.exists(cfgFile):
         try:
@@ -58,7 +91,7 @@ def loadConfig(cfgFile):
 
 
 def obsDate():
-    """
+    '''
     Return the observing date string
 
     Returns
@@ -72,45 +105,65 @@ def obsDate():
     an "observing date" as running from noon to noon local time.
     
     For example, the observing date for the night starting at sunset
-    on 2024 Dec 17 and ending at sunrise on 2024 Dec 18 is 20241217
+    on 2025 Dec 15 and ending at sunrise on 2025 Oct 16 is `20251015`.
 
-    We use this for filenames for data and logs.
-    """
+    We use obsDate for logs and data files.
+    '''
 
     if float(datetime.datetime.now().strftime("%H")) < 12.0:  # before noon
         return (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
     else:
         return datetime.date.today().strftime("%Y%m%d")
 
-#---------------------------------------------------------------------------
-#
-# modsFITSProc for threading FITS file process
-#
 
 def modsFITSProc(fitsFile,repoDir):
-    """
+    '''
     Process a MODS FITS image
 
     Parameters
     ----------
     fitsFile : string
         name of the raw MODs FITS file to process
-
     repoDir : string
         full path of the LBTO new data repository directory
     
-    Setup to be called by threading.Thread()
+    Returns
+    -------
+    None.
+
 
     Description
     -----------
     Processes a raw MODS FITS file and pushes the  processed file into the repository.
+    Setup to be called by threading.Thread() to allow concurrency in processing
+    data files.
     
-    """
+    If the image doesn't exist or any processing step fails, a report may be found
+    in the runtime logs.  We do not delete or allow overwriting existing data.
+    
+    Processing Steps
+    ----------------
+    We limit the processing to those items that require exposure to the time-critical
+    or evanescent state of the data-acquisition system.  Processes that can be done
+    at relative leisure offline should be done offline, as steps here ultimately
+    delay arrival of the data where it is needed, e.g., for target acquisition,
+    so time is of the essence.  This limits us to
+     * items we must fix before the data are presented to on-site observers
+     * items we must fix before the data are presented to the data archive
+     * items that can only be fixed using data available on the acquisition machine
+     
+    Once processing steps are completed, the last step is to copy the processed
+    FITS file to the observatory "newdata" repository which is where it may be
+    accessed by observers and SciOps personnel on site.  From newdata, the images
+    are transferred to the repository and queued for ingestion into the LBTO Data
+    Archive.  This latter places a requirement on fixing any FITS header issues
+    that might inhibit ingestion into the data archive.
+    '''
 
     if Path(fitsFile).exists():
         logger.info(f"proc: processing {fitsFile}...")
         time.sleep(10)
-        logger.info(f"proc done: {fitsFile} sent to {repoDir}")
+        logger.info(f"proc done: {fitsFile} copied to {repoDir}")
     else:
         logger.error(f"proc: no such file {fitsFile}")
         
@@ -131,9 +184,12 @@ logDir = "/home/Logs/dataMan"
 configPath = "/home/dts/Config"
 defaultCfg = "dataman.ini"
 
+#---------------------------------------------------------------------------
 #
-# -- sloppy main --
+# Start of the code
 #
+
+# process command-line arguments.
 
 if len(sys.argv)-1 == 0:
     cfgFile = str(Path() / configPath / defaultCfg)
@@ -141,15 +197,15 @@ elif len(sys.argv)-1 == 1:
     cfgFile = sys.argv[1]
     if not os.path.exists(cfgFile):
         # try adding the default configuration path
-        cfgFile = str(Path() / configDir / sys.argv[1])
+        cfgFile = str(Path() / configPath / sys.argv[1])
         if not os.path.exists(cfgFile):
-            print(f"ERROR: could not find {cfgFile} in pwd or {str(configDir)}")
+            print(f"ERROR: could not find {cfgFile} in pwd or {str(configPath)}")
             sys.exit(1)
 else:
-    print(f"Usage: dataMan [cfgFile]")
+    print("Usage: dataMan [cfgFile]")
     sys.exit(0)
 
-# Read in the config file
+# Load and parse the runtime configuration file
 
 try:
     cfg = loadConfig(cfgFile)
@@ -157,7 +213,7 @@ except Exception as exp:
     print(f"ERROR: (loadConfig): {exp}")
     sys.exit(1)
 
-# Retrieve info we need
+# Process the configuration data
 
 dmHost = cfg["server"]["ipAddr"]
 dmPort = cfg["server"]["ipPort"]
@@ -165,51 +221,59 @@ dmPort = cfg["server"]["ipPort"]
 repoDir = str(Path(cfg["paths"]["repoDir"]))
 logDir = Path(cfg["paths"]["logDir"])
 dataDir = Path(cfg["paths"]["dataDir"])
-              
-# start logging
+
+if cfg["debug"]:
+    logLevel = logging.DEBUG
+else:
+    logLevel = logging.INFO
+    
+# Start runtime logging
 
 logFile = str(Path(logDir) / f"{modsID}.{obsDate()}.txt")
 
 logging.basicConfig(filename=logFile,
                     format="%(asctime)s %(name)s %(levelname)s: %(message)s",
                     filemode="a",
-                    level=logging.INFO)
+                    level=logLevel)
 
 logger = logging.getLogger("dataMan")
 
 logger.info(f"Started dataMan for {modsID}")
 
-# Datagram (udp) socket
+# Initialze the datagram (udp) socket 
 
-logger.info(f"Starting the {modsID} dataMan server")
+logger.info(f"Initializing the {modsID} dataMan server UDP socket")
 
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     logger.info("UDP socket created")
 except Exception as err:
-    logger.error(f"Failed to create UDP socket - {err}")
+    logger.exception(f"Failed to create UDP socket - {err}")
     sys.exit(-1)
 
-# Bind socket to local host and port
+# Bind the socket to the localhost IP address and port
 
 try:
     s.bind((dmHost,dmPort))
 except Exception as err:
-    logger.error(f"UDP socket binding failed - {err}")
+    logger.exception(f"UDP socket binding failed - {err}")
+    s.close()
     sys.exit(-1)
         
-logger.info(f"{modsID} dataMan UDP/IP server started on {dmHost}:{dmPort}")
+logger.info(f"{modsID} dataMan server started on {dmHost}:{dmPort}")
 
-# Talk to the client until we are killed off
+# Listen for remote client directives, including quit
 
 while 1:
-    # received data from client
+    
+    # receive data from client
     
     d = s.recvfrom(1024)
     
+    # decode it
+    
     cmdStr = d[0].decode('utf-8')
     addr = d[1]
-    
     cmdBits = cmdStr.split()
     cmdWord = cmdBits[0]
     if len(cmdBits) > 1:
@@ -217,26 +281,44 @@ while 1:
     else:
         cmdArgs = ''
         
+    # we got a command 
+    
     if len(cmdStr)>0:
         logger.debug(f">> {cmdStr}")
 
+        # quit - stop the dataMan session
+        
         if cmdWord.lower() == 'quit':
-            logger.info(f"Received quit command from remote user")
+            logger.info("Received QUIT command from remote user")
             break
 
+        # proc - process a file
+        
         elif cmdWord.lower() == 'proc':
             filename = cmdArgs
-            logger.info(f"start processing image {filename}")
-            t = threading.Thread(target=modsFITSProc,args=[filename,repoDir])
-            t.start()
-            
+            if Path(filename).exists():
+                logger.info(f"proc: start processing image {filename}")
+                t = threading.Thread(target=modsFITSProc,args=[filename,repoDir])
+                t.start()                
+            else:
+                testFile = str(Path() / dataDir / filename) # is it in dataDir?
+                if not os.path.exists(testFile):
+                    logger.error(f"proc: file {testFile} not found, no processing")
+                else:
+                    logger.info(f"proc: start processing image {testFile}")
+                    t = threading.Thread(target=modsFITSProc,args=[testFile,repoDir])
+                    t.start()
+
+        # unknown command received, log it
+        
         else:
             logger.error(f"Unknown command {cmdWord} received")
 
 
 # all done
 
-logger.info(f"Done: {modsID} dataMan server shutdown")
-
 s.close()
 
+logger.info(f"Done: {modsID} dataMan server shutdown complete")
+
+exit(0)
