@@ -63,7 +63,7 @@ set usage = "mods1 {start|stop} {modsUI|gui}\n       mods1 {status}\n       mods
 if ($#argv == 1) then
    switch ($1)
    case 'status':
-      ssh -i ${keys} ${user}@${mods1Host} /home/dts/mods/bin/modsStatus
+      ssh -i ${keys} ${user}@${mods1Host} /home/dts/mods/bin/mtStatus
       breaksw
 
    case 'temps':
