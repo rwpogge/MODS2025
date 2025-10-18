@@ -39,6 +39,8 @@
 use lib "/lbt/lbto/mods/lib/modsPerl"; # LBTO mountain network common path
 use lib "/home/dts/modsPerl"; # MODS data-taking system path
 
+use ISIS;
+
 # Additional Perl modules we use, part of the standard distribution
 
 use Getopt::Long;  # command-line parsing
