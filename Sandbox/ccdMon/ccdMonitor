@@ -1,0 +1,30 @@
+#!/bin/bash
+
+tmuxID="monitor"
+
+# LBTO Public executable path
+
+modsDir="/lbt/lbto/mods"
+configDir="/lbt/lbto/mods/.config"
+
+# Parse the command-line options
+
+tmux has-session -t $tmuxID 2> /dev/null
+if [ $? != 0 ]; then
+   tmux -f ${configDir}/tmux_mods.conf new-session -d -s $tmuxID
+   tmux new-window -t ${tmuxID}:1 -n "CCD Monitor Session"
+   # aliases
+   tmux send-keys -t ${tmuxID}:1 "source ${configDir}/tmaliases" C-m
+fi
+
+# If we're already in the expected tmux session, do nothing
+# otherwise attach to the command pane (1.2)
+
+if [ -n "$TMUX" ]; then
+   echo "Currently in the ${tmuxID} session"
+else
+   tmux select-pane -t ${tmuxID}:1
+   tmux attach-session -t ${tmuxID}
+fi
+
+exit 0

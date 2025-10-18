@@ -17,7 +17,15 @@ This is a receive-only UDP socket server.  It accepts and processes
 commands sent by a client, but makes no reply.  All activities
 are logged.
 
+Author
+------
+R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
 
+Modification History
+--------------------
+ * 2025 Aug 29 - start of development, test server/client stubs w/threading
+ * 2025 Oct 16 - added logging, config file, paths, and FITS handling
+ 
 '''
 
 import os
