@@ -1,203 +1,23 @@
-COMMENT  Detector Information
+INSTRUME  MODS1R               / Instrument Name
+CHANNEL   RED                  / MODS Channel [blue|red]
 DETECTOR  e2v CCD231-68 Red CCD 1 / Detector name
-DETSIZE   [1:8288,1:3088]      / Unbinned size of detector full array
-CCDCTRLR  Archon               / STA Archon CCD controller
+CCDCTRLR  Archon               / STA Archon CCD controller 
 DISPAXIS                     1 / Spectral Dispersion Axis
-PIXSCALE                 0.123 / Unbinned pixel scale [arcsec per pixel]
+PIXSCALE                 0.120 / Unbinned pixel scale [arcsec per pixel]
 PIXSIZE                   15.0 / Unbinned pixel size [microns]
-COMMENT  Observatory Information
 ORIGIN    MGIO-LBT             / Location where the data was generated
 OBSERVAT  MGIO-LBT             / Observatory Site
 TELESCOP  LBT-SX               / Telescope and Focal Station
 FOCSCALE                  1.67 / Focal Plane Scale [arcsec per mm]
 LATITUDE              32.70131 / Site Latitude [deg N]
-LONGITUD             109.88906 / Site Longitude [deg W]
+LONGITUD             109.88906 / Site Longitude [deg W] 
 ELEVATIO                3221.0 / Site Elevation [meters]
 OBSERVER  Observer Name(s)     / Observer(s)
 PARTNER   ENGINEERING          / LBT Project Partner(s)
 PROPID    ENGINEERING          / Observing Proposal ID
 PI_NAME   ENGINEERING          / Project PI Name(s)
-SUPPORT   Support Name(s)      / LBT Support Scientist(s)
-TELOPS    TelOps Name(s)       / LBT Telescope Operator(s)
-COMMENT  Exposure Information
-GROUP                        0 / Group identifier for related images
-IMAGETYP  OBJECT               / Type of observation
-OBJECT    Object Name          / Name of object
-EXPTIME                    0.0 / Exposure time [seconds]
-DARKTIME                   0.0 / Cumulative Dark Time [seconds]
-FILENAME  mods1r.CCYYMMDD.nnnn / Filename assigned by the data-taking system
-COMMENT  Instrument Configuration
-INSTRUME  MODS1R               / Instrument Name
-HATCH     HatchPos             / Instrument Dark Hatch [open|closed]
-CALIB     CalibPos             / Calibration Tower Position [in|out]
-CALLAMPS  None                 / Calibration Lamps
-VFLAT                      0.0 / Variable Intensity Flat Lamp Intensity
-SLITMASK                     0 / Slit Mask Cassette position
-MASKPOS   IN                   / Slit Mask Position
-MASKNAME  Mask Name            / Slit Mask Name
-MASKINFO  Mask Description     / Slit Mask Description
-DICHROIC                     0 / Dichroic Turret Position
-DICHNAME  Dichroic Name        / Dichroic Beam Selector position ID
-DICHINFO  Dichoic Description  / Dichroic Beam Selector Description
-COMMENT  Spectrograph Channel Configuration
-CHANNEL   RED                  / MODS Channel [blue|red]
-COLFOCUS                     0 / Collimator Focus (A+B+C) [microns]
-COLTTFA                      0 / Collimator TTF actuator A [microns]
-COLTTFB                      0 / Collimator TTF actuator B [microns]
-COLTTFC                      0 / Collimator TTF actuator C [microns]
-GRATING                      0 / Grating Turret Position
-GRATNAME  Grating Name         / Name of the Disperser at GRATING
-GRATINFO  Grating Description  / Description of the Disperser
-GRATTILT                     0 / Grating Tilt [microns]
-GRCENLAM                       / Grating nominal central wavelength [Ang]
+SUPPORT   Support Name(s)      / LBT Support Scientist(s) on duty
+TELOPS    TelOps Name(s)       / LBT Telescope Operator(s) on duty
 GRORDER                      1 / Grating order used
-FILTER                       0 / Camera Filter Wheel Position
-FILTNAME  Filter Name          / Camera Filter Name
-FILTINFO  Filter Description   / Camera Filter Description
-CAMFOCUS                     0 / Camera Primary Mirror Focus [microns]
-COMMENT  IMCS IR Reference Laser Status
-IRLASER   OFF                  / IMCS IR Laser AC Power On or Off
-IRBEAM    DISABLED             / IMCS IR Laser Beam Enabled or Disabled
-IRPSET                     0.0 / IMCS IR Laser Beam Power Set Point [mW]
-IRPOUT                     0.0 / IMCS IR Laser Beam Power Output [mW]
-IRTEMP                     0.0 / IMCS IR Laser Head Temperature [deg C]
-IRTSET                     0.0 / IMCS IR Laser Head Temp Set Point [deg C]
-COMMENT  Target and Guide Star Coordinates
-OBJNAME   Target Name          / Target Name
-OBJRA     hh:mm:ss.sss         / Target RA
-OBJDEC    +dd:mm:ss.ss         / Target DEC
-OBJRADEC  FK5                  / Target Coordinate System
-OBJEQUIN  J2000                / Target Coordinate System Equinox
-OBJPMRA                   0.00 / Target RA proper motion [mas per yr]
-OBJPMDEC                  0.00 / Target Dec proper motion [mas per yr]
-OBJEPOCH               2000.00 / Target Epoch
-GUINAME   Guide Star Name      / Guide Star Name
-GUIRA     hh:mm:ss.sss         / Guide Star RA
-GUIDEC    +dd:mm:ss.ss         / Guide Star DEC
-GUIRADEC  FK5                  / Guide Star Coordinate System
-GUIEQUIN  J2000                / Guide Star Coord System Equinox
-GUIPMRA                   0.00 / Guide Star RA proper motion [mas per yr]
-GUIPMDEC                  0.00 / Guide Star Dec proper motion [mas per yr]
-GUIEPOCH               2000.00 / Guide Star Epoch
-COMMENT  Telescope and TCS Information
-TCSLINK   Live                 / TCS Communications Link Status
-DATE-OBS  CCYY-MM-DDThh:mm:ss.sss / UTC Date at start of obs
-UTC-OBS   hh:mm:ss.sss         / UTC Time at start of obs
-TIMESYS   UTC                  / Time System
-LST-OBS   hh:mm:ss.sss         / Local Siderial Time at start of obs
-MJD-OBS                    0.0 / Modified JD JD-2400000.5 at start of obs
 RADECSYS  FK5                  / Coordinate System
 EQUINOX                 2000.0 / Equinox of coordinates
-TELRA     hh:mm:ss.sss         / Telescope RA
-TELDEC    dd:mm:ss.sss         / Telescope DEC
-POSANGLE                   0.0 / Instrument Celestial Position Angle [deg]
-TELALT                     0.0 / Telescope Altitude at start of obs [deg]
-TELAZ                      0.0 / Telescope Azimuth at start of obs [deg]
-PARANGLE                   0.0 / Parallactic Angle at start of obs [deg]
-ROTANGLE                   0.0 / Rotator Angle at start of obs [deg]
-ROTMODE   POSITION             / Rotator Mode
-HA        hh:mm:ss.sss         / Hour Angle at start of obs
-AIRMASS                    1.0 / Airmass (secZD) at start of obs
-COMMENT  Acquisition Guide and WFS System Configuration
-AGWXGP                     0.0 / AGW Guide Probe X focal plane position [mm]
-AGWYGP                     0.0 / AGW Guide Probe Y focal plane position [mm]
-AGWFOCUS                   0.0 / AGW Guide Probe relative focus [mm]
-AGWFILT                      0 / Guide Camera Filter Wheel position
-AGWFNAME  AGW Filter Name      / Guide Camera Filter Name
-AGWFINFO  AGW Filter Info      / Guide Camera Filter Description
-AGWXS                      0.0 / AGW Stage X actuator position [mm]
-AGWYS                      0.0 / AGW Stage Y actuator position [mm]
-AGWFS                      0.0 / AGW Stage Focus actuator position [mm]
-AGWFS0                     0.0 / AGW Stage Focus Zero Point [mm]
-AGWXWFS                    0.0 / AGW WFS Pickoff X focal plane position [mm]
-AGWYWFS                    0.0 / AGW WFS Pickoff Y focal plane position [mm]
-COMMENT  GCS and PCS Guide Probe and Guide Star Data
-GPREQ_X                    0.0 / GCS Requested guide probe PCS X [mm]
-GPREQ_Y                    0.0 / GCS Requested guide probe PCS Y [mm]
-GPACT_X                    0.0 / GCS Actual guide probe PCS X [mm]
-GPACT_Y                    0.0 / GCS Actual guide probe PCX Y [mm]
-GSPRED_X                   0.0 / PCS Predicted guide star X position [mm]
-GSPRED_Y                   0.0 / PCS Predicted guide star Y position [mm]
-GSMEAS_X                   0.0 / GCS Measured guide star X position [mm]
-GSMEAS_Y                   0.0 / GCS Measured guide star Y position [mm]
-GSDELTAX                   0.0 / GCS cumulative X guide update position [mm]
-GSDELTAY                   0.0 / GCS cumulative Y guide update position [mm]
-COMMENT  Red CCD Head Electronics Box Sensor Data
-DEWPRES                    0.0 / Dewar Pressure [torr]
-DEWTEMP                    0.0 / Dewar LN2 Reservoir Temperature [deg C]
-CCDTEMP                    0.0 / CCD Mount Temperature [deg C]
-HEBTEMP                    0.0 / HEB Air Temperature [deg C]
-IGPOWER   ONOFF                / Dewar Vacuum Ion Gauge Power State
-ARPOWER   ONOFF                / Archon CCD Controller Power State
-COMMENT  Instrument Temperature Sensor Data
-AMBTEMP                    0.0 / Outside Ambient Air Temperature [deg C]
-TAIRTOP                    0.0 / MODS Inside Air Temp at Top [deg C]
-TAIRBOT                    0.0 / MODS Inside Air Temp at Bottom [deg C]
-TCOLLTOP                   0.0 / Collimator Truss Tube Top Temp [deg C]
-TCOLLBOT                   0.0 / Collimator Truss Tube Bottom Temp [deg C]
-IEBTEMPB                   0.0 / Blue IEB Air Temperature [deg C]
-IEBGRT_B                   0.0 / Blue IEB Glycol Return Temperature [deg C]
-IEBTEMPR                   0.0 / Red IEB Air Temperature [deg C]
-IEBGRT_R                   0.0 / Red IEB Glycol Return Temperature [deg C]
-IUBTAIR                    0.0 / Utility Box Air Temperature [deg C]
-AGHSTEMP                   0.0 / AGw Controller Heat Sink Temp [deg C]
-COMMENT  Instrument Glycol Cooling In-Line Sensor Data
-GSPRES                     0.0 / Glycol Supply Pressure [psi-g]
-GSTEMP                     0.0 / Glycol Supply Temperature [deg C]
-GRPRES                     0.0 / Glycol Return Pressure [psi-g]
-GRTEMP                     0.0 / Glycol Return Temperature [deg C]
-COMMENT  SX Primary and Secondary Mirror State
-M1POSX                   0.000 / Primary Mirror X Position [mm]
-M1POSY                   0.000 / Primary Mirror Y Position [mm]
-M1POSZ                   0.000 / Primary Mirror Z Position [mm]
-M1ROTX                   0.0.0 / Primary Mirror RX Rotation [arcsec]
-M1ROTY                   0.000 / Primary Mirror RY Rotation [arcsec]
-M1ROTZ                   0.000 / Primary Mirror RZ Rotation [arcsec]M
-M1CTEMP                   0.00 / Primary Mirror Temperature [deg C]
-M1CTEMP2                  0.00 / Primary Mirror Temperature 2 [deg C]
-M1GTEMP                   0.00 / Primary Mirror Glass Temperature [deg C]
-M1ATEMP                   0.00 / Primary Mirror Ambient Air Temp [deg C]
-M2POSX                   0.000 / Secondary Mirror X Position [mm]
-M2POSY                   0.000 / Secondary Mirror Y Position [mm]
-M2POSZ                   0.000 / Secondary Mirror Z Position [mm]
-M2ROTX                   0.000 / Secondary Mirror RX Rotation [arcsec]
-M2ROTY                   0.000 / Secondary Mirror RY Rotation [arcsec]
-M2ROTZ                   0.000 / Secondary Mirror RZ Rotation [arcsec]
-M2CTEMP                   0.00 / Secondary Mirror Temperature [deg C]
-COMMENT  LBT Telescope Temperature Sensor Data
-TTEMP201                 0.000 / Middle C-Ring Steel Temp [deg C]
-TTEMP202                 0.000 / Middle C-Ring Air Temp [deg C]
-TTEMP203                 0.000 / Upper C-Ring Steel Temp [deg C]
-TTEMP204                 0.000 / Upper C-Ring Air Temp [deg C]
-TTEMP205                 0.000 / Lower C-Ring Steel Temp [deg C]
-TTEMP206                 0.000 / Lower C-Ring Air Temp [deg C]
-TTEMP207                 0.000 / Right Lower Wind Brace Steel Temp [deg C]
-TTEMP208                 0.000 / Right Lower Wind Brace Air Temp [deg C]
-TTEMP209                 0.000 / Right Mirror-Cell Brace Steel Temp [deg C]
-TTEMP210                 0.000 / Right Mirror-Cell Brace Air Temp [deg C]
-TTEMP301                 0.000 / Right C-Ring Extension Steel Temp [deg C]
-TTEMP302                 0.000 / Right C-Ring Extension Air Temp [deg C]
-TTEMP303                 0.000 / Left C-Ring Extension Steel Temp [deg C]
-TTEMP304                 0.000 / Left C-Ring Extension Air Temp [deg C]
-TTEMP305                 0.000 / Upper Wind Brace Steel Temp [deg C]
-TTEMP306                 0.000 / Upper Wind Brace Air Temp [deg C]
-TTEMP307                 0.000 / Right Middle Wind Brace Steel Temp [deg C]
-TTEMP308                 0.000 / Right Middle Wind Brace Air Temp [deg C]
-TTEMP309                 0.000 / Left Middle Wind Brace Steel Temp [deg C]
-TTEMP310                 0.000 / Left Middle Wind Brace Air Temp [deg C]
-TTEMP401                 0.000 / Right primary swing arm steel Temp 1 [deg C]
-TTEMP402                 0.000 / Right primary swing arm steel Temp 2 [deg C]
-TTEMP403                 0.000 / Left primary swing arm steel Temp 1 [deg C]
-TTEMP404                 0.000 / Left primary swing arm steel Temp 2 [deg C]
-TTEMP405                 0.000 / Right secondary swing arm steel Temp 1 [deg C]
-TTEMP406                 0.000 / Right secondary swing arm steel Temp 2 [deg C]
-TTEMP407                 0.000 / Left secondary swing arm steel Temp 1 [deg C]
-TTEMP408                 0.000 / Left secondary swing arm steel Temp 2 [deg C]
-COMMENT  LBT Weather Station Information
-LBTWLINK  T                    / LBT Weather Station Link State
-LBTPRES                   0.00 / LBT Ambient Pressure [hPa]
-LBTTEMP                   0.00 / LBT Ambient Temperature [deg C]
-LBTHUM                    0.00 / LBT Relative Humidity [percent]
-LBTDWPT                   0.00 / LBT Dew Point [deg C]
-COMMENT  Miscellaneous Engineering Parameters
-LDGROT                 0.00000 / Left Direct Gregorian Rotator Angle [deg]
