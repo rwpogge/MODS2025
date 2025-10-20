@@ -47,16 +47,16 @@ DDEntries:
   R_AGWKFPReqY:      ["GPREQ_Y","float","GCS Requested guide probe PCS Y [mm]"]
   R_AGWKFPPosX:      ["GPACT_X","float","GCS Actual guide probe PCS X [mm]"]
   R_AGWKFPPosY:      ["GPACT_Y","float","GCS Actual guide probe PCX Y [mm]"]
-  R_GDXPredicted:    ["GSPRED_X","float","PCS Predicted guide star X position [mm]"]  
+  R_GSXPredicted:    ["GSPRED_X","float","PCS Predicted guide star X position [mm]"]  
   R_GSYPredicted:    ["GSPRED_Y","float","PCS Predicted guide star Y position [mm]"]
-  R_GDXMeasured:     ["GSMEAS_X","float","GCS Measured guide star X position [mm]"]
+  R_GSXMeasured:     ["GSMEAS_X","float","GCS Measured guide star X position [mm]"]
   R_GSYMeasured:     ["GSMEAS_Y","float","GCS Measured guide star Y position [mm]"]
   R_GSCumXPredmMeas: ["GSDELTAX","float","GCS cumulative X guide update position [mm]"]
   R_GSCumYPredmMeas: ["GSDELTAY","float","GCS cumulative Y guide update position [mm]"]
   #
   # DX Primary and Secondary collimation state
   #
-  R_M1CollX:     ["M1PODX","float","DX Primary X Position [mm]"]
+  R_M1CollX:     ["M1POSX","float","DX Primary X Position [mm]"]
   R_M1CollY:     ["M1POSY","float","DX Primary Y Position [mm]"]
   R_M1CollZ:     ["M1POSZ","float","DX Primary Z Position [mm]"]
   R_M1CollRx:    ["M1ROTX","float","DX Primary RX Rotation [arcsec]"]
@@ -66,7 +66,7 @@ DDEntries:
   R_M1CollTemp2: ["M1CTEMP2","float","DX Primary Temperature 2 [deg C]"]
   R_M1AirTemp:   ["M1GTEMP","float","DX Primary Glass Temperature [deg C]"]
   R_M1GlassTemp: ["M1ATEMP","float","DX Primary Ambient Air Temp [deg C]"]
-  R_M2CollX:     ["M2PODX","float","DX Secondary X Position [mm]"]
+  R_M2CollX:     ["M2POSX","float","DX Secondary X Position [mm]"]
   R_M2CollY:     ["M2POSY","float","DX Secondary Y Position [mm]"]
   R_M2CollZ:     ["M2POSZ","float","DX Secondary Z Position [mm]"]
   R_M2CollRx:    ["M2ROTX","float","DX Secondary RX Rotation [arcsec]"]       
