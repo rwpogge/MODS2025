@@ -4,7 +4,7 @@ Defines the MODS class for azcam
 Initial version by Mike Lesser (UA ITL)
 Later versions by Rick Pogge (OSU Astronomy)
 
-Updated: 2025 Oct 13 [rwp/osu]
+Updated: 2025 Oct 21 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -984,7 +984,7 @@ class MODS(object):
             cmd = f"WCONFIG{indx&0xFFFF:04X}TRIGOUTINVERT=0"
             reply = azcam.db.tools["controller"].archon_command(cmd)
             reply = azcam.db.tools["controller"].archon_command("APPLYSYSTEM")
-            reply = "shutter open"
+            reply = "shutter closed"
         except Exception as e:
             reply = f"ERROR shclose() - {e}"
             
