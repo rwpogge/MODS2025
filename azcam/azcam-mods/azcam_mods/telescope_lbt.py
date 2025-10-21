@@ -471,7 +471,7 @@ class LBTTelescope(Telescope):
         try:
             iifData = self.tcs.GetParameter(keyList)
         except Exception as exp:
-            azcam.log(f"ERROR: TCS IIF GetParameter() query failed - {exp}")
+            azcam.log(f"ERROR: TCS IIF GetParameter() request failed - {exp}")
             self.tcs.proxy_destroy(self.proxyName)
             raise azcam.exceptions.AzcamError(f"getTCSData() query failed - {exp}")
             return
@@ -549,7 +549,7 @@ class LBTTelescope(Telescope):
         except Exception as exp:
             azcam.log(f"ERROR: TCS IIF SetParameter() failed - {exp}")
             self.tcs.proxy_destroy(self.proxyName)
-            raise azcam.exceptions.AzcamError(f"telescope set_parameter() query failed - {exp}")
+            raise azcam.exceptions.AzcamError(f"telescope set_parameter() request failed - {exp}")
             return
             
         # all done, close the proxy and return the data
