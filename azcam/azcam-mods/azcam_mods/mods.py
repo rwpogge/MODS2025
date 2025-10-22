@@ -605,11 +605,11 @@ class MODS(object):
         
         # try to push to the TCS DD, no penalty if it fails
         
-        ccdState = {f"{self.ddSide}_MODS{self.modsChan}CCDState":statStr}
-        try:
-            azcam.db.tools["telescope"].set_parameter(ccdState)
-        except:
-            pass
+        #ccdState = {f"{self.ddSide}_MODS{self.modsChan}CCDState":statStr}
+        #try:
+        #    azcam.db.tools["telescope"].set_parameter(ccdState)
+        #except:
+        #    pass
                
         return f"{expFlag} {statStr}"
 
@@ -755,11 +755,11 @@ class MODS(object):
 
         # If a good read, push ccdTemp to the telescope DD.
 
-        setTemp = {f"{self.ddSide}_MODS{self.modsChan}CCDTemp":ccdTemp}
-        try:
-            azcam.db.tools["telescope"].set_parameter(setTemp)
-        except:
-            pass
+        #setTemp = {f"{self.ddSide}_MODS{self.modsChan}CCDTemp":ccdTemp}
+        #try:
+        #    azcam.db.tools["telescope"].set_parameter(setTemp)
+        #except:
+        #    pass
         
         return ["OK", ccdTemp, baseTemp]
     
