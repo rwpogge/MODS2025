@@ -3,7 +3,7 @@ CHANNEL   RED                  / MODS Channel [blue|red]
 DETECTOR  e2v CCD231-68 Red CCD 1 / Detector name
 CCDCTRLR  Archon               / STA Archon CCD controller 
 DISPAXIS                     1 / Spectral Dispersion Axis
-PIXSCALE                 0.120 / Unbinned pixel scale [arcsec per pixel]
+PIXSCALE                 0.123 / Unbinned pixel scale [arcsec per pixel]
 PIXSIZE                   15.0 / Unbinned pixel size [microns]
 ORIGIN    MGIO-LBT             / Location where the data was generated
 OBSERVAT  MGIO-LBT             / Observatory Site
