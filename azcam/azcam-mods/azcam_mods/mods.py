@@ -4,7 +4,7 @@ Defines the MODS class for azcam
 Initial version by Mike Lesser (UA ITL)
 Later versions by Rick Pogge (OSU Astronomy)
 
-Updated: 2025 Oct 21 [rwp/osu]
+Updated: 2025 Oct 22 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -34,6 +34,8 @@ Additions:
 '''
 
 import datetime
+import pytz
+
 import os
 import re
 import glob
@@ -128,7 +130,9 @@ class MODS(object):
         azcam.db.tools["exposure"].image_types = self.image_types
         azcam.db.tools["exposure"].shutter_dict = self.shutter_dict
         
-        # anything else?
+        # observatory timezone (for obsDate())
+        
+        self.obsTZ = "US/Arizona"
         
         return
     
@@ -1577,22 +1581,28 @@ class MODS(object):
         on 2025 July 13 and ending at sunrise on 2025 July 14 is `20250714`.
         
         We use this in the filenames of raw data and logs for MODS.
+        
+        The timezone for "here" is set in self.obsTZ in the constructor
         '''
 
-        if float(datetime.datetime.now().strftime("%H")) < 12.0:  # before noon
-            return (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+        myTZ = pytz.timezone(self.obsTZ)
+        if float(datetime.datetime.now(myTZ).strftime("%H")) < 12.0:  # is it before noon?
+            return (datetime.datetime.now(myTZ).today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
         else:
-            return datetime.date.today().strftime("%Y%m%d")
+            return datetime.datetime.now(myTZ).today().strftime("%Y%m%d")
 
-
+    #-------------------------------------------------------------------------
+    #
+    # odd bits
+    #
+    
     # modest test function, as in "wtf does _this_ do?"
 
     def wtf(self,cmdStr: str,wait: bool=False) -> str:
         try:
             if wait:
-                return f"wtf is {cmdStr} wait"
+                return f"wtf is {cmdStr} wait?"
             else:
-                return f"wtf is {cmdStr} nowait"
+                return f"wtf is {cmdStr} nowait?"
         except Exception as e:
-            return f"ERROR wtf~? - {e}"
-        
+            return f"ERROR wtf? - {e}"
