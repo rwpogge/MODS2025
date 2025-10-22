@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Which MODS ccd host are we running on?
+
+modsHost="${HOSTNAME}"
+
+if [[ "$modsHost" == "mods1blue" || "$modsHost" == "mods1red" || "$modsHost" == "mods2blue" || "$modsHost" == "mods2red" ]]; then
+    modsID=${modsHost:0:6}   # like mods1b, used by azcam
+else
+    echo "ERROR: you cannot run azcam on host $modsHost"
+    exit 1
+fi
+
+# launch the MODS azcam server for this channel
+
+ipython -i -m azcam_mods.server -- -${modsID}
+
+exit 0
