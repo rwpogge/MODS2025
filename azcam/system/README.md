@@ -1,6 +1,6 @@
 # MODS azcam system files
 
-**Updated**: 2025 Oct 12
+**Updated**: 2025 Oct 23
 
 We restructured the configuration for azcam for MODS to segregate system configuration files and logs from raw imaging data.  This is to help
 streamline our configuration management (4 Archon controllers across 2 instruments in the same rack), and to make getting at raw science image
@@ -10,7 +10,10 @@ We use `system/` as the root folder for all system-specific files
  * `parameters/` for azcam server parameter files
  * `templates/` for FITS header templates and IIF data dictionary files
  * `archon/` for the Archon controller files (.acf and .ncf)
- * `logs/` for azcam server logs
+
+In a change from the usual config, we don't have a `logs/` folder in
+the `azcam/system` tree.  Instead, log files are sent to
+`/home/Logs/azcam` on each
 
 Each MODS instance has its own directory:
  * `MODS1B` - MODS1 Blue Channel
@@ -40,20 +43,59 @@ data like actual exposure time, total dark time, etc.
 
 ## Archon Control Files
 
-The archon controller use `.acf` or `.ncf` files for the detailed detector readout
-configuration. There may be many test or alternative files in this folder, but
-the `<modsID>.ncf` file will be considered the "flight" configuration.  Use
-symbolic links or judicious copying (careful!) to enable an alternative or test
-configuration
+The archon controller use `.acf` or `.ncf` files for the detailed
+detector readout configuration. There may be many test or alternative
+files in this folder, but the `<modsID>.ncf` file will be considered
+the "flight" configuration.  Use symbolic links or judicious copying
+(careful!) to enable an alternative or test configuration
 
-Once on the ground in Tucson with the live system we identified the correct .ncf files
-and was able to convert it to an ACF format using the STA `archongui`.  With help
-from Greg Bredthauer, we learned we have to edit out the `[SYSTEM]` block to upload
-from a remote host, but need that section for local download into `archongui`.
+Once on the ground in Tucson with the live system we identified the
+correct .ncf files and was able to convert it to an ACF format using
+the STA `archongui`.  With help from Greg Bredthauer, we learned we
+have to edit out the `[SYSTEM]` block to upload from a remote host,
+but need that section for local download into `archongui`.
 
-The reference file is `MODS_Example_2.ncf`, which we converted into `mods_1.acf` fore
-testing.  Copies of each are in the individual system `MODS#c/archon` folders named
-for the system channel in case we need to individually modify it.  So far this is
-just multiple redundant copies.
+The reference file is `MODS_Example_2.ncf` which includes the ROI
+readout modes with binning and long exposure support.  Copies of each
+are in the individual system `MODS#c/archon` folders named for the
+system channel as the heater parameters need to be tuned individually
+for each dewar (and later we'll adjust readout rates, bias, etc., if
+needed or if if we can at all).
+
+### Details
+
+Mostly it is the setpoint (`HEATERATARGET`) that differs.  It is a balance
+between desired operating range and what we can do given the variation in
+the efficiency of the heat strap between the CCD mount base and the LN2 dewar.
+
+#### MODS1B
+HeaterX board control parameters
+ * `HEATERATARGET=-120` - set point
+ * `HEATERAP=15` - PID P parameter (D and I are 0)
+ * `HEATERALIMIT=8.0` volts
+ * `HEATERAIL=1000`
+ 
+#### MODS1R
+HeaterX board control parameters
+ * `HEATERATARGET=-100` - set point
+ * `HEATERAP=15` - PID P parameter (D and I are 0)
+ * `HEATERALIMIT=8.0` volts
+ * `HEATERAIL=1000`
+
+#### MODS2B
+HeaterX board control parameters
+ * `HEATERATARGET=-106` - set point
+ * `HEATERAP=15` - PID P parameter (D and I are 0)
+ * `HEATERALIMIT=8.0` volts
+ * `HEATERAIL=1000`
+ 
+#### MODS2R
+HeaterX board control parameters
+ * `HEATERATARGET=-115` - set point
+ * `HEATERAP=15` - PID P parameter (D and I are 0)
+ * `HEATERALIMIT=8.0` volts
+ * `HEATERAIL=1000`
+
+
 
 
