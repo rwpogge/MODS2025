@@ -9,6 +9,7 @@ Usage example:
 import os
 import sys
 import glob
+import datetime
 
 import azcam
 import azcam.utils
@@ -42,36 +43,6 @@ from azcam_mods.tempcon_mods import TempConMODS
 # other stuff
 
 from azcam.web.fastapi_server import WebServer
-
-# observing date
-
-import datetime
-
-def obsDate():
-    """
-    Return the observing date string
-
-    Returns
-    -------
-    string
-        observing date in CCYYMMD format, see description.
-
-    Description
-    -----------        
-    Returns the observing date in CCYYMMDD format.  We define the
-    an "observing date" as running from noon to noon local time.
-    
-    For example, the observing date for the night starting at sunset
-    on 2024 Dec 17 and ending at sunrise on 2024 Dec 18 is 20241217
-
-    We use this for filenames for data and logs.
-    """
-
-    if float(datetime.datetime.now().strftime("%H")) < 12.0:  # before noon
-        return (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
-    else:
-        return datetime.date.today().strftime("%Y%m%d")
-
 
 # setup
 
@@ -334,7 +305,7 @@ def setup():
     # and the current observing date, e.g., mods1b.20251007.  mind the .
     # at the end of root!
     
-    azcam.db.tools["exposure"].root = f"{modsID.lower()}.{obsDate()}."
+    azcam.db.tools["exposure"].root = f"{modsID.lower()}.{mods.obsDate()}."
     azcam.db.tools["exposure"].folder = datafolder
 
     # This might be a restart on the same obsDate, so see if there are
