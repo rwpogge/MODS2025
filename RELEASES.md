@@ -1,6 +1,14 @@
 # MODS2025 Release Notes
 Last Release: 2025 Oct 12
 
+## Version 1.3.3 - 2025 Oct 24
+Live testing with MODS1 and MODS2 on LBT, ran with temperature control on all 4 dewars.  Bug fixes applied, tools built
+to help monitor progress, and new problems emerged. 
+ * We stood up all major instrument systems on both and have good logging and comms on all 6 computers.
+ * Ran dewars cold, learning about temperature control, found ways to crash `azcam` and identified ways to stop it.
+ * FITS headers now looking good, nearly converged, many bugs found and fixed
+ * More work to go...
+
 ## Version 1.3.2 - 2025 Oct 12
  * Updated MODS azcam to v1.1.1
    * Added Archon config for the CCD heater controls with help from Greg Bredthauer
