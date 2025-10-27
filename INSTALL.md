@@ -218,12 +218,13 @@ are additional steps to run it as a systemd service.
 We do not run `isis` on the Archon servers.
 
 ### MODS agw and mmc Servers
+
+This basic builds makes all the libraries and servers, but we don't expose
+the servers or setup the shared memory segment on all machines.
 ```shell
 cd ~/mods
 ./build
 ```
-Remember to follow the instructions for implementing the 
-shared memory segment (`modsalloc` README)
 
 ### MODS Agents
 
