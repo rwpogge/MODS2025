@@ -197,17 +197,25 @@ cp -r MODS2025/Scripts .
 ```
 
 ## Build order
-
+ 
 ### ISIS client and server
+
+#### All machines
 ```shell
 cd ~/ISIS/isisClient
 ./build
+```
+
+#### MODS instrument servers (mods1 and mods2 only)
+```
 cd ../isisServer
 ./build
 sudo cp isis /usr/local/bin/
 ```
 Note that after building `isis` and copying the executable to `/usr/local/bin` there
 are additional steps to run it as a systemd service.
+
+We do not run `isis` on the Archon servers.
 
 ### MODS agw and mmc Servers
 ```shell
