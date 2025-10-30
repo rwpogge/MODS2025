@@ -12577,6 +12577,7 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
   int cmd;
   int mlcmask=0x1;
   short onoff[1];
+  short regData[1];
   short i;
   char dummy[PAGE_SIZE];
   char cmd_instruction[PAGE_SIZE];
@@ -12661,7 +12662,8 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 
       ieb_id=iebIDval-1;
 
-      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+      //ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+      ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
 
       if(ierr&=0x2)
 	sprintf(reply,"IEB GLYCOL=NOFLOW");
@@ -12679,8 +12681,9 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 	onoff[0]=0; // Turn on the 65V power supply
 	onoff[1]=1;
 	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,514,&onoff[0],1);
-
-	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+	MilliSleep(100);
+	//ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
 
 	if(!ierr)
 	  sprintf(reply,"IEB MPOWER_%c=ON",iebID);
@@ -12691,8 +12694,9 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 	onoff[0]=1; // Turn off the 65V power supply
 	onoff[1]=1;
 	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,514,&onoff[0],1);
-
-	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+	MilliSleep(100);
+	//ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
 
 	if(!ierr)
 	  sprintf(reply,"IEB IEB_%c=OFF",iebID);
@@ -12825,7 +12829,8 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 
       } else if(!strcasecmp(argbuf,"STATUS") || cmd==0) {
 
-	if (wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1)) {
+	//if (wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1)) {
+	if (wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1)) {
 	  sprintf(reply,"%s IEB_%c=OFF",who_selected,iebID);
 	  return CMD_ERR;
 	}
