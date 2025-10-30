@@ -12676,21 +12676,17 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 
     /*
      * Retired, this does not measure glycol flow [rwp/osu 2025 Oct 30]
-     
+     *     
     else if(!strcasecmp(argbuf,"GLYCOL")) {
       GetArg(args,1,&iebID);
       iebID = toupper(iebID);
 
       ieb_id=iebIDval-1;
-
-      //ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
       ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
-
       if (ierr&=0x2)
 	sprintf(reply,"IEB GLYCOL=NOFLOW");
       else
 	sprintf(reply,"IEB GLYCOL=FLOW");
-
     }
     */
     
