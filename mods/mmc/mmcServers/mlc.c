@@ -1864,7 +1864,8 @@ mlcStep(int i, char who [], int what, float val, char dummy[])
 
   <pre>
   </pre>
-
+  2025 Oct 29 - This is still a mess, put in diagnostic printouts
+  
 */
 
 int 
@@ -1904,7 +1905,9 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
 
     }
     else {
+      printf("wagoRW IEBS what=%d argbuf=%s\n",what,argbuf);
       ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+      printf("wagoRW IEBS ierr=%d\n",ierr);
       if (!ierr)
 	sprintf(dummy,"IEB_%c=ON MPOWER_%c=ON",
 		(iebID==1 ? 'R' : 'B'),
@@ -1920,6 +1923,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
     }
     return CMD_OK;
   }
+
   else if (!strcasecmp(who,"BYNAME")) {
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
     MilliSleep(100);
@@ -1950,10 +1954,14 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
 	      (!(i&onoff[0]) ? "ON" : "OFF"));
     }
   }
+
   else if (!strcasecmp(who,"MLCS")) {
+    printf("wagoRW MLCS what=%d argbuf=%s\n",what,argbuf);
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+    printf("wagoRW MLCS ierr=%d\n",ierr);
     MilliSleep(100);
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
+    printf("wagoRW MLCS onoff ierr=%d\n",ierr);
 
     if (value==0 || value>16) {
       if (ierr==-1) {
@@ -1977,6 +1985,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
     }
 
   }
+
   else if (!strcasecmp(who,"TEMPS")) {
 
     char tempRMonitor[4][9] = {"IEBTEMPR","IEBGRT_R","TAIRTOP","TAIRBOT" };
@@ -2002,9 +2011,12 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
 	sprintf(dummy,"%s %s=%0.1f",dummy,tempBMonitor[value-1],temperature[value-1]);
     }
   }
-  else if(!strcasecmp(who,"MPOWER")) {
 
+  else if(!strcasecmp(who,"MPOWER")) {
+    printf("wagoRW MPOWER what=%d argbuf=%s\n",what,argbuf);
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+    printf("wagoRW MPOWER ierr=%d\n",ierr);
+    
     sprintf(dummy,"%s MPOWER_%c=%s ",dummy,(iebID==1 ? 'R' : 'B'),( !ierr ? "ON" : "OFF"));
 
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,0,regData,1);
@@ -2016,6 +2028,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
     sprintf(dummy,"%s IDRIVE_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),idrive);
 
   }
+
   else if(!strcasecmp(who,"IVS")) {
 
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,0,regData,1);
