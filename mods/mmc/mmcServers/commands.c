@@ -12556,7 +12556,7 @@ cmd_power65(char *args, MsgType msgtype, char *reply)
 
   mlc = MicroLynx Controller 
 
-  n = IEB ID or MicroLynx Controll ID
+  n = IEB ID or MicroLynx Control ID
 
   on = Turn ON the power
 
@@ -12565,7 +12565,12 @@ cmd_power65(char *args, MsgType msgtype, char *reply)
   \par Description:
   IEB Interface
 
-  \par Lock Behavior:
+  [Note, rwp/osu 2025 Oct 30] This particular command is a low-level
+  engineering command useful for checking and controlling internal
+  IEB functions. The coding is somewhat opaque and has some
+  unimplemented functions that confuse things.  Beware diving into
+  this...
+  
 */
 
 int
@@ -12594,6 +12599,8 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
   float idrive;
   float vcontrol;
 
+  // process command arguments
+  
   memset(cmd_instruction,0,sizeof(cmd_instruction));
   strcpy(who_selected,cmdtab[commandID].cmd);
   StrUpper(who_selected);
@@ -12602,24 +12609,30 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
   GetArg(args,1,cmd_instruction);
   StrUpper(cmd_instruction);
 
-  if(!strcasecmp(cmd_instruction,"RED") || !strcasecmp(cmd_instruction,"R") || !strcasecmp(cmd_instruction,"1")) {
+  // Which IEB, red or blue?
+  
+  if (!strcasecmp(cmd_instruction,"RED") || !strcasecmp(cmd_instruction,"R") || !strcasecmp(cmd_instruction,"1")) {
     iebIDval=1; 
     iebID='R';
 
-  } else if(!strcasecmp(cmd_instruction,"BLUE") || !strcasecmp(cmd_instruction,"B") || !strcasecmp(cmd_instruction,"2")) {
+  }
+  else if (!strcasecmp(cmd_instruction,"BLUE") || !strcasecmp(cmd_instruction,"B") || !strcasecmp(cmd_instruction,"2")) {
     iebIDval=2; 
     iebID='B';
 
-  } else {
+  }
+  else {
     sprintf(reply,"%s Invalid request '%s', Usage: IEB [R|B|RED|BLUE|1|2]", who_selected,cmd_instruction);
     return CMD_ERR;
   }
 
-  if(!strcasecmp(who_selected,"IEB")) {
+  // We know which IEB (red or blue) to address, proceed
+  
+  if (!strcasecmp(who_selected,"IEB")) {
     GetArg(args,2,argbuf);
     StrUpper(argbuf);
 
-    if(iebIDval==0 || iebIDval>2) {
+    if (iebIDval==0 || iebIDval>2) {
       sprintf(reply,"%s IEB_%c=UNKNOWN no such IEB",who_selected,iebID);
       return CMD_ERR;
     }
@@ -12627,25 +12640,28 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
     GetArg(args,3,power_only);
     StrUpper(power_only);
 
-    if(!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0 ||
+    if (!strcasecmp(argbuf,"STATUS") || strlen(argbuf)<=0 ||
        (!strcasecmp(argbuf,"POWER") && strlen(power_only)<=0)) {
 
-      if(strlen(argbuf)<=0) {
+      if (strlen(argbuf)<=0) {
 
 	wagoRW(iebIDval,"IEBS",0,0,dummy);
 	sprintf(reply,"%s %s",who_selected,dummy);
 
-      } else {
+      }
+      else {
 	ierr = wagoRW(iebIDval,"IEBS",0,0,dummy);
 	sprintf(reply,"%s %s",who_selected,dummy);
 
-	if(!ierr) {
+	if (!ierr) {
 	  wagoRW(iebIDval,"MLCS",0,0,dummy);
 	  sprintf(reply,"%s %s",reply,dummy);
-	} else if(ierr==1) {
+	}
+	else if (ierr==1) {
 	  wagoRW(iebIDval,"MLCS",0,0,dummy);
 	  sprintf(reply,"%s %s",reply,dummy);
-	} else if(ierr==-1) {
+	}
+	else if (ierr==-1) {
 	  return CMD_ERR;
 	}
 	wagoRW(iebIDval,"TEMPS",0,0,dummy);
@@ -12656,7 +12672,12 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 
 	return CMD_OK;
       }
-    } else if(!strcasecmp(argbuf,"GLYCOL")) {
+    }
+
+    /*
+     * Retired, this does not measure glycol flow [rwp/osu 2025 Oct 30]
+     
+    else if(!strcasecmp(argbuf,"GLYCOL")) {
       GetArg(args,1,&iebID);
       iebID = toupper(iebID);
 
@@ -12665,79 +12686,79 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
       //ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
       ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
 
-      if(ierr&=0x2)
+      if (ierr&=0x2)
 	sprintf(reply,"IEB GLYCOL=NOFLOW");
       else
 	sprintf(reply,"IEB GLYCOL=FLOW");
 
-    } else if(!strcasecmp(argbuf,"MPOWER")) {
+    }
+    */
+    
+    else if (!strcasecmp(argbuf,"MPOWER")) {
       GetArg(args,3,argbuf);
       StrUpper(argbuf);
       GetArg(args,1,&iebID);
       iebID = toupper(iebID);
       ieb_id=iebIDval-1;
 
-      if(!strcasecmp(argbuf,"ON")) {
+      if (!strcasecmp(argbuf,"ON")) {
 	onoff[0]=0; // Turn on the 65V power supply
 	onoff[1]=1;
 	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,514,&onoff[0],1);
 	MilliSleep(100);
-	//ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
 	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
-
-	if(!ierr)
+	if (!ierr)
 	  sprintf(reply,"IEB MPOWER_%c=ON",iebID);
 	else
 	  sprintf(reply,"IEB MPOWER_%c=OFF",iebID);
-
-      } else if(!strcasecmp(argbuf,"OFF")) {
+      }
+      else if (!strcasecmp(argbuf,"OFF")) {
 	onoff[0]=1; // Turn off the 65V power supply
 	onoff[1]=1;
 	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,514,&onoff[0],1);
 	MilliSleep(100);
-	//ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
 	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
-
-	if(!ierr)
+	if (!ierr)
 	  sprintf(reply,"IEB IEB_%c=OFF",iebID);
 	else
 	  sprintf(reply,"IEB IEB_%c=OFF",iebID);
-	
-      } else if(!strcasecmp(argbuf,"STATUS") || (strlen(argbuf)<=0)) {
+      }
+      else if (!strcasecmp(argbuf,"STATUS") || (strlen(argbuf)<=0)) {
 	wagoRW(iebIDval,"MPOWER",0,0,dummy);
 	sprintf(reply,"%s%s",who_selected,dummy);
-
-      } else if(!strcasecmp(argbuf,"NSTATUS") || (strlen(argbuf)<=0)) {
+      }
+      else if (!strcasecmp(argbuf,"NSTATUS") || (strlen(argbuf)<=0)) {
 	wagoRW(iebIDval,"BYNAME",0,0,dummy);
 	sprintf(reply,"%s%s",who_selected,dummy);
-
-      } else {
+      }
+      else {
 	sprintf(reply,"%s Invalid request '%s', Usage: ieb [n] power [on|off]",who_selected,args);
       }
-    } else if(!strcasecmp(argbuf,"TEMP")) {
+    }
+
+    // read IEB temperature sensors (all or by number 1..4)
+    
+    else if(!strcasecmp(argbuf,"TEMP")) {
       memset(whatTemp,0,sizeof(whatTemp));
       GetArg(args,3,whatTemp);
       StrUpper(whatTemp);
 
-      if(atoi(whatTemp)<=0) {
+      if (atoi(whatTemp)<=0) {
 	wagoRW(iebIDval,"TEMPS",0,0,dummy);
 	sprintf(reply,"%s %s",who_selected,dummy);
-
-      } else if(atoi(whatTemp)<=4) {
+      } else if (atoi(whatTemp)<=4) {
 	wagoRW(iebIDval,"TEMPS",0,atoi(whatTemp),dummy);
 	sprintf(reply,"%s %s",who_selected,dummy);
-
       } else {
 	sprintf(reply,"%s Invalid request '%s', Usage: ieb [n] temp [1-4]", who_selected,whatTemp);
 	return CMD_ERR;
       }
       return CMD_OK;
+    }
 
-    } else if(!strcasecmp(argbuf,"COMTROL")) {
-      sprintf(reply,"%s %s Not implemented Yet!",who_selected,argbuf);
-      return CMD_OK;
-
-    } else if(!strcasecmp(argbuf,"VDRIVE")) {
+    // read IEB motor drive voltages
+    
+    else if (!strcasecmp(argbuf,"VDRIVE")) {
       GetArg(args,1,&iebID);
       iebID = toupper(iebID);
       ieb_id=iebIDval-1;
@@ -12746,7 +12767,11 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
       sprintf(reply,"%s %s_%c=%0.3f",who_selected,argbuf,iebID,vdrive);
       return CMD_OK;
 
-    } else if(!strcasecmp(argbuf,"IDRIVE")) {
+    }
+
+    // read IEB motor drive currents
+    
+    else if (!strcasecmp(argbuf,"IDRIVE")) {
       GetArg(args,1,&iebID);
       iebID = toupper(iebID);
       ieb_id=iebIDval-1;
@@ -12755,7 +12780,11 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
       sprintf(reply,"%s %s_%c=%0.3f",who_selected,argbuf,iebID,idrive);
       return CMD_OK;
 
-    } else if(!strcasecmp(argbuf,"VCONTROL")) {
+    }
+
+    // read IEB control voltages
+    
+    else if (!strcasecmp(argbuf,"VCONTROL")) {
       GetArg(args,1,&iebID);
       iebID = toupper(iebID);
       ieb_id=iebIDval-1;
@@ -12764,42 +12793,47 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
       sprintf(reply,"%s %s_%c=%0.3f",who_selected,argbuf,iebID,vcontrol);
       return CMD_OK;
 
-    } else if(!strcasecmp(argbuf,"MLC")) {
+    }
+
+    // Query/control MicroLYNX controller (MLCs)
+    
+    else if (!strcasecmp(argbuf,"MLC")) {
       GetArg(args,3,mlcID);
 
-      if(strlen(mlcID)<3) {
+      if (strlen(mlcID)<3) {
 	cmd=atoi(mlcID); 
 	if(cmd>18) {
 	  sprintf(reply,"%s %s_%c=FAULT Invalid request '%d', valid range is 1..16", who_selected,who_selected,iebID,cmd);
 	  return CMD_ERR;
 	}
-      } else {
+      }
+      else {
 	cmd=getMechanismID(mlcID,dummy); // Get mechanism device ID
 	if(cmd==-1) {
 	  sprintf(reply,"%s %s",who_selected,dummy);
 	  return CMD_ERR;
 	}
 
-	if(iebID=='B' && cmd<18) {
+	if (iebID=='B' && cmd<18) {
 	  sprintf(reply,"%s %s_%c=FAULT Invalid '%s' not found in BLUE IEB, Try the RED IEB",
 		  who_selected,who_selected,iebID,mlcID);
 	  return CMD_ERR;
 	} 
-	if(iebID=='R' && cmd>17) {
+	if (iebID=='R' && cmd>17) {
 	  sprintf(reply,"%s %s_%c=FAULT Invalid '%s' not found in RED IEB, Try the BLUE IEB",
 		  who_selected,who_selected,iebID,mlcID);
 	  return CMD_ERR;
 	}
-	if(iebID=='R' || (int)iebID==1) cmd++;
-	if(iebID=='B' || (int)iebID==2) cmd-=17;
+	if (iebID=='R' || (int)iebID==1) cmd++;
+	if (iebID=='B' || (int)iebID==2) cmd-=17;
       }
       GetArg(args,4,argbuf);
       StrUpper(argbuf);
 
       ieb_id=iebIDval-1;
 
-      if(!strcasecmp(argbuf,"RESET")) {
-	/* Turn it off */
+      if (!strcasecmp(argbuf,"RESET")) {
+	// Turn it off
 
 	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,512,devOnOff,1);
 	onoff[0] = devOnOff[0];
@@ -12809,17 +12843,14 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 
 	MilliSleep(500); // Wait 500ms and let it adjust
 
-	/*	
 	// Now Turn it on 
-	*/
 
-	
 	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,512,devOnOff,1);
 	onoff[0] = devOnOff[0];
 	onoff[0]&=onoff[0] ^ (short)bits[cmd];
 	ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
 
-	if(cmd==0 || cmd>18) {
+	if (cmd==0 || cmd>18) {
 	  sprintf(reply,"%s",who_selected);
 	  for(i=1,ierr=1;ierr<=16;i+=i,ierr++) {
 	    sprintf(reply,"%s MLC%d_%c=%s ",reply,ierr,
@@ -12827,7 +12858,8 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 	  }
 	}
 
-      } else if(!strcasecmp(argbuf,"STATUS") || cmd==0) {
+      }
+      else if (!strcasecmp(argbuf,"STATUS") || cmd==0) {
 
 	//if (wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1)) {
 	if (wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1)) {
@@ -12835,7 +12867,7 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 	  return CMD_ERR;
 	}
 
-	if(cmd==0) {
+	if (cmd==0) {
 	  wagoRW(iebIDval,"MLCS",0,0,dummy);
 	  sprintf(reply,"%s %s",who_selected,dummy);
 	} else {
@@ -12845,7 +12877,8 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 
 	return CMD_OK;
 
-      } else if(!strcasecmp(argbuf,"ON")) {
+      }
+      else if (!strcasecmp(argbuf,"ON")) {
 	if(cmd>18) cmd+=18; // BLUE IEB starts at 18-33 in Shared Memory
 
 	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,512,devOnOff,1);
@@ -12855,7 +12888,8 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 
 	sprintf(reply,"IEB MLC%d_%c=ON",cmd,iebID);
 	
-      } else if(!strcasecmp(argbuf,"OFF")) {
+      }
+      else if(!strcasecmp (argbuf,"OFF")) {
 	if(cmd>18) cmd+=18; // BLUE IEB starts at 18-33 in Shared Memory
 
 	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,512,devOnOff,1);
@@ -12866,14 +12900,15 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 
 	sprintf(reply,"IEB MLC%d_%c=OFF",cmd,iebID);
 	
-      } else {
+      }
+      else {
 	sprintf(reply,"%s Invalid request '%s', Usage: ieb [n] mlc [m] [ON|OFF|STATUS]", who_selected,args);
-
 	return CMD_ERR;
       }
-    } else {
+
+    }
+    else {
       sprintf(reply,"%s Invalid request '%s', Usage: ieb [n] mlc [m] [ON|OFF|STATUS]", who_selected,args);
-      
       return CMD_ERR;
     }
   }
