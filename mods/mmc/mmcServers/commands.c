@@ -12867,7 +12867,7 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 	return CMD_ERR;
       }
     } else {
-      sprintf(reply,"%s Invalid requset '%s', Usage: ieb [n] mlc [m] [ON|OFF|STATUS]", who_selected,args);
+      sprintf(reply,"%s Invalid request '%s', Usage: ieb [n] mlc [m] [ON|OFF|STATUS]", who_selected,args);
       
       return CMD_ERR;
     }
