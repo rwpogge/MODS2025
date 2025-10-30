@@ -1905,8 +1905,9 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
 
     }
     else {
-      printf("wagoRW IEBS what=%d argbuf=%s\n",what,argbuf);
-      ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+      //printf("wagoRW IEBS what=%d argbuf=%s\n",what,argbuf);
+      //ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+      ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,regData,1);
       printf("wagoRW IEBS ierr=%d\n",ierr);
       if (!ierr)
 	sprintf(dummy,"IEB_%c=ON MPOWER_%c=ON",
@@ -1925,7 +1926,8 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
   }
 
   else if (!strcasecmp(who,"BYNAME")) {
-    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+    //ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,regData,1);
     MilliSleep(100);
 
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
@@ -1956,8 +1958,9 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
   }
 
   else if (!strcasecmp(who,"MLCS")) {
-    printf("wagoRW MLCS what=%d argbuf=%s\n",what,argbuf);
-    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+    //printf("wagoRW MLCS what=%d argbuf=%s\n",what,argbuf);
+    //ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,regData,1);
     printf("wagoRW MLCS ierr=%d\n",ierr);
     MilliSleep(100);
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
@@ -2013,8 +2016,9 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
   }
 
   else if(!strcasecmp(who,"MPOWER")) {
-    printf("wagoRW MPOWER what=%d argbuf=%s\n",what,argbuf);
-    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+    //printf("wagoRW MPOWER what=%d argbuf=%s\n",what,argbuf);
+    //ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,regData,1);
     printf("wagoRW MPOWER ierr=%d\n",ierr);
     
     sprintf(dummy,"%s MPOWER_%c=%s ",dummy,(iebID==1 ? 'R' : 'B'),( !ierr ? "ON" : "OFF"));
