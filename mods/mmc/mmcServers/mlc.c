@@ -1954,6 +1954,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,regData,1);
     MilliSleep(100);
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
+    printf("wagoRW value=%d ierr=%d onoff[0]=%d\n",value,ierr,onoff[0]);
     if (value==0 || value>16) {
       if (ierr==-1) {
 	for (i=1,ierr=1;ierr<=16;i+=i,ierr++) 
@@ -1962,8 +1963,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
       else {
  	for (i=1,ierr=1;ierr<=16;i+=i,ierr++) {
 	  sprintf(dummy,"%s MLC%d_%s=%s",dummy,ierr,
-		  (iebID==1 ? "R" : "B"),(onoff[0]==0 ? "ON" : "OFF"));
-	  //(iebID==1 ? "R" : "B"),(!(i&onoff[0]) ? "ON" : "OFF"));
+		  (iebID==1 ? "R" : "B"),(!(i & onoff[0]) ? "ON" : "OFF"));
 	}
       }
     }
@@ -1971,7 +1971,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
       if (value>18) value-=18; // This is for the BLUE IEB set 18-34
       for (i=1,ierr=1;ierr<=value-1;i+=i,ierr++) {
 	sprintf(dummy,"MLC%d_%s=%s",abs(value),(iebID==1 ? "R" : "B"),
-		(!(i&onoff[0]) ? "ON" : "OFF"));
+		(!(i & onoff[0]) ? "ON" : "OFF"));
       }
     }
 

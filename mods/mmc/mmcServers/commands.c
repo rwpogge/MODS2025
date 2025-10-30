@@ -12871,7 +12871,8 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
 	if (cmd==0) {
 	  wagoRW(iebIDval,"MLCS",0,0,dummy);
 	  sprintf(reply,"%s %s",who_selected,dummy);
-	} else {
+	}
+	else {
 	  wagoRW(iebIDval,"MLCS",0,cmd,dummy);
 	  sprintf(reply,"%s %s",who_selected,dummy);
 	}
