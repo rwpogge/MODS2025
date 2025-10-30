@@ -1,7 +1,15 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2025 Oct 4
+Last Build: 2025 Oct 30
+
+## Version 3.2.3: 2025 Oct 30
+Fixed bugs in IEB command that caused crashes with segmentation faults for some IEB options and especially
+anything to do with reading or setting the MicroLYNX motor controller (MLC) power status:
+ * `mlc.c` in `wagoRW()` - replaced `(short *)atoi(argbuf)` in `wagoSetGet()` calls with `regData` short.
+ * `commands.c` in `cmd_ieb()` - replaced `(short *)atoi(argbuf)` in `wagoSetGet()` calls with `regData` short, and cleaned up some of the code and logic. 
+
+Tested on MODS2 live (on cart in high-bay), not crashing, restored MLC engineering-level function
 
 ## Version 3.2.2: 2025 Oct 4
 Two builds running down bugs

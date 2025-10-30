@@ -1955,8 +1955,6 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
     MilliSleep(100);
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
 
-    printf("wagoRW value=%d ierr=%d onoff[0]=%d\n",value,ierr,onoff[0]);
-
     if (value==0 || value>16) {
       if (ierr==-1) {
 	for (i=1,ierr=1;ierr<=16;i+=i,ierr++) 
