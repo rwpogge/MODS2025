@@ -12861,8 +12861,9 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
       }
       else if (!strcasecmp(argbuf,"STATUS") || cmd==0) {
 
-	//if (wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1)) {
-	if (wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1)) {
+	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
+	printf("cmd_ieb() IEB %s MLC %s %s...\n",iebID,mlcID,argbuf); 
+	if (ierr) {
 	  sprintf(reply,"%s IEB_%c=OFF",who_selected,iebID);
 	  return CMD_ERR;
 	}
