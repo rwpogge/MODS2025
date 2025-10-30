@@ -49,8 +49,8 @@ char* makeUpper(char str2[])
 
   strcpy(str,str2);
 
-  for(i=0;i<strlen(str);i++)
-    if(str[i] >= 'a' && str[i] <= 'z')
+  for (i=0;i<strlen(str);i++)
+    if (str[i] >= 'a' && str[i] <= 'z')
       str[i] = toupper(str[i]);
 
   return str;
@@ -78,8 +78,8 @@ char* makeLower(char str2[])
 
   strcpy(str,str2);
 
-  for(i=0;i<strlen(str);i++)
-    if(str[i] >= 'A' && str[i] <= 'Z')
+  for (i=0;i<strlen(str);i++)
+    if (str[i] >= 'A' && str[i] <= 'Z')
       str[i] = tolower(str[i]);
 
    return str;
@@ -103,8 +103,8 @@ void
 StrUpper(char *str)
 {
   int i;
-  for(i=0;i<strlen(str);i++)
-    if(str[i] >= 'a' && str[i] <= 'z')
+  for (i=0;i<strlen(str);i++)
+    if (str[i] >= 'a' && str[i] <= 'z')
       str[i] = toupper(str[i]);
 }
 
@@ -206,7 +206,7 @@ positionToShrMem(int i, char dummy[])
   memset(dummy,0,sizeof(dummy));
   shm_addr->MODS.busy[i]=1; // Hold the IP until finished
 
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],"PRINT POS\r")<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],"PRINT POS\r")<0) {
     sprintf(dummy,"%s=TIMEOUT positionToShrMem cannot write to %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -215,7 +215,7 @@ positionToShrMem(int i, char dummy[])
   }
     
   MilliSleep(10);
-  if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
+  if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
     sprintf(dummy,"%s=TIMEOUT positionToShrMem cannot read from %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -264,7 +264,7 @@ sendCommand(int i, char cmd[], char dummy[])
   memset(dummy,0,sizeof(dummy)); // Clear the dummy and start again.
   memset(dummy2,0,sizeof(dummy2)); // Clear the dummy and start again.
 
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
     sprintf(dummy,"%s=TIMEOUT sendCommand cannot write to %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -273,7 +273,7 @@ sendCommand(int i, char cmd[], char dummy[])
   }
 
   MilliSleep(20);
-  if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,
+  if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,
 		 shm_addr->MODS.timeout[i]+1L)<0) {
     sprintf(dummy,"%s=TIMEOUT sendCommand cannot read from %s",
 	    makeUpper(shm_addr->MODS.who[i]),
@@ -282,11 +282,11 @@ sendCommand(int i, char cmd[], char dummy[])
     return CMD_ERR;
   }
 
-  if(strstr(dummy,"?")) {  // check for a MicroLynx Controller ERROR '?'
+  if (strstr(dummy,"?")) {  // check for a MicroLynx Controller ERROR '?'
     strcpy(dummy2,&dummy[strlen(send)+3]); // Save message if != standard
                                            // microLynx controller error.
     sprintf(modserr,"%s",dummy);
-    if(WriteTTYPort(&shm_addr->MODS.commport[i],"PRINT ERROR\r")<0) {
+    if (WriteTTYPort(&shm_addr->MODS.commport[i],"PRINT ERROR\r")<0) {
       sprintf(dummy,"%s=TIMEOUT sendCommand cannot write to %s",
 	      makeUpper(shm_addr->MODS.who[i]),
 	      shm_addr->MODS.commport[i].Port);
@@ -296,7 +296,7 @@ sendCommand(int i, char cmd[], char dummy[])
     memset(dummy,0,sizeof(dummy)); // Clear dummy return
       
     MilliSleep(10);
-    if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
+    if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
       sprintf(dummy,"%s=TIMEOUT sendCommand cannot read from %s",
 	      makeUpper(shm_addr->MODS.who[i]),
 	      shm_addr->MODS.commport[i].Port);
@@ -353,7 +353,7 @@ sendCommand(int i, char cmd[], char dummy[])
   Sends Multiple Command to the named MicroLYNX controller.
 
   EXAMPLE for MODS: if you should ever need it.
-  if(!strcasecmp(argbuf,"LIST")) { // ask for help
+  if (!strcasecmp(argbuf,"LIST")) { // ask for help
     char listdum[5][512];
     char listcmds[5][80];
     sprintf(&listcmds[0][0],"PRINT POS");
@@ -363,10 +363,10 @@ sendCommand(int i, char cmd[], char dummy[])
     sprintf(&listcmds[4][0],"PRINT DICHNUM");
     ierr = sendMultiCommand(device,listcmds,5,listdum);
     sprintf(reply,"%s %s=%s",who_selected,who_selected,listdum[0]);
-    for(int i=1;i<5;i++)
+    for (int i=1;i<5;i++)
       sprintf(reply,"%s\n%s %s=%s",reply,who_selected,who_selected,listdum[i]);
 
-    if(ierr!=0) return CMD_ERR;
+    if (ierr!=0) return CMD_ERR;
 
     rawCommand(device,"PRINT POS",dummy);
     shm_addr->MODS.pos[device]=atof(dummy);
@@ -385,12 +385,12 @@ sendMultiCommand(int i, char cmdlist[][80], int cnt, char dumlist[][512])
   shm_addr->MODS.busy[i]=1;    // Set the HOST busy bit.
   memset(dummy,0,sizeof(dummy));
 
-  for(cmditem=0;cmditem<cnt;cmditem++) {
+  for (cmditem=0;cmditem<cnt;cmditem++) {
     memset(send,0,sizeof(send));
     strcpy(send,cmdlist[cmditem]); // command
     strcat(send,"\r"); // Add a '\r'. <CR> to satisfy MicroLynx controller
     /* Send nth command */
-    if(WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
+    if (WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
       sprintf(dummy,"%s=TIMEOUT sendMultiCommand cannot write to %s",
 	      makeUpper(shm_addr->MODS.who[i]),
 	      shm_addr->MODS.commport[i].Port);
@@ -398,7 +398,7 @@ sendMultiCommand(int i, char cmdlist[][80], int cnt, char dumlist[][512])
       return CMD_ERR;
     }
     MilliSleep(200);
-    if(ReadTTYPort(&shm_addr->MODS.commport[i],dumlist[cmditem],
+    if (ReadTTYPort(&shm_addr->MODS.commport[i],dumlist[cmditem],
 		   shm_addr->MODS.timeout[i]+1L)<0) {
       sprintf(dummy,"%s=TIMEOUT sendMultiCommand cannot read from %s",
 	      makeUpper(shm_addr->MODS.who[i]),
@@ -459,7 +459,7 @@ sendTwoCommand(int i, char cmd[], char cmd2[], char dummy[])
 
   /* Send 1st command */
 
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
     sprintf(dummy,"%s=TIMEOUT sendTwoCommand cannot write to %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -468,7 +468,7 @@ sendTwoCommand(int i, char cmd[], char cmd2[], char dummy[])
   }
 
   MilliSleep(10);
-  if(ReadTTYPort(&shm_addr->MODS.commport[i],temp,1L)<0) {
+  if (ReadTTYPort(&shm_addr->MODS.commport[i],temp,1L)<0) {
     sprintf(dummy,"%s=TIMEOUT sendTwoCommand cannot read from %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -480,7 +480,7 @@ sendTwoCommand(int i, char cmd[], char cmd2[], char dummy[])
   /* Send 2nd command */
 
   memset(dummy,0,sizeof(dummy)); // Clear the dummy and start again.
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],send2)<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],send2)<0) {
     sprintf(dummy,"%s=TIMEOUT sendTwoCommand cannot write to %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -491,7 +491,7 @@ sendTwoCommand(int i, char cmd[], char cmd2[], char dummy[])
   memset(dummy,0,sizeof(dummy)); // Clear the dummy and start again.
 
   MilliSleep(50);
-  if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,
+  if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,
 		 shm_addr->MODS.timeout[i]+1L)<0) {
     sprintf(dummy,"%s=TIMEOUT sendTwoCommand cannot read from %s",
 	    makeUpper(shm_addr->MODS.who[i]),
@@ -500,8 +500,8 @@ sendTwoCommand(int i, char cmd[], char cmd2[], char dummy[])
     return CMD_ERR;
   }
 
-  if(strstr(dummy,"?")) { // check for a MicroLynx Controller ERROR '?'
-    if(WriteTTYPort(&shm_addr->MODS.commport[i],"PRINT ERROR\r")<0) {
+  if (strstr(dummy,"?")) { // check for a MicroLynx Controller ERROR '?'
+    if (WriteTTYPort(&shm_addr->MODS.commport[i],"PRINT ERROR\r")<0) {
       sprintf(dummy,"%s=TIMEOUT sendTwoCommand cannot write to %s",
 	      makeUpper(shm_addr->MODS.who[i]),
 	      shm_addr->MODS.commport[i].Port);
@@ -511,7 +511,7 @@ sendTwoCommand(int i, char cmd[], char cmd2[], char dummy[])
     memset(dummy,0,sizeof(dummy)); // Clear dummy return
       
     MilliSleep(10);
-    if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
+    if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
       sprintf(dummy,"%s=TIMEOUT sendTwoCommand cannot read from %s",
 	      makeUpper(shm_addr->MODS.who[i]),
 	      shm_addr->MODS.commport[i].Port);
@@ -566,7 +566,7 @@ rawCommand(int i, char cmd[], char dummy[])
   memset(dummy,0,sizeof(dummy)); // Clear the dummy and start again.
   memset(dummy2,0,sizeof(dummy2)); // Clear the dummy and start again.
 
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
     sprintf(dummy,"%s=TIMEOUT rawCommand cannot write to %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -576,7 +576,7 @@ rawCommand(int i, char cmd[], char dummy[])
 
   MilliSleep(100);
 
-  if(ierr=ReadTTYPort(&shm_addr->MODS.commport[i],dummy,
+  if (ierr=ReadTTYPort(&shm_addr->MODS.commport[i],dummy,
 		      (long )shm_addr->MODS.timeout[i])<0) {
     sprintf(dummy,"%s=TIMEOUT rawCommand cannot read from %s",
 	    makeUpper(shm_addr->MODS.who[i]),
@@ -585,9 +585,9 @@ rawCommand(int i, char cmd[], char dummy[])
     return CMD_ERR;
   }
 
-  if(strstr(dummy,"?")) { // check for a MicroLynx Controller ERROR '?'
+  if (strstr(dummy,"?")) { // check for a MicroLynx Controller ERROR '?'
     sprintf(modserr,"%s",dummy);
-    if(WriteTTYPort(&shm_addr->MODS.commport[i],"PRINT ERROR\r")<0) {
+    if (WriteTTYPort(&shm_addr->MODS.commport[i],"PRINT ERROR\r")<0) {
       sprintf(dummy,"%s=TIMEOUT rawCommand cannot write to %s",
 	      makeUpper(shm_addr->MODS.who[i]),
 	      shm_addr->MODS.commport[i].Port);
@@ -597,7 +597,7 @@ rawCommand(int i, char cmd[], char dummy[])
     memset(dummy,0,sizeof(dummy)); // Clear dummy return
     
     MilliSleep(10);
-    if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,1L)<0) {
+    if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,1L)<0) {
       sprintf(dummy,"%s=TIMEOUT rawCommand cannot read from %s",
 	      makeUpper(shm_addr->MODS.who[i]),
 	      shm_addr->MODS.commport[i].Port);
@@ -607,12 +607,12 @@ rawCommand(int i, char cmd[], char dummy[])
 
     ierr = atoi(&dummy[13]); // Get error number
 
-    if(ierr==0) { // Check to see if it was a MODS type error.
+    if (ierr==0) { // Check to see if it was a MODS type error.
       GetArg(modserr,3,argbuf);
       ierr=atoi(argbuf);
     }
     checkForError(ierr,&dummy[0]); // message for this error number
-    if(strstr(dummy,"0000")) {
+    if (strstr(dummy,"0000")) {
       rmcrlf(dummy2,dummy2);
       memset(dummy,0,sizeof(dummy));
       sprintf(dummy,"%s",dummy2); 
@@ -667,7 +667,7 @@ rawCommandOnly(int i, char cmd[])
   memset(dummy,0,sizeof(dummy)); // Clear the dummy and start again.
   shm_addr->MODS.busy[i]=1;    // Set the HOST busy bit.
 
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
     sprintf(dummy,"%s=TIMEOUT rawCommandOnly cannot write %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -713,7 +713,7 @@ hebCommand(int i, char cmd[], char dummy[])
   memset(dummy,0,sizeof(dummy)); // Clear the dummy and start again.
   memset(dummy2,0,sizeof(dummy2)); // Clear the dummy and start again.
 
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],send)<0) {
     sprintf(dummy,"%s=TIMEOUT rawCommand cannot write to %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -723,7 +723,7 @@ hebCommand(int i, char cmd[], char dummy[])
 
   MilliSleep(100);
 
-  if(ierr=ReadTTYPort(&shm_addr->MODS.commport[i],dummy,
+  if (ierr=ReadTTYPort(&shm_addr->MODS.commport[i],dummy,
 		      (long )shm_addr->MODS.timeout[i])<0) {
     sprintf(dummy,"%s=TIMEOUT rawCommand cannot read from %s",
 	    makeUpper(shm_addr->MODS.who[i]),
@@ -773,7 +773,7 @@ mlcCheckBits(int i, char dummy[])
 
   memset(dummy,0,sizeof(dummy)); // Clear the dummy and start again.
     
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],IO20)<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],IO20)<0) {
     sprintf(dummy,"%s=TIMEOUT mlcCheckBits cannot write to %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -782,7 +782,7 @@ mlcCheckBits(int i, char dummy[])
   }
   
   MilliSleep(10);
-  if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
+  if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
     sprintf(dummy,"%s=TIMEOUT mlcCheckBits cannot read from %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -792,7 +792,7 @@ mlcCheckBits(int i, char dummy[])
 
   ierr=atoi(&dummy[strlen(IO20)+1]);
 
-  if((ierr&0x3) == 3) {
+  if ((ierr&0x3) == 3) {
     sprintf(dummy,"%s=FAULT cable disconnected or sensor fault",
 	    makeUpper(shm_addr->MODS.who[i]),ierr);
     shm_addr->MODS.busy[i]=0;    // Clear the HOST busy bit.
@@ -830,7 +830,7 @@ mlcQuery(int i, long timeout, char dummy[])
 
   shm_addr->MODS.busy[i]=1;    // Clear the HOST busy bit.
   
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],"PRINT WHO\r")<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],"PRINT WHO\r")<0) {
     sprintf(dummy,"%s=TIMEOUT cannot write to %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -838,7 +838,7 @@ mlcQuery(int i, long timeout, char dummy[])
     return CMD_ERR;
   }
   MilliSleep(10);
-  if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,timeout)<0) {
+  if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,timeout)<0) {
     sprintf(dummy,"%s=TIMEOUT cannot read from %s",
 	    makeUpper(shm_addr->MODS.who[i]),
 	    shm_addr->MODS.commport[i].Port);
@@ -923,7 +923,7 @@ getMaskNumber(int i,char dummy[])
   memset(dummy,0,sizeof(dummy)); // Clear the dummy before you start
   ierr=sendCommand(i,"MASK_ID",dummy); // Get mask current ID
 
-  if(ierr!=0)  return CMD_ERR;
+  if (ierr!=0)  return CMD_ERR;
 
   masknumber=atoi(dummy);
   shm_addr->MODS.busy[i]=0;    // Clear the HOST busy bit.
@@ -961,8 +961,8 @@ mlcActivePorts(char dummy[])
 
   /* List active comm port(s) */
   sprintf(dummy,"PORTS '%s %s' ",shm_addr->MODS.who[0],shm_addr->MODS.commport[0].Port);
-  for(i=1;i<MAX_ML;i++) {
-    if(shm_addr->MODS.host[i]) {
+  for (i=1;i<MAX_ML;i++) {
+    if (shm_addr->MODS.host[i]) {
       sprintf(dummy,"%s '%s %s' ",dummy,shm_addr->MODS.who[i],shm_addr->MODS.commport[i].Port);
 
     }
@@ -1007,13 +1007,13 @@ mlcWhoAmI(int device,char mechanism_name[],char dummy[])
   rmcrlf(dummy2,dummy2); // remove all CR and LF
   GetArg(dummy2,2,whoisit); // The one we want is the second argument.
 
-  if(atoi(dummy2)>0) {
+  if (atoi(dummy2)>0) {
     sprintf(dummy,"MLCERR=FAULT Microlynx Controller ML%d not preloaded you must use an engineering software program",device);
     shm_addr->MODS.busy[device]=0;    // clear busy bit.
     return CMD_ERR;
   }
 
-  if(!strstr(dummy2,shm_addr->MODS.who[device])) {
+  if (!strstr(dummy2,shm_addr->MODS.who[device])) {
     sprintf(dummy,"MLCERR=FAULT requested name '%s' does not match microLynx Controller '%s'",mechanism_name, dummy2);
     shm_addr->MODS.busy[device]=0;    // clear busy bit.
     return CMD_ERR;
@@ -1052,11 +1052,11 @@ getMechanismID(char mechanism_name[], char dummy[])
   memset(dummy2,0,sizeof(dummy2));
   //  shm_addr->MODS.busy[device]=0;    // clear busy bit.
   
-  for(dev=0;
+  for (dev=0;
       !strstr(mechanism_name,shm_addr->MODS.who[dev]) && dev<=MAX_ML;
       dev++);
 
-  if(dev<0 || dev>=MAX_ML-1) {
+  if (dev<0 || dev>=MAX_ML-1) {
     sprintf(dummy,"Unknown mechanism '%s'",makeUpper(mechanism_name));
     return CMD_ERR;
   }
@@ -1092,11 +1092,11 @@ getWagoID(char wagoid_name[], char dummy[])
 
   memset(dummy2,0,sizeof(dummy2));
   
-  for(dev=0;
+  for (dev=0;
       !strstr(wagoid_name,shm_addr->MODS.WAGOWHO[dev]) && dev<=6;
       dev++);
 
-  if(dev<0 || dev>=6) {
+  if (dev<0 || dev>=6) {
     sprintf(dummy,"Unknown WAGO device '%s'",makeUpper(wagoid_name));
     return CMD_ERR;
   }
@@ -1136,7 +1136,7 @@ checkPower(int device, char dummy[])
   ReadTTYPort(&shm_addr->MODS.commport[device],dummy,5L);
   rmcrlf(dummy,dummy); // remove all CR and LF
   ierr=atoi(&dummy[14]);
-  if(ierr) {
+  if (ierr) {
     sprintf(dummy,"%s=PWRFLR %s has been power cycled and must be reset to initialize",makeUpper(shm_addr->MODS.who[device]),makeUpper(shm_addr->MODS.who[device]));
     shm_addr->MODS.busy[device]=0;    // clear busy bit.
       return CMD_ERR;
@@ -1172,7 +1172,7 @@ mlcBusy(int device, char dummy[])
   int ierr;
 
   memset(dummy,0,sizeof(dummy));
-  if(shm_addr->MODS.busy[device]==1) {
+  if (shm_addr->MODS.busy[device]==1) {
     sprintf(dummy,"%s=BUSY",makeUpper(shm_addr->MODS.who[device]));
     return 1;
   }
@@ -1222,7 +1222,7 @@ mlcTechCmd(int device, char args[], char who[], char dummy[])
   memset(dummy,0,sizeof(dummy));
   memset(dummy2,0,sizeof(dummy2));
   memset(dummy3,0,sizeof(dummy3));
-  for(j=0;j<100;j++) memset(tempo[j],0,sizeof(tempo[j]));
+  for (j=0;j<100;j++) memset(tempo[j],0,sizeof(tempo[j]));
 
   memset(tempo2,0,sizeof(tempo2));
   memset(tempo3,0,sizeof(tempo3));
@@ -1238,26 +1238,26 @@ mlcTechCmd(int device, char args[], char who[], char dummy[])
   cmd2[strlen(cmd2)]='\0';
   GetArg(cmd2,1,mlccmd);
 
-  if(cmd2[0]=='"') {
+  if (cmd2[0]=='"') {
     memset(cmd_instruction,0,sizeof(cmd_instruction));
-    for(i=1,j=0;cmd2[i]!='\0';i++) cmd_instruction[j++]=cmd2[i];
+    for (i=1,j=0;cmd2[i]!='\0';i++) cmd_instruction[j++]=cmd2[i];
 
-    if(strlen(cmd2)>=76) {
+    if (strlen(cmd2)>=76) {
       sprintf(dummy,"%s MLCERR=FAULT Command string too long for Microlynx controller or busy",who,cmd_instruction); 
       shm_addr->MODS.busy[device]=0;    // clear busy bit.
       return CMD_ERR;
     }
 
     len=strlen(cmd_instruction);
-    if(cmd_instruction[len-1]=='"') {
+    if (cmd_instruction[len-1]=='"') {
       cmd_instruction[len-1]='\0';
     }
 
     ierr=rawCommand(device,cmd_instruction,dummy2); // Send a Raw command
 
-    if(strlen(dummy2)<=1 && !strstr(cmd_instruction,"=")) 
+    if (strlen(dummy2)<=1 && !strstr(cmd_instruction,"=")) 
        sprintf(dummy,"%s MLCOUT=UNKNOWN mangled command (example: mechanism m#\"print pos accl io 21 \"or\" mechanism m#\"print pos,vm,io 21,io 25\"  ", who);
-    else if(strstr(cmd_instruction,"=")); 
+    else if (strstr(cmd_instruction,"=")); 
     //else sprintf(dummy,"%s MLCOUT=%s",who,&dummy2[strlen(who)+1]);
     else sprintf(dummy,"%s MLCOUT=%s",who,dummy2); // data fill
 
@@ -1266,23 +1266,23 @@ mlcTechCmd(int device, char args[], char who[], char dummy[])
     return CMD_OK;
   }
 
-  if(!strcasecmp(mlccmd,"PRINT")) {
+  if (!strcasecmp(mlccmd,"PRINT")) {
     len=strlen(cmd2);
     memset(cmd_instruction,0,sizeof(cmd_instruction));
-    for(i=0,j=0;cmd2[i]!='\0';i++) { // Remove any commas that were sent
+    for (i=0,j=0;cmd2[i]!='\0';i++) { // Remove any commas that were sent
       if (cmd2[i]==',')
-	if(cmd2[i+1]==' ');
+	if (cmd2[i+1]==' ');
 	else
 	  cmd_instruction[j++]=' ';
       else 
 	cmd_instruction[j++]=cmd2[i];
     }
     i=0; len=strlen(cmd_instruction);
-    for(param_cnt=0,var_cnt=1;param_cnt<len;param_cnt++) {
+    for (param_cnt=0,var_cnt=1;param_cnt<len;param_cnt++) {
       if (cmd_instruction[param_cnt]==' ') {
 	var_cnt++;
 	GetArg(cmd_instruction,var_cnt,tempo[i]); // get the next parameter
-	if(!strcasecmp(tempo[i],"IO")) {
+	if (!strcasecmp(tempo[i],"IO")) {
 	
 	  /* The request was for an IO bit status */
 	  strcpy(tempo3,tempo[i]);
@@ -1290,7 +1290,7 @@ mlcTechCmd(int device, char args[], char who[], char dummy[])
 	  len-=3;
 
 	  GetArg(cmd_instruction,var_cnt,tempo[i]); // io parameter
-	  if(atoi(tempo[i])<=0) {
+	  if (atoi(tempo[i])<=0) {
 	    sprintf(dummy,"%s MLCERR=FAULT Invalid IO request",who);
 	    shm_addr->MODS.busy[device]=0;    // clear busy bit.
 
@@ -1305,10 +1305,10 @@ mlcTechCmd(int device, char args[], char who[], char dummy[])
 	}
 
 	tempoLen=strlen(tempo[i]);
-	if(tempoLen!=0)
+	if (tempoLen!=0)
 	  ierr=rawCommand(device,tempo2,dummy2); // Send a Raw command
 
-	if(ierr<=-1) {
+	if (ierr<=-1) {
 	  sprintf(dummy,"%s MLCERR=%s",who,dummy2); // fill the return
 	  shm_addr->MODS.busy[device]=0;    // clear busy bit.
 	  return CMD_ERR;
@@ -1318,12 +1318,12 @@ mlcTechCmd(int device, char args[], char who[], char dummy[])
 	 * Stack the returns into dummy3 until 
 	 * all requests have been sent and received 
 	 */
-	if(!strcasecmp(tempo3,"IO")) {
-	  if(tempoLen!=0)
+	if (!strcasecmp(tempo3,"IO")) {
+	  if (tempoLen!=0)
 	    sprintf(dummy3,"%s IO%s=%s",dummy3,tempo[i],dummy2); // data fill
 	  memset(tempo3,0,sizeof(tempo3));
 	} else 
-	  if(tempoLen!=0)
+	  if (tempoLen!=0)
 	    sprintf(dummy3,"%s %s=%s",dummy3,tempo[i],dummy2); // data fill
 	i++;
       }
@@ -1364,14 +1364,14 @@ mlcClear(int i,char dummy[])
   memset(dummy,0,sizeof(dummy));
   shm_addr->MODS.busy[i]=1;    // set busy bit.
 
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],"IP\r")<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],"IP\r")<0) {
     sprintf(dummy,"%s=TIMEOUT mlcClear cannot write to %s",
 	    shm_addr->MODS.who[i],
 	    shm_addr->MODS.commport[i].Port);
     shm_addr->MODS.busy[i]=0;    // clear busy bit.
     return CMD_ERR;
   }
-  if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
+  if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
     sprintf(dummy,"%s=TIMEOUT mlcClear cannot read from %s",
 	    shm_addr->MODS.who[i],
 	    shm_addr->MODS.commport[i].Port);
@@ -1380,7 +1380,7 @@ mlcClear(int i,char dummy[])
   }
 
   MilliSleep(100);
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],"DVF\r")<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],"DVF\r")<0) {
     sprintf(dummy,"%s=TIMEOUT mlcClear cannot write to %s",
 	    shm_addr->MODS.who[i],
 	    shm_addr->MODS.commport[i].Port);
@@ -1388,7 +1388,7 @@ mlcClear(int i,char dummy[])
     return CMD_ERR;
   }
 
-  if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
+  if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
     sprintf(dummy,"%s=TIMEOUT mlcClear cannot read from %s",
 	    shm_addr->MODS.who[i],
 	    shm_addr->MODS.commport[i].Port);
@@ -1397,14 +1397,14 @@ mlcClear(int i,char dummy[])
   }
 
   MilliSleep(100);
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],"CP 1,1\r")<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],"CP 1,1\r")<0) {
     sprintf(dummy,"%s=TIMEOUT mlcClear cannot write to %s",
 	    shm_addr->MODS.who[i],
 	    shm_addr->MODS.commport[i].Port);
     shm_addr->MODS.busy[i]=0;    // clear busy bit.
     return CMD_ERR;
   }
-  if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,30L)<0) {
+  if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,30L)<0) {
     sprintf(dummy,"%s=TIMEOUT mlcClear cannot read from %s",
 	    shm_addr->MODS.who[i],
 	    shm_addr->MODS.commport[i].Port);
@@ -1413,14 +1413,14 @@ mlcClear(int i,char dummy[])
   }
 
   MilliSleep(100);
-  if(WriteTTYPort(&shm_addr->MODS.commport[i],"SAVE\r")<0) {
+  if (WriteTTYPort(&shm_addr->MODS.commport[i],"SAVE\r")<0) {
     sprintf(dummy,"%s=TIMEOUT mlcClear cannot write to %s",
 	    shm_addr->MODS.who[i],
 	    shm_addr->MODS.commport[i].Port);
     shm_addr->MODS.busy[i]=0;    // clear busy bit.
     return CMD_ERR;
   }
-  if(ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
+  if (ReadTTYPort(&shm_addr->MODS.commport[i],dummy,10L)<0) {
     sprintf(dummy,"%s=TIMEOUT mlcClear cannot read from %s",
 	    shm_addr->MODS.who[i],
 	    shm_addr->MODS.commport[i].Port);
@@ -1584,13 +1584,13 @@ isisStatusMsg(char dummy[])
   
   memset(msg,0,sizeof(msg));
   
-  if(!strncasecmp(dummy,"WARNING:",8))
+  if (!strncasecmp(dummy,"WARNING:",8))
     strcpy(msg,ISISMessage(client.ID,who_srcID,WARNING,&dummy[8]));
-  else if(!strncasecmp(dummy,"FATAL:",6))
+  else if (!strncasecmp(dummy,"FATAL:",6))
     strcpy(msg,ISISMessage(client.ID,who_srcID,FATAL,&dummy[6]));
-  else if(!strncasecmp(dummy,"ERROR:",6))
+  else if (!strncasecmp(dummy,"ERROR:",6))
     strcpy(msg,ISISMessage(client.ID,who_srcID,ERROR,&dummy[6]));
-  else if(!strncasecmp(dummy,"DONE:",5))
+  else if (!strncasecmp(dummy,"DONE:",5))
     strcpy(msg,ISISMessage(client.ID,who_srcID,DONE,&dummy[5]));
   else
     strcpy(msg,ISISMessage(client.ID,who_srcID,STATUS,dummy));
@@ -1631,7 +1631,7 @@ mlcBitsBase10(int i, char cmd [],char dummy[])
   memset(dummy,0,sizeof(dummy)); // Clear dummy
   ierr=rawCommand(i,cmd,dummy);
 
-  if(ierr!=0) {
+  if (ierr!=0) {
     shm_addr->MODS.busy[i]=0;  // Clear busy bit.
     return CMD_ERR;
   }
@@ -1741,9 +1741,9 @@ mlcReset(int i, char who [], int what, char how[], char dummy[])
 
   sprintf(mechanism_name,"%s",shm_addr->MODS.who[i]); // Get mechanisms name
 
-  if(what==0) { // Bi-State
+  if (what==0) { // Bi-State
     ierr = sendCommand(i,how,temp);
-    if(ierr!=0) {
+    if (ierr!=0) {
       sprintf(dummy,"%s %s=%s", 
 	      who, makeUpper(mechanism_name), temp);
       shm_addr->MODS.busy[i]=0;  // Clear busy bit.
@@ -1755,10 +1755,10 @@ mlcReset(int i, char who [], int what, char how[], char dummy[])
 
     shm_addr->MODS.pos[i]=positionToShrMem(i,temp);
     
-  } else if(what==1) { // Linear
+  } else if (what==1) { // Linear
     sprintf(dummy,"%s %s=Not Yet!",who,mechanism_name);    
 
-  } else if(what==2) { // Indexed
+  } else if (what==2) { // Indexed
     sprintf(dummy,"%s %s=Not Yet!",who,mechanism_name);
   }
   shm_addr->MODS.busy[i]=0;  // Clear busy bit.
@@ -1814,7 +1814,7 @@ mlcStep(int i, char who [], int what, float val, char dummy[])
 
   sprintf(mechanism_name,"%s",shm_addr->MODS.who[i]); // Get mechanisms name
 
-  if(what==0 || what==1) { // Bi-State, and Linear mechanisms
+  if (what==0 || what==1) { // Bi-State, and Linear mechanisms
     sprintf(temp,"MOVR %s",valStr);
 
     rawCommand(i,temp,dummy);
@@ -1822,13 +1822,13 @@ mlcStep(int i, char who [], int what, float val, char dummy[])
     sprintf(dummy,"%s %s=%f",
 	    who,mechanism_name, shm_addr->MODS.pos[i]);
 
-  } else if(what==2) { // Indexed
+  } else if (what==2) { // Indexed
     ierr = sendTwoCommand(i,"TARGNUM=",valStr,temp);
     ierr = sendCommand(i,"BEGIN",temp);
 
     shm_addr->MODS.pos[i]=positionToShrMem(i,temp);
 
-    if(ierr!=0) {
+    if (ierr!=0) {
       sprintf(dummy,"%s %s=%f", 
 	      who,mechanism_name,shm_addr->MODS.pos[i]);
       shm_addr->MODS.busy[i]=0;  // Clear busy bit.
@@ -1862,9 +1862,7 @@ mlcStep(int i, char who [], int what, float val, char dummy[])
 
   Mechanisms, Lamps, and Lasers status
 
-  <pre>
-  </pre>
-  2025 Oct 29 - This is still a mess, put in diagnostic printouts
+  2025 Oct 29 - This is still a mess (see commands.c:cmd_ieb() for similar mess) [rwp/osu]
   
 */
 
@@ -1894,9 +1892,10 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
       onoff[0]=(short)value; // Turn off the 65V power supply
       onoff[1]=(short)value;
       ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[ieb_id],1,513,&onoff[0],1);
-      if (!ierr)	sprintf(dummy,"IEB_%c=ON MPOWER_%c=ON",
-			(iebID==1 ? 'R' : 'B'),
-			(iebID==1 ? 'R' : 'B'));
+      if (!ierr)
+	sprintf(dummy,"IEB_%c=ON MPOWER_%c=ON",
+		(iebID==1 ? 'R' : 'B'),
+		(iebID==1 ? 'R' : 'B'));
       else if (ierr==-1)
 	sprintf(dummy,"IEB_%c=OFF",(iebID==1 ? 'R' : 'B'));
       else 
@@ -1905,10 +1904,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
 
     }
     else {
-      //printf("wagoRW IEBS what=%d argbuf=%s\n",what,argbuf);
-      //ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
       ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,regData,1);
-      printf("wagoRW IEBS ierr=%d\n",ierr);
       if (!ierr)
 	sprintf(dummy,"IEB_%c=ON MPOWER_%c=ON",
 		(iebID==1 ? 'R' : 'B'),
@@ -1918,19 +1914,17 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
 		(iebID==1 ? 'R' : 'B'),
 		(iebID==1 ? 'R' : 'B'));
       else 
-	sprintf(dummy,"IEB_%c=UNKNOWN",
-		(iebID==1 ? 'R' : 'B'));
+	sprintf(dummy,"IEB_%c=UNKNOWN",(iebID==1 ? 'R' : 'B'));
+
       return ierr;
     }
     return CMD_OK;
   }
-
   else if (!strcasecmp(who,"BYNAME")) {
-    //ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,regData,1);
     MilliSleep(100);
-
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
+    
     if (iebID==1)
       blueIndex=-1;
     else
@@ -1956,39 +1950,32 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
 	      (!(i&onoff[0]) ? "ON" : "OFF"));
     }
   }
-
   else if (!strcasecmp(who,"MLCS")) {
-    //printf("wagoRW MLCS what=%d argbuf=%s\n",what,argbuf);
-    //ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,regData,1);
-    printf("wagoRW MLCS ierr=%d\n",ierr);
     MilliSleep(100);
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
-    printf("wagoRW MLCS onoff ierr=%d\n",ierr);
 
     if (value==0 || value>16) {
       if (ierr==-1) {
-	for(i=1,ierr=1;ierr<=16;i+=i,ierr++) 
-	  sprintf(dummy,"%s MLC%d_%s=OFF",dummy,ierr,
-		  (iebID==1 ? "R" : "B"));
+	for (i=1,ierr=1;ierr<=16;i+=i,ierr++) 
+	  sprintf(dummy,"%s MLC%d_%s=OFF",dummy,ierr,(iebID==1 ? "R" : "B"));
       }
       else {
- 	for(i=1,ierr=1;ierr<=16;i+=i,ierr++) {
+ 	for (i=1,ierr=1;ierr<=16;i+=i,ierr++) {
 	  sprintf(dummy,"%s MLC%d_%s=%s",dummy,ierr,
 		  (iebID==1 ? "R" : "B"),(!(i&onoff[0]) ? "ON" : "OFF"));
 	}
       }
     }
     else {
-      if(value>18) value-=18; // This is for the BLUE IEB set 18-34
-
-      for(i=1,ierr=1;ierr<=value-1;i+=i,ierr++);
-      sprintf(dummy,"MLC%d_%s=%s",abs(value),(iebID==1 ? "R" : "B"),
-	      (!(i&onoff[0]) ? "ON" : "OFF"));
+      if (value>18) value-=18; // This is for the BLUE IEB set 18-34
+      for (i=1,ierr=1;ierr<=value-1;i+=i,ierr++) {
+	sprintf(dummy,"MLC%d_%s=%s",abs(value),(iebID==1 ? "R" : "B"),
+		(!(i&onoff[0]) ? "ON" : "OFF"));
+      }
     }
 
   }
-
   else if (!strcasecmp(who,"TEMPS")) {
 
     char tempRMonitor[4][9] = {"IEBTEMPR","IEBGRT_R","TAIRTOP","TAIRBOT" };
@@ -2014,13 +2001,8 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
 	sprintf(dummy,"%s %s=%0.1f",dummy,tempBMonitor[value-1],temperature[value-1]);
     }
   }
-
-  else if(!strcasecmp(who,"MPOWER")) {
-    //printf("wagoRW MPOWER what=%d argbuf=%s\n",what,argbuf);
-    //ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)atoi(argbuf),1);
+  else if (!strcasecmp(who,"MPOWER")) {
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,regData,1);
-    printf("wagoRW MPOWER ierr=%d\n",ierr);
-    
     sprintf(dummy,"%s MPOWER_%c=%s ",dummy,(iebID==1 ? 'R' : 'B'),( !ierr ? "ON" : "OFF"));
 
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,0,regData,1);
@@ -2032,9 +2014,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
     sprintf(dummy,"%s IDRIVE_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),idrive);
 
   }
-
-  else if(!strcasecmp(who,"IVS")) {
-
+  else if (!strcasecmp(who,"IVS")) {
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,0,regData,1);
     vdrive = ((float)(regData[0])/pow(2,15)*10)*9.28;
     sprintf(dummy,"%s VDRIVE_%c=%0.3f",dummy,(iebID==1 ? 'R' : 'B'),vdrive);
@@ -2127,7 +2107,7 @@ mlcStow(char who [], char dummy[])
   memset(dummy,0,sizeof(dummy)); // Clear dummy
   sprintf(temp,"%s reset",who);
   KeyCommand(temp, dummy);
-  if(strstr(dummy,"ERROR:")) {
+  if (strstr(dummy,"ERROR:")) {
     sprintf(dummy,"RESET Invalid request %s",&dummy[6]);
     shm_addr->MODS.busy[i]=0;  // Clear busy bit.
     return CMD_ERR;
@@ -2164,12 +2144,12 @@ mlcPANIC(int device, char who [], char dummy[])
   char temp[80];
   short devOnOff[1],devEnable[1];
 
-  if(!strcasecmp(who,"MODS1")) {
+  if (!strcasecmp(who,"MODS1")) {
     devOnOff[0]=0;
     devOnOff[1]=0;
     ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[device],1,512,devOnOff,1);
     
-  } else if(!strcasecmp(who,"MODS2")) {
+  } else if (!strcasecmp(who,"MODS2")) {
     devOnOff[0]=0;
     devOnOff[1]=0;
     ierr = wagoSetGet(1,shm_addr->MODS.WAGOIP[device],1,512,devOnOff,1);
@@ -2179,7 +2159,7 @@ mlcPANIC(int device, char who [], char dummy[])
     return CMD_ERR;
   }
 
-  if(ierr!=0) {
+  if (ierr!=0) {
     sprintf(dummy,"PANIC %s error occurred while testing WAGO system",who);
     return CMD_ERR;
   }
