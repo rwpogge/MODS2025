@@ -1962,7 +1962,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
       else {
  	for (i=1,ierr=1;ierr<=16;i+=i,ierr++) {
 	  sprintf(dummy,"%s MLC%d_%s=%s",dummy,ierr,
-		  (iebID==1 ? "R" : "B"),(onoff[0]==0) ? "ON" : "OFF"));
+		  (iebID==1 ? "R" : "B"),((onoff[0]==0) ? "ON" : "OFF"));
 	  //(iebID==1 ? "R" : "B"),(!(i&onoff[0]) ? "ON" : "OFF"));
 	}
       }
