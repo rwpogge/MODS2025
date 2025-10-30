@@ -12862,7 +12862,7 @@ cmd_ieb(char *args, MsgType msgtype, char *reply)
       else if (!strcasecmp(argbuf,"STATUS") || cmd==0) {
 
 	ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
-	printf("cmd_ieb() status...\n");
+	printf("cmd_ieb() status, ierr=%d\n",ierr);
 	if (ierr) {
 	  sprintf(reply,"%s IEB_%c=OFF",who_selected,iebID);
 	  return CMD_ERR;
