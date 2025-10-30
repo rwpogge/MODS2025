@@ -1954,7 +1954,6 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,regData,1);
     MilliSleep(100);
     ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,512,onoff,1);
-    printf("wagoRW() onoff=%d\n",onoff[0]);
     if (value==0 || value>16) {
       if (ierr==-1) {
 	for (i=1,ierr=1;ierr<=16;i+=i,ierr++) 
@@ -1963,7 +1962,8 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
       else {
  	for (i=1,ierr=1;ierr<=16;i+=i,ierr++) {
 	  sprintf(dummy,"%s MLC%d_%s=%s",dummy,ierr,
-		  (iebID==1 ? "R" : "B"),(!(i&onoff[0]) ? "ON" : "OFF"));
+		  (iebID==1 ? "R" : "B"),(onoff[0]==0) ? "ON" : "OFF"));
+	  //(iebID==1 ? "R" : "B"),(!(i&onoff[0]) ? "ON" : "OFF"));
 	}
       }
     }
