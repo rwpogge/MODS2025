@@ -1,0 +1,99 @@
+#
+# The client reads this property to create the reference to 
+# IIF Factory class.
+#
+# This is for the TCS simulator running at OSU.
+#
+#Factory.Proxy=Factory:tcp -p 10000 -h 192.168.139.92 #-t timeout(milliseconds)
+Factory.Proxy=Factory:tcp -p 10000 -h 10.130.142.12 #-t timeout(milliseconds)
+
+#
+# Default proxy name, instrument ID (is always MODS), and focal station
+#
+# This is for MODS1 on DG left
+#
+MODS.ProxyName=MODS1
+MODS.InstrumentID=MODS
+MODS.FocalStation=directGregorian left
+
+#
+# Warn about connection exceptions
+#
+#Ice.Warn.Connections=1
+
+#
+# We want a faster ACM for this client. Deprecated Ice v3.7
+#
+#Ice.ACM.Client=10
+
+#
+# Multi-threading support
+#
+Ice.ThreadPool.Client.Size=5
+Ice.ThreadPool.Client.SizeWarn=7
+Ice.ThreadPool.Client.SizeMax=10
+
+#
+# Network Tracing
+#
+# 0 = no network tracing
+# 1 = trace connection establishment and closure
+# 2 = like 1, but more detailed
+# 3 = like 2, but also trace data transfer
+#
+#Ice.Trace.Network=1
+
+#
+# Protocol Tracing
+#
+# 0 = no protocol tracing
+# 1 = trace protocol messages
+#
+#Ice.Trace.Protocol=1
+
+#
+# Ice Logging system
+#
+# 0 = no logging
+# 1 = logging in /var/log/messages
+#
+Ice.UseSyslog=1
+
+#
+# Logging flag of GetParameter
+#
+# true = logging
+# false = not logging
+#
+MODS.DD.logging=false
+
+#
+# Verbose levels.
+# 0 = print out to stdout 0 if the execution is succesfull, otherwise -1. Critical errors are printed on stderr.
+# 1 = Shows command status coming from the Server. Low level of details.
+# 2 = Shows all the messages coming from the Server. High level of details.
+#
+MODS.Verbose=2
+
+#
+# Separator character for the list of data dictionary entries.
+#
+MODS.Separator=,
+
+#
+# DS9 - XPA Tools configuration .
+# DS9.Open=true : use DS9 to see the image taked
+# DS9.Open=false : do not use DS9
+#
+#DS9.Open=false
+
+#
+# IRC.Path=Folder where the fits are stored
+# By default is /tmp
+#
+MODS.Path=/Repository
+
+#
+# Copy the image to the client, or store it in the server.
+#
+#MODS.Img.Copy=false

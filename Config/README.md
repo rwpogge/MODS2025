@@ -1,34 +1,14 @@
-# MODS public runtime configuration files
+# MODS runtime configuration files
 
-Last Update: 2025 August 26 [rwp/osu]
+Last Update: 2025 October 30 [rwp/osu]
 
 This directory contains the runtime configuration files released for MODS
 observing operations.  
 
-These should be fully vetted and working versions copied from templates maintined
-deeper in the source code tree.  Applications run by users for LBT night-time
-observing and engineering operations with MODS will reference these runtime
-configuration files.
+## Contents
 
-## Updating instructions
+ * `MODS` - runtime configuration for the instrument server machines (`mods1` and `mods2`)
+ * `Archon` - runtime configuration for the Archon CCD server machines (`mods1blue` et al.)
+ * `IIF` - LBTO telescope Instrument InterFace configurations common to all MODS machines
 
-## MODS data-taking system UDP ports
 
-These are the assignments for the MODS2025 system
-```
-MODS1:
-   M1.IE  UDP/IP 192.168.139.130 10700 # mmcServer
-   M1.RC  UPD/IP 192.168.139.131 10402 # red modsCCD agent
-   M1.BC  UPD/IP 192.168.139.132 10401 # blue modsCCD agent
-   M1.ENV UDP/IP 192.168.139.130 10901 # modsEnv agent
-   modsUI UDP/IP 192.168.139.130 20800 (base), 20801 (dashboard)
-   M1.TC  UDP/IP 192.168.139.130 10801 # SX lbttcs
-   
-MODS2:
-   M2.IE  UDP/IP 192.168.139.230 10700
-   M2.RC  UPD/IP 192.168.139.231 10402 # red modsCCD agent
-   M2.BC  UPD/IP 192.168.139.232 10401 # blue modsCCD agent
-   M2.ENV UDP/IP 192.168.139.230 10901
-   modsUI UDP/IP 192.168.139.230 20800 (base), 20801 (dashboard)
-   M2.TC  UDP/IP 192.168.139.230 10801
-```
