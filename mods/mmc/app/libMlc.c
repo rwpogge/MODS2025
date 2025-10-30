@@ -329,7 +329,6 @@ sendCommand(int i, char cmd[], char dummy[])
   /* ********* */
 
   shm_addr->MODS.busy[i]=0;   // Clear the HOST busy bit.
-  //return (atoi(argbuf)); // CMD_OK;
   return CMD_OK;
 
 }
@@ -1900,6 +1899,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
   int i;
   int ierr,cmd,ieb_id;
   short onoff[1];
+  short regData[1];
   char temp[512];
   int blueIndex;
   
@@ -1923,7 +1923,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
       return ierr;
 
     } else {
-      ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+      ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
       if(!ierr)
 	sprintf(dummy,"IEB_%c=ON MPOWER_%c=ON",
 		(iebID==1 ? 'R' : 'B'),
@@ -1940,7 +1940,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
     }
     return CMD_OK;
   } else if(!strcasecmp(who,"BYNAME")) {
-    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
     MilliSleep(100);
     onoff[0] = (short )wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)0,1);
     if(iebID==1) blueIndex=-1;
@@ -1970,7 +1970,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
 	      (!(i&onoff[0]) ? "ON" : "OFF"));
     }
   } else if(!strcasecmp(who,"MLCS")) {
-    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+    ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
     MilliSleep(100);
     onoff[0] = (short )wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,513,(short *)0,1);
 
@@ -2007,7 +2007,7 @@ wagoRW(int iebID, char who[], int what, int value,char dummy[])
 
   } else if(!strcasecmp(who,"MPOWER")) {
 
-      ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,(short *)atoi(argbuf),1);
+      ierr = wagoSetGet(what,shm_addr->MODS.WAGOIP[ieb_id],1,514,regData,1);
 
       sprintf(dummy,"%s MPOWER_%c=%s ",dummy,
 	      (iebID==1 ? 'R' : 'B'),( !ierr ? "ON" : "OFF"));
