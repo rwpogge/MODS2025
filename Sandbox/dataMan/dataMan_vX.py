@@ -25,6 +25,7 @@ Modification History
 --------------------
  * 2025 Aug 29 - start of development, test server/client stubs w/threading
  * 2025 Oct 16 - added logging, config file, paths, and FITS handling
+ * 2025 Oct 31 - boo! Started header processing coding
  
 '''
 
@@ -38,6 +39,10 @@ import datetime
 # astropy.io for FITS file handling
 
 from astropy.io import fits
+
+# astropy.table for FITS binary table handling
+
+from astropy.table import Table
 
 # pathlib for path handling
 
@@ -170,8 +175,79 @@ def modsFITSProc(fitsFile,repoDir):
 
     if Path(fitsFile).exists():
         logger.info(f"proc: processing {fitsFile}...")
-        time.sleep(10)
+
+        try:
+            hdu = fits.open(fitsFile)
+        except:
+            logger.error(f"could not open {origFits} - {exp}")
+            return
+
+        if procParam["fixROI"]:
+            # fix DETSEC and CCDSEC per quadrant
+
+            xc=int(hdu[0].header['ref-pix1'])
+            yc=int(hdu[0].header['ref-pix2'])
+            nx=hdu[1].header['naxis1']
+            ny=hdu[1].header['naxis2']
+
+            # compute corrected DETSEC and LVTn parameters
+
+            detsec1=f"[{xc-nx+1}:{xc},{yc-ny+1}:{yc}]"
+            detsec2=f"[{xc+nx}:{xc+1},{yc-ny+1}:{yc}]" # flip x
+            detsec3=f"[{xc-nx+1}:{xc},{yc+1}:{yc+ny}]"
+            detsec4=f"[{xc+nx}:{xc+1},{yc+1}:{yc+ny}]" # flip x
+            q24_LTV1 = xc+nx+1
+            q34_LTV2 = -yc
+
+            # we need to fix DETSEC *and* CCDSEC
+
+            hdu[1].header['detsec'] = (detsec1,'Corrected DETSEC')
+            hdu[2].header['detsec'] = (detsec2,'Corrected DETSEC')
+            hdu[3].header['detsec'] = (detsec3,'Corrected DETSEC')
+            hdu[4].header['detsec'] = (detsec4,'Corrected DETSEC')
+            hdu[1].header['ccdsec'] = (detsec1,'Corrected CCDSEC')
+            hdu[2].header['ccdsec'] = (detsec2,'Corrected CCDSEC')
+            hdu[3].header['ccdsec'] = (detsec3,'Corrected CCDSEC')
+            hdu[4].header['ccdsec'] = (detsec4,'Corrected CCDSEC')
+
+            # fix LTVn so ds9 cursor returns correct physical pixel coords
+            # in Q2,Q3, and Q4 (Q1 is OK)
+
+            hdu[2].header['LTV1'] = (q24_LTV1,'Corrected LTV1')
+            hdu[4].header['LTV1'] = (q24_LTV1,'Corrected LTV1')
+            hdu[3].header['LTV2'] = (q34_LTV2,'Corrected LTV2')
+            hdu[4].header['LTV2'] = (q34_LTV2,'Corrected LTV2')
+
+            hdu[0].header['HISTORY'] = "[dataMan] Updated ROI DETSEC and CCDSEC"
+            
+        # archon status snapshot to augment/correct header
+        
+        t = Table(hdu[5].data)
+        archonDict = dict(zip(t['Keyword'].tolist(),t['Value'].tolist()))
+
+        # fix CCDTEMP and BASETEMP
+   
+        try:
+            ccdTemp = float(archonDict[procParam['ccdTemp']])
+        except:
+            ccdTemp = -999.9 # no-read value
+        hdu[0].header['CCDTEMP'] = (ccdTemp,'CCD Detector Temperature [deg C]')
+
+        try:
+            baseTemp = float(archonDict[procParam['baseTemp']])
+        except:
+            baseTemp = -999.9 # no-read value
+        hdu[0].header['BASETEMP'] = (baseTemp,'CCD Mount Base Temperature [deg C]')
+
+        hdu[0].header['HISTORY'] = "[dataMan] Updated CCDTEMP and BASETEMP"
+                             
+        # write new data to ...
+
+        # close original and done
+        
+        hdu.close()
         logger.info(f"proc done: {fitsFile} copied to {repoDir}")
+        
     else:
         logger.error(f"proc: no such file {fitsFile}")
         
@@ -186,6 +262,8 @@ modsID = hostname[:6]
 dmHost = 'localhost'
 dmPort = 10301
 
+dataDir = "/home/data"
+procDir = "/home/data/Proc"
 repoDir = "/lbt/data/new"
 logDir = "/home/Logs/dataMan"
 
@@ -221,14 +299,23 @@ except Exception as exp:
     print(f"ERROR: (loadConfig): {exp}")
     sys.exit(1)
 
-# Process the configuration data
+# Process runtime configuration parameters
 
 dmHost = cfg["server"]["ipAddr"]
 dmPort = cfg["server"]["ipPort"]
 
+# data and log directory paths
+
+dataDir = Path(cfg["paths"]["dataDir"])
+procDir = Path(cfg["paths"]["procDir"])
 repoDir = str(Path(cfg["paths"]["repoDir"]))
 logDir = Path(cfg["paths"]["logDir"])
-dataDir = Path(cfg["paths"]["dataDir"])
+
+# image processing parameters
+
+procParam = cfg["processing"]
+
+# other runtime flags
 
 if cfg["debug"]:
     logLevel = logging.DEBUG
