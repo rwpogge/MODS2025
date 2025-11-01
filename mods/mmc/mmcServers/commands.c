@@ -53,8 +53,9 @@
   \date 2025 Jul 20 - power state code updates and clean up shmem interaction [rwp/osu]
   \date 2025 Aug 08 - many changes after live tests with MODS1 at LBT (off telescope) [rwp/osu]
   \date 2025 Oct 04 - bug fixes during live testing of MODS1 and MODS2 on-telescope [rwp/osu]
-  
+  \date 2025 Oct 31 - removed NOCOMM placeholders where int or float expected [rwp/osu]
 */
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -124,10 +125,10 @@ int mmcLOGGER(char [],char []);
 extern char *mods_fatalerrormsg[];
 
 static char *lamp_names[9] = 
-  {"AR","XE","NE","HG","KR","QTH6V", "QTH1","QTH2","VFLAT"}; // lamp names
+  {"AR","XE","NE","HG","KR","QTH6V","QTH1","QTH2","VFLAT"}; // lamp names
 
 static char *util_names[7] = 
-  {"IEB_R","IEB_B","HEB_R","HEB_B","LLB","WFS", "AGC"}; // lamp names
+  {"IEB_R","IEB_B","HEB_R","HEB_B","LLB","WFS","AGC"}; // lamp names
 
 static short int lamp_codes[9] = {1,2,4,8,16,32,1024,2048,4096}; // lamp codes
 
@@ -771,7 +772,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     
     if(!shm_addr->MODS.host[device1]) {
       ttfa=0.0;
-      sprintf(ttfKeeper,"%s COLTTFA=-99",ttfKeeper);
+      sprintf(ttfKeeper,"%s COLTTFA=-1",ttfKeeper);
     } else {
       ttfa=shm_addr->MODS.pos[device1]*shm_addr->MODS.convf[device1];
       sprintf(ttfKeeper,"%s COLTTFA=%0.0f",ttfKeeper,ttfa);
@@ -779,7 +780,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
 
     if(!shm_addr->MODS.host[device2]) {
       ttfb=0.0;
-      sprintf(ttfKeeper,"%s COLTTFB-99",ttfKeeper);
+      sprintf(ttfKeeper,"%s COLTTFB=-1",ttfKeeper);
     }  else {
       ttfb=shm_addr->MODS.pos[device2]*shm_addr->MODS.convf[device2];
       sprintf(ttfKeeper,"%s COLTTFB=%0.0f",ttfKeeper,ttfb);
@@ -787,7 +788,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
 
     if(!shm_addr->MODS.host[device3]) {
       ttfc=0.0;
-      sprintf(ttfKeeper,"%s COLTTFC=-99",ttfKeeper);
+      sprintf(ttfKeeper,"%s COLTTFC=-1",ttfKeeper);
     } else {
       ttfc=shm_addr->MODS.pos[device3]*shm_addr->MODS.convf[device3];
       sprintf(ttfKeeper,"%s COLTTFC=%0.0f",ttfKeeper,ttfc);
@@ -839,11 +840,11 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     else device=getMechanismID("bfilter",dummy);
 
     if(!shm_addr->MODS.host[device]) {
-      sprintf(ttfKeeper,"%s FILTER=0 FILTNAME='None' FILTINFO='None'",
+      sprintf(ttfKeeper,"%s FILTER=-1 FILTNAME='Unknown' FILTINFO='Unknown'",
 	      ttfKeeper);
     } else {
       if(shm_addr->MODS.pos[device]<=0) {
-	sprintf(ttfKeeper,"%s FILTER=UNKNOWN FILTNAME='None' FILTINFO='None'",
+	sprintf(ttfKeeper,"%s FILTER=-1 FILTNAME='Unknown' FILTINFO='Unknown'",
 		ttfKeeper);
 
       } else {
@@ -865,7 +866,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("bcolttfa",dummy); // TTFA
     if(!shm_addr->MODS.host[device]) {
       ttfa=0.0;
-      sprintf(ttfKeeper,"BCOLTTFA=-99");
+      sprintf(ttfKeeper,"BCOLTTFA=-1");
     } else {
       ttfa=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"BCOLTTFA=%0.0f",ttfa);
@@ -874,7 +875,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("bcolttfb",dummy); // TTFB
     if(!shm_addr->MODS.host[device]) {
       ttfb=0.0;
-      sprintf(ttfKeeper,"%s BCOLTTFB=-99",ttfKeeper);
+      sprintf(ttfKeeper,"%s BCOLTTFB=-1",ttfKeeper);
     }  else {
       ttfb=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"%s BCOLTTFB=%0.0f",ttfKeeper,ttfb);
@@ -883,7 +884,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("bcolttfc",dummy); // TTFC
     if(!shm_addr->MODS.host[device]) {
       ttfc=0.0;
-      sprintf(ttfKeeper,"%s BCOLTTFC=-99",ttfKeeper);
+      sprintf(ttfKeeper,"%s BCOLTTFC=-1",ttfKeeper);
     } else {
       ttfc=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"%s BCOLTTFC=%0.0f",ttfKeeper,ttfc);
@@ -917,10 +918,10 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     
     device=getMechanismID("bfilter",dummy);
     if(!shm_addr->MODS.host[device]) {
-      sprintf(ttfKeeper,"%s BFILTER=0 BFILTID='None'",ttfKeeper);
+      sprintf(ttfKeeper,"%s BFILTER=-1 BFILTID='Unknown'",ttfKeeper);
     } else {
       if(shm_addr->MODS.pos[device]<=0) {
-	sprintf(ttfKeeper,"%s BFILTER=UNKNOWN, BFILTID='None'",ttfKeeper);
+	sprintf(ttfKeeper,"%s BFILTER=-1 BFILTID='Unknown'",ttfKeeper);
       } else {
 	sprintf(ttfKeeper,"%s BFILTER=%0.0f BFILTID='%s'",ttfKeeper,
 		shm_addr->MODS.pos[device],
@@ -933,7 +934,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("rcolttfa",dummy); // TTFA
     if(!shm_addr->MODS.host[device]) {
       ttfa=0.0;
-      sprintf(ttfKeeper,"%s RCOLTTFA=-99",ttfKeeper);
+      sprintf(ttfKeeper,"%s RCOLTTFA=-1",ttfKeeper);
     } else {
       ttfa=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"%s RCOLTTFA=%0.0f",ttfKeeper,ttfa);
@@ -942,7 +943,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("rcolttfb",dummy); // TTFB
     if(!shm_addr->MODS.host[device]) {
       ttfb=0.0;
-      sprintf(ttfKeeper,"%s RCOLTTFA=-99",ttfKeeper);
+      sprintf(ttfKeeper,"%s RCOLTTFA=-1",ttfKeeper);
     }  else {
       ttfb=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"%s RCOLTTFB=%0.0f",ttfKeeper,ttfb);
@@ -951,7 +952,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("rcolttfc",dummy); // TTFC
     if(!shm_addr->MODS.host[device]) {
       ttfc=0.0;
-      sprintf(ttfKeeper,"%s RCOLTTFC=-99",ttfKeeper);
+      sprintf(ttfKeeper,"%s RCOLTTFC=-1",ttfKeeper);
     } else {
       ttfc=shm_addr->MODS.pos[device]*shm_addr->MODS.convf[device];
       sprintf(ttfKeeper,"%s RCOLTTFC=%0.0f",ttfKeeper,ttfc);
@@ -963,7 +964,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     device=getMechanismID("rgrating",dummy);
     
     if(!shm_addr->MODS.host[device])
-      sprintf(ttfKeeper,"%s RGRATING=0 RGRATID=None",ttfKeeper);
+      sprintf(ttfKeeper,"%s RGRATING=-1 RGRATID='Unknown'",ttfKeeper);
     else 
       sprintf(ttfKeeper,"%s RGRATING=%d RGRATID='%s'",ttfKeeper,
 	      atoi(shm_addr->MODS.state_word[device]),
@@ -985,10 +986,10 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     
     device=getMechanismID("rfilter",dummy);
     if(!shm_addr->MODS.host[device]) {
-      sprintf(ttfKeeper,"%s RFILTER=0 RFILTID=NOCOMM",ttfKeeper);
+      sprintf(ttfKeeper,"%s RFILTER=-1 RFILTID='Unknown'",ttfKeeper);
     } else {
       if(shm_addr->MODS.pos[device]<=0) {
-	sprintf(ttfKeeper,"%s RFILTER=UNKNOWN RFILTID=NOCOMM",ttfKeeper);
+	sprintf(ttfKeeper,"%s RFILTER=-1 RFILTID='Unknown'",ttfKeeper);
       } else {
 	sprintf(ttfKeeper,"%s RFILTER=%0.0f RFILTID='%s'",ttfKeeper,
 		shm_addr->MODS.pos[device],
@@ -1004,7 +1005,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
   device = getMechanismID("hatch",dummy);
   
   if(!shm_addr->MODS.host[device])
-    sprintf(reply,"%s HATCH=NOCOMM", who_selected);
+    sprintf(reply,"%s HATCH=Unknown", who_selected);
   else {
     if(strlen(shm_addr->MODS.state_word[device])<=0)
       sprintf(reply,"%s HATCH=FAULT", who_selected);
@@ -1018,7 +1019,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
   device=getMechanismID("calib",dummy);
   
   if(!shm_addr->MODS.host[device])
-    sprintf(reply,"%s CALIB=NOCOMM", reply, who_selected);
+    sprintf(reply,"%s CALIB=Unknown", reply, who_selected);
   else 
     if(strlen(shm_addr->MODS.state_word[device])<=0)
       sprintf(reply,"%s CALIB=UNKNOWN",reply);
@@ -1052,7 +1053,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
   if(cmd_instruction[0]=='R' || cmd_instruction[0]=='B') {
     if(!shm_addr->MODS.host[device])
 
-      sprintf(reply,"%s SLITMASK=0 MASKPOS=NOCOMM MASKNAME='NOCOMM' MASKINFO='None'",reply);
+      sprintf(reply,"%s SLITMASK=-1 MASKPOS=Unknown MASKNAME='Unknown' MASKINFO='Unknown'",reply);
     else {
       sprintf(reply,"%s SLITMASK=%d MASKPOS=%s MASKNAME='%s' MASKINFO='%s'",reply,
 	      shm_addr->MODS.active_smask,
@@ -1062,7 +1063,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     }
   } else {
     if(!shm_addr->MODS.host[device])
-      sprintf(reply,"%s SLITMASK=0 MASKPOS=NOCOMM",reply);
+      sprintf(reply,"%s SLITMASK=0 MASKPOS=Unknown",reply);
     else {
       sprintf(reply,"%s SLITMASK=%d MASKPOS=%s",reply,
 	      shm_addr->MODS.active_smask,
@@ -1092,11 +1093,11 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
 
   if(cmd_instruction[0]=='R' || cmd_instruction[0]=='B') {
     if(!shm_addr->MODS.host[device])
-      sprintf(reply,"%s DICHROIC=0 DICHNAME='None' DICHINFO='None'",reply);
+      sprintf(reply,"%s DICHROIC=0 DICHNAME='Unknown' DICHINFO='Unknown'",reply);
     else {
       if(shm_addr->MODS.pos[device] < 1.0 || 
 	 shm_addr->MODS.pos[device] > 3.0)  
-	sprintf(reply,"%s DICHROIC=UNKNOWN DICHNAME='None' DICHINFO='None'",reply);
+	sprintf(reply,"%s DICHROIC=UNKNOWN DICHNAME='Unknown' DICHINFO='Unknown'",reply);
       else {
 	sprintf(reply,"%s DICHROIC=%d DICHNAME='%s' DICHINFO='%s'",reply,
 		int(shm_addr->MODS.pos[device]),
@@ -1106,7 +1107,7 @@ cmd_istatus(char *args, MsgType msgtype, char *reply)
     }
   } else {
     if(!shm_addr->MODS.host[device])
-      sprintf(reply,"%s DICHROIC=0 DICHNAME=NOCOMM",reply);
+      sprintf(reply,"%s DICHROIC=-1 DICHNAME=Unknown",reply);
     else {
       if(shm_addr->MODS.pos[device] < 1.0 ||shm_addr->MODS.pos[device] > 3.0)
 	sprintf(reply,"%s DICHROIC=UNKNOWN DICHNAME=UNKNOWN",reply);
@@ -1499,19 +1500,19 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
   // Calibration Mode Command
   
-  if ( strcasecmp(who_selected, "CALMODE") == 0 ) { // Calibration Mode
+  if ( strcasecmp(who_selected,"CALMODE") == 0 ) { // Calibration Mode
 
     if ( shm_addr->MODS.instrMode == 1 ) {
       len = strlen(dummy1);
 
-      if ( mlcBitsBase10(hatchID, "PRINT IO 22,IO 21", dummy) == 2 ) {
+      if ( mlcBitsBase10(hatchID,"PRINT IO 22,IO 21", dummy) == 2 ) {
 	sprintf(statusMsg,"%s Hatch closed, HATCH=CLOSED", who_selected);
 	isisStatusMsg(statusMsg);
 	sprintf(dummy1,"HATCH=CLOSED ");
 	
       } else {
 	if ( mechanismError > 0 ) {
-	  if ( mlcBitsBase10(hatchID, "PRINT IO 22,IO 21", dummy) == 1 ) {
+	  if ( mlcBitsBase10(hatchID,"PRINT IO 22,IO 21", dummy) == 1 ) {
 	    sprintf(statusMsg,"%s Hatch open, HATCH=OPEN", who_selected);
 	    isisStatusMsg(statusMsg);
 	    sprintf(&dummy1[len],"HATCH=OPEN ");
@@ -1534,19 +1535,19 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       }
 
       len = strlen(dummy1);
-      if ( mlcBitsBase10(calibID, "PRINT IO 22,IO 21", dummy) == 2 ) {
+      if ( mlcBitsBase10(calibID,"PRINT IO 22,IO 21", dummy) == 2 ) {
 	sprintf(statusMsg,"%s Calibration Tower inserted, CALIB=IN", who_selected);
 	isisStatusMsg(statusMsg);
 	sprintf(&dummy1[len],"CALIB=IN ");
-	ierr = agwcu("localhost", 0, "calib in", dummy);
+	ierr = agwcu("localhost", 0,"calib in", dummy);
 	
       } else {
 	if ( mechanismError > 0 ) {
-	  if ( mlcBitsBase10(calibID, "PRINT IO 22,IO 21", dummy) == 1 ) {
+	  if ( mlcBitsBase10(calibID,"PRINT IO 22,IO 21", dummy) == 1 ) {
 	    sprintf(statusMsg,"%s Calibration Tower inserted, CALIB=OUT", who_selected);
 	    isisStatusMsg(statusMsg);
 	    sprintf(&dummy1[len],"CALIB=OUT ");
-	    ierr = agwcu("localhost", 0, "calib out", dummy);
+	    ierr = agwcu("localhost", 0,"calib out", dummy);
 
 	  } else {
 	    sprintf(statusMsg,"%s Calibration Tower, CALIB=FAULT", who_selected);
@@ -1562,7 +1563,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	    shm_addr->MODS.instrMode = -1;
 	    mechanismError = ierr;
 	  } else 
-	    ierr = agwcu("localhost", 0, "calib in", dummy);
+	    ierr = agwcu("localhost", 0,"calib in", dummy);
 	  
 	}
 
@@ -1602,19 +1603,19 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     i++;
     shm_addr->MODS.ygpLast = atof(&dummy[i]); // Save Y axis Guide Probe position.
     
-    sprintf(statusMsg, "%s Saving current AGw guide probe position XGPLAST=%0.3f YGPLAST=%0.3f", who_selected, shm_addr->MODS.xgpLast, shm_addr->MODS.ygpLast);
+    sprintf(statusMsg,"%s Saving current AGw guide probe position XGPLAST=%0.3f YGPLAST=%0.3f", who_selected, shm_addr->MODS.xgpLast, shm_addr->MODS.ygpLast);
     isisStatusMsg(statusMsg); // Status message
 
     //<! ********* START Dark Hatch
 
-    if ( mlcBitsBase10(hatchID, "PRINT IO 22,IO 21", dummy) == 2 ) {
+    if ( mlcBitsBase10(hatchID,"PRINT IO 22,IO 21", dummy) == 2 ) {
       sprintf(statusMsg,"%s Hatch closed, HATCH=CLOSED", who_selected);
       sprintf(dummy1,"HATCH=CLOSED ");
       isisStatusMsg(statusMsg);
       
     } else {
       if ( mechanismError > 0 ) {
-	if ( mlcBitsBase10(hatchID, "PRINT IO 22,IO 21", dummy) == 1 ) {
+	if ( mlcBitsBase10(hatchID,"PRINT IO 22,IO 21", dummy) == 1 ) {
 	  sprintf(statusMsg,"%s Hatch open, HATCH=OPEN", who_selected);
 	  sprintf(&dummy1[len],"HATCH=OPEN ");
 	} else {
@@ -1650,19 +1651,19 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     //<! END Retacting the AGw guide probe and START Inserting the Calibration Tower
     len = strlen(dummy1); // Add a space 
 
-    if ( mlcBitsBase10(calibID, "PRINT IO 22,IO 21", dummy) == 2 ) {
+    if ( mlcBitsBase10(calibID,"PRINT IO 22,IO 21", dummy) == 2 ) {
       sprintf(statusMsg,"%s Calibration Tower inserted, CALIB=IN", who_selected);
       isisStatusMsg(statusMsg);
       sprintf(&dummy1[len],"CALIB=IN ");
-      ierr = agwcu("localhost", 0, "calib in", dummy);
+      ierr = agwcu("localhost", 0,"calib in", dummy);
       
     } else {
       if ( mechanismError > 0 ) {
-	if ( mlcBitsBase10(calibID, "PRINT IO 22,IO 21", dummy) == 1 ) {
+	if ( mlcBitsBase10(calibID,"PRINT IO 22,IO 21", dummy) == 1 ) {
 	  sprintf(statusMsg,"%s Calibration Tower inserted, CALIB=OUT", who_selected);
 	  isisStatusMsg(statusMsg);
 	  sprintf(&dummy1[len],"CALIB=OUT ");
-	  ierr = agwcu("localhost", 0, "calib out", dummy);
+	  ierr = agwcu("localhost", 0,"calib out", dummy);
 
 	} else {
 	  sprintf(statusMsg,"%s Calibration Tower, CALIB=FAULT", who_selected);
@@ -1679,7 +1680,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	  shm_addr->MODS.instrMode = -1;
 	  mechanismError = ierr;
 	} else
-	  ierr = agwcu("localhost", 0, "calib in", dummy);
+	  ierr = agwcu("localhost", 0,"calib in", dummy);
       }
 
     }
@@ -1688,7 +1689,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     KeyCommand("gprobe", dummy);
     cmdLen = strlen("DONE: GPROBE "); // Add a space 
 
-    sprintf(&dummy1[len], "%s", &dummy[cmdLen]);
+    sprintf(&dummy1[len],"%s", &dummy[cmdLen]);
 
     //<! END Inserting the Calibration Tower and Check for errors
 
@@ -1715,7 +1716,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
   // OBSMODE command
     
-  } else if ( strcasecmp(who_selected, "OBSMODE") == 0 ) { // Observing Mode
+  } else if ( strcasecmp(who_selected,"OBSMODE") == 0 ) { // Observing Mode
 
     // Make sure all calibration lamps are turned OFF
 
@@ -1723,17 +1724,17 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     shm_addr->MODS.lamps.lamplaser_all[0] &= 0x03C0; 
     ierr = wagoSetGet(1, shm_addr->MODS.WAGOIP[llbID], 1, LLBONOFF, &shm_addr->MODS.lamps.lamplaser_all[0], 1);
     if ( ierr < 0 ) {
-      sprintf(statusMsg, "%s could not talk to Lamps, no IP Address, CALLAMPS=FAULT", who_selected);
+      sprintf(statusMsg,"%s could not talk to Lamps, no IP Address, CALLAMPS=FAULT", who_selected);
       if ( mechanismError == 0 ) {
 	errorLen = strlen(errorMsg);
-	sprintf(&errorMsg[errorLen], "could not talk to Lamps, no IP Address ");
+	sprintf(&errorMsg[errorLen],"could not talk to Lamps, no IP Address ");
 	mechanismError = 1;
       }
-      sprintf(lampMsg, "CALLAMPS=FAULT");
+      sprintf(lampMsg,"CALLAMPS=FAULT");
     } else {
       for ( i = 0 ; i < 9; i++ ) shm_addr->MODS.lamps.lamp_state[i] = 0;
       sprintf(statusMsg,"%s CALLAMPS='None' All lamps have been turned OFF",who_selected);
-      sprintf(lampMsg, "CALLAMPS='None' ");
+      sprintf(lampMsg,"CALLAMPS='None' ");
     }      
     isisStatusMsg(statusMsg);
 
@@ -1743,14 +1744,14 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
     if ( shm_addr->MODS.instrMode == 0 ) {
 
-      if ( mlcBitsBase10(hatchID, "PRINT IO 22,IO 21", dummy) == 1 ) {
+      if ( mlcBitsBase10(hatchID,"PRINT IO 22,IO 21", dummy) == 1 ) {
 	sprintf(statusMsg,"%s Hatch opened, HATCH=OPEN", who_selected);
 	sprintf(dummy1,"HATCH=OPEN ");
 	isisStatusMsg(statusMsg);
 	
       } else {
 	if ( mechanismError > 0 ) {
-	  if ( mlcBitsBase10(hatchID, "PRINT IO 22,IO 21", dummy) == 2 ) {
+	  if ( mlcBitsBase10(hatchID,"PRINT IO 22,IO 21", dummy) == 2 ) {
 	    sprintf(statusMsg,"%s Hatch open, HATCH=CLOSED", who_selected);
 	    isisStatusMsg(statusMsg);
 	    sprintf(&dummy1[len],"HATCH=CLOSED ");
@@ -1774,19 +1775,19 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
       // Calibration Tower
 
-      if ( mlcBitsBase10(calibID, "PRINT IO 22,IO 21", dummy) == 1 ) {
+      if ( mlcBitsBase10(calibID,"PRINT IO 22,IO 21", dummy) == 1 ) {
 	sprintf(statusMsg,"%s Calibration Tower retracted, CALIB=OUT", who_selected);
 	isisStatusMsg(statusMsg);
 	sprintf(&dummy1[len],"CALIB=OUT ");
-	ierr = agwcu("localhost", 0, "calib out", dummy);
+	ierr = agwcu("localhost", 0,"calib out", dummy);
 	
       } else {
 	if ( mechanismError > 0 ) {
-	  if ( mlcBitsBase10(calibID, "PRINT IO 22,IO 21", dummy) == 2 ) {
+	  if ( mlcBitsBase10(calibID,"PRINT IO 22,IO 21", dummy) == 2 ) {
 	    sprintf(statusMsg,"%s Calibration Tower inserted, CALIB=IN", who_selected);
 	    isisStatusMsg(statusMsg);
 	    sprintf(&dummy1[len],"CALIB=IN ");
-	    ierr = agwcu("localhost", 0, "calib in", dummy);
+	    ierr = agwcu("localhost", 0,"calib in", dummy);
 
 	  } else {
 	    sprintf(statusMsg,"%s Calibration Tower, CALIB=FAULT", who_selected);
@@ -1800,7 +1801,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	    shm_addr->MODS.instrMode = -1;
 	    mechanismError = ierr;
 	  } else 
-	    ierr = agwcu("localhost", 0, "calib out", dummy);
+	    ierr = agwcu("localhost", 0,"calib out", dummy);
 
 	}
 
@@ -1844,14 +1845,14 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 
     memset(dummy, 0, sizeof(dummy));
 
-    if ( mlcBitsBase10(hatchID, "PRINT IO 22,IO 21", dummy) == 1 ) {
+    if ( mlcBitsBase10(hatchID,"PRINT IO 22,IO 21", dummy) == 1 ) {
       sprintf(statusMsg,"%s Hatch opened, HATCH=OPEN", who_selected);
       sprintf(dummy1,"HATCH=OPEN ");
       isisStatusMsg(statusMsg);
 
     } else {
       if ( mechanismError > 0 ) {
-	if ( mlcBitsBase10(hatchID, "PRINT IO 22,IO 21", dummy) == 2 ) {
+	if ( mlcBitsBase10(hatchID,"PRINT IO 22,IO 21", dummy) == 2 ) {
 	  sprintf(statusMsg,"%s Hatch open, HATCH=CLOSED", who_selected);
 	  isisStatusMsg(statusMsg);
 	  sprintf(&dummy1[len],"HATCH=CLOSED ");
@@ -1877,19 +1878,19 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
     
     len = strlen(dummy1);
     
-    if ( mlcBitsBase10(calibID, "PRINT IO 22,IO 21", dummy) == 1 ) {
+    if ( mlcBitsBase10(calibID,"PRINT IO 22,IO 21", dummy) == 1 ) {
       sprintf(statusMsg,"%s Calibration Tower retracted, CALIB=OUT", who_selected);
       sprintf(&dummy1[len],"CALIB=OUT ");
       isisStatusMsg(statusMsg);
-      ierr = agwcu("localhost", 0, "calib out", dummy);      
+      ierr = agwcu("localhost", 0,"calib out", dummy);      
 
     } else {
       if ( mechanismError > 0 ) {
-	if ( mlcBitsBase10(calibID, "PRINT IO 22,IO 21", dummy) == 2 ) {
+	if ( mlcBitsBase10(calibID,"PRINT IO 22,IO 21", dummy) == 2 ) {
 	  sprintf(statusMsg,"%s Calibration Tower inserted, CALIB=IN", who_selected);
 	  isisStatusMsg(statusMsg);
 	  sprintf(&dummy1[len],"CALIB=IN ");
-	  ierr = agwcu("localhost", 0, "calib in", dummy);
+	  ierr = agwcu("localhost", 0,"calib in", dummy);
 
 	} else {
 	  sprintf(statusMsg,"%s Calibration Tower, CALIB=FAULT", who_selected);
@@ -1906,7 +1907,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
 	  mechanismError = ierr;
 
 	} else
-	  ierr = agwcu("localhost", 0, "calib out", dummy);
+	  ierr = agwcu("localhost", 0,"calib out", dummy);
 
       }
 
@@ -1935,7 +1936,7 @@ cmd_misc(char *args, MsgType msgtype, char *reply)
       KeyCommand("gprobe", dummy);
       
       sprintf(statusMsg,"%s Leaving AGw guide probe unchanged, %s", who_selected, &dummy[cmdLen]);
-      sprintf(&dummy1[len], "%s", &dummy[cmdLen]);
+      sprintf(&dummy1[len],"%s", &dummy[cmdLen]);
 
       isisStatusMsg(statusMsg);
       
@@ -3668,7 +3669,7 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
   device = getMechanismID(cmdtab[commandID].cmd, dummy);
 
   if ( device == -1 ) {
-    sprintf(reply, "%s %s=%s", who_selected, who_selected, dummy);
+    sprintf(reply,"%s %s=%s", who_selected, who_selected, dummy);
     return CMD_ERR;
   }
 
@@ -3676,7 +3677,7 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
 
   if ( strcasecmp(cmd_instruction,"LOCK") == 0 ) { // Abort process
     shm_addr->MODS.LOCKS[device] = 1;
-    sprintf(reply, " %s %s=LOCK mechanism is locked",
+    sprintf(reply," %s %s=LOCK mechanism is locked",
 	    who_selected, who_selected);
     return CMD_OK;
 
@@ -3690,12 +3691,12 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
   }
 
   if( shm_addr->MODS.host[device] == 0 ) {
-    sprintf(reply," %s %s=NOCOMM No IP address configured, check mechanisms.ini file", who_selected, who_selected);
+    sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file", who_selected, who_selected);
     return CMD_ERR;
 
 
   } else if ( shm_addr->MODS.LOCKS[device] ) {
-    sprintf(reply, " %s %s=FAULT connection LOCKED OUT, '%s UNLOCK' to continue", who_selected, who_selected, who_selected);
+    sprintf(reply," %s %s=FAULT connection LOCKED OUT, '%s UNLOCK' to continue", who_selected, who_selected, who_selected);
     return CMD_ERR;
 
   }
@@ -3705,7 +3706,7 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
   ierr = mlcQuery(device, 1, dummy); 
 
   if ( ierr != 0 ) {
-    sprintf(reply, "%s %s", who_selected, dummy);
+    sprintf(reply,"%s %s", who_selected, dummy);
     return CMD_ERR;
 
   }
@@ -3721,7 +3722,7 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
 
   // Check for Busy
   if ( mlcBusy(device,dummy) ) {
-    sprintf(reply, "%s %s", who_selected, dummy);
+    sprintf(reply,"%s %s", who_selected, dummy);
     return CMD_ERR;
 
   }
@@ -3730,12 +3731,12 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
 
   if ( strcasecmp(cmd_instruction,"CONFIG") == 0 ) {
     mlcMechanismConfig(device, who_selected, dummy);
-    sprintf(reply, "%s", dummy);
+    sprintf(reply,"%s", dummy);
     return CMD_OK;
 
   }
   
-  io20_hatch = mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy);
+  io20_hatch = mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy);
 
   if (strlen(args)<=0) { // Query when no command is issued
 
@@ -3744,23 +3745,23 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
     if ( io20_hatch == 0 ) {
       sprintf(reply," %s HATCH=AJAR The dark hatch is partially open, or sensor problem, Reset to recover", who_selected);
 
-      sprintf(shm_addr->MODS.state_word[device], "AJAR");
+      sprintf(shm_addr->MODS.state_word[device],"AJAR");
       shm_addr->MODS.pos[device] = positionToShrMem(device, dummy);
       return CMD_ERR;
 
     } else if ( io20_hatch == 1 ) {
-      sprintf(reply, "%s HATCH=OPEN", who_selected);
+      sprintf(reply,"%s HATCH=OPEN", who_selected);
       shm_addr->MODS.pos[device] = (float)io20_hatch;
-      sprintf(shm_addr->MODS.state_word[device], "OPEN");
+      sprintf(shm_addr->MODS.state_word[device],"OPEN");
 
     } else if(io20_hatch==2) {
       sprintf(reply,"%s HATCH=CLOSED",who_selected);
       shm_addr->MODS.pos[device] = (float)io20_hatch;
-      sprintf(shm_addr->MODS.state_word[device], "CLOSED");
+      sprintf(shm_addr->MODS.state_word[device],"CLOSED");
 
     } else {
-      sprintf(reply, "%s HATCH=FAULT Sensor Fault, both limits asserted", who_selected);
-      sprintf(shm_addr->MODS.state_word[device], "FAULT");
+      sprintf(reply,"%s HATCH=FAULT Sensor Fault, both limits asserted", who_selected);
+      sprintf(shm_addr->MODS.state_word[device],"FAULT");
       shm_addr->MODS.pos[device] = (float)io20_hatch;
       return CMD_ERR;
 
@@ -3771,21 +3772,21 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
 
   // Initialize(reset)  hatch
   
-  if ( strcasecmp(cmd_instruction, "RESET") == 0 ) {
+  if ( strcasecmp(cmd_instruction,"RESET") == 0 ) {
 
     ierr = mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy);
 
     if ( ierr == 2 ) { // bit 22 is on, hatch already reset and closed
 
-      rawCommand(device, "PWRFAIL=0", dummy);
-      sprintf(reply, "%s HATCH=CLOSED", who_selected);
+      rawCommand(device,"PWRFAIL=0", dummy);
+      sprintf(reply,"%s HATCH=CLOSED", who_selected);
       strcpy(shm_addr->MODS.state_word[device],"CLOSED"); 
 
       return CMD_OK;
     }
       
-    ierr = mlcReset(device,who_selected,BI_STATE, "INITIAL", dummy);
-    sprintf(reply, "%s", dummy);
+    ierr = mlcReset(device,who_selected,BI_STATE,"INITIAL", dummy);
+    sprintf(reply,"%s", dummy);
 
     if ( ierr < 0 ) return CMD_ERR;
 
@@ -3796,26 +3797,26 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
     ierr = checkPower(device, dummy); // Check mechanism power bit.
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s %s", who_selected, dummy);
+      sprintf(reply,"%s %s", who_selected, dummy);
       return CMD_ERR;
     }
   }
   
-  if ( strncasecmp(args, "M#", 2) != 0 ) { // check for low-level command
+  if ( strncasecmp(args,"M#", 2) != 0 ) { // check for low-level command
     ierr = mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy);
     if ( ierr == 3 ) {
-      sprintf(reply, "%s %s=FAULT Sensor Fault, both limits asserted", who_selected, who_selected);
+      sprintf(reply,"%s %s=FAULT Sensor Fault, both limits asserted", who_selected, who_selected);
       return CMD_ERR;
     }
   }
 
-  if ( strcasecmp(cmd_instruction, "?") == 0 ) {
-     sprintf(reply, "Usage: %s [reset|step|open|close] ", who_selected);
+  if ( strcasecmp(cmd_instruction,"?") == 0 ) {
+     sprintf(reply,"Usage: %s [reset|step|open|close] ", who_selected);
      return CMD_OK;
 
   }
 
-  if ( strcasecmp(cmd_instruction, "STEP") == 0 ) {
+  if ( strcasecmp(cmd_instruction,"STEP") == 0 ) {
     // STEP behavior, since this is a two-state system, it swaps
     // back and forth between states. If open, then close.
     // If closed, then open. 
@@ -3827,8 +3828,8 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
 
       // send back an error if the hatch is partially ajar
 
-      sprintf(reply, "%s HATCH=AJAR The dark hatch is partially open", who_selected);
-      sprintf(shm_addr->MODS.state_word[device], "AJAR");
+      sprintf(reply,"%s HATCH=AJAR The dark hatch is partially open", who_selected);
+      sprintf(shm_addr->MODS.state_word[device],"AJAR");
       shm_addr->MODS.pos[device] = io20_hatch;
       return CMD_ERR;
 
@@ -3836,12 +3837,12 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
 
       // If the hatch is open, close the hatch
 
-      ierr = sendCommand(device, "CLOSE", dummy);
-      sprintf(reply, "%s HATCH=%s", who_selected,dummy);
+      ierr = sendCommand(device,"CLOSE", dummy);
+      sprintf(reply,"%s HATCH=%s", who_selected,dummy);
 
       if ( ierr != 0 ) return CMD_ERR;
   
-      sprintf(shm_addr->MODS.state_word[device], "CLOSED");
+      sprintf(shm_addr->MODS.state_word[device],"CLOSED");
       shm_addr->MODS.pos[device] = 2.0;
       break;
 
@@ -3849,11 +3850,11 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
 
       // If the hatch is closed, then open the hatch 
 
-      ierr = sendCommand(device, "OPEN", dummy);
-      sprintf(reply, "%s HATCH=%s", who_selected, dummy);
+      ierr = sendCommand(device,"OPEN", dummy);
+      sprintf(reply,"%s HATCH=%s", who_selected, dummy);
       if ( ierr != 0 ) return CMD_ERR;
 
-      sprintf(shm_addr->MODS.state_word[device], "OPEN");
+      sprintf(shm_addr->MODS.state_word[device],"OPEN");
       shm_addr->MODS.pos[device] = 1.0;
       break;
 
@@ -3861,7 +3862,7 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
       // Send back a sensor error if this is the case
 
       sprintf(reply,"%s HATCH=FAULT Sensor Fault, both limits asserted", who_selected);
-      sprintf(shm_addr->MODS.state_word[device], "FAULT");
+      sprintf(shm_addr->MODS.state_word[device],"FAULT");
       shm_addr->MODS.pos[device] = 3.0;
       return CMD_ERR;
 
@@ -3871,18 +3872,18 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
     return CMD_OK;
   }
 
-  if ( strcasecmp(cmd_instruction, "RDBITS") == 0 ) {
+  if ( strcasecmp(cmd_instruction,"RDBITS") == 0 ) {
 
-    io20_hatch = mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy);
+    io20_hatch = mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy);
 
     if ( io20_hatch == 0 ) 
-      sprintf(reply, "%s %s=AJAR BITS=%s b22-b21'", who_selected, who_selected, dummy);
+      sprintf(reply,"%s %s=AJAR BITS=%s b22-b21'", who_selected, who_selected, dummy);
     else if ( io20_hatch == 1 ) 
-      sprintf(reply, "%s %s=OPEN BITS=%s b22-b21", who_selected, who_selected, dummy);
+      sprintf(reply,"%s %s=OPEN BITS=%s b22-b21", who_selected, who_selected, dummy);
     else if ( io20_hatch == 2 ) 
       sprintf(reply,"%s %s=CLOSED BITS=%s b22-b21", who_selected, who_selected, dummy);
     else
-      sprintf(reply, "%s %s=FAULT BITS=%s b22-b21'", who_selected, who_selected, dummy);
+      sprintf(reply,"%s %s=FAULT BITS=%s b22-b21'", who_selected, who_selected, dummy);
 
     return CMD_OK;
   }
@@ -3890,26 +3891,26 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
   GetArg(args, 1, cmd_instruction);
 
   if ( io20_hatch == 0 ) {
-    sprintf(reply, "%s HATCH=AJAR The dark hatch is partially open, or sensor problem, Reset to recover", who_selected);
+    sprintf(reply,"%s HATCH=AJAR The dark hatch is partially open, or sensor problem, Reset to recover", who_selected);
     return CMD_ERR;
   }
 
-  if ( strcasecmp(cmd_instruction, "OPEN") == 0 ) {
-    ierr = sendCommand(device, "OPEN", dummy); //  Send a command to the hatch
-    sprintf(reply, "%s HATCH=%s", who_selected, dummy);
+  if ( strcasecmp(cmd_instruction,"OPEN") == 0 ) {
+    ierr = sendCommand(device,"OPEN", dummy); //  Send a command to the hatch
+    sprintf(reply,"%s HATCH=%s", who_selected, dummy);
     if ( ierr != 0 ) return CMD_ERR;
 
-    sprintf(shm_addr->MODS.state_word[device], "OPEN");
+    sprintf(shm_addr->MODS.state_word[device],"OPEN");
     shm_addr->MODS.pos[device] = io20_hatch;
     return CMD_OK;
     
-  } else if ( strcasecmp(cmd_instruction, "CLOSE") == 0 ) {
+  } else if ( strcasecmp(cmd_instruction,"CLOSE") == 0 ) {
 
-    ierr = sendCommand(device, "CLOSE", dummy); //  Send a command to the hatch
-    sprintf(reply, "%s HATCH=%s", who_selected, dummy);
+    ierr = sendCommand(device,"CLOSE", dummy); //  Send a command to the hatch
+    sprintf(reply,"%s HATCH=%s", who_selected, dummy);
     if ( ierr != 0 ) return CMD_ERR;
 
-    sprintf(shm_addr->MODS.state_word[device], "CLOSED");
+    sprintf(shm_addr->MODS.state_word[device],"CLOSED");
     shm_addr->MODS.pos[device] = io20_hatch;
     return CMD_OK;
 
@@ -3920,7 +3921,7 @@ cmd_hatch(char *args, MsgType msgtype, char *reply)
     return CMD_OK;
 
   } else {
-    sprintf(reply, "%s Invalid request '%s', Usage: hatch [open|close]", who_selected, cmd_instruction); 
+    sprintf(reply,"%s Invalid request '%s', Usage: hatch [open|close]", who_selected, cmd_instruction); 
     return CMD_ERR;
 
   }
@@ -3992,17 +3993,17 @@ cmd_calib(char *args, MsgType msgtype, char *reply)
   device = getMechanismID(cmdtab[commandID].cmd, dummy); // Get mechanism ID
 
   if ( device == -1 ) { // Check for mechanism ID errors
-    sprintf(reply, "%s %s", who_selected, dummy);
+    sprintf(reply,"%s %s", who_selected, dummy);
     return CMD_ERR;
   }
 
-  if ( !strcasecmp(cmd_instruction, "ABORT") ) { // Abort process
+  if ( !strcasecmp(cmd_instruction,"ABORT") ) { // Abort process
     ierr = mlcStopMechanism(device, dummy);     // STOP the operation
-    sprintf(reply, "%s %s", who_selected, dummy);
+    sprintf(reply,"%s %s", who_selected, dummy);
     return CMD_OK;
   }
 
-  if ( !strcasecmp(cmd_instruction, "CONFIG") ) { // get mechanism ip
+  if ( !strcasecmp(cmd_instruction,"CONFIG") ) { // get mechanism ip
 
     mlcMechanismConfig(device,who_selected,dummy);
     sprintf(reply,"%s",dummy);
@@ -4013,22 +4014,22 @@ cmd_calib(char *args, MsgType msgtype, char *reply)
   ierr = mlcQuery(device, 1, dummy); // Check if the microLynx is ON
 
   if ( ierr != 0 ) {
-    sprintf(reply, "%s %s", who_selected, dummy);
+    sprintf(reply,"%s %s", who_selected, dummy);
     return CMD_ERR;
   }
 
   if ( mlcBusy(device,dummy) ) { // Check for busy
-    sprintf(reply, "%s %s", who_selected, dummy);
+    sprintf(reply,"%s %s", who_selected, dummy);
     return CMD_ERR;
   }
 
-  if ( !strcasecmp(cmd_instruction, "LOCK") ) { // Lock the Calibration Tower
+  if ( !strcasecmp(cmd_instruction,"LOCK") ) { // Lock the Calibration Tower
     shm_addr->MODS.LOCKS[device] = 1;
-    sprintf(reply, "%s %s=LOCK mechanism is locked",
+    sprintf(reply,"%s %s=LOCK mechanism is locked",
 	    who_selected, who_selected);
     return CMD_OK;
 
-  } else if ( !strcasecmp(cmd_instruction, "UNLOCK") ) { // Unlock
+  } else if ( !strcasecmp(cmd_instruction,"UNLOCK") ) { // Unlock
     shm_addr->MODS.LOCKS[device] = 0;
     sprintf(reply,"%s %s=UNLOCK mechanism is unlocked",
 	    who_selected, who_selected);
@@ -4037,32 +4038,32 @@ cmd_calib(char *args, MsgType msgtype, char *reply)
   }
 
   if ( !shm_addr->MODS.host[device] ) {
-    sprintf(reply, " %s %s=NOCOMM No IP address configured, check mechanisms.ini file", who_selected, who_selected);
+    sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file", who_selected, who_selected);
     return CMD_ERR;
 
   } else if ( shm_addr->MODS.LOCKS[device] ) {
-    sprintf(reply, " %s %s=FAULT connection LOCKED OUT, %s UNLOCK to continue", who_selected, who_selected, who_selected);
+    sprintf(reply," %s %s=FAULT connection LOCKED OUT, %s UNLOCK to continue", who_selected, who_selected, who_selected);
     return CMD_ERR;
 
   }
 
   if ( strlen(args) <= 0 ) {  // Query when no command is issued
 
-    blimit = mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy); // check bits
+    blimit = mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy); // check bits
 
     if ( blimit == 1 ) {
-      sprintf(reply, "CALIB CALIB=OUT"); 
-      strcpy(shm_addr->MODS.state_word[device], "OUT");
+      sprintf(reply,"CALIB CALIB=OUT"); 
+      strcpy(shm_addr->MODS.state_word[device],"OUT");
       ierr = agwcu("localhost",0,"calib out",dummy); // Send Calibration Tower
 
     } else if ( blimit == 2 ) {
-      sprintf(reply, "CALIB CALIB=IN");
-      strcpy(shm_addr->MODS.state_word[device], "IN");
+      sprintf(reply,"CALIB CALIB=IN");
+      strcpy(shm_addr->MODS.state_word[device],"IN");
       ierr = agwcu("localhost",0,"calib in",dummy); // Send Calibration Tower
 
     } else if ( blimit == 3 ) {  // Check limit switches
-      sprintf(reply, "CALIB CALIB=UNKNOWN Calibration Tower out-of-position, must be reset to initialize");
-      strcpy(shm_addr->MODS.state_word[device], "FAULT");
+      sprintf(reply,"CALIB CALIB=UNKNOWN Calibration Tower out-of-position, must be reset to initialize");
+      strcpy(shm_addr->MODS.state_word[device],"FAULT");
       return CMD_ERR;
 
     }
@@ -4071,26 +4072,26 @@ cmd_calib(char *args, MsgType msgtype, char *reply)
   }
 
 
-  if ( strcasecmp(cmd_instruction, "RESET") == 0 ) { // Reset mechanism
+  if ( strcasecmp(cmd_instruction,"RESET") == 0 ) { // Reset mechanism
 
     memset(dummy, 0, sizeof(dummy));   // Empty the character arrays
-    ierr = mlcBitsBase10(device, "PRINT IO 21", dummy); // Check direction
+    ierr = mlcBitsBase10(device,"PRINT IO 21", dummy); // Check direction
 
     if( ierr == 1 ) { // bit 21 is on, calib already reset and out
 
-      rawCommand(device, "PWRFAIL=0", dummy);
-      sendCommand(device, "POS=0", dummy);      // Find/define position
-      sprintf(reply, "%s %s=OUT", who_selected, who_selected);
-      strcpy(shm_addr->MODS.state_word[device], "OUT"); 
-      ierr = agwcu("localhost", 0, "calib out", dummy); // Send Calibration Tower
+      rawCommand(device,"PWRFAIL=0", dummy);
+      sendCommand(device,"POS=0", dummy);      // Find/define position
+      sprintf(reply,"%s %s=OUT", who_selected, who_selected);
+      strcpy(shm_addr->MODS.state_word[device],"OUT"); 
+      ierr = agwcu("localhost", 0,"calib out", dummy); // Send Calibration Tower
 
       return CMD_OK;
     }
       
-    sendCommand(device, "PWRFAIL=0", dummy);      // Find/define position
+    sendCommand(device,"PWRFAIL=0", dummy);      // Find/define position
 
-    sendCommand(device, "STORAGE", dummy);      // Find/define position
-    sprintf(reply, "%s CALIB=%s Reset Successful", who_selected, dummy);
+    sendCommand(device,"STORAGE", dummy);      // Find/define position
+    sprintf(reply,"%s CALIB=%s Reset Successful", who_selected, dummy);
 
     /* Set Calibration Tower bit OFF */
     ierr=agwcu("localhost",0,"calib out",dummy); // Send Calibration Tower
@@ -4102,37 +4103,37 @@ cmd_calib(char *args, MsgType msgtype, char *reply)
     }
 
     // clear for AGW server operations
-    sprintf(shm_addr->MODS.state_word[device], "OUT");
-    shm_addr->MODS.pos[device] = (float)mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy);
+    sprintf(shm_addr->MODS.state_word[device],"OUT");
+    shm_addr->MODS.pos[device] = (float)mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy);
     ierr=agwcu("localhost",0,"calib out",dummy); // Send Calibration Tower
 
     return CMD_OK;
 
   }
 
-  if ( strncasecmp(args, "M#", 2) ) { // check for low-level command
+  if ( strncasecmp(args,"M#", 2) ) { // check for low-level command
     ierr = checkPower(device, dummy); // check the mechanisms power
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s %s", who_selected, dummy);
+      sprintf(reply,"%s %s", who_selected, dummy);
       return CMD_ERR;
     }
   }
 
-  if ( !strcasecmp(cmd_instruction, "STEP") ) { // Step calibration in rev's
+  if ( !strcasecmp(cmd_instruction,"STEP") ) { // Step calibration in rev's
     //GetArg(args, 2, cmd_instruction2);
 
-    sprintf(cmd_instruction, "MOVR %s", cmd_instruction);
+    sprintf(cmd_instruction,"MOVR %s", cmd_instruction);
     ierr = sendCommand(device, cmd_instruction, dummy);
 
     shm_addr->MODS.pos[device] = positionToShrMem(device, dummy);
     sprintf(reply,"%s CALIB=%0.3f", who_selected, shm_addr->MODS.pos[device]);
     return CMD_OK;
 
-  } else if ( !strncasecmp(args, "M#", 2) ) { // check for low-level command
+  } else if ( !strncasecmp(args,"M#", 2) ) { // check for low-level command
 
     ierr = mlcTechCmd(device,args,who_selected,dummy);
-    sprintf(reply, "%s", dummy);
+    sprintf(reply,"%s", dummy);
 
     if ( ierr <= -1 ) return CMD_ERR;
     return CMD_OK;
@@ -4140,19 +4141,19 @@ cmd_calib(char *args, MsgType msgtype, char *reply)
 
   // Move Calibration Tower into the beam
 
-  if ( strcasecmp(cmd_instruction, "IN") == 0 ) { 
+  if ( strcasecmp(cmd_instruction,"IN") == 0 ) { 
 
-    blimit = mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy);
+    blimit = mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy);
 
     if ( blimit == 2 ) {
-      sprintf(reply, "CALIB CALIB=IN");
+      sprintf(reply,"CALIB CALIB=IN");
       ierr = agwcu("localhost",0,"calib in",dummy); // Send Calibration Tower
 
       return CMD_OK;
 
     } else if ( blimit == 0 ) {  // Check limit switches
-      sprintf(reply, "CALIB CALIB=FAULT Calibration Tower out-of-position, must be reset to initialize");
-      strcpy(shm_addr->MODS.state_word[device], "FAULT");
+      sprintf(reply,"CALIB CALIB=FAULT Calibration Tower out-of-position, must be reset to initialize");
+      strcpy(shm_addr->MODS.state_word[device],"FAULT");
       return CMD_ERR;
 
     }
@@ -4160,11 +4161,11 @@ cmd_calib(char *args, MsgType msgtype, char *reply)
     memset(dummy,0,sizeof(dummy));   // Empty the character arrays
 
     /* Check the AGW Y stage and make sure that Y axis is stowed
-    agwcu("localhost", 0, "calib", dummy);
+    agwcu("localhost", 0,"calib", dummy);
     ierr = atoi(&dummy[6]);
 
     if ( ierr == 0 ) {
-      sprintf(reply, "CALIB AGW Stage is in the science beam, move disallowed");
+      sprintf(reply,"CALIB AGW Stage is in the science beam, move disallowed");
       return CMD_ERR;
 
     }
@@ -4175,7 +4176,7 @@ cmd_calib(char *args, MsgType msgtype, char *reply)
     ierr=agwcu("localhost",0,"mmcIC 2 ",dummy);
 
     if(ierr) {
-      sprintf(reply,"AGWY=UNKNOWN %s",dummy);
+      sprintf(reply,"AGWY=-1 %s",dummy);
       return CMD_ERR;
     }
 
@@ -4188,49 +4189,49 @@ cmd_calib(char *args, MsgType msgtype, char *reply)
       
     }
 
-    ierr = sendCommand(device, "CALMODE", dummy); //  Science MODE command
+    ierr = sendCommand(device,"CALMODE", dummy); //  Science MODE command
 
     if ( ierr != 0 ) return CMD_ERR;
 
-    blimit = mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy); // get tell bit
+    blimit = mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy); // get tell bit
 
     if ( blimit == 0 || blimit == 3 )
-      sprintf(reply, "%s CALIB=FAULT Calibration Tower not in position", who_selected);
+      sprintf(reply,"%s CALIB=FAULT Calibration Tower not in position", who_selected);
 
-    strcpy(shm_addr->MODS.state_word[device], "IN");
+    strcpy(shm_addr->MODS.state_word[device],"IN");
     shm_addr->MODS.pos[device] = positionToShrMem(device,dummy);
 
     // Set Calibration Tower bit ON 
     memset(dummy, 0, sizeof(dummy));   // Empty the dummy character array
-    agwcu("localhost", 0, "calib in", dummy);
+    agwcu("localhost", 0,"calib in", dummy);
 
-    blimit = mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy); // get tell bit
+    blimit = mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy); // get tell bit
 
-    if ( blimit == 1 ) sprintf(reply, "%s CALIB=OUT", who_selected);
-    else if ( blimit == 2 ) sprintf(reply, "%s CALIB=IN", who_selected);
+    if ( blimit == 1 ) sprintf(reply,"%s CALIB=OUT", who_selected);
+    else if ( blimit == 2 ) sprintf(reply,"%s CALIB=IN", who_selected);
     
     // Override AGW software protection, move Calibration Tower into the beam
 
-  } else if ( !strcasecmp(cmd_instruction, "IN_OR") ) { // AGW Override
+  } else if ( !strcasecmp(cmd_instruction,"IN_OR") ) { // AGW Override
 
-    blimit = mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy); // get tell bit
+    blimit = mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy); // get tell bit
 
     if ( blimit == 2 ) {
-      sprintf(reply, "CALIB CALIB=IN");
+      sprintf(reply,"CALIB CALIB=IN");
       return CMD_OK;
 
     } else if ( blimit == 0 ) {  // Check both sensors
-      sprintf(reply, "CALIB CALIB=FAULT Calibration Tower out-of-position, must be reset to initialize");
-      strcpy(shm_addr->MODS.state_word[device], "FAULT");
+      sprintf(reply,"CALIB CALIB=FAULT Calibration Tower out-of-position, must be reset to initialize");
+      strcpy(shm_addr->MODS.state_word[device],"FAULT");
 
       return CMD_ERR;
     }
 
-    ierr = sendCommand(device, "CALMODE", dummy); //  Science MODE command
+    ierr = sendCommand(device,"CALMODE", dummy); //  Science MODE command
 
     if ( ierr != 0 ) return CMD_ERR;
 
-    strcpy(shm_addr->MODS.state_word[device], "IN");
+    strcpy(shm_addr->MODS.state_word[device],"IN");
     shm_addr->MODS.pos[device] = positionToShrMem(device,dummy);
 
     // Set Calibration Tower bit ON
@@ -4240,77 +4241,77 @@ cmd_calib(char *args, MsgType msgtype, char *reply)
     agwcu("localhost",0,"calib in",dummy);
     ierr = atoi(&dummy[6]);
 
-    blimit = mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy); // get tell bit
+    blimit = mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy); // get tell bit
 
-    if( blimit == 1 ) sprintf(reply, "%s CALIB=OUT", who_selected);
-    else if( blimit == 2 ) sprintf(reply, "%s CALIB=IN", who_selected);
+    if( blimit == 1 ) sprintf(reply,"%s CALIB=OUT", who_selected);
+    else if( blimit == 2 ) sprintf(reply,"%s CALIB=IN", who_selected);
 
     // Move the Calibration Tower out of the beam for Science Mode
 
   } else if (!strcasecmp(cmd_instruction,"OUT")) {
 
     blimit = 0;
-    blimit = mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy);
+    blimit = mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy);
 
     if ( blimit == 1 ) {
-      sprintf(reply, "CALIB CALIB=OUT");
+      sprintf(reply,"CALIB CALIB=OUT");
       ierr = agwcu("localhost",0,"calib out",dummy); // Send Calibration Tower
       return CMD_OK;
 
     } else if ( blimit == 0 ) {  // Check limit switches
-      sprintf(reply, "CALIB CALIB=FAULT Calibration Tower out-of-position, must be reset to initialize");
-      strcpy(shm_addr->MODS.state_word[device], "FAULT");
+      sprintf(reply,"CALIB CALIB=FAULT Calibration Tower out-of-position, must be reset to initialize");
+      strcpy(shm_addr->MODS.state_word[device],"FAULT");
       return CMD_ERR;
 
     }
 
-    ierr = sendCommand(device, "SCIMODE", dummy); //  Calibration MODE command
+    ierr = sendCommand(device,"SCIMODE", dummy); //  Calibration MODE command
 
     blimit = 0;
-    blimit = mlcBitsBase10(device, "PRINT IO 22,IO 21",dummy);
+    blimit = mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy);
 
     if ( blimit != 1 )
-      sprintf(reply, "%s CALIB=FAULT Calibration Tower not in position", who_selected);
+      sprintf(reply,"%s CALIB=FAULT Calibration Tower not in position", who_selected);
 
-    strcpy(shm_addr->MODS.state_word[device], "OUT");
+    strcpy(shm_addr->MODS.state_word[device],"OUT");
     shm_addr->MODS.pos[device] = positionToShrMem(device,dummy);
 
 
     /* Set Calibration Tower bit OFF */
-    ierr = agwcu("localhost", 0, "calib out", dummy);
+    ierr = agwcu("localhost", 0,"calib out", dummy);
     ierr = atoi(&dummy[6]);
 
-    blimit = mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy); // get tell bit
+    blimit = mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy); // get tell bit
 
     if ( blimit == 1 ) {
-      sprintf(reply, "%s CALIB=OUT", who_selected);
+      sprintf(reply,"%s CALIB=OUT", who_selected);
       ierr = agwcu("localhost",0,"calib out",dummy); // Send Calibration Tower
 
     } else if ( blimit == 2 ) {
-      sprintf(reply, "%s CALIB=IN", who_selected);
+      sprintf(reply,"%s CALIB=IN", who_selected);
       ierr = agwcu("localhost",0,"calib in",dummy); // Send Calibration Tower
     }
 
   } else if ( strcasecmp(cmd_instruction,"RDBITS") == 0 ) {
 
-    blimit = mlcBitsBase10(device, "PRINT IO 22,IO 21", dummy); // get tell bit
+    blimit = mlcBitsBase10(device,"PRINT IO 22,IO 21", dummy); // get tell bit
     
     if ( blimit == 1 ) 
-      sprintf(reply, "%s %s=OUT BITS=%s b22-b21, CW sensor asserted", who_selected, who_selected, dummy);
+      sprintf(reply,"%s %s=OUT BITS=%s b22-b21, CW sensor asserted", who_selected, who_selected, dummy);
 
     else if ( blimit == 2 ) 
-      sprintf(reply, "%s %s=IN BITS=%s b22-b21, CCW sensor asserted", who_selected, who_selected, dummy);
+      sprintf(reply,"%s %s=IN BITS=%s b22-b21, CCW sensor asserted", who_selected, who_selected, dummy);
 
     else if ( blimit == 3 ) 
-      sprintf(reply, "%s %s=FAULT BITS=%s Both CW and CCW are asserted", who_selected, who_selected, dummy);
+      sprintf(reply,"%s %s=FAULT BITS=%s Both CW and CCW are asserted", who_selected, who_selected, dummy);
 
     else
-      sprintf(reply, "%s %s=UNKNOWN BITS=%s No Sensors asserted", who_selected, who_selected, dummy);
+      sprintf(reply,"%s %s=UNKNOWN BITS=%s No Sensors asserted", who_selected, who_selected, dummy);
 
     return CMD_OK;
 
   } else {
-    sprintf(reply, "%s Invalid request '%s', Usage: calib [in|out]", who_selected, cmd_instruction);
+    sprintf(reply,"%s Invalid request '%s', Usage: calib [in|out]", who_selected, cmd_instruction);
     return CMD_ERR;
 
   }
@@ -4412,7 +4413,7 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM No IP address configured, check mechanisms.ini file",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file",who_selected,who_selected);
     return CMD_ERR;
   } else if ( shm_addr->MODS.LOCKS[device] ) {
     sprintf(reply," %s %s=FAULT connection LOCKED OUT, SLITMASK UNLOCK to continue",who_selected,who_selected);
@@ -4430,7 +4431,7 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - NO COMMunication or not connected",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
@@ -4923,7 +4924,7 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device2]) {
-    sprintf(reply," %s %s=NOCOMM No IP address configured, check mechanisms.ini file",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file",who_selected,who_selected);
     return CMD_ERR;
   } else if ( shm_addr->MODS.LOCKS[device2] ) {
     sprintf(reply," %s %s=FAULT connection LOCKED OUT, SLITMASK UNLOCK to continue",who_selected,who_selected);
@@ -4956,7 +4957,7 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM No IP address configured, check mechanisms.ini file",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file",who_selected,who_selected);
     return CMD_ERR;
   } else if ( shm_addr->MODS.LOCKS[device] ) {
     sprintf(reply," %s %s=FAULT connection LOCKED OUT, SLITMASK UNLOCK to continue",who_selected,who_selected);
@@ -5403,7 +5404,7 @@ cmd_slitmask(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM No IP address configured, check mechanisms.ini file",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file",who_selected,who_selected);
     return CMD_ERR;
   } else if ( shm_addr->MODS.LOCKS[device] ) {
     sprintf(reply," %s %s=FAULT connection LOCKED OUT, %s UNLOCK to continue",who_selected,who_selected,who_selected);
@@ -5977,9 +5978,9 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
   memset(get_buff, 0, sizeof(get_buff));
   memset(dummy, 0, sizeof(dummy));
 
-  if ( !strcasecmp(cmd_instruction, "RDTAB") ) { // re-read the filter tables
+  if ( !strcasecmp(cmd_instruction,"RDTAB") ) { // re-read the filter tables
     system("/usr/local/bin/mlcRecover agwfilt");
-    sprintf(reply, "%s %s table read", who_selected, cmd_instruction);
+    sprintf(reply,"%s %s table read", who_selected, cmd_instruction);
     return CMD_OK;
 
   }
@@ -5996,21 +5997,21 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
 
   device1 = getMechanismID("agwy", dummy); // Get mechanism device ID
   if ( device1 == -1 ) {
-    sprintf(reply, "%s %s", who_selected, dummy);  
+    sprintf(reply,"%s %s", who_selected, dummy);  
     return CMD_ERR;
 
   }
 
   device2 = getMechanismID("agwfoc", dummy); // Get mechanism device ID
   if ( device2 == -1 ) {
-    sprintf(reply, "%s %s", who_selected, dummy);  
+    sprintf(reply,"%s %s", who_selected, dummy);  
     return CMD_ERR;
 
   }
 
   device3 = getMechanismID("agwfilt", dummy); // Get mechanism device ID
   if ( device3 == -1 ) {
-    sprintf(reply, "%s %s", who_selected, dummy);  
+    sprintf(reply,"%s %s", who_selected, dummy);  
     return CMD_ERR;
 
   }
@@ -6019,14 +6020,14 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
     strcpy(who_selected,"AGW");
     
     memset(get_buff, 0, sizeof(get_buff));
-    ierr = agwcu("localhost", 0, "getxy", get_buff);
+    ierr = agwcu("localhost", 0,"getxy", get_buff);
 
     if ( ierr != 0 ) {
       sprintf(reply,"%s %s", who_selected, &get_buff[6]);
       return CMD_ERR;
     }
 
-    sprintf(reply, "%s %s", who_selected, &get_buff[6]);
+    sprintf(reply,"%s %s", who_selected, &get_buff[6]);
 
     MilliSleep(100);
     memset(get_buff, 0, sizeof(get_buff));
@@ -6037,7 +6038,7 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
       return CMD_ERR;
 
     }
-    sprintf(reply, "%s %s", reply, &get_buff[6]);
+    sprintf(reply,"%s %s", reply, &get_buff[6]);
     return CMD_OK;
 
   }
@@ -6048,7 +6049,7 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
   memset(get_buff, 0, sizeof(get_buff));
 
   if ( val[0] > shm_addr->MODS.max[device] || val[0] < 0 ) {
-    sprintf(reply, "%s Invalid AGWXS %d request, valid range 0..%0.0f", who_selected, val[0], shm_addr->MODS.max[device]);
+    sprintf(reply,"%s Invalid AGWXS %d request, valid range 0..%0.0f", who_selected, val[0], shm_addr->MODS.max[device]);
     return CMD_ERR;
 
   } else if ( val[1] > shm_addr->MODS.max[device1] || val[1] < 0) {
@@ -6056,7 +6057,7 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
   return CMD_ERR;
 
   } else if ( val[2] > shm_addr->MODS.max[device2] || val[2] < 0) {
-    sprintf(reply, "%s Invalid AGWFS %d request, valid range 0..%0.0f", who_selected, val[2], shm_addr->MODS.max[device2]);
+    sprintf(reply,"%s Invalid AGWFS %d request, valid range 0..%0.0f", who_selected, val[2], shm_addr->MODS.max[device2]);
     return CMD_ERR;
 
   }
@@ -6067,7 +6068,7 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
   caldevice = getMechanismID("calib", dummy); // Get mechanism device ID
 
   if ( caldevice == -1 ) {
-    sprintf(reply, "%s %s", who_selected, dummy);  
+    sprintf(reply,"%s %s", who_selected, dummy);  
     return CMD_ERR;
 
   }
@@ -6075,26 +6076,26 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
   /*  
   // Check the for Calibration Tower obstruction
   */
-  //  ierr = rawCommand(caldevice, "PRINT IO 21", dummy);
+  //  ierr = rawCommand(caldevice,"PRINT IO 21", dummy);
   //  calibErr = atoi(dummy);
 
-  if ( !strcasecmp(cmd_instruction, "ABORT") ) {
-    sprintf(dummy, "%c", 27);     // Stop Y axis
-    ierr = agwcu("localhost", 0, "mmcIC 2 ", dummy);
+  if ( !strcasecmp(cmd_instruction,"ABORT") ) {
+    sprintf(dummy,"%c", 27);     // Stop Y axis
+    ierr = agwcu("localhost", 0,"mmcIC 2 ", dummy);
 
-    sprintf(dummy, "%c", 27);     // Stop X axis
-    ierr = agwcu("localhost", 0, "mmcIC 1 ", dummy);
+    sprintf(dummy,"%c", 27);     // Stop X axis
+    ierr = agwcu("localhost", 0,"mmcIC 1 ", dummy);
 
-    sprintf(dummy, "%c", 27);   // Stop FOCUS axis
-    ierr = agwcu("localhost", 0, "mmcIC 4 ", dummy);
+    sprintf(dummy,"%c", 27);   // Stop FOCUS axis
+    ierr = agwcu("localhost", 0,"mmcIC 4 ", dummy);
 
-    sprintf(reply, "%s AGW=ABORT operation was aborted", who_selected);
+    sprintf(reply,"%s AGW=ABORT operation was aborted", who_selected);
     return CMD_OK;
 
   }
 
-  if ( !strcasecmp(cmd_instruction, "RESET") ||
-       !strcasecmp(cmd_instruction, "HOME") ) {
+  if ( !strcasecmp(cmd_instruction,"RESET") ||
+       !strcasecmp(cmd_instruction,"HOME") ) {
 
     memset(dummy, 0, sizeof(dummy));
     if ( mlcBitsBase10(caldevice,"PRINT IO 22,IO 21",dummy) == 1 ) {
@@ -6111,7 +6112,7 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
 
     if ( mlcBitsBase10(caldevice,"PRINT IO 22,IO 21",dummy) != 1 ) {
 
-      sprintf(reply, "%s Calibration Tower is in the beam, move disallowed,", who_selected);
+      sprintf(reply,"%s Calibration Tower is in the beam, move disallowed,", who_selected);
       return CMD_ERR;
       
     }
@@ -6119,32 +6120,32 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
     memset(agwcmd,0,sizeof(agwcmd));
     GetArg(args,1,agwcmd); // AGW X Stage
     sprintf(get_buff,"x %s ",agwcmd);
-    ierr = agwcu("localhost", 0, "setposition ", get_buff);
+    ierr = agwcu("localhost", 0,"setposition ", get_buff);
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s %s", who_selected, get_buff);
+      sprintf(reply,"%s %s", who_selected, get_buff);
       return CMD_ERR;
 
     }
 
     memset(agwcmd, 0, sizeof(agwcmd));
     GetArg(args, 3, agwcmd); // AGW Focus 
-    sprintf(get_buff, "focus %s", agwcmd);
-    ierr = agwcu("localhost", 0, "setposition ", get_buff);
+    sprintf(get_buff,"focus %s", agwcmd);
+    ierr = agwcu("localhost", 0,"setposition ", get_buff);
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s %s", who_selected, get_buff);
+      sprintf(reply,"%s %s", who_selected, get_buff);
       return CMD_ERR;
 
     }
 
     memset(agwcmd, 0, sizeof(agwcmd));
     GetArg(args, 2, agwcmd); // AGW Y Stage
-    sprintf(get_buff, "y %s 4", agwcmd);
+    sprintf(get_buff,"y %s 4", agwcmd);
     ierr = agwcu("localhost", 0,"setposition ", get_buff);
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s %s", who_selected, get_buff);
+      sprintf(reply,"%s %s", who_selected, get_buff);
       return CMD_ERR;
 
     }
@@ -6152,7 +6153,7 @@ cmd_agw(char *args, MsgType msgtype, char *reply)
     cmd_agw("", EXEC, reply); // Display results
 
   } else {
-    sprintf(reply, "%s Invalid request '%s', Usage: agw [xpos ypos fpos]", who_selected, cmd_instruction);
+    sprintf(reply,"%s Invalid request '%s', Usage: agw [xpos ypos fpos]", who_selected, cmd_instruction);
     return CMD_ERR;
 
   }
@@ -6233,7 +6234,7 @@ cmd_agwy(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - NO COMMunication or not connected",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
@@ -6484,7 +6485,7 @@ cmd_agwx(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - NO COMMunication or not connected",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
@@ -6504,22 +6505,22 @@ cmd_agwx(char *args, MsgType msgtype, char *reply)
 
   } else if (!strcasecmp(cmd_instruction,"RDBITS")) {
 
-    sprintf(dummy, "M#PRINT IO 22, IO 21", args);
+    sprintf(dummy,"M#PRINT IO 22, IO 21", args);
     len=strlen(dummy);
-    ierr = agwcu("localhost", 0, "mmcIC 1 ", dummy);
+    ierr = agwcu("localhost", 0,"mmcIC 1 ", dummy);
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s", dummy);
+      sprintf(reply,"%s", dummy);
       return CMD_ERR;
 
     }
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s", dummy);
+      sprintf(reply,"%s", dummy);
       return CMD_ERR;
 
     }
-    sprintf(reply, "BITS %s", &dummy[6]);
+    sprintf(reply,"BITS %s", &dummy[6]);
 
     return CMD_OK;
   }
@@ -6583,10 +6584,10 @@ cmd_agwx(char *args, MsgType msgtype, char *reply)
     if ( mlcBitsBase10(caldevice,"PRINT IO 22,IO 21",dummy) == 1 ) {
 
       memset(dummy, 0, sizeof(dummy));
-      ierr = agwcu("localhost", 0, "initx", dummy); // Home AGw X Stage
+      ierr = agwcu("localhost", 0,"initx", dummy); // Home AGw X Stage
 
       if ( ierr != 0 ) {
-	sprintf(reply, "%s %s", who_selected, dummy);
+	sprintf(reply,"%s %s", who_selected, dummy);
 	return CMD_ERR;
       }
     }
@@ -6745,7 +6746,7 @@ cmd_agwfoc(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - NO COMMunication or not connected",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
@@ -6799,21 +6800,21 @@ cmd_agwfoc(char *args, MsgType msgtype, char *reply)
     return CMD_OK;
 
   } else if (!strcasecmp(cmd_instruction,"RDBITS")) {
-    sprintf(dummy, "M#PRINT IO 22, IO 21", args);
+    sprintf(dummy,"M#PRINT IO 22, IO 21", args);
     len=strlen(dummy);
-    ierr = agwcu("localhost", 0, "mmcIC 4 ", dummy);
+    ierr = agwcu("localhost", 0,"mmcIC 4 ", dummy);
     if ( ierr != 0 ) {
-      sprintf(reply, "%s", dummy);
+      sprintf(reply,"%s", dummy);
       return CMD_ERR;
 
     }
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s", dummy);
+      sprintf(reply,"%s", dummy);
       return CMD_ERR;
 
     }
-    sprintf(reply, "BITS %s", &dummy[6]);
+    sprintf(reply,"BITS %s", &dummy[6]);
 
     return CMD_OK;
 
@@ -6836,14 +6837,14 @@ cmd_agwfoc(char *args, MsgType msgtype, char *reply)
     /* Check the for Calibration Tower obstruction */
     if ( mlcBitsBase10(caldevice,"PRINT IO 22,IO 21",dummy) == 1 ) {
 
-      ierr = agwcu("localhost", 0, "initfoc", dummy); // Home/Init Focus
+      ierr = agwcu("localhost", 0,"initfoc", dummy); // Home/Init Focus
 
       if ( ierr != 0 ) {
-	sprintf(reply, "%s %s", who_selected, dummy);
+	sprintf(reply,"%s %s", who_selected, dummy);
 	return CMD_ERR;
       }
     }
-    ierr = agwcu("localhost", 0, "getfocus", dummy); // Home/Init Focus
+    ierr = agwcu("localhost", 0,"getfocus", dummy); // Home/Init Focus
       
     for(ierr=0;dummy[ierr]!='=';ierr++);
     ierr++;
@@ -6998,7 +6999,7 @@ cmd_agwfilt(char *args, MsgType msgtype, char *reply)
 
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - NO COMMunication or not connected",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
@@ -7016,21 +7017,21 @@ cmd_agwfilt(char *args, MsgType msgtype, char *reply)
 
   } else if (!strcasecmp(cmd_instruction,"RDBITS")) {
 
-    sprintf(dummy, "M#PRINT IO 22, IO 21", args);
+    sprintf(dummy,"M#PRINT IO 22, IO 21", args);
     len=strlen(dummy);
-    ierr = agwcu("localhost", 0, "mmcIC 8 ", dummy);
+    ierr = agwcu("localhost", 0,"mmcIC 8 ", dummy);
     if ( ierr != 0 ) {
-      sprintf(reply, "%s", dummy);
+      sprintf(reply,"%s", dummy);
       return CMD_ERR;
 
     }
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s", dummy);
+      sprintf(reply,"%s", dummy);
       return CMD_ERR;
 
     }
-    sprintf(reply, "BITS %s", &dummy[6]);
+    sprintf(reply,"BITS %s", &dummy[6]);
 
     return CMD_OK;
   }
@@ -7224,7 +7225,7 @@ cmd_dichroic(char *args, MsgType msgtype, char *reply)
 
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM No IP address configured, check mechanisms.ini file",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file",who_selected,who_selected);
     return CMD_ERR;
   } else if ( shm_addr->MODS.LOCKS[device] ) {
     sprintf(reply," %s %s=FAULT connection LOCKED OUT, Check Field Lens Cover remove it then '%s UNLOCK' to continue",who_selected,who_selected,who_selected);
@@ -7590,7 +7591,7 @@ cmd_dichroic(char *args, MsgType msgtype, char *reply)
 
   If the home keyword is given, it retracts the guide probe to its home 
   (mechanical zero) position, out of the science beam. This is equivalent to 
-  giving the individual commands "AGWX home", "AGWY home", and "AGWFS home".
+  giving the individual commands "AGWX home","AGWY home", and "AGWFS home".
 
   Both XGP and YGP must be given device coordinates and then executes 
   equivalent AGWX, AGWY, and AGWFS motions.
@@ -7637,13 +7638,13 @@ cmd_gprobe(char *args, MsgType msgtype, char *reply)
   /* Search for the IP and Socket */
   device = getMechanismID("agwy", dummy); // Get mechanism device ID
   if ( device == -1 ) {
-    sprintf(reply, "%s %s", who_selected, dummy);
+    sprintf(reply,"%s %s", who_selected, dummy);
     return CMD_ERR;
 
   }
 
   if( shm_addr->MODS.host[device] == 0 ) {
-    sprintf(reply, " %s AGWY=NOCOMM - NO COMMunication or not connected", who_selected);
+    sprintf(reply," %s AGWY=-1 - No communication or not connected", who_selected);
     return CMD_ERR;
 
   }
@@ -7653,23 +7654,23 @@ cmd_gprobe(char *args, MsgType msgtype, char *reply)
   device2 = getMechanismID("agwx", dummy); // Get mechanism device ID
 
   if ( device2 == -1 ) {
-    sprintf(reply, "%s %s", who_selected, dummy);
+    sprintf(reply,"%s %s", who_selected, dummy);
     return CMD_ERR;
 
   }
 
   if(!shm_addr->MODS.host[device2]) {
-    sprintf(reply," %s AGWXS=NOCOMM - NO COMMunication or not connected",who_selected);
+    sprintf(reply," %s AGWXS=-1 - No communication or not connected",who_selected);
     return CMD_ERR;
   }
 
-  ierr = sscanf(args, "%s %s", Xval,Yval);
+  ierr = sscanf(args,"%s %s", Xval,Yval);
 
   if ( strlen(args) <= 0 ) { // Query when no command is issued
 
     memset(get_buff, 0, sizeof(get_buff));
 
-    ierr = agwcu("localhost", 0, "getxy", get_buff);
+    ierr = agwcu("localhost", 0,"getxy", get_buff);
     if ( ierr != 0 ) {
       sprintf(reply,"%s %s", who_selected, get_buff);
       return CMD_ERR;
@@ -7687,8 +7688,8 @@ cmd_gprobe(char *args, MsgType msgtype, char *reply)
 
     GetArg(dummy, 1, argbuf);
 
-    if ( mlcBitsBase10(caldevice, "PRINT IO 22, IO 21", dummy) == 1 ) {
-      ierr = agwcu("localhost", 0, "init", get_buff); // Home AGW
+    if ( mlcBitsBase10(caldevice,"PRINT IO 22, IO 21", dummy) == 1 ) {
+      ierr = agwcu("localhost", 0,"init", get_buff); // Home AGW
 
     }
 
@@ -7697,7 +7698,7 @@ cmd_gprobe(char *args, MsgType msgtype, char *reply)
     ierr=agwcu("localhost",0,"getxy", get_buff);
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s %s", who_selected, get_buff);
+      sprintf(reply,"%s %s", who_selected, get_buff);
       return CMD_ERR;
       
     }
@@ -7713,8 +7714,8 @@ cmd_gprobe(char *args, MsgType msgtype, char *reply)
     */
     GetArg(dummy, 1, argbuf);
 
-    if ( ierr = mlcBitsBase10(caldevice, "PRINT IO 22, IO 21", dummy) == 2 ) {
-      sprintf(reply, "%s Calibration Tower is in the beam, move disallowed[%d][%s]", who_selected, ierr, dummy);
+    if ( ierr = mlcBitsBase10(caldevice,"PRINT IO 22, IO 21", dummy) == 2 ) {
+      sprintf(reply,"%s Calibration Tower is in the beam, move disallowed[%d][%s]", who_selected, ierr, dummy);
       return CMD_ERR;
 
     }
@@ -7722,7 +7723,7 @@ cmd_gprobe(char *args, MsgType msgtype, char *reply)
     ierr = mods_setxy("localhost", 0, atof(Xval), atof(Yval), 0.0, 0);
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s %s", who_selected, mods_fatalerrormsg[ierr]);
+      sprintf(reply,"%s %s", who_selected, mods_fatalerrormsg[ierr]);
       return CMD_ERR;
 
     }
@@ -7731,15 +7732,15 @@ cmd_gprobe(char *args, MsgType msgtype, char *reply)
 
     memset(get_buff,0,sizeof(get_buff));
 
-    ierr = agwcu("localhost", 0, "getxy", get_buff);
+    ierr = agwcu("localhost", 0,"getxy", get_buff);
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s %s", who_selected, get_buff);
+      sprintf(reply,"%s %s", who_selected, get_buff);
       return CMD_ERR;
 
     }
 
-    sprintf(reply, "%s %s", who_selected, &get_buff[6]);
+    sprintf(reply,"%s %s", who_selected, &get_buff[6]);
     return CMD_OK;
 
   } else {
@@ -7921,7 +7922,7 @@ cmd_gpfocus(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - NO COMMunication or not connected",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
@@ -8017,7 +8018,7 @@ cmd_gpfocus(char *args, MsgType msgtype, char *reply)
 
     } else {
 
-      ierr = agwcu("localhost", 0, "getfocus", dummy);
+      ierr = agwcu("localhost", 0,"getfocus", dummy);
 
       sprintf(reply,"%s", &dummy[6]);
 
@@ -8083,14 +8084,14 @@ cmd_gpfocus(char *args, MsgType msgtype, char *reply)
     GetArg(args, 1, cmd_instruction); // AGW Focus
 
     /* Check the for Calibration Tower obstruction */
-    if ( ierr = mlcBitsBase10(caldevice, "PRINT IO 22,IO 21", dummy) == 2 ) {
-      sprintf(reply, "%s Calibration Tower is in the beam, move disallowed[%d][%s]", who_selected, ierr, dummy);
+    if ( ierr = mlcBitsBase10(caldevice,"PRINT IO 22,IO 21", dummy) == 2 ) {
+      sprintf(reply,"%s Calibration Tower is in the beam, move disallowed[%d][%s]", who_selected, ierr, dummy);
       return CMD_ERR;
       
     }
 
     memset(get_buff, 0, sizeof(get_buff));
-    sprintf(get_buff, "setfocus %s", cmd_instruction);
+    sprintf(get_buff,"setfocus %s", cmd_instruction);
     ierr = agwcu("localhost", 0, get_buff, dummy);
 
     if ( ierr != 0 ) {
@@ -8101,15 +8102,15 @@ cmd_gpfocus(char *args, MsgType msgtype, char *reply)
     }
 
     memset(dummy, 0, sizeof(dummy));
-    ierr = agwcu("localhost", 0, "getfocus", dummy);
+    ierr = agwcu("localhost", 0,"getfocus", dummy);
     sprintf(reply,"%s", &dummy[6]);
 
     memset(dummy, 0, sizeof(dummy));
     strcpy(dummy,"y");
-    ierr = agwcu("localhost", 0, "getposition ", dummy);
+    ierr = agwcu("localhost", 0,"getposition ", dummy);
 
     if ( ierr != 0 ) {
-      sprintf(reply, "%s %s", who_selected, dummy);
+      sprintf(reply,"%s %s", who_selected, dummy);
       return CMD_ERR;
   
     }
@@ -8240,7 +8241,7 @@ cmd_colttf(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - NO COMMunication or not connected",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
@@ -9086,9 +9087,9 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
 
   if(ttfA==-1 || ttfB==-1  || ttfC==-1) { 
     sprintf(reply,"%s",who_selected);
-    if(ttfA==-1) sprintf(reply,"%s %cCOLTTFA=NOTAVAIL",reply,who_selected[0]);
-    if(ttfB==-1) sprintf(reply,"%s %cCOLTTFB=NOTAVAIL",reply,who_selected[0]);
-    if(ttfC==-1) sprintf(reply,"%s %cCOLTTFC=NOTAVAIL",reply,who_selected[0]);
+    if(ttfA==-1) sprintf(reply,"%s %cCOLTTFA=-1",reply,who_selected[0]);
+    if(ttfB==-1) sprintf(reply,"%s %cCOLTTFB=-1",reply,who_selected[0]);
+    if(ttfC==-1) sprintf(reply,"%s %cCOLTTFC=-1",reply,who_selected[0]);
     return CMD_ERR; 
   }
 
@@ -9096,10 +9097,10 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
      !shm_addr->MODS.host[ttfB] || 
      !shm_addr->MODS.host[ttfC]) { 
     sprintf(reply,"%s",who_selected);
-    if(!shm_addr->MODS.host[ttfA]) sprintf(reply,"%s %cCOLTTFA=NOCOMM",reply,who_selected[0]);
-    if(!shm_addr->MODS.host[ttfB]) sprintf(reply,"%s %cCOLTTFB=NOCOMM",reply,who_selected[0]);
-    if(!shm_addr->MODS.host[ttfC]) sprintf(reply,"%s %cCOLTTFC=NOCOMM",reply,who_selected[0]);
-    strcat(reply," NO COMMunication or not connected");
+    if(!shm_addr->MODS.host[ttfA]) sprintf(reply,"%s %cCOLTTFA=-1",reply,who_selected[0]);
+    if(!shm_addr->MODS.host[ttfB]) sprintf(reply,"%s %cCOLTTFB=-1",reply,who_selected[0]);
+    if(!shm_addr->MODS.host[ttfC]) sprintf(reply,"%s %cCOLTTFC=-1",reply,who_selected[0]);
+    strcat(reply," No communication or not connected");
     return CMD_ERR;
   }
 
@@ -9114,13 +9115,13 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
     sprintf(ABCval,"MOVA %f",ttfvals[0]);
     ierr=rawCommand(ttfB,ABCval,dummy);
     MilliSleep(100);
-    if(ierr==-1) sprintf(ABCmsg,"%cCOLTTFB=NOCOMM",who_selected[0]);
+    if(ierr==-1) sprintf(ABCmsg,"%cCOLTTFB=-1",who_selected[0]);
     MilliSleep(100);
     ierr=rawCommand(ttfC,ABCval,dummy);
-    if(ierr==-1) sprintf(ABCmsg,"%s %cCOLTTFC=NOCOMM",ABCmsg,who_selected[0]);
+    if(ierr==-1) sprintf(ABCmsg,"%s %cCOLTTFC=-1",ABCmsg,who_selected[0]);
     MilliSleep(100);
     ierr=rawCommand(ttfA,ABCval,dummy);
-    if(ierr==-1) sprintf(ABCmsg,"%s %cCOLTTFA=NOCOMM",ABCmsg,who_selected[0]);
+    if(ierr==-1) sprintf(ABCmsg,"%s %cCOLTTFA=-1",ABCmsg,who_selected[0]);
       
     if(ierr<0) {
       sprintf(reply,"%s %s",who_selected,ABCmsg);
@@ -9205,19 +9206,19 @@ cmd_colfoc(char *args, MsgType msgtype, char *reply)
     sprintf(ABCval,"MOVA %f",ttfvals[1]);
     ierr=rawCommand(ttfB,ABCval,dummy);
     MilliSleep(100);
-    if(ierr==-1) sprintf(ABCmsg,"%cCOLTTFB=NOCOMM",who_selected[0]);
+    if(ierr==-1) sprintf(ABCmsg,"%cCOLTTFB=-1",who_selected[0]);
 
     ttfvals[2]=-((ttfvals[2]/shm_addr->MODS.convf[ttfC])); // TTFC
     sprintf(ABCval,"MOVA %f",ttfvals[2]);
     ierr=rawCommand(ttfC,ABCval,dummy);
     MilliSleep(100);
-    if(ierr==-1) sprintf(ABCmsg,"%cCOLTTFC=NOCOMM",ABCmsg,who_selected[0]);
+    if(ierr==-1) sprintf(ABCmsg,"%cCOLTTFC=-1",ABCmsg,who_selected[0]);
     
     ttfvals[0]=-((ttfvals[0]/shm_addr->MODS.convf[ttfA])); // TTFA
     sprintf(ABCval,"MOVA %f",ttfvals[0]);
     ierr=rawCommand(ttfA,ABCval,dummy);
     MilliSleep(100);
-    if(ierr==-1) sprintf(ABCmsg,"%cCOLTTFA=NOCOMM",ABCmsg,who_selected[0]);
+    if(ierr==-1) sprintf(ABCmsg,"%cCOLTTFA=-1",ABCmsg,who_selected[0]);
     
     if(ierr<0) {
       sprintf(reply,"%s %s",who_selected,ABCmsg);
@@ -9417,7 +9418,7 @@ cmd_grating(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM No IP address configured, check mechanisms.ini file",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file",who_selected,who_selected);
     return CMD_ERR;
   } else if ( shm_addr->MODS.LOCKS[device] ) {
     sprintf(reply," %s %s=FAULT connection LOCKED OUT, '%s UNLOCK' to continue",who_selected,who_selected,who_selected);
@@ -9746,7 +9747,7 @@ cmd_grtilt(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - NO COMMunication or not connected",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
@@ -10032,7 +10033,7 @@ cmd_shutter(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - NO COMMunication or not connected",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
@@ -10196,7 +10197,7 @@ cmd_camfoc(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - NO COMMunication or not connected",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
@@ -10587,7 +10588,7 @@ cmd_filter(char *args, MsgType msgtype, char *reply)
   }
 
   if(!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - NO COMMunication or not connected",who_selected,who_selected);
+    sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
@@ -11343,7 +11344,7 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
   VISLASER [enable|disable]\n
 
   Enables or disables laser light output to the fiber.  To turn output off 
-  without powering down the laser controller, "VISLASER disable" is used.
+  without powering down the laser controller,"VISLASER disable" is used.
 
   Additional command options are used to change the light output power, 
   change the temperature controller settings, and request status 
@@ -11622,7 +11623,7 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
     } else {
       if (shm_addr->MODS.lasers.vislaser_power < 0) shm_addr->MODS.lasers.vislaser_power = 0;
       
-      sprintf(reply, "%s Visible Laser is %s, cannot enable the beam VISLASER=%s VISBEAM=%s",who_selected,
+      sprintf(reply,"%s Visible Laser is %s, cannot enable the beam VISLASER=%s VISBEAM=%s",who_selected,
 	      shm_addr->MODS.lasers.vislaser_state==1 ? "ON" : "OFF",
 	      shm_addr->MODS.lasers.vislaser_state==1 ? "ON" : "OFF",
 	      shm_addr->MODS.lasers.visbeam_state==1 ? "ENABLED" : "DISABLED");
@@ -11660,7 +11661,7 @@ cmd_vislaser(char *args, MsgType msgtype, char *reply)
     } else {
       if (shm_addr->MODS.lasers.vislaser_power < 0) shm_addr->MODS.lasers.vislaser_power = 0;
       
-      sprintf(reply, "%s Visible Laser is %s, cannot disable the beam VISLASER=%s VISBEAM=%s",who_selected,
+      sprintf(reply,"%s Visible Laser is %s, cannot disable the beam VISLASER=%s VISBEAM=%s",who_selected,
 	      shm_addr->MODS.lasers.vislaser_state==1 ? "ON" : "OFF",
 	      shm_addr->MODS.lasers.vislaser_state==1 ? "ON" : "OFF",
 	      shm_addr->MODS.lasers.visbeam_state==1 ? "ENABLED" : "DISABLED");
@@ -12133,7 +12134,7 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
     } else {
       if (shm_addr->MODS.lasers.irlaser_power < 0) shm_addr->MODS.lasers.irlaser_power = 0;
       
-      sprintf(reply, "%s IR Laser is %s, cannot enable the beam IRLASER=%s IRBEAM=%s",who_selected,
+      sprintf(reply,"%s IR Laser is %s, cannot enable the beam IRLASER=%s IRBEAM=%s",who_selected,
 	      shm_addr->MODS.lasers.irlaser_state==1 ? "ON" : "OFF",
 	      shm_addr->MODS.lasers.irlaser_state==1 ? "ON" : "OFF",
 	      shm_addr->MODS.lasers.irbeam_state==1 ? "ENABLED" : "DISABLED");
@@ -12174,7 +12175,7 @@ cmd_irlaser(char *args, MsgType msgtype, char *reply)
     } else {
       if (shm_addr->MODS.lasers.irlaser_power < 0) shm_addr->MODS.lasers.irlaser_power = 0;
 
-      sprintf(reply, "%s IR Laser is %s, cannot disable the beam IRLASER=%s IRBEAM=%s",who_selected,
+      sprintf(reply,"%s IR Laser is %s, cannot disable the beam IRLASER=%s IRBEAM=%s",who_selected,
 	      shm_addr->MODS.lasers.irlaser_state==1 ? "ON" : "OFF",
 	      shm_addr->MODS.lasers.irlaser_state==1 ? "ON" : "OFF",
 	      shm_addr->MODS.lasers.irbeam_state==1 ? "ENABLED" : "DISABLED");
@@ -13188,7 +13189,7 @@ cmd_loadplc(char *args, MsgType msgtype, char *reply)
   /*
   // Now open the program file, return a -9 if file is in error.
   */
-  if (!(fp=fopen(plcFile, "r"))) {
+  if (!(fp=fopen(plcFile,"r"))) {
     sprintf(reply,"LOADPLC Could not open file %s",plcFile);
     return CMD_ERR;
   }
