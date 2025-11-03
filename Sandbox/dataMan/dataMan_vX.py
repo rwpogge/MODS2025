@@ -241,11 +241,37 @@ def modsFITSProc(fitsFile,repoDir):
 
         hdu[0].header['HISTORY'] = "[dataMan] Updated CCDTEMP and BASETEMP"
                              
-        # write new data to ...
+        # write new data to procDir, then copy to repoDir
 
-        # close original and done
+        baseFile = os.path.basename(fitsFile)
+        procPath = Path() / procDir / baseFile
+        # if procPath.exists():
+        #    logger.error(f"{str(procPath)} exists, will not overwrite, aborting")
+        # else:
+        procFile = str(procPath)
+        repoPath = Path() / repoDir / baseFile
+        # if repoPath.exists():
+        #    logger.error(f"{str(repoPath)} exists, will not overwrite, aborting")
+        # else:
+
+        #
+        # try:
+        #    hdu.writeto(str(procPath))
+        #    hdu.close()
+        #    logger.info(f"processed file {fitsFile} copied to {procDir}")
+        # except Exception as err:
+        #    logger.error(f"could not write {fitsFile} to {procDir} - {err}")
+        #    hdu.close()
+        #
+        # try:
+        #    shutil.copyfile(str(procPath),str(procFile))
+        #    logger.info(f"processed {fitsFile} copied to {repoDir}")
+        # except Exception as err:
+        #    logger.error(f"could not copy {fitsFile} to {repoDir} - {err}")
+        # 
+
+        # we're done
         
-        hdu.close()
         logger.info(f"proc done: {fitsFile} copied to {repoDir}")
         
     else:
