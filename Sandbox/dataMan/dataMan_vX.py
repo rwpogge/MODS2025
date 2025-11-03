@@ -171,6 +171,14 @@ def modsFITSProc(fitsFile,repoDir):
     are transferred to the repository and queued for ingestion into the LBTO Data
     Archive.  This latter places a requirement on fixing any FITS header issues
     that might inhibit ingestion into the data archive.
+
+    Author
+    ------
+    R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
+
+    Modification
+    ------------
+    
     '''
 
     if Path(fitsFile).exists():
@@ -255,13 +263,18 @@ def modsFITSProc(fitsFile,repoDir):
         # else:
 
         #
+        # Write out the FITS file with the modified header to the procPath
+        #
         # try:
         #    hdu.writeto(str(procPath))
         #    hdu.close()
+        #    procPath.chmod(0o666) # change to RW for all before copying
         #    logger.info(f"processed file {fitsFile} copied to {procDir}")
         # except Exception as err:
         #    logger.error(f"could not write {fitsFile} to {procDir} - {err}")
         #    hdu.close()
+        #
+        # Copy the processed file to the repository
         #
         # try:
         #    shutil.copyfile(str(procPath),str(procFile))
