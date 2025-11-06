@@ -23,9 +23,10 @@ R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
 
 Modification History
 --------------------
- * 2025 Aug 29 - start of development, test server/client stubs w/threading
- * 2025 Oct 16 - added logging, config file, paths, and FITS handling
- * 2025 Oct 31 - boo! Started header processing coding
+ * 2025 Aug 29 - start of development, test server/client stubs w/threading [rwp/osu]
+ * 2025 Oct 16 - added logging, config file, paths, and FITS handling [rwp/osu]
+ * 2025 Oct 31 - boo! Started header processing coding [rwp/osu]
+ * 2025 Nov 06 - FITS header time/date fixes [rwp/osu]
  
 '''
 
@@ -33,8 +34,8 @@ import os
 import sys
 import socket
 import threading
-import time
 import datetime
+import pytz
 
 # astropy.io for FITS file handling
 
@@ -43,6 +44,12 @@ from astropy.io import fits
 # astropy.table for FITS binary table handling
 
 from astropy.table import Table
+
+# astropy units, coordinates, and time
+
+from astropy import units as u
+from astropy.coordinates import SkyCoord, EarthLocation
+from astropy.time import Time
 
 # pathlib for path handling
 
@@ -123,6 +130,12 @@ def obsDate():
     We use obsDate for logs and data files.
     '''
 
+    myTZ = pytz.timezone("US/Arizona")
+    if float(datetime.datetime.now(myTZ).strftime("%H")) < 12.0:  # is it before noon?
+        return (datetime.datetime.now(myTZ).today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+    else:
+        return datetime.datetime.now(myTZ).today().strftime("%Y%m%d")
+
     if float(datetime.datetime.now().strftime("%H")) < 12.0:  # before noon
         return (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
     else:
@@ -165,6 +178,10 @@ def modsFITSProc(fitsFile,repoDir):
      * items we must fix before the data are presented to the data archive
      * items that can only be fixed using data available on the acquisition machine
      
+    One exception to time-critical updates is getting the observation date
+    and time info in the correct standard ISO8601 format required by FITS and
+    the LBT Archive. Absent this, the LBT Archive might not ingest the file.
+    
     Once processing steps are completed, the last step is to copy the processed
     FITS file to the observatory "newdata" repository which is where it may be
     accessed by observers and SciOps personnel on site.  From newdata, the images
@@ -186,17 +203,17 @@ def modsFITSProc(fitsFile,repoDir):
 
         try:
             hdu = fits.open(fitsFile)
-        except:
-            logger.error(f"could not open {origFits} - {exp}")
+        except Exception as exp:
+            logger.error(f"could not open {fitsFile} - {exp}")
             return
 
         if procParam["fixROI"]:
             # fix DETSEC and CCDSEC per quadrant
 
-            xc=int(hdu[0].header['ref-pix1'])
-            yc=int(hdu[0].header['ref-pix2'])
-            nx=hdu[1].header['naxis1']
-            ny=hdu[1].header['naxis2']
+            xc=int(hdu[0].header["ref-pix1"])
+            yc=int(hdu[0].header["ref-pix2"])
+            nx=hdu[1].header["naxis1"]
+            ny=hdu[1].header["naxis2"]
 
             # compute corrected DETSEC and LVTn parameters
 
@@ -209,86 +226,149 @@ def modsFITSProc(fitsFile,repoDir):
 
             # we need to fix DETSEC *and* CCDSEC
 
-            hdu[1].header['detsec'] = (detsec1,'Corrected DETSEC')
-            hdu[2].header['detsec'] = (detsec2,'Corrected DETSEC')
-            hdu[3].header['detsec'] = (detsec3,'Corrected DETSEC')
-            hdu[4].header['detsec'] = (detsec4,'Corrected DETSEC')
-            hdu[1].header['ccdsec'] = (detsec1,'Corrected CCDSEC')
-            hdu[2].header['ccdsec'] = (detsec2,'Corrected CCDSEC')
-            hdu[3].header['ccdsec'] = (detsec3,'Corrected CCDSEC')
-            hdu[4].header['ccdsec'] = (detsec4,'Corrected CCDSEC')
+            hdu[1].header["DETSEC"] = (detsec1,"Corrected DETSEC")
+            hdu[2].header["DETSEC"] = (detsec2,"Corrected DETSEC")
+            hdu[3].header["DETSEC"] = (detsec3,"Corrected DETSEC")
+            hdu[4].header["DETSeC"] = (detsec4,"Corrected DETSEC")
+            hdu[1].header["CCDSEC"] = (detsec1,"Corrected CCDSEC")
+            hdu[2].header["CCDSEC"] = (detsec2,"Corrected CCDSEC")
+            hdu[3].header["CCDSEC"] = (detsec3,"Corrected CCDSEC")
+            hdu[4].header["CCDSEC"] = (detsec4,"Corrected CCDSEC")
 
             # fix LTVn so ds9 cursor returns correct physical pixel coords
             # in Q2,Q3, and Q4 (Q1 is OK)
 
-            hdu[2].header['LTV1'] = (q24_LTV1,'Corrected LTV1')
-            hdu[4].header['LTV1'] = (q24_LTV1,'Corrected LTV1')
-            hdu[3].header['LTV2'] = (q34_LTV2,'Corrected LTV2')
-            hdu[4].header['LTV2'] = (q34_LTV2,'Corrected LTV2')
+            hdu[2].header["LTV1"] = (q24_LTV1,"Corrected LTV1")
+            hdu[4].header["LTV1"] = (q24_LTV1,"Corrected LTV1")
+            hdu[3].header["LTV2"] = (q34_LTV2,"Corrected LTV2")
+            hdu[4].header["LTV2"] = (q34_LTV2,"Corrected LTV2")
 
-            hdu[0].header['HISTORY'] = "[dataMan] Updated ROI DETSEC and CCDSEC"
+            hdu[0].header["HISTORY"] = "[dataMan] Updated ROI DETSEC and CCDSEC"
+            
+        # fix DATE-OBS to be compliant with the LBT Archive and NOST FITS standards
+
+        try:        
+            dateObs = hdu[0].header["DATE-OBS"]
+            utcObs = hdu[0].header["UTC-OBS"]
+            newDateObs = f"{dateObs}T{utcObs}"
+            hdu[0].header["DATE-OBS"] = (newDateObs,"UTC Date at start of obs")
+            
+            # compute modified Julian Date
+            
+            obsTime = Time(newDateObs,format="isot",scale="utc")
+            hdu[0].header["MJD-OBS"] = (obsTime.mjd,"Modified JD at start of obs")
+            
+        except Exception as err:
+            logger.error(f"Could not process date/time in {fitsFile} - corrupted header? - {err}")
+            logger.error(f"Aborted processing, {fitsFile} not processed or tranferred")
+            hdu.close()
+            return
+        
+        # Compute HJD and BJD
+        
+        try:
+            telRA = hdu[0].header["TELRA"]
+            telDec = hdu[0].header["TELDEC"]
+        
+            # compute Heliocentric and Barycenter JD
+            
+            obsSite = EarthLocation.of_site("LBT")
+            obsTime = Time(newDateObs,format="isot",scale="utc",location=obsSite)
+            obsCoord = SkyCoord(telRA,telDec,unit=(u.hourangle,u.deg),frame="icrs")
+            
+            lttBary = obsTime.light_travel_time(obsCoord,"barycentric")
+            lttHelio = obsTime.light_travel_time(obsCoord,"heliocentric")
+            obsBary = obsTime.tdb + lttBary
+            obsHelio = obsTime.utc + lttHelio            
+
+            hdu[0].header["HJD-OBS"] = (obsHelio.mjd,"Barycentric MJD at start of obs")
+            hdu[0].header["BJD-OBS"] = (obsBary.mjd,"Heliocentric MJD at start of obs")
+        except:
+            # might have header corruption, but this is non-critical so let pass
+            pass
             
         # archon status snapshot to augment/correct header
         
-        t = Table(hdu[5].data)
-        archonDict = dict(zip(t['Keyword'].tolist(),t['Value'].tolist()))
-
+        try:
+            t = Table(hdu[5].data)
+            archonDict = dict(zip(t["Keyword"].tolist(),t["Value"].tolist()))
+        except:
+            pass
+        
         # fix CCDTEMP and BASETEMP
    
         try:
-            ccdTemp = float(archonDict[procParam['ccdTemp']])
+            ccdTemp = float(archonDict[procParam["ccdTemp"]])
         except:
             ccdTemp = -999.9 # no-read value
-        hdu[0].header['CCDTEMP'] = (ccdTemp,'CCD Detector Temperature [deg C]')
+        hdu[0].header["CCDTEMP"] = (ccdTemp,"CCD Detector Temperature [deg C]")
 
         try:
-            baseTemp = float(archonDict[procParam['baseTemp']])
+            baseTemp = float(archonDict[procParam["baseTemp"]])
         except:
             baseTemp = -999.9 # no-read value
-        hdu[0].header['BASETEMP'] = (baseTemp,'CCD Mount Base Temperature [deg C]')
-
-        hdu[0].header['HISTORY'] = "[dataMan] Updated CCDTEMP and BASETEMP"
+        hdu[0].header["BASETEMP"] = (baseTemp,"CCD Mount Base Temperature [deg C]")
                              
+        # Generate a uniqName coded as
+        #    <instID>.CCYYMMDD.hhmmss.fits
+        # that we use in the event writing out the processed image would
+        # overwrite an existing image.  The FILENAME preserves the intended
+        # filename, we add UNIQNAME to the primary header, and use that
+        # name to avoid overwrite.
+        
+        try:
+            instID = hdu[0].header["INSTRUME"].lower()
+        except:
+            logger.warning(f"No INSTRUME keyword found in {fitsFile} - corrupt header, uniqname not created")
+            instID = "modsNx"
+
+        dtNow = datetime.datetime.now().strftime("%Y%m%d.%H%M%S")
+        uniqName = f"{instID}.{dtNow}.fits"
+        hdu[0].header["UNIQNAME"] = (uniqName,"Unique filename")
+        
         # write new data to procDir, then copy to repoDir
 
         baseFile = os.path.basename(fitsFile)
+        
         procPath = Path() / procDir / baseFile
-        # if procPath.exists():
-        #    logger.error(f"{str(procPath)} exists, will not overwrite, aborting")
-        # else:
-        procFile = str(procPath)
-        repoPath = Path() / repoDir / baseFile
-        # if repoPath.exists():
-        #    logger.error(f"{str(repoPath)} exists, will not overwrite, aborting")
-        # else:
+        if procPath.exists():
+            logger.error(f"{str(procPath)} exists, using uniqname={uniqName}")
+            procPath = Path() / procDir / uniqName
+        
+        repoPath = Path() / repoDir / uniqName
+        if repoPath.exists():
+            logger.error(f"{str(repoPath)} exists, using uniqname={uniqName}")
+            repoPath = Path() / repoDir / uniqName
 
-        #
-        # Write out the FITS file with the modified header to the procPath
-        #
-        # try:
-        #    hdu.writeto(str(procPath))
-        #    hdu.close()
-        #    procPath.chmod(0o666) # change to RW for all before copying
-        #    logger.info(f"processed file {fitsFile} copied to {procDir}")
-        # except Exception as err:
-        #    logger.error(f"could not write {fitsFile} to {procDir} - {err}")
-        #    hdu.close()
-        #
-        # Copy the processed file to the repository
-        #
-        # try:
-        #    shutil.copyfile(str(procPath),str(procFile))
-        #    logger.info(f"processed {fitsFile} copied to {repoDir}")
-        # except Exception as err:
-        #    logger.error(f"could not copy {fitsFile} to {repoDir} - {err}")
-        # 
+        # Write out the FITS file with the modified header to the procPath and close it
 
-        # we're done
+        try:
+            hdu.writeto(str(procPath))
+            hdu.close()
+            procPath.chmod(0o666) # change to RW for all before copying
+            logger.info(f"processed file {fitsFile} copied to {procDir}")
+        except Exception as err:
+            logger.error(f"could not write {fitsFile} to {procDir} - {err}")
+            hdu.close()
+            return
+            
+        # Copy the processed file to the LBTO new data repository
+
+        try:
+            shutil.copyfile(str(procPath),str(repoPath))
+            logger.info(f"processed {fitsFile} copied to {repoDir}")
+        except Exception as err:
+            logger.error(f"could not copy {fitsFile} to {repoDir} - {err}")
+            return
+        
+        # we"re done
         
         logger.info(f"proc done: {fitsFile} copied to {repoDir}")
         
     else:
-        logger.error(f"proc: no such file {fitsFile}")
+        logger.error(f"proc: no such file {fitsFile}, nothing to process")
+
+    return
         
 #---------------------------------------------------------------------------
 #
@@ -298,7 +378,7 @@ def modsFITSProc(fitsFile,repoDir):
 hostname = socket.gethostname()
 modsID = hostname[:6]
     
-dmHost = 'localhost'
+dmHost = "localhost"
 dmPort = 10301
 
 dataDir = "/home/data"
@@ -406,14 +486,14 @@ while 1:
     
     # decode it
     
-    cmdStr = d[0].decode('utf-8')
+    cmdStr = d[0].decode("utf-8")
     addr = d[1]
     cmdBits = cmdStr.split()
     cmdWord = cmdBits[0]
     if len(cmdBits) > 1:
         cmdArgs = cmdBits[1]
     else:
-        cmdArgs = ''
+        cmdArgs = ""
         
     # we got a command 
     
@@ -422,13 +502,13 @@ while 1:
 
         # quit - stop the dataMan session
         
-        if cmdWord.lower() == 'quit':
+        if cmdWord.lower() == "quit":
             logger.info("Received QUIT command from remote user")
             break
 
         # proc - process a file
         
-        elif cmdWord.lower() == 'proc':
+        elif cmdWord.lower() == "proc":
             filename = cmdArgs
             if Path(filename).exists():
                 logger.info(f"proc: start processing image {filename}")
