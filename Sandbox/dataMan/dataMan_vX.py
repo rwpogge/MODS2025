@@ -264,14 +264,14 @@ def modsFITSProc(fitsFile,repoDir):
             hdu.close()
             return
         
-        # Compute HJD and BJD
+        # Compute heliocentric and barycentric JD.  HJD is in UTC time scale,
+        # but BJD is in Barycentric Dynamical Time (TDB).  We need site and
+        # target coordinate info for this.
         
         try:
             telRA = hdu[0].header["TELRA"]
             telDec = hdu[0].header["TELDEC"]
         
-            # compute Heliocentric and Barycenter JD
-            
             obsSite = EarthLocation.of_site("LBT")
             obsTime = Time(newDateObs,format="isot",scale="utc",location=obsSite)
             obsCoord = SkyCoord(telRA,telDec,unit=(u.hourangle,u.deg),frame="icrs")
@@ -281,8 +281,8 @@ def modsFITSProc(fitsFile,repoDir):
             obsBary = obsTime.tdb + lttBary
             obsHelio = obsTime.utc + lttHelio            
 
-            hdu[0].header["HJD-OBS"] = (obsHelio.mjd,"Barycentric MJD at start of obs")
-            hdu[0].header["BJD-OBS"] = (obsBary.mjd,"Heliocentric MJD at start of obs")
+            hdu[0].header["HJD-OBS"] = (obsHelio.mjd,"Barycentric MJD at start of obs [TDB]")
+            hdu[0].header["BJD-OBS"] = (obsBary.mjd,"Heliocentric MJD at start of obs [UTC]")
         except:
             # might have header corruption, but this is non-critical so let pass
             pass
