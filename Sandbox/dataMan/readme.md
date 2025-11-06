@@ -1,6 +1,6 @@
 # dataMan - MODS Data Manager
 
-**Updated: 2025 Oct 31 [rwp/osu]##
+**Updated: 2025 Nov 6 [rwp/osu]**
 
 Development sandbox for a python-based data manager for the Archon MODS 
 system that will post-process raw images taken with MODS.
