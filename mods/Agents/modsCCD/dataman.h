@@ -58,12 +58,12 @@
 
 */
 
-typedef struct dataman_config {
+typedef struct dmConfig {
 
   // First things first:
 
   int  useDM;   //!< 1 = Instrument uses dataman, 0 = no dataman
-  char CfgFile[128]; //!< Name of a DataMan configuration file loaded into this struct (if used)
+  char cfgFile[128]; //!< Name of a DataMan configuration file loaded into this struct (if used)
 
   // IMPv2 Identity of this application
 
@@ -88,12 +88,12 @@ typedef struct dataman_config {
 
 // DataMan agent interface functions (see dataman.c for definitions)
 
-int  OpenDataMan(dataman_t *, int);
-int  ReadDataMan(dataman_t *, char *);
-int  WriteDataMan(dataman_t *, char *);
-void CloseDataMan(dataman_t *); 
-void InitDataMan(dataman_t *);
-int  LoadDMConfig(dataman_t *, char *, char *);
-void DataManInfo(dataman_t *);
+int  openDM(dataman_t *, int);
+int  readDM(dataman_t *, char *);
+int  writeDM(dataman_t *, char *);
+void closeDM(dataman_t *); 
+void initDM(dataman_t *);
+int  loadDMConfig(dataman_t *, char *, char *);
+void dmInfo(dataman_t *);
 
 #endif

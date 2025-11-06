@@ -146,7 +146,7 @@ loadConfig(char *cfgfile)
   initObsPars(&obs);
   initAzCam(&ccd);
   
-  //initDataMan(&dm);
+  //initDM(&dm);
 
   // Now open the config file, if not, gripe and return -1.  Opening the
   // file here ensures that sensible defaults are set even if the config
@@ -308,7 +308,30 @@ loadConfig(char *cfgfile)
 	GetArg(inbuf,2,argbuf);
 	obs.keepAlive = atof(argbuf);
       }
+
+      // dataMan agent info
+
+      // useDM: are we using dataMan for data transfer?
+
+      //else if (strcasecmp(keyword,"useDM")==0) {
+      //  dm.useDM = 1;
+      //}
       
+      // dmHost: Hostname of the machine running this channel's dataman agent
+      //         usually localhost, but doesn't have to be...
+
+      else if (strcasecmp(keyword,"dmHost")==0) {
+	GetArg(inbuf,2,argbuf);
+	// strcpy(dm.Host,argbuf);
+      }
+	
+      // dmPort: network socket port number of the dataMan agent on dmHost
+							  
+      else if (strcasecmp(keyword,"dmPort")==0) {
+	GetArg(inbuf, 2, argbuf);
+	// dm.Port = atoi(argbuf);
+      }
+
       // Gripe if junk is in the config file
 
       else { 
@@ -333,7 +356,7 @@ loadConfig(char *cfgfile)
 //---------------------------------------------------------------------------
 
 /*!
-  \brief Save the runtime aconfiguration
+  \brief Save the runtime configuration
   
   \param cfgfile name of the configuration file to save
   \return 0 on success, -1 on failure

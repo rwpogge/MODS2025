@@ -496,11 +496,11 @@ processImage(azcam_t *cam, obsPars_t *obs, char *fname, char *reply)
 
   // build the command string
 
-  sprintf(cmdStr,"%s>%s process %s\r",srcID,dm.ID,fname);
+  sprintf(cmdStr,"process %s\r",fname);
   
   // Upload the command to DataMan and return
 
-  if (writeDataMan(&dm,cmdStr)<0) {
+  if (writeDM(&dm,cmdStr)<0) {
     strcpy(reply,"Post-Processing command upload failed - cannot write to socket");
     return -1;
   }

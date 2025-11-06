@@ -14,9 +14,9 @@
 #include "dataman.h"  // all the header we should need...
 
 /*!
-  \brief OpenDataMan - open a socket connection to the DataMan agent
+  \brief openDM - open a socket connection to the DataMan agent
 
-  \param dm pointer to a dataman_config data structure
+  \param dm pointer to a dmConfig data structure
   \param Port localhost port to bind to for replies - must be unused
   \return file descriptor of the open socket or \<0 if an error
 
@@ -33,7 +33,7 @@
 */
 
 int
-OpenDataMan(dataman_t *dm, int Port)
+openDM(dataman_t *dm, int Port)
 { 
 
   // sockaddr and hostent structs for the DataMan agent
@@ -52,7 +52,7 @@ OpenDataMan(dataman_t *dm, int Port)
 
   dm->FD = socket(AF_INET,SOCK_DGRAM,0);
   if (dm->FD < 0) {
-    printf("ERROR(OpenDataMan): Cannot open DataMan comm socket - %s\n",
+    printf("ERROR(openDM): Cannot open DataMan comm socket - %s\n",
 	   strerror(errno));
     dm->FD = -1;
     return -1;
@@ -61,7 +61,7 @@ OpenDataMan(dataman_t *dm, int Port)
   // bind this socket to the requested port
 
   if (bind(dm->FD, (struct sockaddr *) &DMclient, sizeof(DMclient)) < 0) {
-    printf("ERROR (OpenDataMan): Cannot bind DataMan comm socket %s\n",
+    printf("ERROR (openDM): Cannot bind DataMan comm socket %s\n",
            strerror(errno));
     close(dm->FD);
     dm->FD = -1;
@@ -75,18 +75,18 @@ OpenDataMan(dataman_t *dm, int Port)
 }
 
 /*!
-  \brief ReadDataMan - read data sent from the DataMan agent to our UDP socket
+  \brief readDM - read data sent from the DataMan agent to our UDP socket
 
-  \param dm pointer to a dataman_config data structure
+  \param dm pointer to a dmConfig data structure
   \param buf character string to hold the data read
 
   \return number of bytes read, or -1 if an error
 
   We communicate with the DataMan agent using UDP datagrams.  This
   routine sets up a socket read with a timeout interval. If timeout=0,
-  it simply polls the socket.  If #dataman_config::Timeout<0, it
+  it simply polls the socket.  If #dmConfig::Timeout<0, it
   blocks indefinitely until either there is input on the socket, or a
-  SIGINT (Ctrl+C) signal is received.  If #dataman_config::Timeout>0,
+  SIGINT (Ctrl+C) signal is received.  If #dmConfig::Timeout>0,
   it will wait "timeout" seconds for input on the socket.  If the
   timeout expires before data is received, it issues a timeout error
   and returns.  The calling routine must figure out what to do next.
@@ -94,7 +94,7 @@ OpenDataMan(dataman_t *dm, int Port)
 */
 
 int
-ReadDataMan(dataman_t *dm, char *buf)
+readDM(dataman_t *dm, char *buf)
 {
   int nread=0;
   struct sockaddr_in sock;
@@ -107,7 +107,7 @@ ReadDataMan(dataman_t *dm, char *buf)
   // If we have no active file descriptor, we can't do this...
 
   if (dm->FD <= 0) {
-    printf("ERROR(ReadDataMan): No DataMan socket open.\n");
+    printf("ERROR(readDM): No DataMan socket open.\n");
     return -1;
   }
 
@@ -138,15 +138,15 @@ ReadDataMan(dataman_t *dm, char *buf)
 
   if (nready < 0) {
     if (errno == EINTR) { // got a Ctrl+C interrupt
-      printf("ReadDataMan: caught interrupt, aborting\n");
+      printf("readDM: caught interrupt, aborting\n");
       return -2;
     }
-    printf("ERROR (ReadDataMan): select error - %s\n",strerror(errno));
+    printf("ERROR (readDM): select error - %s\n",strerror(errno));
     return -2;
   }
   else if (nready == 0) {
     if (dm->Timeout > 0) {
-      printf("ERROR (ReadDataMan): %d sec timeout expired\n",dm->Timeout);
+      printf("ERROR (readDM): %d sec timeout expired\n",dm->Timeout);
       return -1;
     }
     else
@@ -159,7 +159,7 @@ ReadDataMan(dataman_t *dm, char *buf)
 		 (struct sockaddr *) &sock, (socklen_t *) &sock_len);
 
   if (nread<0)
-    printf("ERROR(ReadDataMan): network socket recvfrom() error - %s\n",
+    printf("ERROR(readDM): network socket recvfrom() error - %s\n",
            strerror(errno));
 
   // all done, return the number of bytes read
@@ -169,9 +169,9 @@ ReadDataMan(dataman_t *dm, char *buf)
 }
 
 /*!
-  \brief WriteDataMan - write data to the DataMan agent via our UDP socket
+  \brief writeDM - write data to the DataMan agent via our UDP socket
 
-  \param dm pointer to a #dataman_config data structure
+  \param dm pointer to a #dmConfig data structure
   \param buf character string with the data to write to the DataMan socket
   \return number of bytes written, or -1 if an error
 
@@ -179,12 +179,10 @@ ReadDataMan(dataman_t *dm, char *buf)
   This routine sends a command string to the DataMan agent at the
   specified host:port.
 
-  How do we handle string termination?  In the calling routine.  buf
-  must contain a properly configured, IMPv2-compliant message string.
 */
 
 int
-WriteDataMan(dataman_t *dm, char *buf)
+writeDM(dataman_t *dm, char *buf)
 {
   int nwrote;
   struct hostent *host;
@@ -195,14 +193,14 @@ WriteDataMan(dataman_t *dm, char *buf)
     return 0;
 
   if (dm->FD <= 0) {
-    printf("ERROR(WriteDataMan): No DataMan comm socket open.\n");
+    printf("ERROR(writeDM): No DataMan comm socket open.\n");
     return -1;
   }
 
   // Translate the DM agent's hostname into an IP address 
 
   if (!(host=gethostbyname(dm->Host))){
-    printf("ERROR(WriteDataMan): cannot resolve hostname %s - %s\n",
+    printf("ERROR(writeDM): cannot resolve hostname %s - %s\n",
            dm->Host,hstrerror(h_errno));
     return -1;
   }
@@ -220,7 +218,7 @@ WriteDataMan(dataman_t *dm, char *buf)
 		  (struct sockaddr *) &hostaddr, sizeof(hostaddr));
 
   if (nwrote<0)
-    printf("ERROR(WriteDataMan): could not sendto() %s:%d - %s\n",
+    printf("ERROR(writeDM): could not sendto() %s:%d - %s\n",
            dm->Host,dm->Port,strerror(errno));
 
   return nwrote;
@@ -228,9 +226,9 @@ WriteDataMan(dataman_t *dm, char *buf)
 }
 
 /*!
-  \brief CloseDataMan - close a DataMan agent connection
+  \brief closeDM - close a DataMan agent connection
 
-  \param dm pointer to a dataman_config struct
+  \param dm pointer to a dmConfig struct
 
   Simple function for closing an open DataMan agent communications
   socket. Provided for syntatic consistency with the rest of the API.
@@ -242,7 +240,7 @@ WriteDataMan(dataman_t *dm, char *buf)
 */
 
 void
-CloseDataMan(dataman_t *dm)
+closeDM(dataman_t *dm)
 {
   if (dm->FD > 0)
     close(dm->FD);
@@ -250,20 +248,20 @@ CloseDataMan(dataman_t *dm)
 }
 
 /*!
-  \brief InitDataMan - initialize a DataMan data structure
+  \brief initDM - initialize a DataMan data structure
 
-  \param dm pointer to a #dataman_config data structure to initialize
+  \param dm pointer to a #dmConfig data structure to initialize
 
-  Initializes the contents of a #dataman_config data structure to
+  Initializes the contents of a #dmConfig data structure to
   sensible default values.  Should be called to remove any delinquent
   data values before setting it up with real values (Note,
-  LoadDMConfig() calls this function).
+  loadDMConfig() calls this function).
 
-  \sa LoadDMConfig()
+  \sa loadDMConfig()
 */
 
 void
-InitDataMan(dataman_t *dm)
+initDM(dataman_t *dm)
 {
 
   if (dm->FD < 0) { // only change these if we are no live (allows warm restart)
@@ -274,7 +272,7 @@ InitDataMan(dataman_t *dm)
 
   dm->useDM = 0;  // start out assuming no DataMan in use
 
-  strcpy(dm->CfgFile,"NONE");
+  strcpy(dm->cfgFile,"NONE");
   strcpy(dm->Name,"NONE");
 
   dm->Timeout = DM_TIMEOUT;
@@ -283,9 +281,9 @@ InitDataMan(dataman_t *dm)
 }
 
 /*!
-  \brief LoadDMConfig - load the contents of a DataMan configuration file
+  \brief loadDMConfig - load the contents of a DataMan configuration file
 
-  \param dm pointer to a dataman_config data stucture
+  \param dm pointer to a dmConfig data stucture
   \param config name of a configuration file to load
   \param reply string to contain any replies from the function
   \return 0 on success, -1 on errors
@@ -319,10 +317,14 @@ InitDataMan(dataman_t *dm)
   The minimum information needed is the name, host, port, and timeout of
   the DataMan agent.  Other data may be added later as required.
 
+  We may or may not have a separate runtime configuration file for this,
+  but this is provided in case we do.  A more economical approach is
+  to embed this in the main runtime configuration file and then populate
+  the dataman_t data structure as needed.
 */
 
 int
-LoadDMConfig(dataman_t *dm, char *config, char *reply)
+loadDMConfig(dataman_t *dm, char *config, char *reply)
 { 
   char inbuf[MAXCFGLINE];   // Generic line buffer
   char keyword[MAXCFGLINE]; // File is organized into KEYWORD VALUE pairs
@@ -342,11 +344,11 @@ LoadDMConfig(dataman_t *dm, char *config, char *reply)
   
   // Clear the DataMan struct of delinquent data
 
-  InitDataMan(dm);
+  initDM(dm);
 
   // Save the name of this config file for future reference
 
-  strcpy(dm->CfgFile,config);
+  strcpy(dm->cfgFile,config);
   
   dm->useDM = 1;
 
@@ -409,26 +411,26 @@ LoadDMConfig(dataman_t *dm, char *config, char *reply)
 }
 
 /*!
-  \brief DataManInfo - Print the DataMan agent interface configuration
+  \brief dmInfo - Print the DataMan agent interface configuration
   
-  \param dm pointer to the #dataman_config data structure
+  \param dm pointer to the #dmConfig data structure
 
-  Prints the contents of the #dataman_config data structure describing
+  Prints the contents of the #dmConfig data structure describing
   the DataMan agent interface configuration to stdout.
 
 */
 
 void
-DataManInfo(dataman_t *dm)
+dmInfo(dataman_t *dm)
 {
-  printf("DataMan Agent Interface Configuration:\n");
+  printf("dataMan Agent Interface Configuration:\n");
 
   if (dm->useDM)
     printf("  Interface: ENABLED\n");
   else
     printf("  Interface: DISABLED\n");
 
-  printf("  Config File: %s\n",dm->CfgFile);
+  printf("  Config File: %s\n",dm->cfgFile);
 
   printf("Communications:\n");
   if (dm->FD < 0) 

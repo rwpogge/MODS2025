@@ -238,7 +238,7 @@ main(int argc, char *argv[])
       dm.FD = client.FD;  // use the ISIS socket
     }
     else {
-      if (openDataMan(&dm,0)<0) { // open on any free localhost port
+      if (openDM(&dm,0)<0) { // open on any free localhost port
 	printf("\nWARNING: Could not connect to the DataMan Agent\n");
 	printf("Disabling DataMan Link ...\n");
 	dm.FD = -1;
@@ -728,7 +728,7 @@ main(int argc, char *argv[])
       /*
       if (dm.FD > 0 && (!client.useISIS)) {
 	if (FD_ISSET(dm.FD, &read_fd)) {
-	  nread = ReadDataMan(&dm,camData);  // direct read, no timeout
+	  nread = readDM(&dm,camData);  // direct read, no timeout
 	  if (nread > 0) {
 	    printf("DM> %s\n",camData);
 	    memset(camData,0,sizeof(camData));
@@ -760,7 +760,7 @@ main(int argc, char *argv[])
 
   /*
   if (dm.FD>0 && (!client.useISIS))
-    CloseDataMan(&dm);
+    closeDM(&dm);
   */
   
   // Tear down the application's client socket
