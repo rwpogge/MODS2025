@@ -29,6 +29,13 @@ FITS handling capability gives us many more options.
 
 ## Notes
 
+### 2025 Nov 6
+FITS header fix code in `dataMan_vX.py`:
+ * Fix `DATE-OBS` to comply with LBT Archive and NOST FITS standards for ISO8601 date+time data
+ * Added code to compute MJD, HJD, and BJD for headers
+ * Added code to generate a `UNIQNAME` keyword based on date/time
+ * Took notes on `modsCCD` additions to implement the client side, see that repository for info
+
 ### 2025 Oct 31
 Working with data headers from live MODS.  Found a few issues that need fixing:
  * DETSEC and CCDSEC headers in extension Q1..4 are incorrect for ROI subframe reads, found a fix
