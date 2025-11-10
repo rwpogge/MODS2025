@@ -43,7 +43,8 @@ and data-acquisition system.
  * clientutils.c
  * commands.c
  * config.c
- * headers: client.h, commands.h
+ * dataman.c
+ * headers: client.h, commands.h, dataman.h
  * build and Makefiles
 
 links to `libazcam.a` in `mods/utilities/azcamUtils/` with the azcam
