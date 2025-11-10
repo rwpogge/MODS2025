@@ -1,5 +1,15 @@
 # modsCCD ISIS client Releases
 
+## Version 1.1.0 - Data transfer manager (dataMan) testing
+2025 Nov 10 [rwp/osu]
+
+Version testing dataMan hooks
+ * `dataman.c` and `dataman.h` for the new python dataMan agent
+ * Put hooks into `client.h`, `clientutils.h`, `main.c`, `commands.c` and `config.c`
+ * A big change from the old Y4KCam system is that we put the dm config info into the `modsccd.ini` file instead of a standalone config file for just dataMan. The `dataMan.ini` for the python version uses yaml and has a very different config profile.
+
+Version ready for live testing and debugging.
+
 ## Version 1.0.2 - LBTO Live on-telescope testing
 2025 Oct 15 [rwp/osu]
  
