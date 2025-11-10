@@ -460,14 +460,8 @@ writeCCDImage(azcam_t *cam, obsPars_t *obs, char *reply)
   azcam server is concerned (once it successfully writes a FITS image
   to disk, the azcam server is "done").
 
-  We fire off the "process %s" command to the Data Manager and then do
-  not wait for a reply.  We also make sure that the apparent sender ID
-  is #obspars::expHost, so that any subsequent status messages from
-  the Data Manager go to that host, not (necessarily) to this client
-  (unless the exposure command was from the console).  The process
-  that started the exposure is responsible for all subsequent output
-  from the Data Manager.  The correct routing is only assured on an
-  ISIS network, or with a very savvy Data Manager.
+  We fire off the "proc %s" command to the Data Manager and then do
+  not wait for a reply.
 
 */
 
@@ -477,39 +471,25 @@ processImage(azcam_t *cam, obsPars_t *obs, char *fname, char *reply)
   char cmdStr[256];    // command string to send
   char srcID[16];      // source ID of whoever started this
 
-  // can't do this if we don't have a data manager handy
+  // can't do this if we don't have a data manager running
 
-  return 0;
-
-  /*  
   if (!dm.useDM) {
     sprintf(reply,"No Data Manager agent enabled.");
     return -1;
   }
 
-  // set the srcID for the message as obs->expHost
-
-  if (strcasecmp(obs->expHost,"console")==0)
-    strcpy(srcID,client.ID);
-  else
-    strcpy(srcID,obs->expHost);
-
   // build the command string
 
-  sprintf(cmdStr,"process %s\r",fname);
+  sprintf(cmdStr,"proc %s\r",fname);
   
-  // Upload the command to DataMan and return
+  // Upload the command to dataMan and return
 
   if (writeDM(&dm,cmdStr)<0) {
     strcpy(reply,"Post-Processing command upload failed - cannot write to socket");
     return -1;
   }
-  
-  sprintf(reply,"Post-Processing command uploaded to %s...",dm.ID);
-  */
-
+  sprintf(reply,"Post-Processing command sent to dataMan agent");
   return 0;
-
 }
 
 

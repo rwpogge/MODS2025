@@ -2608,12 +2608,10 @@ cmd_process(char *args, MsgType msgtype, char *reply)
 
   // check the file descriptor and make sure we have an active connection
 
-  /*
   if (!dm.useDM) {
     strcpy(reply,"No Data Manager agent link is active");
     return CMD_ERR;
   }
-  */
   
   memset(fname,0,sizeof(fname));
 
@@ -2635,7 +2633,7 @@ cmd_process(char *args, MsgType msgtype, char *reply)
     strcpy(fname,ccd.lastFile);
   }
 
-  // upload it to DataMan for post-processing
+  // upload it to dataMan for post-processing
 
   if (processImage(&ccd,&obs,fname,reply)<0)
     return CMD_ERR;

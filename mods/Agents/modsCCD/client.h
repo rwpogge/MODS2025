@@ -87,9 +87,11 @@ extern isisclient_t client;  // global client runtime config table
 
 extern azcam_t ccd;  // azcam server info data structure
 
-//#include "dataman.h" // Data Manager (dataMan) agent header
+// dataMan - raw data manager agent
 
-//extern dataman_t dm;
+#include "dataman.h" // Data Manager (dataMan) agent header
+
+extern dataman_t dm;
 
 //---------------------------------------------------------------------------
 

@@ -313,23 +313,23 @@ loadConfig(char *cfgfile)
 
       // useDM: are we using dataMan for data transfer?
 
-      //else if (strcasecmp(keyword,"useDM")==0) {
-      //  dm.useDM = 1;
-      //}
+      else if (strcasecmp(keyword,"useDM")==0) {
+        dm.useDM = 1;
+      }
       
       // dmHost: Hostname of the machine running this channel's dataman agent
       //         usually localhost, but doesn't have to be...
 
       else if (strcasecmp(keyword,"dmHost")==0) {
 	GetArg(inbuf,2,argbuf);
-	// strcpy(dm.Host,argbuf);
+	strcpy(dm.Host,argbuf);
       }
 	
       // dmPort: network socket port number of the dataMan agent on dmHost
 							  
       else if (strcasecmp(keyword,"dmPort")==0) {
 	GetArg(inbuf, 2, argbuf);
-	// dm.Port = atoi(argbuf);
+	dm.Port = atoi(argbuf);
       }
 
       // Gripe if junk is in the config file
@@ -439,15 +439,6 @@ saveConfig(char *cfgfile)
   fprintf(cfgFP,"azcamPort %s\n",ccd.Port);
   fprintf(cfgFP,"Timeout %ld\n",ccd.Timeout);
 
-  // Data Manager info if enabled
-
-  /*
-  if (dm.useDM) {
-    fprintf(cfgFP,"\n# Data Manager agent config file\n\n");
-    fprintf(cfgFP,"\DATAMAN %s\n",dm.cfgFile);
-  }
-  */
-  
   // Session Restart Information
 
   fprintf(cfgFP,"\n# Observing Session Restart Information\n\n");

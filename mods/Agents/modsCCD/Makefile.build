@@ -5,9 +5,9 @@
 #
 # R. Pogge, OSU Astronomy Dept. pogge.1@osu.edu
 #
-# Last Modified: 2025 Oct 15
+# Last Modified: 2025 Nov 10
 #
-VERSION     = v1.0.2
+VERSION     = v1.1.0
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 
@@ -25,7 +25,7 @@ LIBS        = $(INCS) -L$(ISISDIR)/lib -L$(ROOTDIR)/ulib -lisis -lazcam \
 	      -lreadline -lhistory -lncurses
 LFLAGS      = -o modsCCD
 
-OBJS        = commands.o clientutils.o config.o 
+OBJS        = commands.o clientutils.o config.o dataman.o
 
 .c.o:       client.h commands.h
 	    $(CC) $(CFLAGS) $(VFLAGS) $*.c

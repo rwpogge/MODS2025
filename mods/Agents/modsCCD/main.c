@@ -90,7 +90,7 @@ azcam_t ccd;         // azcam server parameters data structure
 
 obsPars_t obs;       // Observation parameters data structure
 
-// dataman_t dm;        // Data Manager data structure
+dataman_t dm;        // Data Manager data structure
 
 //----------------------------------------------------------------
 //
@@ -228,33 +228,22 @@ main(int argc, char *argv[])
       printf("OUT: %s\n",buf);
   }
 
-  // Initialize the DataMan link, if used
+  // Initialize the dataMan link, if used
 
-  /*
   strcpy(dm.Name,client.ID); // copy client ID into dm.Name member
 
   if (dm.useDM) {
-    if (client.useISIS) {
-      dm.FD = client.FD;  // use the ISIS socket
+    if (openDM(&dm,0)<0) { // open on any free localhost port
+      printf("\nWARNING: Could not connect to the dataMan Agent\n");
+      printf("Disabling dataMan Link ...\n");
+      dm.FD = -1;
     }
-    else {
-      if (openDM(&dm,0)<0) { // open on any free localhost port
-	printf("\nWARNING: Could not connect to the DataMan Agent\n");
-	printf("Disabling DataMan Link ...\n");
-	dm.FD = -1;
-      }
-    }
-    if (dm.FD>0) {
-      if (client.useISIS)
-	printf("DataMan Link via ISIS initialized\n");
-      else
-	printf("DataMan Direct Link initialized\n");
-    }
+    if (dm.FD>0)
+      printf("dataMan agent link initialized\n");
   }
   else {
-    printf("NOTE: Started with no DataMan interface\n");
+    printf("NOTE: Started with no dataMan interface\n");
   }
-  */
   
   // Now that all components are connected, upload the
   // baseline FITS header database
@@ -360,8 +349,9 @@ main(int argc, char *argv[])
       FD_SET(ccd.FD, &read_fd);    
 
     /*
-    // Listen to DataMan if active and we're standalone
-
+    // Listen to dataMan if active and we're standalone
+    // post-2025 dataMan does not send anything back
+    
     if (dm.FD > 0 && (!client.useISIS)) 
       FD_SET(dm.FD, &read_fd);
     */
@@ -722,8 +712,8 @@ main(int argc, char *argv[])
 	}
       } // end of azcam server TCP port handling
       
-      // Message from the DataMan agent - just echo it to the console
-      // for now.
+      // Message from the dataMan agent - just echo it to the console
+      // for now.  NOTE: post-2025 dataMan does not communicate with clients
 
       /*
       if (dm.FD > 0 && (!client.useISIS)) {
@@ -756,12 +746,10 @@ main(int argc, char *argv[])
   if (ccd.FD>0) 
     closeAzCam(&ccd);
 
-  // Tear down the DataMan link, if any
+  // Tear down the dataMan link, if any
 
-  /*
-  if (dm.FD>0 && (!client.useISIS))
+  if (dm.FD>0)
     closeDM(&dm);
-  */
   
   // Tear down the application's client socket
 
