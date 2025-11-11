@@ -1,6 +1,6 @@
 # modsCCD Agent Runtime Configuration Files
 
-**Updated: 2025 July 27 [rwp/osu]**
+**Updated: 2025 Nov 11 [rwp/osu]**
 
 These are files used by modsCCD agents for each of the binocular MODS channels.
 
