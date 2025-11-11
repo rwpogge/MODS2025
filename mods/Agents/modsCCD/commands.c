@@ -2577,14 +2577,15 @@ cmd_cleanup(char *args, MsgType msgtype, char *reply)
   \par Usage:
   process [image]
 
-  Uploads information about the image to the Data Manager (if enabled)
+  Uploads information about the image to the dataMan agent (if enabled)
   to initiate any post-processing of the image (e.g., transfer to
-  a Linux disk from the azcam server, display, archiving, logging,
-  etc).  This processing is handled off-line.
+  the LBTO repository "newdata" folder to present to observers for
+  archiving, logging, and display). This processing is handled off-line
+  from the modsCCD agent.
 
   This command is usually used to recover "by hand" when a regular
   post-exposure write fails (most often because the azcam server
-  refuses to overwrite images on its data disks).  The PROCESS
+  refuses to overwrite images on its raw data disks).  The PROCESS
   command is usually preceded by a WRITE command to first write
   out the image to the azcam server disks, then PROCESS is used
   to initiate post-processing.
@@ -2595,7 +2596,7 @@ cmd_cleanup(char *args, MsgType msgtype, char *reply)
 
   If the optional argument is given, it overrides the current file
   pattern.  Note that image must not contain any path information,
-  the Data Manager has the correct info (if it does not, the user
+  the dataMan agent has the correct info (if it does not, the user
   has done something wrong...).
 
 */

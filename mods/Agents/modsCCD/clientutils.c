@@ -435,8 +435,7 @@ writeCCDImage(azcam_t *cam, obsPars_t *obs, char *reply)
 
   cam->fileNum++;
   strcpy(cam->lastFile,filename);
-  sprintf(reply,"Wrote LastFile=%s to Path=%s",
-	  cam->lastFile,cam->filePath);
+  sprintf(reply,"Wrote LastFile=%s to Path=%s",cam->lastFile,cam->filePath);
   cam->State = IDLE;
 
   return 0;
