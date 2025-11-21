@@ -3,7 +3,7 @@ Setup method for LBTO MODS azcamserver
 Usage example:
   python -i -m azcam_mods.server -- -mods1r
   
-  Updated: 2025 Oct 15 [rwp/osu]
+  Updated: 2025 Nov 21 [rwp/osu]
 """
 
 import os
@@ -244,6 +244,7 @@ def setup():
     exposure.image.filetype = exposure.filetypes["MEF"]
     exposure.display_image = 0
     exposure.add_extensions = 1
+    exposure.shutter_delay = 250 # msec, not optimized
 
     exposure.image.focalplane.gains = 4 * [2.0]
     exposure.image.focalplane.rdnoises = 4 * [2.0]
