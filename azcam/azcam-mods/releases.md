@@ -1,8 +1,23 @@
 # azcam-mods Release Notes
 
-**Current Version: 1.1.2**
+**Current Version: 1.1.5**
 
-**Last Update: 2025 Oct 13 [rwp/osu]**
+**Last Update: 2025 Nov 21 [rwp/osu]**
+
+### Version 1.1.5 - 2025 Nov 21
+ * Added `exposure.shutter_delay = 250` to add a 250-msec shutter delay before starting readout.  This is needed because of the slower MODS shutter.  This is an initial value that will be optimized later to be a best for all 4 cameras.  Change was introduced by Mike Lesser during MODS detector testing.
+
+### Verison 1.1.4 - 2025 Oct 22/23
+ * Fixed bug in `mods.py` function `obsDate()` because the old code assumed local computers had clocks set to local time but LBTO standard is to set clocks on mountain machines to UTC.  Now explicitly code local time (zone US/Arizona), requiring importing
+`pytz`.
+
+### Version 1.1.3 - 2025 Oct 21
+Numerous bug fixes, additions to logging, etc., driven primarily by verifying interaction with the LBT telescope control system (`pyIIF` code).
+
+### Version 1.1.2 - 2025 Oct 15
+
+Multiple patches during rapid fire testing with live systems.  All kinds of fun on first contact with what goes into header and finding ways to get into a tight spin. 
+
 
 ### Version 1.1.1 - 2025 Oct 13
  * Changed `heaterData()` method in `mods.py` to be `archonStatus()` to make it more general. For now this adds the backplane temperature and the CCD power state code (0..5).
