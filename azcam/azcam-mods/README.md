@@ -3,6 +3,8 @@ Version 1.1.5
 
 Last Update: 2025 Nov 21
 
+See [Release Notes](releases.md) for details
+
 ## Purpose
 
 This repository contains the *azcam-mods* azcam environment, consisting of code and data files for the Large Binocular Telescope 
