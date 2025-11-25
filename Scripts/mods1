@@ -24,7 +24,8 @@
 #   2012 Oct 9  - version for MODS1 [rwp/osu]
 #   2025 Sep 26 - Archon CCD controller version for MODS1 [rwp/osu]
 #   2025 Oct 03 - First full Archon version release [rwp/osu]
-# 
+#   2025 Nov 25 - resize out of place, fixed [rwp/osu]
+#
 #---------------------------------------------------------------------------
 
 # We are MODS1
@@ -60,10 +61,6 @@ if ($numArgs > 3) then
    exit 0
 endif
 
-# A good size for this terminal session
-
-resize -s 42 128 >& /dev/null
-
 # See if we are running in the expected server admin tmux session.  If
 # so, attach to the command pane.  If not, start the tmux session,
 # execute the modsStatus monitor in the top left pane
@@ -84,10 +81,10 @@ if ($status) then
    tmux send-keys -t ${tmuxID}:1.0 "$binDir/modsStatus" C-m
 endif
 
-# If we're already in the expected tmux session, do nothing
-# otherwise attach
+# If we're already in the expected tmux session, do nothing otherwise attach
 
 if ( ! $?TMUX) then
+   resize -s 42 128 >& /dev/null
    tmux select-pane -t ${tmuxID}:1.2
    tmux attach-session -t ${tmuxID}
 endif   

@@ -1,6 +1,9 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2025 Oct 14 [rwp/osu]</b>
+<b>Last Update: 2025 Nov 25 [rwp/osu]</b>
+
+## 2025 Nov 25: resize issue
+ * `resize` command was out of place in `mods1` and `mods2`, causing users to have to tap Enter twice to get the command to start.  Found and fixed
 
 ## 2025 Oct 14: observing scripts
 
