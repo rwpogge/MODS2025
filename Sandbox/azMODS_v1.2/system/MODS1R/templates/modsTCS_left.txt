@@ -1,0 +1,106 @@
+#
+# MODS TCS info header template entries for MODS1 at left (SX) direct Gregorian
+#
+# Updated: 2025 Oct 20 [rwp/osu]
+#
+# YAML format
+#
+# IIFConfig:
+#   instID, side, and client_config
+#
+# DDEntries:
+#   ddName: ["fitsKey","dtype","comment text"]
+#
+# parameters in the ddName list:
+#    fitsKey: FITS header keyword, 8-characters max, all caps
+#    dtype: one of {int,float,str}
+#           float can take 2 conversion tags:
+#               float-as = convert arcsec to degrees
+#               float-rad = convert radians to degrees
+#    comment: comment text for the FITS keyword
+#
+
+IIFConfig:
+  instID: mods
+  side:   left
+  client_config: "/home/dts/Config/IIF/lbtIIF.client"
+
+DDEntries:
+  #
+  # LBT Pointing Info
+  #
+  L_AchievedRAHMS:     ["TELRA","str","SX Telescope Achieved RA [hms]"]
+  L_AchievedDECDMS:    ["TELDEC","str","SX Telescope Achieved DEC [dms]"]                    
+  L_PosAngle:          ["POSANGLE","float-rad","SX Instrument Celestial PA [deg]"]
+  MountAchievedALTDMS: ["TELALT","str","Telescope Altitude at start of obs [dms]"]
+  MountAchievedAZDMS:  ["TELAZ","str","Telescope Azimuth at start of obs [dms]"]
+  MountAchievedHAHMS:  ["HA","str","Telescope Hour Angle at start of obs [hms]"]
+  AirMass:             ["AIRMASS","float","Airmass (secZD) at start of obs"]
+  ParAngle:            ["PARANGLE","float","Parallactic Angle at start of obs [deg]"]
+  L_RotAngle:          ["ROTANGLE","float-rad","SX Rotator Angle at start of obs [deg]"]
+  L_RotMode:           ["ROTMODE","str","SX Rotator Mode"]
+  L_DGRPosition:       ["DGROTPOS","float-as","SX Direct Gregorian Rotator Angle [deg]"]
+  #
+  # GCS and PCS Guide Probe Data  
+  #
+  L_AGWKFPReqX:      ["GPREQ_X","float","GCS Requested guide probe PCS X [mm]"] 
+  L_AGWKFPReqY:      ["GPREQ_Y","float","GCS Requested guide probe PCS Y [mm]"]
+  L_AGWKFPPosX:      ["GPACT_X","float","GCS Actual guide probe PCS X [mm]"]
+  L_AGWKFPPosY:      ["GPACT_Y","float","GCS Actual guide probe PCX Y [mm]"]
+  L_GSXPredicted:    ["GSPRED_X","float","PCS Predicted guide star X position [mm]"]  
+  L_GSYPredicted:    ["GSPRED_Y","float","PCS Predicted guide star Y position [mm]"]
+  L_GSXMeasured:     ["GSMEAS_X","float","GCS Measured guide star X position [mm]"]
+  L_GSYMeasured:     ["GSMEAS_Y","float","GCS Measured guide star Y position [mm]"]
+  L_GSCumXPredmMeas: ["GSDELTAX","float","GCS cumulative X guide update position [mm]"]
+  L_GSCumYPredmMeas: ["GSDELTAY","float","GCS cumulative Y guide update position [mm]"]
+  #
+  # SX Primary and Secondary collimation state
+  #
+  L_M1CollX:     ["M1POSX","float","SX Primary X Position [mm]"]
+  L_M1CollY:     ["M1POSY","float","SX Primary Y Position [mm]"]
+  L_M1CollZ:     ["M1POSZ","float","SX Primary Z Position [mm]"]
+  L_M1CollRx:    ["M1ROTX","float","SX Primary RX Rotation [arcsec]"]
+  L_M1CollRy:    ["M1ROTY","float","SX Primary RY Rotation [arcsec]"]
+  L_M1CollRz:    ["M1ROTZ","float","SX Primary RZ Rotation [arcsec]"]
+  L_M1CollTemp:  ["M1CTEMP","float","SX Primary Temperature [deg C]"] 
+  L_M1CollTemp2: ["M1CTEMP2","float","SX Primary Temperature 2 [deg C]"]
+  L_M1AirTemp:   ["M1GTEMP","float","SX Primary Glass Temperature [deg C]"]
+  L_M1GlassTemp: ["M1ATEMP","float","SX Primary Ambient Air Temp [deg C]"]
+  L_M2CollX:     ["M2POSX","float","SX Secondary X Position [mm]"]
+  L_M2CollY:     ["M2POSY","float","SX Secondary Y Position [mm]"]
+  L_M2CollZ:     ["M2POSZ","float","SX Secondary Z Position [mm]"]
+  L_M2CollRx:    ["M2ROTX","float","SX Secondary RX Rotation [arcsec]"]       
+  L_M2CollRy:    ["M2ROTY","float","SX Secondary RY Rotation [arcsec]"]     
+  L_M2CollRz:    ["M2ROTZ","float","SX Secondary RZ Rotation [arcsec]"]   
+  L_M2CollTemp:  ["M2CTEMP","float","SX Secondary Temperature [deg C]"]
+  #
+  # Telescope temperature sensors
+  #
+  Temp201: ["TTEMP201","float","Middle C-Ring Steel Temp [deg C]"]   
+  Temp202: ["TTEMP202","float","Middle C-Ring Air Temp [deg C]"]         
+  Temp203: ["TTEMP203","float","Upper C-Ring Steel Temp [deg C]"]
+  Temp204: ["TTEMP204","float","Upper C-Ring Air Temp [deg C]"]      
+  Temp205: ["TTEMP205","float","Lower C-Ring Steel Temp [deg C]"]
+  Temp206: ["TTEMP206","float","Lower C-Ring Air Temp [deg C]"]      
+  Temp207: ["TTEMP207","float","Right Lower Wind Brace Steel Temp [deg C]"]
+  Temp208: ["TTEMP208","float","Right Lower Wind Brace Air Temp [deg C]"]
+  Temp209: ["TTEMP209","float","Right Mirror-Cell Brace Steel Temp [deg C]"]
+  Temp210: ["TTEMP210","float","Right Mirror-Cell Brace Air Temp [deg C]"]
+  Temp301: ["TTEMP301","float","Right C-Ring Extension Steel Temp [deg C]"]
+  Temp302: ["TTEMP302","float","Right C-Ring Extension Air Temp [deg C]"]
+  Temp303: ["TTEMP303","float","Left C-Ring Extension Steel Temp [deg C]"]
+  Temp304: ["TTEMP304","float","Left C-Ring Extension Air Temp [deg C]"]      
+  Temp305: ["TTEMP305","float","Upper Wind Brace Steel Temp [deg C]"]
+  Temp306: ["TTEMP306","float","Upper Wind Brace Air Temp [deg C]"]
+  Temp307: ["TTEMP307","float","Right Middle Wind Brace Steel Temp [deg C]"]
+  Temp308: ["TTEMP308","float","Right Middle Wind Brace Air Temp [deg C]"]
+  Temp309: ["TTEMP309","float","Left Middle Wind Brace Steel Temp [deg C]"]
+  Temp310: ["TTEMP310","float","Left Middle Wind Brace Air Temp [deg C]"]
+  #
+  # LBT Weather Station Information
+  #
+  LBTWeatherAlive: ["LBTWLINK","string","LBT Weather Station Link State"]         
+  LBTPressure:     ["LBTPRES","float","LBT Ambient Pressure [hPa]"]
+  LBTTemp:         ["LBTTEMP","float","LBT Ambient Temperature [deg C]"]
+  LBTHumidity:     ["LBTHUM","float","LBT Relative Humidity [percent]"]  
+  LBTDewPoint:     ["LBTDWPT","float","LBT Dew Point [deg C]"]

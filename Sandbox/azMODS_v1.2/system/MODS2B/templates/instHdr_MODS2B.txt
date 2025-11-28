@@ -1,0 +1,101 @@
+#
+# MODS2B instrument header template entries for MODS2 at right (DX) direct Gregorian
+#
+# Updated: 2025 Sept 23 [rwp/osu]
+#
+# YAML format
+#
+# IIFConfig:
+#   instID, side, and client_config
+#
+# Note: instID is the IIF ID, which for MODS1 or MODS2 is "mods" (it uses
+#    "side" in combination with"instID" to distinguish MODS1 from MODS2
+#
+# DDEntries:
+#   ddName: ["fitsKey","dtype","comment text"]
+#
+# parameters in the ddName list:
+#    fitsKey: FITS header keyword, 8-characters max, all caps
+#    dtype: one of {int,float,str}
+#           float can take 2 conversion tags:
+#               float-as = convert arcsec to degrees
+#               float-rad = convert radians to degrees
+#    comment: comment text for the FITS keyword
+#
+
+IIFConfig:
+  instID: mods
+  side:   right
+  client_config: "/home/dts/Config/IIF/lbtIIF.client"
+
+DDEntries:
+  #
+  # Common Focal Plane mechanisms
+  #  
+  R_MODSHatch:                 ["HATCH","str","Instrument Dark Hatch"]
+  R_MODSCalibTower:            ["CALIB","str","Calibration Tower Position"]
+  R_MODSAGWXPos:               ["AGWXS","float","AGW Stage X position [mm]"]
+  R_MODSAGWYPos:               ["AGWYS","float","AGW Stage Y position [mm]"]
+  R_MODSAGWFPos:               ["AGWFS","float","AGW Stage Focus position [mm]"]
+  R_MODSAGWFilterName:         ["AGWFNAME","str","AGW Guide Camera Filter Name"]
+  R_MODSMaskSelected:          ["SLITMASK","int","Slit Mask Cassette Position"]
+  R_MODSMaskID:                ["MASKNAME","str","Slit Mask Name"]
+  R_MODSMaskPosition:          ["MASKPOS","str","Slit Mask Position"]
+  R_MODSDichroicPosition:      ["DICHROIC","int","Dichroic Turret Position"]
+  R_MODSDichroicName:          ["DICHNAME","str","Dichroic Beam Selector Name"]
+  #
+  # Blue Channel Mechanisms
+  #
+  R_MODSBlueCollTTFA:          ["COLTTFA","float","Blue Collimator TTFA [microns]"]
+  R_MODSBlueCollTTFB:          ["COLTTFB","float","Blue Collimator TTFB [microns]"]
+  R_MODSBlueCollTTFC:          ["COLTTFC","float","Blue Collimator TTFC [microns]"]
+  R_MODSBlueCollFocus:         ["COLFOCUS","float","Blue Collimator Focus [microns]"]
+  R_MODSBlueGratingPosition:   ["GRATING","int","Blue Grating Turret Position"]
+  R_MODSBlueGrating:           ["GRATNAME","str","Blue Grating Turret Disperser Name"]
+  R_MODSBlueGratingTilt:       ["GRATTILT","int","Blue Grating Tilt [microns]"]
+  R_MODSBlueCameraFocus:       ["CAMFOCUS","float","Blue Camera Focus [microns]"]
+  R_MODSBlueFilterPosition:    ["FILTER","int","Blue Camera Filter Wheel Position"]
+  R_MODSBlueFilter:            ["FILTNAME","str","Blue Camera Filter Name"]
+  #
+  # IMCS IR Laser 
+  #
+  R_MODSIMCSLaser:             ["IRLASER","str","IMCS IR Laser Power [mW]"]
+  R_MODSIMCSLaserBeam:         ["IRBEAM","str","IMCS IR Laser Beam state"]
+  R_MODSIMCSLaserPower:        ["IRPOUT","float","IMCS IR Laser Power [mW]"]
+  R_MODSIMCSLaserTemp:         ["IRTEMP","float","IMCS IR Laser Temperature [deg C]"]
+  #
+  # Calibration Lamps
+  #
+  R_MODSCalibLamps:            ["CALLAMPS","str","Calibration Lamps"]
+  R_MODSVFLATIntensity:        ["VFLAT","float","Variable Flat Lamp Intensity"]
+  #
+  # Environmental Sensors
+  #
+  R_MODSIUBTemp:               ["IUBTAIR","float","IUB Inside Air Temperature [deg C]"]
+  R_MODSGlycolReturnPres:      ["GRPRES","float","Glycol Return Pressure [psi-g]"]
+  R_MODSGlycolReturnTemp:      ["GRTEMP","float","Glycol Return Temperature [deg C]"]
+  R_MODSGlycolSupplyPres:      ["GSPRES","float","Glycol Supply Pressure [psi-g]"]
+  R_MODSGlycolSupplyTemp:      ["GSTEMP","float","Glycol Supply Temperature [deg C]"]
+  R_MODSBlueIEBTemp:           ["IEBTEMPB","float","Blue IEB Air Temperature [deg C]"]
+  R_MODSRedIEBTemp:            ["IEBTEMPR","float","Red IEB Air Temperature [deg C]"]
+  R_MODSCollTempBottom:        ["TCOLLBOT","float","Collimator Truss Bottom Temp [deg C]"]
+  R_MODSCollTempTop:           ["TCOLLTOP","float","Collimator Truss Top Temp [deg C]"]
+  R_MODSAirTempBottom:         ["TAIRBOT","float","Enclosure Air Temp Bottom [deg C]"]
+  R_MODSAirTempTop:            ["TAIRTOP","float","Enclosure Air Temp Top [deg C]"]
+  #
+  # Subsystem Power States
+  #
+  R_MODSBlueIEBPower:          ["IEBPWR_B","str","Blue IEB Power"]
+  R_MODSRedIEBPower:           ["IEBPWR_R","str","Red IEB Power"]
+  R_MODSLLBPower:              ["LLBPWR","str","Lamp/Laser Box Power"]
+  R_MODSWFSCamPower:           ["WFSPWR","str","AGw WFS camera power"]
+  R_MODSGuideCamPower:         ["AGCPWR","str","AGw guide camera Power"]
+  #
+  # Blue HEB
+  #
+  R_MODSBlueHEBPower:          ["HEBPOWER","str","Blue HEB Power"]
+  R_MODSBlueHEBTemp:           ["HEBTEMP","float","Blue HEB air temperature [deg C]"]
+  R_MODSBlueVacuumGaugePower:  ["IGPOWER","str","Blue Dewar Ion Gauge Power"]
+  R_MODSBlueArchonPower:       ["ARPOWER","str","Blue Archon Controller Power"]
+  R_MODSBlueDewPres:           ["DEWPRES","float","Blue CCD Dewar Pressure [torr]"]
+  R_MODSBlueDewTemp:           ["DEWTEMP","float","Blue CCD Dewar Temperature [deg C]"]
