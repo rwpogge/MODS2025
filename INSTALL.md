@@ -14,7 +14,7 @@ sudo dnf -y install readline readline-devel
 sudo dnf -y install libmodbus libmodbus-devel
 sudo dnf -y install qt6-qtbase-devel qt6-qtsvg-devel
 sudo dnf -y install perl-Curses
-sudo dnf -y install dnsutils wget
+sudo dnf -y install dnsutils wget nfs-utils
 ```
 
 #### VNC support
@@ -378,6 +378,17 @@ sudo cp mlcRecover /usr/local/bin
 ```
 **DO NOT** copy `mmcServer`, `agwService`, `blueIMCS`, or `redIMCS` to `/usr/local/bin/`!
 
+## Time, Date, etc.
+
+LBTO computers are set to run on GMT+0 timezone and display time in 
+24-h format:
+```script
+sudo timedatectl set-timezone GMT
+sudo localectl set-locale LC_TIME=C.UTF-8
+```
+Note that you'll have to logout and log back in before you see 24-h 
+format appear.
+
 ## Observatory NFS mounts
 
 MODS machines NFS mounts a subset of relevant shared observatory folders
@@ -399,14 +410,51 @@ FITS images are pushed into `/lbt/data/new`
 Public versions of MODS observing and operations scripts are "published" on /lbt/lbto/mods/bin/ for use
 on all relevant machines.  Only the safe public subset of scripts are exposed on the shared public path.
 
-## Time, Date, etc.
+## Mount raw data folders
 
-LBTO computers are set to run on GMT+0 timezone and display time in 
-24-h format:
-```script
-sudo timedatectl set-timezone GMT
-sudo localectl set-locale LC_TIME=C.UTF-8
+On each instrument server (mods1 and mods2) we mount the raw data folders
+of the corresponding instrument channels.  This is the procedure to set it
+up on a new machine
+
+### Archon Servers
+
+Configure each of the Archon servers (`mods1blue`, et al.) as NFS servers
+as follows.  Be logged in as root.  This is generic to all four Archon servers:
 ```
-Note that you'll have to logout and log back in before you see 24-h 
-format appear.
+dnf -y install nfs-utils
+systemctl start nfs-server
+systemctl enable nsf-server
+cd
+chown -R nobody:nobody /home/data
+vim /etc/exports
+   /home/data 192.168.139.0/24(rw,sync,no_subtree_check)
+systemctl restart nfs-server
+exportfs -v
+```
+We only expose the raw data drives to the MODS VLAN, not to the entire
+LBTO network to protect raw data as much as possible from accidental
+deletion.
 
+### Instrument Servers
+
+Configure the Instrument servers (`mods1` and `mods2`) as NFS clients as
+follows.  Be logged in as root.  The example is for `mods1`
+```
+mkdir -p /data/mods1r /data/mods1b
+showmount -e 192.168.139.131
+showmount -e 192.168.139.132
+mount 192.168.139.131:/home/data /data/mods1r
+mount 192.168.139.132:/home/data /data/mods1b
+df -h
+  ... verify read and write, then unmount ...
+umount /data/mods1r
+umount /data/mods1b
+vim /etc/fstab
+  192.168.139.131:/home/data /data/mods1r nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
+  192.168.139.132:/home/data /data/mods1b nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
+
+systemctl daemon-reload
+mount -a
+df -h
+```
+You should now see `/data/mods1r` and `/data/mods1b`, and be able to read and write to them
