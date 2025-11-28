@@ -412,9 +412,9 @@ on all relevant machines.  Only the safe public subset of scripts are exposed on
 
 ## Mount raw data folders
 
-On each instrument server (mods1 and mods2) we mount the raw data folders
+Each instrument server (`mods1` and `mods2`) NFS mounts the raw data folders
 of the corresponding instrument channels.  This is the procedure to set it
-up on a new machine
+up on a new machine.
 
 ### Archon Servers
 
