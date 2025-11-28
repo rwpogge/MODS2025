@@ -16,5 +16,5 @@ New bits are a template yaml-format `.ini` file for azcam-mods server for the
 different MODS "systems" so we don't have to hard-code system-specific items
 into `server.py`.
  * `azcam.ini` - server .ini template 
-
+ * `modsYAML.ipynb` - notebook for YAML parser debugging
 
