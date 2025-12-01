@@ -7,7 +7,7 @@ Usage example:
 Updates:
     2025 Oct 15 - "flight" server beta version [rwp/osu]
     2025 Nov 28 - changes during CCD tune-up [mlesser]
-
+    2025 Dec 01 - start of v1.2 changes
 """
 
 import os
@@ -48,10 +48,78 @@ from azcam_mods.tempcon_mods import TempConMODS
 
 from azcam.web.fastapi_server import WebServer
 
-# setup
+# read a YAML configuration file
+
+import yaml
+
+# Modern path-handling
+
+from pathlib import Path
+
+# load the azcam server runtime configuration file
+
+def loadConfig(fileName):
+    '''
+    Load the contents of a YAML-format file using safe_load()   
+
+    Parameters
+    ----------
+    fileName : string
+        Name of the YAML-format configuration file with fully-qualified path.
+
+    Raises
+    ------
+    RuntimeError
+        Raised if file cannot be opened, read, or is empty.
+    ValueError
+        Raised if the file does not exist
+
+    Returns
+    -------
+    data : dict
+        Dictionary containing the file contents (nested dictionaries).
+
+    '''
+
+    if os.path.exists(fileName):
+        try:
+            stream = open(fileName,'r')
+        except Exception as exp:
+            raise RuntimeError(f"ERROR: could not open {fileName}: {exp}")
+            
+        try:
+            data = yaml.safe_load(stream)
+        except yaml.YAMLError as exp:
+            raise RuntimeError(f"ERROR: could not load {fileName}: {exp}")
+        
+        if len(data)==0:
+            raise RuntimeError(f"YAML file {fileName} is empty!")
+        
+        return data
+    else:
+        raise ValueError(f"YAML file {fileName} does not exist")
+        
+
+# setup the azcam server
 
 def setup():
+    '''
+    Setup the azcam server
+    
+
+    Raises
+    ------
+    azcam
+        Raised on azcam errors
+
+    Returns
+    -------
+    None.
+
+    '''
+
     # command line args
+
     option = "menu"
     try:
         i = sys.argv.index("-mods1r")
