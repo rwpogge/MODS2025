@@ -10,7 +10,7 @@ and will not work on the MODS machines without our version of the core `azcam` c
 
 See the release notes:
  * `azcam` [Release Notes](azcam/release.md)
- * `azcam-mods` [Release Notes](azcam-mods/RELEASES.md)
+ * `azcam-mods` [Release Notes](azcam-mods/releases.md)
  
 for details.
 
