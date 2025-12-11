@@ -53,22 +53,51 @@
 # Measured: 2018 Apr 16 - updated blue-only imaging focus 1088->940 [LBTO]
 # Measured: 2018 Sep 09 - post-shutdown startup 2018B [LBTO]
 # Measured: 2018 Sep 13 - updated direct grating & imaging based on focus runs [opk/LBTO]
-# Measured IMCS TTFs: 2019 Jan 25 - after remounting MODS2 following the PEPSIPOL run [opk/LBTO
-# Adjusted DImaging focus from 1225->1255 on 2019 Feb 18 [opk/LBTO]
-# Adjusted DImaging focus back to 1225 (1255->1225) on 2019 Apr 21 [opk/LBTO]
-# 2019-05-21 [JP/lbto] reran imcsTTFs after remount post PEPSIPOL run
-# 2019-09-03 [OPK/lbto] reran imcsTTFs after remount post summer shutdown
-#          
+# Measured IMCS TTFs: 2019 Jan 25 - after remounting MODS2 following the PEPSIPOL run [opk/LBTO]
+# Adjusted: DImaging focus from 1225->1255 on 2019 Feb 18 [opk/LBTO]
+# Adjusted: DImaging focus back to 1225 (1255->1225) on 2019 Apr 21 [opk/LBTO]
+# Measured: 2019-05-21 [JP/lbto] reran imcsTTFs after remount post PEPSIPOL run
+# Measured: 2019-09-03 [OPK/lbto] reran imcsTTFs after remount post summer shutdown
+# Measured: 2020-12-23 [OPK/lbto] reran imcsTTFs after remount post PEPSIPOL run
+# Measured: 2021-May-28 [OPK/lbto] reran imcsTTFs after remount post PEPSIPOL run
+# Measured: 2021-09-03 [OPK/lbto] ran imcsTTFs after remount post summer shutdown
+# Measured: 2021-09-16 [OPK/lbto] adjusted blue dual grating focus: 1525->1500
+# Measured: 2021-09-16 [OPK/lbto] adjusted blue dual imaging focus: 1225->1200
+# Measured: 2021-11-27 [OPK/lbto] adjusted blue dual imaging focus: 1200->1255
+# Measured: 2021-11-27 [OPK/lbto] adjusted blue dual grating focus: 1500->1525
+# Measured: 2022-01-22 [OPK/lbto] reran imcsTTFs after PEPSIPOL run
+# Measured: 2022-09-22 [OPK/lbto] ran imcsTTFs after remount post SSD
+# Measured: 2022-09-22 [OPK/lbto] updated DImg focus 1255->1240 
+# Measured: 2022-12-08 [OPK/lbto] ran imcsTTFs after PEPSI-POL run
+# 2022-12-15 [OPK/lbto] Checked focus near center of detector: updated DIm 1240->1260 (Im remains 985)
+# Measured: 2022-12-17 [OPK/lbto] ran imcsTTFs after focus adjustments
+# Measured: 2023-06-18 [OPK/lbto] ran imcsTTFs after blue channel was very 
+#                                 slow to lock on 20230617UT.
+# Measured: 2023-08-31 [OPK/lbto] ran imcsTTFs after SSD
+# Measured: 2023-09-03 jp  adjusted direct imaging from 985 -> 955
+# Measured: 2023-09-03 jp adjusted dual imaging from 1260-> 1220         
+# Measured: 2023-09.03 jp adjusted direct grating from 1245 -> 1215
+# Measured: 2023-09-03 jp adjusted dual prism 1450 ->1420
+# Measured: 2023-09-03 jp adjusted direct prism 1138 -> 1108
+# Measured: 2023-12-08 [opk/lbto] post-install, updated 2024-01-08 
+# Measured: 2024-01-10 [opk/lbto] updated dual im focus +70 mic (1220->1290) 
+# Measured: 2024-01-12 [opk/lbto] updated dual gr focus +30 mic (1525->1555) 
+# Measured: 2024-01-12 [opk/lbto] updated blue gr focus +60 mic (1215->1275) 
+# Measured: 2024-01-25 [opk/lbto] updated blue im focus +30 mic (955->985)  
+# Measured: 2024-02-02 [opk/lbto] updated IMCS ZPs after focus changes
+# Measured: 2024-08-26 [opk/lbto] measured IMCS ZPs after reinstall
+
+
 # Direct-Mode Presets
 #
-Imaging  Flat    Any    985 26393 19710 27212 3Kx3K  1 1 0 0 Slow
-Grating  G400L   Clear  1245 26376 19598 27343 Full   1 1 0 0 Slow
-Prism    P450L   Clear  1138 26279 19562 27217 4Kx3K  1 1 0 0 Slow
-Acquire  Flat    g_sdss 940 26393 19710 27212 3Kx3K  1 1 0 0 Slow
+Imaging  Flat    Any    985 26426 19696 27192 3Kx3K  1 1 0 0 Slow
+Grating  G400L   Clear  1275 26409 19579 27330 Full   1 1 0 0 Slow
+Prism    P450L   Clear  1108 26311 19538 27209 4Kx3K  1 1 0 0 Slow
+Acquire  Flat    g_sdss 985 26426 19696 27192 3Kx3K  1 1 0 0 Slow
 #
 # Dual-Mode Presets
 #
-DImaging Flat    Any    1225 26557 19634 27126 3Kx3K  1 1 0 0 Slow
-DGrating G400L   Clear  1525 26467 19420 27171 Full   1 1 0 0 Slow
-DPrism   P450L   Clear  1450 26455 19474 27127 4Kx3K  1 1 0 0 Slow
-DAcquire Flat    g_sdss 1225 26557 19634 27126 3Kx3K  1 1 0 0 Slow
+DImaging Flat    Any    1290 26590 19622 27105 3Kx3K  1 1 0 0 Slow
+DGrating G400L   Clear  1555 26497 19402 27158 Full   1 1 0 0 Slow
+DPrism   P450L   Clear  1420 26484 19454 27119 4Kx3K  1 1 0 0 Slow
+DAcquire Flat    g_sdss 1260 26590 19622 27105 3Kx3K  1 1 0 0 Slow

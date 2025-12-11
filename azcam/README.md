@@ -1,17 +1,17 @@
-# MODS AzCam Server
+# MODS azcam Server
 
 Updated: 2025 Nov 21
 
 ## Overview
 
-Our copy of Mike Lesser's `azcam` (https://github.com/mplesser/azcam) and `azcam-mods` (https://github.com/mplesser/azcam-mods).
+The MODS azcam server is basedo n Mike Lesser's `azcam` (https://github.com/mplesser/azcam) and `azcam-mods` (https://github.com/mplesser/azcam-mods),
+but substantially modified.  While we are leaving the core `azcam` code mostly unmodified (see the release notes), `azcam-mods` is the focus of our development, 
+and will not work on the MODS machines without our version of the core `azcam` code, which is why we bundle them together. Do not use the ITL/Lesser version of that.
 
-While we are leaving the core `azcam` code alone and `azcam-mods` is the focus of our development, we are   We are reserving the possiblity 
-of modifying the `azcam` server proper if we have no other alterative.  This is why we are bundling them together.
-
-One important note: our version of the core `azcam` code has changed only once to fix a break/continue bug in a loop.  Our version
-of `azcam-mods` has significantly diverged - do not use the ITL/Lesser version of that.
-
-See separate notes under both `azcam` and `azcam-mods` for details.
+See the release notes:
+ * `azcam` [Release Notes](azcam/release.md)
+ * `azcam-mods` [Release Notes](azcam-mods/releases.md)
+ 
+for details.
 
 Work in progress, stay tuned...

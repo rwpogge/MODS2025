@@ -1,27 +1,36 @@
 #
-# MODS1 Red Channel Preset Configurations
-# 2012-09-24 [rwp/osu]
-# 2013-09-04 [opk/lbto] averages of 3 back-to-back sets of TTF positions
-# 2014-08-30 [opk/lbto] 2 back-to-back sets of TTF positions taken, 
-#            maximum deviation 5 microns, adopting values from the first set.
-# 2015-09-07 [opk/lbto] median of 3 back-to-back sets of TTF positions
-# Measured: 2016 Oct 8 post-installation of recoated red collimator
-#           R. Pogge [OSU]
-# 2016-10-08 [rwp/osu] post-recoating of red collimator mirror
-# 2017-10-28 [opk/lbto] 2017B startup from summer shutdown
-# Updated:  2017 Nov 21 updated red dual imaging focus from 1200 to 1160 mic [opk/lbto]
-# 2018-09-12 [opk/lbto] 2018B startup from summer shutdown
-# 2019-01-25 remeasured IMCS TTFs after MODS1 was re-mounted following the PEPSIPOL run [opk/lbto]
-# 2019-05-21 [JP/lbto] reran imcsTTFs after remount post PEPSIPOL run
-# 2019-05-21 [JP/lbto] reran imcsTTFs after remount post PEPSIPOL run
-# 2019-09-03 [OPK/lbto] reran imcsTTFs after remount post summer shutdown
-# 2020-10-20 [OPK/lbto] updated mods1r dual grating focus from 1650 to 1600 mic
-# 2020-10-20 [OPK/lbto] updated mods1r red grating focus from 1650 to 1620 mic
-# 2020-12-23 [OPK/lbto] reran imcsTTFs after remount post PEPSIPOL run 
-# 2021-05-28 [OPK/lbto] Measured imcsTTFs after remount post PEPSIPOL run 
+# MODS2 Red Channel Preset Configurations
+# 2017-11-18 [rwp/osu]
 #
-# Config for MODS1 with LBT oriented at El=60deg, rotAngle=207
-# (PA=0 on the meridian) on the Left Direct Gregorian rotator
+# Measured: 2017 Nov 18 - post IMCS laser launch block realignment
+#           R. Pogge [OSU]
+# Updated: 2017 Nov 21 - DualImaging focus changed from 600 mic to 450 mic. 
+#          and Direct Imaging red focus changed from 597 mic to 450 mic. 
+#           O. Kuhn [LBTO]
+# Measured: 2018 Jan 10 - ran imcsTTFs.pro script O. Kuhn [LBTO]
+# Measured: 2018 Sep 09 - 2018B post shutdown startup [OPK/LBTO]
+# Measured: 2019 Jan 25 - after remounting MODS2 following the PEPSIPOL run [opk/lbto]
+# Measured: 2019-05-21 [JP/lbto] reran imcsTTFs after remount post PEPSIPOL run
+# Measured: 2019 Sep 09 - after remounting MODS2 following summer shutdown run [opk/lbto]
+# Measured: 2020 Dec 23 - after remounting MODS2 following PEPSIPOL run [opk/lbto]
+# Measured: 2021 May 28 - after remounting MODS2 following PEPSIPOL run [opk/lbto]
+# Measured: 2021-09-03 - ran IMCSTTFs.pro post summer shutdown [opk/lbto]
+# Measured: 2021-09-16 - adjusted focus dualgrating 860->831 [opk/lbto]
+# Measured: 2021-11-26 - adjusted focus dualgrating 831->861 [opk/lbto]
+# Measured: 2022-01-23 - ran IMCSTTFs.pro after PEPSI-POL run [opk/lbto]
+# Measured: 2022-09-22 - ran IMCSTTFs.pro after SSD [opk/lbto]
+# Measured: 2022-12-08 - ran IMCSTTFs.pro after PEPSI-POL run [opk/lbto]
+# 2022-12-15 [OPK/lbto] Checked focus near center of detector: updated Im 450->500 DIm 450->490
+# Measured: 2022-12-17 - ran IMCSTTFs.pro after focus adjustments [opk/lbto]
+# Measured: 2023-09-03 JP/OK - Updated Direct imaging from 500->450
+# Measured: 2023-09-03 JP/OK - Updated Dual Imaging from 490->430
+# measured 2023-12-08 [opk/lbto] post-install; updated 2024-01-08 
+# measured 2024-01-10 [opk/lbto] dual im focus updated +90 mic (430->520) 
+# measured 2024-01-12 [opk/lbto] red im focus updated +90 mic (450->540) 
+# measured 2024-01-12 [opk/lbto] red gr focus updated +30 mic (861->891)  
+# measured 2024-02-02 [opk/lbto] remeasured IMCS TTF ZPs after focus changes 
+# measured 2024-08-24 [opk/lbto] remeasured IMCS TTF ZPs after reinstall 
+# measured 2024-12-09 [opk/lbto] red pr focus updated +60 mic (800->860) 
 #
 # Format: 
 #  name grating filter cfoc ttfA ttfB ttfC ccdroi xbin ybin xover yover speed
@@ -59,21 +68,21 @@
 #
 # Custom configuration entries should come *AFTER* the 4 reserved
 # configurations.  If you comment out a reserved configuration you
-# effectively disable the correspondng GUI button
+# effectively disable the corresponding GUI button
 #
 # name grating filter cfoc ttfA ttfB ttfC ccdroi xbin ybin xover yover speed
 #
-#
+#          
 # Direct-Mode Presets
 #
-Imaging  Flat    Any    1200 16126 14754 12524 3Kx3K  1 1 0 0 Slow
-Grating  G670L   GG495  1620 16165 14809 12438 Full   1 1 0 0 Slow
-Prism    P700L   GG495  1550 16099 14832 12485 4Kx3K  1 1 0 0 Slow
-Acquire  Flat    r_sdss 1250 16126 14754 12524 3Kx3K  2 2 0 0 Fast
+Imaging  Flat    Any     540 23214 17388 19296 3Kx3K  1 1 0 0 Slow
+Grating  G670L   GG495   891 23138 17497 19264 Full   1 1 0 0 Slow
+Prism    P700L   GG495   860 23224 17512 19228 4Kx3K  1 1 0 0 Slow
+Acquire  Flat    r_sdss  500 23214 17388 19296 3Kx3K  1 1 0 0 Slow
 #
-# Dual-Mode Presets
+# Dual-Mode Presets 
 #
-DImaging Flat    Any    1160 16078 14781 12543 3Kx3K  1 1 0 0 Slow
-DGrating G670L   Clear  1600 16105 14826 12471 Full   1 1 0 0 Slow
-DPrism   P700L   GG495  1550 15719 14527 12171 4Kx3K  1 1 0 0 Slow
-DAcquire Flat    r_sdss 1160 16078 14781 12543 3Kx3K  2 2 0 0 Fast
+DImaging Flat    Any     520 23208 17386 19298 3Kx3K  1 1 0 0 Slow
+DGrating G670L   Clear   861 23131 17499 19267 Full   1 1 0 0 Slow
+DPrism   P700L   GG495   825 23215 17515 19232 4Kx3K  1 1 0 0 Slow
+DAcquire Flat    r_sdss  490 23208 17386 19298 3Kx3K  1 1 0 0 Slow

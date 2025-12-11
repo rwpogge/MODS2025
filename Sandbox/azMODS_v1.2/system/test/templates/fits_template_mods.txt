@@ -1,0 +1,5 @@
+OBSERVER Lesser         / Observers
+ORIGIN   LBTO           / Observatory
+OBSERVAT LBTO           / Observatory
+PROJECT  MODS           / Project Name
+DEWAR    MODS_test      / Dewar name

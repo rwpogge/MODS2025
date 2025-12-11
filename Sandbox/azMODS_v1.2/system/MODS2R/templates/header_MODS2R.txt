@@ -1,0 +1,23 @@
+INSTRUME  MODS2R               / Instrument Name
+CHANNEL   RED                  / MODS Channel [blue|red]
+DETECTOR  e2v CCD231-68 Red CCD 2 / Detector name
+CCDCTRLR  Archon               / STA Archon CCD controller 
+DISPAXIS                     1 / Spectral Dispersion Axis
+PIXSCALE                 0.123 / Unbinned pixel scale [arcsec per pixel]
+PIXSIZE                   15.0 / Unbinned pixel size [microns]
+ORIGIN    MGIO-LBT             / Location where the data was generated
+OBSERVAT  MGIO-LBT             / Observatory Site
+TELESCOP  LBT-DX               / Telescope and Focal Station
+FOCSCALE                  1.67 / Focal Plane Scale [arcsec per mm]
+LATITUDE              32.70131 / Site Latitude [deg N]
+LONGITUD             109.88906 / Site Longitude [deg W] 
+ELEVATIO                3221.0 / Site Elevation [meters]
+OBSERVER  Observer Name(s)     / Observer(s)
+PARTNER   ENGINEERING          / LBT Project Partner(s)
+PROPID    ENGINEERING          / Observing Proposal ID
+PI_NAME   ENGINEERING          / Project PI Name(s)
+SUPPORT   Support Name(s)      / LBT Support Scientist(s) on duty
+TELOPS    TelOps Name(s)       / LBT Telescope Operator(s) on duty
+GRORDER                      1 / Grating order used
+RADECSYS  FK5                  / Coordinate System
+EQUINOX                 2000.0 / Equinox of coordinates
