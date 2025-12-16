@@ -11,7 +11,7 @@ and will not work on the MODS machines without our version of the core `azcam` c
 See the release notes:
  * `azcam` [Release Notes](azcam/releases.md)
  * `azcam-mods` [Release Notes](azcam-mods/releases.md)
- * `azcam-console` [Release Notes][azcam-console/releases.md) 
+ * `azcam-console` [Release Notes](azcam-console/releases.md) 
 for details.
 
 Work in progress, stay tuned...
