@@ -75,12 +75,61 @@ MODS to resume on-telescope recommissioning in December.
 
 ## CCD configuration details
 
-### Heater control
+### CCD Temperature Control
 
-One main difference between MODS detectors is the HEATERX board
-settings.  It is a balance between desired operating range and what we
-can do given the variation in the efficiency of the heat strap between
-the CCD mount base and the LN2 dewar.
+The HeaterX board is installed in the **MOD10** slot
+
+#### Temperature Sensors
+
+`SENSORA` is the CCD detector, a 100-ohm Pt RTD run at 0.1mA
+```
+MOD10\SENSORALABEL=CCD
+MOD10\SENSORATYPE=2
+MOD10\SENSORACURRENT=100000
+MOD10\SENSORAFILTER=3
+MOD10\SENSORALOWERLIMIT=-150.0
+MOD10\SENSORAUPPERLIMIT=50.0
+```
+`SENSORB` is the CCD mount base, where the cold strap from the LN2 dewar attaches to the detector mount.  It is the same type of RTD as sensor A
+```
+MOD10\SENSORBLABEL=BASE
+MOD10\SENSORBTYPE=2
+MOD10\SENSORBCURRENT=100000
+MOD10\SENSORBFILTER=3
+MOD10\SENSORBLOWERLIMIT=-150.0
+MOD10\SENSORBUPPERLIMIT=50.0
+```
+`SENSORC` is not used.
+
+#### PID Control Parameters
+
+We run the CCD heater from Heater A.  
+
+The CCD heater is a 50-ohm resistor.
+We set a heater limit of 7V, which corresponds to ~1 watt max (49/50).  This is a conservative protection value.
+
+The temperature set-point is **-100C**, but can be changed from the `azcam` server.
+
+We only set the proportional gain on the heater, leaving I and D at 0.  An I limit of 1000 was recommended by STA.
+
+```
+MOD10\HEATERAENABLE=1
+MOD10\HEATERAD=0
+MOD10\HEATERAFORCE=0
+MOD10\HEATERAFORCELEVEL=0
+MOD10\HEATERAI=0
+MOD10\HEATERAIL=1000
+MOD10\HEATERALABEL=MODS
+MOD10\HEATERALIMIT=7.0
+MOD10\HEATERAP=30
+MOD10\HEATERARAMP=0
+MOD10\HEATERARAMPRATE=1
+MOD10\HEATERASENSOR=0
+MOD10\HEATERATARGET=-100
+MOD10\HEATERUPDATETIME=1000
+```
+
+Heater B is not used.
 
 #### MODS1B
 HeaterX board control parameters
@@ -109,7 +158,6 @@ HeaterX board control parameters
  * `HEATERAP=15` - PID P parameter (D and I are 0)
  * `HEATERALIMIT=8.0` volts
  * `HEATERAIL=1000`
-
 
 
 
