@@ -5,7 +5,7 @@
 **Last Update: 2025 Dec 10 [rwp/osu]**
 
 ### Version 1.1.6 - 2025 Dec 10
- * Set `exposure.shutter_delay = 500` msec on testing with 1Kx1K images acquired with MODS2R camera and the pinhole sieve mask, 1s exposure. Stop seeing streaks at 300ms.  The old controller used 1s, which was arbitrary.
+ * `exposure.shutter_delay = 500` msec set in `server.py` on testing with 1Kx1K images acquired with MODS2R camera and the pinhole sieve mask, 1s exposure. Stop seeing streaks at 300ms.  The old controller used 1s, which was arbitrary.
  * `detector_mods.py` updated, now includes 32 overscan columns from Mike Lesser
  * `console.py` - new console setup method for azcam-mods from Mike Lesser
  * `server.py` - modified server setup, with changes for the new Archon control files
