@@ -13,6 +13,9 @@
 See the `azcam/server/MODS*/` folders for the updated Archon control files (`.ncf`) and changes in filenames
 for some elements to support the azcam-console.
 
+Many of the changes in `server.py` are hard-coded for now and will be set in a yaml-based runtime configuration
+file for v1.2 of `azcam-mods` that is currently in alpha development.
+
 ### Version 1.1.5 - 2025 Nov 21
  * Added `exposure.shutter_delay = 250` to add a 250-msec shutter delay before starting readout.  This is needed because of the slower MODS shutter.  This is an initial value that will be optimized later to be a best for all 4 cameras.  Change was introduced by Mike Lesser during MODS detector testing.
 
