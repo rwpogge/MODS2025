@@ -1,9 +1,10 @@
 # MODS2025 Release Notes
 Last Release: 2025 Oct 12
 
-## Versoin 1.4.0 - 2025 Dec 16
+## Version 1.4.0 - 2025 Dec 16
 Updates after significant work by Mike Lesser getting the MODS CCD detectors working with the Archon controllers.
  * `azcam` - added `azcam-console` and updated all of the runtime and Archon configuration files in `azcam-mods`.  
+ * `azcam-mods` - multiple changes for the Archon controllers. See notes there.
  * `Sandbox/dataMan` - update for the azcam-generated FITS headers, and a testing Jupyter notebook.
 
 ## Version 1.3.3 - 2025 Oct 24
