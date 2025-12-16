@@ -5,7 +5,7 @@
 **Last Update: 2025 Dec 10 [rwp/osu]**
 
 ### Version 1.1.6 - 2025 Dec 10
- * Set `exposure.shutter_delay = 500` msec on testing with 1Kx1K images acquired with MODS2R camera and the pinhole sieve mask, 1s exposure. Stop seeing streaks at 300ms.  The old controller used 1s, which was arbitrary but small compared to the readout time then of 40s for 1Kx1K readout, compared to 2s now.
+ * Set `exposure.shutter_delay = 500` msec on testing with 1Kx1K images acquired with MODS2R camera and the pinhole sieve mask, 1s exposure. Stop seeing streaks at 300ms.  The old controller used 1s, which was arbitrary.
 
 ### Version 1.1.5 - 2025 Nov 21
  * Added `exposure.shutter_delay = 250` to add a 250-msec shutter delay before starting readout.  This is needed because of the slower MODS shutter.  This is an initial value that will be optimized later to be a best for all 4 cameras.  Change was introduced by Mike Lesser during MODS detector testing.
