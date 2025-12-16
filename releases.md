@@ -1,5 +1,6 @@
 # MODS2025 Release Notes
-Last Release: 2025 Oct 12
+
+**Last Release: 2025 Dec 16**
 
 ## Version 1.4.0 - 2025 Dec 16
 Updates after significant work by Mike Lesser getting the MODS CCD detectors working with the Archon controllers.
