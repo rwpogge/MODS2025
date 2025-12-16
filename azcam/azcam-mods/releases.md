@@ -1,8 +1,8 @@
 # azcam-mods Release Notes
 
-**Current Version: 1.1.5**
+**Current Version: 1.1.6**
 
-**Last Update: 2025 Nov 21 [rwp/osu]**
+**Last Update: 2025 Dec 10 [rwp/osu]**
 
 ### Version 1.1.6 - 2025 Dec 10
  * Set `exposure.shutter_delay = 500` msec on testing with 1Kx1K images acquired with MODS2R camera and the pinhole sieve mask, 1s exposure. Stop seeing streaks at 300ms.  The old controller used 1s, which was arbitrary but small compared to the readout time then of 40s for 1Kx1K readout, compared to 2s now.
