@@ -1,12 +1,12 @@
 # MODS2025
 
-**Version 1.3.3**
+**Version 1.4.0**
 
-**Last Update: 2025 Oct 24 [rwp/osu]**
+**Last Update: 2025 Dec 16 [rwp/osu]**
 
 Lead: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
-See the [Release Notes](RELEASES.md) for details, as well as sub-system release notes inside.
+See the [Release Notes](releases.md) for details, as well as sub-system release notes inside.
 
 ## Overview
 MODS2025 Project to update MODS1+2 CCD and instrument control systems at the LBT
@@ -44,9 +44,3 @@ See the [installation instructions](INSTALL.md) in this repository.
 - Matthieu Bec (LBTO) mbec@lbto.org
 - Glenn Eychaner (LBTO) geychaner@lbto.org
 - Ray Gonzalez (OSU Retired)
-
-## Whiteboard Status
-
-MP4067 whiteboard as of 2025 Sept 21:
-
-![MP4067 Whiteboard](MODS_dts_Status_2025Sept21.jpg)

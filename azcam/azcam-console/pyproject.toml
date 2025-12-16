@@ -1,5 +1,5 @@
 [project]
-name = "azcam"
+name = "azcam-console"
 version = "25.1.1"
 description = "Acquisition and analysis package for scientific imaging"
 license = { file = "LICENSE" }
@@ -7,27 +7,27 @@ readme = "README.md"
 keywords = ["ccd", "imaging", "astronomy", "sensors"]
 authors = [{ name = "Michael Lesser" }, { email = "mlesser@arizona.edu" }]
 dependencies = [
+    "azcam",
     "loguru",
+    "scipy",
     "numpy",
     "astropy",
-    "psutil",
-    "fastapi",
-    "uvicorn",
-    "jinja2",
-    "dash",
-    "dash-bootstrap-components",
-    "dash_daq",
-    "pandas",
+    "matplotlib",
+    "pdfkit",
+    "markdown",
+    "pypdf",
+    "pywin32; sys_platform == 'win32'",
+    "mkdocstrings[python]>=0.18",
 ]
 requires-python = ">= 3.10"
 
 [project.urls]
 Documentation = "https://azcam.readthedocs.io/"
-Repository = "https://github.com/mplesser/azcam/"
+Repository = "https://github.com/mplesser/azcam-console/"
 
 [build-system]
 requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
-[project.scripts]
-azcammonitor = "azcam.monitor.__main__:main"
+[tool.flit.module]
+name = "azcam_console"

@@ -9,9 +9,9 @@ but substantially modified.  While we are leaving the core `azcam` code mostly u
 and will not work on the MODS machines without our version of the core `azcam` code, which is why we bundle them together. Do not use the ITL/Lesser version of that.
 
 See the release notes:
- * `azcam` [Release Notes](azcam/release.md)
+ * `azcam` [Release Notes](azcam/releases.md)
  * `azcam-mods` [Release Notes](azcam-mods/releases.md)
- 
+ * `azcam-console` [Release Notes][azcam-console/releases.md) 
 for details.
 
 Work in progress, stay tuned...
