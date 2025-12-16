@@ -2,12 +2,9 @@
 
 **Updated**: 2025 Dec 16
 
-We restructured the configuration for azcam for MODS to segregate
-system configuration files and logs from raw imaging data.  This is to
-help streamline our configuration management (4 Archon controllers
-across 2 instruments in the same rack), and to make getting at raw
-science image transparent without exposing critical system
-configuration files.
+We restructured the configuration for azcam for MODS to segregate system configuration files and logs from raw imaging data.  This is to help
+streamline our configuration management (4 Archon controllers across 2 instruments in the same rack), and to make getting at raw science image
+transparent without exposing critical system configuration files.
 
 We use `system/` as the root folder for all system-specific files
  * `parameters/` for azcam server parameter files
@@ -29,58 +26,47 @@ In addition, there is a separate entry for the MODS lab test dewar
 
 ## Parameters
 
-Parameter initialization files for the azcam server and console
-apps. Each MODS instrument has its own set of parameters.  `<modsID>`
-= (MODS1B/R,MODS2B/R):
+Parameter initialization files for the azcam server and console apps. Each
+MODS instrument has its own set of parameters.  `<modsID>` = (MODS1B/R,MODS2B/R):
  * `server_<modsID>.ini` - azcam server parameters for `<modsID>`
  * `console_<modsID>.ini` - azcam console parameters for `<modsID>`
 
 ## Templates
 
-Header and other templates used by the azcam server.  The FITS header
-template is the static header structure for each `<modsID>` system.
-The azcam server will add various other parameters as it will, and
-populate the headers with dates, times, and specific data like actual
-exposure time, total dark time, etc.
-
+Header and other templates used by the azcam server.  The FITS header template is the
+static header structure for each `<modsID>` system.  The azcam server will add various
+other parameters as it will, and populate the headers with dates, times, and specific
+data like actual exposure time, total dark time, etc.
  * `header_<modsID>.txt` - static exposure info FITS header template for `<modsID>` channel.
  * `instHdr_<modsID>.txt` - LBT IIF data dictionary to Instrument FITS header keyword mapping used by `instrument_mods.py` for `<modsID>` channel.
  * `modsTCS_<side>.txt` - LBT IIF data dictionary to TCS FITS header keyword mapping used by `telescope_lbt.py`. <side> is left (SX) or right (DX), same for both channels in a single MODS
 
 ## Archon Control Files
 
-An Archon controller uses `.acf` or `.ncf` files for the detailed
+The archon controller use `.acf` or `.ncf` files for the detailed
 detector readout configuration. There may be many test or alternative
 files in this folder, but the `<modsID>.ncf` file will be considered
 the "flight" configuration.  Use symbolic links or judicious copying
-(careful!) to enable an alternative or test configuration if needed.
+(careful!) to enable an alternative or test configuration
 
-### Lab Test Dewar
+Once on the ground in Tucson with the live system we identified the
+correct .ncf files and was able to convert it to an ACF format using
+the STA `archongui`.  With help from Greg Bredthauer, we learned we
+have to edit out the `[SYSTEM]` block to upload from a remote host,
+but need that section for local download into `archongui`.
 
-The Lab Test Dewar with the MODS e2v electrical sample CCD has
-different serial clock wiring than the flight dewars, and so its
-Archon control files are incompatible for use with the MODS science
-CCDS.
+The reference file is `MODS_Example_2.ncf` which includes the ROI
+readout modes with binning and long exposure support.  Copies of each
+are in the individual system `MODS#c/archon` folders named for the
+system channel as the heater parameters need to be tuned individually
+for each dewar (and later we'll adjust readout rates, bias, etc., if
+needed or if if we can at all).
 
-Figuring this out was the rate-limiting step to getting the new
-system up on its feet.
+### Details
 
-### MODS Science Dewars
-
-Mike Lesser in 2025 November/December worked to get the Archons
-working with the MODS science CCDs with the MODS on their handling
-carts on the floor in the LBT high-bay area.  This resulted in a major
-overhaul of all of the `.ncf` files. These were released for use with
-MODS to resume on-telescope recommissioning in December.
-
-## CCD configuration details
-
-### Heater control
-
-One main difference between MODS detectors is the HEATERX board
-settings.  It is a balance between desired operating range and what we
-can do given the variation in the efficiency of the heat strap between
-the CCD mount base and the LN2 dewar.
+Mostly it is the setpoint (`HEATERATARGET`) that differs.  It is a balance
+between desired operating range and what we can do given the variation in
+the efficiency of the heat strap between the CCD mount base and the LN2 dewar.
 
 #### MODS1B
 HeaterX board control parameters
