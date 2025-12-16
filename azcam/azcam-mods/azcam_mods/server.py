@@ -159,28 +159,28 @@ def setup():
     
     if "MODS" in option:
         
-        # paramteter files are <modsID>_pars.ini in system/<modsID>/parameters/
+        # parameter files are paramters_server_<modsID>.ini in system/<modsID>/parameters/
         
         parfile = os.path.join(azcam.db.systemfolder,
                                "parameters", 
-                               f"server_{option}.ini")
+                               f"parameteres_server_{option}.ini")
         
-        # "flight" archon configuration (aka "timing") files are 
-        # named <modsID>.acf in system/<modsID>/archon/
+        # "flight" archon configuration (aka "timing") files are named <modsID>.ncf in
+        # system/<modsID>/archon/
         
         timingfile = os.path.join(azcam.db.systemfolder,
                                   "archon",
-                                  f"{option}.acf")
+                                  f"{option}.ncf")
 
-        # exposure information header template
-        # filename is header_<systemname>.txt in the system templates folder
+        # exposure information header template filename is header_<systemname>.txt in
+        # the system templates folder
         
         expTemplate = os.path.join(azcam.db.systemfolder,
                                    "templates",
                                    f"header_{azcam.db.systemname}.txt")
         
-        # instrument information header template
-        # name is instHdr_<systemname>.txt in the system templates folder
+        # instrument information header template name is instHdr_<systemname>.txt in
+        # the system templates folder
         
         instTemplate = os.path.join(azcam.db.systemfolder,
                                     "templates",
@@ -236,6 +236,13 @@ def setup():
     tempcon.heaterx_board = "MOD10"
     tempcon.control_temperature = -100.0
     controller.heater_board_installed = 1
+
+    # basetemp and ccdtemp sensors are wired oppoiste on MODS1 and MODS2
+
+    if option == "mods1r" or option == "mods1b":
+      tempcon.temperature_ids = [1, 0]  # basetemp, ccdtemp for MODS1
+    else:
+      tempcon.temperature_ids = [0, 1]  # ccdtemp, basetemp for MODS2
 
     # exposure
  
@@ -354,6 +361,11 @@ def setup():
     if 0:
         azcam.db.monitor.register()
 
+    # For floor testing without telescope and instrument interaction, uncomment
+
+    #instrument.is_enabled = 0
+    #telescope.is_enabled = 0
+    
     # finish
 
     azcam.log(f"{option} configuration complete")

@@ -1,15 +1,17 @@
 """
-MODS focal plane configuration
+MODS focal plane CCD configuration
 
-Updated: 2025 July 10 [rwp/osu]
-         changed im# -> Q# to match MODS nomenclature
+Updates:
+    2025 July 10 [rwp/osu] - changed im# -> Q# to match MODS nomenclature
+    2025 Nov 21 [mlesser] - changes for working CCD config, including overscan columns
+
 """
 
 detector_mods = {
     "name": "MODS",
     "description": "MODS",
     "ref_pixel": [4144.0, 1544.0],
-    "format": [8288, 0, 0, 0, 3088, 0, 0, 0, 0],
+    "format": [8288, 0, 0, 32, 3088, 0, 0, 0, 0],
     "focalplane": [1, 1, 2, 2, [0, 1, 0, 1]],
     "roi": [1, 8288, 1, 3088, 1, 1],
     "ext_position": [[1, 1], [2, 1], [1, 2], [2, 2]],

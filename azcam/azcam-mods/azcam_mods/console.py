@@ -4,8 +4,9 @@ Setup method for LBTO MODS azcam console
 Usage example:
   python -i -m azcam_mods.console -- -mods1r
   
-  Updated: 2025 July 13 [rwp/osu]
- 
+  
+Updated: 2025 Nov 28 [mlesser]
+  
 """
 
 import os
@@ -16,6 +17,7 @@ import azcam
 import azcam.utils
 import azcam_console.console
 from azcam_console.tools.console_tools import create_console_tools
+from azcam_console.testers import load_testers
 import azcam_console.shortcuts
 import azcam_console.tools.console_tools
 from azcam.tools.ds9display import Ds9Display
@@ -72,6 +74,7 @@ def setup():
     azcamRoot = "/home/dts/azcam"
     
     os.environ["AZCAM_DATAROOT"] = datafolder
+    azcam.db.datafolder = datafolder
     
     # define folders for the system
 
@@ -138,20 +141,7 @@ def setup():
     # console tools
 
     create_console_tools()
-
-    # observe
-
-    azcam.log("Loading observe")
-    from azcam_console.observe.observe_cli.observe_cli import ObserveCli
-
-    observe = ObserveCli()
-    observe.move_telescope_during_readout = 1
-
-    # focus tool
-
-    #focus = FocusConsole()
-    #focus.focus_component = "instrument"
-    #focus.focus_type = "step"
+    load_testers()
 
     # try to connect to azcamserver
     
@@ -171,6 +161,17 @@ def setup():
 
     azcam.db.parameters.read_parfile(parfile)
     azcam.db.parameters.update_pars()
+    
+    # debug for Mike Lesser
+    
+    azcam.db.tools['instrument'].is_enabled=0
+    azcam.db.tools['telescope'].is_enabled=0
+    azcam.db.imageroi=[[3500,3550,1200,1250],[4150,4159,1200,1250]]
+    gain=azcam.db.tools['gain']
+    gain.create_report=0
+    ptc=azcam.db.tools['ptc']
+    ptc.create_report=0
+    
 
 # start
 
