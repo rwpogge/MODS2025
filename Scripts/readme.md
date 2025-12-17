@@ -20,7 +20,14 @@ option.
 
 ### Public SciOps Folder
 
-...
+The robs/obs machines at the LBTO summit used for observing and routine technical
+operations use the NFS-mounted `/lbt/lbto/mods` folder for all public MODS scripts
+and support files (e.g., the tmux config files).
+
+This folder is synced daily at 1900UTC into the LBTO GitHub (https://github.com/LBTO/sciops-obs-mods) 
+repository.  Any changes to scripts made before 1900UTC will make it into the daily autosync.
+Read the [sciops-obs-mods README](https://github.com/LBTO/sciops-obs-mods/blob/master/README.md) before
+pushing scripts into this folder, and be mindful of what you put there and why.
 
 
 ## Dependences
