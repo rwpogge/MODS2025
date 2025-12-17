@@ -1,6 +1,6 @@
 # MODS runtime configuration files
 
-Last Update: 2025 July 16 [rwp/osu]
+Last Update: 2025 Dec 17 [rwp/osu]
 
 This directory contains the active runtime configuration files
 for the MODS instrument control programs.  These are the
@@ -20,5 +20,4 @@ in the code tree instead of the /home/mods/ support directory
 
 IIF/ contains copies of the files needed by the lbttcs and other IIF client 
 programs that rely on the ICE version of the IIF provided by LBTO. 
-
 

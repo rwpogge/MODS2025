@@ -1,6 +1,9 @@
 # MODS Runtime Configuration File Release Notes
 
-Latest Release: 2025 July 16
+Latest Release: 2025 Dec 17
+
+## Version 2.1 - 2025 Dec 17
+ * Updates after Archon controller configuration and tune-up. Found errors in the MODS2 `rconfig.tab` file that confused the MODS2R tune-up until corrected.  
 
 ## Version 2.0 - 2025 July 
  * MODS2025 controller update including new mechanism.ini files for both MODS
