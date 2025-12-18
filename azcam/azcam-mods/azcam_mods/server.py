@@ -163,7 +163,7 @@ def setup():
         
         parfile = os.path.join(azcam.db.systemfolder,
                                "parameters", 
-                               f"parameteres_server_{option}.ini")
+                               f"parameters_server_{option}.ini")
         
         # "flight" archon configuration (aka "timing") files are named <modsID>.ncf in
         # system/<modsID>/archon/
