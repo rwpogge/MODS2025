@@ -11,14 +11,14 @@ Collimator mirror focus steps from centered to
 move the laser spot onto each of the quad cell
 quadrants.  Measured with pre-Archon MODS.
 
-'''
+```
   command: r/bcolfoc step dA dB dC
 
   Q1:  40 -53  17
   Q2:  40  17 -53
   Q3: -40  53 -17
   Q4: -40 -17  53
-'''
+```
 Verified for MODS1 and MODS2
 
 
