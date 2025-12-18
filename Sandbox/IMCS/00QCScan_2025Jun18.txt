@@ -1,0 +1,17 @@
+Quad Cell quadrant scans
+2025 June 18 [rwp/osu]
+
+
+Overview:
+
+
+MODS1
+
+  command: r/bcolfoc step dA dB dC
+
+  Q1:  40 -53  17
+  Q2:  40  17 -53
+  Q3: -40  53 -17
+  Q4: -40 -17  53
+
+verified for MODS2
