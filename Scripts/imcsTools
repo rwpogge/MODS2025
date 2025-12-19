@@ -1,0 +1,149 @@
+#!/bin/csh -f
+#
+# starts/stops the IMCS test tools
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge@astronomy.ohio-state.edu
+# 2010 June 9
+#
+# the LBT version uses the explicit IP of the mods server host, otherwise
+# we use the locally-resolved name of the OSU Lab mods server host.
+#
+# This version is meant to be run on a MODS instrument server (mods1/2)
+#
+# Modification History:
+#  2025 Dec 19 - New version for the Archon controller update [rwp/osu]
+#
+#---------------------------------------------------------------------------
+
+set versionID = "2.0.1 (2025-12-19)"
+
+# Common variables
+
+set usageMsg = "imcsTools {start|stop|restart|help} [blue|red]"
+
+set modsHost = `hostname`
+set modsID = `echo ${modsHost} | tr '[:lower:]' '[:upper:]'`
+set imcsDir = '/home/dts/mods/TclTk'
+
+# Get the command line argument - we will validate it later
+
+if ($#argv == 1) then
+   set option = $1
+   set mode = "all"
+else if ($#argv == 2) then
+   set option = $1
+   set mode = $2
+else
+   echo "Usage: ${usageMsg}"
+   exit 1
+endif
+
+# Perform the requested command
+
+switch ($option)
+    case 'help':
+    echo " "
+    echo "imcsTools - start/stop/restart the ${modsID} IMCS testing tools"
+    echo " "
+    echo "Usage: ${usageMsg}"
+    echo " "
+    echo "Options:"
+    echo "  start   - start the ${modsID} IMCS programs (QC monitors and gui)"
+    echo "  stop    - stop the ${modsID} IMCS programs"
+    echo "  restart - restart the ${modsID} IMCS programs"
+    echo "  help    - print this message"
+    echo " "
+    echo "Given without the red or blue qualifier, performs the requested"
+    echo "function for the ${modsID} red and blue channels"
+    echo " "
+    echo "--------------------------------"
+    echo "imcsTools v${versionID}"
+    echo " "
+    exit 0
+    breaksw
+
+    case 'start':
+    if (${mode} == "all") then
+       ${imcsDir}/blueQC
+       ${imcsDir}/redQC
+       ${imcsDir}/bimcsGUI
+       ${imcsDir}/rimcsGUI
+    else if (${mode} == "blue") then
+       ${imcsDir}/blueQC
+       ${imcsDir}/bimcsGUI
+    else if (${mode} == "red") then
+       ${imcsDir}/redQC
+       ${imcsDir}/rimcsGUI
+    else
+       echo "ERROR: Unknown option '${mode}' - Usage: ${usageMsg}"
+       exit 1
+    endif
+    echo " "
+    exit 0
+    breaksw
+
+    case 'stop':
+    if (${mode} == "all") then
+       killall blueQC
+       killall redQC
+       killall bimcsGUI
+       killall rimcsGUI
+    else if (${mode} == "blue") then
+       killall blueQC
+       killall bimcsGUI
+    else if (${mode} == "red") then
+       killall redQC
+       killall rimcsGUI
+    else
+       echo "ERROR: Unknown option '${mode}' - Usage: ${usageMsg}"
+       exit 1
+    endif
+    echo " "
+    exit 0
+    breaksw
+
+    case 'restart':
+    echo "Stopping ${mode} ${modsID} imcsTools..."
+    if (${mode} == "all") then
+       killall blueQC
+       killall redQC
+       killall bimcsGUI
+       killall rimcsGUI
+    else if (${mode} == "blue") then
+       killall blueQC
+       killall bimcsGUI
+    else if (${mode} == "red") then
+       killall redQC
+       killall rimcsGUI
+    else
+       echo "ERROR: Unknown option '${mode}' - Usage: ${usageMsg}"
+       exit 1
+    endif
+    echo "Starting ${mode} ${modsID} imcsTools..."
+    if (${mode} == "all") then
+       ${imcsDir}/blueQC
+       ${imcsDir}/redQC
+       ${imcsDir}/bimcsGUI
+       ${imcsDir}/rimcsGUI
+    else if (${mode} == "blue") then
+       ${imcsDir}/blueQC
+       ${imcsDir}/bimcsGUI
+    else if (${mode} == "red") then
+       ${imcsDir}/redQC
+       ${imcsDir}/rimcsGUI
+    else
+       echo "ERROR: Unknown option '${mode}' - Usage: ${usageMsg}"
+       exit 1
+    endif
+    echo " "
+    exit 0
+    breaksw
+
+    default:
+    echo "ERROR: Unknown option '${option}' - Usage: ${usageMsg}"
+    exit 1
+    breaksw
+endsw
+
+exit 0

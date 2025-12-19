@@ -1,6 +1,9 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2025 Nov 25 [rwp/osu]</b>
+<b>Last Update: 2025 Dec 19 [rwp/osu]</b>
+
+## 2025 Dec 19: imcsTools
+ * created an updated version of `imcsTools` for the Archon system.
 
 ## 2025 Nov 25: resize issue
  * `resize` command was out of place in `mods1` and `mods2`, causing users to have to tap Enter twice to get the command to start.  Found and fixed
