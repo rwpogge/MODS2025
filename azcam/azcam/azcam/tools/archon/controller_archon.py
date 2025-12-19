@@ -312,7 +312,7 @@ class ControllerArchon(Controller):
         # Connect to controller
         self.connect()
         if not self.connected_controller:
-            raise azcam.exceptions.AzcamError("coud not connect to controller")
+            raise azcam.exceptions.AzcamError("could not connect to controller")
 
         self.warmboot()
         self.disconnect()

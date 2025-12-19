@@ -1,6 +1,6 @@
 # MODS azcam system files
 
-**Updated**: 2025 Dec 16
+**Updated**: 2025 Dec 19
 
 We restructured the configuration for azcam for MODS to segregate
 system configuration files and logs from raw imaging data.  This is to

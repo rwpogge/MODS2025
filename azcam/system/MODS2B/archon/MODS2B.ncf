@@ -665,7 +665,7 @@ IMAGE8; X(AT)
 X; RETURN VerticalShift
 
 [PARAMETERS]
-ContinuousExposures=1
+ContinuousExposures=0
 Exposures=0
 SweepCount=1
 IntMS=1000
