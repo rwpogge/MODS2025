@@ -65,16 +65,16 @@ switch ($option)
 
     case 'start':
     if (${mode} == "all") then
-       ${imcsDir}/blueQC
-       ${imcsDir}/redQC
-       ${imcsDir}/bimcsGUI
-       ${imcsDir}/rimcsGUI
+       ${imcsDir}/blueQC >& /dev/null &
+       ${imcsDir}/redQC >& /dev/null &
+       ${imcsDir}/bimcsGUI >& /dev/null &
+       ${imcsDir}/rimcsGUI >& /dev/null &
     else if (${mode} == "blue") then
-       ${imcsDir}/blueQC
-       ${imcsDir}/bimcsGUI
+       ${imcsDir}/blueQC >& /dev/null &
+       ${imcsDir}/bimcsGUI >& /dev/null &
     else if (${mode} == "red") then
-       ${imcsDir}/redQC
-       ${imcsDir}/rimcsGUI
+       ${imcsDir}/redQC >& /dev/null &
+       ${imcsDir}/rimcsGUI >& /dev/null &
     else
        echo "ERROR: Unknown option '${mode}' - Usage: ${usageMsg}"
        exit 1
@@ -122,16 +122,16 @@ switch ($option)
     endif
     echo "Starting ${mode} ${modsID} imcsTools..."
     if (${mode} == "all") then
-       ${imcsDir}/blueQC
-       ${imcsDir}/redQC
-       ${imcsDir}/bimcsGUI
-       ${imcsDir}/rimcsGUI
+       ${imcsDir}/blueQC >& /dev/null &
+       ${imcsDir}/redQC >& /dev/null &
+       ${imcsDir}/bimcsGUI >& /dev/null &
+       ${imcsDir}/rimcsGUI >& /dev/null &
     else if (${mode} == "blue") then
-       ${imcsDir}/blueQC
-       ${imcsDir}/bimcsGUI
+       ${imcsDir}/blueQC >& /dev/null &
+       ${imcsDir}/bimcsGUI >& /dev/null &
     else if (${mode} == "red") then
-       ${imcsDir}/redQC
-       ${imcsDir}/rimcsGUI
+       ${imcsDir}/redQC >& /dev/null &
+       ${imcsDir}/rimcsGUI >& /dev/null &
     else
        echo "ERROR: Unknown option '${mode}' - Usage: ${usageMsg}"
        exit 1
