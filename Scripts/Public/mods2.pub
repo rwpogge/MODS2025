@@ -22,6 +22,7 @@
 #   2011 Jan 18 - reduced-version for partner observing accounts [rwp/osu]
 #   2011 Mar 17 - added tcs/lbttcs to allowed processes [rwp/osu]
 #   2025 Oct 13 - updated for the Archon CCD controller system [rwp/osu]
+#   2025 Dec 19 - updates from live testing at LBTO [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -34,7 +35,7 @@ if ("${user}" == "osurc" || "${user}" == "inaf" || "${user}" == "lbtb" || "${use
 else if ("${user}" == "lbto") then
   set user="mods"
 else
-  printf "ERROR: User '${user}' is not permitted to run this program.\n"
+  printf "ERROR: User '${user}' is not permitted to run the mods2 script.\n"
   printf "       Ask your ISP for assistance with this operation.\n"
   exit 1
 endif
@@ -46,7 +47,7 @@ set keys=`realpath ${keys}`
 set keys="${keys}/../keys/id_ecdsa_${user}"
 
 if ( ! -e "${keys}" ) then
-  printf "ERROR: user '${user}' is not authorized to run this program!\n"
+  printf "ERROR: user '${user}' is not authorized to run the mods2 script!\n"
   exit 1
 endif
 
@@ -72,7 +73,7 @@ if ($#argv == 1) then
       breaksw
    
    default:
-      printf "\nERROR: unrecognized directive ${1}\n"
+      printf "\nERROR: unrecognized mods2 directive ${1}\n"
       printf "Usage: $usage\n"
       exit 1
       breaksw
@@ -93,13 +94,13 @@ else if ($#argv == 2) then
    case 'mmc':
    case 'agw':
    case 'imcs':
-      printf "\nERROR: Restricted directive '${1} ${2}' requested.\n"
+      printf "\nERROR: Restricted mods2 directive '${1} ${2}' requested.\n"
       printf "       Please request assistance from your ISA for this operation.\n"
       printf "\nUsage: $usage\n" 
       breaksw
    
    default:
-      printf "\nERROR: Unrecognized directive ${1} ${2}\n"
+      printf "\nERROR: Unrecognized mods2 directive ${1} ${2}\n"
       printf "Usage: $usage\n" 
       breaksw
 
