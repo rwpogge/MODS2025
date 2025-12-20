@@ -21,7 +21,7 @@
 
 set user=`echo $USER | tr '[:upper:]' '[:lower:]'`
 
-if ("${user}" == "lbto") then
+if ("${user}" == "lbto" || "${user}" == "osurc") then
   set modsUser="mods"
 else
   printf "ERROR: User '${user}' is not permitted to run the imcsTools script.\n"
@@ -33,7 +33,7 @@ endif
 
 set keys=`dirname $0`
 set keys=`realpath ${keys}`
-set keys="${keys}/../keys/id_ecdsa_${user}"
+set keys="${keys}/../keys/id_ecdsa_${modsUser}"
 
 # imcsTOOLS instrument server hosts are mods1 and mods2
 

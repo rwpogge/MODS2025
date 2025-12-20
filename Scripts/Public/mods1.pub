@@ -22,7 +22,7 @@
 #   2011 Jan 18 - reduced-version for partner observing accounts [rwp/osu]
 #   2011 Mar 17 - added tcs/lbttcs to allowed processes [rwp/osu]
 #   2025 Oct 13 - updated for the Archon CCD controller system [rwp/osu]
-#   2025 Dec 19 - updates from live testing at LBTO [rwp/osu]
+#   2025 Dec 20 - updates from live testing at LBTO [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -31,9 +31,9 @@
 set user=`echo $USER | tr '[:upper:]' '[:lower:]'`
 
 if ("${user}" == "osurc" || "${user}" == "inaf" || "${user}" == "lbtb" || "${user}" == "queue") then
-  set user="observer"
+  set modsUser="observer"
 else if ("${user}" == "lbto") then
-  set user="mods"
+  set modsUser="mods"
 else
   printf "ERROR: User '${user}' is not permitted to run the mods1 script.\n"
   printf "       Ask your ISP for assistance with this operation.\n"
@@ -44,10 +44,10 @@ endif
 
 set keys=`dirname $0`
 set keys=`realpath ${keys}`
-set keys="${keys}/../keys/id_ecdsa_${user}"
+set keys="${keys}/../keys/id_ecdsa_${modsUser}"
 
 if ( ! -e "${keys}" ) then
-  printf "ERROR: user '${user}' is not authorized to run the mods1 script!\n"
+  printf "ERROR: MODS1 server user '${modsUser}' is not authorized to run the mods1 script!\n"
   exit 1
 endif
 
@@ -64,12 +64,12 @@ set usage = "mods1 {start|stop} {modsUI|gui}\n       mods1 {status}\n       mods
 if ($#argv == 1) then
    switch ($1)
    case 'status':
-      ssh -i ${keys} ${user}@${mods1Host} /home/dts/mods/bin/mtStatus
+      ssh -i ${keys} ${modsUser}@${mods1Host} /home/dts/mods/bin/mtStatus
       breaksw
 
    case 'temps':
       printf "MODS1 Environmental Sensors:\n"
-      ssh -i ${keys} ${user}@${mods1Host} /usr/local/bin/vueinfo env
+      ssh -i ${keys} ${modsUser}@${mods1Host} /usr/local/bin/vueinfo env
       breaksw
    
    default:
@@ -86,7 +86,7 @@ else if ($#argv == 2) then
 
    case 'modsUI':
    case 'gui':
-      ssh -i ${keys} -X -f ${user}@${mods1Host} /home/dts/bin/modsGUI $1
+      ssh -i ${keys} -X -f ${modsUser}@${mods1Host} /home/dts/bin/modsGUI $1
       breaksw
 
    # These directives are restricted
