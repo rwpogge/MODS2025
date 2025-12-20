@@ -1,0 +1,12 @@
+#
+# MODS Runtime User Configuration File
+# Observer user 
+# Created: 2025-12-20 [rwp/osu]
+#
+Observer RPogge
+Partner  CALIBRATION
+PropID   CALIBRATION
+PI_Name  All
+Support  OKuhn 
+TelOps   SAllanson
+Comment  None

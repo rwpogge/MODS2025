@@ -1,0 +1,12 @@
+#
+# MODS Runtime User Configuration File
+# LBTO support user
+# Created: 2025-12-20 [rwp/osu]
+#
+Observer JPower
+Partner  CALIBRATION
+PropID   CALIBRATION
+PI_Name  All
+Support  None
+TelOps   JWilliams
+Comment  ECD
