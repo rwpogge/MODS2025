@@ -1,0 +1,81 @@
+#!/bin/csh
+#
+# imcsTools - start/stop/check imcsTolls on mods1 or mods2
+#
+# usage: imcsTools {mods1|mods2} {start|stop}
+#
+# This version is for use by the LBTO support account (lbto) to start
+# the IMCS engineering GUIs.  We limit access to these tools to just
+# the support side of LBTO.
+#
+# R. Pogge, OSU Astronomy Dept
+# pogge.1@osu.edu
+# 2025 Dec 20
+#
+# Modification History:
+#   2025 Dec 20 - based on mods1.pub and non-pub imcsTools [rwp/osu]
+#
+#---------------------------------------------------------------------------
+
+# check if the current user is allowed to run this program
+
+set user=`echo $USER | tr '[:upper:]' '[:lower:]'`
+
+if ("${user}" == "lbto") then
+  set modsUser="mods"
+else
+  printf "ERROR: User '${user}' is not permitted to run the imcsTools script.\n"
+  printf "       Ask your ISP for assistance with this operation.\n"
+  exit 1
+endif
+
+# the LBTO user needs the right ssh key
+
+set keys=`dirname $0`
+set keys=`realpath ${keys}`
+set keys="${keys}/../keys/id_ecdsa_${user}"
+
+# imcsTOOLS instrument server hosts are mods1 and mods2
+
+set mods1Host = 192.168.139.130
+set mods2Host = 192.168.139.230
+
+# Usage message 
+
+set usage = "imcsTools {mods1|mods2} {start|stop}\n"
+
+# Process the command-line arguments
+
+if ($#argv == 2) then
+   if (${1} == "mods1") then
+      set imcsHost = ${mods1Host}
+   else if (${1} == "mods2") then
+      set imcsHost = ${mods2Host}
+   else
+      printf "\nERROR: unrecognized MODS instance ${1} - must be mods1 or mods2\n"
+      printf "\nUsage: $usage\n"
+      exit 1
+   endif
+      
+   # start or stop?
+
+   if (${2} == "start") then
+      ssh -i ${keys} -X -f ${modsUser}@${imcsHost} /home/dts/mods/TclTk/blueQC
+      ssh -i ${keys} -X -f ${modsUser}@${imcsHost} /home/dts/mods/TclTk/redQC
+      ssh -i ${keys} -X -f ${modsUser}@${imcsHost} /home/dts/mods/TclTk/bimcsGUI
+      ssh -i ${keys} -X -f ${modsUser}@${imcsHost} /home/dts/mods/TclTk/rimcsGUI
+
+   else if (${2} == "stop") then
+      ssh -i ${keys} -X -f ${modsUser}@${imcsHost} /home/dts/bin/imcsTools stop
+
+   else
+      printf "\nERROR: unrecognized directive ${2} - must be start or stop\n"
+      printf "\nUsage: $usage\n"
+      exit 1
+   endif
+         
+else
+   printf "\nUsage: $usage\n"
+endif
+
+exit 0
