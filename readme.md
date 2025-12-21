@@ -11,10 +11,8 @@ See the [Release Notes](releases.md) for details, as well as sub-system release 
 ## Overview
 MODS2025 Project to update MODS1+2 CCD and instrument control systems at the LBT
 
-**This our very messy working repository, not the final flight code repository that will be built later.  
-Proceed at your own risk**
-
-However, it is taking on many of the structures of the real thing, so not totally sloppy.  Sort of.
+**This a working repository, not the final released code repository that will be built later
+on the LBTO GitHub. While much has converged, a lot has not. Proceed at your own risk**
 
 ## Contents
 
