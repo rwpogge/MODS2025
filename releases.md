@@ -1,6 +1,16 @@
 # MODS2025 Release Notes
 
-**Last Release: 2025 Dec 16**
+**Last Release: 2025 Dec 20**
+
+## Version 1.4.1 - 2025 Dec 20
+First live tests on summit observing workstations with the `lbto` account by Olga Kuhn on the `robs1` machine, 
+with additional checks from user `osurc` on `obs1` and one of the other member user accounts.  Found and fixed a
+number of issues small and large
+ * `agwServer` - mods2 `agwServer` had been recompiled but not installed in path, found when checking `gprobe` for MODS2. Fixed and verified
+ * User accounts given `PATH` updates to put the standard executables in their default path
+ * Found setup issues with the `observer` account on two of the Archon servers, fixed and verified
+ * Tested and updated the public `mods1`, `mods2`, and `imcsTools` scripts visible from the `robs/obs` machines.
+ * Captured the `.bashrc` file template on the GitHub for future reference.
 
 ## Version 1.4.0 - 2025 Dec 16
 Updates after significant work by Mike Lesser getting the MODS CCD detectors working with the Archon controllers.
