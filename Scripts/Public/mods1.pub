@@ -6,11 +6,14 @@
 #        mods1 {status}
 #        mods1 {temps}
 #
-# This version is for use by partner observing accounts, and allows
-# start/stop access to a limited subset of MODS services.  For access
-# to the full-range of MODS services, you need to be the logged into
+# This version is for use by LBTO support and member observing accounts, 
+# and allows start/stop access to a limited subset of MODS services.  For 
+# access to the full-range of MODS services, you need to be the logged into
 # the MODS host machines.  We limit services to those most routinely
 # required by unprivileged observers.
+#
+# Support accounts: lbto 
+# Member observer accounts: osurc, inaf, lbtb, queue
 #
 # R. Pogge, OSU Astronomy Dept
 # pogge.1@osu.edu
@@ -36,7 +39,7 @@ else if ("${user}" == "lbto") then
   set modsUser="mods"
 else
   printf "ERROR: User '${user}' is not permitted to run the mods1 script.\n"
-  printf "       Ask your ISP for assistance with this operation.\n"
+  printf "       Ask your ISA for assistance with this operation.\n"
   exit 1
 endif
 

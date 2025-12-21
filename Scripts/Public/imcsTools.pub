@@ -21,11 +21,11 @@
 
 set user=`echo $USER | tr '[:upper:]' '[:lower:]'`
 
-if ("${user}" == "lbto" || "${user}" == "osurc") then
+if ("${user}" == "lbto") then
   set modsUser="mods"
 else
   printf "ERROR: User '${user}' is not permitted to run the imcsTools script.\n"
-  printf "       Ask your ISP for assistance with this operation.\n"
+  printf "       Ask your ISA for assistance with this operation.\n"
   exit 1
 endif
 
