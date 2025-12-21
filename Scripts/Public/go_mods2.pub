@@ -1,0 +1,56 @@
+#!/bin/csh
+#
+# go_mods2 - controlled access to the MODS1 instrument server
+#
+# usage: go_mods2
+#
+# Support accounts: lbto 
+# Member observer accounts: osurc, inaf, lbtb, queue
+#
+# R. Pogge, OSU Astronomy Dept
+# pogge.1@osu.edu
+# 2025 Dec 20
+#
+# Modification History:
+#   2025 Dec 20 - based on live startup tests at LBTO [rwp/osu]
+#
+#---------------------------------------------------------------------------
+
+# check if the current user is allowed access
+
+set user=`echo $USER | tr '[:upper:]' '[:lower:]'`
+
+if ("${user}" == "osurc" || "${user}" == "inaf" || "${user}" == "lbtb" || "${user}" == "queue") then
+  set modsUser="observer"
+else if ("${user}" == "lbto") then
+  set modsUser="mods"
+else
+  printf "ERROR: User '${user}' is not permitted login access to mods2.\n"
+  printf "       Ask your ISA for assistance with this operation.\n"
+  exit 1
+endif
+
+# Another check is if the user has an ssh key
+
+set keys=`dirname $0`
+set keys=`realpath ${keys}`
+set keys="${keys}/../keys/id_ecdsa_${modsUser}"
+
+if ( ! -e "${keys}" ) then
+  printf "ERROR: MODS1 server user '${modsUser}' is not authorized!\n"
+  exit 1
+endif
+
+# MODS1 instrument server (Archon system)
+
+set mods2Host = 192.168.139.230
+
+# Usage message 
+
+set usage = "go_mods2\n"
+
+# do it
+
+ssh -i ${keys} -XYC ${modsUser}@${mods2Host}
+
+exit 0
