@@ -162,3 +162,19 @@ a terminal, not a screen share, it is fast and sharp.
 
 
 ![mods1 server admin tmux session live test with MODS1 on 2025 Oct 15](Screenshots/mods1_agwOn.png)
+
+### `modsAdmin` monitor session
+
+This shows a `modsAdmin` tmux session launched by the `lbto` user
+while remotely logged into the `robs1` Linu workstation on the
+mountain.  The two upper panels show the live MODS server status
+windows for MODS1 (left) and MODS2 (right).  These panes are remotely
+logged into the respective MODS servers via ssh.
+
+The lower pane is a **local** command window as user `lbto@robs1` and the
+example here is the user issuing the `isisCmd` command to power on the
+MODS1 wavefront sensor camera.
+
+![modsAdmin tmux session live test from robs1 on 2025 Dec 23](Screenshots/modsAdmin_wfsOn.png)
+
+
