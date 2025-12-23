@@ -6,12 +6,12 @@
 //
 
 #define MODS_SESSION_NAME "MODS Control Panel" //!< Window Name for banner
-#define MODS_REV_NUMBER   "v3.1.0-archon"      //!< MODS UI Revision number
-#define MODS_REV_DATE     "2025 Oct 5"         //!< Revision date
+#define MODS_REV_NUMBER   "v3.1.1-archon"      //!< MODS UI Revision number
+#define MODS_REV_DATE     "2025 Dec 22"        //!< Revision date
 
 // Runtime files and paths
 
-#define MODS_BASE_PATH    "/home/dts/"     //!< Runtime base path
+#define MODS_BASE_PATH    "/home/dts/mods" //!< Runtime base path
 #define MODS_INI_FILE     "modsUI.ini"     //!< default MODS ini file in MODS_BASE_PATH/Config/
 
 // MODS dual-instrument array-indexes (convenience parameters)
@@ -166,7 +166,7 @@
 #define MODS_MAX_DEWPRES 1.0e-03 //!< Maximum dewar pressure before triggering alarms [torr]
 #define MODS_MAX_CCDTEMP   -90.0 //!< Maximum CCD temperature before triggering alarms [deg C]
 #define MODS_MAX_DEWTEMP  -165.0 //!< Maximum LN2 dewar tank temperature before triggering alarms [deg C]
-#define MODS_MIN_GLYPRES     1.0 //!< Minimum pressure of the glycol cooling supply/return [psi-g]
+#define MODS_MIN_GLYPRES    -1.0 //!< Minimum pressure of the glycol cooling supply/return [psi-g], -1 disables
 #define MODS_ALARM_REPEAT      5 //!< Suppress repeat alarm messages every N times
 
 // Application Default Base Fonts
