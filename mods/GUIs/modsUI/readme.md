@@ -24,7 +24,7 @@ Run the following commands from the modsUI directory.
 ## Usage Instructions
 Run the executable with the following optional command line arguments.
 - `./modsUI <config_file> <font_size>`
-- `./modsUI <config_gile>`
+- `./modsUI <config_file>`
 - `./modsUI`
 
 - <config_file>: A path to the configuration *.ini file.
