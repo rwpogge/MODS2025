@@ -1,8 +1,8 @@
 # modsUI - MODS spectrograph user interface
 
-Version: 3.1.0
+Version: 3.1.1-archon
 
-**Updated: 2025 Oct 5**
+**Updated: 2025 Dec 22**
 
 Author: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
@@ -24,7 +24,7 @@ Run the following commands from the modsUI directory.
 ## Usage Instructions
 Run the executable with the following optional command line arguments.
 - `./modsUI <config_file> <font_size>`
-- `./modsUI <config_gile>`
+- `./modsUI <config_file>`
 - `./modsUI`
 
 - <config_file>: A path to the configuration *.ini file.

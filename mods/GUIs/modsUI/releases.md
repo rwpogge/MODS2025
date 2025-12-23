@@ -1,7 +1,7 @@
 # modsUI Release Notes
 Original Build: 2009 Feb 24
 
-Last Build: 2025 Oct 3
+Last Build: 2025 Dec 22
 
 ### modsUI version numbering
 
@@ -9,6 +9,12 @@ Last Build: 2025 Oct 3
  * Version 1.x - MODS1 monocular version for commissioning and monocular science with MODS1, using Qt4
  * Version 2.x - MODS1+2 binocular operations version
  * Version 3.x - MODS Archon CCD controller update version and AlmaLinux Port to Qt6
+
+## Version 3.1.1
+2025 Dec 22
+
+ * Changed `MODS_BASE_PATH` in `mods.h` to `/home/dts/mods` (added "mods"). Updates for new config management
+ * Changed `MODS_MIN_GLYPRES` in `mods.h` to -1.0 to essentially disable glycol pressure alerts (modsUI not primary now that ALH is enabled on summit)
 
 ## Version 3.1.0
 2025 Oct 5

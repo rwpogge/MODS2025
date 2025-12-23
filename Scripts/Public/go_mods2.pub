@@ -1,6 +1,6 @@
 #!/bin/csh
 #
-# go_mods2 - controlled access to the MODS1 instrument server
+# go_mods2 - controlled access to the MODS2 instrument server
 #
 # usage: go_mods2
 #
@@ -37,11 +37,11 @@ set keys=`realpath ${keys}`
 set keys="${keys}/../keys/id_ecdsa_${modsUser}"
 
 if ( ! -e "${keys}" ) then
-  printf "ERROR: MODS1 server user '${modsUser}' is not authorized!\n"
+  printf "ERROR: MODS2 server user '${modsUser}' is not authorized!\n"
   exit 1
 endif
 
-# MODS1 instrument server (Archon system)
+# MODS2 instrument server (Archon system)
 
 set mods2Host = 192.168.139.230
 
