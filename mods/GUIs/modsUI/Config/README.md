@@ -1,32 +1,32 @@
 # modsUI GUI Runtime Configuration Files
 
-**Updated: 2025 Sept 10 [rwp/osu]**
+**Updated: 2025 Dec 22 [rwp/osu]**
 
 These are files used by the modsUI GUIs for each of the MODS instances (MODS1 and MODS2)
 
 ## Config directory
 
-For a "flight" MODS data-taking system, the `modsUI` GUI will look in `/home/dts/Confg/` for the approriate
+For a "flight" MODS data-taking system, the `modsUI` GUI will look in `/home/dts/mods/Confg/` for the appropriate
 configuration file.  There are 2 variants, one each for MODS1 and MODS2.
 
 On the azcam server machine, make a symbolic link for the MODS instance:
 ```shell
-cd /home/dts/Config
+cd /home/dts/mods/Config
 ln -s ./MODS1/modsUI_MODS1.ini modsUI.ini
 ```
 That way when the modsUI instance is launched, it will always come up as the correct instance.
 
 ## Installation
 
-Copy the contents of this `Config/` folder into a subfolder in the public `/home/dts/Config` directory:
+Copy the contents of this `Config/` folder into a subfolder in the public `/home/dts/mods/Config` directory:
 ```shell
-  cd /home/dts/Config
+  cd /home/dts/mods/Config
   cp ~/MODS2025/mods/GUIs/modsUI/Config/modsUI_MODS1.ini MODS1/
   cp ~/MODS2025/mods/GUIs/modsUI/Config/modsUI_MODS2.ini MODS2/
 ```
 Then make a link pointing to the correct file for the particular MODS instance:
 ```
-  cd /home/dts/Config
+  cd /home/dts/mods/Config
   ln -s MODS1/modsUI_MODS1.ini modsUI.ini
 ```
 for example, to setup that machine's `modsUI` GUI to talk to the MODS1 system.
