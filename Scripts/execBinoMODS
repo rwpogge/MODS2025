@@ -41,11 +41,12 @@
 # Author:
 #   R. Pogge, OSU Astronomy Dept.
 #   pogge.1@osu.edu
-#   2015 Jan 05
+#   Original: 2015 Jan 05
 #
 # Modification History:
 #   2016 Oct 17: First full binocular release for 2016B [rwp/osu]
 #   2025 Oct 14: tmux version for the MODS Archon control system [rwp/osu]
+#   2025 Dec 23: updates following live testing at LBTO [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -74,25 +75,28 @@ endif
 
 tmux has-session -t modsTerm >& /dev/null
 if ($status) then
-   # no tmux session named modsTerm...
+   # There is no tmux session named modsTerm...
    printf "${prog} needs to be run in a modsTerm tmux session but none is running\n"
    printf "    Type 'modsTerm' to start a new modsTerm tmux session and try again.\n"
    exit 1
 else
-   # there is a tmux session named modsTerm, are we in it?
+   # There IS a tmux session named modsTerm, but are we in it?
    if ( ! $?TMUX ) then
       # that would be a no...
-      printf "${prog} needs to be run in a modsTerm tmux session, but you're not in it.\n"
-      printf "   Either go to the active window on the desktop, or\n"
+      printf "${prog} needs to be run in a modsTerm tmux session, but you're not in it.\n" 
+      printf "   Either go to the active modsTerm tmux window on the desktop, or\n"
       printf "   type 'modsTerm' to attach to the current modsTerm session\n"
+      printf "   and try again.\n"
       exit 1
    endif
 endif
 
+#
 # We are attached to the modsTerm tmux session.
 #
 # Where are we being run from?  Make sure all panes are in the same folder
-# as the command pane before we start
+# as the command pane before we start.
+#
 
 set whereAmI=$cwd
 
