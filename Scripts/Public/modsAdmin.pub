@@ -1,0 +1,134 @@
+#!/bin/bash
+#
+# modsAdmin - MODS remote admin/monitor tool
+#
+# Usage:
+#   modsAdmin [start|attach|stop|kill]
+#
+#   where:
+#     start or attach - start new session or (re)attach to modsAdmin session
+#     stop or kill - stop any running modsAdmin sessions
+#
+# This script launches a named tmux session that will be used to remotely
+# monitor MODS1/2 status and provide a local terminal shell in which users
+# can issue low-level commands to the MODS instruments. The intended
+# user is the LBTO support user.
+#
+# The modsAdmin tmux session is configured with 3 window panes
+# 
+#      +---------------------+---------------------+
+#      |        MODS1        |        MODS2        |
+#      |         1.0         |         1.1         |
+#      |                     |                     |
+#      |                     |                     |
+#      |                     |                     |
+#      +---------------------+---------------------+
+#      |                  command                  |
+#      |                    1.2                    |
+#      +---------------------+---------------------+
+#
+# Low-level setup is in the $configDir/tmux_mods.conf file.
+# Also defines and exports aliases to the bash shell to make
+# detachment by "detach" or "quit" and throttling "exit"
+#
+# R. Pogge (pogge.1@osu.edu)
+# OSU Astronomy Department
+# 2025 Dec 23 - based on modsTerm and live testing experience
+#
+# Modification History:
+#
+#---------------------------------------------------------------------------
+
+tmuxID="modsAdmin"
+
+# LBTO Public executable path
+
+modsDir="/lbt/lbto/mods"
+configDir="/lbt/lbto/mods/.config"
+modsBin="/home/dts/mods/bin"
+
+# check if the current user is allowed access, and to which server user id
+
+user=`echo $USER | tr '[:upper:]' '[:lower:]'`
+
+if [[ ${user} == "osurc" || ${user} == "inaf" || ${user} == "lbtb" || ${user} == "queue" ]]; then
+   modsUser="observer"
+elif [[ ${user} == "lbto" || ${user} == "dts" ]]; then
+   modsUser="mods"
+else
+   printf "ERROR: User ${user} is not permitted to run the ${tmuxID} tool.\n"
+   printf "       Ask your ISA for assistance with this operation.\n"
+   exit 1
+fi
+
+# Another check is if the user has an ssh key
+
+keys="${modsDir}/keys/id_ecdsa_${modsUser}"
+
+if [ ! -e "${keys}" ]; then
+   printf "ERROR: MODS server user ${modsUser} is not authorized!\n"
+   printf "       keys = ${keys}\n"
+   exit 1
+fi
+
+# Look for command-line option stop or kill to terminate the tmux sesssion
+
+if [ "$#" -eq 1 ]; then
+    if [[ "$1" == "stop" || "$1" == "kill" ]]; then
+	tmux kill-session -t ${tmuxID} >& /dev/null
+	printf "${tmuxID} session terminated\n"
+	exit 0
+    elif [[ "$1" == "start" || "$1" == "attach" ]]; then
+	printf "starting ${tmuxID} session\n"
+    else
+	printf "ERROR: unrecognized option $1\n"
+	printf "Usage: modsAdmin [start|attach|stop|kill]\n"
+	exit 1
+    fi
+fi
+
+# MODS1 and MODS2 server hosts
+
+mods1Host="192.168.139.130"
+mods2Host="192.168.139.230"
+
+# If there is no modsAdmin tmux session running, start it
+
+tmux has-session -t $tmuxID 2> /dev/null
+if [ $? != 0 ]; then
+   tmux -f ${configDir}/tmux_mods.conf new-session -d -s $tmuxID
+   tmux new-window -t ${tmuxID}:1 -n "MODS Support Monitor"
+   tmux split-window -v -p 5  
+   tmux split-window -h -p 50 -t ${tmuxID}:1.0
+   # pane IDs
+   tmux set -g pane-border-status top
+   tmux set -g pane-border-format " #{pane_title} "
+   tmux select-pane -t ${tmuxID}:1.0 -T "MODS1"
+   tmux select-pane -t ${tmuxID}:1.1 -T "MODS2"
+   tmux select-pane -t ${tmuxID}:1.2 -T "Commands"
+   # aliases
+   tmux send-keys -t ${tmuxID}:1.0 "source ${configDir}/tmaliases" C-m
+   tmux send-keys -t ${tmuxID}:1.1 "source ${configDir}/tmaliases" C-m
+   tmux send-keys -t ${tmuxID}:1.2 "source ${configDir}/tmaliases" C-m
+   # start the status monitors
+   tmux set -g default-terminal "screen-256color"
+   #  MODS1 in the left pane
+   tmux send-keys -t ${tmuxID}:1.0 "ssh -i ${keys} ${modsUser}@${mods1Host}" C-m
+   tmux send-keys -t ${tmuxID}:1.0 "${modsBin}/modsStatus" C-m
+   #  MODS2 in the right pane
+   tmux send-keys -t ${tmuxID}:1.1 "ssh -i ${keys} ${modsUser}@${mods2Host}" C-m
+   tmux send-keys -t ${tmuxID}:1.1 "${modsBin}/modsStatus" C-m
+fi
+
+# Otherwise there If we're already in the expected tmux session, do nothing
+# otherwise attach to the command pane (1.2)
+
+if [ -n "$TMUX" ]; then
+   echo "Currently in the ${tmuxID} session"
+else
+   resize -s 42 128 &> /dev/null
+   tmux select-pane -t ${tmuxID}:1.2
+   tmux attach-session -t ${tmuxID}
+fi
+
+exit 0
