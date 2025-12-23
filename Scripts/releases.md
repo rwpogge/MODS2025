@@ -1,7 +1,10 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2025 Dec 19 [rwp/osu]</b>
+<b>Last Update: 2025 Dec 23 [rwp/osu]</b>
 
+## 2025 Dec 23: modsAdmin
+ * After live testing at LBTO with MODS run by LBT personnel from the `robs1` machine, developed a new `modsAdmin` tool to provide a cleaner way to have a live MODS server monitor running that merged what would have to be done in 3 separate xterms. Tested and released on the public MODS tools path.
+ 
 ## 2025 Dec 19: imcsTools
  * created an updated version of `imcsTools` for the Archon system.
 
