@@ -38,7 +38,11 @@ class MODSInstrument(Instrument):
     
     Author: R. Pogge, OSU Astronomy Dept (pogge.1@osu.edu)
     
-    Updated: 2025 September 23 [rwp/osu]
+    Original: 2025 September 23 [rwp/osu]
+    
+    Modification History:
+        2025 Dec 24 - did stuff [rwp/osu]
+    
     '''
     
     def __init__(self, tool_id="instrument", description="Multi-Object Double Spectrograph (MODS)",modsID="MODS1B",side="left"):
@@ -55,7 +59,7 @@ class MODSInstrument(Instrument):
         self.modsIIF = None
         self.proxy = iif.model['PROXIES'].get(self.iifID)
 
-        # header configuration file is in the systemfolder/template directory
+        # the instrument configuration file is in the systemfolder/template directory
         # with names like "instHdr_MODS1B.txt"
         
         self.cfgFile = os.path.join(azcam.db.systemfolder, 
