@@ -1,8 +1,12 @@
 # azcam-mods Release Notes
 
-**Current Version: 1.1.6**
+**Current Version: 1.1.7**
 
-**Last Update: 2025 Dec 10 [rwp/osu]**
+**Last Update: 2025 Dec 24 [rwp/osu]**
+
+### Version 1.1.7 - 2025 Dec 24
+ * `mods.py` - added `set_roiByName()` convenience function to set the ROI by sensible aliases ("off","full","8kx3k","3kx3k", etc.). Hard-coded for now, but later versions can define in yaml config files so we don't have to hack code.
+ * `instrument_mods.py` - implemented the `exposure_finish()` method from the base `Instrument()` class.  This triggers a prototype of the `azcam` side of the `dataMan` offline image post-processor that will condition raw images offline from `azcam` and send the data from the raw data disks to the LBTO archive repostory staging disk (`/lbt/data/new` NFS mount). Tested the UDP/IP client socket code to be triggered when an exposure finished and pass the name of the raw FITS file to be processed to the `dataMan` agent (eventually a systemd service).  Worked like a champ, also logs the proc request in the azcam logs
 
 ### Version 1.1.6 - 2025 Dec 10
  * `exposure.shutter_delay = 500` msec set in `server.py` on testing with 1Kx1K images acquired with MODS2R camera and the pinhole sieve mask, 1s exposure. Stop seeing streaks at 300ms.  The old controller used 1s, which was arbitrary.
