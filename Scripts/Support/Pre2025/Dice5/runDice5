@@ -1,0 +1,36 @@
+#!/bin/csh
+#
+# Execute a 5-dice procedure, 5x5 with 10- and 1-arcsec throw
+#
+# NOTE: this is for MODS1 pre-MODS2, to execute with MODS2
+#       change execMODS2 -> execMODS22 during commissioning
+#
+#       Post-MODS2 commissioning, the syntax will be
+#          execMODS2 --mods1 ...
+#       or --mods2
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge@astronomy.ohio-state.edu
+# 2014 May 2
+#
+# Modification History:
+#
+#---------------------------------------------------------------------------
+
+# 5x(5x10 arcsec), first to setup instrument
+
+execMODS2 -e dice10.img
+execMODS2 -e dice10.img
+execMODS2 -e dice10.img
+execMODS2 -e dice10.img
+execMODS2 -e dice10.img
+
+# 5x(5x1 arcsec), same setup
+
+execMODS2 -e dice1.img
+execMODS2 -e dice1.img
+execMODS2 -e dice1.img
+execMODS2 -e dice1.img
+execMODS2 -e dice1.img
+
+exit 0

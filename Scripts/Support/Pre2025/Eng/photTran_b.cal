@@ -1,0 +1,62 @@
+#
+# Blue Camera CCD Photon Transfer Calibration
+#
+# Original: 2010 Dec 18
+# MODS2 Version: 2013 July 7
+# 
+
+SETUPMODE
+
+Instrument:
+   instconfig blue imaging
+   slitmask out
+   blue filter g_sdss
+
+Exec:
+  nimgs 2
+
+  # two bias images
+  blue bias Photon Transfer Calibration
+  blue go
+
+  # lamp on, pairs of flats
+  blue object Photon Transfer Calibration
+  lamp vflat 2.5 on
+  blue exp 1
+  blue go
+  blue exp 2
+  blue go
+  blue exp 3
+  blue go
+  blue exp 5
+  blue go
+  blue exp 10
+  blue go
+  blue exp 20
+  blue go
+  blue exp 30
+  blue go
+  blue exp 50
+  blue go
+  blue exp 100
+  blue go
+  blue exp 150
+  blue go
+  # make sure lamp doesn't go off by itself...
+  lamp off
+  lamp vflat 2.5 on
+  blue exp 200
+  blue go
+  blue exp 250
+  blue go
+  blue exp 300
+  blue go
+  lamp off
+
+  # ending bias image pair
+  blue bias Photon Transfer Calibration
+  blue go
+
+  nimgs 1
+
+end

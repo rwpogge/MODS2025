@@ -1,0 +1,38 @@
+#
+# CCD Dark Test
+#
+# Sequence of increasing dark exposures in both
+# channels, taken in groups of 3 with the dome
+# lights off.  Full frame binned 4x4 readout
+#
+#bias Dark Bias
+#blue numexp 3
+#red numexp 3
+#dgo
+
+calmode
+
+Exec:
+  dark Dark Test
+  red numexp 3
+  blue numexp 3
+  ccdbin 4
+  red roi 8Kx3K
+  blue roi 8Kx3K
+  exptime 10
+  dgo
+  exptime 30
+  dgo
+  exptime 60
+  dgo
+  exptime 300
+  dgo
+  exptime 600
+  dgo
+  exptime 1200
+  dgo
+  red numexp 1
+  blue numexp 1
+  ccdbin 1
+
+end

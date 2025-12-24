@@ -1,0 +1,47 @@
+#
+# dice1 - execute a "five dice" offset pattern with a 11-arcsec throw.
+#
+# Runs the following telescope RADEC offset pattern
+#
+#     2   1
+#       0
+#     3   4
+#
+
+OBSMODE Imaging
+
+Archive:
+   PARTNER COMMISSIONING
+   PROPID COMMISSIONING
+   PI_NAME Pogge, Kuhn
+  
+Instrument:
+   instconfig dual imaging
+   red filter r_sdss
+   red roi 2Kx2K
+   updatepointing
+   red exptime 20
+
+Exec:
+
+   red object 1-arcsec Dice Pattern Spot 0,0
+   offset 0 0 abs
+   red go
+
+   red object 1-arcsec Dice Pattern Spot +1,+1
+   offset 1.0 1.0 abs
+   red go
+
+   red object 1-arcsec Dice Pattern Spot -1,+1
+   offset -1.0 1.0 abs
+   red go
+
+   red object 1-arcsec Dice Pattern Spot -1,-1
+   offset -1.0 -1.0 abs
+   red go
+
+   red object 1-arcsec Dice Pattern Spot +1,-1
+   offset 1.0 -1.0 abs
+   red go
+
+end

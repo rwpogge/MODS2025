@@ -12,6 +12,9 @@ been merged since operations are identical for both instruments.
 A few older scripts have been retired, but all of the pre-2025
 scripts are in the `Pre2025/` folder for reference.
 
+ * `Eng` are engineering scripts for measuring CCD and telescope offset performance. This merges the CCD tests from the old `Eng/` folder and the `Dice5` offset tests.
+ * `Pre2025` - the original suite of scripts
+
 ## Descriptions
 
 ... coming soon...

@@ -1,0 +1,53 @@
+#
+# Red Camera CCD Photon Transfer Calibration
+#
+# Original: 2010 Dec 18
+# MODS2 Version: 2013 July 7
+# 
+
+SETUPMODE
+
+Instrument:
+   instconfig red imaging
+   slitmask out
+   red filter r_sdss
+
+Exec:
+  nimgs 2
+
+  # two bias images
+  red bias Photon Transfer Calibration
+  red go
+
+  # lamp on, pairs of flats
+  red object Photon Transfer Calibration
+  lamp vflat 1.5 on
+  red exp 1
+  red go
+  red exp 2
+  red go
+  red exp 3
+  red go
+  red exp 5
+  red go
+  red exp 10
+  red go
+  red exp 20
+  red go
+  red exp 30
+  red go
+  red exp 50
+  red go
+  red exp 100
+  red go
+  red exp 150
+  red go
+
+  # lamp off, ending bias image pair
+  lamp off
+  red bias Photon Transfer Calibration
+  red go
+
+  nimgs 1
+
+end
