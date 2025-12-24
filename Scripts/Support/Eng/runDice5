@@ -1,0 +1,38 @@
+#!/bin/csh
+#
+# Execute a 5-dice procedure, 5x5 with 10- and 1-arcsec throw
+#
+# Change modsID to pick which instrument is being tested.
+# 
+# Must not be run in binocular mode - monocular only!
+#
+# R. Pogge, OSU Astronomy Dept.
+# pogge@astronomy.ohio-state.edu
+# 2014 May 2
+#
+# Modification History:
+#   2025 Dec 23 - updated for the Archon controller system [rwp/osu]
+#
+#---------------------------------------------------------------------------
+
+set modsID = "mods1" # or "mods2"
+
+set binDir = "/lbt/lbto/mods/bin"
+
+# 5x(5x10 arcsec), first to setup instrument
+
+${binDir}/execMODS --${modsID} -e dice10.img
+${binDir}/execMODS --${modsID} -e dice10.img
+${binDir}/execMODS --${modsID} -e dice10.img
+${binDir}/execMODS --${modsID} -e dice10.img
+${binDir}/execMODS --${modsID} -e dice10.img
+
+# 5x(5x1 arcsec), same setup
+
+${binDir}/execMODS --${modsID} -e dice1.img
+${binDir}/execMODS --${modsID} -e dice1.img
+${binDir}/execMODS --${modsID} -e dice1.img
+${binDir}/execMODS --${modsID} -e dice1.img
+${binDir}/execMODS --${modsID} -e dice1.img
+
+exit 0

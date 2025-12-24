@@ -1,0 +1,36 @@
+#
+# CCD Dark Test
+#
+# Sequence of increasing dark exposures in both
+# channels, taken in groups of 3 with the dome
+# lights off.  Full frame binned 4x4 readout
+#
+# 2025 Dec 23 - updated for the Archon controllers [rwp/osu]
+#
+
+calmode
+
+Exec:
+  dark Dark Test
+  red nimgs 3
+  blue nimgs 3
+  ccdbin 4
+  red roi 8Kx3K
+  blue roi 8Kx3K
+  exptime 10
+  dgo
+  exptime 30
+  dgo
+  exptime 60
+  dgo
+  exptime 300
+  dgo
+  exptime 600
+  dgo
+  exptime 1200
+  dgo
+  red nimgs 1
+  blue nimgs 1
+  ccdbin 1
+
+end
