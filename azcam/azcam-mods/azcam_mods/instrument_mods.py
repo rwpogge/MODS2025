@@ -8,6 +8,7 @@ import lbto.iif as iif
 import yaml
 import os
 import math
+import socket
 
 # import time # uncomment if we need to run timing experiments
 
@@ -41,7 +42,7 @@ class MODSInstrument(Instrument):
     Original: 2025 September 23 [rwp/osu]
     
     Modification History:
-        2025 Dec 24 - did stuff [rwp/osu]
+        2025 Dec 24 - adding MODS dataMan hooks [rwp/osu]
     
     '''
     
@@ -59,6 +60,15 @@ class MODSInstrument(Instrument):
         self.modsIIF = None
         self.proxy = iif.model['PROXIES'].get(self.iifID)
 
+        # dataMan default UDP host and port
+        
+        self.dmHost = "localhost"
+        self.dmPort = 10301
+
+        # by default, enable post-exposure processing.  Set false to disable
+        
+        self.dmEnabled = True   # enable image post-exposure processing
+                
         # the instrument configuration file is in the systemfolder/template directory
         # with names like "instHdr_MODS1B.txt"
         
@@ -642,3 +652,85 @@ class MODSInstrument(Instrument):
             pass
             
         return iifData
+
+    #########################################################
+    #  
+    # exposure_finish() and related dataMan hooks
+    #
+    #########################################################
+        
+    def dmProc(self,fitsFile):
+        '''
+        Send the name of a FITS file to the dataMan agent for processing
+
+        Parameters
+        ----------
+        fitsFile : string
+            full path and name of a FITS file for dataMan to process
+
+        Returns
+        -------
+        None.
+
+        Description
+        -----------
+        Sends the "proc fitsFile" command to a dataMan agent to post-process
+        the named FITS image file.  If no dataMan agent is running, nothing happens.
+        
+        This is invoked by the exposure_finish() method after an exposure has
+        finished to initial post processing.  If postProc = False, this
+        is not done.
+        
+        The most recent filename is usually obtained from the 
+        azcam.db.tools["exposure"].last_filename datum
+        
+        dataMan uses UDP (datagram) sockets.  Very vanilla.  It is
+        a "read-only" server that does not send replies.  If no
+        dataMan server is running, nothing bad happens
+        
+        See also: exposure_finish()
+        
+        '''
+        if len(fitsFile) == 0:
+            return
+        
+        msg = f"proc {fitsFile}"
+        try:
+            s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+            s.sendto(msg.encode('utf-8'),(self.dmHost,self.dmPort))
+            s.close()
+            azcam.log(f"Sent {msg} to dataMan", level=2)
+        except Exception as exp:
+            azcam.log(f"instrument::dmProc exception {exp}",level=3)
+
+        return
+    
+
+    def exposure_finish(self):
+        '''
+        Custom end-of-exposure MODS instrument operations
+
+        Returns
+        -------
+        None.
+        
+        Description
+        -----------
+        This function is triggered by the azcam exposure tool
+        finish() method after an exposure is finished (including
+        writing the image).  
+        
+        For MODS this is where we can refer a recently acquired
+        image to the dataMan agent for post-processing, which
+        entails any header fixes and augmentation and copying the
+        FITS image from the Archon server to the LBTO archive 
+        staging disk (aka "newdata").  Only do this if dmEnabled is True.
+        
+        See also: procDM()
+
+        '''
+        if self.dmEnabled:
+            self.dmProc(azcam.db.tools["exposure"].last_filename)
+        
+        return
+    
