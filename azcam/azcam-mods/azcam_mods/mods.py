@@ -4,7 +4,7 @@ Defines the MODS class for azcam
 Initial version by Mike Lesser (UA ITL)
 Later versions by Rick Pogge (OSU Astronomy)
 
-Updated: 2025 Oct 22 [rwp/osu]
+Updated: 2025 Dec 24 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -18,6 +18,7 @@ Additions:
     abortReadout(): abort readout
     pctRead(): return percentage of CCD readout (inverse of pixels_remaining)
     set/get_roi(): set/get the CCD readout region of interest and binning factor
+    set_roiByName(): set the CCD readout region of interest by name
     set/get_ccdbin(): set CCD binning in x and y
     reset_roi() restore full-frame unbinned readout (alias: roi_off())
     reset_ccdbin() restore 1x1 binning, leave ROI unchanged
@@ -268,7 +269,7 @@ class MODS(object):
 
         Returns
         -------
-        None.
+        The ROI and binning set.
 
         Description
         -----------
@@ -294,6 +295,64 @@ class MODS(object):
         return azcam.db.tools["exposure"].get_roi()
     
     
+    def set_roiByName(self,roiMode):
+        '''
+        Set the CCD readout region of interest (ROI) by name.
+
+        Parameters
+        ----------
+        roiMode : string
+            Name of the preset ROI mode.
+            
+        Returns
+        -------
+        The ROI and binning mode set.
+        
+        Description
+        -----------
+        Sets the CCD readout region of interest (ROI) by name using one
+        of a set of preset ROI configurations.  These are hardcoded in
+        the initializer, but could in future be set at runtime from
+        the azcam server runtime config file.
+        
+        Presets
+        -------
+         * off, full, 8kx3k = full-frame, unbinned 8288x3088 pixels
+         * 3kx3k, 3k = 3088x3088 pixels [2601,5688,1,3088]
+         * 1kx1k, 1k = 1024x1024 pixels [3633,4656,1033,2056]
+         * 4kx3k = 4096x3088 [2097,6192,1,3088]
+         
+        This function resets binning to 1x1 pixel, and so it must be followed 
+        by set_ccdbin() if another binning mode is desired.
+        
+        See Also: set_roi(), get_roi(), reset_roi(), set_ccdbin()
+
+        '''
+        
+        if len(roiMode)==0:
+            return "ERROR set_roiByName() requires one argument (roiMode string)"
+        
+        if roiMode.lower() in ["off","full","8kx3k"]:
+            azcam.db.tools["exposure"].roi_reset()
+            azcam.db.tools["exposure"].set_roi(-1,-1,-1,-1,1,1)
+
+        elif roiMode.lower() in ["3kx3k","3k"]:
+            azcam.db.tools["exposure"].roi_reset()
+            azcam.db.tools["exposure"].set_roi(2601,5688,1,3088,1,1)
+
+        elif roiMode.lower() in ["1kx1k","1k"]:
+            azcam.db.tools["exposure"].roi_reset()
+            azcam.db.tools["exposure"].set_roi(3633,4656,1033,2056,1,1)
+            
+        elif roiMode.lower() in ["4kx3k"]:
+            azcam.db.tools["exposure"].roi_reset()
+            azcam.db.tools["exposure"].set_roi(2097,6192,1,3088,1,1)
+        else:
+            return f"ERROR set_roiByName() unrecognized ROI mode {roiMode}"
+        
+        return azcam.db.tools["exposure"].get_roi()
+        
+        
     def get_roi(self):
         '''
         Get the current CCD readout region of interest (ROI) and binning factors
