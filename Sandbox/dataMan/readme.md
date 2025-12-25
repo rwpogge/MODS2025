@@ -1,6 +1,6 @@
 # dataMan - MODS Data Manager
 
-**Updated: 2025 Nov 6 [rwp/osu]**
+**Updated: 2025 Dec 25 [rwp/osu]**
 
 Development sandbox for a python-based data manager for the Archon MODS 
 system that will post-process raw images taken with MODS.
@@ -26,9 +26,18 @@ FITS handling capability gives us many more options.
  * `dataMan.ini` - yaml runtime configuration file template.
  * `dataMan_server.py` - simple UDP socket server demo, run as `python dataMan_server.py`
  * `clientDemo.py` - simple dm client - run in ipython shell, and use `sendToDM()` to send messages. `quit` will shutdown the server demo
+ * `clientDemo2.py` - a variant to test impact of socket open/send/close as a single operation rather than persistent client socket like `clientDemo.py`
+ * `fixHead.py` - test of pre-processing, standalone, in-place, no transfer
+ * `archonFITSLab.ipynb` - Jupyter notebook for working out pre-processing functions
 
 ## Notes
 
+### 2025 Dec 25
+Significant work on `dataMan_vX.py`, with changes to `fixHead.py` and the `archonFITSLab.ipynb` Jupyter notebook.  
+ * Broke out preprocessing steps into separate functions.  Lets us toggle on/off with the runtime config file
+ * Incorporated overscan/trim/merge (otm) processing from `archonFITSLab` which will append a fast debiased, trimmed and merged image into the FITS file as extension 6.
+ * Performed at test of triggering the dataMan client message to server from inside `azcam-mods` which was successful. Will trigger dataMan processing from the `MODSInstrument()` class `exposure_finish()` method, using native `azcam` core functions instead of grafting into `modsCCD`.  Tested and works like a champ.  Greatly simplifies the image acquisition and post-processing workflow.
+   
 ### 2025 Nov 6
 FITS header fix code in `dataMan_vX.py`:
  * Fix `DATE-OBS` to comply with LBT Archive and NOST FITS standards for ISO8601 date+time data
