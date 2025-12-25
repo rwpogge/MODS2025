@@ -1,6 +1,6 @@
 # MODS Instrument Control and Data-Taking System Installation
 
-**Updated: 2025 Oct 15 [rwp/osu]**
+**Updated: 2025 Dec 24 [rwp/osu]**
 
 ## Preparations
 
@@ -120,11 +120,13 @@ sudo chmod 777 Env ISIS
 #### Archon Server Logs
 
 Under `/home/Logs/`, the four Archon servers (`mods1blue/red` and `mods2blue/red`) need a subdirectory for
-the azcam server logs:
+the azcam server and dataMan logs:
 ```
 cd /home/Logs
 sudo mkdir azcam
+sudo mkdir dataMan
 sudo chmod 777 azcam
+sudo chmod 777 dataMan
 ```
 
 ### LBTO conda environment
