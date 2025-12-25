@@ -36,7 +36,10 @@ FITS handling capability gives us many more options.
 Significant work on `dataMan_vX.py`, with changes to `fixHead.py` and the `archonFITSLab.ipynb` Jupyter notebook.  
  * Broke out preprocessing steps into separate functions.  Lets us toggle on/off with the runtime config file
  * Incorporated overscan/trim/merge (otm) processing from `archonFITSLab` which will append a fast debiased, trimmed and merged image into the FITS file as extension 6.
+ * Added preprocessing directives to `dataMan.ini` for the new functions
+ * Restructured `dataMan_vX.py` to incorporate the above changes.
  * Performed at test of triggering the dataMan client message to server from inside `azcam-mods` which was successful. Will trigger dataMan processing from the `MODSInstrument()` class `exposure_finish()` method, using native `azcam` core functions instead of grafting into `modsCCD`.  Tested and works like a champ.  Greatly simplifies the image acquisition and post-processing workflow.
+
    
 ### 2025 Nov 6
 FITS header fix code in `dataMan_vX.py`:
