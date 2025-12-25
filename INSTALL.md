@@ -125,8 +125,7 @@ the azcam server and dataMan logs:
 cd /home/Logs
 sudo mkdir azcam
 sudo mkdir dataMan
-sudo chmod 777 azcam
-sudo chmod 777 dataMan
+sudo chmod 777 azcam dataMan
 ```
 
 ### LBTO conda environment
