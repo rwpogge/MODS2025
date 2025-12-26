@@ -1,6 +1,6 @@
 # MODS Instrument Control and Data-Taking System Installation
 
-**Updated: 2025 Dec 24 [rwp/osu]**
+**Updated: 2025 Dec 26 [rwp/osu]**
 
 ## Preparations
 
@@ -99,6 +99,7 @@ chmod 777 Logs
 #### Data and Logs
 
 All machines need open-access `/home/data/` and `/home/Logs/` folder.
+for particular services 
 ```shell
 cd /home
 sudo mkdir data
@@ -108,24 +109,24 @@ sudo chmod 777 Logs data
 
 #### Instrument Server Logs
 
-Under `/home/Logs/`, the instrument servers (`mods1` and `mods2`) need two subdirectories for runtime logs
-from instrument services:
+Under `/home/Logs/`, the instrument servers (`mods1` and `mods2`) need subdirectories for runtime logs
+from instrument services that do runtime logging.
 ```
 cd /home/Logs
 sudo mkdir Env
 sudo mkdir ISIS
-sudo chmod 777 Env ISIS
+sudo mkdir dataMan
+sudo chmod 777 Env ISIS dataMan
 ```
 
 #### Archon Server Logs
 
 Under `/home/Logs/`, the four Archon servers (`mods1blue/red` and `mods2blue/red`) subdirectories for
-the azcam server and dataMan logs:
+the azcam server logs:
 ```
 cd /home/Logs
 sudo mkdir azcam
-sudo mkdir dataMan
-sudo chmod 777 azcam dataMan
+sudo chmod 777 azcam
 ```
 
 ### LBTO conda environment
