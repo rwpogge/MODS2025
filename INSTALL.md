@@ -119,7 +119,7 @@ sudo chmod 777 Env ISIS
 
 #### Archon Server Logs
 
-Under `/home/Logs/`, the four Archon servers (`mods1blue/red` and `mods2blue/red`) need a subdirectory for
+Under `/home/Logs/`, the four Archon servers (`mods1blue/red` and `mods2blue/red`) subdirectories for
 the azcam server and dataMan logs:
 ```
 cd /home/Logs
