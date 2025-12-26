@@ -1,6 +1,6 @@
 # dataMan - MODS Data Manager
 
-**Updated: 2025 Dec 25 [rwp/osu]**
+**Updated: 2025 Dec 26 [rwp/osu]**
 
 Development sandbox for a python-based data manager for the Archon MODS 
 system that will post-process raw images taken with MODS.
@@ -31,6 +31,14 @@ FITS handling capability gives us many more options.
  * `archonFITSLab.ipynb` - Jupyter notebook for working out pre-processing functions
 
 ## Notes
+
+### 2025 Dec 26
+Big architecture change: found a good way to make one `dataMan` server per MODS, which solves problems of raw and processed data
+aggregation and configuration management.  Will now run `dataMan` as a systemd service on mods1 and mods2, and use the NFS-mounted
+data disk so we protect raw data better.
+ * live testing of code with ipython shell to verify and test operation timing with real data
+ * reworked `dataMan_vX.py` and `dataman.ini` for the changes
+ * corresponding changes in `azcam-mods`, see release notes (server.py and instrument_mods.py)
 
 ### 2025 Dec 25
 Significant work on `dataMan_vX.py`, with changes to `fixHead.py` and the `archonFITSLab.ipynb` Jupyter notebook.  
