@@ -1,6 +1,10 @@
 # MODS2025 Release Notes
 
-**Last Release: 2025 Dec 20**
+**Last Release: 2025 Dec 26**
+
+## Version 1.4.2 - 2025 Dec 26
+Live testing with `dataMan` and `azcam` on mountain, dataMan still alpha but advancing rapidly.
+ * Tested and verified method to invoke `dataMan` from `azcam` proper that streamlines the data flow after end of exposure. See release notes for `azcam-mods` for details. Advanced `azcam-mods` to version 1.1.8
 
 ## Version 1.4.1 - 2025 Dec 20
 First live tests on summit observing workstations with the `lbto` account by Olga Kuhn on the `robs1` machine, 

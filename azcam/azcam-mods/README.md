@@ -1,7 +1,7 @@
 # azcam-mods
-Version 1.1.7
+Version 1.1.8
 
-Last Update: 2025 Dec 24
+Last Update: 2025 Dec 26
 
 See [Release Notes](releases.md) for details
 

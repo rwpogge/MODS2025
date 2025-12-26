@@ -1,8 +1,12 @@
 # azcam-mods Release Notes
 
-**Current Version: 1.1.7**
+**Current Version: 1.1.8**
 
-**Last Update: 2025 Dec 24 [rwp/osu]**
+**Last Update: 2025 Dec 26 [rwp/osu]**
+
+### Version 1.1.8 - 2025 Dec 26
+ * `instrument_mods.py` - tweaked `dataMan` client implementation. `self.useDM` boolean now False to disable `dataMan` use by default.
+ * `server.py` - embedded new code to enable `dataMan` use for post-processing/archiving, and specify the `dataMan` host IP address.
 
 ### Version 1.1.7 - 2025 Dec 24
  * `mods.py` - added `set_roiByName()` convenience function to set the ROI by sensible aliases ("off","full","8kx3k","3kx3k", etc.). Hard-coded for now, but later versions can define in yaml config files so we don't have to hack code.

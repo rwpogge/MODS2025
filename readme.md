@@ -1,8 +1,8 @@
 # MODS2025
 
-**Version 1.4.1**
+**Version 1.4.2**
 
-**Last Update: 2025 Dec 21 [rwp/osu]**
+**Last Update: 2025 Dec 26 [rwp/osu]**
 
 Lead: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
