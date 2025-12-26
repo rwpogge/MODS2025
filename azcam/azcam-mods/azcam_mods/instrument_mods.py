@@ -43,6 +43,7 @@ class MODSInstrument(Instrument):
     
     Modification History:
         2025 Dec 24 - adding MODS dataMan hooks [rwp/osu]
+        2025 Dec 26 - set useDM=False by default [rwp/osu]
     
     '''
     
@@ -60,15 +61,13 @@ class MODSInstrument(Instrument):
         self.modsIIF = None
         self.proxy = iif.model['PROXIES'].get(self.iifID)
 
-        # dataMan default UDP host and port
+        # dataMan post-exposure image processing and archving server
+        # By default, dataMan is disabled. Enable by setting self.useDM=True
         
+        self.useDM = False   # enable image post-exposure processing
         self.dmHost = "localhost"
         self.dmPort = 10301
 
-        # by default, enable post-exposure processing.  Set false to disable
-        
-        self.dmEnabled = True   # enable image post-exposure processing
-                
         # the instrument configuration file is in the systemfolder/template directory
         # with names like "instHdr_MODS1B.txt"
         
@@ -724,12 +723,12 @@ class MODSInstrument(Instrument):
         image to the dataMan agent for post-processing, which
         entails any header fixes and augmentation and copying the
         FITS image from the Archon server to the LBTO archive 
-        staging disk (aka "newdata").  Only do this if dmEnabled is True.
+        staging disk (aka "newdata").  Only do this if useDM is True.
         
         See also: procDM()
 
         '''
-        if self.dmEnabled:
+        if self.useDM:
             self.dmProc(azcam.db.tools["exposure"].last_filename)
         
         return

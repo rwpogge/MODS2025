@@ -3,7 +3,7 @@ Setup method for LBTO MODS azcamserver
 Usage example:
   python -i -m azcam_mods.server -- -mods1r
   
-  Updated: 2025 Dec 10 [rwp/osu]
+  Updated: 2025 Dec 26 [rwp/osu]
 """
 
 import os
@@ -54,6 +54,8 @@ def setup():
         option = "MODS1R"
         modsID = option
         lbtSide = "left"
+        modsHost = "192.168.139.130"
+        useDM = True
     except ValueError:
         pass
 
@@ -62,6 +64,8 @@ def setup():
         option = "MODS1B"
         modsID = option
         lbtSide = "left"
+        modsHost = "192.168.139.130"
+        useDM = True
     except ValueError:
         pass
 
@@ -70,6 +74,8 @@ def setup():
         option = "MODS2R"
         modsID = option
         lbtSide = "right"
+        modsHost = "192.168.139.230"
+        useDM = True
     except ValueError:
         pass
 
@@ -78,6 +84,8 @@ def setup():
         option = "MODS2B"
         modsID = option
         lbtSide = "right"
+        modsHost = "192.168.139.230"
+        useDM = True
     except ValueError:
         pass
 
@@ -86,6 +94,7 @@ def setup():
         option = "test"
         modsID = "Test"
         lbtSide = "left"
+        useDM = False   # do not use the dataMan post-processor/archiver
     except ValueError:
         pass
 
@@ -336,6 +345,12 @@ def setup():
     
     instrument = MODSInstrument(modsID=azcam.db.systemname,side=mods.lbtSide)
 
+    # enable/disalbe dataMan for pre-processing and archiving
+    
+    instrument.useDM = useDM
+    if useDM:
+        instrument.dmHost = modsHost
+        
     # Instantiate the LBTTelescope() class for LBT TCS interaction
 
     telescope = LBTTelescope(iifInst="mods",side=mods.lbtSide)

@@ -531,107 +531,152 @@ def modsFITSProc(fitsFile,repoDir):
 
     Modification
     ------------
-    2025 Dec 25 - invoking operations as separate methods, simplifies this method
+    2025 Dec 25 - invoking processing ops as separate methods, simplifies this method
+    2025 Dec 26 - now building NFS-mounted paths for one dataMan per MODS
     
     '''
 
-    if Path(fitsFile).exists():
-        logger.info(f"proc: processing {fitsFile}...")
+    # Raw data files are in directories like /data/mods1b/ that are NFS-mounted
+    # on the dataMan server machine. Get what we need from fitsFile passed
+    # to this method.
+    
+    baseName = os.path.basename(fitsFile)
+    modsChan = baseName.split(".")[0]
+    obsDate = baseName.split(".")[1]
+    
+    rawFile = str(Path() / dataDir / modsChan / baseName)
 
-        try:
-            hdu = fits.open(fitsFile)
-        except Exception as exp:
-            logger.error(f"could not open {fitsFile} - {exp}")
-            return
+    # If rawFile does not exist, nothing to do.
 
-        # fix header DETSEC and related records?
-        
-        if procParam["fixDETSEC"]:
-            fixDataSec(hdu)
+    if not Path(rawFile).exists():
+        logger.error(f"proc: {rawFile} not found")
+        return
+    
+    # We have a file to process    
+    
+    logger.info(f"Processing {baseName}...")
 
-        # fix header Date/Time records?
-            
-        if procParam["fixDateTime"]:
-            fixDateTime(hdu)
-
-        # fix header CCD and Archon backplane temperature records?
-        
-        if procParam["fixTemps"]:
-            fixArchonTemps(hdu)
-
-        # create an overscan bias subtracted, trimmmed, and merged image
-        # and append it to the file?
-            
-        if procParam["makeOTM"]:
-            otmImg,quadBias,quadStd = otmProc(hdu)
-            otmHDU = fits.ImageHDU(data=otmImg,header=hdu[0].header,name="Merged")
-
-            for quad in [1,2,3,4]:
-                otmHDU.header[f"Q{quad}Bias"] = (quadBias[quad-1],f"Q{quad} median overscan bias [DN]")
-                otmHDU.header[f"Q{quad}Std"] = (quadStd[quad-1],f"Q{quad} overscan bias stdev [DN]")
-
-            hdu.append(otmHDU)
-             
-        # Generate a uniqName coded as
-        #    <instID>.CCYYMMDD.hhmmss.fits
-        # that we use in the event writing out the processed image would
-        # overwrite an existing image.  The FILENAME preserves the intended
-        # filename, we add UNIQNAME to the primary header, and use that
-        # name to avoid overwrite.
-        
-        try:
-            instID = hdu[0].header["INSTRUME"].lower()
-        except:
-            logger.warning(f"No INSTRUME keyword found in {fitsFile} - corrupt header, uniqname not created")
-            instID = "modsNx"
-
-        dtNow = datetime.datetime.now().strftime("%Y%m%d.%H%M%S")
-        uniqName = f"{instID}.{dtNow}.fits"
-        hdu[0].header["UNIQNAME"] = (uniqName,"Unique filename")
-        
-        # write new data to procDir, then copy to repoDir
-
-        baseFile = os.path.basename(fitsFile)
-        
-        procPath = Path() / procDir / baseFile
-        if procPath.exists():
-            logger.error(f"{str(procPath)} exists, using uniqname={uniqName}")
-            procPath = Path() / procDir / uniqName
-        
-        repoPath = Path() / repoDir / uniqName
-        if repoPath.exists():
-            logger.error(f"{str(repoPath)} exists, using uniqname={uniqName}")
-            repoPath = Path() / repoDir / uniqName
-
-        # Write out the FITS file with the modified header to the procPath and close it
-
-        try:
-            hdu.writeto(str(procPath))
-            hdu.close()
-            procPath.chmod(0o666) # change to RW for all before copying
-            logger.info(f"processed file {fitsFile} copied to {procDir}")
-        except Exception as err:
-            logger.error(f"could not write {fitsFile} to {procDir} - {err}")
-            hdu.close()
-            return
-            
-        # Copy the processed file to the LBTO new data repository
-
-        try:
-            shutil.copyfile(str(procPath),str(repoPath))
-            logger.info(f"processed {fitsFile} copied to {repoDir}")
-        except Exception as err:
-            logger.error(f"could not copy {fitsFile} to {repoDir} - {err}")
-            return
-        
-        # we"re done
-        
-        logger.info(f"proc done: {fitsFile} copied to {repoDir}")
-        
+    try:
+        hdu = fits.open(rawFile)
+    except Exception as exp:
+        logger.error(f"Cannot open {rawFile} - {exp}")
+        return
+                     
+    # procPath is the directory where the processed data will
+    # be written.  It will have a name like /home/data/20251226/,
+    # the date derived from obsDate.
+    
+    procPath = Path() / procDir / obsDate    
+    
+    # does procPath exist?  If not, create it and set permissions
+    
+    try:
+        procPath.mkdir(parents=True, exist_ok=False)
+        procPath.chmod(0o777)
+    except FileExistsError:
+        pass
     else:
-        logger.error(f"proc: no such file {fitsFile}, nothing to process")
+        logger.info(f"Created processed image folder {str(procPath)}")
+    
+    # Generate a uniqName coded as
+    #    <instID>.CCYYMMDD.hhmmss.fits
+    # that we use in the event writing out the processed image would
+    # overwrite an existing image.  The FILENAME preserves the intended
+    # filename, we add UNIQNAME to the primary header, and use that
+    # name to avoid overwrite.
+        
+    try:
+        instID = hdu[0].header["INSTRUME"].lower()
+    except:
+        logger.warning(f"No INSTRUME keyword found in {fitsFile} - corrupt header?")
+        instID = "modsNx"
 
+    dtNow = datetime.datetime.now().strftime("%Y%m%d.%H%M%S")
+    uniqName = f"{instID}.{dtNow}.fits"
+    hdu[0].header["UNIQNAME"] = (uniqName,"Unique filename")
+
+    #--------------------------------------------------------------------------
+    # Start processing
+            
+    # fix DETSEC and related header records?
+        
+    if procParam["fixDETSEC"]:
+        fixDataSec(hdu)
+
+    # fix Date/Time header records?
+            
+    if procParam["fixDateTime"]:
+        fixDateTime(hdu)
+
+    # fix CCD and Archon backplane temperature header records?
+        
+    if procParam["fixTemps"]:
+        fixArchonTemps(hdu)
+
+    # Create an overscan bias subtracted, trimmmed, and merged image
+    # and append it to the file?
+            
+    if procParam["makeOTM"]:
+        otmImg,quadBias,quadStd = otmProc(hdu)
+        otmHDU = fits.ImageHDU(data=otmImg,header=hdu[0].header,name="Merged")
+
+        for quad in [1,2,3,4]:
+            otmHDU.header[f"Q{quad}Bias"] = (quadBias[quad-1],f"Q{quad} median overscan bias [DN]")
+            otmHDU.header[f"Q{quad}Std"] = (quadStd[quad-1],f"Q{quad} overscan bias stdev [DN]")
+
+        hdu.append(otmHDU)
+
+    #--------------------------------------------------------------------------
+    # Done: write out the processed image and stage to the LBTO archive
+             
+    # We need two paths to write:
+    #   processed FITS saved as procFile = procPath/baseName
+    #   copy of processed FITS archived to repoFile = repoDir/baseName
+    # if the target filename exists, write/copy using uniqName
+    
+    numErrors = 0
+    
+    procFile = Path() / procPath / baseName
+    if procFile.exists():
+        logger.warning(f"{str(procFile)} exists, using unique name {uniqName}")
+        procFile = Path() / procPath / uniqName
+
+    repoFile = Path() / repoDir / baseName
+    if repoFile.exist():
+        logger.warning(f"{str(repoFile)} exists, using unique name {uniqName}")
+        repoPath = Path() / repoDir / uniqName
+
+    # Write out the processed FITS file to the procPath and close it
+
+    try:
+        hdu.writeto(str(procFile))
+        hdu.close()
+        # procFile.chmod(0o655) # change to RW for all before copying
+        logger.info(f"Processed image {baseName} written to {str(procPath)}")
+    except Exception as err:
+        logger.error(f"Cannot write {baseName} to {str(procPath)} - {err}")
+        numErrors += 1
+        hdu.close()
+            
+    # Copy the processed FITS file to the LBTO new data repository which 
+    # stages it for ingestion in the LBTO data archive
+
+    try:
+        shutil.copyfile(str(procFile),str(repoPath))
+        logger.info(f"Processed image {baseName} copied to {repoDir}")
+    except Exception as err:
+        logger.error(f"Cannot copy {baseName} to {repoDir} - {err}")
+        numErrors += 1
+        
+    # we"re done
+        
+    if numErrors > 0:
+        logger.warning(f"Done: Processing {baseName} had {numErrors} errors")
+    else:
+        logger.info(f"Done: {baseName} processed and archived")
+        
     return
+
         
 #---------------------------------------------------------------------------
 #
@@ -639,13 +684,13 @@ def modsFITSProc(fitsFile,repoDir):
 #
 
 hostname = socket.gethostname()
-modsID = hostname[:6]
+modsID = hostname[:5]
     
 dmHost = "localhost"
 dmPort = 10301
 
-dataDir = "/home/data"
-procDir = "/home/data/Proc"
+dataDir = "/data"
+procDir = "/home/data"
 repoDir = "/lbt/data/new"
 logDir = "/home/Logs/dataMan"
 
@@ -654,7 +699,7 @@ defaultCfg = "dataman.ini"
 
 #---------------------------------------------------------------------------
 #
-# Start of the code
+# start of main program
 #
 
 # process command-line arguments.
@@ -704,7 +749,7 @@ if cfg["debug"]:
 else:
     logLevel = logging.INFO
     
-# Start runtime logging
+# Start the runtime logger
 
 logFile = str(Path(logDir) / f"{modsID}.{obsDate()}.txt")
 
@@ -719,11 +764,8 @@ logger.info(f"Started dataMan for {modsID}")
 
 # Initialze the datagram (udp) socket 
 
-logger.info(f"Initializing the {modsID} dataMan server UDP socket")
-
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    logger.info("UDP socket created")
 except Exception as err:
     logger.exception(f"Failed to create UDP socket - {err}")
     sys.exit(-1)
@@ -739,7 +781,13 @@ except Exception as err:
         
 logger.info(f"{modsID} dataMan server started on {dmHost}:{dmPort}")
 
-# Listen for remote client directives, including quit
+#
+# Listen for commands from remote socekt clients
+#
+# Supported commands:
+#   proc rawFile - processed the named raw FITS file
+#   quit - exit the server loop and stop the session
+#
 
 while 1:
     
