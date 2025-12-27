@@ -545,7 +545,7 @@ def modsFITSProc(fitsFile,repoDir):
     obsDate = baseName.split(".")[1]
     
     rawFile = str(Path() / dataDir / modsChan / baseName)
-
+    
     # If rawFile does not exist, nothing to do.
 
     if not Path(rawFile).exists():
@@ -668,7 +668,16 @@ def modsFITSProc(fitsFile,repoDir):
         logger.error(f"Cannot copy {baseName} to {repoDir} - {err}")
         numErrors += 1
         
-    # we"re done
+    # Put the baseName into a file named modsChan.new on repoDir
+    
+    newFile = str(Path() / repoDir / f"{modsChan.upper()}.new")
+    with open(newFile, "w") as nf:
+        try:
+            nf.write(f"{baseName}\n")
+        except Exception as err:
+            logger.error(f"Cannot write {newFile} - {err}")
+
+    # we're done
         
     if numErrors > 0:
         logger.warning(f"Done: Processing {baseName} had {numErrors} errors")
