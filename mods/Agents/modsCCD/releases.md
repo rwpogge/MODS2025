@@ -8,6 +8,9 @@ Version testing dataMan hooks
  * Put hooks into `client.h`, `clientutils.h`, `main.c`, `commands.c` and `config.c`
  * A big change from the old Y4KCam system is that we put the dm config info into the `modsccd.ini` file instead of a standalone config file for just dataMan. The `dataMan.ini` for the python version uses yaml and has a very different config profile.
 
+Note that the dataMan interface is provisional.  We are also exploring sending `proc` directives to dataMan by azcam proper, which cuts out the middleman and could
+simplify the command flow of modCCD.
+
 Version ready for live testing and debugging.
 
 ## Version 1.0.2 - LBTO Live on-telescope testing
