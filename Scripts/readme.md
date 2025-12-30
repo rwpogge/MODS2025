@@ -1,6 +1,6 @@
 # MODS operations scripts
 
-Latest Version: 2025 Dec 23 [rwp/osu]
+Latest Version: 2025 Dec 30 [rwp/osu]
 
 See [Release Notes](releases.md) for the current verison
 
@@ -139,6 +139,10 @@ al.).  The upper left panel runs the `modsCCD` interface agent (the
 replacement for the old DOS "IC" program), and the upper right panel
 runs the `azcam-mods` server session.  There is one `ccdTerm` session
 per MODS channel, 4 in total.
+
+Use `start_azcam` and `start_modsccd` to start the `azcam-mods` server and
+`modsCCD` agent in the right pane, preventing running the wrong version on
+the wrong machine, or running duplicates by different users.
 
 ## Screenshots
 
