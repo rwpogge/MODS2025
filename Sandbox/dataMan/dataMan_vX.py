@@ -29,7 +29,8 @@ Modification History
  * 2025 Nov 06 - FITS header time/date fixes [rwp/osu]
  * 2025 Dec 25 - Restructuring header pre-proc ops into separate functions, simplifying
                  modsFITSProc() method. Enable with config file directives [rwp/osu]
-                 
+ * 2025 Dec 30 - edits resulting from live testing at LBTO [rwp/osu]                
+ 
 '''
 
 import os
@@ -99,18 +100,14 @@ def loadConfig(cfgFile):
     '''
 
     if os.path.exists(cfgFile):
-        try:
-            stream = open(cfgFile,'r')
-        except Exception as exp:
-            raise RuntimeError(f"ERROR: could not open {cfgFile}: {exp}")
-        try:
-            config = yaml.safe_load(stream) #,Loader=Loader)
-        except Exception as exp:
-            raise RuntimeError(f"ERROR: could not load {cfgFile}: {exp}")
-        
+        with open(cfgFile,"r",encoding="utf-8") as stream:
+            try:
+                config = yaml.safe_load(stream) #,Loader=Loader)
+            except Exception as exp:
+                raise RuntimeError(f"ERROR: could not load {cfgFile}: {exp}")
+       
         if len(config)==0:
             raise RuntimeError(f"File file {cfgFile} is empty or incorrectly formatted")
-        
         return config
     else:
         raise ValueError(f"Runtime configuration file {cfgFile} does not exist")
@@ -674,6 +671,7 @@ def modsFITSProc(fitsFile,repoDir):
     with open(newFile, "w") as nf:
         try:
             nf.write(f"{baseName}\n")
+            os.chmod(newFile,0o666)
         except Exception as err:
             logger.error(f"Cannot write {newFile} - {err}")
 
@@ -760,7 +758,7 @@ else:
     
 # Start the runtime logger
 
-logFile = str(Path(logDir) / f"{modsID}.{obsDate()}.txt")
+logFile = str(Path(logDir) / f"dataMan_{modsID}.{obsDate()}.txt")
 
 logging.basicConfig(filename=logFile,
                     format="%(asctime)s %(name)s %(levelname)s: %(message)s",
