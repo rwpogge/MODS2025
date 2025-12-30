@@ -1,0 +1,87 @@
+#!/bin/csh -f
+#
+# start_azcam - start the azcam server safely
+#
+# usage: start_azcam
+#
+# Verifies that we allowed to run the azcam server and in the
+# correct environment:
+#   * we on a MODS Archon server (mods1blue, mods2red, etc.)
+#   * are we an authorized user (dts or mods)?
+#   * are we in a ccdTerm tmux shell?
+#   * is azcam already running, and if so, by who
+#
+# After starting azcam you are then able to start the modsCCD agent.
+#
+# R. Pogge (pogge.1@osu.edu)
+# OSU Astronomy Department
+# 2025 Oct 21 - original version
+#
+# Modification History:
+#   2025 Dec 30 - less sloppy version
+#
+# See also: start_modsccd
+#
+#---------------------------------------------------------------------------
+
+set prog=`basename $0`
+set tmuxID="ccdTerm"
+
+# Are we on a MODS Archon server?
+
+set myHost="${HOSTNAME}"
+
+if ("$myHost" == "mods1blue" || "$myHost" == "mods1red" || "$myHost" == "mods2blue" || "$myHost" == "mods2red") then
+   set modsID=`echo $myHost | cut -c 1-6`   # like mods1b, used by azcam
+else
+   printf "ERROR: you cannot run ${prog} on host ${myHost}.\n"
+   printf "       Ask your ISA for assistance with this operation.\n"
+   exit 1
+endif
+
+# Is this user allowed to run azcam?
+
+set user=`echo $USER | tr '[:upper:]' '[:lower:]'`
+
+if ("${user}" == "dts" || "${user}" == "mods") then
+   set azcamUser=${user}
+else
+   printf "ERROR: User '${user}' is not permitted to run ${prog}.\n"
+   printf "       Ask your ISA for assistance with this operation.\n"
+   exit 1
+endif
+
+# Do we have the right tmux session running?
+
+tmux has-session -t ${tmuxID} >& /dev/null
+if ($status) then
+   # we are not in the right tmux session
+   printf "${prog} needs to be run in a ${tmuxID} tmux session but none is running\n"
+   printf "    Type '${tmuxID}' to start a new ${tmuxID} tmux session and try again.\n"
+   exit 1
+else
+   # There IS a tmux session named ${tmuxID}, but are we in it?
+   if ( ! $?TMUX ) then
+      # that would be a no...
+      printf "${prog} needs to be run in a ${tmuxID} tmux session, but you're not in it.\n" 
+      printf "   Either go to the active ${tmuxID} tmux window on the desktop, or\n"
+      printf "   type '${tmuxID}' to attach to the current ${tmuxID} session\n"
+      printf "   and try again.\n"
+      exit 1
+   endif
+endif
+
+# Last check: is azcam already running?
+
+ps h -C ipython | grep azcam_mods >& /dev/null
+if ($status) then
+   # not running, start in the right pane of the ccdTerm
+   printf "Starting the ${modsID} azcam server...\n"
+   tmux send-keys -t ${tmuxID}:1.1 "ipython -i -m azcam_mods.server -- -${modsID}" C-m
+else
+   # it IS running, who is running it?
+   set azcamUser=`ps o user,cmd h -C ipython | grep azcam_mods`
+   printf "The ${modsID} azcam server is already being run by user ${azcamUser[1]}\n"
+endif
+
+exit 0
