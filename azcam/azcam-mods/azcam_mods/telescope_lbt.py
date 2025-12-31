@@ -24,7 +24,10 @@ class LBTTelescope(Telescope):
     
     Author: R. Pogge, OSU Astronomy Dept (pogge.1@osu.edu)
     
-    Updated: 2025 Sept 23 [rwp/osu]
+    Updated: 
+        2025 Sep 23 - Live testing with LBT IIF [rwp/osu]
+        2025 Dec 31 - Live testing with flight system at LBTO [rwp/osu]
+        
     '''
     
     def __init__(self, tool_id="telescope", description="Large Binocular Telescope",iifInst="mods",side="left"):
@@ -337,35 +340,26 @@ class LBTTelescope(Telescope):
         self.cfgData = None
         
         if os.path.exists(configFile):
-            try:
-                stream = open(configFile,'r')
-            except Exception as exp:
-                raise azcam.exceptions.AzcamError(f"cannot open LBT TCS header config file {configFile} - {exp}")
-                return
-        
-            try:
-                self.cfgData = yaml.safe_load(stream)
-            except yaml.YAMLError as exp:
-                stream.close()
-                self.cfgData = None
-                raise RuntimeError(f"ERROR: cannot load LBT TCS header config file {configFile} - {exp}")
-                return
-    
+            with open(configFile,'r') as stream:
+                try:
+                    self.cfgData = yaml.safe_load(stream)
+                except yaml.YAMLError as exp:
+                    self.cfgData = None
+                    raise RuntimeError(f"ERROR: cannot load LBT TCS config file {configFile} - {exp}")
+                    return
+
             if len(self.cfgData)==0:
                 self.cfgData = None
-                stream.close()
-                raise RuntimeError(f"ERROR: LBT TCS header config file {configFile} is empty!")
+                raise RuntimeError(f"ERROR: LBT TCS config file {configFile} is empty!")
                 return
-
-            stream.close()
     
         else:
-            raise ValueError(f"ERROR: LBT TCS header config file {configFile} not found")
+            raise ValueError(f"ERROR: LBT TCS config file {configFile} not found")
             return
         
         # We have a config file, pick it apart and get what we need
         
-        azcam.log(f"Opened LBT TCS FITS header configuration file {configFile}")
+        azcam.log(f"Opened LBT TCS config file {configFile}")
         
         # Get the IIF configuration info
         

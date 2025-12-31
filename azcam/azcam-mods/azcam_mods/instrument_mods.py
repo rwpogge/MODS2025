@@ -44,6 +44,7 @@ class MODSInstrument(Instrument):
     Modification History:
         2025 Dec 24 - adding MODS dataMan hooks [rwp/osu]
         2025 Dec 26 - set useDM=False by default [rwp/osu]
+        2025 Dec 31 - live testing at LBTO with flight system [rwp/osu]
     
     '''
     
@@ -363,28 +364,19 @@ class MODSInstrument(Instrument):
         self.cfgData = None
         
         if os.path.exists(configFile):
-            try:
-                stream = open(configFile,'r')
-            except Exception as exp:
-                raise azcam.exceptions.AzcamError(f"Cannot open MODS instrument header config file {configFile} - {exp}")
-                return
-        
-            try:
-                self.cfgData = yaml.safe_load(stream)
-            except yaml.YAMLError as exp:
-                stream.close()
-                self.cfgData = None
-                raise RuntimeError(f"ERROR: Cannot load MODS instrument header config file {configFile} - {exp}")
-                return
+            with open(configFile,'r') as stream:
+                try:
+                    self.cfgData = yaml.safe_load(stream)
+                except yaml.YAMLError as exp:
+                    self.cfgData = None
+                    raise RuntimeError(f"ERROR: Cannot load MODS instrument header config file {configFile} - {exp}")
+                    return
     
             if len(self.cfgData)==0:
                 self.cfgData = None
-                stream.close()
                 raise RuntimeError(f"ERROR: MODS instrument header config file {configFile} is empty!")
                 return
 
-            stream.close()
-    
         else:
             raise ValueError(f"ERROR: MODS instrument header config file {configFile} not found")
             return
@@ -693,15 +685,24 @@ class MODSInstrument(Instrument):
         if len(fitsFile) == 0:
             return
         
-        msg = f"proc {fitsFile}"
+        if ({fitsFile} == "quit"):
+            msg = "quit"
+        else:
+            msg = f"proc {fitsFile}"
+
         try:
             s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        except Exception as exp:
+            azcam.log(f"ERROR: cannot open dataMan client socket - {exp}")
+
+        try:
             s.sendto(msg.encode('utf-8'),(self.dmHost,self.dmPort))
             s.close()
-            azcam.log(f"Sent {msg} to dataMan", level=2)
+            azcam.log(f"Sent {msg} to dataMan",level=2)
         except Exception as exp:
-            azcam.log(f"instrument::dmProc exception {exp}",level=3)
-
+            s.close()
+            azcam.log(f"ERROR: cannot send proc {fitsFile} to dataMan - {exp}")
+            
         return
     
 
