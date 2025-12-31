@@ -241,9 +241,6 @@ main(int argc, char *argv[])
     if (dm.FD>0)
       printf("dataMan agent link initialized\n");
   }
-  else {
-    printf("NOTE: Started with no dataMan interface\n");
-  }
   
   // Now that all components are connected, upload the
   // baseline FITS header database
