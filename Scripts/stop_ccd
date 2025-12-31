@@ -1,0 +1,97 @@
+#!/bin/csh -f
+#
+# stop_ccd - start the azcam server safely
+#
+# usage: stop_ccd
+#
+# Used to stop the azcam server and modsCCD agents cleanly.
+# Verifies that we allowed to run the azcam server and in the correct environment:
+#   * we on a MODS Archon server (mods1blue, mods2red, etc.)
+#   * are we an authorized user (dts or mods)?
+#   * are we in a ccdTerm tmux shell?
+#
+# Stops first modsCCD then azcam-mods, the correct order so that modsCCD drops
+# the TCP socket connection so azcam-mods can terminate (otherwise it hangs)
+#
+# R. Pogge (pogge.1@osu.edu)
+# OSU Astronomy Department
+# 2025 Oct 30 - original version
+#
+# Modification History:
+#   2025 Dec 31 - edits after live testing
+#
+# See also: start_azcam, start_modsccd
+#
+#---------------------------------------------------------------------------
+
+set prog=`basename $0`
+set tmuxID="ccdTerm"
+
+# Are we on a MODS Archon server?
+
+set myHost="${HOSTNAME}"
+
+if ("$myHost" == "mods1blue" || "$myHost" == "mods1red" || "$myHost" == "mods2blue" || "$myHost" == "mods2red") then
+   set modsID=`echo $myHost | cut -c 1-6`   # like mods1b, used by azcam
+else
+   printf "ERROR: you cannot run ${prog} on host ${myHost}.\n"
+   printf "       Ask your ISA for assistance with this operation.\n"
+   exit 1
+endif
+
+# Is this user allowed to run azcam?
+
+set user=`echo $USER | tr '[:upper:]' '[:lower:]'`
+
+if ("${user}" == "dts" || "${user}" == "mods") then
+   set azcamUser=${user}
+else
+   printf "ERROR: User '${user}' is not permitted to run ${prog}.\n"
+   printf "       Ask your ISA for assistance with this operation.\n"
+   exit 1
+endif
+
+# Do we have the right tmux session running?
+
+tmux has-session -t ${tmuxID} >& /dev/null
+if ($status) then
+   # we are not in the right tmux session
+   printf "${prog} needs to be run in a ${tmuxID} tmux session but none is running\n"
+   printf "    Type '${tmuxID}' to start a new ${tmuxID} tmux session and try again.\n"
+   exit 1
+else
+   # There IS a tmux session named ${tmuxID}, but are we in it?
+   if ( ! $?TMUX ) then
+      # that would be a no...
+      printf "${prog} needs to be run in a ${tmuxID} tmux session, but you're not in it.\n" 
+      printf "   Either go to the active ${tmuxID} tmux window on the desktop, or\n"
+      printf "   type '${tmuxID}' to attach to the current ${tmuxID} session\n"
+      printf "   and try again.\n"
+      exit 1
+   endif
+endif
+
+# Stop modsCCD then azcam_mods
+
+ps h -C modsCCD >& /dev/null
+if ($status) then
+   # not running, nothing to do
+   printf "The ${modsID} modsCCD agent is not running.\n"
+else
+   # it IS running, set quit to the shell, then sleep 1 sec
+   tmux send-keys -t ${tmuxID}:1.0 "quit" C-m
+   printf "The ${modsID} modsCCD agent has been stopped.\n"
+   sleep 1
+endif
+
+ps h -C ipython | grep azcam_mods >& /dev/null
+if ($status) then
+   # not running, start in the right pane of the ccdTerm
+   printf "The ${modsID} azcam server is not running.\n"
+else
+   # it IS running, send quit to the shell
+   tmux send-keys -t ${tmuxID}:1.1 "quit" C-m
+   printf "The ${modsID} azcam server has been stopped.\n"
+endif
+
+exit 0

@@ -1,6 +1,8 @@
 # dataMan - MODS Data Manager
 
-**Updated: 2025 Dec 26 [rwp/osu]**
+**Updated: 2025 Dec 31 [rwp/osu]**
+
+**Migrating to main branch, SandBox version here is for reference only**
 
 Development sandbox for a python-based data manager for the Archon MODS 
 system that will post-process raw images taken with MODS.
@@ -9,9 +11,8 @@ Post-processing steps include
  * fixing fits header issues
  * logging the images
  * pushing the raw images to the data repository
- * converting raw MEF to standard FITS?
- * inserting telemetry metadata (guider, wfs, weather?) as FITS bintable extensions
- * other?
+ * maybe someday inserting telemetry metadata (guider, wfs, weather?) as FITS bintable extensions, but for now we want to limit to entirely local/internal data so we don't get bit by reliance on uncontrolled sources.
+ * other (simple WCS, not-so-simple WCS, etc)
 
 The idea is to let the azcam server continue taking data moving post-processing "offline" from
 the azcam server and the modsCCD interface client.  
@@ -23,14 +24,30 @@ FITS handling capability gives us many more options.
 ## contents
 
  * `dataMan_vX.py` - development version of `dataMan`.
- * `dataMan.ini` - yaml runtime configuration file template.
+ * `Config/dataMan_MODSn.ini` - yaml runtime configuration file templates for MODS1 and MODS2.
  * `dataMan_server.py` - simple UDP socket server demo, run as `python dataMan_server.py`
  * `clientDemo.py` - simple dm client - run in ipython shell, and use `sendToDM()` to send messages. `quit` will shutdown the server demo
  * `clientDemo2.py` - a variant to test impact of socket open/send/close as a single operation rather than persistent client socket like `clientDemo.py`
  * `fixHead.py` - test of pre-processing, standalone, in-place, no transfer
  * `archonFITSLab.ipynb` - Jupyter notebook for working out pre-processing functions
+ * `systemd/` - folder with systemd service files
 
 ## Notes
+
+### 2025 Dec 31
+Lots of debugging since Dec 26.  Live test Dec 30 uncovered the usual bugs, some rework required. LBT had to solve write permissions
+issues
+ * dataMan.py ready to transition from Sandbox to released beta code at v1.0
+ * testing running `dataMan` as a systemd service, verified function
+ * added `dataMan` to the `modsStatus.pl` display, verified function
+ * first live transfers of data from the Archon servers to LBTO /newdata staging drive, including update of "lastdata" files.
+ * cleaned up logging issues
+ * minor tweaks to the `modsCCD` agent to make sure prototype dataMan hooks are disabled, but not yet removed.
+
+All on mods1blue and mods1 for now, will distribute and install across systems on migration from the Sandbox
+
+**This is the last Sandbox version**
+
 
 ### 2025 Dec 26
 Big architecture change: found a good way to make one `dataMan` server per MODS, which solves problems of raw and processed data
