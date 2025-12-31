@@ -28,6 +28,7 @@
 #   2025 Oct 3 - first full release [rwp/osu]
 #   2025 Oct 4 - added MODS subsystem power and dewar T/P display [rwp/osu]
 #   2025 Oct 13 - check if on a TMUX session [rwp/osu]
+#   2025 Dec 31 - added dataMan systemd service [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -95,7 +96,7 @@ my $offCol = COLOR_PAIR(6); # blue on black is Off (barely visible - no reliable
 my $userProcs = ["mmcServer","agwServer","redIMCS","blueIMCS","modsUI"]; # unix names
 my $userHead = ["Process","Status","UserID"];
 
-my $sysdProcs = ["isis","lbttcs","modsenv","modsDD"];
+my $sysdProcs = ["isis","lbttcs","modsenv","modsDD","dataMan"];
 my $sysdHead = ["Service","Status","Restart"];
 
 my @subSystems = qw(UTIL LLB GCAM WFS IEB HEB Archon IonGauge IEB HEB Archon IonGauge);

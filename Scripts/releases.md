@@ -2,6 +2,10 @@
 
 <b>Last Update: 2025 Dec 30 [rwp/osu]</b>
 
+## 2025 Dec 31: new and modified scripts
+ * `stop_ccd` a convenience script to stop `modsCCD` and `azcam-mods` gracefully in a `ccdTerm` tmux session.
+ * `modsStatus.pl` - added `dataMan` service to the systemd services list to monitor
+
 ## 2025 Dec 30: start_azcam
  * `start_azcam` is a safe way to ensure the azcam server is started in a `ccdTerm` tmux session by the right user on the right host, and that it is not 
 already running (and by who).  Live tested at LBTO with MODS1B

@@ -1,6 +1,6 @@
 # MODS operations scripts
 
-Latest Version: 2025 Dec 30 [rwp/osu]
+Latest Version: 2025 Dec 31 [rwp/osu]
 
 See [Release Notes](releases.md) for the current verison
 
@@ -143,6 +143,10 @@ per MODS channel, 4 in total.
 Use `start_azcam` and `start_modsccd` to start the `azcam-mods` server and
 `modsCCD` agent in the right pane, preventing running the wrong version on
 the wrong machine, or running duplicates by different users.
+
+Use `stop_ccd` to shutdown `modsCCD` and `azcam-mods` gracefully. We must
+stop `modsCCD` first, then `azcam-mods`.  If reverse, `azcam-mods` quit
+hangs until `modsCCD` quits and releases the TCP socket.
 
 ## Screenshots
 
