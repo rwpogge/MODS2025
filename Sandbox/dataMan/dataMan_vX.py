@@ -29,7 +29,7 @@ Modification History
  * 2025 Nov 06 - FITS header time/date fixes [rwp/osu]
  * 2025 Dec 25 - Restructuring header pre-proc ops into separate functions, simplifying
                  modsFITSProc() method. Enable with config file directives [rwp/osu]
- * 2025 Dec 30 - edits resulting from live testing at LBTO [rwp/osu]                
+ * 2025 Dec 30 - many bug fixes resulting from initial live testing at LBTO [rwp/osu]
  
 '''
 
@@ -476,7 +476,7 @@ def otmProc(hdu,skipBiasCols=2,biasRowMargin=2,sigClip=3):
 # FITS processor function
 #
 
-def modsFITSProc(fitsFile,repoDir):
+def modsFITSProc(fitsFile):
     '''
     Process a MODS FITS image
 
@@ -484,8 +484,6 @@ def modsFITSProc(fitsFile,repoDir):
     ----------
     fitsFile : string
         name of the raw MODs FITS file to process
-    repoDir : string
-        full path of the LBTO new data repository directory
     
     Returns
     -------
@@ -594,7 +592,7 @@ def modsFITSProc(fitsFile,repoDir):
 
     #--------------------------------------------------------------------------
     # Start processing
-            
+    
     # fix DETSEC and related header records?
         
     if procParam["fixDETSEC"]:
@@ -639,9 +637,9 @@ def modsFITSProc(fitsFile,repoDir):
         procFile = Path() / procPath / uniqName
 
     repoFile = Path() / repoDir / baseName
-    if repoFile.exist():
+    if repoFile.exists():
         logger.warning(f"{str(repoFile)} exists, using unique name {uniqName}")
-        repoPath = Path() / repoDir / uniqName
+        repoFile = Path() / repoDir / uniqName
 
     # Write out the processed FITS file to the procPath and close it
 
@@ -659,8 +657,19 @@ def modsFITSProc(fitsFile,repoDir):
     # stages it for ingestion in the LBTO data archive
 
     try:
-        shutil.copyfile(str(procFile),str(repoPath))
+        shutil.copyfile(str(procFile),str(repoFile))
         logger.info(f"Processed image {baseName} copied to {repoDir}")
+        
+        # update the modsChan.new file on repoDir
+
+        newFile = str(Path() / repoDir / f"{modsChan.upper()}.new")
+        with open(newFile, "w") as nf:
+            try:
+                nf.write(f"{baseName}\n")
+                os.chmod(newFile,0o666)
+                logger.info(f"Updated {newFile}")
+            except Exception as err:
+                logger.error(f"Cannot write {newFile} - {err}")
     except Exception as err:
         logger.error(f"Cannot copy {baseName} to {repoDir} - {err}")
         numErrors += 1
@@ -678,7 +687,7 @@ def modsFITSProc(fitsFile,repoDir):
     # we're done
         
     if numErrors > 0:
-        logger.warning(f"Done: Processing {baseName} had {numErrors} errors")
+        logger.warning(f"{baseName} processing had {numErrors} error(s)")
     else:
         logger.info(f"Done: {baseName} processed and archived")
         
@@ -693,7 +702,7 @@ def modsFITSProc(fitsFile,repoDir):
 hostname = socket.gethostname()
 modsID = hostname[:5]
     
-dmHost = "localhost"
+dmHost = "localhost" # actual from config needs to be full ipAddr
 dmPort = 10301
 
 dataDir = "/data"
@@ -756,18 +765,19 @@ if cfg["debug"]:
 else:
     logLevel = logging.INFO
     
-# Start the runtime logger
+# Start the runtime logger: {modsID}dm.ccyymm.txt
 
-logFile = str(Path(logDir) / f"dataMan_{modsID}.{obsDate()}.txt")
+logFile = str(Path(logDir) / f"{modsID}dm.{obsDate()}.txt")
 
 logging.basicConfig(filename=logFile,
-                    format="%(asctime)s %(name)s %(levelname)s: %(message)s",
+                    format="%(asctime)s %(levelname)s: %(message)s",
                     filemode="a",
                     level=logLevel)
 
 logger = logging.getLogger("dataMan")
 
-logger.info(f"Started dataMan for {modsID}")
+logger.info(f"Started {modsID} dataMan server")
+logger.info(f"severity level {logLevel}")
 
 # Initialze the datagram (udp) socket 
 
@@ -816,7 +826,7 @@ while 1:
     # we got a command 
     
     if len(cmdStr)>0:
-        logger.debug(f">> {cmdStr}")
+        logger.debug(f"received command: {cmdStr}")
 
         # quit - stop the dataMan session
         
@@ -828,19 +838,10 @@ while 1:
         
         elif cmdWord.lower() == "proc":
             filename = cmdArgs
-            if Path(filename).exists():
-                logger.info(f"proc: start processing image {filename}")
-                t = threading.Thread(target=modsFITSProc,args=[filename,repoDir])
+            if len(filename) > 0:
+                logger.debug(f"started processing image {filename}")
+                t = threading.Thread(target=modsFITSProc,args=[filename])
                 t.start()                
-            else:
-                testFile = str(Path() / dataDir / filename) # is it in dataDir?
-                if not os.path.exists(testFile):
-                    logger.error(f"proc: file {testFile} not found, no processing")
-                else:
-                    logger.info(f"proc: start processing image {testFile}")
-                    t = threading.Thread(target=modsFITSProc,args=[testFile,repoDir])
-                    t.start()
-
         # unknown command received, log it
         
         else:
