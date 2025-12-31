@@ -1,13 +1,49 @@
 #!/bin/bash
+#
+# ccdTerm - start MODS binocular observing script session
+#
+# This script launches a named tmux session that will be used to execute
+# MODS binocular science target acquisition and observation scripts.
+#
+# While it may be invoked by itself, if the session is not running
+# it will be executed by the acqBinoMODS and execBinoMODS scripts.
+#
+# The ccdTerm tmux session is configured with 3 window panes
+# 
+#      +---------------------+---------------------+
+#      |         1.0         |         1.1         |
+#      |       modsCCD       |        azcam        |
+#      |                     |                     |
+#      |                     |                     |
+#      |                     |                     |
+#      +---------------------+---------------------+
+#      |                  command                  |
+#      |                    1.2                    |
+#      +---------------------+---------------------+
+#
+# Low-level setup is in the $configDir/.tmux.conf.blue or .tmux.conf.red
+# file, depending on the channel.  Because we are running on the
+# MODS servers, the detach, quit, and throttled exit alias are
+# defined for the login shell.
+#
+# R. Pogge (pogge.1@osu.edu)
+# OSU Astronomy Department
+# 2025 Oct 4 - Alpha version
+#
+# Modification History:
+#   2025 Oct 13 - beta version, put tmaliases in configDir [rwp/osu]
+#   2025 Oct 14 - resize on launch to a good size if needed [rwp/osu]
+#   2025 Dec 30 - numerous changes from live testing at LBTO [rwp/osu]
+#
+#---------------------------------------------------------------------------
 
 tmuxID="ccdTerm"
 
-# LBTO Public executable path
+# MODS server tmux configuration file directory
 
-modsDir="/lbt/lbto/mods"
-configDir="/lbt/lbto/mods/.config"
+configDir="/home/dts"
 
-# Which MODS ccd host are we running on?
+# Which MODS Archon server host are we running on?
 
 modsHost="${HOSTNAME}"
 
@@ -19,7 +55,8 @@ if [[ "$modsHost" == "mods1blue" || "$modsHost" == "mods1red" || "$modsHost" == 
     modsName="${modsInst} ${modsChan^}" # for tmux session
 
 else
-    echo "ERROR: you cannot run $tmuxID on host $modsHost"
+    printf "ERROR: you cannot run $tmuxID on host $modsHost\n"
+    printf "       must be on mods1blue, mods1red, mods2blue, or mods2red\n"
     exit 1
 fi
 
@@ -30,7 +67,7 @@ tmux has-session -t $tmuxID 2>/dev/null
 if [ $? != 0 ]; then
   # Create a new detached session
 
-  tmux -f ${configDir}/tmux_${modsChan}.conf new-session -d -s $tmuxID
+  tmux -f ${configDir}/.tmux.conf.${modsChan} new-session -d -s $tmuxID
 
   # Create a new window (if needed) and name it
 
@@ -51,15 +88,15 @@ if [ $? != 0 ]; then
   tmux select-pane -t $tmuxID:1.2 -T "Commands"
 
    # aliases
-   tmux send-keys -t ${tmuxID}:1.0 "source ${configDir}/tmaliases" C-m
-   tmux send-keys -t ${tmuxID}:1.1 "source ${configDir}/tmaliases" C-m
-   tmux send-keys -t ${tmuxID}:1.2 "source ${configDir}/tmaliases" C-m
+   #tmux send-keys -t ${tmuxID}:1.0 "source ${configDir}/tmaliases" C-m
+   #tmux send-keys -t ${tmuxID}:1.1 "source ${configDir}/tmaliases" C-m
+   #tmux send-keys -t ${tmuxID}:1.2 "source ${configDir}/tmaliases" C-m
 
   # programs to launch in panes...
-
-  # tmux send-keys -t $tmuxID:1.0 "start_modsCCD" C-m # run the modsCCD agent in the top left pane
-  # tmux send-keys -t $tmuxID:1.1 "start_azcam" C-m # run the azcam server in the top right pane
-
+  #
+  # launch by hand for now
+  #
+  
 fi
 
 # If we're already in the expected tmux session, do nothing

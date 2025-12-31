@@ -6,6 +6,7 @@
  * `start_azcam` is a safe way to ensure the azcam server is started in a `ccdTerm` tmux session by the right user on the right host, and that it is not 
 already running (and by who).  Live tested at LBTO with MODS1B
  * `start_modsccd` is a safe way to start the `modsCCD` agent.  It verifies we an authorized user on an authorized machine, that the `ccdTerm` tmux session is rrunning and we are in it, that the `azcam` server is running, and that `modsCCD` is already running.
+ * `ccdTerm` updates from live testing at LBTO, includes some changes in the configuration management scheme since this only runs on the MODS archon servers so we have more latitude.
 
 ## 2025 Dec 23: modsAdmin
  * After live testing at LBTO with MODS run by LBT personnel from the `robs1` machine, developed a new `modsAdmin` tool to provide a cleaner way to have a live MODS server monitor running that merged what would have to be done in 3 separate xterms. Tested and released on the public MODS tools path.
