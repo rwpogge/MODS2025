@@ -1,0 +1,27 @@
+################################################################################
+# dataMan.service
+#
+# This service unit is runs the dataMan server for a MODS instrument at LBTO
+#
+# R. Pogge, OSU Astronomy
+# pogge.1@osu.edu
+# 2025 Dec 31 
+#
+################################################################################
+# This program should be placed in /usr/lib/systemd/system/
+#
+# For SELinux running in enforcing mode, dataMan.sh and dataMan must
+# be in /usr/local/bin, copied using sudo
+################################################################################
+
+[Unit]
+Description=dataMan server for a MODS instrument
+
+[Service]
+ExecStart=/usr/local/bin/dataMan.sh
+Restart=always
+RestartSec=10s
+Environment="USER=systemd"
+
+[Install]
+WantedBy=multi-user.target
