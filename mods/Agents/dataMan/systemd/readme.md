@@ -32,7 +32,7 @@ cd /home/dts/Config
 cp /home/dts/mods/Agents/dataMan/Config/dataman_MODS1.ini MODS1/
 cp /home/dts/mods/Agents/dataMan/Config/dataman_MODS2.ini MODS2/
 ```
-and then create the symbolic link for the correct server instance (mods1 or mods2).
+and then create the symbolic link for the server instance (mods1 or mods2).
 
 #### MODS1 dataMan service
 ```
@@ -49,7 +49,8 @@ This must be done **before** installing and starting the systemd service.
 
 ### systemd install
 
-After the initial build, go to `/home/dts/mods/Agents/dataMan` and copy these files to `/usr/local/bin` as root or sudo:
+After installing the runtime configuration files, go to `/home/dts/mods/Agents/dataMan` and copy these 
+files to `/usr/local/bin` as root or sudo:
 ```
 % sudo cp dataMan.py /usr/local/bin/dataMan
 % sudo cp systemd/dataMan.sh /usr/local/bin/
