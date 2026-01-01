@@ -16,6 +16,7 @@
 #   2025 Oct 14 - new app
 #
 # Modification History:
+#   2025 Dec 31 - added dataMan to the systemd process list [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -33,7 +34,7 @@ my $userID = (getpwuid($<))[0];
 # process lists
 
 my $userProcs = ["mmcServer","agwServer","redIMCS","blueIMCS","modsUI"]; # unix names
-my $sysdProcs = ["isis","lbttcs","modsenv","modsDD"];
+my $sysdProcs = ["isis","lbttcs","modsenv","modsDD","dataMan"];
 
 # Text based status
 
