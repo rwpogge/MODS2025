@@ -1,6 +1,9 @@
 # MODS2025 Release Notes
 
-**Last Release: 2025 Dec 26**
+**Last Release: 2025 Dec 31**
+
+## Version 1.5.0 - 2025 Dec 31
+Beta release of the `dataMan` for use across the servers, plus support scripts for starting/stopping the `azcam` server and `modsCCD` agent in a `ccdTerm`.
 
 ## Version 1.4.2 - 2025 Dec 26
 Live testing with `dataMan` and `azcam` on mountain, dataMan still alpha but advancing rapidly.

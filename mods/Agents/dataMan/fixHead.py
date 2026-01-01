@@ -1,3 +1,33 @@
+'''
+fixHead - MODS FITS image post-processor
+
+Usage
+-----
+    fixHead origFITS newFITS
+    where:
+        origFITS : string
+            name of the raw original MODS MEF image (5-extensions)
+        newFITS: string
+            name of the new processed MODS MEF image to create
+
+Description
+-----------
+
+Performs the same FITS header fixing and post-processing steps as the
+dataMan agent, but without data-transfer to the archives.  Can be used
+to post-process an image by hand for copying by hand at need.
+
+
+Author
+------
+R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
+
+Modification History
+--------------------
+ * 2025 Dec 30 - many bug fixes resulting from initial live testing at LBTO [rwp/osu]
+ 
+'''
+
 from astropy.io import fits
 from astropy.table import Table
 from astropy import units as u
@@ -8,7 +38,11 @@ import numpy as np
 
 import sys
 
+
+#---------------------------------------------------------------------------
+#
 # functions
+#
 
 def fixDataSec(hdu):
     '''
@@ -240,7 +274,7 @@ def otmProc(hdu,skipBiasCols=2,biasRowMargin=2,sigClip=3):
 
     Returns
     -------
-    mergedImg : numpy 32-bit floating array
+    otmData : numpy 32-bit floating array
         merged image array
     quadBias : float array
         median overscan bias subtracted from each quadrant.
@@ -279,7 +313,7 @@ def otmProc(hdu,skipBiasCols=2,biasRowMargin=2,sigClip=3):
 
     # create an empty array to contian the merged image
     
-    mergedImg = np.empty((nrImg,ncImg),dtype=np.float32)
+    otmData = np.empty((nrImg,ncImg),dtype=np.float32)
 
     # starting numpy pixels of each quadrant
 
@@ -326,11 +360,12 @@ def otmProc(hdu,skipBiasCols=2,biasRowMargin=2,sigClip=3):
         sc = startPix[quad-1][1]
         ec = sc + nc - ncbias
     
-        mergedImg[sr:er,sc:ec] = imgData
+        otmData[sr:er,sc:ec] = imgData
 
-    # all done return the image
+    # all done, return the image and per-quadrant bias values
 
-    return mergedImg, quadBias, quadStd
+    return otmData, quadBias, quadStd
+
 
 #---------------------------------------------------
 #
