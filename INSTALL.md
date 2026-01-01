@@ -382,14 +382,13 @@ sudo cp mlcRecover /usr/local/bin
 
 ## Time, Date, etc.
 
-LBTO computers are set to run on GMT+0 timezone and display time in 
-24-h format:
+Set the MODS servers to run local time in the US/Arizona timezone in 24-hour format
+with `timedatectl` and `localectl` as follows
 ```script
-sudo timedatectl set-timezone GMT
+sudo timedatectl set-timezone US/Arizona
 sudo localectl set-locale LC_TIME=C.UTF-8
 ```
-Note that you'll have to logout and log back in before you see 24-h 
-format appear.
+Note that you'll have to logout and log back in before you see 24-h format appear.
 
 ## Observatory NFS mounts
 
