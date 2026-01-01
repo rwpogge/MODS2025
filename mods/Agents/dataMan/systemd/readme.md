@@ -25,14 +25,14 @@ Because the LBTO mountain machines are configured to use SELinux in enforcing mo
 
 ### Configuration Files
 
-Make sure you move the dataMan runtime configuration files to the server configuration directory:
+First copy the `dataMan` runtime configuration files to the server configuration directory:
 ```
 cd /home/dts/Config
 
 cp /home/dts/mods/Agents/dataMan/Config/dataman_MODS1.ini MODS1/
 cp /home/dts/mods/Agents/dataMan/Config/dataman_MODS2.ini MODS2/
 ```
-and then create the symbolic link for the server instance (mods1 or mods2).
+and then create a symbolic link for the server instance (mods1 or mods2).
 
 #### MODS1 dataMan service
 ```
