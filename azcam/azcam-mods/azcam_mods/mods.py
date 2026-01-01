@@ -131,10 +131,6 @@ class MODS(object):
         azcam.db.tools["exposure"].image_types = self.image_types
         azcam.db.tools["exposure"].shutter_dict = self.shutter_dict
         
-        # observatory timezone (for obsDate())
-        
-        self.obsTZ = "US/Arizona"
-        
         return
     
 
@@ -1640,15 +1636,18 @@ class MODS(object):
         on 2025 July 13 and ending at sunrise on 2025 July 14 is `20250714`.
         
         We use this in the filenames of raw data and logs for MODS.
-        
-        The timezone for "here" is set in self.obsTZ in the constructor
-        '''
 
-        myTZ = pytz.timezone(self.obsTZ)
-        if float(datetime.datetime.now(myTZ).strftime("%H")) < 12.0:  # is it before noon?
-            return (datetime.datetime.now(myTZ).today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+        Important
+        ---------
+        This function assumes the system clock has been set to localtime.
+        If the system clocks are set to UTC, this fails badly because of
+        how timedelta() works.
+        '''
+        
+        if float(datetime.datetime.now().strftime("%H")) < 12.0:  # is it before noon local time
+            return (datetime.datetime.now().today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
         else:
-            return datetime.datetime.now(myTZ).today().strftime("%Y%m%d")
+            return datetime.datetime.now().today().strftime("%Y%m%d")
 
     #-------------------------------------------------------------------------
     #
