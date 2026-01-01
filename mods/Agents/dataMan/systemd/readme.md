@@ -48,11 +48,20 @@ automatically every time the system reboots.
 Check to see if dataMan started OK:
 ```
 % systemctl status dataMan
+● dataMan.service - dataMan server for a MODS instrument
+     Loaded: loaded (/usr/lib/systemd/system/dataMan.service; enabled; preset: disabled)
+     Active: active (running) since Thu 2026-01-01 01:10:48 GMT; 6s ago
+   Main PID: 1234067 (dataMan.sh)
+      Tasks: 2 (limit: 99336)
+     Memory: 111.7M
+        CPU: 706ms
+     CGroup: /system.slice/dataMan.service
+             ├─1234067 /bin/sh /usr/local/bin/dataMan.sh
+             └─1234068 /usr/local/conda/envs/py312/bin/python /usr/local/bin/dataMan
 
-...
+Jan 01 01:10:48 mods2 systemd[1]: Started dataMan server for a MODS instrument.
 
 ```
 
 ## Testing
 
-...
