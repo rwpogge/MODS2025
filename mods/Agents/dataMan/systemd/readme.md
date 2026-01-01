@@ -91,5 +91,4 @@ Check to see if dataMan started OK:
              └─1234068 /usr/local/conda/envs/py312/bin/python /usr/local/bin/dataMan
 
 Jan 01 01:10:48 mods2 systemd[1]: Started dataMan server for a MODS instrument.
-
 ```

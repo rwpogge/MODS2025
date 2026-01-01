@@ -9,15 +9,8 @@ in the code tree instead of the /home/mods/ support directory
 
 ## Files:
 <pre>
-   changeConfig   - This shell will configure to LBTO of OSU addresses
-      Example: link mechanisms.ini to the instrument osu1.
-      prompt% sudo changeConfig
-      prompt% Change mechanisms.ini link to: osu1, osu2, lbt1, lbt2: osu1
-
    MODS1/ - folder with the MODS1 mechanism config and tables
    MODS2/ - folder with the MODS2 mechanism config and tables
+   IIF/ - folder with IIF config files for the TCS interface
+   Retired/ - old ini files no longer used (reference)
 </pre>
-
-IIF/ contains copies of the files needed by the lbttcs and other IIF client 
-programs that rely on the ICE version of the IIF provided by LBTO. 
-
