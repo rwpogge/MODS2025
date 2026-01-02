@@ -1,7 +1,12 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2025 Oct 30
+Last Build: 2025 Dec 31
+
+## Version 3.2.4: 2025 Dec 31
+Small changes from live testing at LBTO. Probably more to come.  Took us this long to get the
+Archon controllers working properly with the MODS science CCDs
+ * `blueIMCS.cpp` and `redIMCS.cpp` - verified IMCS operation earlier in month, got wirign right the first time. Adjusted minimum quad cell signal threshold downward, need to adjust electronic bias when cold later, looks workable for now.
 
 ## Version 3.2.3: 2025 Oct 30
 Fixed bugs in IEB command that caused crashes with segmentation faults for some IEB options and especially
