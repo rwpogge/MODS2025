@@ -2,14 +2,15 @@
 
 ## Version 1.1.1 - disable dataMan
 2025 Dec 31 [rwp/osu]
+ * set all dataMan interfaces default OFF, removed reminder of OFF
+ * set readout polling cadence to 0.5sec, was 0.2sec, now that readout is 20sec vs. 8sec, this is too fast
 
-While the dataMan code is still in place, during work with `azcam-mods` on the live system
+While the dataMan C++ code is still in place, during work with `azcam-mods` on the live system
 it was determined that it was very easy to trigger the `dataMan` "proc filename" command
 from azcam proper, removing all the tricky logic to detect that a file had been written
 by `azcam-mods`. In other words: cut out the middleman. The default configuration of
 `modsCCD` is setup to have useDM false and disabled, and the hooks removed from the 
 runtime configuration files to prevent enabling it.
-
 
 ## Version 1.1.0 - Data transfer manager (dataMan) testing
 2025 Nov 10 [rwp/osu]

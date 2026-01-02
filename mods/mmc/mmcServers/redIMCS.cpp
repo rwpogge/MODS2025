@@ -42,6 +42,7 @@
   ----
   2025 Jun 26 - start of port to the WAGO-based HEB for the ARCHON
                 CCD controller update [rwp/osu]
+  2025 Dec 31 - adjusted default signal threshold [rwp/osu]
 </pre>
 
 \todo
@@ -198,7 +199,7 @@ int main(int argc, char *argv[]) {
   shm_addr->MODS.redQC_SampleRate=500;
   shm_addr->MODS.redQC_Samples=5;       // Number of quad cell measurements to average
   shm_addr->MODS.redQC_Gain=1.0;
-  shm_addr->MODS.redQC_Threshold[0]=0.30;
+  shm_addr->MODS.redQC_Threshold[0]=0.05; // reduced 2025 Dec 31 [rwp/osu]
 
   // Reset the signal>threshold and on-target flags [rwp]
 
