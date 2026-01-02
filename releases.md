@@ -1,6 +1,12 @@
 # MODS2025 Release Notes
 
-**Last Release: 2025 Dec 31**
+**Last Release: 2026 Jan 02**
+
+## Version 1.6.0 - 2026 Jan 02
+Critical updates:
+ * `azcam-mods`: Updated Archon config files for correct readout (50 pre-scan instead of 48)
+ * `dataMan`: Updated dataMan agent with an overhauled merging code (correct mapping of Archon ADC lines to MODS quadrants)
+ * minor fixes to `azcam_mods/mods.py` to fix `obsDate()` bug and update `set_roiByName()` coords for new Archon readout.
 
 ## Version 1.5.0 - 2025 Dec 31
 Beta release of the `dataMan` for use across the servers, plus support scripts for starting/stopping the `azcam` server and `modsCCD` agent in a `ccdTerm`.
