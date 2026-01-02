@@ -1,10 +1,16 @@
 # dataMan Release Notes
 
-**Latest Version: v1.0.0, 2025 Dec 23**
+**Latest Version: v1.1.0, 2026 Jan 02**
 
 ## Released Versions (v1.0 and later)
 
-### 2025 Dec 13 - v1.0.0
+### 2026 Jan 02 - v1.1.0
+Successful live testing at LBTO.  Updates as follows:
+ * Major overhaul of merging (mapping of IMx to Qx was flipped vertically). Adding header info on the mapping
+ * fixed obsDate() bug
+
+
+### 2025 Dec 31 - v1.0.0
 
 First beta release for integration with the MODS data-taking system at LBTO.
 

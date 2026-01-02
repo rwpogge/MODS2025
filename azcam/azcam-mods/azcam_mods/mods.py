@@ -313,10 +313,10 @@ class MODS(object):
         
         Presets
         -------
-         * off, full, 8kx3k = full-frame, unbinned 8288x3088 pixels
-         * 3kx3k, 3k = 3088x3088 pixels [2601,5688,1,3088]
-         * 1kx1k, 1k = 1024x1024 pixels [3633,4656,1033,2056]
-         * 4kx3k = 4096x3088 [2097,6192,1,3088]
+         * off, full, 8kx3k = full-frame, unbinned 8292x3088 pixels
+         * 3kx3k, 3k = 3088x3088 pixels [2603,5690,1,3088]
+         * 1kx1k, 1k = 1024x1024 pixels [3635,4658,1033,2056]
+         * 4kx3k = 4096x3088 [2099,6194,1,3088]
          
         This function resets binning to 1x1 pixel, and so it must be followed 
         by set_ccdbin() if another binning mode is desired.
@@ -334,15 +334,19 @@ class MODS(object):
 
         elif roiMode.lower() in ["3kx3k","3k"]:
             azcam.db.tools["exposure"].roi_reset()
-            azcam.db.tools["exposure"].set_roi(2601,5688,1,3088,1,1)
+            #azcam.db.tools["exposure"].set_roi(2601,5688,1,3088,1,1)
+            azcam.db.tools["exposure"].set_roi(2603,5690,1,3088,1,1)
 
         elif roiMode.lower() in ["1kx1k","1k"]:
             azcam.db.tools["exposure"].roi_reset()
-            azcam.db.tools["exposure"].set_roi(3633,4656,1033,2056,1,1)
+            #azcam.db.tools["exposure"].set_roi(3633,4656,1033,2056,1,1)
+            azcam.db.tools["exposure"].set_roi(3635,4658,1033,2056,1,1)
             
         elif roiMode.lower() in ["4kx3k"]:
             azcam.db.tools["exposure"].roi_reset()
-            azcam.db.tools["exposure"].set_roi(2097,6192,1,3088,1,1)
+            #azcam.db.tools["exposure"].set_roi(2097,6192,1,3088,1,1)
+            azcam.db.tools["exposure"].set_roi(2099,6194,1,3088,1,1)
+
         else:
             return f"ERROR set_roiByName() unrecognized ROI mode {roiMode}"
         

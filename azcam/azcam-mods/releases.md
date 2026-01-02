@@ -1,8 +1,18 @@
 # azcam-mods Release Notes
 
-**Current Version: 1.1.8**
+**Current Version: 1.1.9**
 
-**Last Update: 2025 Dec 26 [rwp/osu]**
+**Last Update: 2026 Jan 02 [rwp/osu]**
+
+### Version 1.1.9 - 2026 Jan 02
+ * `detector_mods.py` - changed detector fromat, roi, ref_pixel, and amp_pixel_position for 50 instead of 48 pre-scan columns (discovered readout was 2 pixels short per line per quadrant!)
+ * `mods.py` - changed set_roiByName() for new image metric
+ * `mods.py` - reworked `obsDate()` to fix off-by-one-day bug because of how datetime functions are or are not timezone aware.  The "fix" was to set the mods server system clocks to `US/Arizona` timezone instead of `GMT` with `timedatectl`, and remove zonespecification.  
+
+Changes to the Archon config and parameter files for the readout change:
+ * In `system/MODSNc/archon/MODSNc.ncf` - under `[PARAMETERS]`, set `Pixels=4146
+ * In `system/MODSNc/parameters/parameters_server_MODSNc.ini` make sure `lastcol = 8298` is set first time.
+
 
 ### Version 1.1.8 - 2025 Dec 26
  * `instrument_mods.py` - tweaked `dataMan` client implementation. `self.useDM` boolean now False to disable `dataMan` use by default.

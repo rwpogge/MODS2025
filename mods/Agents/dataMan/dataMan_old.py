@@ -33,8 +33,6 @@ Modification History
                  modsFITSProc() method. Enable with config file directives [rwp/osu]
  * 2025 Dec 30 - many bug fixes resulting from initial live testing at LBTO [rwp/osu]
  
- * 2026 Jan 02 - major overhaul of otmProc() after discoveries from live testing [rwp/osu]
- 
 '''
 
 import os
@@ -137,10 +135,16 @@ def obsDate():
     We use obsDate for logs and data files.
     '''
 
-    if float(datetime.datetime.now().strftime("%H")) < 12.0:  # is it before noon?
-        return (datetime.datetime.now().today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+    myTZ = pytz.timezone("US/Arizona")
+    if float(datetime.datetime.now(myTZ).strftime("%H")) < 12.0:  # is it before noon?
+        return (datetime.datetime.now(myTZ).today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
     else:
-        return datetime.datetime.now().today().strftime("%Y%m%d")
+        return datetime.datetime.now(myTZ).today().strftime("%Y%m%d")
+
+    if float(datetime.datetime.now().strftime("%H")) < 12.0:  # before noon
+        return (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+    else:
+        return datetime.date.today().strftime("%Y%m%d")
 
 #------------------------------------------------------------------------------
 #
@@ -202,10 +206,10 @@ def fixDataSec(hdu):
     detsec3=f"[{c0-nc+ncbias+1}:{c0},{r0+1}:{r0+nr}]"
     detsec4=f"[{c0+nc+ncbias}:{c0+1},{r0+1}:{r0+nr}]" # flip x
 
-    im24_LTV1 = c0 + nc - ncbias + 1 
-    im34_LTV2 = -r0
+    q24_LTV1 = c0 + nc - ncbias + 1 
+    q34_LTV2 = -r0
 
-    # Recompute and correct DETSEC and CCDSEC
+    # Rrecompute and correct DETSEC and CCDSEC
 
     hdu[1].header['detsec'] = (detsec1,'Corrected DETSEC')
     hdu[2].header['detsec'] = (detsec2,'Corrected DETSEC')
@@ -218,13 +222,13 @@ def fixDataSec(hdu):
     hdu[4].header['ccdsec'] = (detsec4,'Corrected CCDSEC')
 
     # fix LTVn so the ds9 cursor returns correct physical pixel coords 
-    # in IM2,IM3, and IM4 (IM1 is OK)
+    # in Q2,Q3, and Q4 (Q1 is OK)
 
-    hdu[2].header['LTV1'] = (im24_LTV1,'Corrected LTV1')
-    hdu[4].header['LTV1'] = (im24_LTV1,'Corrected LTV1')
+    hdu[2].header['LTV1'] = (q24_LTV1,'Corrected LTV1')
+    hdu[4].header['LTV1'] = (q24_LTV1,'Corrected LTV1')
 
-    hdu[3].header['LTV2'] = (im34_LTV2,'Corrected LTV2')
-    hdu[4].header['LTV2'] = (im34_LTV2,'Corrected LTV2')
+    hdu[3].header['LTV2'] = (q34_LTV2,'Corrected LTV2')
+    hdu[4].header['LTV2'] = (q34_LTV2,'Corrected LTV2')
 
     # all done
 
@@ -359,7 +363,7 @@ def fixArchonTemps(hdu):
     return
 
 
-def otmProc(hdu,biasColSkip=2,biasRowSkip=2):
+def otmProc(hdu,skipBiasCols=2,biasRowMargin=2,sigClip=3):
     '''
     subtract overscan bias, trim, and merge quadrants into a single image
 
@@ -367,10 +371,13 @@ def otmProc(hdu,biasColSkip=2,biasRowSkip=2):
     ----------
     hdu : HDUList
         open header data unit list returned by astropy.io.fits.open()
-    biasColSkip : int, optional
+    skipBiasCols : int, optional
         number of starting bias columns to skip. The default is 2 columns
-    biasRowSkip : int, optional
-        bias rows to skip at top and bottom. The default is 2 rows
+    biasRowMargin : int, optional
+        bias rows to skip at start and end. The default is 2 rows
+    sigClip : float, optional
+        Compute bias with sigma clipping. The default is 3.  Set to 0 for no 
+        sigma clipping.  
 
     Returns
     -------
@@ -397,103 +404,74 @@ def otmProc(hdu,biasColSkip=2,biasRowSkip=2):
     The numpy array is ready to be saved as a standalone FITS file,
     or appended as an extension to an existing MEF FITS file.
     
-    Readout Mapping
-    ---------------
-    The Archon controllers readout the CCDs using 4 amplifiers into
-    a 4-channel ADC. The data from each channel is stored in the 
-    multi-extension FITS files as extension IM1 through IM4, where
-    the number (1..4) refers to the ADC channel.  The mapping from
-    ADC channels (IM1..4) to MODS CCD quadrants (Q1..4) including
-    transforms that map pixels from readout order to physical order
-    on the CCD proper are:
-        Q1 = IM3 flipped along columns
-        Q2 = IM4 flipped along rows and columns
-        Q3 = IM1 flipped along columns
-        Q4 = IM2 flipped along rows and columns
-    
-    Put in a MODSQUAD keyword in each raw IMx header identifying
-    which MODS quadrant that IMx data maps into.
-    
-    Notes
-    -----
-    The method below is adapted from one written by Olga Kuhn (LBTO)
-    
     '''
     
-    # Size of a single quadrant 
+    # Q2 and Q4 are flipped along rows
 
-    nx = hdu[1].header["naxis1"]
-    ny = hdu[1].header["naxis2"]
+    flipRows = [False,True,False,True]
 
-    # columns (x) trimmed of overscan
+    # Size of data section w/o column bias
+
+    ncQuad = hdu[1].header['naxis1'] - hdu[1].header['ovrscan1']
+    nrQuad = hdu[1].header['naxis2']
+
+    ncImg = 2*ncQuad
+    nrImg = 2*nrQuad
+
+    # create an empty array to contian the merged image
     
-    xtrim = nx - hdu[1].header["ovrscan1"]
+    otmData = np.empty((nrImg,ncImg),dtype=np.float32)
 
-    # images read by Archon ADC channel 1..4 are IM1..4
+    # starting numpy pixels of each quadrant
 
-    im1 = hdu[1].data
-    im2 = hdu[2].data
-    im3 = hdu[3].data
-    im4 = hdu[4].data
+    startPix = [(0,0),(0,ncQuad),(nrQuad,0),(nrQuad,ncQuad)]
 
-    # Compute the median of the overscan sector because it is essentially
-    # constant with rows even on bright flats.  Ignore skipped columns and
-    # rows (biasColSkip and biasRowSkip).  Also compute standard deviation.
+    # process by quadrant
 
-    im1mb = np.median(im1[biasRowSkip:-biasRowSkip,xtrim+biasColSkip:nx])
-    im1sb = np.std(im1[biasRowSkip:-biasRowSkip,xtrim+biasColSkip:nx])
+    quadBias = []
+    quadStd = []
+    for quad in [1,2,3,4]:
+        quadData = hdu[quad].data.astype(np.float32) # convert to 32-bit float for processing
+        nc = hdu[quad].header['naxis1'] # number of columns
+        nr = hdu[quad].header['naxis2'] # number of rows
+        ncbias = hdu[quad].header['ovrscan1'] # number of overscan columns
+
+        # extract bias overscan columns
     
-    im2mb = np.median(im2[biasRowSkip:-biasRowSkip,xtrim+biasColSkip:nx])
-    im2sb = np.std(im2[biasRowSkip:-biasRowSkip,xtrim+biasColSkip:nx])
+        biasCols = quadData[biasRowMargin:-biasRowMargin,nc-ncbias+skipBiasCols:]
+        bias1d = np.median(biasCols,axis=1)
+        medBias = np.median(bias1d)
+        stdBias = np.std(bias1d)
+        if (sigClip > 0):
+            loCut = medBias - sigClip*stdBias
+            hiCut = medBias + sigClip*stdBias
+            iClip = np.where((bias1d >= loCut) & (bias1d <= hiCut))
+            medBias= np.median(bias1d[iClip])
+            stdBias = np.std(bias1d[iClip])                                    
+        quadBias.append(medBias)
+        quadStd.append(stdBias)
+
+        # subtract the median overscan bias from the quadrant
+
+        imgData = quadData[0:,0:nc-ncbias] - medBias
+
+        # is this quadrant flipped? Unflip it
+
+        if flipRows[quad-1]:
+            imgData = np.flip(imgData,axis=1)
+        
+        # insert the debiased quadrant into the full merged image array
     
-    im3mb = np.median(im3[biasRowSkip:-biasRowSkip,xtrim+biasColSkip:nx])
-    im3sb = np.std(im3[biasRowSkip:-biasRowSkip,xtrim+biasColSkip:nx])
+        sr = startPix[quad-1][0]
+        er = sr + nr
+        sc = startPix[quad-1][1]
+        ec = sc + nc - ncbias
     
-    im4mb = np.median(im4[biasRowSkip:-biasRowSkip,xtrim+biasColSkip:nx])
-    im4sb = np.std(im4[biasRowSkip:-biasRowSkip,xtrim+biasColSkip:nx])   
+        otmData[sr:er,sc:ec] = imgData
 
-    # Subtract the scalar median bias from the data sections and trim here
-    
-    im1t = im1[:,:xtrim] - im1mb
-    im2t = im2[:,:xtrim] - im2mb
-    im3t = im3[:,:xtrim] - im3mb
-    im4t = im4[:,:xtrim] - im4mb
+    # all done, return the image and per-quadrant bias values
 
-    # Map ADC channels IM1..4 to original MODS CCD quadrants Q1..4:
-    #   Q1 = IM3 flipped along columns
-    #   Q2 = IM4 flipped along rows and columns
-    #   Q3 = IM1 flipped along columns
-    #   Q4 = IM2 flipped along rows and columns
-
-    q1 = np.flipud(im3t)
-    q2 = np.flipud(np.fliplr(im4t))
-    q3 = np.flipud(im1t)
-    q4 = np.flipud(np.fliplr(im2t))
-
-    # Quadrant mapping (MODSQUAD) mapping info
-    
-    hdu[1].header['MODSQUAD'] = ("Q3 flip cols","Mapping into MODS CCD")
-    hdu[2].header['MODSQUAD'] = ("Q4 flip rows and cols","Mapping into MODS CCD")
-    hdu[3].header['MODSQUAD'] = ("Q1 flip cols","Mapping into MODS CCD")
-    hdu[4].header['MODSQUAD'] = ("Q2 flip rows and cols","Mapping into MODS CCD")
-    
-    # Quadrant bias subtracted for the FITS headers
-
-    quadBias = [im3mb,im4mb,im1mb,im2mb]
-    quadStd = [im3sb,im4sb,im1sb,im2sb]
-    
-    # Merge the quadrants into a single-image mosaic retaining the 
-    # original orientation of the pre-Archon MODS CCD controllers
-
-    mosaic = np.zeros((ny*2,xtrim*2),dtype=np.float32)
-    mosaic[:ny,:xtrim] = q1
-    mosaic[:ny,xtrim:] = q2
-    mosaic[ny:,:xtrim] = q3
-    mosaic[ny:,xtrim:] = q4
-
-    # all done, return the mosaic image and per-quadrant bias medians/sigmas
-
-    return mosaic, quadBias, quadStd
+    return otmData, quadBias, quadStd
 
 #------------------------------------------------------------------------------
 # 
