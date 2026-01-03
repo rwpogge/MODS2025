@@ -8,7 +8,7 @@ if len(sys.argv) == 3:
 elif len(sys.argv) > 3:
     fitsKey = sys.argv[1]
 else:
-    print("Usage: getHead.py keyword fitsFile(s)")
+    print("Usage: {sys.argv[0]} keyword fitsFile(s)")
     sys.exit(1)
 
 for fitsFile in sys.argv[2:]:
@@ -20,7 +20,7 @@ for fitsFile in sys.argv[2:]:
         sys.exit(1)
 
     try:
-        print(f"{fitsFile}: {fitsKey} = {hdu[0].header[fitsKey]}")
+        print(f"{fitsFile}: {hdu[0].header[fitsKey]}")
     except Exception as exp:
         print(f"ERROR: cannot read FITS header - {exp}")
         hdu.close()

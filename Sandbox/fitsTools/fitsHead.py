@@ -10,7 +10,7 @@ elif len(sys.argv) == 2:
     fitsFile = sys.argv[1]
     fitsExt = 0
 else:
-    print("Usage: fitsHead.py fitsFile [extNum]")
+    print("Usage: {sys.argv[0]} fitsFile [extNum]")
     sys.exit(1)
 
 try:
