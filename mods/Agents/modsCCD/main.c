@@ -377,11 +377,13 @@ main(int argc, char *argv[])
     case WRITING:
     case ABORT:
       // azcam server is busy reading out, writing, servicing abort,
-      //   setup select() for 0.5s polling. Shortest readout is ~1.5 sec,
+      //   setup select() for 0.25s polling. Shortest readout is ~1.5 sec,
       //   longest about 20 sec.
+      // NOTE: 0.5sec seemed more reasonable, but started missing state
+      //       changes on faster readouts. 0.25s seems reliable - WATCH!!!
       
       timeout.tv_sec = 0;
-      timeout.tv_usec = 500000;
+      timeout.tv_usec = 250000;
       n_ready = select(sel_wid, &read_fd, NULL, NULL, &timeout);
       break;
 
