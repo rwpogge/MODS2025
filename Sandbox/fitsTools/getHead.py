@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from astropy.io import fits
 import sys
 
@@ -6,7 +8,7 @@ if len(sys.argv) == 3:
 elif len(sys.argv) > 3:
     fitsKey = sys.argv[1]
 else:
-    print("Usage: getHead.py keyword fitsFile")
+    print("Usage: getHead.py keyword fitsFile(s)")
     sys.exit(1)
 
 for fitsFile in sys.argv[2:]:
