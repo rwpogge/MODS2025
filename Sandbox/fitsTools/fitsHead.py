@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
+import os, sys
 from astropy.io import fits
-import sys
 
 if len(sys.argv) == 3:
     fitsFile = sys.argv[1]
@@ -10,7 +10,7 @@ elif len(sys.argv) == 2:
     fitsFile = sys.argv[1]
     fitsExt = 0
 else:
-    print(f"Usage: {sys.argv[0]} fitsFile [extNum]")
+    print(f"Usage: {os.path.basename(sys.argv[0])} fitsFile [extNum]")
     sys.exit(1)
 
 try:
