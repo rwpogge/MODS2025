@@ -8,7 +8,7 @@ if len(sys.argv) == 3:
 elif len(sys.argv) > 3:
     fitsKey = sys.argv[1]
 else:
-    print("Usage: {sys.argv[0]} keyword fitsFile(s)")
+    print(f"Usage: {sys.argv[0]} keyword fitsFile(s)")
     sys.exit(1)
 
 for fitsFile in sys.argv[2:]:
