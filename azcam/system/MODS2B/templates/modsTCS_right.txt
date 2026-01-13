@@ -44,6 +44,8 @@ DDEntries:
   #
   # GCS and PCS Guide Probe Data  
   #
+  R_AGWPosX:         ["AGWXGP","float","AGW Guide Probe X focal plane position [mm]"]
+  R_AGWPosY:         ["AGWYGP","float","AGW Guide Probe Y focal plane position [mm]"] 
   R_AGWKFPReqX:      ["GPREQ_X","float","GCS Requested guide probe PCS X [mm]"] 
   R_AGWKFPReqY:      ["GPREQ_Y","float","GCS Requested guide probe PCS Y [mm]"]
   R_AGWKFPPosX:      ["GPACT_X","float","GCS Actual guide probe PCS X [mm]"]
