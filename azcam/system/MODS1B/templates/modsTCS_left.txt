@@ -1,7 +1,7 @@
 #
 # MODS TCS info header template entries for MODS1 at left (SX) direct Gregorian
 #
-# Updated: 2025 Oct 20 [rwp/osu]
+# Updated: 2026 Jan 13 [rwp/osu]
 #
 # YAML format
 #
@@ -37,6 +37,7 @@ DDEntries:
   MountAchievedHAHMS:  ["HA","str","Telescope Hour Angle at start of obs [hms]"]
   AirMass:             ["AIRMASS","float","Airmass (secZD) at start of obs"]
   ParAngle:            ["PARANGLE","float","Parallactic Angle at start of obs [deg]"]
+  LST:                 ["OBS_LST","str","Local Sidereal Time at start of obs"]
   L_RotAngle:          ["ROTANGLE","float-rad","SX Rotator Angle at start of obs [deg]"]
   L_RotMode:           ["ROTMODE","str","SX Rotator Mode"]
   L_DGRPosition:       ["DGROTPOS","float-as","SX Direct Gregorian Rotator Angle [deg]"]
@@ -99,7 +100,7 @@ DDEntries:
   #
   # LBT Weather Station Information
   #
-  LBTWeatherAlive: ["LBTWLINK","string","LBT Weather Station Link State"]         
+  LBTWeatherAlive: ["LBTWLINK","str","LBT Weather Station Link State"]         
   LBTPressure:     ["LBTPRES","float","LBT Ambient Pressure [hPa]"]
   LBTTemp:         ["LBTTEMP","float","LBT Ambient Temperature [deg C]"]
   LBTHumidity:     ["LBTHUM","float","LBT Relative Humidity [percent]"]  

@@ -1,6 +1,6 @@
 # MODS azcam system files
 
-**Updated**: 2025 Dec 19
+**Updated: 2026 Jan 13 [rwp/osu]**
 
 We restructured the configuration for azcam for MODS to segregate
 system configuration files and logs from raw imaging data.  This is to
