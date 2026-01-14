@@ -11,6 +11,8 @@ Updates based on review of FITS headers by the LBT Archive Team in Trieste and S
  * Legacy keywords (ZD, CCDROI, CCDXBIN, CCDYBIN) created in postprocessing from info returned by Archons
  * LBTWLINK returned by DD as 1/0 boolean, translate to "Up"/"Down" like original MODS
  * Added `fixMisc` boolean to runtime config files to enable new header fixes
+ * See `archonFITSLab.ipynb` for the test notebook
+
 
 ### 2026 Jan 02 - v1.1.0
 Successful live testing at LBTO.  Updates as follows:
