@@ -2,6 +2,8 @@
 
 **Updated: 2026 Jan 14 [rwp/osu]**
 
+See the [Release Notes](releases.md) for details.
+
 We restructured the configuration for azcam for MODS to segregate
 system configuration files and logs from raw imaging data.  This is to
 help streamline our configuration management (4 Archon controllers
