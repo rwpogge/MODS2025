@@ -51,7 +51,7 @@ This must be done **before** installing and starting the systemd service.
 After installing the runtime configuration files, go to `/home/dts/mods/Agents/dataMan` and copy these 
 files to `/usr/local/bin` as root or sudo:
 ```
-cd /home/mods/Agents/dataMan
+cd /home/dts/mods/Agents/dataMan
 sudo cp dataMan.py /usr/local/bin/dataMan
 sudo cp systemd/dataMan.sh /usr/local/bin/
 sudo chmod +x /usr/local/bin/dataMan.sh
