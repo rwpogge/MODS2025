@@ -1,8 +1,16 @@
 # dataMan Release Notes
 
-**Latest Version: v1.1.0, 2026 Jan 02**
+**Latest Version: v1.2.0, 2026 Jan 02**
 
 ## Released Versions (v1.0 and later)
+
+### 2026 Jan 14 - v1.2.0
+Updates based on review of FITS headers by the LBT Archive Team in Trieste and SciOps at LBTO.
+ * `dataMan.py` - created `fixMisc()` method to address multiple small issues
+ * Archive requests TELALT/TELAZ be in decimal degrees instead of sexagesimal returned by DD, this blocks ingestion into the data archive
+ * Legacy keywords (ZD, CCDROI, CCDXBIN, CCDYBIN) created in postprocessing from info returned by Archons
+ * LBTWLINK returned by DD as 1/0 boolean, translate to "Up"/"Down" like original MODS
+ * Added `fixMisc` boolean to runtime config files to enable new header fixes
 
 ### 2026 Jan 02 - v1.1.0
 Successful live testing at LBTO.  Updates as follows:

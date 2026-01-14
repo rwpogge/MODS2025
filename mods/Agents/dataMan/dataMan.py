@@ -34,6 +34,7 @@ Modification History
  * 2025 Dec 30 - many bug fixes resulting from initial live testing at LBTO [rwp/osu]
  
  * 2026 Jan 02 - major overhaul of otmProc() after discoveries from live testing [rwp/osu]
+ * 2026 Jan 14 - added fixMisc() method with other header issues from live testing [rwp/osu]
  
 '''
 
@@ -59,7 +60,7 @@ from astropy.table import Table
 # astropy units, coordinates, and time
 
 from astropy import units as u
-from astropy.coordinates import SkyCoord, EarthLocation
+from astropy.coordinates import SkyCoord, EarthLocation, Angle
 from astropy.time import Time
 
 # pathlib for path handling
@@ -359,6 +360,98 @@ def fixArchonTemps(hdu):
     return
 
 
+def fixMisc(hdu):
+    '''
+    Fix miscellanous FITS info in the Primary HDU
+
+    Parameters
+    ----------
+    hdu : HDUList
+        open header data unit list returned by astropy.io.fits.open()
+
+    Returns
+    -------
+    None.
+    
+    Description
+    ----------- 
+    Fixes header issues that defy simple classification so "miscellaneous".
+    Among the fixes:
+     * convert mount alt/az from sexagesimal to decimal for LBT archive
+     * compute zenith distance, zd=90-alt (legacy keyword)
+     * convert LBTWLINK 1/0 boolean to string "Up"/"Down"
+     * compute CCDROI header keyword from image dimensions
+     * convert Archon CCDSUM=(nx ny) into CCDXBIN= and CCDYBIN= keywords
+     
+    '''
+
+    # DD returns mount alt/az in sexigesimal degrees, LBT data archive is orthodox about
+    # using decimal degrees, but DD only returns decimal angles in radians.  So, we use 
+    # astropy.coordinates Angle() to make the conversion. Why they can't handle this natively...
+
+    try:         
+        dAlt = Angle(hdu[0].header["TELALT"],unit=u.degree).degree
+        dAz = Angle(hdu[0].header["TELAZ"],unit=u.degree).degree
+        hdu[0].header["TELALT"] = (dAlt,"Telescope Altitude at start of obs [deg]")
+        hdu[0].header["TELAZ"] = (dAz,"Telescope Azimuth at start of obs [deg]")
+    except:
+        # unlikely...
+        pass
+
+    # Zenith distance is just 90-altitude, but OK
+    
+    try:         
+        zd = 90.0 - Angle(hdu[0].header["TELALT"],unit=u.degree).degree
+        hdu[0].header["ZD"] = (zd,"Zenith distance at start of obs [deg]")
+    except:
+        hdu[0].header["ZD"] = (-99.99,"Zenith distance at start of obs [deg]")
+
+    # LBTWLINK is returned by the DD as a 1/0 boolean, old MODS translated to Up/Down
+    
+    try:
+        lbtWLink = int(hdu[0].header["LBTWLINK"])
+        if (lbtWLink == 1):
+            hdu[0].header["LBTWLINK"] = ("Up","LBT Weather Station Link State")
+        else:
+            hdu[0].header["LBTWLINK"] = ("Down","LBT Weather Station Link State")
+    except:
+        hdu[0].header["LBTWLINK"] = ("Unknown","LBT Weather Station Link State")
+
+    # azcam does not record a global merged CCD ROI, like the old MODS CCDROI keyword, so we  
+    # compute it.  Header 1 (IM1) has the relevant dimensions plus overscan, 0 has ref pix
+    
+    try:
+        nc = hdu[1].header['NAXIS1']
+        nr = hdu[1].header['NAXIS2']
+        overx = hdu[1].header['OVRSCAN1']
+        xref = hdu[0].header['REF-PIX1']
+        yref = hdu[0].header['REF-PIX2']
+        
+        sc = int(xref - nc + overx +1)
+        ec = int(xref + nc - overx)
+        sr = int(yref - nr + 1)
+        er = int(yref + nr)
+        hdu[0].header["CCDROI"] = (f"[{sc}:{ec},{sr}:{er}]","CCD readout ROI coords")
+    except:
+        # unlikely...
+        pass
+
+    # azcam stores binning factors in the CCDSUM keyword as "(nx ny)", convert to old-style
+    # MODS CCDXBIN and CCDYBIN. Get from header 1 (IM1 extension), all are the same.
+    
+    try:
+        ccdsum = hdu[1].header["CCDSUM"]
+        bits = ccdsum.split(" ")
+        hdu[0].header["CCDXBIN"] = (int(bits[0]),"CCD X-axis Binning Factor")
+        hdu[0].header["CCDYBIN"] = (int(bits[1]),"CCD Y-axis Binning Factor")
+    except:
+        pass
+
+    # Other stuff goes here
+    
+    return
+
+
 def otmProc(hdu,biasColSkip=2,biasRowSkip=2):
     '''
     subtract overscan bias, trim, and merge quadrants into a single image
@@ -631,6 +724,9 @@ def modsFITSProc(fitsFile):
         
     if procParam["fixTemps"]:
         fixArchonTemps(hdu)
+
+    if procParam["fixMisc"]:
+	fixMisc(hdu)
 
     # Create an overscan bias subtracted, trimmmed, and merged image
     # and append it to the file?

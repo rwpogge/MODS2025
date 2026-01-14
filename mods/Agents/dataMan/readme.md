@@ -1,6 +1,6 @@
 # dataMan - MODS Data Manager
 
-**Updated: 2026 Jan 02 [rwp/osu]**
+**Updated: 2026 Jan 14 [rwp/osu]**
 
 See the [Release Notes](releases.md) for details.
 
@@ -87,6 +87,14 @@ backplane temperatures at start of exposure and puts these into
 primary HDU.  This corrects wrong `CCDTEMP` and `BASETEMP` that comes
 from `azcam`, and sets by instrument-specific wiring (MODS1 different
 than MODS2).
+
+#### Fix Miscellanous FITS header keywords
+
+Function to take care of the numerous keywords that need different fixes
+to satisfy LBT data archive and data-reduction pipelines that expect them
+Most are legacy keywords from the old MODS system.  Some involve converting
+native Archon formats into legacy MODS controller format for backwards
+compatibility.
 
 #### Create a preview bias-subtracted, merged image
 
