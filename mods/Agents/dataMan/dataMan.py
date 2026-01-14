@@ -388,7 +388,7 @@ def fixMisc(hdu):
     # DD returns mount alt/az in sexigesimal degrees, LBT data archive is orthodox about
     # using decimal degrees, but DD only returns decimal angles in radians.  So, we use 
     # astropy.coordinates Angle() to make the conversion. Why they can't handle this natively...
-
+    
     try:         
         dAlt = Angle(hdu[0].header["TELALT"],unit=u.degree).degree
         dAz = Angle(hdu[0].header["TELAZ"],unit=u.degree).degree
