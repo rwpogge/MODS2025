@@ -28,7 +28,6 @@ Because the LBTO mountain machines are configured to use SELinux in enforcing mo
 First copy the `dataMan` runtime configuration files to the server configuration directory:
 ```
 cd /home/dts/Config
-
 cp /home/dts/mods/Agents/dataMan/Config/dataman_MODS1.ini MODS1/
 cp /home/dts/mods/Agents/dataMan/Config/dataman_MODS2.ini MODS2/
 ```
@@ -52,6 +51,7 @@ This must be done **before** installing and starting the systemd service.
 After installing the runtime configuration files, go to `/home/dts/mods/Agents/dataMan` and copy these 
 files to `/usr/local/bin` as root or sudo:
 ```
+cd /home/mods/Agents/dataMan
 sudo cp dataMan.py /usr/local/bin/dataMan
 sudo cp systemd/dataMan.sh /usr/local/bin/
 sudo chmod +x /usr/local/bin/dataMan.sh
