@@ -52,24 +52,24 @@ This must be done **before** installing and starting the systemd service.
 After installing the runtime configuration files, go to `/home/dts/mods/Agents/dataMan` and copy these 
 files to `/usr/local/bin` as root or sudo:
 ```
-% sudo cp dataMan.py /usr/local/bin/dataMan
-% sudo cp systemd/dataMan.sh /usr/local/bin/
-% sudo chmod +x /usr/local/bin/dataMan.sh
+sudo cp dataMan.py /usr/local/bin/dataMan
+sudo cp systemd/dataMan.sh /usr/local/bin/
+sudo chmod +x /usr/local/bin/dataMan.sh
 ```
 Then, logged in as root (or sudo):
 ```
-% sudo cp systemd/dataMan.service /usr/lib/systemd/system/
+sudo cp systemd/dataMan.service /usr/lib/systemd/system/
 ```
 and enable for boot-time execution:
 ```
-% sudo systemctl enable dataMan
+sudo systemctl enable dataMan
 Created symlink /etc/systemd/system/multi-user.target.wants/dataMan.service → /usr/lib/systemd/system/dataMan.service.
 ```
 After the next reboot the `dataMan` service will be started automatically. 
 
 Before the first reboot, you will need to start the service for the first time:
 ```
-% sudo systemctl restart dataMan
+sudo systemctl restart dataMan
 ```
 After this it should start automatically every time the system reboots, and it will automatically
 restart after 10s if it crashes.
