@@ -726,7 +726,7 @@ def modsFITSProc(fitsFile):
         fixArchonTemps(hdu)
 
     if procParam["fixMisc"]:
-	fixMisc(hdu)
+        fixMisc(hdu)
 
     # Create an overscan bias subtracted, trimmmed, and merged image
     # and append it to the file?
