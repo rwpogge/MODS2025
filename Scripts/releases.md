@@ -1,6 +1,9 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2025 Dec 30 [rwp/osu]</b>
+<b>Last Update: 2026 Jan 15 [rwp/osu]</b>
+
+## 2026 Jan 15: new script
+ * `start_ccd` is an experimental script to start `azcam-mods` and `modsCCD` in the correct order.
 
 ## 2025 Dec 31: new and modified scripts
  * `stop_ccd` a convenience script to stop `modsCCD` and `azcam-mods` gracefully in a `ccdTerm` tmux session.

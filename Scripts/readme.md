@@ -144,6 +144,9 @@ Use `start_azcam` and `start_modsccd` to start the `azcam-mods` server and
 `modsCCD` agent in the right pane, preventing running the wrong version on
 the wrong machine, or running duplicates by different users.
 
+Use `start_ccd` to start `azcam-mods` and `modsCCD` in the correct order.
+This is experimental, we're still not sure what the fault states might be.
+
 Use `stop_ccd` to shutdown `modsCCD` and `azcam-mods` gracefully. We must
 stop `modsCCD` first, then `azcam-mods`.  If reverse, `azcam-mods` quit
 hangs until `modsCCD` quits and releases the TCP socket.
