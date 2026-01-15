@@ -182,10 +182,10 @@ mountain.  The two upper panels show the live MODS server status
 windows for MODS1 (left) and MODS2 (right).  These panes are remotely
 logged into the respective MODS servers via ssh.
 
-The lower pane is a **local** command window as user `lbto@robs1` and the
-example here is the user issuing the `isisCmd` command to power on the
-MODS1 wavefront sensor camera.
+The lower pane is a **local** command window as user `lbto@robs1`, it is
+yellow showing that it is the active pane, with a Linux prompt ready to
+receive commands.
 
-![modsAdmin tmux session live test from robs1 on 2025 Dec 23](Screenshots/modsAdmin_wfsOn.png)
+![modsAdmin tmux session live test by user lbto@robs1](Screenshots/modsAdmin_lbto_robs1.png)
 
 
