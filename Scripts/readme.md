@@ -20,14 +20,17 @@ option.
 
 ### Public SciOps Folder
 
-The robs/obs machines at the LBTO summit used for observing and routine technical
-operations use the NFS-mounted `/lbt/lbto/mods` folder for all public MODS scripts
-and support files (e.g., the tmux config files).
+The robs/obs machines at the LBTO summit used for observing and
+routine technical operations use the NFS-mounted `/lbt/lbto/mods`
+folder for all public MODS scripts and support files (e.g., the tmux
+config files).
 
-This folder is autosynced daily at 1900UTC with the LBTO GitHub (https://github.com/LBTO/sciops-obs-mods) 
-repository.  Any changes to scripts made before 1900UTC will make it into the daily autosync.
-Read the [sciops-obs-mods README](https://github.com/LBTO/sciops-obs-mods/blob/master/README.md) before
-pushing scripts into this folder, and be mindful of what you put there and why.
+This folder is autosynced daily at 1900UTC with the LBTO GitHub
+(https://github.com/LBTO/sciops-obs-mods) repository.  Any changes to
+scripts made before 1900UTC will make it into the daily autosync.
+Read the [sciops-obs-mods README](https://github.com/LBTO/sciops-obs-mods/blob/master/README.md)
+before pushing scripts into this folder, and be mindful of what you
+put there and why.
 
 
 ## Dependences
@@ -170,7 +173,6 @@ services, or `isisCmd` to send commands to the data-taking system).
 This screenshot was taken of a VPN ssh session from the author's home
 computer logged into the `mods1` server at LBT.  Because it works with
 a terminal, not a screen share, it is fast and sharp.
-
 
 ![mods1 server admin tmux session with AGW on and just turned AGC off](Screenshots/mods1_agwOn.png)
 

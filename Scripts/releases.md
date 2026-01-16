@@ -1,9 +1,11 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2026 Jan 15 [rwp/osu]</b>
+<b>Last Update: 2026 Jan 16 [rwp/osu]</b>
 
-## 2026 Jan 15: new script
+## 2026 Jan 16: new scripts
  * `start_ccd` is an experimental script to start `azcam-mods` and `modsCCD` in the correct order.
+ * `updateSlits` is an updated version of a script of the same name used by instrument support personnel after mask changes to commit the slitmask tables to the running MMC servers.  This version does both MODS at once, and can be run from `robs` or `obs` machines wihtout having to login to the MODS servers proper.
+
 
 ## 2025 Dec 31: new and modified scripts
  * `stop_ccd` a convenience script to stop `modsCCD` and `azcam-mods` gracefully in a `ccdTerm` tmux session.
