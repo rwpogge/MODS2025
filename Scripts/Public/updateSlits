@@ -1,0 +1,41 @@
+#!/bin/csh
+#
+# updateSlits - update the slit mask table for MODS1
+#
+# usage: updateSlits
+#
+# Description:
+#
+# Instructs the MMC servers for each MODS to update the slit mask
+# tables by reloading their respective 'slitmask.tab' files. This
+# needs to be done after a slit mask exchange.
+#
+# This script does this for both MODS at the same time. It is harmless
+# if it is run on an MMC server but the slit mask table hasn't changed.
+#
+# This is a convenience function, meant to be run only by instrument
+# support scientists and techs responsible for exchanging slit masks.
+#
+# Author:
+#   R. Pogge, OSU Astronomy Dept.
+#   pogge.1@osu.edu
+#   2026 Jan 16 [rwp/osu]
+#
+# Modification History:
+#   2026 Jan 16 - new version for the Archon controller update [rwp/osu]
+# 
+#---------------------------------------------------------------------------
+
+printf "Updating the slitmask tables for MODS...\n"
+
+# update on MODS1 and MODS2
+
+isisCmd --mods1 m1.ie slitmask rdtab
+
+isisCmd --mods2 m2.ie slitmask rdtab
+
+# all done
+
+printf "Done: Please remember to restart the MODS GUIs before observing.\n"
+
+exit 0
