@@ -1,6 +1,6 @@
 #!/bin/csh
 #
-# Poke (query status of) all MODS2 mechanisms via ISIS and the IE
+# Poke (query status of) all MODS2 mechanisms via ISIS and the MMC
 # server.  This is a quick way to check for dangling sockets
 #
 # R. Pogge, OSU Astronomy

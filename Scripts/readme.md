@@ -106,6 +106,14 @@ a non-MODS observatory machine.
 
 ### Observing Scripts
 
+#### `modsTerm`
+
+Launches a multi-pane `modsTerm` tmux session used for running MODS
+scripts with `acqBinoMODS` or `execBinoMODS`. Using a `tmux` session
+keeps the script progress and error messages resident in a persistent
+tmux (terminal multiplexer) session that may be detached and joined as
+needed.
+
 #### `acqBinoMODS`
 
 Wrapper shell script to execute a binocular target acquisition in a
@@ -126,13 +134,7 @@ one .acq script is given, it executed on both MODS ("twinning").  If
 two .acq scripts are given, they are implicitly executed in the order
 MODS1 MODS2.
 
-#### `modsTerm`
-
-Launches a multi-pane `modsTerm` tmux session used for running MODS
-scripts with `acqBinoMODS` or `execBinoMODS`. Using a `tmux` session
-keeps the script progress and error messages resident in a persistent
-tmux (terminal multiplexer) session that may be detached and joined as
-needed.
+### Archon CCD data-taking system scripts
 
 #### `ccdTerm`
 
@@ -143,16 +145,87 @@ replacement for the old DOS "IC" program), and the upper right panel
 runs the `azcam-mods` server session.  There is one `ccdTerm` session
 per MODS channel, 4 in total.
 
-Use `start_azcam` and `start_modsccd` to start the `azcam-mods` server and
-`modsCCD` agent in the right pane, preventing running the wrong version on
-the wrong machine, or running duplicates by different users.
+#### `start_ccd`
 
-Use `start_ccd` to start `azcam-mods` and `modsCCD` in the correct order.
-This is experimental, we're still not sure what the fault states might be.
+Use `start_ccd` to start `azcam-mods` and `modsCCD` in the correct
+order in a running `ccdTerm`. We must start the `azcam-mods` server
+before starting the `modsCCD` agent.  This makes sure that happens
+with the correct time delays.
 
-Use `stop_ccd` to shutdown `modsCCD` and `azcam-mods` gracefully. We must
-stop `modsCCD` first, then `azcam-mods`.  If reverse, `azcam-mods` hangs
-until `modsCCD` quits and releases the TCP client socket.
+It requires that it is being run in an active `ccdTerm` tmux session
+and stops the user if that is not the case, with corrective
+instructions.
+
+#### `stop_ccd`
+
+Use `stop_ccd` to shutdown `modsCCD` and `azcam-mods` gracefully in
+the correct order. We must stop `modsCCD` first, then `azcam-mods`.
+If reverse, `azcam-mods` hangs until `modsCCD` quits and releases the
+TCP client socket.
+
+#### Agent-level start scripts
+
+`start_azcam` and `start_modsccd` allow engineering users to start
+the `azcam-mods` server and `modsCCD` agents separately.  Should
+only be used for engineering work. `modsCCD` will make sure an
+`azcam-mods` server is running before starting, so does ensure
+logical order of execution, and checks that a `ccdTerm` tmux
+session is running and you are in it when giving these commands.
+
+### MODS Dashboard GUI scripts
+
+`modsGUI` is used to start/stop/check the MODS GUI dashboard program
+on an instrument server (`mods1` or `mods2`). Only used directly when
+logged into a MODS instrument server for engineering work.
+
+The public `mods1` and `mods2` scripts are used by observers to launch
+the MODS dashboard GUIs from operations machines (robs and obs) for
+routine observing operations. These public scripts run the `modsGUI`
+in a detached ssh secure shell.
+
+
+### Support Scripts
+
+These are scripts for instrument support operations by LBTO support
+scientists and support personnel.  Used to do system configuration
+(like updating slitmask tables) and running low-level engineering
+support tools like the IMCS monitor GUIs.
+
+#### `modsAdmin`
+
+This is a public script that will run the `modsStatus` monitor
+programs for MODS1 and MODS2 in a dedicated tmux session that is
+executed on an operations workstation (robs or obs machine).  This
+provides a "one-window" dual-instrument monitor and low-level command
+application for running `isisCmd` to operate a MODS at the lowest
+levels, bypassing the GUI.
+
+#### `imcsTools`
+
+These launch the IMCS monitor GUIs on a MODS server.  The script makes
+sure they are run only on the `mods1` and `mods2` instrument servers
+by authorized users.  Engineering versions can only be run logged into
+the instrument servers, but a more restricted public version may be
+run at need from the operations machines (robs or obs) at need.
+
+#### `updateSlits`
+
+Used by support personnel to instruct the running MMC server instances
+to read the slitmask tables after a slit mask exchange.  Enabled to
+run from the operations machines (robs or obs).
+
+#### `pingMODS1` and `pingMODS2`
+
+Scripts to ping the internal TCP/IP ports on the WAGO and Comtrol
+units in the MODS instruments. Used to provide a low-level "test of life"
+for critical interface hardware.
+
+#### `pokeMODS1` and `pokeMODS2`
+
+These do a low-level "poke" (query status of) all MODS1 mechanisms via ISIS and the MMC
+server.  This is a quick way to check for dangling sockets.  Use is restricted to
+the to the ISP user account (lbto).
+
 
 ## Screenshots
 
