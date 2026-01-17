@@ -51,13 +51,13 @@ else
    exit 1
 endif
 
-# Do we have the right tmux session running?
+# Is the required tmux session running and are we in it?
 
 tmux has-session -t ${tmuxID} >& /dev/null
 if ($status) then
-   # we are not in the right tmux session
+   # The required tmux session isn't running
    printf "${prog} needs to be run in a ${tmuxID} tmux session but none is running\n"
-   printf "    Type '${tmuxID}' to start a new ${tmuxID} tmux session and try again.\n"
+   printf "    Type '${tmuxID}' to start a ${tmuxID} tmux session and try again.\n"
    exit 1
 else
    # There IS a tmux session named ${tmuxID}, but are we in it?
