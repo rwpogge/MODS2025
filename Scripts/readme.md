@@ -151,8 +151,8 @@ Use `start_ccd` to start `azcam-mods` and `modsCCD` in the correct order.
 This is experimental, we're still not sure what the fault states might be.
 
 Use `stop_ccd` to shutdown `modsCCD` and `azcam-mods` gracefully. We must
-stop `modsCCD` first, then `azcam-mods`.  If reverse, `azcam-mods` quit
-hangs until `modsCCD` quits and releases the TCP socket.
+stop `modsCCD` first, then `azcam-mods`.  If reverse, `azcam-mods` hangs
+until `modsCCD` quits and releases the TCP client socket.
 
 ## Screenshots
 
