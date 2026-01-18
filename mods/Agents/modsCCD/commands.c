@@ -2091,6 +2091,11 @@ cmd_saveconf(char *args, MsgType msgtype, char *reply)
 {
   char cfgfile[64];
 
+  // currently a no-op
+  
+  return CMD_OK;
+
+  /*
   if (strlen(args)>0)
     strcpy(cfgfile,args);
   else
@@ -2104,7 +2109,8 @@ cmd_saveconf(char *args, MsgType msgtype, char *reply)
   }
   sprintf(reply,"Wrote config file %s\n",cfgfile);
   return CMD_OK;
-
+  */
+  
 }
 
 /*!  
