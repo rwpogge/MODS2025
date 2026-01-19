@@ -1,6 +1,6 @@
 # modsUI GUI Runtime Configuration Files
 
-**Updated: 2025 Dec 22 [rwp/osu]**
+**Updated: 2026 Jan 18 [rwp/osu]**
 
 These are files used by the modsUI GUIs for each of the MODS instances (MODS1 and MODS2)
 
