@@ -3910,8 +3910,8 @@ void DashBoard::envUpdate()
 {
   //isis->queue(modsIEHost[modsID],"estatus");
   isis->send(modsIMHost[modsID],"estatus");
-  isis->send(modsBCHost[modsID],"estatus");
-  isis->send(modsRCHost[modsID],"estatus");
+  //isis->send(modsBCHost[modsID],"estatus");
+  //isis->send(modsRCHost[modsID],"estatus");
 }
 
 // This slot is used to handle imcsLocked() signals

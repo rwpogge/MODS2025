@@ -1560,8 +1560,8 @@ void EnvPanel::update()
 
   emit statusMsg(tr("Updating %1 utility status...").arg(panelName),Qt::blue);
   sendCmdWait(modsIMHost[modsID],"ESTATUS",MODS_QUEUE_REQUEST);
-  sendCmdWait(modsBCHost[modsID],"ESTATUS",MODS_QUEUE_REQUEST);
-  sendCmdWait(modsRCHost[modsID],"ESTATUS",MODS_QUEUE_REQUEST);
+  //sendCmdWait(modsBCHost[modsID],"ESTATUS",MODS_QUEUE_REQUEST);
+  //sendCmdWait(modsRCHost[modsID],"ESTATUS",MODS_QUEUE_REQUEST);
   sendCmdWait(modsBCHost[modsID],"STATUS",MODS_QUEUE_REQUEST);
   sendCmdWait(modsRCHost[modsID],"STATUS",MODS_QUEUE_REQUEST);
 }
