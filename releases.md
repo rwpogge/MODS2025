@@ -1,6 +1,23 @@
 # MODS2025 Release Notes
 
-**Last Release: 2026 Jan 02**
+**Last Release: 2026 Jan 19**
+
+## Version 1.6.2 - 2026 Jan 19
+Updates resulting from an ECD night on-sky with LBT in great seeing(!).  Ran up the full system for the first time and found all
+kinds of new bugs and issues.
+
+### `modsUI`
+ * misconfiguration in `modsUI.ini` for MODS1 for the TCS, was tricky - updated config files for both
+ * dashboard not showing `LASTFILE` info. Turns out that was a push from the old caliban data-transfer agents, so put in explicit requests to the `modsCCD` agents at the right places.
+ * dashboard also not showing `Image: 1 of 3` status during exposures, reason was that the logic to catch the `SETUP` state was not fast enough for the Archons.  Solution was to modify `doExposure()` in `modsCCD/clientutils.c` to send an explicit notification to remote clients with the required `EXPSTATUS=INITIALIZING` flag. With the old DOS system this triggered the exposure state init in the GUI, including starting the Image counter.  Also some other stuff that was behind some benign but odd behaviors during exposures.
+ * `COMMENT` field in setup has no equivalent in the Archon system.  Until I can work out a replacement, the right solution is to keep it in the setup info, but make it a benign "no-op" in the `modsCCD` agent for now.  It doesn't put info in the headers yet.  Later.
+ * `monitor/envpanel.cpp` fixed location of the dewar temperature displays to make blue like red (typo in code).  Still not populating the `ArchonTemp` field, but we should be able to do that by adding it to the `modsCCD` agent `status` call.
+ * other bits?
+
+### `modsCCD`
+ * made `COMMENT` and `SAVECONFIG` benign no-ops until we can design suitable replacements.
+ * added `notifyClient()` call to `doExposure()` in `clientutils.c` to send `EXPSTATUS=INITIALIZING` back to the client initiating a `GO` on exposure setup.  The original timing-loop method is not going to work for the Archons as the state transition is too fast to catch. Tested and released.
+ * other bits?
 
 ## Version 1.6.0 - 2026 Jan 02
 Critical updates:
