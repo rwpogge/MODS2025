@@ -200,6 +200,9 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   sensorDisplay[Blue_DewPres] = new TextDisplay("","torr",8,this);
   blueCCDPTLayout->addRow(tr("Vacuum"),sensorDisplay[Blue_DewPres]);
 
+  sensorDisplay[Blue_DewTemp] = new TextDisplay("","C",8,this);
+  blueCCDPTLayout->addRow(tr("Dewar"),sensorDisplay[Blue_DewTemp]);
+
   QGroupBox *blueCCDGroupBox = new QGroupBox(tr("Blue CCD"));
   blueCCDGroupBox->setLayout(blueCCDPTLayout);
 
@@ -220,7 +223,7 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   sensorDisplay[HEB_B_IGPower] = new TextDisplay("","",5,this);
   blueHEBInLayout->addRow(tr("Ion Gauge"),sensorDisplay[HEB_B_IGPower]);
 
-  // Blue HEB air temp, Archon backplane temp, and LN2 tank temp
+  // Blue HEB air temp, Archon backplane temp, and the dewar temp
 
   QFormLayout *blueHEBOutLayout = new QFormLayout;
   blueHEBOutLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
@@ -233,9 +236,6 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
 
   sensorDisplay[Blue_ArchonTemp] = new TextDisplay("","C",5,this);
   blueHEBOutLayout->addRow(tr("Archon"),sensorDisplay[Blue_ArchonTemp]);
-
-  sensorDisplay[Blue_DewTemp] = new TextDisplay("","C",8,this);
-  blueCCDPTLayout->addRow(tr("LN2 Tank"),sensorDisplay[Blue_DewTemp]);
 
   // Layout horizontally in a group box
 
@@ -306,6 +306,9 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   sensorDisplay[Red_DewPres] = new TextDisplay("","torr",8,this);
   redCCDPTLayout->addRow(tr("Vacuum"),sensorDisplay[Red_DewPres]);
 
+  sensorDisplay[Red_DewTemp] = new TextDisplay("","C",8,this);
+  redCCDPTLayout->addRow(tr("Dewar"),sensorDisplay[Red_DewTemp]);
+
   QGroupBox *redCCDGroupBox = new QGroupBox(tr("Red CCD"));
   redCCDGroupBox->setLayout(redCCDPTLayout);
 
@@ -328,7 +331,7 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
   sensorDisplay[HEB_R_IGPower] = new TextDisplay("","",5,this);
   redHEBInLayout->addRow(tr("AC Power"),sensorDisplay[HEB_R_IGPower]);
 
-  // This column has HEB air temp, Archon backplane temp, and LN2 tank temp
+  // This column has HEB air temp, Archon backplane temp
 
   QFormLayout *redHEBOutLayout = new QFormLayout;
   redHEBOutLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
@@ -341,9 +344,6 @@ EnvPanel::EnvPanel(const int &myMODS, QWidget *parent)
 
   sensorDisplay[Red_ArchonTemp] = new TextDisplay("","C",5,this);
   redHEBOutLayout->addRow(tr("Archon"),sensorDisplay[Red_ArchonTemp]);
-
-  sensorDisplay[Red_DewTemp] = new TextDisplay("","C",8,this);
-  redHEBOutLayout->addRow(tr("LN2 Tank"),sensorDisplay[Red_DewTemp]);
 
   // Layout horizontally in a group box
 

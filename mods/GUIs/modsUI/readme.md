@@ -2,7 +2,7 @@
 
 Version: 3.1.1-archon
 
-**Updated: 2025 Dec 22**
+**Updated: 2026 Jan 19**
 
 Author: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 

@@ -2113,6 +2113,33 @@ cmd_saveconf(char *args, MsgType msgtype, char *reply)
   
 }
 
+/*!
+  \brief COMMENT command - add a COMMENT to the FITS header
+
+  \param args string with the command-line arguments
+  \param msgtype message type if the command was sent as an IMPv2 message
+  \param reply string to contain the command return reply
+  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
+  an error message.
+
+  \par Usage:
+  comment commentStr
+
+  Adds a COMMENT to the FITS header with the text given.
+
+  This is currently here for backwards compatibility with the old MODS IC
+  code, and only returns CMD_OK.  A placeholder once we later decide how
+  (or if) to implement the function for-real.
+
+*/
+
+int
+cmd_comment(char *args, MsgType msgtype, char *reply)
+{
+  // currently a no-op
+  return CMD_OK;
+}
+
 /*!  
   \brief CCDINFO command - print the CCD camera configuration on stdout
   \param args string with the command-line arguments
@@ -2369,6 +2396,7 @@ cmd_go(char *args, MsgType msgtype, char *reply)
   
   // do it!
   
+  ccd.State = SETUP;
   if (doExposure(&ccd,&obs,reply)<0) {
     ccd.State = IDLE;
     return CMD_ERR;
@@ -2376,8 +2404,6 @@ cmd_go(char *args, MsgType msgtype, char *reply)
 
   // We're off, ccd.State tells the main event loop what to do
 
-  ccd.State = SETUP;
-  
   return CMD_NOOP;
 
 }

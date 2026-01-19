@@ -1,7 +1,7 @@
 # modsUI Release Notes
 Original Build: 2009 Feb 24
 
-Last Build: 2026 Jan 18
+Last Build: 2026 Jan 19
 
 ### modsUI version numbering
 
@@ -9,6 +9,16 @@ Last Build: 2026 Jan 18
  * Version 1.x - MODS1 monocular version for commissioning and monocular science with MODS1, using Qt4
  * Version 2.x - MODS1+2 binocular operations version
  * Version 3.x - MODS Archon CCD controller update version and AlmaLinux Port to Qt6
+
+## Version 3.2.1
+2026 Jan 19
+
+Changes from live-testing at LBTO last night.
+ * Add command "lastfile" sent to CCD hosts after "nextfile" at end of exposure.  LASTFILE was reported by the defunct CALIBAN agent, we must now explicitly request it at end of exposure to properly update the GUI
+ * Cleaned up `monitor/envplanel.cpp` to make red and blue placement of dewar and HEB info consistent.
+ * No "Image: 1 of 3" was due to not seeing `EXPSTATUS=INITIALIZING` from the CCD agent.  This required a fix on the `modsCCD` side, not in `modsUI`, but noted here as an issue resolved.
+ * Error `COMMENT Unknown Command` is in the `modsCCD` agent, adding neutral response, will late see if we can figure out how to insert in the header, but not until we've stabilized basic functions
+
 
 ## Version 3.2.0
 2026 Jan 18

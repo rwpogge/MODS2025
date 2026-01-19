@@ -1,5 +1,12 @@
 # modsCCD ISIS client Releases
 
+## Version 1.1.3 - exposure initialization
+2026 Jan 19 [rwp/osu]
+ * `commands.c` - in `cmd_go()` set `ccd.state=SETUP` before calling `doExposure()`
+ * `commands.c/.h` - added no-op version of `cmd_comment()` for old MODS IC back compatibility
+ * `clientutils.c` - in `doExposure()` call `notifyClient()` that we are initializing, this send the remote client the `EXPSTATUS=INITIALIZING` message that triggers exposure initialization in the modsUI GUI, setting the exposure counter and other paramters correctly. This was missing during live testing last night.
+
+
 ## Version 1.1.2 - disable saveconfig
 2026 Jan 18 [rwp/osu]
  * Sending saveconfig (modsUI) triggered segfault in some cases, errors in other but no segfault.  Fix is to just return CMD_OK and make a soft no-op for now until we can decide how to handle this back-compatibility feature.

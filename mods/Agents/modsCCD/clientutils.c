@@ -52,11 +52,17 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
   char temp[32];  // working string
 
   // Setup exposure parameters
+
+  notifyClient(cam,obs,"GO Initializing",STATUS);
   
-  if (getFormat(cam,reply)<0) // get the detector format in pixels
+  // Get the detector format in pixels
+  
+  if (getFormat(cam,reply)<0)
     return -1;
 
-  if (setImageInfo(cam,obs->imgType,obs->imgTitle,reply)<0) // image type and title
+  // Set the image type and title
+  
+  if (setImageInfo(cam,obs->imgType,obs->imgTitle,reply)<0)
     return -1;
   
   // Upload the basic header parameters from the instrument

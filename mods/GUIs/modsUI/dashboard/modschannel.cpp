@@ -305,8 +305,7 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   // they'll have, then set the state at the end of the constructor.
 
   goButton = new ActionButton(tr("Abort"),this);
-  connect(goButton, SIGNAL(clicked()),
-          this, SLOT(doExposure()));
+  connect(goButton, SIGNAL(clicked()), this, SLOT(doExposure()));
   goButton->setFont(QFont("Helvetica",18,QFont::Normal));
 
   pauseButton = new ActionButton(tr("Resume"),this);
@@ -1360,9 +1359,10 @@ void MODSChannel::parse(const QString &cmdStr,
 
 	acqStatus->setText(expStatusStr,Qt::blue);
 
-	// Update the next file
+	// Update the next file and last file
 
 	sendCmdWait(icHostID,"nextfile",MODS_QUEUE_REQUEST);
+	sendCmdWait(icHostID,"lastfile",MODS_QUEUE_REQUEST);
 
 	// What do we do next, is this it or is there another image to
 	// acquire?  Do the test for kExp >= numExp, as there are some
@@ -2871,10 +2871,11 @@ void MODSChannel::forceExpDone()
 
   acqStatus->setText(expStatusStr,Qt::blue);
 
-  // Update the next file
+  // Update nextfile and lastfile
 
   sendCmdWait(icHostID,"nextfile",MODS_QUEUE_REQUEST);
-
+  sendCmdWait(icHostID,"lastfile",MODS_QUEUE_REQUEST);
+  
   // What do we do next, is this it or is there another image to
   // acquire?  We must test kExp>=numExp otherwise there are some rare
   // abort-service race conditions that cause the exposure counter

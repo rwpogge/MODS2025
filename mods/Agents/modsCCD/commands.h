@@ -89,6 +89,7 @@ int cmd_abort   (char *, MsgType, char *); // Abort an exposure or readout
 int cmd_config  (char *, MsgType, char *); // Report instrument configuration info
 int cmd_status  (char *, MsgType, char *); // Report the CCD system status 
 int cmd_saveconf(char *, MsgType, char *); // Save the current configuration (saveconfig)
+int cmd_comment (char *, MsgType, char *); // Add a comment to the FITS header
 
 // Application command/action structure
 
@@ -177,6 +178,7 @@ cmdtab[] = {   //!< global scope command table for this application
   {"ccdinfo" ,cmd_ccdinfo ,"ccdinfo","Print detailed azcam server and CCD config info (engineering)"},
   {"cleanup" ,cmd_cleanup ,"cleanup","Cleanup runtime parameters after serious errors"},
   {"saveconfig",cmd_saveconf,"saveconfig","Save the current runtime configuration (e.g., for restarts)"},
+  {"comment" ,cmd_comment ,"comment","Add a COMMENT to the FITS header"},
   {"azcam"   ,cmd_azcam   ,"azcam <cmd>","Send a raw command to the azcam server"},
   {"archon"  ,cmd_archon  ,"archon [reset|...]","Send a command to the Archon controller"},
   {"?"       ,cmd_help    ,"",""},  // "" excludes from help
