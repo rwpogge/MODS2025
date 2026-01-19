@@ -1,6 +1,9 @@
 # modsPerl Release Notes
 
-<b>Last Update: 2025 Oct 3 [rwp/osu]</b>
+<b>Last Update: 2026 Jan 18 [rwp/osu]</b>
+
+## 2026 Jan 18: Incremental update from live testing
+ * Suppressed binocular exit "Hit <Enter>..." for `execMODS` and `acqMODS` since we now execute with the `modsTerm` tmux session.
 
 ## 2025 Oct 3: Incremental update
  * Added the LBTO mountain network NSF-mounted common path `/lbt/lbto/mods/lib/modsPerl` to the perl `use lib` path for running these scripts on the mountain network for observations.

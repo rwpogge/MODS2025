@@ -121,6 +121,8 @@
 #   2025 Sep 10 - Archon CCD controller system updates [rwp/osu]
 #   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
 #
+#   2026 Jan 18 - Updates from Archon MODS live testing [rwp/osu]
+#
 #---------------------------------------------------------------------------
 
 # Custom ISIS.pm module.  These are all the places it can be on the
@@ -1174,10 +1176,10 @@ sub binoExit {
 	if ($exStatus != 0) {
 	    print RED "\n** Binocular MODS${useMODS} acquisition aborting on fatal error.\n";
 	}
-	print CYAN "\n** Hit the <Enter> key to exit and close this window...";
-	$kbdIn = <STDIN>;
-	last unless defined $kbdIn;
-	print CYAN "Bye!\n";
+	# print CYAN "\n** Hit the <Enter> key to exit and close this window...";
+	# $kbdIn = <STDIN>;
+	# last unless defined $kbdIn;
+	# print CYAN "Bye!\n";
     }
     exit $exStatus;
 }
