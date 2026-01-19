@@ -2,6 +2,10 @@
 
 <b>Last Update: 2026 Jan 16 [rwp/osu]</b>
 
+## 2026 Jan 18: updated modsAlign and modsDisp
+ * `modsAlign` updated to use the azcam MEF format for the Archons, advanced version to 3.1.x
+ * `modsDisp` updated to use the azcam MEF format for the Archons, version 3.1.0
+
 ## 2026 Jan 16: new scripts
  * `start_ccd` is an experimental script to start `azcam-mods` and `modsCCD` in the correct order.
  * `updateSlits` is an updated version of a script of the same name used by instrument support personnel after mask changes to commit the slitmask tables to the running MMC servers.  This version does both MODS at once, and can be run from `robs` or `obs` machines wihtout having to login to the MODS servers proper.

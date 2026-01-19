@@ -150,7 +150,7 @@ from lbto.sciops.misc import logger, slack, beep, DS9IgnoreTimeoutWithLogger
 
 # Version info
 
-verName = "modsAlign v3.1.0"
+verName = "modsAlign v3.1.1"
 verDate = "2026-01-18"
 
 log = logger(f"modsAlign-{os.environ.get('USER','anon')}")
@@ -2585,11 +2585,11 @@ except:
 
 if haveMask:
     print("\n%s thru-mask image %s" % (instID,maskRoot))
-    disp.set("file fits %s" % (maskFile))
+    disp.set(f"file {maskFile}[{imExt}]")
     disp.set("scale limits %.2f %.2f" % (maskScale[0],2.0*maskScale[1]))
 else:
     print("\n%s field image %s" % (instID,fieldRoot))
-    disp.set("file fits %s" % (fieldFile))
+    disp.set(f"file [{fieldFile}[{imExt}]")
     disp.set("scale limits %.2f %.2f" % (fieldScale[0],fieldScale[1]))
 
 disp.set("zoom to fit")
@@ -2710,7 +2710,7 @@ if longSlit:
     else:
         disp.set("frame 2")
         print("\n%s field image %s" % (instID,fieldRoot))
-        disp.set("file fits %s" % (fieldFile))
+        disp.set(f"file {fieldFile}[{imExt}]")
         disp.set("zoom to fit")
         disp.set("scale limits %.2f %.2f" % (fieldScale[0],fieldScale[1]))
         disp.set(regSlit)
@@ -2817,7 +2817,7 @@ else:
 
     disp.set("frame 2")
     print("\n%s field image %s" % (instID,fieldRoot))
-    disp.set("file fits %s" % (fieldFile))
+    disp.set(f"file {fieldFile}[{imExt}]")
     disp.set("zoom to fit")
     disp.set("scale limits %.2f %.2f" % (fieldScale[0],fieldScale[1]))
 
