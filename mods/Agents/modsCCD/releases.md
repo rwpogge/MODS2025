@@ -1,5 +1,9 @@
 # modsCCD ISIS client Releases
 
+## Version 1.1.2 - disable saveconfig
+2026 Jan 18 [rwp/osu]
+ * Sending saveconfig (modsUI) triggered segfault in some cases, errors in other but no segfault.  Fix is to just return CMD_OK and make a soft no-op for now until we can decide how to handle this back-compatibility feature.
+
 ## Version 1.1.1 - disable dataMan
 2025 Dec 31 [rwp/osu]
  * set all dataMan interfaces default OFF, removed reminder of OFF

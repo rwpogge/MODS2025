@@ -5,9 +5,9 @@
 #
 # R. Pogge, OSU Astronomy Dept. pogge.1@osu.edu
 #
-# Last Modified: 2025 Dec 31
+# Last Modified: 2026 Jan 18
 #
-VERSION     = v1.1.1
+VERSION     = v1.1.2
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 

@@ -1,7 +1,7 @@
 # modsCCD - MODS Archon CCD controller agent
-Version 1.1.1
+Version 1.1.2
 
-**Last Update:** 2025 Dec 31 [rwp/osu] [Release Notes](releases.md)
+**Last Update:** 2026 Jan 18 [rwp/osu] [Release Notes](releases.md)
 
 **Heritage:** Y4KCam at the CTIO 1m with a Windows AzCamServer and ARC Gen3 (May 2005).
 
