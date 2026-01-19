@@ -2396,13 +2396,14 @@ cmd_go(char *args, MsgType msgtype, char *reply)
   
   // do it!
   
-  ccd.State = SETUP;
   if (doExposure(&ccd,&obs,reply)<0) {
     ccd.State = IDLE;
     return CMD_ERR;
   }
 
   // We're off, ccd.State tells the main event loop what to do
+
+  ccd.State = SETUP;
 
   return CMD_NOOP;
 

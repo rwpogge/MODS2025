@@ -427,7 +427,7 @@ main(int argc, char *argv[])
 	case RESUME:
 	  printf("\nStarted %.1f sec exposure              \r",obs.expTime);
 	  fflush(stdout);
-	  sprintf(reply,"GO started %.1f sec exposure",obs.expTime);
+	  sprintf(reply,"GO Started %.1f sec exposure",obs.expTime);
 	  notifyClient(&ccd,&obs,reply,STATUS);
 	  break;
 

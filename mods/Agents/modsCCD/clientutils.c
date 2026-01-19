@@ -53,7 +53,7 @@ doExposure(azcam_t *cam, obsPars_t *obs, char *reply)
 
   // Setup exposure parameters
 
-  notifyClient(cam,obs,"GO Initializing",STATUS);
+  notifyClient(cam,obs,"GO Setting up exposure... EXPSTATUS=INITIALIZING",STATUS);
   
   // Get the detector format in pixels
   
@@ -272,7 +272,9 @@ notifyClient(azcam_t *cam, obsPars_t *obs, char *msgStr, MsgType msgType)
   if (msgType == STATUS) {
     switch(cam->State) {
     case SETUP:
+      printf("notifyClient(): cam->State=SETUP msgStr=%s\n",msgStr);
       sprintf(msgStr,"%s EXPSTATUS=INITIALIZING",msgStr);
+      printf("notifyClient(): done\n");
       break;
       
     case EXPOSING:
