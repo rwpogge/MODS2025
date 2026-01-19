@@ -3,6 +3,8 @@
 ## Version 1.1.2 - disable saveconfig
 2026 Jan 18 [rwp/osu]
  * Sending saveconfig (modsUI) triggered segfault in some cases, errors in other but no segfault.  Fix is to just return CMD_OK and make a soft no-op for now until we can decide how to handle this back-compatibility feature.
+ * Seeing missed "done" state on 1Kx1K ROI, backed off to 0.2sec
+
 
 ## Version 1.1.1 - disable dataMan
 2025 Dec 31 [rwp/osu]
@@ -15,6 +17,7 @@ from azcam proper, removing all the tricky logic to detect that a file had been 
 by `azcam-mods`. In other words: cut out the middleman. The default configuration of
 `modsCCD` is setup to have useDM false and disabled, and the hooks removed from the 
 runtime configuration files to prevent enabling it.
+
 
 ## Version 1.1.0 - Data transfer manager (dataMan) testing
 2025 Nov 10 [rwp/osu]
