@@ -1,6 +1,6 @@
 # modsUI - MODS spectrograph user interface
 
-Version: 3.1.1-archon
+Version: 3.2.1-archon
 
 **Updated: 2026 Jan 19**
 

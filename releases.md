@@ -12,7 +12,10 @@ kinds of new bugs and issues.
  * dashboard also not showing `Image: 1 of 3` status during exposures, reason was that the logic to catch the `SETUP` state was not fast enough for the Archons.  Solution was to modify `doExposure()` in `modsCCD/clientutils.c` to send an explicit notification to remote clients with the required `EXPSTATUS=INITIALIZING` flag. With the old DOS system this triggered the exposure state init in the GUI, including starting the Image counter.  Also some other stuff that was behind some benign but odd behaviors during exposures.
  * `COMMENT` field in setup has no equivalent in the Archon system.  Until I can work out a replacement, the right solution is to keep it in the setup info, but make it a benign "no-op" in the `modsCCD` agent for now.  It doesn't put info in the headers yet.  Later.
  * `monitor/envpanel.cpp` fixed location of the dewar temperature displays to make blue like red (typo in code).  Still not populating the `ArchonTemp` field, but we should be able to do that by adding it to the `modsCCD` agent `status` call.
- * other bits?
+ * Object names with "=" anywhere in them confused the `azcam` remote command interface. We filter these at the `modsUI`, but may have to implement filters elsewhere.
+ * Updated `modsUI` config files with the new subframe region-of-interst modes for the Archon (`mods/Config/MODSn/ccdroi.tab`).
+ * Modified `modsUI` and `modsCCD` to limit binning factors to 1 and 2 only (bin factors of 4 and 8 supported by old MODS are not supported by the Archon controllers).
+ 
 
 ### `modsCCD`
  * made `COMMENT` and `SAVECONFIG` benign no-ops until we can design suitable replacements.
