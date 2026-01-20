@@ -14,9 +14,11 @@
 # parameters in the ddName list:
 #    fitsKey: FITS header keyword, 8-characters max, all caps
 #    dtype: one of {int,float,str}
-#           float can take 2 conversion tags:
+#           float can take optional units conversion tags:
 #               float-as = convert arcsec to degrees
 #               float-rad = convert radians to degrees
+#               float-mas = convert radians to milliarcseconds
+#
 #    comment: comment text for the FITS keyword
 #
 
@@ -46,8 +48,8 @@ DDEntries:
   #
   R_PresetTargetRAHMS:  ["OBJRA","str","Target RA"]
   R_PresetTargetDECDMS: ["OBJDEC","str","Target DEC"]
-  #R_TargetPMRA:         ["OBJPMRA","float-pm","Target RA proper motion [mas/yr]"]
-  #R_TargetPMDEC:        ["OBJPMDEC","float-pm","Target DEC proper motion [mas/yr]"]
+  R_TargetPMRA:         ["OBJPMRA","float-mas","Target RA proper motion [mas/yr]"]
+  R_TargetPMDEC:        ["OBJPMDEC","float-mas","Target DEC proper motion [mas/yr]"]
   R_GSPresetRAHMS:      ["GUIRA","str","Guide Star RA"]
   R_GSPresetDECDMS:     ["GUIDEC","str","Guide Star DEC"]
   #
