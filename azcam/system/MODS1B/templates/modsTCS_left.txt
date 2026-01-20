@@ -126,4 +126,3 @@ DDEntries:
   L_NSDECTRKRate:     ["NSDERATE","float","Differential Dec tracking rate [arcsec/h]"]
   L_NSType:           ["NSTYPE","str","Non-sidereal target type"] 
   L_NSEphemerisName:  ["NSEPHFIL","str","Non-sidereal ephemeris file name"]
- 

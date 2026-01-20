@@ -292,7 +292,7 @@ class LBTTelescope(Telescope):
                     v = math.degrees(float(tcsData[i]))
                 elif iift == 'float-mas':
                     t = 'float'
-                    v = 206264806.2*float(tcsData[0]) # radians -> milliarcsec
+                    v = 206264806.2*float(tcsData[i]) # radians -> milliarcsec
                 else:
                     t = 'str'
                     v = tcsData[i]
