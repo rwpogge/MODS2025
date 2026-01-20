@@ -266,23 +266,23 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   // Implement X and Y binning as an indexed mechanism class
 
   xCCDBin = new IndexedMechanism(tr("%1 CCD X-axis Binning Factor").arg(channelName),
-				 "XBIN",0,3,10);
+				 "XBIN",0,1,10);
   xBinEntry = new IndexedSelector(xCCDBin,"X:",this);
   xCCDBin->setID(0,"1");
   xCCDBin->setID(1,"2");
-  xCCDBin->setID(2,"4");
-  xCCDBin->setID(3,"8");
+  //xCCDBin->setID(2,"4");
+  //xCCDBin->setID(3,"8");
   connect(xBinEntry,SIGNAL(cmdReady(const QString &)),
 	  this,SLOT(ccdXBin(const QString &)));
   binLayout->addWidget(xBinEntry);
 
   yCCDBin = new IndexedMechanism(tr("%1 CCD Y-axis Binning Factor").arg(channelName),
-				 "YBIN",0,3,10);
+				 "YBIN",0,1,10);
   yBinEntry = new IndexedSelector(yCCDBin,"Y:",this);
   yCCDBin->setID(0,"1");
   yCCDBin->setID(1,"2");
-  yCCDBin->setID(2,"4");
-  yCCDBin->setID(3,"8");
+  //yCCDBin->setID(2,"4");
+  //yCCDBin->setID(3,"8");
   connect(yBinEntry,SIGNAL(cmdReady(const QString &)),
 	  this,SLOT(ccdYBin(const QString &)));
   binLayout->addWidget(yBinEntry);
@@ -1640,6 +1640,8 @@ void MODSChannel::setCCDBinning(const int &ixb,const int &iyb)
 }
 
 // Set the CCD X-axis on-chip binning factor
+//
+// For the Archon controllers, only 1 and 2 are supported [rwp/osu 2026 Jan 19]
 
 void MODSChannel::ccdXBin(const QString &bfc)
 {
@@ -1653,11 +1655,9 @@ void MODSChannel::ccdXBin(const QString &bfc)
   sendICCommand(cmdStr);
 }
 
-// Set the CCD X-axis on-chip binning factor
-
 void MODSChannel::setCCDXBin(const int &ixb)
 {
-  if (ixb == 1 || ixb == 2 || ixb == 4 || ixb == 8) {
+  if (ixb == 1 || ixb == 2) {
     xBin = ixb;
     QString cmdStr = QString("xbin %1").arg(QString::number(ixb));
     xBinEntry->setChange();
@@ -1666,6 +1666,8 @@ void MODSChannel::setCCDXBin(const int &ixb)
 }
 
 // Set the CCD Y-axis on-chip binning factor
+//
+// For the Archon controllers, only 1 and 2 are supported [rwp/osu 2026 Jan 19]
 
 void MODSChannel::ccdYBin(const QString &bfc)
 {
@@ -1680,7 +1682,7 @@ void MODSChannel::ccdYBin(const QString &bfc)
 
 void MODSChannel::setCCDYBin(const int &iyb)
 {
-  if (iyb == 1 || iyb == 2 || iyb == 4 || iyb == 8) {
+  if (iyb == 1 || iyb == 2) { 
     yBin = iyb;
     QString cmdStr = QString("ybin %1").arg(QString::number(iyb));
     yBinEntry->setChange();
@@ -1688,7 +1690,7 @@ void MODSChannel::setCCDYBin(const int &iyb)
   }
 }
 
-// Set the region of interest - we are passed the command to do the job...
+// Set the subframe region of interest - we are passed the command to do the job...
 
 void MODSChannel::ccdROI(const QString &cmdStr)
 {

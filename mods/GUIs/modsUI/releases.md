@@ -18,6 +18,7 @@ Changes from live-testing at LBTO last night.
  * Cleaned up `monitor/envplanel.cpp` to make red and blue placement of dewar and HEB info consistent.
  * No "Image: 1 of 3" was due to not seeing `EXPSTATUS=INITIALIZING` from the CCD agent.  This required a fix on the `modsCCD` side, not in `modsUI`, but noted here as an issue resolved.
  * Error `COMMENT Unknown Command` is in the `modsCCD` agent, adding neutral response, will late see if we can figure out how to insert in the header, but not until we've stabilized basic functions
+ * Binning now limited to 1 and 2 pixels on each axis.  Changed pulldowns in the `dashboard/modschannel.cpp` code to reflect the change (4 and 8 are not supported by the Archons).
 
 
 ## Version 3.2.0
