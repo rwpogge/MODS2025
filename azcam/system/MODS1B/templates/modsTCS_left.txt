@@ -42,6 +42,15 @@ DDEntries:
   L_RotMode:           ["ROTMODE","str","SX Rotator Mode"]
   L_DGRPosition:       ["DGROTPOS","float-as","SX Direct Gregorian Rotator Angle [deg]"]
   #
+  # Target Preset Info
+  #
+  L_PresetTargetRAHMS:  ["OBJRA","str","Target RA"]
+  L_PresetTargetDECDMS: ["OBJDEC","str","Target DEC"]
+  #L_TargetPMRA:         ["OBJPMRA","float-pm","Target RA proper motion [mas/yr]"]
+  #L_TargetPMDEC:        ["OBJPMDEC","float-pm","Target DEC proper motion [mas/yr]"]
+  L_GSPresetRAHMS:      ["GUIRA","str","Guide Star RA"]
+  L_GSPresetDECDMS:     ["GUIDEC","str","Guide Star DEC"]
+  #
   # GCS and PCS Guide Probe Data  
   #
   L_AGWPosX:         ["AGWXGP","float","AGW Guide Probe X focal plane position [mm]"]
