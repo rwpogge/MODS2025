@@ -1,6 +1,9 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2026 Jan 16 [rwp/osu]</b>
+<b>Last Update: 2026 Jan 20 [rwp/osu]</b>
+
+## 2026 Jan 20: go_mods script
+ * all-in-one script for access to MODS servers, 1 script to replace 6
 
 ## 2026 Jan 18: updated modsAlign and modsDisp
  * `modsAlign` updated to use the azcam MEF format for the Archons, advanced version to 3.1.x

@@ -29,7 +29,7 @@ set numArgs = $#argv
 
 # usage message if too few or too many arguments
 
-if ($numArgs == 0) || $numArgs > 1) then
+if ($numArgs == 0 || $numArgs > 1) then
     printf "Usage: go_mods modsHost\n"
     exit 0
 else if ($numArgs == 1) then

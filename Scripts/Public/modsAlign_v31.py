@@ -128,8 +128,8 @@
 #
 # ---- version 3.1.x ----
 #
-#   2026 Jan 18 - Updates for the MODS Archon controllers - see the
-#                 detailed notes below [rwp/osu]
+#   2026 Jan 18 - Updates for the MODS Archon controllers - see notes [rwp/osu]
+#   2026 Jan 20 - Updates from live testing [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -142,16 +142,21 @@ import os, sys
 import termios
 import subprocess
 import numpy as np
+
 from pathlib import Path
+
 from scipy import ndimage
+
 from astropy.io import fits
+
 from scipy.optimize import curve_fit
+
 from lbto.sciops.misc import logger, slack, beep, DS9IgnoreTimeoutWithLogger
 
 # Version info
 
-verName = "modsAlign v3.1.1"
-verDate = "2026-01-18"
+verName = "modsAlign v3.1.2"
+verDate = "2026-01-20"
 
 log = logger(f"modsAlign-{os.environ.get('USER','anon')}")
 
@@ -161,6 +166,8 @@ import warnings
 warnings.filterwarnings('ignore',category=UserWarning, append=True)
 warnings.filterwarnings('ignore',category=RuntimeWarning, append=True)
 warnings.filterwarnings('ignore',category=FutureWarning, append=True)
+warnings.filterwarnings('ignore',category=DeprecationWarning, append=True)
+
 from astropy.utils.exceptions import AstropyWarning
 warnings.filterwarnings('ignore',category=AstropyWarning, append=True)
 
@@ -198,6 +205,7 @@ defMatch = 2.0        # multiplier for star/box XY matching
 matchFac = defMatch
 
 # define interactive key press mappings
+
 keySaveQuit = 'q'
 keyAbort = 'c'
 keyMarkAuto = 'a'
@@ -206,7 +214,7 @@ keyMarkDelete = 'd'
 keyHelp = 'h'
 keyRadius = 'r'
 
-# this input function first clears any buffered input that might still
+# This input function first clears any buffered input that might still
 # be around and then calls the real input function. we don't want any
 # previous buffered input characters to interfere with our current input.
 
