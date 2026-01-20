@@ -413,11 +413,11 @@ void InstConfig::doSleep()
     emit cmdReady(modsIEHost[modsID],"SLEEP");
     // Put each of the ICs into movie mode with 0s exposure, 8x8 binning
     emit cmdReady(modsBCHost[modsID],"EXPTIME 0");
-    emit cmdReady(modsBCHost[modsID],"CCDBIN 8 8");
-    emit cmdReady(modsBCHost[modsID],"MOVIE");
+    // emit cmdReady(modsBCHost[modsID],"CCDBIN 8 8");
+    // emit cmdReady(modsBCHost[modsID],"MOVIE");
     emit cmdReady(modsRCHost[modsID],"EXPTIME 0");
-    emit cmdReady(modsRCHost[modsID],"CCDBIN 8 8");
-    emit cmdReady(modsRCHost[modsID],"MOVIE");
+    // emit cmdReady(modsRCHost[modsID],"CCDBIN 8 8");
+    // emit cmdReady(modsRCHost[modsID],"MOVIE");
     emit logMessage(tr("%1 Requested...").arg(titleStr));
     break;
 

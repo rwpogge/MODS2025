@@ -1571,13 +1571,17 @@ void MODSChannel::setObject(const QString &obj)
 
   objName = obj.left(68);
 
-  // IMPvX reserves single quotes and () for its own purposes,
+  // IMPv2 reserves single quotes and () for its own purposes,
   // remove or modifiy as required to conform to FITS 3.0
 
   objName.remove("'");
   objName.replace("(","[");
   objName.replace(")","]");
 
+  // No "=" for the Archon/azcam server (you really don't want to know)
+
+  objName.replace("="," ");
+  
   // If the objName has been changed, replace it in the display
 
   if (objName != obj)
