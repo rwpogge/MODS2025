@@ -122,6 +122,7 @@
 #   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
 #
 #   2026 Jan 18 - Updates from Archon MODS live testing [rwp/osu]
+#   2026 Jan 20 - Added SSLEEP command for silent sleep [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -140,8 +141,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - date in ISO8601 format
 
-$verNum  = "v2.5.1-bino";
-$verDate = "2025-10-03";
+$verNum  = "v2.5.2-bino";
+$verDate = "2026-01-20";
 
 # Make sure text reverts to normal on using color
 
@@ -902,6 +903,16 @@ while ($execGo) {
 	    }
 	    printf "%c[2K",27;
 	    print CYAN "** Sleep done\n\n";
+	}
+	$iCmd++;
+    }
+
+    # SSLEEP - silently sleep for a specified time in seconds before script execution.
+
+    elsif ($cmdWord eq "ssleep") {
+	$sleepTime = $cmdBits[1];
+	if ($sleepTime > 0) {
+	    sleep $sleepTime;
 	}
 	$iCmd++;
     }
