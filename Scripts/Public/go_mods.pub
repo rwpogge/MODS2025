@@ -1,0 +1,93 @@
+#!/bin/csh -f
+#
+# go_mods - controlled access to the MODS instrument and archon serversa
+#
+# usage:
+#   go_mods modsHost
+#
+# where:
+#   modsHost is one of
+#      instrument servers: mods1, mods2
+#      Archon servers: mods1blue, mods1red, mods2blue, mods2red
+#
+# Support accounts: lbto 
+# Member observer accounts: osurc, inaf, lbtb, queue
+#
+# R. Pogge, OSU Astronomy Dept
+# pogge.1@osu.edu
+# 2025 Dec 20
+#
+# Modification History:
+#   2025 Dec 20 - based on live startup tests at LBTO [rwp/osu]
+#   2026 Jan 20 - on script to do 6 jobs [rwp/osu]
+#
+#---------------------------------------------------------------------------
+
+# command line options
+
+set numArgs = $#argv
+
+# usage message if too few or too many arguments
+
+if ($numArgs == 0) || $numArgs > 1) then
+    printf "Usage: go_mods modsHost\n"
+    exit 0
+else if ($numArgs == 1) then
+    set modsHost = $1
+endif
+
+switch ($modsHost)
+    case 'mods1':
+	modsIPAddr = 192.168.139.130
+	breaksw
+    case 'mods1red':
+	modsIPAddr = 192.168.139.131
+	breaksw
+    case 'mods1blue':
+	modsIPAddr = 192.168.139.131
+	breaksw
+    case 'mods2':
+	modsIPAddr = 192.168.139.230
+	breaksw
+    case 'mods2red':
+	modsIPAddr = 192.168.139.231
+	breaksw
+    case 'mods2blue':
+	modsIPAddr = 192.168.139.231
+        breaksw
+    default:
+	printf "ERROR: unknown MODS host $modsHost\n"
+	exit 1
+endsw
+
+# check if the current user is allowed access
+
+set user=`echo $USER | tr '[:upper:]' '[:lower:]'`
+
+if ("${user}" == "osurc" || "${user}" == "inaf" || "${user}" == "lbtb" || "${user}" == "queue") then
+    set modsUser="observer"
+else if ("${user}" == "lbto") then
+    set modsUser="mods"
+else
+    printf "ERROR: User '${user}' is not permitted login access to ${modsHost}.\n"
+    printf "       Ask your ISA for assistance with this operation.\n"
+    exit 1
+endif
+
+# Another check is if the user has an ssh key
+
+set keys=`dirname $0`
+set keys=`realpath ${keys}`
+set keys="${keys}/../keys/id_ecdsa_${modsUser}"
+
+if ( ! -e "${keys}" ) then
+    printf "ERROR: ${modsHost} user '${modsUser}' is not authorized!\n"
+    printf "       Ask your ISA for assistance with this operation.\n"
+    exit 1
+endif
+
+# do it
+
+ssh -i ${keys} -XYC ${modsUser}@${modsIPAddr}
+
+exit 0
