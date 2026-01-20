@@ -1,7 +1,7 @@
 #
 # MODS TCS info header template entries for MODS2 at right (DX) direct Gregorian
 #
-# Updated: 2026 Jan 13 [rwp/osu]
+# Updated: 2026 Jan 20 [rwp/osu]
 #
 # YAML format
 #
@@ -107,3 +107,11 @@ DDEntries:
   LBTTemp:         ["LBTTEMP","float","LBT Ambient Temperature [deg C]"]
   LBTHumidity:     ["LBTHUM","float","LBT Relative Humidity [percent]"]  
   LBTDewPoint:     ["LBTDWPT","float","LBT Dew Point [deg C]"]
+  #
+  # Non-sideral tracking information
+  #
+  NonSiderealTarget:  ["NONSIDER","int","Target is non-sidereal"]
+  R_NSRATRKRate:      ["NSRARATE","float","Differential RA tracking rate [arcsec/h]"]
+  R_NSDECTRKRate:     ["NSDERATE","float","Differential Dec tracking rate [arcsec/h]"]
+  R_NSType:           ["NSTYPE","str","Non-sidereal target type"] 
+  R_NSEphemerisName:  ["NSEPHFIL","str","Non-sidereal ephemeris file name"]
