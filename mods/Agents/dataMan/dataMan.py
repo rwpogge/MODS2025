@@ -35,6 +35,7 @@ Modification History
  
  * 2026 Jan 02 - major overhaul of otmProc() after discoveries from live testing [rwp/osu]
  * 2026 Jan 14 - added fixMisc() method with other header issues from live testing [rwp/osu]
+ * 2026 Jan 20 - additions to fixMisc() following ECD time and archive review [rwp/osu]
  
 '''
 
@@ -382,6 +383,12 @@ def fixMisc(hdu):
      * convert LBTWLINK 1/0 boolean to string "Up"/"Down"
      * compute CCDROI header keyword from image dimensions
      * convert Archon CCDSUM=(nx ny) into CCDXBIN= and CCDYBIN= keywords
+     * copy OBJECT -> OBJNAME for back compatibility (may be temporary?)
+     * add OBJ/GUI keywords EQUIN, RADEC, and EPOCH not in DD
+     * add GUINAME='None' as placeholder for datum not in DD
+     * fix blank non-sidereal header keywords for Archive format compliance
+     
+    the list is getting bigger, we may split off subsets later.
      
     '''
 
@@ -417,8 +424,8 @@ def fixMisc(hdu):
     except:
         hdu[0].header["LBTWLINK"] = ("Unknown","LBT Weather Station Link State")
 
-    # azcam does not record a global merged CCD ROI, like the old MODS CCDROI keyword, so we  
-    # compute it.  Header 1 (IM1) has the relevant dimensions plus overscan, 0 has ref pix
+    # azcam does not record a merged image CCDROI keyword, compute it. Header 1 
+    # (IM1) has the relevant dimensions plus overscan, Header 0 has ref pix
     
     try:
         nc = hdu[1].header['NAXIS1']
@@ -446,7 +453,45 @@ def fixMisc(hdu):
         hdu[0].header["CCDYBIN"] = (int(bits[1]),"CCD Y-axis Binning Factor")
     except:
         pass
+    
+    # Missing target and guide star keywords from the SetStars() preset info for
+    # the Archive data model.  We make placeholders for data not (yet?) exposed
+    # in the IIF data dictionary
+    
+    try:
+        hdu[0].header["OBJNAME"] = (hdu[0].header['OBJECT'],"Target Name")
+    except:
+        hdu[0].header["OBJNAME"] = ("None","Target name")
+        
+    try:
+        hdu[0].header["OBJRADEC"] = ("FK5","Target coordinate system")
+        hdu[0].header["OBJEQUIN"] = ("J2000","Target coordinate system equinox")
+        hdu[0].header["OBJEPOCH"] = (2000.00,"Target epoch")
+    except:
+        pass
 
+    try:
+        hdu[0].header["GUINAME"]  = ("None","Guide star name")
+        hdu[0].header["GUIRADEC"] = ("FK5","Guide star coordinate system")
+        hdu[0].header["GUIEQUIN"] = ("J2000","Guide star coordinate system equinox")
+        hdu[0].header["GUIPMRA"]  = (0.0,"Guide star RA proper motion [mas/yr]")
+        hdu[0].header["GUIPMDEC"] = (0.0,"Guide star DEC proper motion [mas/yr]")
+        hdu[0].header["GUIEPOCH"] = (2000.00,"Guide star epoch")
+    except:
+        pass    
+
+    # Check the non-sidereal keywords as some can be blank, make "None" because
+    # the archive will raise warnings if blank keywords
+    
+    try:
+        if (len(hdu[0].header["NSTYPE"])==0):
+            hdu[0].header["NSTYPE"] = ("None","Non-sidereal target type")
+        if (len(hdu[0].header["NSEPHFIL"])==0):
+            hdu[0].header["NSEPHFIL"] = ("None","Non-sidereal ephemeris file name")    
+    except:
+        hdu[0].header["NSTYPE"] = ("None","Non-sidereal target type")
+        hdu[0].header["NSEPHFIL"] = ("None","Non-sidereal ephemeris file name")
+        
     # Other stuff goes here
     
     return

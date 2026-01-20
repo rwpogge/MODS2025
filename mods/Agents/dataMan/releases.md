@@ -1,8 +1,13 @@
 # dataMan Release Notes
 
-**Latest Version: v1.2.0, 2026 Jan 02**
+**Latest Version: v1.2.1, 2026 Jan 20**
 
 ## Released Versions (v1.0 and later)
+
+### 2026 Jan 20 - v1.2.1
+Updates from live testing on-sky during the Jan 18/19 ECD night and header checks by Trieste LBT Archive
+ * added multiple keywords and checks to `fixMisc()` for the preset coordinates (target and guider) and to check for blank data that can come from non-sidereal header data required by the Archive.
+
 
 ### 2026 Jan 14 - v1.2.0
 Updates based on review of FITS headers by the LBT Archive Team in Trieste and SciOps at LBTO.

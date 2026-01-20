@@ -1,6 +1,6 @@
 # dataMan - MODS Data Manager
 
-**Updated: 2026 Jan 14 [rwp/osu]**
+**Updated: 2026 Jan 20 [rwp/osu]**
 
 See the [Release Notes](releases.md) for details.
 
