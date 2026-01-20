@@ -1642,6 +1642,8 @@ cmd_ccdbin(char *args, MsgType msgtype, char *reply)
   int xbin;
   int ybin;
   int nargs;
+
+  int maxBin = 2;
   
   // check the file descriptor and make sure we have an active connection
 
@@ -1662,6 +1664,15 @@ cmd_ccdbin(char *args, MsgType msgtype, char *reply)
       ybin = xbin;
     }
 
+    // validate binning factors
+    
+    if (xbin > maxBin || ybin > maxBin) {
+      sprintf(reply,"Invalid binning factors %d %d, must be 1 or 2",xbin,ybin);
+      return CMD_ERR;
+    }
+
+    // Send the command to set binning
+    
     if (setCCDBin(&ccd,xbin,ybin,reply)<0)
       return CMD_ERR;
   }
@@ -1683,7 +1694,8 @@ cmd_xbin(char *args, MsgType msgtype, char *reply)
 {
   char argbuf[32];
   int xbin;
-
+  int maxBin = 2;
+  
   // check the file descriptor and make sure we have an active connection
 
   if (ccd.FD<0) {
@@ -1695,6 +1707,11 @@ cmd_xbin(char *args, MsgType msgtype, char *reply)
   if (strlen(args)>0) {
     GetArg(args,1,argbuf);
     xbin = atoi(argbuf);
+
+    if (xbin > maxBin) {
+      sprintf(reply,"Invalid binning factor %d, must be 1 or 2",xbin);
+      return CMD_ERR;
+    }
 
     if (setCCDBin(&ccd,xbin,-1,reply)<0) 
       return CMD_ERR;
@@ -1717,7 +1734,8 @@ cmd_ybin(char *args, MsgType msgtype, char *reply)
 {
   char argbuf[32];
   int ybin;
-
+  int maxBin = 2;
+  
   // check the file descriptor and make sure we have an active connection
 
   if (ccd.FD<0) {
@@ -1729,6 +1747,11 @@ cmd_ybin(char *args, MsgType msgtype, char *reply)
   if (strlen(args)>0) {
     GetArg(args,1,argbuf);
     ybin = atoi(argbuf);
+
+    if (ybin > maxBin) {
+      sprintf(reply,"Invalid binning factor %d, must be 1 or 2",ybin);
+      return CMD_ERR;
+    }
 
     if (setCCDBin(&ccd,-1,ybin,reply)<0) 
       return CMD_ERR;

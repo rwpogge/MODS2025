@@ -5,7 +5,7 @@
  * `commands.c` - in `cmd_go()` set `ccd.state=SETUP` before calling `doExposure()`
  * `commands.c/.h` - added no-op version of `cmd_comment()` for old MODS IC back compatibility
  * `clientutils.c` - in `doExposure()` call `notifyClient()` that we are initializing, this send the remote client the `EXPSTATUS=INITIALIZING` message that triggers exposure initialization in the modsUI GUI, setting the exposure counter and other paramters correctly. This was missing during live testing last night.
-
+ * `commands.c` - `cmd_ccdbin()`, `ccd_xbin()`, and `ccd_ybin()`, restrict binning factors to 1 or 2.  Archon controllers do not support binning factors 4 and 8.
 
 ## Version 1.1.2 - disable saveconfig
 2026 Jan 18 [rwp/osu]
