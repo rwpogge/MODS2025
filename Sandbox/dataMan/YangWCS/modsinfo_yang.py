@@ -50,11 +50,8 @@ if not os.path.isfile(image):
 
 # some built-in constants
 # DMS mongodb credentials:
-mongocreds = {'host': 'dms.mountain.lbto.org',
-              'port':  27017,
-              'username': 'tcs_user',
-              'password': 'FenasOwnyo',
-              'authSource': 'tcs'}
+#
+# deleted dms credentials...
 # MODS camera specs, these should be obtained from the standard
 # database configuration collection. if we fail to obtain these
 # parameters, then the entire program will fail. we put the current
