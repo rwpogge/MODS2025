@@ -27,6 +27,7 @@ class LBTTelescope(Telescope):
     Updated: 
         2025 Sep 23 - Live testing with LBT IIF [rwp/osu]
         2025 Dec 31 - Live testing with flight system at LBTO [rwp/osu]
+        2026 Jan 20 - Added new floating units conversion (rad -> mas) [rwp/osu]
         
     '''
     
@@ -214,6 +215,9 @@ class LBTTelescope(Telescope):
             elif iift == 'float-rad':
                 t = 'float'
                 v = math.degrees(float(tcsData[0]))
+            elif iift == 'float-mas':
+                t = 'float'
+                v = 206264806.2*float(tcsData[0]) # radians -> milliarcsec
             else:
                 t = 'str'
                 v = tcsData[0]
@@ -286,6 +290,9 @@ class LBTTelescope(Telescope):
                 elif iift == 'float-rad':
                     t = 'float'
                     v = math.degrees(float(tcsData[i]))
+                elif iift == 'float-mas':
+                    t = 'float'
+                    v = 206264806.2*float(tcsData[0]) # radians -> milliarcsec
                 else:
                     t = 'str'
                     v = tcsData[i]
