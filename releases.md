@@ -14,13 +14,14 @@ kinds of new bugs and issues.
  * `monitor/envpanel.cpp` fixed location of the dewar temperature displays to make blue like red (typo in code).  Still not populating the `ArchonTemp` field, but we should be able to do that by adding it to the `modsCCD` agent `status` call.
  * Object names with "=" anywhere in them confused the `azcam` remote command interface. We filter these at the `modsUI`, but may have to implement filters elsewhere.
  * Updated `modsUI` config files with the new subframe region-of-interst modes for the Archon (`mods/Config/MODSn/ccdroi.tab`).
- * Modified `modsUI` and `modsCCD` to limit binning factors to 1 and 2 only (bin factors of 4 and 8 supported by old MODS are not supported by the Archon controllers).
+ * Modified `modsUI` dashboard to limit binning factors to 1 and 2 only (bin factors of 4 and 8 supported by old MODS are not supported by the Archon controllers).
  
 
 ### `modsCCD`
  * made `COMMENT` and `SAVECONFIG` benign no-ops until we can design suitable replacements.
  * added `notifyClient()` call to `doExposure()` in `clientutils.c` to send `EXPSTATUS=INITIALIZING` back to the client initiating a `GO` on exposure setup.  The original timing-loop method is not going to work for the Archons as the state transition is too fast to catch. Tested and released.
- * other bits?
+ * Modified `commands.c` binning commands to limit binning factors to 1 and 2 only (bin factors of 4 and 8 supported by old MODS are not supported by the Archon controllers).
+
 
 ## Version 1.6.0 - 2026 Jan 02
 Critical updates:
