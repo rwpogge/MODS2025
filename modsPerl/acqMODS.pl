@@ -122,7 +122,9 @@
 #   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
 #
 #   2026 Jan 18 - Updates from Archon MODS live testing [rwp/osu]
-#   2026 Jan 20 - Added SSLEEP command for silent sleep [rwp/osu]
+#   2026 Jan 21 - Added SSLEEP command for silent sleep. This is a hack
+#                 until a long-term solution can be found for timing
+#                 issues associated with mask operations [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -142,7 +144,7 @@ use Term::ANSIColor qw(:constants);  # color output
 # Version number and date - date in ISO8601 format
 
 $verNum  = "v2.5.2-bino";
-$verDate = "2026-01-20";
+$verDate = "2026-01-21";
 
 # Make sure text reverts to normal on using color
 
@@ -672,6 +674,12 @@ while (<MSC>) {
 			$numCmd++;
 		    }
 		}
+		
+		# insert a 3-second silent sleep following slitmask [rwp/osu]
+		$cmd[$numCmd] = "ssleep 3";
+		$cmdTO[$numCmd] = $shortTO;
+		$numCmd++;
+		
 		$hasMask = 1;
 	    }
 
@@ -686,6 +694,10 @@ while (<MSC>) {
 		}
 		if ($acqMode ne "imaging") {
 		    $cmd[$numCmd] = "slitmask out";
+		    $cmdTO[$numCmd] = $shortTO;
+		    $numCmd++;
+		    # insert a 3-second silent sleep following slitmask [rwp/osu]
+		    $cmd[$numCmd] = "ssleep 3";
 		    $cmdTO[$numCmd] = $shortTO;
 		    $numCmd++;
 		}
@@ -711,6 +723,11 @@ while (<MSC>) {
 		$cmd[$numCmd] = "slitmask in";
 		$cmdTO[$numCmd] = $shortTO;
 		$numCmd++;
+		# insert a 3-second silent sleep following slitmask [rwp/osu]
+		$cmd[$numCmd] = "ssleep 3";
+		$cmdTO[$numCmd] = $shortTO;
+		$numCmd++;
+		# then execute go
 		$cmd[$numCmd] = "go";
 		$cmdTO[$numCmd] = $baseTO;
 		$numCmd++;
@@ -725,7 +742,7 @@ while (<MSC>) {
 		$hasEnd = 1;
 	    }
 
-	    # Assume what is left is a valid command - always an adventure,,,
+	    # Assume what is left is a valid command - always an adventure...
 
 	    else {
 		$cmd[$numCmd] = simplify($cmdStr);
@@ -907,7 +924,7 @@ while ($execGo) {
 	$iCmd++;
     }
 
-    # SSLEEP - silently sleep for a specified time in seconds before script execution.
+    # SSLEEP - silently sleep for a specified time in seconds during script execution.
 
     elsif ($cmdWord eq "ssleep") {
 	$sleepTime = $cmdBits[1];
