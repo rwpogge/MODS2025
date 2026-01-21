@@ -10,12 +10,13 @@
 # Last Modification:
 #   2025 Sep 20 - Updates after first live tests [rwp/osu]
 #   2025 Sep 21 - Beta release as v1.0.1 [rwp/osu]
+#   2026 Jan 21 - Updates after end-to-end live tests [rwp/osu]
 #
 #-------------------------------------------------------------------------
 
 # Version Number: <major>.<minor>.<build>
 
-VERSION     = v1.1.2
+VERSION     = v1.1.3
 
 # Compiler and libary info as required
 

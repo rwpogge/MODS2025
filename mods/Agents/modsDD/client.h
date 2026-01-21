@@ -12,6 +12,11 @@
   Client application header for the modsDD application.
 
   \date 2025 Sept 19
+
+  <pre>
+  Modification history:
+     2026 Jan 21 - DEFAULT_CADENCE reduced to 2 seconds [rwp/osu]
+  </pre>
 */
 
 // Default client application values (override/set in loadconfig.c)
@@ -29,7 +34,7 @@
 
 #define DEFAULT_IIFDIR (char*)"/home/dts/Config/IIF" //<! default path to IIF client props files
 
-#define DEFAULT_CADENCE 10 //!< default DD update cadence in seconds
+#define DEFAULT_CADENCE 2 //!< default DD update cadence in seconds
 
 //
 // END of Site-Dependent Setup

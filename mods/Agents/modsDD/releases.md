@@ -1,5 +1,10 @@
 # modsDD agent release notes
-Last Build: 2025 Oct 3
+Last Build: 2026 Jan 21
+
+## Version 1.1.3
+2026 Jan 21
+ * Reduced `DEFAULT_CADENCE` to 2 seconds, also changed in the .ini files
+ * Last version 1.x, major update to follow because of timing issues emerging from live testing
 
 ## Version 1.1
 2025 Oct 3

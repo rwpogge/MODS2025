@@ -1,6 +1,6 @@
 # MODS Data Dictionary Agent
 
-**Version: 1.1.2 - 2025 Oct 3**
+**Version: 1.1.3 - 2026 Jan 21**
 
 **IIF Build Compatibility: 2025B**
 
