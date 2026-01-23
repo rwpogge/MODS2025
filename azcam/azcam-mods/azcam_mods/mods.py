@@ -4,7 +4,7 @@ Defines the MODS class for azcam
 Initial version by Mike Lesser (UA ITL)
 Later versions by Rick Pogge (OSU Astronomy)
 
-Updated: 2025 Dec 24 [rwp/osu]
+Updated: 2026 Jan 23 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -1160,21 +1160,31 @@ class MODS(object):
     
     def get_lastfile(self):
         '''
-        Retreive the name of the last file written during the
-        current azcam server session.
-
+        Retreive the name of the last file written
+        
         Returns
         -------
         lastfile: string
             name of the last file written.
             
-        `lastfile` will be blank ("") if the server was restarted.
+        Description
+        -----------
+        Returns the name of the last image file written during
+        the current azcam server session. If none, it returns
+        the name of the last file in the raw data folder chronogically.
+        If there are no files in the raw data folder, return None
 
         '''
 
         lastFile = azcam.db.tools["exposure"].last_filename
         if len(lastFile) == 0:
-            return 'None'
+            curPath = azcam.db.tools["exposure"].folder
+            fitsList = glob.glob(f"{os.path.join(curPath)}*.fits")
+            fitsList.sort(key=os.path.getmtime)
+            if len(fitsList) > 0:
+                return fitsList[-1]
+            else:
+                return 'None'
         else:
             return lastFile
     

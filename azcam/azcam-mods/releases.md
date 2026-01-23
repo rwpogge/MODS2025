@@ -1,8 +1,11 @@
 # azcam-mods Release Notes
 
-**Current Version: 1.1.10**
+**Current Version: 1.1.11**
 
-**Last Update: 2026 Jan 20 [rwp/osu]**
+**Last Update: 2026 Jan 23 [rwp/osu]**
+
+### Verison 1.1.11 - 2026 Jan 23
+ * `mods.py` - modified `get_lastfile()` method to return the last file found on disk if there is no current last file from the current azcam server session.  This will provide a more robust restart state than "None" even though there is a last image in the raw data folder
 
 ### Verison 1.1.10 - 2026 Jan 20
  * `telescope_lbt.py` - added `float-mas` formatting option for header data in units of milliarcseconds
