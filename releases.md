@@ -2,6 +2,10 @@
 
 **Last Release: 2026 Jan 19**
 
+## Version 1.6.3 - 2025 Jan 22
+ * Fixed a nasty segmentation fault bug in the `modsCCD` agent that would crash out if a string was too long for common commands like object et al.  Rebuilt `modsCCD` on all servers
+ * Put in extra filtering of "=" in strings intended for the azcam server coming from scripts by filtering at the source in `acqMODS` and `execMODS`. Kind of insidious, but so deep in the structure of the `azcam` server remote interface we have to stop it from getting to the socket.
+
 ## Version 1.6.2 - 2026 Jan 19
 Updates resulting from an ECD night on-sky with LBT in great seeing(!).  Ran up the full system for the first time and found all
 kinds of new bugs and issues.
