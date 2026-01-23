@@ -6,6 +6,16 @@
 #include "actionbutton.h"
 #include "led.h"
 
+//---------------------------------------------------------------------------
+//
+// InstConfig class - written but not implemented
+//
+// Really, don't implement this...
+//
+// Updated: 2026 Jan 23 [rwp/osu]
+//
+//---------------------------------------------------------------------------
+
 #include "isisclient.h"  // needed for msgType codes
 
 InstConfig::InstConfig(const int &myMODS, QWidget *parent)
@@ -22,7 +32,7 @@ InstConfig::InstConfig(const int &myMODS, QWidget *parent)
     focalStation = "Right Direct Gregorian";
   }
 
-  // Startup, Reset, Sleep, Stow, and Shutdown Buttons
+  // Startup, Reset, Sleep, Stow, and Shutdown Buttons - not used
 
   startButton = new ActionButton(tr("Startup"),this);
   connect(startButton,SIGNAL(clicked()),this,SLOT(doStartup()));
