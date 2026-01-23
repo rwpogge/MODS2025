@@ -4,6 +4,7 @@
 
 ## 2026 Jan 22: azcam remote command = issue
  * `acqMODS.pl` and `execMODS.pl` - an = any where in a string that might go to the azcam server is trouble.  We strip = from any command string in a script before executing it, replacing the = by a space character.  Reason is deep in the archon parser, easier to filter the inputs than to totally rewrite the way azcam works.
+ * `isisCmd.pl` - for safety apply = filter to `isisCmd`, but probably very rare.
 
 ## 2026 Jan 18: Incremental update from live testing
  * Suppressed binocular exit "Hit <Enter>..." for `execMODS` and `acqMODS` since we now execute with the `modsTerm` tmux session.
