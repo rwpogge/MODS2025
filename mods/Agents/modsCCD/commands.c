@@ -664,7 +664,7 @@ cmd_observer(char *args, MsgType msgtype, char *reply)
   // If we have arguments, get the observer names and set them
 
   if (strlen(args)>0) {
-    strcpy(obs.Observer,args);
+    snprintf(obs.Observer,41,"%s",args);
     if (setKeyword(&ccd,"OBSERVER",obs.Observer,"Observer Name(s)",reply)<0)
       return CMD_ERR;
   }
@@ -709,7 +709,7 @@ cmd_piname(char *args, MsgType msgtype, char *reply)
   // If we have arguments, get the PI_NAME and set it
 
   if (strlen(args)>0) {
-    strcpy(obs.PIName,args);
+    snprintf(obs.PIName,41,"%s",args);
     if (setKeyword(&ccd,"PI_NAME",obs.PIName,"Project PI Name(s)",reply)<0)
       return CMD_ERR;
   }
@@ -736,7 +736,7 @@ cmd_partner(char *args, MsgType msgtype, char *reply)
   // If we have arguments, get the PARTNER info and set it
 
   if (strlen(args)>0) {
-    strcpy(obs.Partner,args);
+    snprintf(obs.Partner,41,"%s",args);
     if (setKeyword(&ccd,"PARTNER",obs.Partner,"LBT Project Partner(s)",reply)<0)
       return CMD_ERR;
   }
@@ -763,7 +763,7 @@ cmd_propid(char *args, MsgType msgtype, char *reply)
   // If we have arguments, get the PROPID info and set it
 
   if (strlen(args)>0) {
-    strcpy(obs.PropID,args);
+    snprintf(obs.PropID,41,"%s",args);
     if (setKeyword(&ccd,"PROPID",obs.PropID,"Observing Proposal ID",reply)<0)
       return CMD_ERR;
   }
@@ -790,7 +790,7 @@ cmd_support(char *args, MsgType msgtype, char *reply)
   // If we have arguments, get the SUPPORT info and set it
 
   if (strlen(args)>0) {
-    strcpy(obs.Support,args);
+    snprintf(obs.Support,41,"%s",args);
     if (setKeyword(&ccd,"SUPPORT",obs.Support,"LBT Support Scientist(s) on duty",reply)<0)
       return CMD_ERR;
   }
@@ -817,7 +817,7 @@ cmd_telops(char *args, MsgType msgtype, char *reply)
   // If we have arguments, get the SUPPORT info and set it
 
   if (strlen(args)>0) {
-    strcpy(obs.TelOps,args);
+    snprintf(obs.TelOps,41,"%s",args);
     if (setKeyword(&ccd,"TELOPS",obs.TelOps,"LBT Telescope Operator(s) on duty",reply)<0)
       return CMD_ERR;
   }
@@ -1101,8 +1101,7 @@ int
 cmd_object(char *args, MsgType msgtype, char *reply)
 {
   char cmdStr[64];
-  char argbuf[32];
-  
+
   // check the file descriptor and make sure we have an active connection
 
   if (ccd.FD<0) {
@@ -1111,10 +1110,10 @@ cmd_object(char *args, MsgType msgtype, char *reply)
   }
 
   // If we have no arguments, we set the image type but don't change
-  // the image title
+  // the image title.  Max title length is 35 characters
 
-  if (strlen(args)>0)
-    strcpy(obs.imgTitle,args);
+  if (strlen(args)>0) 
+    snprintf(obs.imgTitle,35,"%s",args);
   
   strcpy(obs.imgType,"OBJECT");
   
@@ -1130,7 +1129,7 @@ cmd_object(char *args, MsgType msgtype, char *reply)
       return CMD_ERR;
     strcpy(obs.imgTitle,ccd.imgTitle);
   }
-  
+
   sprintf(reply,"IMAGETYP=%s OBJECT=(%s)",obs.imgType,obs.imgTitle);
 
   return CMD_OK;
@@ -1162,7 +1161,6 @@ int
 cmd_flat(char *args, MsgType msgtype, char *reply)
 {
   char cmdStr[64];
-  char argbuf[32];
 
   // check the file descriptor and make sure we have an active connection
 
@@ -1175,7 +1173,7 @@ cmd_flat(char *args, MsgType msgtype, char *reply)
   // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.imgTitle,args);
+    snprintf(obs.imgTitle,35,"%s",args);
   
   strcpy(obs.imgType,"FLAT");
   
@@ -1223,7 +1221,6 @@ int
 cmd_comp(char *args, MsgType msgtype, char *reply)
 {
   char cmdStr[64];
-  char argbuf[32];
 
   // check the file descriptor and make sure we have an active connection
 
@@ -1236,7 +1233,7 @@ cmd_comp(char *args, MsgType msgtype, char *reply)
   // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.imgTitle,args);
+    snprintf(obs.imgTitle,35,"%s",args);
   
   strcpy(obs.imgType,"COMP");
   
@@ -1286,7 +1283,6 @@ int
 cmd_std(char *args, MsgType msgtype, char *reply)
 {
   char cmdStr[64];
-  char argbuf[32];
 
   // check the file descriptor and make sure we have an active connection
 
@@ -1299,7 +1295,7 @@ cmd_std(char *args, MsgType msgtype, char *reply)
   // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.imgTitle,args);
+    snprintf(obs.imgTitle,35,"%s",args);
   
   strcpy(obs.imgType,"STD");
   
@@ -1349,7 +1345,6 @@ int
 cmd_dark(char *args, MsgType msgtype, char *reply)
 {
   char cmdStr[64];
-  char argbuf[32];
 
   // check the file descriptor and make sure we have an active connection
 
@@ -1362,7 +1357,7 @@ cmd_dark(char *args, MsgType msgtype, char *reply)
   // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.imgTitle,args);
+    snprintf(obs.imgTitle,35,"%s",args);
   
   strcpy(obs.imgType,"DARK");
   
@@ -1413,7 +1408,6 @@ int
 cmd_bias(char *args, MsgType msgtype, char *reply)
 {
   char cmdStr[64];
-  char argbuf[32];
 
   // check the file descriptor and make sure we have an active connection
 
@@ -1426,7 +1420,7 @@ cmd_bias(char *args, MsgType msgtype, char *reply)
   // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.imgTitle,args);
+    snprintf(obs.imgTitle,35,"%s",args);
   
   strcpy(obs.imgType,"BIAS");
   
@@ -1498,7 +1492,7 @@ cmd_zero(char *args, MsgType msgtype, char *reply)
   // the image title
 
   if (strlen(args)>0)
-    strcpy(obs.imgTitle,args);
+    snprintf(obs.imgTitle,35,"%s",args);
   
   strcpy(obs.imgType,"ZERO");
   

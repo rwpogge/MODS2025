@@ -1,5 +1,9 @@
 # modsCCD ISIS client Releases
 
+## Version 1.1.4 - nasty segmentation fault
+2026 Jan 22 [rwp/osu]
+ * `commands.c` - rooted out a bug that caused long strings in object names, partner, pi_info, etc. string data to crash out with segmentation fault because of shamefully sloppy use of `strcpy()`. Code is now being more robust and using `snprintf()` like we should have all along.
+
 ## Version 1.1.3 - exposure initialization
 2026 Jan 19 [rwp/osu]
  * `commands.c` - in `cmd_go()` set `ccd.state=SETUP` before calling `doExposure()`

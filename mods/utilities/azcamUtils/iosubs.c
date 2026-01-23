@@ -1,6 +1,6 @@
 /*!
   \file iosubs.c
-  \brief azxam client API, server I/O utilities
+  \brief azcam client API, server I/O utilities
 
   A set of basic TCP socket I/O routines that define the common
   communications layer for the azcam client API.
