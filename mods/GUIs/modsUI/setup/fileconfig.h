@@ -52,7 +52,7 @@ signals:
 
 private slots:  
   void getDateTag();     //!< Get the current UTC date tag
-  void setRootName(const QString &);    //!< Set the rootname
+  void setObsDate(const QString &);    //!< Set the file obsDate
   void setFileNames();   //!< send the filenames to the ICs
   void setBlueNum(const QString &); //!< set the file counter for the Blue CCD
   void setRedNum(const QString &);  //!< set the file counter for the Red CCD
@@ -62,28 +62,28 @@ private:
 
   bool haveBlueName;    //!< A full blue filename exists
   QString bluePrefix;   //!< Blue CCD file prefix (e.g., "m1b")
-  QString blueRootName; //!< Blue CCD file rootname (usually CCYYMMDD)
+  QString blueObsDate;  //!< Blue CCD file obsDate (usually CCYYMMDD)
   QString blueFileNum;  //!< Blue CCD file number string (e.g., 0001)
   int blueCounter;      //!< Blue CCD file counter (1..9999)
   
   bool haveRedName;     //!< A full red filename exists
   QString redPrefix;    //!< Red CCD file prefix (e.g., "m1r")
-  QString redRootName;  //!< Red CCD file rootname (usually CCYYMMDD)
+  QString redObsDate;   //!< Red CCD file obsDate (usually CCYYMMDD)
   QString redFileNum;   //!< Red CCD file number string (e.g., 0001)
   int redCounter;       //!< Red CCD file counter (1..9999)
 
-  QString rootName;     //!< File rootname, the CCYYMMDD UTC date
+  QString obsDate;     //!< File obsDate, the CCYYMMDD UTC date
 
   QString errorStr;     //!< Error strings for error conditions
 
   // Entry and Display widgets and Action Buttons, 
 
-  TextEntry *rootNameEntry;      //!< root name entry box
+  TextEntry *obsDateEntry;      //!< obsDate entry box
 
-  ValueDisplay *blueRootDisplay; //!< Blue CCD root name display widget
+  ValueDisplay *blueDateDisplay; //!< Blue CCD obsDate display widget
   TextEntry *blueNumEntry;       //!< Blue CCD file number entry box
 
-  ValueDisplay *redRootDisplay;  //!< Red CCD root name display widget
+  ValueDisplay *redDateDisplay;  //!< Red CCD obsDate display widget
   TextEntry *redNumEntry;        //!< Red CCD file number entry box
 
   ActionButton *getDateButton;   //!< Get current UTC time button

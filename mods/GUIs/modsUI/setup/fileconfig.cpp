@@ -28,28 +28,28 @@ FileConfig::FileConfig(const int &myMODS, QWidget *parent)
   fileFormLayout->setFormAlignment(Qt::AlignCenter);  
   fileFormLayout->setLabelAlignment(Qt::AlignRight);
 
-  // RootName and get-Date button
+  // ObsDate and get-Date button
 
-  QHBoxLayout *rootNameLayout = new QHBoxLayout;
+  QHBoxLayout *obsDateLayout = new QHBoxLayout;
 
-  rootNameEntry = new TextEntry("","",8,this);
-  connect(rootNameEntry,SIGNAL(dataReady(const QString &)),
-	  this,SLOT(setRootName(const QString &)));
+  obsDateEntry = new TextEntry("","",8,this);
+  connect(obsDateEntry,SIGNAL(dataReady(const QString &)),
+	  this,SLOT(setObsDate(const QString &)));
 
   getDateButton = new ActionButton(tr("Get Date"),this);
   getDateButton->setFont(QFont("Helvetica",appFontSize,QFont::Normal));
   connect(getDateButton,SIGNAL(clicked()),this,SLOT(getDateTag()));
   int bwid = (int)(getDateButton->minimumSizeHint().width());
 
-  rootNameLayout->addWidget(rootNameEntry);
-  rootNameLayout->addStretch();
-  rootNameLayout->addWidget(getDateButton);
-  fileFormLayout->addRow(tr("Root Name:"),rootNameLayout);
+  obsDateLayout->addWidget(obsDateEntry);
+  obsDateLayout->addStretch();
+  obsDateLayout->addWidget(getDateButton);
+  fileFormLayout->addRow(tr("ObsDate:"),obsDateLayout);
 
   // Blue CCD filename entry
 
   QHBoxLayout *blueNameLayout = new QHBoxLayout;
-  blueRootDisplay = new ValueDisplay(QString("%1.").arg(bluePrefix),".",this);
+  blueDateDisplay = new ValueDisplay(QString("%1.").arg(bluePrefix),".",this);
   blueNumEntry = new TextEntry("",".fits",4,this);
   blueNumEntry->setCommit(false);
   connect(blueNumEntry,SIGNAL(textReady(const QString &)),
@@ -60,7 +60,7 @@ FileConfig::FileConfig(const int &myMODS, QWidget *parent)
   connect(refreshButton,SIGNAL(clicked()),this,SLOT(update()));
   bwid = qMax((int)(refreshButton->minimumSizeHint().width()),bwid);
 
-  blueNameLayout->addWidget(blueRootDisplay);
+  blueNameLayout->addWidget(blueDateDisplay);
   blueNameLayout->addWidget(blueNumEntry);
   blueNameLayout->addStretch();
   blueNameLayout->addWidget(refreshButton);
@@ -69,7 +69,7 @@ FileConfig::FileConfig(const int &myMODS, QWidget *parent)
   // Red CCD filename entry
 
   QHBoxLayout *redNameLayout = new QHBoxLayout;
-  redRootDisplay = new ValueDisplay(QString("%1.").arg(redPrefix),".",this);
+  redDateDisplay = new ValueDisplay(QString("%1.").arg(redPrefix),".",this);
   redNumEntry = new TextEntry("",".fits",4,this);
   redNumEntry->setCommit(false);
   connect(redNumEntry,SIGNAL(textReady(const QString &)),
@@ -80,7 +80,7 @@ FileConfig::FileConfig(const int &myMODS, QWidget *parent)
   connect(applyButton,SIGNAL(clicked()),this,SLOT(setFileNames()));
   bwid = qMax((int)(applyButton->minimumSizeHint().width()),bwid);
 
-  redNameLayout->addWidget(redRootDisplay);
+  redNameLayout->addWidget(redDateDisplay);
   redNameLayout->addWidget(redNumEntry);
   redNameLayout->addStretch();
   redNameLayout->addWidget(applyButton);
@@ -110,11 +110,11 @@ FileConfig::FileConfig(const int &myMODS, QWidget *parent)
 
   // Put in some placeholders
   
-  blueRootDisplay->setText("yyyymmdd");
+  blueDateDisplay->setText("yyyymmdd");
   blueNumEntry->setText("####");
-  redRootDisplay->setText("yyyymmdd");
+  redDateDisplay->setText("yyyymmdd");
   redNumEntry->setText("####");
-  rootNameEntry->setText("yyyymmdd");
+  obsDateEntry->setText("yyyymmdd");
 }
 
 // Public Methods and Slots
@@ -255,15 +255,15 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
 	char buf[BufSize];
 	QString ctrStr;
 	QStringList fileBits = fileName.split(".");
-	if (fileBits.count() == 3) {  // 3 components, we have something "normal"
+	if (fileBits.count() > 3) {  // at least 3 components is "normal" (e.g., mods1b.CCYYMMDD.####.fits)
 	  int ctr = fileBits.at(2).toInt(&ok,10);
 	  if (ok) {
 	    ::snprintf(buf,BufSize,"%04d",ctr);
 	    ctrStr = QString::fromUtf8(buf);
 	  }
 	  if (isRed) {
-	    redRootName = fileBits.at(1);
-	    redRootDisplay->setText(redRootName);
+	    redObsDate = fileBits.at(1);
+	    redDateDisplay->setText(redObsDate);
 	    if (ok) {
 	      redCounter = ctr;
 	      redFileNum = ctrStr;
@@ -272,8 +272,8 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
 	    }
 	  }
 	  else {
-	    blueRootName = fileBits.at(1);
-	    blueRootDisplay->setText(blueRootName);
+	    blueObsDate = fileBits.at(1);
+	    blueDateDisplay->setText(blueObsDate);
 	    if (ok) {
 	      blueCounter = ctr;
 	      blueFileNum = ctrStr;
@@ -289,8 +289,8 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
 	    ctrStr = QString::fromUtf8(buf);
 	  }
 	  if (isRed) {
-	    redRootName = fileBits.at(0);
-	    redRootDisplay->setText(redRootName);
+	    redObsDate = fileBits.at(0);
+	    redDateDisplay->setText(redObsDate);
 	    if (ok) {
 	      redCounter = ctr;
 	      redFileNum = ctrStr;
@@ -299,8 +299,8 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
 	    }
 	  }
 	  else {
-	    blueRootName = fileBits.at(0);
-	    blueRootDisplay->setText(blueRootName);
+	    blueObsDate = fileBits.at(0);
+	    blueDateDisplay->setText(blueObsDate);
 	    if (ok) {
 	      blueCounter = ctr;
 	      blueFileNum = ctrStr;
@@ -311,12 +311,12 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
 	}
 	else { // uninterpretable mess (rare), clear the entry boxes to signal badness
 	  if (isRed) {
-	    redRootDisplay->clear();
+	    redDateDisplay->clear();
 	    redNumEntry->clear();
 	    haveRedName = false;
 	  }
 	  else {
-	    blueRootDisplay->clear();
+	    blueDateDisplay->clear();
 	    blueNumEntry->clear();
 	    haveBlueName = false;
 	  }
@@ -331,50 +331,51 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
 
 // Private Slots
 
-// Generate a root name by reading the UTC system clock, and then fill
-// In the various entry widgets as needed
+// Generate an obsDate by reading the system clock, and then fill In
+// the various entry widgets as needed. LBT uses UTC, and their 7h
+// offset is such they mostly get lucky...
 
 void FileConfig::getDateTag()
 {
   QDateTime utcDate = QDateTime::currentDateTime().toUTC();
 
-  rootName = utcDate.toString("yyyyMMdd");
-  rootNameEntry->setText(rootName);
+  obsDate = utcDate.toString("yyyyMMdd");
+  obsDateEntry->setText(obsDate);
 
-  blueRootName = rootName;
+  blueObsDate = obsDate;
   blueCounter = 1;
-  blueRootDisplay->setText(blueRootName);
+  blueDateDisplay->setText(blueObsDate);
   blueNumEntry->setText("0001");
   blueFileNum = "0001";
   haveBlueName = true;
 
-  redRootName = rootName;
+  redObsDate = obsDate;
   redCounter = 1;
-  redRootDisplay->setText(redRootName);
+  redDateDisplay->setText(redObsDate);
   redNumEntry->setText("0001");
   redFileNum = "0001";
   haveRedName = true;
 
 }
 
-// Set the file rootname.  On setting a new rootname, reset the file counters
+// Set the file obsDate.  On setting a new obsDate, reset the file counters
 
-void FileConfig::setRootName(const QString &newRoot)
+void FileConfig::setObsDate(const QString &newObsDate)
 {
-  if (newRoot.isEmpty()) return;
-  rootName = newRoot;
-  rootNameEntry->setText(rootName);
+  if (newObsDate.isEmpty()) return;
+  obsDate = newObsDate;
+  obsDateEntry->setText(obsDate);
 
-  blueRootName = rootName;
+  blueObsDate = obsDate;
   blueCounter = 1;
-  blueRootDisplay->setText(blueRootName);
+  blueDateDisplay->setText(blueObsDate);
   blueNumEntry->setText("0001");
   blueFileNum = "0001";
   haveBlueName = true;
 
-  redRootName = rootName;
+  redObsDate = obsDate;
   redCounter = 1;
-  redRootDisplay->setText(redRootName);
+  redDateDisplay->setText(redObsDate);
   redNumEntry->setText("0001");
   redFileNum = "0001";
   haveRedName = true;
@@ -450,11 +451,11 @@ void FileConfig::setFileNames()
 {
   if (haveBlueName && haveRedName) {
     QString blueCmd = QString("FILENAME %1.%2.%3"
-			      ).arg(bluePrefix).arg(blueRootName).arg(blueFileNum);
+			      ).arg(bluePrefix).arg(blueObsDate).arg(blueFileNum);
     emit cmdReady(modsBCHost[modsID],blueCmd);
 
     QString redCmd = QString("FILENAME %1.%2.%3"
-			     ).arg(redPrefix).arg(redRootName).arg(redFileNum);
+			     ).arg(redPrefix).arg(redObsDate).arg(redFileNum);
     emit cmdReady(modsRCHost[modsID],redCmd);
   }
   else {
