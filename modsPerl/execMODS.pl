@@ -146,6 +146,8 @@
 #   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
 #
 #   2026 Jan 18 - Updates from Archon MODS live testing [rwp/osu]
+#   2026 Jan 22 - Strip = from any command string (Archon interface
+#                 issue) [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -164,8 +166,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - dates in ISO8601 format, please.
 
-$verNum  = "v2.5.2-bino";
-$verDate = "2026-01-18";
+$verNum  = "v2.5.3-bino";
+$verDate = "2026-01-22";
 
 # Make sure text reverts to normal on using color
 
@@ -357,6 +359,10 @@ while (<MSC>) {
 	    $cmdArg = lc $lineBits[1];  # lowercase first command argument
 
 	    # Pre-preprocess the script commands, keeping count
+
+	    # strip "=" from cmdStr and replace with " " to fix an arcane Archon issue...
+
+	    $cmdStr =~ s/=/ /g;
 
 	    # Label: is a command block label
 

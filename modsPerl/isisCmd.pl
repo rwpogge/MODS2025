@@ -31,6 +31,8 @@
 #                 otherwise require explicit --mods1 or --mods2 [rwp/osu]
 #   2025 Oct 15 - extended autodefault to the respective archon server
 #                 machines. [rwp/osu]
+#   2026 Jan 22 - Minor tweaks from live testing at LBTO with Archons [rwp/osu]
+#
 #---------------------------------------------------------------------------
 
 # Custom ISIS.pm module.  These are all the places it can be on the
@@ -48,8 +50,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date, date in ISO8601 format
 
-$verNum = "2.2.3";
-$verDate = "2025-10-15";
+$verNum = "2.2.4";
+$verDate = "2026-01-22";
 
 # get host ID
 
@@ -174,6 +176,7 @@ $argStr = "@ARGV";
 @argBits = split(' ',$argStr);
 $hostID = $argBits[0];
 $cmdStr = stripFirst($argStr);
+$cmdStr =~ s/=/ /g;  # remote = in case it goes to azcam
 
 # Trap Ctrl+C gracefully
 

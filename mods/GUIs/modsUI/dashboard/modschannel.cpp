@@ -852,6 +852,7 @@ void MODSChannel::parse(const QString &cmdStr,
       // This is a real kludge - do better ...
 
       else if (keyStr.compare("IMAGETYPE",Qt::CaseInsensitive)==0 ||
+	       keyStr.compare("IMAGETYP",Qt::CaseInsensitive)==0 ||
 	       keyStr.compare("IMTYP",Qt::CaseInsensitive)==0) {
 	imgType = valStr;
 	if (imgType.compare("OBJECT",Qt::CaseInsensitive)==0)
@@ -878,6 +879,7 @@ void MODSChannel::parse(const QString &cmdStr,
       // Object (aka Target) Name - a couple of variants are possible here
 
       else if (keyStr.compare("OBJECTNAME",Qt::CaseInsensitive)==0 ||
+	       keyStr.compare("OBJECT",Qt::CaseInsensitive)==0 ||
 	       keyStr.compare("OBJ",Qt::CaseInsensitive)==0) {
 	objName = valStr;
 	objNameEntry->setText(objName);
