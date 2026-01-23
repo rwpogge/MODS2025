@@ -125,6 +125,8 @@
 #   2026 Jan 21 - Added SSLEEP command for silent sleep. This is a hack
 #                 until a long-term solution can be found for timing
 #                 issues associated with mask operations [rwp/osu]
+#   2026 Jan 22 - Strip = from any command string (Archon interface
+#                 issue) [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -143,8 +145,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - date in ISO8601 format
 
-$verNum  = "v2.5.2-bino";
-$verDate = "2026-01-21";
+$verNum  = "v2.5.3-bino";
+$verDate = "2026-01-22";
 
 # Make sure text reverts to normal on using color
 
@@ -348,7 +350,11 @@ while (<MSC>) {
 	    $cmdArg  = lc $lineBits[1]; # lowercase first command argument
 
 	    # pre-preprocessing...
-	    
+
+	    # strip "=" from cmdStr and replace with " " to fix an arcane Archon issue...
+
+	    $cmdStr =~ s/=/ /g;
+
 	    # LABEL: is a command block label, start the command block info
 
 	    if (substr($cmdWord,-1) eq ":") { # a command block label
