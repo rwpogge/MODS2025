@@ -34,6 +34,7 @@
 #   2016 Jun 14 - Binocular Release for 2016B [rwp/osu]
 #   2025 Sep 10 - Archon CCD controller system updates [rwp/osu]
 #   2025 Oct 03 - Add LBTO NFS-mounted common path [rwp/osu]
+#   2026 Jan 22 - Filter = for azcam parser [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -54,8 +55,8 @@ $Term::ANSIColor::AUTORESET = 1;     # revert to normal after using color
 
 # Version number.  Date should be ISO8601 format
 
-$verNum = "2.2.1";
-$verDate = "2025-10-03"; 
+$verNum = "2.2.2";
+$verDate = "2026-01-22"; 
 
 # ISIS network and host IDs for MODS1 and MODS2 instances
 
@@ -166,6 +167,7 @@ if (!$isOK) {
 
 $inStr = "@ARGV";
 $cmdStr = simplify($inStr);
+$cmdStr =~ s/=/ /g;
 
 if ($verbose) {
     print GREEN "$modsName>> $cmdStr\n";
