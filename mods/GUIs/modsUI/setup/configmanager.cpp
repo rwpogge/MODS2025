@@ -261,9 +261,9 @@ ConfigManager::ConfigManager(const QString &myID,
   QLabel *mainLabel = new QLabel(tr("MODS Instrument Setup"));
   mainLabel->setFont(QFont("Helvetica",(2*appFontSize),QFont::Normal));
   QLabel *osuLogo = new QLabel();
-  osuLogo->setPixmap(QPixmap(":/images/OSULogo_new.png"));
+  osuLogo->setPixmap(QPixmap(":/images/OSUlogo.png"));
   QLabel *lbtLogo = new QLabel();
-  lbtLogo->setPixmap(QPixmap(":/images/LBTLogo_new.png"));
+  lbtLogo->setPixmap(QPixmap(":/images/LBTlogo.png"));
   
   QGridLayout *mastheadLayout = new QGridLayout;
   mastheadLayout->addWidget(osuLogo,0,0,Qt::AlignLeft);
