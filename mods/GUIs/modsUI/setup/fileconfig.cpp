@@ -110,11 +110,11 @@ FileConfig::FileConfig(const int &myMODS, QWidget *parent)
 
   // Put in some placeholders
   
-  blueDateDisplay->setText("yyyymmdd");
+  blueDateDisplay->setText("ccyymmdd");
   blueNumEntry->setText("####");
-  redDateDisplay->setText("yyyymmdd");
+  redDateDisplay->setText("ccyymmdd");
   redNumEntry->setText("####");
-  obsDateEntry->setText("yyyymmdd");
+  obsDateEntry->setText("ccyymmdd");
 }
 
 // Public Methods and Slots
@@ -127,6 +127,8 @@ void FileConfig::update()
   haveRedName = false;
   emit cmdReady(modsBCHost[modsID],"FILENAME");
   emit cmdReady(modsRCHost[modsID],"FILENAME");
+  emit cmdReady(modsBCHost[modsID],"OBSDATE");
+  emit cmdReady(modsRCHost[modsID],"OBSDATE");
   return;
 }
 
@@ -197,13 +199,15 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
     break;
   }
 
-  // The first word in the message body is the command that
-  // generated this response.  We only parse FILENAME, NEXTFILE and EXPNUM returns
+  // The first word in the message body is the command that generated
+  // this response.  We only parse FILENAME, NEXTFILE, OBSDATE, and
+  // EXPNUM returns
 
   QString cmdWord = msgStr.section(" ",0,0);
 
   if (cmdWord.compare("FILENAME",Qt::CaseInsensitive)!=0 &&
       cmdWord.compare("NEXTFILE",Qt::CaseInsensitive)!=0 &&
+      cmdWord.compare("OBSDATE",Qt::CaseInsensitive)!=0 &&
       cmdWord.compare("EXPNUM",Qt::CaseInsensitive)!=0) return;
 
   // Who did we get this from?  We only respond to our blue or red host
@@ -229,7 +233,9 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
       // What is the current filename?
 
       bool haveFile = false;
+      bool haveObsDate = false;
       QString fileName;
+      QString newObsDate;
 
       // FILENAME - next FITS file name w/o path
 
@@ -245,8 +251,17 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
         fileName = fullName.fileName();
 	haveFile = true;
       }
+
+      // OBSDATE - observing date from the azcam server
+
+      else if (keyStr.compare("OBSDATE",Qt::CaseInsensitive)==0) {
+	newObsDate = valStr;
+	haveObsDate = true;
+      }
+
       else
 	haveFile = false;
+
 
       // Do we have a filename string to interpret?
 
@@ -322,6 +337,10 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
 	  }
 	}
       }
+      else if (haveObsDate) {
+	obsDate = newObsDate;
+	obsDateEntry->setText(obsDate);
+      }
     }
   }
   
@@ -331,12 +350,19 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
 
 // Private Slots
 
-// Generate an obsDate by reading the system clock, and then fill In
-// the various entry widgets as needed. LBT uses UTC, and their 7h
-// offset is such they mostly get lucky...
+// *** UPDATE: [rwp/osu 2026 Jan 24] ***
+//
+//   getDateTag() now queries the CCD hosts for the obsdate, which
+//   query the azcam servers which use a more nuanced model for
+//   generating obs dates than just looking at the UTC time
+//
 
 void FileConfig::getDateTag()
 {
+  emit cmdReady(modsBCHost[modsID],"OBSDATE");
+  emit cmdReady(modsRCHost[modsID],"OBSDATE");
+
+  /*
   QDateTime utcDate = QDateTime::currentDateTime().toUTC();
 
   obsDate = utcDate.toString("yyyyMMdd");
@@ -355,7 +381,8 @@ void FileConfig::getDateTag()
   redNumEntry->setText("0001");
   redFileNum = "0001";
   haveRedName = true;
-
+  */
+  
 }
 
 // Set the file obsDate.  On setting a new obsDate, reset the file counters

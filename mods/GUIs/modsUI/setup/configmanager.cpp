@@ -1111,12 +1111,12 @@ void ConfigManager::setComment(const QString &str)
   if (str.isEmpty()) {
     commentStr.clear();
     commentEntry->clear();
-    setParameter("comment","None");
+    //setParameter("comment","None");
   }
   else if (str.compare(commentStr)!=0) {
     commentStr = str;
     commentEntry->setText(str);
-    setParameter("comment",str);
+    //setParameter("comment",str);
   }
 }
 
@@ -1266,8 +1266,8 @@ void ConfigManager::sendConfig()
   setParameter("PI_NAME",piNameStr);
   setParameter("SUPPORT",supportStr);
   setParameter("TELOPS",telopsStr);
-  setParameter("COMMENT",commentStr);
-  setParameter("SAVECONFIG","null");
+  // setParameter("COMMENT",commentStr);
+  // setParameter("SAVECONFIG","null");
 
   // now save it
 
