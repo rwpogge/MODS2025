@@ -6,8 +6,8 @@
 //
 
 #define MODS_SESSION_NAME "MODS Control Panel" //!< Window Name for banner
-#define MODS_REV_NUMBER   "v3.2.2-archon"      //!< MODS UI Revision number
-#define MODS_REV_DATE     "2026 Jan 22"        //!< Revision date
+#define MODS_REV_NUMBER   "v3.2.3-archon"      //!< MODS UI Revision number
+#define MODS_REV_DATE     "2026 Jan 24"        //!< Revision date
 
 // Runtime files and paths
 
