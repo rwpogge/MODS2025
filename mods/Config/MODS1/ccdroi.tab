@@ -22,6 +22,7 @@
 #
 # MODS e2v CCD231-68 Full Frame: x=1..8292 y=1..3088 (less overscan)
 #
+8Kx3K    1    8292    1 3088  # Full frame
 3Kx3K    2603 5690    1 3088  # Direct Imaging 3088x3088 full height
 1Kx1K    3635 4558 1033 2056  # 1024x1024 centered
 4Kx3K    2099 6194    1 3088  # Prism MOS Spectra: 4096x3088

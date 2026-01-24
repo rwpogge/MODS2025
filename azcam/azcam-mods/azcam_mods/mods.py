@@ -4,7 +4,7 @@ Defines the MODS class for azcam
 Initial version by Mike Lesser (UA ITL)
 Later versions by Rick Pogge (OSU Astronomy)
 
-Updated: 2026 Jan 23 [rwp/osu]
+Updated: 2026 Jan 24 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -30,16 +30,21 @@ Additions:
     set/get_keyword(): set/get a header keyword, ensure proper sytnax
     set/get_imageInfo(): set/get IMAGETYP and OBJECT for the next image
     set_istatus(): process instrument ISTATUS info into the instrument FITS header database
-    obsDate(): return the observing date CCYYMMDD noon-to-noon local time
+    utcObsDate(): return the observing date CCYYMMDD as UTC
+    locObsDate(): return the observing date CCYYMMDD noon-to-noon local time
+    obsDate() - alias for utcObsDate(), but could be defined as locObsDate()
     modsFilename(): split a filename string into dataPath, rootName, and expNum
 '''
-
-import datetime
-import pytz
 
 import os
 import re
 import glob
+
+# time handling
+
+import astropy.units as u
+from astropy.time import Time, TimeDelta
+import datetime
 
 import typing
 
@@ -1629,11 +1634,21 @@ class MODS(object):
                     expNum = 1
 
         return dataPath, rootName, expNum
-                
+     
 
-    def obsDate(self):
+    #-------------------------------------------------------------------------
+    #
+    # Observing date methods
+    #    
+
+    def utcObsDate(self,utcOff=7):
         '''
         Return the UTC observing date string in CCYYMMDD format
+
+        Parameters
+        ----------
+        utcOff : float, UTC offset in hours of site (utc = local + utcOff)
+            The default is 7 for LBTO (US/Arizona)
 
         Returns
         -------
@@ -1646,20 +1661,30 @@ class MODS(object):
         the LBTO site because the local timezone is UT-7h and stays on
         standard time all year round.  
         
+        Nuance: if it is after noon local time at LBTO, we we adopt the 
+        UTC date of the *next* day so there is continuity of names
+        for calibrations taken during the afternoon but before 0UTC for
+        the night.
+        
         We use this in the filenames of raw data and logs for MODS.
 
-        If UTC is awkward, consider using localObsDate()
+        If UTC is awkward, consider using locObsDate()
         
         See Also
         --------
-            localObsDate()
-        
+            locObsDate()       
         '''
         
-        return (datetime.datetime.now(datetime.timezone.utc)).strftime("%Y%m%d")
+        utcNow = Time.now()
+        locNow = Time(datetime.datetime.now())
+        locHour = float(locNow.strftime("%H"))
+        if ((locHour>=12) and (locHour<(24-utcOff))):
+            return (utcNow+TimeDelta(1.0*u.day)).strftime("%Y%m%d")
+        else:
+            return utcNow.strftime("%Y%m%d")
+    
 
-
-    def localObsDate(self):
+    def locObsDate(self):
         '''
         Return the observing date string in CCYYMMDD format
 
@@ -1688,6 +1713,11 @@ class MODS(object):
             return (datetime.datetime.now().today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
         else:
             return datetime.datetime.now().today().strftime("%Y%m%d")
+
+
+    # obsDate() - define as utcObsDate or locObsDate
+    
+    obsDate = utcObsDate
 
 
     #-------------------------------------------------------------------------
