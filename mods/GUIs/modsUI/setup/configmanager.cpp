@@ -258,20 +258,12 @@ ConfigManager::ConfigManager(const QString &myID,
 
   // The masthead has the OSU and LBT logos flanking the page title, centered
 
-  if (useMODS1 && !useMODS2) {
-    QLabel *mainLabel = new QLabel(tr("MODS1 Instrument Setup"));
-  }
-  else if (useMODS2 && !useMODS1) {
-    QLabel *mainLabel = new QLabel(tr("MODS2 Instrument Setup"));
-  }
-  else {
-    QLabel *mainLabel = new QLabel(tr("MODS Instrument Setup"));
-  }
+  QLabel *mainLabel = new QLabel(tr("MODS Instrument Setup"));
   mainLabel->setFont(QFont("Helvetica",(2*appFontSize),QFont::Normal));
   QLabel *osuLogo = new QLabel();
-  osuLogo->setPixmap(QPixmap(":/images/OSULogo_New.png"));
+  osuLogo->setPixmap(QPixmap(":/images/OSULogo_new.png"));
   QLabel *lbtLogo = new QLabel();
-  lbtLogo->setPixmap(QPixmap(":/images/LBTlogo.png"));
+  lbtLogo->setPixmap(QPixmap(":/images/LBTLogo_new.png"));
   
   QGridLayout *mastheadLayout = new QGridLayout;
   mastheadLayout->addWidget(osuLogo,0,0,Qt::AlignLeft);
