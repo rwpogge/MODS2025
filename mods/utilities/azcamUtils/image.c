@@ -12,6 +12,10 @@
   \author R. Pogge, OSU Astronomy Dept. (pogge.1@osu.edu)
   \original 2005 May 17
   \date 2025 July 26 for MODS
+
+  Modification History:
+    2026 Jan 24 - added obsDate() to query observing date from azcam [rwp/osu]
+    
 */
 
 #include "azcam.h" // azcam client API header 
@@ -38,7 +42,7 @@ imgFilename(azcam_t *cam, char *fileStr, char *reply)
 
   strcpy(cam->fileName,reply);
 
-  sprintf(reply,"filename=%s",cam->fileName);
+  sprintf(reply,"FILENAME=%s",cam->fileName);
   
   return 0;
 }
@@ -110,9 +114,28 @@ getLastFile(azcam_t *cam, char *reply)
 
   strcpy(cam->lastFile,reply);
   
-  sprintf(reply,"lastfile=%s",cam->lastFile);
+  sprintf(reply,"LASTFILE=%s",cam->lastFile);
   return 0;
 }
+
+// getObsDate - return the observation date
+
+int
+getObsDate(azcam_t *cam, char *reply)
+{
+  char cmdStr[64];
+  
+  strcpy(cmdStr,"mods.obsDate");
+  if (azcamCmd(cam,cmdStr,reply)<0)
+    return -1;
+
+  strcpy(cam->obsDate,reply);
+
+  sprintf(reply,"obsDate=%s",cam->obsDate);
+  return 0;
+  
+}
+
 
 /*!
   \brief Open/Close socket connections to various azcam server clients.

@@ -118,6 +118,7 @@ typedef struct azcam {
   int   fileNum;       //!< Image sequence number of the next file to be written
   int   fileFormat;    //!< File format, one of #STDFITS, #MEF, #BINARY
   char  lastFile[128]; //!< Full name of the last image file written, including path
+  char  obsDate[12];   //!< Observing Date in CCYYMMDD format
 
 } azcam_t;
 
@@ -182,6 +183,7 @@ int imgFilename(azcam_t *, char *, char *);
 int imgPath(azcam_t *, char *, char *);
 int imgExpNum(azcam_t *, int, char *);
 int getLastFile(azcam_t *, char *);
+int getObsDate(azcam_t *, char *);
 
 int setSocket(azcam_t *, int , char *, int , char *);
 int writeImage(azcam_t *, char *, char *);

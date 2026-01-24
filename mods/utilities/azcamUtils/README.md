@@ -1,10 +1,8 @@
 # libazcam - azcam client utility library
 
-Version: 2.0.1
+**Version: 2.0.3**
 
-Last Update: 2025 Aug 3 [rwp/osu]
-
-Heritage: AzCamUtils library for the Y4KCam at the CTIO 1m with a Windows AzCamServer and ARC Gen3 (May 2005)
+**Last Update: 2026 Jan 24 [rwp/osu]**
 
 ## Overview
 
@@ -17,6 +15,8 @@ of the MODS instruments at the Large Binocular Telescope.
 One major change is in the exposure sequence, and provision of robust and reasonably granular reporting
 of exposure state information.  This has simplified the event sequencing that we'll use in the
 `modsCCD` client application.
+
+Heritage is the AzCamUtils library for the Y4KCam at the CTIO 1m with a Windows AzCamServer and ARC Gen3 (May 2005)
 
 Here we've reworked and added features to `libazcam` to update it.
 
