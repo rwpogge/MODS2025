@@ -299,7 +299,7 @@ conda deactivate
 qmake --version 
    -> it should say "Using Qt version 6.6.2 in /usr/lib64", proceed, otherwise "conda deactivate" again
 ```
-Remember to do `conda activate` to restore the anaconda environment after building the GUIs for a machine. F
+Remember to do `conda activate` to restore the anaconda environment after building the GUIs for a machine.
 
 #### iTerm build (all machines)
 
