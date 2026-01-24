@@ -1,8 +1,12 @@
 # MODS2025 Release Notes
 
-**Last Release: 2026 Jan 19**
+**Last Release: 2026 Jan 24**
 
-## Version 1.6.3 - 2025 Jan 22
+## Version 1.6.4 - 2026 Jan 24
+ * Overhauled the `modsUI` instrument setup dashboard. The obsDate is now provided by the `azcam-mods` server using an algorithm that uses the UTC date tag (CCYYMMDD) for images, but between local noon and 5pm MST, uses the UTC date of the coming night so that afternoon (pre-0UTC) calibrations have the same CCYYMMDD as the coming night. SciOps was doing this by hand, now it does it for you.
+ *  Many changes to the `modsUI` instrument dashboard to get all the reporting and display functions working normally. All of the open issues identified on 2026 Jan 19 (v1.6.2 below) have been addressed and tested.
+   
+## Version 1.6.3 - 2026 Jan 22
  * Fixed a nasty segmentation fault bug in the `modsCCD` agent that would crash out if a string was too long for common commands like object et al.  Rebuilt `modsCCD` on all servers
  * Put in extra filtering of "=" in strings intended for the azcam server coming from scripts by filtering at the source in `acqMODS` and `execMODS`. Kind of insidious, but so deep in the structure of the `azcam` server remote interface we have to stop it from getting to the socket.
 
@@ -20,7 +24,6 @@ kinds of new bugs and issues.
  * Updated `modsUI` config files with the new subframe region-of-interst modes for the Archon (`mods/Config/MODSn/ccdroi.tab`).
  * Modified `modsUI` dashboard to limit binning factors to 1 and 2 only (bin factors of 4 and 8 supported by old MODS are not supported by the Archon controllers).
  
-
 ### `modsCCD`
  * made `COMMENT` and `SAVECONFIG` benign no-ops until we can design suitable replacements.
  * added `notifyClient()` call to `doExposure()` in `clientutils.c` to send `EXPSTATUS=INITIALIZING` back to the client initiating a `GO` on exposure setup.  The original timing-loop method is not going to work for the Archons as the state transition is too fast to catch. Tested and released.
