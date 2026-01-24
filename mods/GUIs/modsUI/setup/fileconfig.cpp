@@ -32,7 +32,7 @@ FileConfig::FileConfig(const int &myMODS, QWidget *parent)
 
   QHBoxLayout *obsDateLayout = new QHBoxLayout;
 
-  obsDateEntry = new TextEntry("","",8,this);
+  obsDateEntry = new TextEntry("","UTC",8,this);
   connect(obsDateEntry,SIGNAL(dataReady(const QString &)),
 	  this,SLOT(setObsDate(const QString &)));
 

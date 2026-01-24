@@ -1362,7 +1362,7 @@ void MODSChannel::parse(const QString &cmdStr,
 	acqStatus->setText(expStatusStr,Qt::blue);
 
 	// Update the next file and last file
-
+	
 	sendCmdWait(icHostID,"nextfile",MODS_QUEUE_REQUEST);
 	sendCmdWait(icHostID,"lastfile",MODS_QUEUE_REQUEST);
 

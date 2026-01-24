@@ -256,13 +256,20 @@ ConfigManager::ConfigManager(const QString &myID,
   buttonLayout->addWidget(statusDisplay);
   buttonLayout->addWidget(commLogButton);
 
-  // The masthead has the OSU and LBT logos flanking the page title,
-  // centered
+  // The masthead has the OSU and LBT logos flanking the page title, centered
 
-  QLabel *mainLabel = new QLabel(tr("MODS Instrument Setup"));
+  if (useMODS1 && !useMODS2) {
+    QLabel *mainLabel = new QLabel(tr("MODS1 Instrument Setup"));
+  }
+  else if (useMODS2 && !useMODS1) {
+    QLabel *mainLabel = new QLabel(tr("MODS2 Instrument Setup"));
+  }
+  else {
+    QLabel *mainLabel = new QLabel(tr("MODS Instrument Setup"));
+  }
   mainLabel->setFont(QFont("Helvetica",(2*appFontSize),QFont::Normal));
   QLabel *osuLogo = new QLabel();
-  osuLogo->setPixmap(QPixmap(":/images/OSUlogo_New.png"));
+  osuLogo->setPixmap(QPixmap(":/images/OSULogo_New.png"));
   QLabel *lbtLogo = new QLabel();
   lbtLogo->setPixmap(QPixmap(":/images/LBTlogo.png"));
   
