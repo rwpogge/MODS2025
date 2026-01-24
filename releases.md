@@ -4,7 +4,7 @@
 
 ## Version 1.6.4 - 2026 Jan 24
  * Overhauled the `modsUI` instrument setup dashboard. The obsDate is now provided by the `azcam-mods` server using an algorithm that uses the UTC date tag (CCYYMMDD) for images, but between local noon and 5pm MST, uses the UTC date of the coming night so that afternoon (pre-0UTC) calibrations have the same CCYYMMDD as the coming night. SciOps was doing this by hand, now it does it for you.
- *  Many changes to the `modsUI` instrument dashboard to get all the reporting and display functions working normally. All of the open issues identified on 2026 Jan 19 (v1.6.2 below) have been addressed and tested.
+ *  Many changes to the `modsUI` instrument dashboard to get all the reporting and display functions working normally. All of the open issues identified on the ECD night (2026 Jan 19 - see v1.6.2 below) have been addressed and tested.
    
 ## Version 1.6.3 - 2026 Jan 22
  * Fixed a nasty segmentation fault bug in the `modsCCD` agent that would crash out if a string was too long for common commands like object et al.  Rebuilt `modsCCD` on all servers
