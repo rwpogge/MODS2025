@@ -3,13 +3,6 @@ Original Build: 2009 Feb 24
 
 **Last Build: 2026 Jan 24**
 
-### modsUI version numbering
-
- * Version 0.x - lab development version using Qt3
- * Version 1.x - MODS1 monocular version for commissioning and monocular science with MODS1, using Qt4
- * Version 2.x - MODS1+2 binocular operations version
- * Version 3.x - MODS Archon CCD controller update version and AlmaLinux Port to Qt6
-
 ## Version 3 - MODS Archon and AlmaLinux Port to Qt6
 
 ### Version 3.2.3 - 2026 Jan 24
