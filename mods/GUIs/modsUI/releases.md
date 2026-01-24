@@ -7,7 +7,8 @@ Original Build: 2009 Feb 24
 
 ### Version 3.2.3 - 2026 Jan 24
  * Small patches after live test with MODS1, verified most of the issues found during 2026 Jan 19 are now fixed, tested with `modsCmd`
- * formallized use of UTC time for the obsDate tags across the system
+ * formalized use of UTC time for the obsDate tags across the system
+ * now gets obsDate from the azcam server (via the modsCCD agents) allowing use of date-setting algorithms that embody established practices instead of just reading the UTC clock. If time is between 1200MST (noon) and 1700MST, the obsDate is utcDate+1d, otherwise it is utcDate. That way, afternoon calibrations taken before 1700MST (UTC midnight) have the same UTC date as data taken during the night that follows up until just before local noon the following day. Observers and support staff used to have to set that by hand, with the inevitable human errors near the UTC midnight branch cut, now it is essentially automated.
 
 ### Version 3.2.2 - 2026 Jan 22
  * fixed various bugs associated with configuration setup
