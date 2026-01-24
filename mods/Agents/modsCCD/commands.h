@@ -62,6 +62,7 @@ int cmd_filename(char *, MsgType, char *); // Set/Query the raw data file name p
 int cmd_path    (char *, MsgType, char *); // Set/Query the raw data file path 
 int cmd_expnum  (char *, MsgType, char *); // Set/Query the raw data file counter 
 int cmd_lastfile(char *, MsgType, char *); // Query the name of the last file written
+int cmd_obsdate (char *, MsgType, char *); // Query the current azcam server observing date tag (CCYYMMDD)
 
 // CCD on-chip binning and region-of-interest readout
 
@@ -166,6 +167,7 @@ cmdtab[] = {   //!< global scope command table for this application
   {"path"    ,cmd_path    ,"path /home/data/","Set/query the raw data file path on the azcam server"},
   {"expnum"  ,cmd_expnum  ,"expnum <n>","Set/query the file counter for the *NEXT* image"},
   {"lastfile",cmd_lastfile,"lastfile","Query the name of the last file written to disk"},
+  {"obsdate" ,cmd_obsdate ,"obsdate","Query the observing date tag (CCYYMMDD) used for filenames"},
   {"process" ,cmd_process ,"process <image>","Upload image info for post-processing following write"},
   {"shopen"  ,cmd_shopen  ,"shopen","Open the shutter, stays open until shclose"},
   {"shclose" ,cmd_shclose ,"shclose","Close the shutter"},

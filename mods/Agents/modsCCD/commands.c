@@ -1070,6 +1070,35 @@ cmd_lastfile(char *args, MsgType msgtype, char *reply)
 }
 
 /*!  
+  \brief OBSDATE command - Report the observing date tag (CCYYMMDD)
+  \param args string with the command-line arguments
+  \param msgtype message type if the command was sent as an IMPv2 message
+  \param reply string to contain the command return reply
+  \return #CMD_OK on success, #CMD_ERR if errors occurred, reply contains
+  an error message.
+
+  \par Usage:
+  obsdate
+
+  Reports the observing date tag (CCYYMMDD) used by the azcam server
+  for filenames.
+  
+  \sa cmd_filename()
+*/
+
+int
+cmd_obsdate(char *args, MsgType msgtype, char *reply)
+{
+  // If we have arguments, send it to azcam and let it deal with it
+
+  if (getObsDate(&ccd,reply)<0) // get observing date
+    return CMD_ERR;
+
+  sprintf(reply,"obsDate=%s",ccd.obsDate);
+  return CMD_OK;
+}
+
+/*!  
   \brief OBJECT command - setup for an object exposure
   \param args string with the command-line arguments
   \param msgtype message type if the command was sent as an IMPv2 message
