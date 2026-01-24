@@ -1,7 +1,8 @@
 # azcam-mods
-Version 1.1.11
+ 
+**Version 1.1.12**
 
-Last Update: 2026 Jan 23
+Last Update: 2026 Jan 23 [rwp/osu]
 
 See [Release Notes](releases.md) for details
 

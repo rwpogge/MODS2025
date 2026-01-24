@@ -4,6 +4,10 @@
 
 **Last Update: 2026 Jan 23 [rwp/osu]**
 
+### Version 1.1.12 - 2026 Jan 23b
+ * `mods.py` - changed `obsDate()` to be UTC. Previously was local time from noon-to-noon, but that's not what the LBT Archive assumes. The old routine is still present as `localObsTime()` for reference
+
+
 ### Verison 1.1.11 - 2026 Jan 23
  * `mods.py` - modified `get_lastfile()` method to return the last file found on disk if there is no current last file from the current azcam server session.  This will provide a more robust restart state than "None" even though there is a last image in the raw data folder
 

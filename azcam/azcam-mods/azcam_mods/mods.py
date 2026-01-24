@@ -1633,6 +1633,34 @@ class MODS(object):
 
     def obsDate(self):
         '''
+        Return the UTC observing date string in CCYYMMDD format
+
+        Returns
+        -------
+        string: UTC observing date in CCYYMMD format, see description.
+
+        Description
+        -----------        
+        Returns the observing date in CCYYMMDD format.  We define the
+        observing date in the UTC time system. This works most times for
+        the LBTO site because the local timezone is UT-7h and stays on
+        standard time all year round.  
+        
+        We use this in the filenames of raw data and logs for MODS.
+
+        If UTC is awkward, consider using localObsDate()
+        
+        See Also
+        --------
+            localObsDate()
+        
+        '''
+        
+        return (datetime.datetime.now(datetime.timezone.utc)).strftime("%Y%m%d")
+
+
+    def localObsDate(self):
+        '''
         Return the observing date string in CCYYMMDD format
 
         Returns
@@ -1641,16 +1669,14 @@ class MODS(object):
 
         Description
         -----------        
-        Returns the observing date in CCYYMMDD format.  We define the
-        an "observing date" as running from noon to noon local time.
+        Returns the observing date in CCYYMMDD format.  This method defines the
+        an "observing date" as running from noon to noon LOCAL time.
         This ensures that all data taken for a given night have 
         contiguous filenames that do not change at local or UT midnight.
           
         For example, the observing date for the night starting at sunset
         on 2025 July 13 and ending at sunrise on 2025 July 14 is `20250714`.
         
-        We use this in the filenames of raw data and logs for MODS.
-
         Important
         ---------
         This function assumes the system clock has been set to localtime.
@@ -1662,6 +1688,7 @@ class MODS(object):
             return (datetime.datetime.now().today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
         else:
             return datetime.datetime.now().today().strftime("%Y%m%d")
+
 
     #-------------------------------------------------------------------------
     #
