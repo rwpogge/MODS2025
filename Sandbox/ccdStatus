@@ -4,6 +4,12 @@
 #
 # usage: ccdStatus
 #
+# output:
+#   mods1blue azcam running mods modsCCD stopped none
+#
+# Run via ssh using
+#   set statStr = `ssh -i /path/to/key mods1blue /home/dts/bin/ccdStatus`
+#
 # R. Pogge (pogge.1@osu.edu)
 # OSU Astronomy Department
 # 2026 Jan 15 - first version
