@@ -62,8 +62,8 @@ my $redHost = "192.168.139.131";
 my $blueHost = "192.168.139.132";
 
 if ($hostID eq "mods2") {
-    my $redHost = "192.168.139.231";
-    my $blueHost = "192.168.139.232";
+    $redHost = "192.168.139.231";
+    $blueHost = "192.168.139.232";
 }
 
 # Initialize curses
