@@ -2,7 +2,7 @@
 
 <b>Last Update: 2026 Jan 25 [rwp/osu]</b>
 
-## 2026 Jan 20: modsStatus.pl and ccdStatus scripts
+## 2026 Jan 25: modsStatus.pl and ccdStatus scripts
  * Updated `modsStatus.pl` to version 2 to include `azcam-mods` and `modsCCD` status, cleaned up display
  * Added `ccdStatus` csh script to go on the Archon servers to provide remote status info for `azcam-mods` and `modsCCD`
 
