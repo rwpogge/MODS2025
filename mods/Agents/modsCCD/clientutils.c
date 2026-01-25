@@ -666,3 +666,4 @@ readTemps(azcam_t *cam, char *reply)
 
 // Other utilities we need?
 
+//---------------------------------------------------------------------------
