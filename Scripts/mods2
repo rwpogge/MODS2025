@@ -25,6 +25,7 @@
 #   2025 Sep 26 - Archon CCD controller version for MODS2 [rwp/osu]
 #   2025 Oct 03 - First full Archon version release [rwp/osu]
 #   2025 Nov 25 - resize out of place, fixed [rwp/osu]
+#   2026 Jan 25 - added azcam and modsCCD status [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -84,7 +85,7 @@ endif
 # If we're already in the expected tmux session, do nothing otherwise attach
 
 if ( ! $?TMUX) then
-   resize -s 42 128 >& /dev/null
+   resize -s 45 128 >& /dev/null
    tmux select-pane -t ${tmuxID}:1.2
    tmux attach-session -t ${tmuxID}
 endif   
