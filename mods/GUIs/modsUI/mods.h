@@ -172,8 +172,10 @@
 // Application Default Base Fonts
 
 #define MODS_BASE_FONT "Helvetica" //!< Base font size in points
-#define MODS_BASE_FONTSIZE      12 //!< Base font size in points
-#define MODS_MED_FONTSIZE       14 //!< Medium font size in points
+//#define MODS_BASE_FONTSIZE      12 //!< Base font size in points
+//#define MODS_MED_FONTSIZE       14 //!< Medium font size in points
+#define MODS_BASE_FONTSIZE      10 //!< Base font size in points
+#define MODS_MED_FONTSIZE       12 //!< Medium font size in points
 
 // Runtime Flags - place to enable/disable features
 
