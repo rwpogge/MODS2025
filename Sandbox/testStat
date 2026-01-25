@@ -1,4 +1,0 @@
-#!/bin/csh -f
-
-set statStr = `ssh -i /lbt/lbto/mods/keys/id_ecdsa_mods mods1blue /home/dts/Scripts/ccdStatus`
-printf "${statStr}\n"
