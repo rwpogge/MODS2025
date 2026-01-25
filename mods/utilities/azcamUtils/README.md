@@ -1,8 +1,8 @@
 # libazcam - azcam client utility library
 
-**Version: 2.0.3**
+**Version: 2.0.4**
 
-**Last Update: 2026 Jan 24 [rwp/osu]**
+**Last Update: 2026 Jan 25 [rwp/osu]**
 
 ## Overview
 
