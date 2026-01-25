@@ -1,0 +1,43 @@
+#!/bin/csh -f
+#
+# ccdStatus - show status and user running modsCCD and azcam-mods
+#
+# usage: ccdStatus
+#
+# R. Pogge (pogge.1@osu.edu)
+# OSU Astronomy Department
+# 2026 Jan 15 - first version
+#
+# Modification History:
+#
+#---------------------------------------------------------------------------
+
+set modsHost=`hostname`
+
+# Is azcam running?
+
+ps h -C ipython | grep azcam_mods >& /dev/null
+if ($status) then
+   set azState = "stopped"
+   set azUser = "none"
+else
+   set azState = "running"
+   set azUser=`ps o user,cmd h -C ipython | grep azcam_mods`
+endif
+
+# Is modsCCD running?
+
+ps h -C modsCCD >& /dev/null
+if ($status) then
+   set mcState = "stopped"
+   set mcUser = "none"
+else
+   set mcState = "running"
+   set mcUser=`ps eo user h -C modsCCD`
+endif
+
+# Return status
+
+printf "${modsHost} azcam ${azState} ${azUser[1]} modsCCD ${mcState} ${mcUser}\n"
+
+exit 0
