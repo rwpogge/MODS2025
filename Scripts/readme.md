@@ -233,34 +233,47 @@ the to the ISP user account (lbto).
 
 Screenshot of a live test of the MODS1 instrument server admin tmux
 session.  This is the session that is created/attached by the new
-version `mods1` startup script.  It is shown after firing up MODS1's
-mechanism servers.
+version `mods1` startup script. It is shown with nearly all of the
+MODS1 system, including the Archon controllers and modsCCD agents,
+running, but the modsUI GUI not yet started.  This shows that
+the various programs were started by the `mods` support user.
 
 The upper left panel is running `modsStatus.pl`, a persistent status
-display that updates every 1-2 seconds.  The upper right panel is
+display that updates every 2-3 seconds.  The upper right panel is
 where user processes (except modsUI) are executed, showing whatever
 they print to the screen during startup or shutdown without.  The
-bottom panel is where user's type command (like `mods1` to start/stop
-services, or `isisCmd` to send commands to the data-taking system).
+bottom panel is where a support user would type simple commands,
+like `mods1` to start/stop services, or `isisCmd` to send low-level
+commands to the data-taking system.  It is not meant as a general
+terminal window. If you need to do more complex tasks, like editing
+slitmask tables and the like, login to the mods1 or mods2 server
+machine with ssh and use a regular terminal.
 
 This screenshot was taken of a VPN ssh session from the author's home
 computer logged into the `mods1` server at LBT.  Because it works with
-a terminal, not a screen share, it is fast and sharp.
+a terminal, not a remote desktop app like x2go or vncviewer, it is
+very fast and sharp, with very little network lag.
 
 ![mods1 server admin tmux session by the mods support user](Screenshots/mods1_mods.png)
 
 ### `modsAdmin` monitor session
 
 This shows a `modsAdmin` tmux session launched by the `lbto` user
-while remotely logged into the `robs1` Linu workstation on the
+while remotely logged into the `robs1` Linux workstation on the
 mountain.  The two upper panels show the live MODS server status
 windows for MODS1 (left) and MODS2 (right).  These panes are remotely
 logged into the respective MODS servers via ssh.
 
-The lower pane is a **local** command window as user `lbto@robs1`, it is
-yellow showing that it is the active pane, with a Linux prompt ready to
-receive commands.
+The lower pane is a **local** command window running (in this example)
+on `robs1` as user `lbto`.  Test appears yellow to indicate that this
+is the active pane, with the usual Linux command prompt the lbto user would
+see in a terminal shell on robs1.
+
+The purpose of `modsAdmin` is a quick-look status display for the support
+astronomer to make sure all MODS system are running on both instruments,
+and a quick readout of the dewar temperature and pressure.  While it can
+be used for low-level admin commands for a MODS, it is not meant to be used
+for tasks like editing MODS files, running observing scripts, etc.
 
 ![modsAdmin tmux session live test by user lbto@robs1](Screenshots/modsAdmin_lbto_robs1.png)
-
 
