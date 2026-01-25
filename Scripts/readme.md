@@ -247,7 +247,7 @@ This screenshot was taken of a VPN ssh session from the author's home
 computer logged into the `mods1` server at LBT.  Because it works with
 a terminal, not a screen share, it is fast and sharp.
 
-![mods1 server admin tmux session with AGW on and just turned AGC off](Screenshots/mods1_agwOn.png)
+![mods1 server admin tmux session by the mods support user](Screenshots/mods1_mods.png)
 
 ### `modsAdmin` monitor session
 
