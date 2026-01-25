@@ -277,3 +277,22 @@ azcamInfo(azcam_t *cam)
 
 }
 
+/*!
+  \brief Replace = in strings for azcam with spaces
+  \param str string to be fixed
+
+  Removes = from any string sent to the azcam server to avoid
+  problems with the remote command interpreter which sees
+  the = as a separator in a python argument (e.g., pyFunc(arg1=a,arg2=b))
+
+*/
+
+void
+replaceEq(char* str)
+{
+  while (*str != '\0') {
+    if (*str == '=')
+      *str = ' ';
+    str++;
+  }
+}

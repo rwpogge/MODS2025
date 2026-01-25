@@ -230,5 +230,6 @@ int setTemp(azcam_t *, float , char *);
 
 void initAzCam(azcam_t *);
 void azcamInfo(azcam_t *);
+void replaceEq(char *);
 
 #endif // AZCAM_H

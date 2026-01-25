@@ -335,6 +335,10 @@ azcamCmd(azcam_t *cam, char *cmdStr, char *reply)
 
   sscanf(msgStr,"%s %[^\n]",status,msgBody);
 
+  // Clean any = in msgBody
+
+  replaceEq(msgBody);
+  
   // strip off any \r or \n left from the server stream reply
   
   msgBody[strcspn(msgBody, "\r\n")] = 0;
