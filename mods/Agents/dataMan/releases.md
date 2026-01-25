@@ -1,8 +1,14 @@
 # dataMan Release Notes
 
-**Latest Version: v1.2.1, 2026 Jan 20**
+**Latest Version: v1.2.2, 2026 Jan 25**
 
 ## Released Versions (v1.0 and later)
+
+### 2026 Jan 25 - v1.2.2
+LBT uses UTC date for all files in the Archive, so changed `obsDate()` to be the same as we use in `azcam-mods` in the `MODS` class definition.
+
+Keeping the old noon-to-noon method as `locObsDate()`, like we did in `azcam-mods`
+
 
 ### 2026 Jan 20 - v1.2.1
 Updates from live testing on-sky during the Jan 18/19 ECD night and header checks by Trieste LBT Archive

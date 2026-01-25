@@ -36,6 +36,7 @@ Modification History
  * 2026 Jan 02 - major overhaul of otmProc() after discoveries from live testing [rwp/osu]
  * 2026 Jan 14 - added fixMisc() method with other header issues from live testing [rwp/osu]
  * 2026 Jan 20 - additions to fixMisc() following ECD time and archive review [rwp/osu]
+ * 2026 Jan 25 - changed obsDate() to be the LBTO UTC-style obsDate algorithm [rwp/osu]
  
 '''
 
@@ -44,7 +45,6 @@ import sys
 import socket
 import threading
 import datetime
-import pytz
 
 # numpy for arrays
 
@@ -62,7 +62,7 @@ from astropy.table import Table
 
 from astropy import units as u
 from astropy.coordinates import SkyCoord, EarthLocation, Angle
-from astropy.time import Time
+from astropy.time import Time, TimeDelta
 
 # pathlib for path handling
 
@@ -119,9 +119,14 @@ def loadConfig(cfgFile):
         raise ValueError(f"Runtime configuration file {cfgFile} does not exist")
 
 
-def obsDate():
+def obsDate(utcOff=7):
     '''
     Return the observing date string
+
+    Parameters
+    ----------
+    utcOff : float, optional
+        Local offset from UT (e.g., UT = local + utcOff). The default is 7 for US/Arizona time
 
     Returns
     -------
@@ -131,14 +136,50 @@ def obsDate():
     Description
     -----------        
     Returns the observing date in CCYYMMDD format.  We define the
-    an "observing date" as running from noon to noon local time.
-    
-    For example, the observing date for the night starting at sunset
-    on 2025 Dec 15 and ending at sunrise on 2025 Oct 16 is `20251015`.
+    an "observing date" at LBT in UTC time, but switch to the *next* night's
+    UTC date if the time is between noon and 24-utcOff (1700 MST) so that
+    afternoon calibrations have the same filename pattern as data taken on the
+    night that follows.
 
     We use obsDate for logs and data files.
+    
+    If UTC is awkward, consider using locObsDate()
+        
+    See also: locObsDate() for a local noon-to-noon obsDate implementation
     '''
+    utcNow = Time.now()
+    locNow = Time(datetime.datetime.now())
+    locHour = float(locNow.strftime("%H"))
+    if ((locHour>=12) and (locHour<(24-utcOff))):
+        return (utcNow+TimeDelta(1.0*u.day)).strftime("%Y%m%d")
+    else:
+        return utcNow.strftime("%Y%m%d")
+    
 
+def locObsDate():
+    '''
+    Return the observing date string in CCYYMMDD format
+
+    Returns
+    -------
+    string: observing date in CCYYMMD format, see description.
+
+    Description
+    -----------        
+    Returns the observing date in CCYYMMDD format.  This method defines the
+    an "observing date" as running from noon to noon LOCAL time.
+    This ensures that all data taken for a given night have 
+    contiguous filenames that do not change at local or UT midnight.
+          
+    For example, the observing date for the night starting at sunset
+    on 2025 July 13 and ending at sunrise on 2025 July 14 is `20250714`.
+        
+    Important
+    ---------
+    This function assumes the system clock has been set to localtime.
+    If the system clocks are set to UTC, this fails badly because of
+    how timedelta() works.    
+    '''
     if float(datetime.datetime.now().strftime("%H")) < 12.0:  # is it before noon?
         return (datetime.datetime.now().today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
     else:
