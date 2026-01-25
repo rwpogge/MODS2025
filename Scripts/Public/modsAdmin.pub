@@ -126,7 +126,7 @@ fi
 if [ -n "$TMUX" ]; then
    echo "Currently in the ${tmuxID} session"
 else
-   resize -s 42 128 &> /dev/null
+   resize -s 45 128 &> /dev/null
    tmux select-pane -t ${tmuxID}:1.2
    tmux attach-session -t ${tmuxID}
 fi
