@@ -5,6 +5,7 @@
 ## 2026 Jan 25: modsStatus.pl and ccdStatus scripts
  * Updated `modsStatus.pl` to version 2 to include `azcam-mods` and `modsCCD` status, cleaned up display
  * Added `ccdStatus` csh script to go on the Archon servers to provide remote status info for `azcam-mods` and `modsCCD`
+ * Added `binoMODS` csh script to `Public/` used to give a fast simultaneous response to prompts by `acqMODS` or `execMODS` run in binocular mode with `acq/execBinoMODS`.  This is a convenience function for observers.
 
 
 ## 2026 Jan 20: go_mods script
