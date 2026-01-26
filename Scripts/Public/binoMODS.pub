@@ -1,0 +1,107 @@
+#!/bin/csh
+#
+# binoMODS - send response to both or either MODS in bino acq/exec
+#
+# Usage:
+#   binoMODS response
+# or
+#   binoMODS [mods1|mods2] response
+#
+# Overview:
+#   acqBinoMODS and execBinoMODS run on each MODS and sometimes
+#   ask for keyboard response.  This command can be issued from
+#   the modsTerm tmux session and respond to both simultaneously
+#   or one or other MODS script.
+#
+#   It is a convenience function that is more efficient than
+#   clicking in the window, typing, then clicking the other. It
+#   can also help keep execution more parallel.
+#
+#   Should be run from inside the modsTerm tmux session.
+#
+#   If you are not in a modsTerm, or none is running, it will give
+#   instructions on what to do.  It resizes the terminal on launch to
+#   a good size for the session, preset below.
+#
+# Author:
+#   R. Pogge, OSU Astronomy Dept.
+#   pogge.1@osu.edu
+#   Original: 2026 Jan 26
+#
+# Modification History:
+#
+#---------------------------------------------------------------------------
+
+setenv modsBin /lbt/lbto/mods/bin
+setenv configDir /lbt/lbto/mods/.config
+
+set prog=`basename $0`
+
+# process the command line
+
+if ($#argv == 1) then
+   set respStr = $argv[1]
+   set whichMODS = 0
+else if ($#argv == 2) then
+   set whichMODS = $argv[1]
+   set respStr = $argv[2]
+else
+   printf "\nUsage: binoMODS [1|2] str\n"
+   printf "\nSends 'str' to MODS observing scripts in response to prompts\n"
+   printf "during binocular MODS observing. Without 1 or 2, sends to both\n"
+   printf "MODS scripts simultanously.\n"
+   printf "\nExamples:\n"
+   printf "  binoMODS str\n"
+   printf "    sends 'str' (no spaces) to both MODS panes in modsTerm\n"
+   printf "  binoMODS 1 str\n"
+   printf "    sends 'str' only to the MODS1 pane in modsTerm\n"
+   printf "\nExamples of responses to prompts from acqMODS or execMODS:\n"
+   printf "  enter\n"
+   printf "  abort/X\n"
+   printf "  retry/R\n"
+   printf "  ignore/I\n\n"
+   exit 0
+endif
+
+# Do we have a modsTerm tmux session running?
+
+tmux has-session -t modsTerm >& /dev/null
+if ($status) then
+   # There is no tmux session named modsTerm...
+   printf "${prog} needs to be run in a modsTerm tmux session but none is running\n"
+   printf "    Type 'modsTerm' to start a modsTerm tmux session and try again.\n"
+   exit 1
+else 
+   # There IS a tmux session named modsTerm, but are we in it?
+   if ( ! $?TMUX ) then
+      # that would be a no...
+      printf "${prog} needs to be run in a modsTerm tmux session, but you're not in it.\n"
+      printf "   Either go to the active modsTerm tmux window on the desktop, or\n"
+      printf "   type 'modsTerm' to attach to the current modsTerm session\n"
+      printf "   and try again.\n"
+      exit 1
+   endif
+endif
+
+# If "enter" or recognized aliases are respStr, we just sent C-m (respStr is cleared)
+
+set testStr=`echo $respStr | tr '[:upper:]' '[:lower:]'`
+if ( $testStr == "enter" || $testStr == "ret" || $testStr == "return") then
+   set respStr = ""
+endif
+
+#
+# We are attached to the modsTerm tmux session.  Send respStr as-is to
+# one or both MODS panes
+#
+
+if ( $whichMODS == 0 ) then
+    tmux send-keys -t modsTerm:1.0 ${respStr} C-m
+    tmux send-keys -t modsTerm:1.1 ${respStr} C-m
+else if ( $whichMODS == 1 ) then
+    tmux send-keys -t modsTerm:1.0 ${respStr} C-m
+else
+    tmux send-keys -t modsTerm:1.1 ${respStr} C-m
+endif
+
+exit 0
