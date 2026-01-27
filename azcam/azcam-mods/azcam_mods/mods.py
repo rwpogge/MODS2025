@@ -4,7 +4,7 @@ Defines the MODS class for azcam
 Initial version by Mike Lesser (UA ITL)
 Later versions by Rick Pogge (OSU Astronomy)
 
-Updated: 2026 Jan 24 [rwp/osu]
+Updated: 2026 Jan 26 [rwp/osu]
 
 Additions:
     expose(): take an exposure (async)
@@ -1096,12 +1096,10 @@ class MODS(object):
         
         if fileStr is not None and len(fileStr) > 0:
             dataPath,rootName,expNum = self.modsFilename(fileStr)
-            autoName = True
         else:
             # build the default name based on obsDate (CCYYMMDD at local noon)
             rootName = f"{self.modsID.lower()}.{self.obsDate()}."
             expNum = 1
-            autoName = True
             
         # rootnames for MODS have to end with ., make sure it does
         
@@ -1113,21 +1111,18 @@ class MODS(object):
         #   1) if this was a user-requested filename, exit and scold them for their bad choice
         #   2) if auto-generated using obsDate, make one attempt to find the next unused name
         
-        reqFilename = os.path.join(azcam.db.tools["exposure"].folder,
-                               f"{rootName}{expNum:04d}.fits")
+        reqFilename = os.path.join(azcam.db.tools["exposure"].folder,f"{rootName}{expNum:04d}.fits")
+
+        # reqFilename exists, what is the next safe name
         if os.path.exists(reqFilename):
-            if not autoName:
-                return f"ERROR requested filename {reqFilename} would overwrite existing image file - try again"
+            testName = os.path.join(azcam.db.tools["exposure"].folder,f"{rootName}*.fits")
+            flist = glob.glob(testName)
+            flist.sort()
+            if len(flist)>0:
+                tp,tr,exn = self.modsFilename(flist[-1])
+                expNum = exn + 1
             else:
-                curPath = azcam.db.tools["exposure"].folder
-                curRoot = azcam.db.tools["exposure"].root
-                flist = glob.glob(f"{os.path.join(curPath,curRoot)}*.fits")
-                flist.sort()
-                if len(flist)>0:
-                    tp,tr,exn = self.modsFilename(flist[-1])
-                    expNum = exn + 1
-                else:
-                    return f"ERROR filename {reqFilename} would overwrite existing file - check and try again"
+                return f"ERROR filename {reqFilename} would overwrite existing file - check and try again"
                 
         # we have a new, unused image filename, commit
         
