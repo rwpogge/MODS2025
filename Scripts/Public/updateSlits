@@ -10,10 +10,10 @@
 # tables by reloading their respective 'slitmask.tab' files. This
 # needs to be done after a slit mask exchange.
 #
-# This script does this for both MODS at the same time. It is harmless
-# if it is run on an MMC server but the slit mask table hasn't changed.
+# updateSlits does this for both MODS at the same time. It is harmless
+# if it is run on an MMC server if the slit mask table hasn't changed.
 #
-# This is a convenience function, meant to be run only by instrument
+# This is a convenience function meant to be run only by instrument
 # support scientists and techs responsible for exchanging slit masks.
 #
 # Author:

@@ -7,6 +7,10 @@
 # or
 #   binoMODS [mods1|mods2] response
 #
+# A special command is
+#   binoMOD abort
+# which sends a Ctrl+C to both windows to hard abort both scripts.
+#
 # Overview:
 #   acqBinoMODS and execBinoMODS run on each MODS and sometimes
 #   ask for keyboard response.  This command can be issued from
@@ -29,6 +33,7 @@
 #   Original: 2026 Jan 26
 #
 # Modification History:
+#   2026 Jan 27 - added "halt" directive to send Ctrl+C to one or both panes
 #
 #---------------------------------------------------------------------------
 
@@ -55,11 +60,16 @@ else
    printf "    sends 'str' (no spaces) to both MODS panes in modsTerm\n"
    printf "  binoMODS 1 str\n"
    printf "    sends 'str' only to the MODS1 pane in modsTerm\n"
+   printf "  binoMODS halt\n"
+   printf "    send Ctrl+C to immediately halt execution of both scripts\n"
    printf "\nExamples of responses to prompts from acqMODS or execMODS:\n"
    printf "  enter\n"
-   printf "  abort/X\n"
-   printf "  retry/R\n"
-   printf "  ignore/I\n\n"
+   printf "  abort or X to respond to Abort\n"
+   printf "  retry or R to respond to Retry\n"
+   printf "  ignore or I to respond to Ignore\n"
+   printf "\nA special directive:\n"
+   printf "  binoMODS halt\n"
+   printf "Will send both scripts Ctrl+C to immediately halt both MODS scripts.\n\n"
    exit 0
 endif
 
@@ -83,11 +93,20 @@ else
    endif
 endif
 
-# If "enter" or recognized aliases are respStr, we just sent C-m (respStr is cleared)
+# Test special response strings
 
 set testStr=`echo $respStr | tr '[:upper:]' '[:lower:]'`
+
+# If "enter" or recognized aliases are respStr, we just sent C-m (respStr is cleared)
+
 if ( $testStr == "enter" || $testStr == "ret" || $testStr == "return") then
    set respStr = ""
+endif
+
+# If "halt", sends Ctrl+C to immediately halt (abort) script execution
+
+if ( $testStr == "halt" ) then
+   set respStr = "C-c"
 endif
 
 #

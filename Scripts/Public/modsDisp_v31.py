@@ -9,17 +9,17 @@
 #
 # Description:
 #
-#   Watches MODS-specific files in the watchDir directory where
-#   incoming FITS images are staged for archiving every watchTime
-#   seconds.  The MODS data handling agents (via the modslogger
-#   script) create files with names like MODS1B.new, MODS2R.new, etc. in
-#   watchDir containing the names of the most recent images written by
-#   the MODS1 blue and red channels, respectively.  modsDisp watches
-#   these files and looks for changes to the creation time (st_ctime
-#   from os.stat).  If one of the watched files changes it is opened
-#   and the name of the new file extracted.  If this file (a) exists
-#   and (b) is a readable FITS file, it is sent to a named DS9 window
-#   for display based on the contents of the INSTRUME header keyword.
+#   Watches MODS-specific files in the raw data directory where
+#   incoming FITS images are staged for archiving. The MODS dataMan
+#   data manager agents create files with names like MODS1B.new,
+#   MODS2R.new, etc. in the raw data directory with names of the most
+#   recent images written by each of the MODS1 and MODS2 channels.
+#   modsDisp watches these files and looks for changes to the creation
+#   time (st_ctime from os.stat).  If one of the watched files changes
+#   it is opened and the name of the new file extracted.  If this file
+#   (a) exists and (b) is a readable FITS file, it is sent to a named
+#   ds9 window for display based on the contents of the INSTRUME
+#   header keyword.
 #
 #   modsDisp will also print onto its terminal screen useful info from
 #   the FITS headers to allow the observer to know which images are
