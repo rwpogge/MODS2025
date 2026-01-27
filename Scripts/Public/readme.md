@@ -10,7 +10,7 @@ shared `/lbt/lbto/mods/bin` path.
 ## Obsering Scripts
 
 ### `modsTerm`
-```
+<pre>
 Usage:
   modsTerm [start|attach|stop|kill]
 
