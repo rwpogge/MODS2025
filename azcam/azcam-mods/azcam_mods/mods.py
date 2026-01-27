@@ -1092,12 +1092,12 @@ class MODS(object):
         See also: set_path(), set_fileroot(), set_expnum()
         '''
 
-        # if no filename given, autogenerate a filename, otherwise use fileStr
+        # if no filename given, create a name based on the obsDate and start numbering at 1
         
         if fileStr is not None and len(fileStr) > 0:
             dataPath,rootName,expNum = self.modsFilename(fileStr)
         else:
-            # build the default name based on obsDate (CCYYMMDD at local noon)
+            # build the default name based on obsDate
             rootName = f"{self.modsID.lower()}.{self.obsDate()}."
             expNum = 1
             
@@ -1105,15 +1105,12 @@ class MODS(object):
         
         if not rootName.endswith('.'): rootName += '.'
 
-        # Validation
-        # Build the full filename with path and make sure does not already exist in the
-        # raw data folder.  If the requested name exists, two options:
-        #   1) if this was a user-requested filename, exit and scold them for their bad choice
-        #   2) if auto-generated using obsDate, make one attempt to find the next unused name
+        # Build the full qualified filename requested from path, root, and expNum
         
         reqFilename = os.path.join(azcam.db.tools["exposure"].folder,f"{rootName}{expNum:04d}.fits")
 
-        # reqFilename exists, what is the next safe name
+        # If reqFilename already exists, what is the next safe expNum for files?
+
         if os.path.exists(reqFilename):
             testName = os.path.join(azcam.db.tools["exposure"].folder,f"{rootName}*.fits")
             flist = glob.glob(testName)
