@@ -1096,7 +1096,7 @@ class MODS(object):
         
         if fileStr is not None and len(fileStr) > 0:
             dataPath,rootName,expNum = self.modsFilename(fileStr)
-            autoName = False
+            autoName = True
         else:
             # build the default name based on obsDate (CCYYMMDD at local noon)
             rootName = f"{self.modsID.lower()}.{self.obsDate()}."

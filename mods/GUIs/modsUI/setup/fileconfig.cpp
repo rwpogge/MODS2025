@@ -340,6 +340,11 @@ void FileConfig::parse(const QString &remHost, const QString &cmdStr,
       else if (haveObsDate) {
 	obsDate = newObsDate;
 	obsDateEntry->setText(obsDate);
+	blueObsDate = newObsDate;
+	blueDateDisplay->setText(blueObsDate);
+	redObsDate = newObsDate;
+	redDateDisplay->setText(redObsDate);
+	setFileNames();
       }
     }
   }
@@ -477,12 +482,12 @@ void FileConfig::setRedNum(const QString &numStr)
 void FileConfig::setFileNames()
 {
   if (haveBlueName && haveRedName) {
-    QString blueCmd = QString("FILENAME %1.%2.%3"
-			      ).arg(bluePrefix).arg(blueObsDate).arg(blueFileNum);
+    //QString blueCmd = QString("FILENAME %1.%2.%3").arg(bluePrefix).arg(blueObsDate).arg(blueFileNum);
+    QString blueCmd = QString("FILENAME %1.%2").arg(bluePrefix).arg(blueObsDate);
     emit cmdReady(modsBCHost[modsID],blueCmd);
 
-    QString redCmd = QString("FILENAME %1.%2.%3"
-			     ).arg(redPrefix).arg(redObsDate).arg(redFileNum);
+    //QString redCmd = QString("FILENAME %1.%2.%3").arg(redPrefix).arg(redObsDate).arg(redFileNum);
+    QString redCmd = QString("FILENAME %1.%2").arg(redPrefix).arg(redObsDate);
     emit cmdReady(modsRCHost[modsID],redCmd);
   }
   else {
