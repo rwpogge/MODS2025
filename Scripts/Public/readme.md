@@ -277,3 +277,15 @@ Used by support personnel to check mechanism integrity.  Error
 message (e.g., indication of PWRFLT condition) or timeouts
 can be used to suggest corrective actions.
 
+### `imcsTools`
+```
+Usage: imcsTools {mods1|mods2} {start|stop}
+```
+Start or stop the MODS IMCS engineering GUIs.  Execution permission
+is limited to the `lbto` support user.
+
+Launches the IMCS "radar-screen" and "quadrant counter" GUIs on
+the named machine.  Should only be used as needed, since the
+GUIs are designed with big fonts so we can read them when
+working on the hardware.
+
