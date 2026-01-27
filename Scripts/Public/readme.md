@@ -17,7 +17,7 @@ Usage:
 where:
   start or attach - start or (re)attach to a modsTerm session
   stop or kill - stop a user's running modsTerm session
-```
+</pre>
 `modsTerm` launches a tmux session used to run binocular MODS observing scripts with `acqBinoMODS` or `execBinoMODS`
 
 While it may be invoked by itself, if the session is not running
@@ -57,12 +57,12 @@ logged in as the same user on the same machine as it
 was started in.
 
 ### `acqBinoMODS`
-```
+<pre>
 Usage:
    acqBinoMODS modsScript.acq
 or
    acqBinoMODS mods1Script.acq mods2Script.acq
-```
+</pre>
 Executes a binocular MODS target acquisition.  acqBinoMODS takes one
 or two command-line arguments: the name(s) of acquisition script(s) to
 execute in binocular context.
@@ -76,12 +76,12 @@ the order `MODS1 MODS2` ("fraternal twinning").
 Must be run in an active `modsTerm` session.
 
 ### `execBinoMODS`
-```
+<pre>
 Usage:
    execBinoMODS mods.obs
 or
    execBinoMODS mods1.obs mods2.obs
-```
+</pre>
 Executes binocular MODS data acquisition or instrument configuration
 scripts.  execBinoMODS takes one or two command-line arguments: the
 name(s) of observing script(s) to execute in binocular context.
@@ -95,14 +95,14 @@ the order `MODS1 MODS2` ("fraternal twinning").
 Must be run in an active `modsTerm` session.
 
 ### `binoMODS`
-```
+<pre>
 Usage:
    binoMODS response
 or
    binoMODS [1|2] response
 or
    binoMODS halt
-```
+</pre>
 Binocular MODS target acquisition and science observing scripts are
 executed using `acqBinoMODS` and `execBinoMODS` inside a `modsTerm`.
 
@@ -140,7 +140,7 @@ Ctrl+C will immediately halt script execution.
 
 ### `modsAlign`
 
-```
+<pre>
 Usage: modsAlign [options] maskImage fieldImage [mmsFile]
 
 Where:
@@ -161,12 +161,12 @@ Options:
    --turbo turbo mode, don't ask questions, except at the end
    --maxiter N iterate MOS fit up to N times [default: 1 = don't iterate]
    --reject S  reject S*sigma outliers [default: 4.0] (requires --maxiter > 1)
-```
+</pre>
 Runs the `modsAlign` program for target acqusition in long-slit and multi-slit masks.
 
 ### `modsDisp`
 
-```
+<pre>
 Usage: modsDisp [options]
 
 Options:
@@ -180,8 +180,7 @@ Options:
   --debug           show verbose debugging info.
 Notes:
   The default raw-data directory path may be re-defined using the MODS_RAWDIR environment variable.
-  
-```
+</pre>
 MODS auto display program run during observing to watch the raw data directory and
 displays new MODS image as they arrive (within a few seconds).
 
@@ -189,23 +188,23 @@ displays new MODS image as they arrive (within a few seconds).
 
 ### `mods1` and `mods2`
 
-```
+<pre>
 Usage: mods1 {start|stop} {modsUI|gui}
        mods1 {status}
        mods1 {temps}
-```
+</pre>
 Used to start/stop the `modsUI` dashboard (aka GUI), get quick status, and
 read temperatures for mods1 or mods2
 
 ### `modsAdmin`
-```
+<pre>
 Usage:
    modsAdmin [start|attach|stop|kill]
 
 where:
    start or attach - start new session or (re)attach to modsAdmin session
    stop or kill - stop any running modsAdmin sessions
-```
+</pre>
 This script launches a tmux session that will be used to remotely
 display MODS1/2 system status, and provide a local terminal shell for
 support users to issue low-level commands to the MODS instruments via
@@ -241,9 +240,9 @@ do so in a separate terminal (e.g., using the `go_mods` convenience
 command).
 
 ### `updateSlits`
-```
+<pre>
 Usage: updateSlits
-```
+</pre>
 Instructs the MMC servers for each MODS to update the slit mask tables
 by reloading their respective 'slitmask.tab' files. This needs to be
 done after a slit mask exchange.
@@ -255,9 +254,9 @@ This is a convenience function meant to be run only by instrument
 support scientists and techs responsible for exchanging slit masks.
 
 ### `pingMODS1` and `pingMODS2`
-```
+<pre>
 Usage: pingMODS1
-```
+</pre>
 Ping all of the MODS1 or MODS2 networked hardware systems (WAGO units and
 Comtrol port servers) to verify all are online and communicating.
 
@@ -267,9 +266,9 @@ subsystem.  No response from the IUB WAGO (first one checked) could
 mean either network or power to the entire instrument is disabled.
 
 ### `pokeMODS1` and `pokeMODS2`
-```
+<pre>
 Usage: pokeMODS1
-```
+</pre>
 Does a hardware level status query of every mechanism individually
 for the named MODS instrument using the `isisCmd` command.
 
@@ -278,9 +277,9 @@ message (e.g., indication of PWRFLT condition) or timeouts
 can be used to suggest corrective actions.
 
 ### `imcsTools`
-```
+<pre>
 Usage: imcsTools {mods1|mods2} {start|stop}
-```
+</pre>
 Start or stop the MODS IMCS engineering GUIs.  Execution permission
 is limited to the `lbto` support user.
 
