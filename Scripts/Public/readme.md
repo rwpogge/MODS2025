@@ -210,7 +210,7 @@ display MODS1/2 system status, and provide a local terminal shell for
 support users to issue low-level commands to the MODS instruments via
 `isisCmd` or `modsCdm`. The intended user is the LBTO support user.
 
-The tmux session has the usual MODS 3-pane layout:
+The `modsAdmin` tmux session has the usual MODS 3-pane layout:
 
 <img src="./modsAdmin.png" width="512">
 
