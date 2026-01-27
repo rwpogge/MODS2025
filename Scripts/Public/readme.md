@@ -211,22 +211,9 @@ support users to issue low-level commands to the MODS instruments via
 `isisCmd` or `modsCdm`. The intended user is the LBTO support user.
 
 The tmux session has the usual MODS 3-pane layout:
-<pre>
-      +---------------------+---------------------+
-      |     MODS1 status    |     MODS2 status    |
-      |         1.0         |         1.1         |
-      |                     |                     |
-      |                     |                     |
-      |                     |                     |
-      |                     |                     |
-      |                     |                     |
-      |                     |                     |
-      |                     |                     |
-      +---------------------+---------------------+
-      |                  command                  |
-      |                    1.2                    |
-      +---------------------+---------------------+
-</pre>
+
+<img src="./modsAdmin.png" width="512">
+
 The status panes above are remotely logged into the MODS instrument
 servers and running the `modsStatus` display programs that will
 update status every 2-3 seconds.
