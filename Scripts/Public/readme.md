@@ -134,12 +134,12 @@ after both MODS1 and MODS2 are ready to resume, you would type
 in the command pane and the two `execMODS` sessions for both MODS
 would resume at essentially the same time.
 
-The specail `halt` directive
+The special `halt` command:
 <pre>
    binoMODS halt
 </pre>
-sends a Ctrl+C to both scripts (or just one if 1 or 2 is given before halt).
-Ctrl+C will immediately halt script execution.
+will send a Ctrl+C to both scripts (or just one if 1 or 2 is given
+before `halt`).  Ctrl+C will immediately halt script execution.
 
 ### `modsAlign`
 
