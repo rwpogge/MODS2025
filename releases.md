@@ -2,6 +2,12 @@
 
 **Last Release: 2026 Jan 24**
 
+## Version 1.6.5 - 2026 Jan 27
+Multiple updates from live testing at LBTO
+ * Cleaned up the filename logic in the `modsUI` setup dashboard. Found and removed misbehavior in the `azcam-mods` routine `set_filename()` that was causing problems. Auto-naming is now more robust, but watch users break it during upcoming live tests.
+ * Introduced `binoMODS` script to be used running binocular scripts in a `modsTerm` allows users to send "return" or "abort" simultaneously to both MODS script engines (or just one at need). Will help efficiency not having to click and type between panes.
+ * Caught up on updating documentation. New `readme.md` that goes in `/lbt/lbto/mods/bin` to get captured by the LBTO GitHub so we have a rolling quick-look summary of the scripts in that public folder.
+
 ## Version 1.6.4 - 2026 Jan 24
  * Overhauled the `modsUI` instrument setup dashboard. The obsDate is now provided by the `azcam-mods` server using an algorithm that uses the UTC date tag (CCYYMMDD) for images, but between local noon and 5pm MST, uses the UTC date of the coming night so that afternoon (pre-0UTC) calibrations have the same CCYYMMDD as the coming night. SciOps was doing this by hand, now it does it for you.
  *  Many changes to the `modsUI` instrument dashboard to get all the reporting and display functions working normally. All of the open issues identified on the ECD night (2026 Jan 19 - see v1.6.2 below) have been addressed and tested.
