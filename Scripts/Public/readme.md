@@ -43,18 +43,18 @@ One `modsTerm` session is allowed at a time.
 
 You can leave the `modsTerm` session running in the
 background by typing
-
-> **detach**
-
+```
+   detach
+```
 at the linux prompt in the command pane.
 
 You re-join the detached session by typing `modsTerm`.
 
 To close the `modsTerm` and stop the tmux session and
 all programs running in the panes by typing
-<pre>
+```
    modsTerm stop
-</pre>
+```>
 this may be typed in the command pane or in any xterm
 logged in as the same user on the same machine as it
 was started in.
