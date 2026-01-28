@@ -44,7 +44,7 @@ switch ($modsHost)
 	modsIPAddr = 192.168.139.131
 	breaksw
     case 'mods1blue':
-	modsIPAddr = 192.168.139.131
+	modsIPAddr = 192.168.139.132
 	breaksw
     case 'mods2':
 	modsIPAddr = 192.168.139.230
@@ -53,7 +53,7 @@ switch ($modsHost)
 	modsIPAddr = 192.168.139.231
 	breaksw
     case 'mods2blue':
-	modsIPAddr = 192.168.139.231
+	modsIPAddr = 192.168.139.232
         breaksw
     default:
 	printf "ERROR: unknown MODS host $modsHost\n"
