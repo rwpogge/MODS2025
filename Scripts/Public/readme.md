@@ -42,8 +42,11 @@ The modsTerm tmux session is configured with 3 window panes
 One `modsTerm` session is allowed at a time.
 
 You can leave the `modsTerm` session running in the
-background by typing `detach` in the command pane at
-the prompt.
+background by typing
+<pre>
+  **detach**
+</pre>
+at the linux prompt in the command pane.
 
 You re-join the detached session by typing `modsTerm`.
 
