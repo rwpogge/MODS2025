@@ -43,9 +43,9 @@ One `modsTerm` session is allowed at a time.
 
 You can leave the `modsTerm` session running in the
 background by typing
-<pre>
-  **detach**
-</pre>
+
+> **detach**
+
 at the linux prompt in the command pane.
 
 You re-join the detached session by typing `modsTerm`.
