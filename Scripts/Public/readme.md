@@ -53,10 +53,10 @@ You re-join the detached session by typing `modsTerm`.
 To close the `modsTerm` and stop the tmux session and
 all programs running in the panes by typing
 ```
-   modsTerm
+   modsTerm stop
 ```
-this may be typed in the command pane or in any xterm
-logged in as the same user on the same machine as it
+This may be typed in the tmux command pane or in any terminal window
+that is logged in as the same user on the same machine as modsTerm
 was started in.
 
 ### `acqBinoMODS`
