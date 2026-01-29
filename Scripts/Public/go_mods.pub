@@ -38,22 +38,22 @@ endif
 
 switch ($modsHost)
     case 'mods1':
-	modsIPAddr = 192.168.139.130
+	set modsIPAddr = 192.168.139.130
 	breaksw
     case 'mods1red':
-	modsIPAddr = 192.168.139.131
+	set modsIPAddr = 192.168.139.131
 	breaksw
     case 'mods1blue':
-	modsIPAddr = 192.168.139.132
+	set modsIPAddr = 192.168.139.132
 	breaksw
     case 'mods2':
-	modsIPAddr = 192.168.139.230
+	set modsIPAddr = 192.168.139.230
 	breaksw
     case 'mods2red':
-	modsIPAddr = 192.168.139.231
+	set modsIPAddr = 192.168.139.231
 	breaksw
     case 'mods2blue':
-	modsIPAddr = 192.168.139.232
+	set modsIPAddr = 192.168.139.232
         breaksw
     default:
 	printf "ERROR: unknown MODS host $modsHost\n"
