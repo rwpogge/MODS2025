@@ -7,7 +7,7 @@ general LBT mountain users (hence "public" on the mountain
 workstations (robsN and obsN machines).  They are installed in the
 shared `/lbt/lbto/mods/bin` path.
 
-## Obsering Scripts
+## Observing Scripts
 
 ### `modsTerm`
 <pre>
