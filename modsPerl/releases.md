@@ -1,13 +1,19 @@
 # modsPerl Release Notes
 
-<b>Last Update: 2026 Jan 22 [rwp/osu]</b>
+<b>Last Update: 2026 Jan 30 [rwp/osu]</b>
+
+## 2026 Jan 30: resurrected `mkMaskSnap.pl`
+ * Dug `mkMaskSnap.pl` out of the archive of pre-Archon mods machines and made a new version for the Archon system
+
 
 ## 2026 Jan 22: azcam remote command = issue
  * `acqMODS.pl` and `execMODS.pl` - an = any where in a string that might go to the azcam server is trouble.  We strip = from any command string in a script before executing it, replacing the = by a space character.  Reason is deep in the archon parser, easier to filter the inputs than to totally rewrite the way azcam works.
  * `isisCmd.pl` - for safety apply = filter to `isisCmd`, but probably very rare.
 
+
 ## 2026 Jan 18: Incremental update from live testing
  * Suppressed binocular exit "Hit <Enter>..." for `execMODS` and `acqMODS` since we now execute with the `modsTerm` tmux session.
+
 
 ## 2025 Oct 3: Incremental update
  * Added the LBTO mountain network NSF-mounted common path `/lbt/lbto/mods/lib/modsPerl` to the perl `use lib` path for running these scripts on the mountain network for observations.
@@ -15,6 +21,7 @@
  * Changed blue color text to cyan for better visibility on dark-mode terminals, like those that will be used for running observing scripts.
  * `isisCmd` now checks the computer hostname, and if on one of the MODS instrument servers (`mods1` or `mods2`) it sets the default instrument instance appropriately. Convenience as we rarely talk to MODS2 from the MODS1 server.  However, if you use `--mods2` while running on `mods1`, it will override the default and properly route the command.  If the host is neither server, it requires an explicit `--modsN` option.
  * `acqBinoMODS` and `execBinoMODS` have been "rehomed" to the [Scripts](../Scripts) repository to prepare new versions that use `tmux` sessions to multiplex observing script execution.  They really didn't belong here since they aren't written in perl.
+
 
 ## 2025 Sep 10: Archon controller update
 
