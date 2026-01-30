@@ -38,7 +38,7 @@ Exec:
   irlaser enable
   print Waiting 5s for the IR laser to power up...
   sleep 5
-  irlaser power 1.5
+  irlaser power 2.0
   irlaser
 
   print Initializing the science CCD cameras

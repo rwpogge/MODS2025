@@ -127,7 +127,7 @@ Exec:
    irlaser enable
    print Waiting 5 sec for laser power up...
    sleep 5
-   irlaser power 1.5
+   irlaser power 2.0
 
    # configure for dual imaging, w/o imcs lock
    

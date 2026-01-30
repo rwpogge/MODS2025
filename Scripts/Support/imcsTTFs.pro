@@ -40,13 +40,13 @@ Exec:
   print Hit Enter when ready
   pause
 
-  object IMCS TTF Calibration El=60 rotAngle=0
+  object IMCS TTF Calibration
   lamp vflat 4.0 on
   irlaser on
   irlaser enable
   print Waiting 5s for the IR laser to power up...
   sleep 5
-  irlaser power 1.5
+  irlaser power 2.0
   red exptime 1.0
   blue exptime 10.0
   slitmask sievemask

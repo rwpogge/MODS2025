@@ -1,6 +1,6 @@
 # MODS Support Scripts
 
-**Updated: 2025 Dec 23 [rwp/osu]**
+**Updated: 2026 Jan 30 [rwp/osu]**
 
 ## Overview
 
