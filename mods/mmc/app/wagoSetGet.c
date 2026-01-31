@@ -35,6 +35,8 @@
 //                for occasional timing race seen in live testing [rwp/osu]
 //   2026 Jan 30 - increased pause to 50ms as seeing condition more often
 //                 in an active network environment [rwp/osu]
+//   2026 Jan 31 - Added a single retry at the modbus_connect() step if it
+//                 gets a fault (usually "Operation now in progress")
 //
 //---------------------------------------------------------------------------
 
@@ -55,6 +57,7 @@ wagoSetGet(int gs, char* host, int slaveAddr, int startRef, short regArr[], int 
   // Connect to the WAGO.  Allow one retry before exiting with an error
   
   if (modbus_connect(modbus) == -1) {
+    usleep(50000); // wait a beat before retrying
     ierr = modbus_connect(modbus);
     if (ierr < 0) {
       printf("ERROR: Cannot connect to WAGO host %s: %s\n",host,modbus_strerror(errno));
@@ -63,7 +66,7 @@ wagoSetGet(int gs, char* host, int slaveAddr, int startRef, short regArr[], int 
     }
   }
 
-  // Pause to give a slow TCP link a chance to catch up
+  // Short pause to give a slow TCP link a chance to catch up
 
   usleep(10000);
 
