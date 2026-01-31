@@ -4,7 +4,8 @@ Original Build: 2009 June 15
 Last Build: 2026 Jan 31
 
 ## Version 3.2.5: 2026 Jan 30
-`app/wagoSetGet.c` - increased pause from 10ms to 50ms to break up "Operation now in service" fault due to reading before socket is fully open (see v3.2.2 below).
+`app/wagoSetGet.c` - increased pause from 10ms to 50ms to break up "Operation now in service" fault due to connecting to the WAGO unit to quickly after
+instantiating the new modbus tcp socket (see v3.2.2 below).
 
 Also added a single retry after another 50ms pause. Fault occurs on `modbus_connect()` that follows `modsbus_new_tcp()`.  Most likely culprit for the fault is 
 collision with a competing request.  A single retry after a pause has been introduced to see if this calms things.
