@@ -41,10 +41,10 @@
 int
 wagoSetGet(int gs, char* host, int slaveAddr, int startRef, short regArr[], int refCnt)
 {
-  
   modbus_t* modbus;
   uint16_t data[refCnt];
   int result = 0;
+  int ierr = 0;
 
   // Open a Modbus/TCP connection to the WAGO
 
