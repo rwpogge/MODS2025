@@ -33,6 +33,8 @@
 // Updates:
 //   2025 Oct 4 - added 10ms pause between modsbus_new_tcp() and modsbus_connect()
 //                for occasional timing race seen in live testing [rwp/osu]
+//   2026 Jan 30 - increased pause to 100ms as seeing condition more often
+//                 in an active network environment [rwp/osu]
 //
 //---------------------------------------------------------------------------
 
@@ -48,7 +50,7 @@ wagoSetGet(int gs, char* host, int slaveAddr, int startRef, short regArr[], int 
 
   modbus = modbus_new_tcp(host,502);
 
-  usleep(10000); // allow open to finish before connect
+  usleep(100000); // allow open to finish before connect
 
   // Connect to the WAGO
   
@@ -60,7 +62,7 @@ wagoSetGet(int gs, char* host, int slaveAddr, int startRef, short regArr[], int 
 
   // Slight pause to give a slow TCP link a chance to catch up
 
-  usleep(10000);
+  usleep(100000);
 
   // Set the slave device
 

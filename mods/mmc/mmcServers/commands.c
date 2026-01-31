@@ -10979,7 +10979,7 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
 
     ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,devOnOff,1);
     if(ierr==-1) {
-      sprintf(reply,"%s LLB=PWROFF",who_selected);
+      sprintf(reply,"%s LLB comm fault",who_selected);
 
       for(i=0;i<9;i++) {  // Reset Shared Memory address has been cleared
 	if(shm_addr->MODS.lamps.lamp_state[i]==1) {
@@ -10995,7 +10995,7 @@ cmd_lamp(char *args, MsgType msgtype, char *reply)
 
   ierr = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,LLBONOFF,devOnOff,1);
   if (ierr<0) {
-    sprintf(reply,"%s LLB=OFF CALLAMPS='None' MODS LLB is powered off, LAMP command unavailable",who_selected);
+    sprintf(reply,"%s CALLAMPS='None' MODS LLB unresponsive, LAMP command unavailable",who_selected);
     return CMD_ERR;
   } 
 

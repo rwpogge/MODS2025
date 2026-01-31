@@ -1,7 +1,10 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2025 Dec 31
+Last Build: 2026 Jan 30
+
+## VErsion 3.2.5: 2026 Jan 30
+ * `app/wagoSetGet.c` - increased pause from 10ms to 100ms to break up "Operation in service" fault due to reading before socket is fully open (see v3.2.2 below)
 
 ## Version 3.2.4: 2025 Dec 31
 Small changes from live testing at LBTO. Probably more to come.  Took us this long to get the
