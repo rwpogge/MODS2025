@@ -52,17 +52,20 @@ wagoSetGet(int gs, char* host, int slaveAddr, int startRef, short regArr[], int 
 
   usleep(50000); // allow open to finish before connect
 
-  // Connect to the WAGO
+  // Connect to the WAGO.  Allow one retry before exiting with an error
   
   if (modbus_connect(modbus) == -1) {
-    printf("ERROR: Cannot connect to WAGO host %s: %s\n",host,modbus_strerror(errno));
-    modbus_free(modbus);
-    return -1;
+    ierr = modbus_connect(modbus);
+    if (ierr < 0) {
+      printf("ERROR: Cannot connect to WAGO host %s: %s\n",host,modbus_strerror(errno));
+      modbus_free(modbus);
+      return -1;
+    }
   }
 
   // Pause to give a slow TCP link a chance to catch up
 
-  usleep(50000);
+  usleep(10000);
 
   // Set the slave device
 
