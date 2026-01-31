@@ -1,10 +1,12 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2026 Jan 30
+Last Build: 2026 Jan 31
 
-## VErsion 3.2.5: 2026 Jan 30
- * `app/wagoSetGet.c` - increased pause from 10ms to 50ms to break up "Operation in service" fault due to reading before socket is fully open (see v3.2.2 below)
+## Version 3.2.5: 2026 Jan 30
+`app/wagoSetGet.c` - increased pause from 10ms to 50ms to break up "Operation now in service" fault due to reading before socket is fully open (see v3.2.2 below).  
+Also added a single retry after another 50ms pause. Fault occurs on `modbus_connect()` following after `modsbus_new_tcp()`.  Most likely culprit for the fault is 
+collision with a competing request.  A single retry after a pause has been introduced to see if this calms things.
 
 ## Version 3.2.4: 2025 Dec 31
 Small changes from live testing at LBTO. Probably more to come.  Took us this long to get the
