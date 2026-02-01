@@ -1,6 +1,14 @@
 # MODS2025 Release Notes
 
-**Last Release: 2026 Jan 24**
+**Last Release: 2026 Feb 01**
+
+## Version 1.6.6 - 2026 Feb 01
+Changes after live testing at LBTO during the Jan 31/Feb 1 ECD night
+ * `modsCCD` changed to slow the cadence of readout reporting from every 200ms to roughly every second. This keeps from flooding comms with rapid-fire updates. A fast internal monitor cadence is required to be able to properly detect CCD control state changes, but that is too fast and unnecessary for downstream clients. Implemented in `main.c`, tested, verified, and rolled out across the 4 Archon servers.
+ * `modsUI` made 2 changes in the default `modsUI.ini` configuration files:
+  - decreased the message dispatcher interval from 500ms to 250ms as modern computers can handle faster speeds
+  - disabled the housekeeping dashboard as redundant given all MODS environmental and power state telemetry is accessible to the general observatory telemetry dashboard (DMS), quasi-real-time in the IIF DD, and long term archive in the HDF5 telemetry stream.  A separate housekeeping dashboard was loading the GUI and logging (not helping given 5x faster Archon controller speeds).
+
 
 ## Version 1.6.5 - 2026 Jan 27
 Multiple updates from live testing at LBTO
