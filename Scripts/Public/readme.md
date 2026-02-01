@@ -23,22 +23,9 @@ where:
 While it may be invoked by itself, if the session is not running
 it will be executed by the acqBinoMODS and execBinoMODS scripts.
 The modsTerm tmux session is configured with 3 window panes
-<pre>
-      +---------------------+---------------------+
-      |        MODS1        |        MODS2        |
-      |         1.0         |         1.1         |
-      |                     |                     |
-      |                     |                     |
-      |                     |                     |
-      |                     |                     |
-      |                     |                     |
-      |                     |                     |
-      |                     |                     |
-      +---------------------+---------------------+
-      |                  command                  |
-      |                    1.2                    |
-      +---------------------+---------------------+
-</pre>
+
+<img src="./modsTerm.png" width="512">
+
 One `modsTerm` session is allowed at a time.
 
 You can leave the `modsTerm` session running in the
