@@ -196,6 +196,15 @@ the functions of the AGw stage, primarily for the Telescope Operators
 or persons engaged in AGw/guider engineering observations.  Does not
 require a running MODS control panel GUI.
 
+#### mkMaskSnap
+
+Create a mask snapshot acquisition script. Reads the `slitmask.tab`
+file on a MODS server and creates a `maskSnap_modsN.pro` script that
+will take thru-mask snapshots in dual imaging mode of the MODS masks
+(those maskIDs prefixed with ID).  Use the SDSS g filter in the blue
+and SDSS r in the red, with the variable-intensity flat lamp.
+Exposure parameters are set at the top of the script.
+
 ## Author & History
 
 modsPerl was written by Rick Pogge, The Ohio State University
