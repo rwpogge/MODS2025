@@ -126,7 +126,13 @@ The special `halt` command:
    binoMODS halt
 </pre>
 will send a Ctrl+C to both scripts (or just one if 1 or 2 is given
-before `halt`).  Ctrl+C will immediately halt script execution.
+before `halt`).  Ctrl+C will immediately halt script execution. You
+may be required to confirm you want to halt, by following this immediately
+with
+<pre>
+   binoMODS y
+</pre>
+to answer "y[es]" at the prompt.
 
 ### `modsAlign`
 
