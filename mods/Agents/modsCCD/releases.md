@@ -2,6 +2,11 @@
 
 ## Version 1 - Observing operations
 
+### Version 1.1.6 - 2026 Feb 01
+From live testing, noted that readout messages were coming so fast they caused a logjam with the MODS GUIs dispatcher.  Readout progress
+was being reported every 0.2 sec.  Modified `main.c` to introduce a readout progress counter that sends a report of progress only every
+5th report after the first. For a full-frame readout this is 20 reports, or about 1 per second, whcih is fast enough.
+
 ### Version 1.1.5 - 2026 Jan 24
  * `commands.c/h` - added getObsDate() method to create an "obsdate" command to query the azcam server for the current observing date. Supercedes methods that simply read the system clock, allowing more nuanced obsDate algorithms (e.g., obsDate noon-to-noon local time, or UTC but next-day after local noon, etc.)
 

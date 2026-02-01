@@ -288,8 +288,7 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   binLayout->addWidget(yBinEntry);
   binLayout->addStretch();
 
-  // Region-of-Interest Readout (eventually get these from the
-  // ccdroi.tab file)
+  // Region-of-Interest Readout (defined in ccdroi.tab file)
 
   roiEntry = new SelectEntry("CCD Readout:","",this);
   roiEntry->addItem(MODS_CCD_FORMAT,"ROI OFF");

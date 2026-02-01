@@ -102,8 +102,11 @@ main(int argc, char *argv[])
   int n;
   int i=0;
   int nread;
-  int readout = 0;
+  int readout = 0;    // number of readout reports
   int countdown = 0;
+
+  int numReadOut = 0; // readout step counter
+  int numReadRep = 5; // report every numReadNotify readouts to client
   
   int expCount = 0;   // running exposure tick reports
   int numExpRep = 60; // max number of exposure tick reports
@@ -429,6 +432,7 @@ main(int argc, char *argv[])
 	  fflush(stdout);
 	  sprintf(reply,"GO Started %.1f sec exposure",obs.expTime);
 	  notifyClient(&ccd,&obs,reply,STATUS);
+	  numReadOut = numReadRep; // reset readout countdown
 	  break;
 
 	case READOUT: // could happen if a bias/zero image
@@ -436,6 +440,7 @@ main(int argc, char *argv[])
 	  fflush(stdout);
 	  sprintf(reply,"GO Readout Started PCTREAD=0");
 	  notifyClient(&ccd,&obs,reply,STATUS);
+	  numReadOut = numReadRep;  // reset readout countdown
 	  break;
 	  
 	default:
@@ -459,8 +464,15 @@ main(int argc, char *argv[])
 	  printf("Read out %d pixels of %d                   \r",ccd.Nread,ccd.Npixels);
 	  fflush(stdout);
 	  pctRead = 100.0*float(ccd.Nread)/float(ccd.Npixels); // percent readout
-	  sprintf(reply,"GO PCTREAD=%d",int(pctRead));
- 	  notifyClient(&ccd,&obs,reply,STATUS);
+	  if (numReadOut < 1) {
+	    // report readout progress to client
+	    sprintf(reply,"GO PCTREAD=%d",int(pctRead));
+	    notifyClient(&ccd,&obs,reply,STATUS);
+	    numReadOut = numReadRep; // reset readout countdown
+	  }
+	  else {
+	    numReadOut -= 1; // decrement readout report countdown
+	  }
 	  break;
 
 	case READ:  // readout is complete, preparing to write
@@ -521,6 +533,7 @@ main(int argc, char *argv[])
 	case READOUT:  // started readout since last time we polled
 	  printf("\nExposure Completed, Reading out                   \n");
 	  strcpy(msgStr,"GO Exposure Completed, Shutter=0 (Closed), Readout started PCTREAD=0");
+	  numReadOut = numReadRep; // set the readout countdown
 	  notifyClient(&ccd,&obs,msgStr,STATUS);
 	  break;
 	  
