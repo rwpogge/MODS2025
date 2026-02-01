@@ -8,6 +8,7 @@ Changes after live testing at LBTO during the Jan 31/Feb 1 ECD night
  * `modsUI` made 2 changes in the default `modsUI.ini` configuration files:
    - decreased the message dispatcher interval from 500ms to 250ms as modern computers can handle faster speeds
    - disabled the housekeeping dashboard as redundant given all MODS environmental and power state telemetry is accessible to the general observatory telemetry dashboard (DMS), quasi-real-time in the IIF DD, and long term archive in the HDF5 telemetry stream.  A separate housekeeping dashboard was loading the GUI and logging (not helping given 5x faster Archon controller speeds).
+ * `mkMaskSnap.pl` - resurrected and added to `modsPerl`.  Used by support astronomers to make scripts to take through-mask images. Tested, committed, and installed in the common executable path.
 
 
 ## Version 1.6.5 - 2026 Jan 27
