@@ -13047,27 +13047,23 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
     if(who_selected[0]=='B') {
       shm_addr->MODS.blueCloseLoop=1;
       shm_addr->MODS.blueCloseLoopON=1;
-      sprintf(reply,"%s %s=CLOSE Running closed loop",who_selected,
-	      who_selected);
+      sprintf(reply,"%s %s=CLOSE Running closed loop",who_selected,who_selected);
     } else if(who_selected[0]=='R') {
       shm_addr->MODS.redCloseLoop=1;
       shm_addr->MODS.redCloseLoopON=1;
-      sprintf(reply,"%s %s=CLOSE Running close loop",who_selected,
-	      who_selected);
+      sprintf(reply,"%s %s=CLOSE Running closed loop",who_selected,who_selected);
     }
 
   } else if (!strcasecmp(cmd_instruction,"OPEN")) {
     if(who_selected[0]=='B') {
       shm_addr->MODS.blueCloseLoop=0;
       shm_addr->MODS.blueCloseLoopON=0;
-      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,
-	      who_selected);
+      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,who_selected);
 
     } else if(who_selected[0]=='R') {
       shm_addr->MODS.redCloseLoop=0;
       shm_addr->MODS.redCloseLoopON=0;
-      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,
-	      who_selected);
+      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,who_selected);
     }
 
   } else if (!strcasecmp(cmd_instruction,"QCMIN")) {
