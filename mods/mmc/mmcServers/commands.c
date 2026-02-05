@@ -4646,7 +4646,7 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
       return CMD_ERR;
 
     case 13:
-      asprintf(reply,"%s MASKPOS=STOW GRABBER=FAULT Grabber Position Sensor Fault",who_selected);
+      sprintf(reply,"%s MASKPOS=STOW GRABBER=FAULT Grabber Position Sensor Fault",who_selected);
       strcpy(shm_addr->MODS.maskpos,"STOW");
       return CMD_ERR;
 
