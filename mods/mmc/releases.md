@@ -1,7 +1,14 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2026 Jan 31
+Last Build: 2026 Feb 15
+
+## Version 3.2.6: 2026 Feb 17
+`mmcServers/redIMCS.cpp` - For MODS2 Red it the wires for QC3 and QC4 are
+swapped **in the dewar**.  Fixing for now in software, hardware fix at the
+HEB level later (summer 2026)?  Means there are now _mods1 and _mods2 versions
+of the redIMCS server we need to be careful about!
+
 
 ## Version 3.2.5: 2026 Jan 30
 `app/wagoSetGet.c` - increased pause from 10ms to 50ms to break up "Operation now in service" fault due to connecting to the WAGO unit to quickly after
