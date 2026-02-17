@@ -1,6 +1,13 @@
 # MODS2025 Release Notes
 
-**Last Release: 2026 Feb 01**
+**Last Release: 2026 Feb 17**
+
+## Version 1.6.7 - 2026 Feb 17
+Fixed MODS2 Red IMCS quad cell problem. Looks like QC3 and QC4 wiring are swapped in the dewar.  Discovered in testing after swapping in a spare QC board.
+Not the board, the wiring.  Made `redIMCS_mods2.cpp` where we swap QC3 and QC4 assignments to the WAGO ADC registers (classic quick-and-dirty fix), verified
+the hack in live testing.
+
+Will consider a proper hardware level solution, or we'll handle in runtime configuration settings but that requires a lot more coding. Stay tuned...
 
 ## Version 1.6.6 - 2026 Feb 01
 Changes after live testing at LBTO during the Jan 31/Feb 1 ECD night
