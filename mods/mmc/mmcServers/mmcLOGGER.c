@@ -30,13 +30,20 @@ int getCurrentTime(char* , char* );
   
   Of course, while it may return microsecond precision, microsecond accuracy
   is quite another thing...
+
+  static chr str[] was 30, increased to 64 as we get glitches that made it
+  longer and caused a seg-fault downstream.  Also cleaned up the code
+  to properly initialize str and not use an append to build it.  That
+  latter part proved to not be thread safe in fast computers like the new
+  64-bit systems for the 2025 Archon updates [rwp/osu]
+  
 */
 
-char *
-getDateTime(void)
+char
+*getDateTime(void)
 {
   struct timeval tv;
-  static char str[30];
+  static char str[64]; // was 30, made 64 for enough room
   char *ptr;
   struct tm *gmt;
   time_t t;
@@ -47,32 +54,32 @@ getDateTime(void)
 
   t = time(NULL);
   gmt = gmtime(&t);
-  monthNum = (gmt->tm_mon)+1;
-
-  // ISO 8601 Date & time format: ccyy-mm-ddThh:mm:ss 
-
-  ccyy = gmt->tm_year + 1900;
-  sprintf(str,"%.4i-%.2i-%.2iT%.2i:%.2i:%.2i",ccyy,monthNum,
-          gmt->tm_mday,gmt->tm_hour,gmt->tm_min,gmt->tm_sec);
 
   // Now get the usec part. If we're off a couple of usec no big deal.
 
   gettimeofday(&tv,NULL);
   ptr = ctime(&tv.tv_sec);
 
-  // Append it to the ISO8601 date+time string created above
+  // compute month number 1s relative, and CCYY from YY
 
-  sprintf(str,"%s.%06ld",str,tv.tv_usec);
+  monthNum = (gmt->tm_mon)+1;
+  ccyy = gmt->tm_year + 1900;
+
+  // ISO 8601 date/time format to usec precision: ccyy-mm-ddThh:mm:ss.ssssss
+
+  memset(str,0,sizeof(str));
+  
+  sprintf(str,"%.4i-%.2i-%.2iT%.2i:%.2i:%.2i.%06ld",ccyy,monthNum,
+          gmt->tm_mday,gmt->tm_hour,gmt->tm_min,gmt->tm_sec,tv.tv_usec);
 
   return(str);
-
 }
 
 /*!
   \brief mmcServer Logger
 
   Reads system's UTC time with getDataTime() function and logs 
-  Service infomation to mmcLogging.log
+  Service infomation to mmc.log
   
 */
 
@@ -81,17 +88,14 @@ mmcLOGGER(char path[79], char msg[512])
 { 
   int len;
   int result;
-  char timestr[80];
   char newfile[80];
 
-  /* 
   // Check for change of UT Date
-  */
-  if(strlen(shm_addr->MODS.mmcUpdate1)<=0) {
-    sprintf(shm_addr->MODS.mmcUpdate1,"%s",UTCDateTag());
-  }
 
-  if(strcasecmp(shm_addr->MODS.mmcUpdate1,UTCDateTag())) {
+  if (strlen(shm_addr->MODS.mmcUpdate1) <= 0)
+    sprintf(shm_addr->MODS.mmcUpdate1,"%s",UTCDateTag());
+
+  if (strcasecmp(shm_addr->MODS.mmcUpdate1,UTCDateTag())) {
     len=strlen(path);
     strncpy(newfile,path,len-4); // Remove the .log extention from filename
     len=strlen(newfile);
@@ -102,7 +106,6 @@ mmcLOGGER(char path[79], char msg[512])
     sprintf(shm_addr->MODS.mmcUpdate1,"%s",UTCDateTag()); // recap DateTag
     chmod(path,0666);  // Give permissions to default logging file
     chmod(newfile,0666); // Give permissions for dated logfile
-
   }
 
   ofstream mmclog;

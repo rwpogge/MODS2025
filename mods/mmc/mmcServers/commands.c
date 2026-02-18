@@ -4392,47 +4392,36 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
 
   queryMinsert=0;
 
-  //------------------------------------------------------
-  //
-  // Preparation: verify that the mask insert and selecdt
-  // mechanisms are ready
-  
-  // Get the mask insert mechanism address (aka ID)
-
-  device=getMechanismID("minsert",dummy);
-  if (device==-1) {
+  /* Search for the IP and Socket */
+  device=getMechanismID("minsert",dummy); // Get mechanism device ID
+  if(device==-1) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  // Lock or unlock the mask insert mechanism
-  
-  if (!strcasecmp(cmd_instruction,"LOCK")) {
+  if(!strcasecmp(cmd_instruction,"LOCK")) { // Abort process
     shm_addr->MODS.LOCKS[device]=1;
-    sprintf(reply," %s %s=LOCK Mechanisms are locked",who_selected,who_selected);
+    sprintf(reply," %s %s=LOCK Mechanisms are locked",
+	    who_selected,who_selected);
     return CMD_OK;
 
-  }
-  else if (!strcasecmp(cmd_instruction,"UNLOCK")) {
+  } else if(!strcasecmp(cmd_instruction,"UNLOCK")) { // Abort process
     shm_addr->MODS.LOCKS[device]=0;
-    sprintf(reply," %s %s=UNLOCK Mechanisms is unlocked",who_selected,who_selected);
+    sprintf(reply," %s %s=UNLOCK Mechanisms is unlocked",
+	    who_selected,who_selected);
     return CMD_OK;
   }
 
-  // Is the mask insert mechanism configured?
-  
-  if (!shm_addr->MODS.host[device]) {
+  if(!shm_addr->MODS.host[device]) {
     sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file",who_selected,who_selected);
     return CMD_ERR;
-  }
-  else if ( shm_addr->MODS.LOCKS[device] ) {
+  } else if ( shm_addr->MODS.LOCKS[device] ) {
     sprintf(reply," %s %s=FAULT connection LOCKED OUT, SLITMASK UNLOCK to continue",who_selected,who_selected);
+
     return CMD_ERR;
   }
 
-  // Get the mask insert mechanism connection configuration info
-  
-  if (!strcasecmp(cmd_instruction,"CONFIG")) { 
+  if (!strcasecmp(cmd_instruction,"CONFIG")) { // get mechanism ip
     strcpy(shm_addr->MODS.state_word[device],shm_addr->MODS.maskpos);
 
     mlcMechanismConfig(device,who_selected,dummy);
@@ -4441,38 +4430,28 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
     return CMD_OK;
   }
 
-  // Is the mask insert mechanism connected?
-  
-  if (!shm_addr->MODS.host[device]) {
+  if(!shm_addr->MODS.host[device]) {
     sprintf(reply," %s %s=NOCOMM - No communication or not connected",who_selected,who_selected);
     return CMD_ERR;
   }
 
-  // Mask insert mechanism ABORT requested
-  
-  if (!strcasecmp(cmd_instruction,"ABORT")) {
-    ierr = mlcStopMechanism(device,dummy);
+  if(!strcasecmp(cmd_instruction,"ABORT")) {
+    ierr = mlcStopMechanism(device,dummy); //  STOP the operation
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_OK;
   }
 
-  // Is the mask insert mechanism busy?
-
-  if (mlcBusy(device,dummy)) { 
+  if (mlcBusy(device,dummy)) { // Busy?
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
-  
-  // Is the mask insert mechanism powered on?
-  
-  if (mlcQuery(device,1,dummy)!=0) {
+ // Check if the microLynx is ON
+  if(mlcQuery(device,1,dummy)!=0) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
-
-  // Is a low-level MicroLYNX command being requested?
-  
-  if (strncasecmp(args,"M#",2)) {
+    
+  if (strncasecmp(args,"M#",2)) { // check for low-level command
     ierr = mlcCheckBits(device,dummy); // check limit bits 21,22
     if((ierr&3)== 3 || ierr==-1) {
       sprintf(reply,"%s %s",who_selected,dummy);
@@ -4480,9 +4459,7 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
     }
   }
 
-  // Mask insert mechanism reset requested
-  
-  if (!strcasecmp(cmd_instruction,"RESET")) {
+  if(!strcasecmp(cmd_instruction,"RESET")) {
 
     sendCommand(device,"PWRFAIL=0",dummy); // Reset Mask Insert mechanism
 
@@ -4508,51 +4485,39 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
     return CMD_OK;
   }
 
-  // If a low-level MicroLYNX command is requested, verify mask insert
-  // mechanism power state
-  
-  if (strncasecmp(args,"M#",2)) {
-    ierr=checkPower(device,dummy); 
-    if (ierr) {
+  if (strncasecmp(args,"M#",2)) { // check for low-level command
+    ierr=checkPower(device,dummy); // check the mechanism power 
+    if(ierr) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
   }
 
-  // Mask insert/retract also requires knowledge of the slit cassette position (mselect)
-  
-  device2=getMechanismID("mselect",dummy); 
-  if (device2==-1) {
+  device2=getMechanismID("mselect",dummy); // Get mechanism device ID
+  if(device2==-1) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  // Is the mask cassette select busy?
-  
-  if (mlcBusy(device2,dummy)) {
+  if (mlcBusy(device2,dummy)) { // Busy?
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
- // Is the mask cassette select powered on?
+ // Check if the microLynx is ON
 
-  if (strlen(cmd_instruction)>0) {
+  if(strlen(cmd_instruction)>0) {
     if(mlcQuery(device2,1,dummy)!=0) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
 
     smask = getMaskNumber(device2,dummy);
-    io30_mselect=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",dummy);
+    io30_mselect=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",
+			       dummy);
     if(io30_mselect==12) smask=-1; // make sure that 13 is not used if BRACE
   }
-
-  //------------------------------------------------------
-  //
-  // Ready to proceed with the minsert command request
-  //
-  
-  if (strlen(args)<=0) {  // Execute a status query when no command is issued
+  if (strlen(args)<=0) {  // Query when no command is issued
 
     strcpy(who_selected,"MINSERT");
 
@@ -4590,7 +4555,7 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
       strcpy(shm_addr->MODS.maskpos,"FAULT");
       return CMD_ERR;
 
-    case 4: // Valid state if not at the brace position
+    case 4: // Valid state if not at brace
       if(io30_mselect==12) { // at brace
 	sprintf(reply,"%s MASKPOS=STOW GRABBER=STOW Cassette at Brace",who_selected);
 	strcpy(shm_addr->MODS.maskpos,"STOW");
@@ -4600,7 +4565,7 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
       strcpy(shm_addr->MODS.maskpos,"EMPTY");
       break;
 
-    case 5: // valid state if not at the brace position
+    case 5: // valid state if not at brace
       if(io30_mselect==12) { // at brace
 	sprintf(reply,"%s MASKPOS=STOW GRABBER=STOW",who_selected);
 	strcpy(shm_addr->MODS.maskpos,"STOW");
@@ -4611,7 +4576,7 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
       break;
 
     case 6:
-      sprintf(reply,"%s MASKPOS=IN GRABBER=STOW FAULT: Mask left in focal plane with grabber stowed",who_selected);
+      sprintf(reply,"%s MASKPOS=IN GRABBER=STOW Impossible: Mask in Science Position but Grabber Stowed",who_selected);
       strcpy(shm_addr->MODS.maskpos,"IN");
       return CMD_ERR;
 
@@ -4626,105 +4591,98 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
       return CMD_ERR;
       
     case 9:
-      sprintf(reply,"%s MASKPOS=STOW GRABBER=IN FAULT: Mask left in the cassette but grabber in the focal plane",who_selected);
+      sprintf(reply,"%s MASKPOS=STOW GRABBER=IN Impossible: Mask Stowed but Grabber in Science Position",who_selected);
       strcpy(shm_addr->MODS.maskpos,"STOW");
       return CMD_ERR;
 
-    case 10: // Mask is in the focal plane
+    case 10: // Valid state
       sprintf(reply,"%s MASKPOS=IN GRABBER=IN",who_selected);
       strcpy(shm_addr->MODS.maskpos,"IN");
       break;
 
     case 11:
-      sprintf(reply,"%s MASKPOS=FAULT GRABBER=IN Mask Occupation Sensor Fault",who_selected);
+      sprintf(reply,"%s MASKPOS=FAULT GRABBER=IN Mask Sensor Fault",who_selected);
       strcpy(shm_addr->MODS.maskpos,"FAULT");
       return CMD_ERR;
 
     case 12:
-      sprintf(reply,"%s MASKPOS=UNKNOWN GRABBER=FAULT Grabber Position and Mask Occupation Sensor Faults",who_selected);
+      sprintf(reply,"%s MASKPOS=UNKNOWN GRABBER=FAULT Grabber and Mask Sensor Faults",who_selected);
       strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
       return CMD_ERR;
 
     case 13:
-      sprintf(reply,"%s MASKPOS=STOW GRABBER=FAULT Grabber Position Sensor Fault",who_selected);
+      sprintf(reply,"%s MASKPOS=STOW GRABBER=FAULT Grabber Sensor Fault",who_selected);
       strcpy(shm_addr->MODS.maskpos,"STOW");
       return CMD_ERR;
 
     case 14:
-      sprintf(reply,"%s MASKPOS=IN GRABBER=FAULT Grabber Position Sensor Fault",who_selected);
+      sprintf(reply,"%s MASKPOS=IN GRABBER=FAULT Grabber Sensor Fault",who_selected);
       strcpy(shm_addr->MODS.maskpos,"IN");
       return CMD_ERR;
 
     case 15:
-      sprintf(reply,"%s MASKPOS=FAULT GRABBER=FAULT ALL-Sensor Fault",who_selected);
+      sprintf(reply,"%s MASKPOS=FAULT GRABBER=FAULT ALL Sensor Fault",who_selected);
       strcpy(shm_addr->MODS.maskpos,"FAULT");
       return CMD_ERR;
 
     default:
       sprintf(reply,"%s MINSERT=FAULT Unknown bit pattern %d, b21-b24",who_selected,io20_minsert);
       return CMD_ERR;
-
     }
     return CMD_OK;
   }
 
-  // Insert the mask into the focal plane
-
   if (!strcasecmp(cmd_instruction,"IN")) {
 
-    if (!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
+    if(!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
       sprintf(reply,"%s %s=FAULT Mechanism out-of-position, in-position sensor not asserted. mselect reset to recover",who_selected,who_selected);
       return CMD_ERR;
     }
 		 
-    if (mlcBitsBase10(device,"PRINT IO 21",dummy)) {
+    if(mlcBitsBase10(device,"PRINT IO 21",dummy)) {
       cmd_minsert("",EXEC,dummy);
       sprintf(reply,"%s",dummy);
       return CMD_OK;
     }
 		 
-    if (!mlcBitsBase10(device,"PRINT IO 24",dummy)) {
+    if(!mlcBitsBase10(device,"PRINT IO 24",dummy)) {
       cmd_minsert("",EXEC,dummy);
       sprintf(reply,"%s",dummy);
       return CMD_OK;
     }
 
-    if (mlcBitsBase10(device,"PRINT IO 22",dummy)) {
+    if(mlcBitsBase10(device,"PRINT IO 22",dummy)) {
       sprintf(dummy,"%s Inserting mask",who_selected);
       isisStatusMsg(dummy);
     }
+		 
+    io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",
+			       dummy);
 
-    // Check the postions of the grabber and mask occupation sensors
-    
-    io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",dummy);
-
-    if (io20_minsert<=0) {
-      sprintf(reply,"%s SLITMASK=%d MASKPOS=UNKNOWN GRABBER=UNKNOWN Mask and Grabber Out-of-Position",who_selected,smask);
+    if(io20_minsert<=0) {
+      sprintf(reply,"%s SLITMASK=%d MASKPOS=UNKNOWN GRABBER=UNKNOWN Mask and Grabber Out-of-Position, reset to initialize",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
       return CMD_ERR;
     }
 
-    // Cassette select position 12 is a mechanical brace with no mask, so don't
-    // move the insert mechanism.  A low-level override option is below
-    
-    if (io30_mselect==12) {
-      if (io20_minsert==4) {
+    if(io30_mselect==12) {
+      if(io20_minsert==4) {
 	sprintf(reply,"%s SLITMASK=BRACE MASKPOS=EMPTY GRABBER=STOW",who_selected);
 	strcpy(shm_addr->MODS.maskpos,"EMPTY");
 	return CMD_ERR;
-      }
-      else {
+
+      } else {
 	sprintf(reply,"%s SLITMASK=BRACE MASKPOS=STOW GRABBER=STOW",who_selected);
 	strcpy(shm_addr->MODS.maskpos,"STOW");
 	return CMD_ERR;
       }
+      
     }
 
-    // Home the mask insert mechanism.  This moves it into the focal plane
-    
-    ierr = sendCommand(device,"HOME",dummy); // Home drives into the focal plane
-    if (ierr!=0) {
-      sprintf(reply,"%s SLITMASK=%d HOME operation failed",who_selected,smask);
+    ierr = sendCommand(device,"HOME",dummy); //  Science Position command
+
+    if(ierr!=0) {
+      sprintf(reply,"%s SLITMASK=%d Home failed",who_selected,smask);
       return CMD_ERR;
     }
 
@@ -4735,35 +4693,32 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
 
     return CMD_OK;
 
-  }
+  } else if (!strcasecmp(cmd_instruction,"STOW") || !strcasecmp(cmd_instruction,"OUT")) {
 
-  // Retract the mask from the focal plane and stow it
-  
-  else if (!strcasecmp(cmd_instruction,"STOW") || !strcasecmp(cmd_instruction,"OUT")) {
-
-    if (!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
+    if(!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
       sprintf(reply,"%s %s=FAULT Mechanism out-of-position, in-position sensor not asserted. mselect reset to recover",who_selected,who_selected);
       return CMD_ERR;
     }
 		 
-    if (mlcBitsBase10(device,"PRINT IO 22",dummy)) {
+    if(mlcBitsBase10(device,"PRINT IO 22",dummy)) {
       cmd_minsert("",EXEC,dummy);
       sprintf(reply,"%s",dummy);
       return CMD_OK;
     }
 		 
-    if (mlcBitsBase10(device,"PRINT IO 24",dummy)) {
+    if(mlcBitsBase10(device,"PRINT IO 24",dummy)) {
       cmd_minsert("",EXEC,dummy);
       sprintf(reply,"%s",dummy);
       return CMD_OK;
+
     }
 
-    if (mlcBitsBase10(device,"PRINT IO 21",dummy)) {
+    if(mlcBitsBase10(device,"PRINT IO 21",dummy)) {
       sprintf(dummy,"%s Retracting mask",who_selected);
       isisStatusMsg(dummy);
     }
 
-    if (!mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy)) {
+    if(!mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy)) {
       sprintf(reply,"%s SLITMASK=%d MASKPOS=UNKNOWN GRABBER=UNKNOWN Mask and Grabber Out-of-Position, reset to initialize",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
       return CMD_ERR;
@@ -4771,7 +4726,7 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
 
     ierr = sendCommand(device,"STOW",dummy); //  Stow Position command
 
-    if (ierr!=0) {
+    if(ierr!=0) {
       sprintf(reply,"%s SLITMASK=%d %s",who_selected,smask,dummy);
       return CMD_ERR;
     }
@@ -4783,72 +4738,64 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
 
     return CMD_OK;
 
-  }
+  } else if (!strcasecmp(cmd_instruction,"RDBITS")) {
 
-  // Read the grabber position and mask occupation sensors
-  
-  else if (!strcasecmp(cmd_instruction,"RDBITS")) {
     smask = getMaskNumber(device2,dummy);
     rawCommand(device,"PRINT IO 24,IO 23,IO 22,IO 21",dummy);
 
     sprintf(reply,"%s SLITMASK=%d BITS=%s b24-b21", who_selected,smask,dummy);
 
-  }
+  } else if(!strncasecmp(args,"M#",2)) { // check for low-level command
 
-  // Issue a low-level command to the MicroLYNX controller
-  
-  else if (!strncasecmp(args,"M#",2)) { 
+    if(!strncasecmp(args,"M#IN_OR",7)) {
 
-    // Special command: insert grabber when in the brace position
-    
-    if (!strncasecmp(args,"M#IN_OR",7)) {
+      io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",
+				 dummy);
+      if(io30_mselect==12) {
+	if(io20_minsert==4) { // MASK select door open
 
-      io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",dummy);
-
-      if (io30_mselect==12) {   
-	if (io20_minsert==4) {
 	  sprintf(reply,"%s SLITMASK=BRACE MASKPOS=FAULT GRABBER=STOW",who_selected);
 	  strcpy(shm_addr->MODS.maskpos,"FAULT");
-	  return CMD_ERR;
 
-	}
-	else {
-	  ierr = sendCommand(device,"HOME",dummy); // Move grabber into the focal plane
+	  return CMD_ERR;
+	} else {
+
+	  ierr = sendCommand(device,"HOME",dummy); //  Science Position command
+
 	  sprintf(reply,"%s SLITMASK=BRACE GRABBER=IN Science Position Override",who_selected);
+
 	  shm_addr->MODS.pos[device]=positionToShrMem(device,dummy);
+	  
 	  if(ierr!=0) return CMD_ERR;
+
 	  return CMD_OK;
 	}
       }
       sprintf(reply,"%s SLITMASK=%d, BRACE position is required for Override slitmask brace",who_selected,io30_mselect);
 
-    }
+    } else if(!strncasecmp(args,"M#STOW_OR",7)) {
 
-    // Special command: retract (stow) grabber when in the brace position
-    
-    else if (!strncasecmp(args,"M#STOW_OR",7)) {
       ierr = sendCommand(device2,"IO36PO",dummy); // look for In Position
-      if (atoi(dummy)==0) {
+      if(atoi(dummy)==0) {
 	sprintf(reply,"%s MINSERT=FAILED, Mask Select In Position(IP) bit not asserted",who_selected);
 	return CMD_ERR;
-      }
-      else {
+      } else {
+
+	/* Stow carefully */
 	ierr = sendCommand(device,"OR_STOW",dummy);
+
 	sprintf(reply,"%s SLITMASK=BRACE MINSERT=STOW Stow Override",who_selected);
+	
 	shm_addr->MODS.pos[device]=positionToShrMem(device,dummy);
       }
-    }
 
-    // Send as-is to the MicroLYNX controller
-    
-    else {
+    } else {
       ierr=mlcTechCmd(device,args,who_selected,reply);
       if(ierr<=-1) return CMD_ERR;
     }
-    return CMD_OK;
+      return CMD_OK;
 
-  }
-  else {
+  } else {
     sprintf(reply,"%s Invalid request '%s', Usage: minsert [in|stow]",who_selected,args); 
     return CMD_ERR;
   }
@@ -4860,7 +4807,7 @@ cmd_minsert(char *args, MsgType msgtype, char *reply)
 
 /* ---------------------------------------------------------------------------
 //
-// mselect - Mask select mechanism
+// mselect - mselect MicroLYNX controller.
 //
 */
 
@@ -4933,129 +4880,122 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
   StrUpper(args);
   GetArg(args,1,cmd_instruction);
 
+
   strcpy(who_selected,cmdtab[commandID].cmd);
   StrUpper(who_selected);
 
   device2=getMechanismID("mselect",reply); // Get mechanism device ID
-  if (device2==-1) {
+  if(device2==-1) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  // return mechanism connection configuration
-  
-  if (!strcasecmp(cmd_instruction,"CONFIG")) {
+
+  if (!strcasecmp(cmd_instruction,"CONFIG")) { // get mechanism ip
     strcpy(shm_addr->MODS.state_word[device2],shm_addr->MODS.maskpos);
     mlcMechanismConfig(device2,who_selected,dummy);
     sprintf(reply,"%s",dummy);
+
     return CMD_OK;
   }
+  /*
+  wagoRW(shm_addr->MODS.ieb_i[device2],"MLCS",0,device2,dummy);
+  if(strstr(dummy,"OFF")) {
+    if(device2>15)
+      sprintf(reply,"%s MLCERR=FAULT %s controller power turned OFF",
+	      who_selected,who_selected);
+    else sprintf(reply,"%s MLCERR=FAULT %s controller power turned OFF",
+		 who_selected,who_selected);
+    return CMD_ERR;
+  }
+  */
 
-  // Lock/Unlock the mask select mechanism
-
-  if (!strcasecmp(cmd_instruction,"LOCK")) { 
+  if(!strcasecmp(cmd_instruction,"LOCK")) { // Abort process
     shm_addr->MODS.LOCKS[device2]=1;
-    sprintf(reply," %s %s=LOCK Mechanisms are locked",who_selected,who_selected);
+    sprintf(reply," %s %s=LOCK Mechanisms are locked",
+	    who_selected,who_selected);
     return CMD_OK;
 
-  }
-  else if (!strcasecmp(cmd_instruction,"UNLOCK")) {
+  } else if(!strcasecmp(cmd_instruction,"UNLOCK")) { // Abort process
     shm_addr->MODS.LOCKS[device2]=0;
-    sprintf(reply," %s %s=UNLOCK Mechanisms is unlocked",who_selected,who_selected);
+    sprintf(reply," %s %s=UNLOCK Mechanisms is unlocked",
+	    who_selected,who_selected);
     return CMD_OK;
   }
 
-  // Is the mask select mechanism configured or locked?
-  
-  if (!shm_addr->MODS.host[device2]) {
+  if(!shm_addr->MODS.host[device2]) {
     sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file",who_selected,who_selected);
     return CMD_ERR;
-  }
-  else if ( shm_addr->MODS.LOCKS[device2] ) {
+  } else if ( shm_addr->MODS.LOCKS[device2] ) {
     sprintf(reply," %s %s=FAULT connection LOCKED OUT, SLITMASK UNLOCK to continue",who_selected,who_selected);
+
     return CMD_ERR;
   }
 
-  // Abort any motion in progress
-  
-  if (!strcasecmp(cmd_instruction,"ABORT")) {
-    ierr = mlcStopMechanism(device2,dummy);
+  if(!strcasecmp(cmd_instruction,"ABORT")) {
+    ierr = mlcStopMechanism(device2,dummy); //  STOP the operation
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_OK;
   }
 
-  // Is the mask select mechanism busy?
-
-  if (mlcBusy(device2,dummy)) {
+  if (mlcBusy(device2,dummy)) { // Busy?
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  // Is hte mask select mechanism's MicroLYNX controller powered on?
-  
+ // Check if the microLynx is ON
   if(mlcQuery(device2,1,dummy)!=0) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  // We also need to know about the mask insert mechanism
-
-  device=getMechanismID("minsert",dummy);
-  if (device==-1) {
+  /* Search for the IP and Socket */
+  device=getMechanismID("minsert",dummy); // Get mechanism device ID
+  if(device==-1) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  if (!shm_addr->MODS.host[device]) {
-    sprintf(reply," %s %s=NOCOMM - minsert No IP address configured, check mechanisms.ini file",who_selected,who_selected);
+  if(!shm_addr->MODS.host[device]) {
+    sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file",who_selected,who_selected);
     return CMD_ERR;
-  }
-  else if ( shm_addr->MODS.LOCKS[device] ) {
-    sprintf(reply," %s %s=FAULT minsert connection LOCKED OUT, MINSERT UNLOCK to continue",who_selected,who_selected);
+  } else if ( shm_addr->MODS.LOCKS[device] ) {
+    sprintf(reply," %s %s=FAULT connection LOCKED OUT, SLITMASK UNLOCK to continue",who_selected,who_selected);
+
     return CMD_ERR;
   }
 
-  // Is the mask insert mechanism busy?
-  
-  if (mlcBusy(device,dummy)) {
+  if (mlcBusy(device,dummy)) { // Busy?
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  // Is the mask insert mechanism MicroLYNX controller powered on?
-  
-  if (mlcQuery(device,1,dummy)!=0) {
+ // Check if the microLynx is ON
+  if(mlcQuery(device,1,dummy)!=0) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  // Are we being asked to execute a low-level command?
-  
   if (strncasecmp(args,"M#",2)) { // check for low-level command
     ierr = mlcCheckBits(device,dummy); // check limit bits 21,22
-    if ((ierr&3)== 3 || ierr==-1) {
+    if((ierr&3)== 3 || ierr==-1) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
   }
 
-  //------------------------------------------------------
-  //
-  // Prep complete, execute mselect command instructions
-  //
-
-  // Reset the mask select mechanism
-  
   if (!strcasecmp(cmd_instruction,"RESET")) {
+
     rawCommand(device,"PRINT IO 23",dummy);
     if(mlcBitsBase10(device,"PRINT IO 23",dummy)) {
       ierr=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",dummy);
       ierr+=1;
+
       sprintf(reply,"%s SLITMASK=%d in the Science Field, RESET is disallowed, stow mask first",who_selected,ierr);
       return CMD_OK;
     }
 
-    if (!mlcBitsBase10(device,"PRINT IO 22, IO 21",dummy)) {
+    if(!mlcBitsBase10(device,"PRINT IO 22, IO 21",dummy)) {
       sprintf(reply,"%s MINSERT=UNKNOWN, GRABBER=UNKNOWN Grabber not in stow or science position, Reset to recover",who_selected);
       return CMD_ERR;
     }
@@ -5076,62 +5016,49 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
     return CMD_OK;
   }
 
-  // Execute a low-level MicroLYNX controller command
-  
-  if (strncasecmp(args,"M#",2)) {
-    ierr=checkPower(device2,dummy);
+  if (strncasecmp(args,"M#",2)) { // check for low-level command
+    ierr=checkPower(device2,dummy); // check the mechanism power 
     if(ierr) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
   }
   
-  io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",dummy);
+  io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",
+			     dummy);
   memset(dummy,0,sizeof(dummy));
   smask = getMaskNumber(device2,dummy);
 
-  io30_mselect=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",dummy);
+  io30_mselect=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",
+			       dummy);
+  if(io30_mselect==12) smask=-1; // make sure that 13 is not used if BRACE
 
-  if(io30_mselect==12) smask=-1; // make sure that position 12 is not used (mechanical brace location)
-  
   if (strlen(args)<=0) {  // Query when no command is issued
     strcpy(who_selected,"MSELECT");
+
     ierr=checkPower(device2,dummy); // check the mechanism power 
-    if (ierr) {
+    if(ierr) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
 
-    if (!mlcBitsBase10(device,"PRINT IO 22, IO 21",dummy)) {
+    if(!mlcBitsBase10(device,"PRINT IO 22, IO 21",dummy)) {
       sprintf(reply,"%s MINSERT=UNKNOWN, GRABBER=UNKNOWN Grabber not in stow or science position, Reset to recover",who_selected);
       return CMD_ERR;
     }
     
-    if (!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
+    if(!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
       sprintf(reply,"%s %s=FAULT Mechanism out-of-position, in-position sensor not asserted. Reset %s to recover",who_selected,who_selected,who_selected);
       return CMD_ERR;
     }
 
-    //
-    // Look at combination of mask grabber position (in/out) and the
-    // mask occupation sensor (in cassette/in focal plane)
-    //   1 bit: io24 = mask sensed in the cassette
-    //   2 bit: io23 = mask sensed in the FP
-    //   4 bit: io22 = grabber out (at cassette)
-    //   8 bit: io21 = grabber in (at FP)
-    //
-    // Grabber out but no mask sensed at cassette is interpreted as Empty cassette position
-    //
-    
     switch (io20_minsert) {
-    case 3:
-    case 7:
-    case 11:
+    case 3: case 7: case 11:
       sprintf(reply,"%s MINSERT='FAULT' Sensor Fault, both positions asserted",who_selected);
       return CMD_ERR;
 
     case 4:
-      if (io30_mselect==12) {
+      if(io30_mselect==12) {
 	sprintf(reply,"%s SLITMASK='BRACE' MASKPOS=EMPTY MASKNAME='BRACE'",who_selected);
 	strcpy(shm_addr->MODS.maskpos,"EMPTY");
 	return CMD_OK;
@@ -5142,7 +5069,7 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
       break;
 
     case 5:
-      if (io30_mselect==12) {
+      if(io30_mselect==12) {
 	sprintf(reply,"%s SLITMASK=BRACE MASKPOS=STOW MASKNAME='BRACE'",who_selected);
 	strcpy(shm_addr->MODS.maskpos,"STOW");
       }
@@ -5151,45 +5078,27 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
       shm_addr->MODS.active_smask=smask;
       break;
 
-    case 6:
-      sprintf(reply,"%s SLITMASK=%d MASKPOS=FAULT MASKNAME='%s' Grabber OUT but mask left in focal plane",
-	      who_selected,smask, shm_addr->MODS.slitmaskName[smask]);
-      strcpy(shm_addr->MODS.maskpos,"IN");
-      shm_addr->MODS.active_smask=smask;
-      return CMD_ERR;
-      // break;
-      
     case 8:
-      sprintf(reply,"%s SLITMASK=%d MASKPOS=EMPTY MASKNAME='%s' Grabber IN but mask position unknown",
-	      who_selected,smask, shm_addr->MODS.slitmaskName[smask]);
+      sprintf(reply,"%s SLITMASK=%d MASKPOS=EMPTY MASKNAME='%s'",who_selected,smask, shm_addr->MODS.slitmaskName[smask]);
       strcpy(shm_addr->MODS.maskpos,"EMPTY");
       shm_addr->MODS.active_smask=smask;
-      return CMD_ERR;
-      //break;
+      break;
 
-    case 9:
-      sprintf(reply,"%s SLITMASK=%d MASKPOS=FAULT MASKNAME='%s' Grabber IN but mask left in cassette",
-	      who_selected,smask, shm_addr->MODS.slitmaskName[smask]);
-      strcpy(shm_addr->MODS.maskpos,"STOW");
-      shm_addr->MODS.active_smask=smask;
-      return CMD_ERR;
-      // break;
-      
     case 10:
-      ierr=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",dummy);
+      ierr=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",
+				 dummy);
+
       sprintf(reply,"%s SLITMASK=%d MASKPOS=IN MASKNAME='%s'",who_selected,smask, shm_addr->MODS.slitmaskName[smask]);
       strcpy(shm_addr->MODS.maskpos,"IN");
       shm_addr->MODS.active_smask=smask;
       break;
 
-    case 12:
-    case 13:
-    case 14:
-      sprintf(reply,"%s MINSERT='FAULT' Sensor Fault - both grabber limits asserted",who_selected);
+    case 12: case 13: case 14:
+      sprintf(reply,"%s MINSERT='FAULT' Sensor Fault, both limits asserted",who_selected);
       return CMD_ERR;
 
     case 15:
-      sprintf(reply,"%s MINSERT='FAULT' All Sensor Fault - all limits and positions asserted");
+      sprintf(reply,"%s MINSERT='FAULT' All Sensor Fault, all limits and positions asserted");
       return CMD_ERR;
 
     default:
@@ -5198,27 +5107,26 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
     return CMD_OK;
   }
 
-  // M# low-level microlynx command
-  
+
   if (!strncasecmp(args,"M#",2)) { // check for low-level command
     ierr=mlcTechCmd(device2,args,who_selected,reply);
     if(ierr<=-1) return CMD_ERR;
 
     return CMD_OK;
 
-  }
-  else if ((atoi(args)>0 && atoi(args)<25)) { 
-    if (checkPower(device2,dummy)) {
+  } else if ((atoi(args)>0 && atoi(args)<25)) { 
+
+    if(checkPower(device2,dummy)) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
 
-    if (!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
+    if(!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
       sprintf(reply,"%s %s=FAULT Mechanism out-of-position, in-position sensor not asserted. Reset %s to recover",who_selected,who_selected,who_selected);
       return CMD_ERR;
     }
 
-    if (!mlcBitsBase10(device,"PRINT IO 22, IO 21",dummy)) {
+    if(!mlcBitsBase10(device,"PRINT IO 22, IO 21",dummy)) {
       sprintf(reply,"%s MINSERT=UNKNOWN, GRABBER=UNKNOWN Grabber not in stow or science position, Reset to recover",who_selected);
       return CMD_ERR;
     }
@@ -5230,70 +5138,62 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
 			       dummy);
 
     switch (io20_minsert) {
-    case 3:
-    case 7:
-    case 11:
-      sprintf(reply,"%s MINSERT=FAULT Occupation sensor fault, both sensors asserted",who_selected);
+    case 3: case 7: case 11:
+      sprintf(reply,"%s MINSERT=FAULT Sensor Fault, both positions asserted",who_selected);
       return CMD_ERR;
 
     case 15:
-      sprintf(reply,"%s MINSERT=FAULT Sensor Fault, all grabber and occupation sensors asserted",who_selected);
+      sprintf(reply,"%s MINSERT=FAULT All Sensor Fault, all limits and positions asserted",who_selected);
       return CMD_ERR;
 
-    case 12:
-    case 13:
-    case 14:
-      sprintf(reply,"%s MINSERT=FAULT Grabber sensor fault, both sensors asserted",who_selected);
+    case 12: case 13: case 14:
+      sprintf(reply,"%s MINSERT=FAULT Sensor Fault, both limits asserted",who_selected);
       return CMD_ERR;
 
     case 10:
-      sprintf(reply,"%s SLITMASK=%d in the focal plane, MSELECT disallowed, stow mask first",who_selected,smask);
+      sprintf(reply,"%s SLITMASK=%d in the Science Field, MSELECT disallowed, stow mask first",who_selected,smask);
       shm_addr->MODS.active_smask=smask;
       break;
 
     case 8:
-      sprintf(reply,"%s MINSERT=FAULT grabber in focal plane without mask, MSELECT disallowed, stow mask first, MASKPOS=UNKNOWN",who_selected);
-      strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
+      sprintf(reply,"%s MINSERT=FAULT in Science Field without Mask, MSELECT disallowed, stow carriage first, MASKPOS=EMPTY",who_selected);
+      strcpy(shm_addr->MODS.maskpos,"EMPTY");
       return CMD_ERR;
 
     default:
-      // OK to move
       
       memset(dummy,0,sizeof(dummy));
       shm_addr->MODS.reqpos[device2]=atof(cmd_instruction);
       smask=atoi(cmd_instruction);
 
-      if (smask>=12) smask++; // skip the brace position
+      if(smask>=12) smask++;
 
       sprintf(mask_selected,"MASKNUM=%d",atoi(cmd_instruction));
       ierr = sendTwoCommand(device2,mask_selected,"MASKR",dummy);
       MilliSleep(100);
 
-      smask=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",dummy)+1;
+      smask=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",
+			  dummy)+1;
 
       if(smask>12) smask--;
       shm_addr->MODS.reqpos[device2]=atof(args);
 
       if(smask!=(int)shm_addr->MODS.reqpos[device2]) {
-	sprintf(reply,"%s %s=%d MOVE FAULT, position at end of move %d but requested position %f",
-		who_selected,who_selected,smask,smask,shm_addr->MODS.reqpos[device2]);
+	sprintf(reply,"%s %s=%d Move Fault, position at end of move %d but requested position %f",who_selected,who_selected,smask,smask,shm_addr->MODS.reqpos[device2]);
 	return CMD_ERR;
       }
 
       shm_addr->MODS.pos[device2]=(float)smask;
       shm_addr->MODS.active_smask=smask;
+
       cmd_mselect("", EXEC, reply);
     }
     return CMD_OK;
 
-  }
-
-  // Step the cassette
-  
-  else if (!strcasecmp(cmd_instruction,"STEP")) {
+  } else if (!strcasecmp(cmd_instruction,"STEP")) {
 
     ierr=checkPower(device2,dummy); // check the mechanism power 
-    if (ierr) {
+    if(ierr) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
@@ -5313,21 +5213,14 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
     cmd_mselect("", EXEC,dummy);
     sprintf(reply,"%s %s",who_selected,dummy);
 
-  }
+  } else if (!strcasecmp(cmd_instruction,"RDBITS")) {
 
-  // Read the mask selecdt position encoders
-  
-  else if (!strcasecmp(cmd_instruction,"RDBITS")) {
     smask = getMaskNumber(device2,dummy);
     rawCommand(device2,"PRINT IO 36,IO 35,IO 34,IO 33,IO 32,IO 31",dummy);
 
     sprintf(reply,"%s SLITMASK=%d BITS=%s b36-b31", who_selected,smask,dummy);
 
-  }
-
-  // Move to the mechanical brace position
-  
-  else if (!strcasecmp(cmd_instruction,"BRACE")) {
+  } else if (!strcasecmp(cmd_instruction,"BRACE")) {
 
     sprintf(mask_selected,"BRACE");
     ierr = sendCommand(device2,mask_selected,dummy);
@@ -5338,30 +5231,24 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
       sprintf(reply,"%s SLITMASK=BRACE stow-position bit not asserted",who_selected);
       return CMD_ERR;
     }
-
+    //    sprintf(reply,"%s %s",who_selected,dummy);
     cmd_mselect("",EXEC,reply);
 
-  }
-
-  // Find which position we are in>
-  
-  else if (!strcasecmp(cmd_instruction,"FINDPOS")) {
+  } else if (!strcasecmp(cmd_instruction,"FINDPOS")) {
 
     memset(dummy,0,sizeof(dummy));
     io20_mselect=mlcBitsBase10(device2,"PRINT IO 21,IO 22", dummy);
     io20_mselect&=0x3;
 
-    if (io20_mselect==2) {
+    if(io20_mselect==2) {
       ierr = sendCommand(device2,"CENTER",dummy);
       sprintf(reply,"%s SLITMASK=24 In first position from CW",who_selected);
 
-    }
-    else if(io20_mselect==1) {
+    } else if(io20_mselect==1) {
       ierr = sendCommand(device2,"FINDPOS",dummy);
       sprintf(reply,"%s SLITMASK=1 In first position from CCW",who_selected);
 
-    }
-    else if(io20_mselect==0) {
+    } else if(io20_mselect==0) {
       ierr = sendCommand(device2,"FINDPOS",dummy);
 
       if(ierr!=0) {
@@ -5382,27 +5269,20 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
       sprintf(reply,"%s SLITMASK=%d In Position(IP) bit asserted",who_selected,smask);
     }
 
-  }
-  
-  // Drive cassette to the clockwise travel limit
-  
-  else if (!strcasecmp(cmd_instruction,"CWLIMIT")) {
+  } else if (!strcasecmp(cmd_instruction,"CWLIMIT")) {
+
     ierr = sendCommand(device2,"CWLIMIT",dummy);
     sprintf(reply,"%s %s",who_selected,dummy);
-  }
 
-  // Drive cassette to the counterclockwise travel limit
-  
-  else if (!strcasecmp(cmd_instruction,"CCWLIMIT")) {
+  } else if (!strcasecmp(cmd_instruction,"CCWLIMIT")) {
+
     ierr = sendCommand(device2,"CCWLIMIT",dummy);
     sprintf(reply,"%s %s",who_selected,dummy);
-  }
 
-  // Unknown request
-  
-  else {
+  } else {
     sprintf(reply,"%s Invalid request '%s', valid range 1..24 or BRACE",
 	    who_selected,cmd_instruction);
+
     return CMD_ERR;
   }
 
@@ -5411,12 +5291,12 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
 
 /* ---------------------------------------------------------------------------
 //
-// slitmask - slitmask command (compound mselect + minsert)
+// slitmask - slitmask MicroLYNX controller.
 //
 */
 
 /*!  
-  \brief slitmask command - select and insert/retract a slit mask
+  \brief slitmask command - command the slit mask for deployment
   \param args string with command-line arguments
   \param msgtype message type if the command was sent as an IMPv2 message
   \param reply string to contain the command return reply
@@ -5434,20 +5314,30 @@ cmd_mselect(char *args, MsgType msgtype, char *reply)
   \par Range: 1..24
 
   \par Description:
+  http://www.astronomy.ohio-state.edu/~rgonzale/MODS_ICSCommands.pdf
+
   Move the slit mask cassette to place the mask in cassette slot n into 
-  position for insertion into the MODS focal plane and insert/restract the
-  mask.
+  position for insertion into the MODS focal plane.
   
   If given without arguments, it returns the slit mask cassette slot currently
   in position, and indicates whether or not a mask is actually loaded in that 
   slot in the cassette along with its ID if known.
 
+  SLITMASK does not insert the named slit mask into the focal plane, it only 
+  positions the mask cassette mechanism to the requested position preparatory 
+  to insertion with the MASK command.
+
   If there is already a slit mask deployed in the focal plane, a request to 
   move the slit mask cassette mechanism will be denied and return an error 
   requesting that the currently deployed mask be retracted first using the 
-  "slitmask out" or "minsert out" commands.
+  "MASK out" command.
 
   \par Interactions: Interlocked with the slit mask insert/retract mechanism 
+  (hardware & software).
+
+  Send a mask MicroLYNX controller command via network or serial.
+  MicroLYNX Controller commands given in MODS Mechanism Commands doc.
+  http://www.astronomy.ohio-state.edu/~rgonzale/MODS_Mechanism_Commands.pdf
 
 */
 
@@ -5479,137 +5369,121 @@ cmd_slitmask(char *args, MsgType msgtype, char *reply)
   strcpy(who_selected,cmdtab[commandID].cmd);
   StrUpper(who_selected);
 
-  // Reload the slit mask assignment table
-
-  if (!strcasecmp(cmd_instruction,"RDTAB")) {
+  if(!strcasecmp(cmd_instruction,"RDTAB")) { // re-read the slitmask table
     system("/usr/local/bin/mlcRecover slitmask");
     sprintf(reply,"%s %s table read",who_selected,cmd_instruction);
     return CMD_OK;
   }
 
-  // Get the mask insert mechanism ID
-
-  device=getMechanismID("minsert",dummy);
-  if (device==-1) {
+  /* Search for the IP and Socket */
+  device=getMechanismID("minsert",dummy); // Get mechanism device ID
+  if(device==-1) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  // Get the mask cassette select mechanism ID
-  
-  device2=getMechanismID("mselect",dummy);
-  if (device2==-1) {
+  device2=getMechanismID("mselect",dummy); // Get mechanism device ID
+  if(device2==-1) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  // Lock/Unlock request
-  
-  if (!strcasecmp(cmd_instruction,"LOCK")) {
+  if(!strcasecmp(cmd_instruction,"LOCK")) { // Abort process
     shm_addr->MODS.LOCKS[device]=1;
     shm_addr->MODS.LOCKS[device2]=1;
-    sprintf(reply," %s %s=LOCK slitmask mechanisms are locked",who_selected,who_selected);
+    sprintf(reply," %s %s=LOCK Mechanisms are locked",
+	    who_selected,who_selected);
     return CMD_OK;
 
-  }
-  else if (!strcasecmp(cmd_instruction,"UNLOCK")) {
+  } else if(!strcasecmp(cmd_instruction,"UNLOCK")) { // Abort process
     shm_addr->MODS.LOCKS[device]=0;
     shm_addr->MODS.LOCKS[device2]=0;
-    sprintf(reply," %s %s=UNLOCK slitmask mechanisms are unlocked",who_selected,who_selected);
+    sprintf(reply," %s %s=UNLOCK Mechanisms is unlocked",
+	    who_selected,who_selected);
     return CMD_OK;
   }
 
-  // Check mechanism comms configuration
-  
-  if (!shm_addr->MODS.host[device]) {
+  if(!shm_addr->MODS.host[device]) {
     sprintf(reply," %s %s=NOCOMM - No IP address configured, check mechanisms.ini file",who_selected,who_selected);
     return CMD_ERR;
-  }
-  else if ( shm_addr->MODS.LOCKS[device] ) {
+  } else if ( shm_addr->MODS.LOCKS[device] ) {
     sprintf(reply," %s %s=FAULT connection LOCKED OUT, %s UNLOCK to continue",who_selected,who_selected,who_selected);
+
     return CMD_ERR;
   }
 
-  // ABORT requested - execute now
-  
-  if (!strcasecmp(cmd_instruction,"ABORT")) {
-    ierr = mlcStopMechanism(device,dummy); // mask insert abort
-    ierr = mlcStopMechanism(device2,dummy); // mask select abort
+  if(!strcasecmp(cmd_instruction,"ABORT")) {
+
+    /* abort the mask insert */
+    ierr = mlcStopMechanism(device,dummy); //  STOP the operation
+
+    /* abort the mask select */
+    ierr = mlcStopMechanism(device2,dummy); //  STOP the operation
+
     sprintf(reply,"%s MINSERT=ABORT MSELECT=ABORT");
+
     return CMD_OK;
   }
 
-  // Are the mechanisms busy?
-  
   if (mlcBusy(device,dummy) || mlcBusy(device2,dummy)) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR; // Busy?
   }
 
-  // Are the MicroLYNX controllers powered on?
-  
-  if (mlcQuery(device,1,dummy)!=0) {
+ // Check if the microLynx is ON
+  if(mlcQuery(device,1,dummy)!=0) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  if (mlcQuery(device2,1,dummy)!=0) {
+ // Check if the microLynx is ON
+  if(mlcQuery(device2,1,dummy)!=0) {
     sprintf(reply,"%s %s",who_selected,dummy);
     return CMD_ERR;
   }
 
-  // Are we servicing a low-level MicroLYNX commands?
-  
-  if (strncasecmp(args,"M#",2)) {
-    if (mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy)==3 ||
-        mlcBitsBase10(device2,"PRINT IO 22,IO 21",dummy)==3) {
+  if (strncasecmp(args,"M#",2)) { // check for low-level command
+    if(mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy)==3 ||
+       mlcBitsBase10(device2,"PRINT IO 22,IO 21",dummy)==3) {
       sprintf(reply,"%s",who_selected);
-      if (mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy)==3)
+      if(mlcBitsBase10(device,"PRINT IO 22,IO 21",dummy)==3)
 	sprintf(reply,"%s MINSERT=FAULT",reply);
-      if (mlcBitsBase10(device2,"PRINT IO 22,IO 21",dummy)==3)
+      if(mlcBitsBase10(device2,"PRINT IO 22,IO 21",dummy)==3)
 	sprintf(reply,"%s MSELECT=FAULT",reply);
       sprintf(reply,"%s cable disconnected or sensor fault",reply);
       return CMD_ERR;
     }
   }
 
-  // Return the mechanism configuration
-  
-  if (!strcasecmp(cmd_instruction,"CONFIG")) {
+  if (!strcasecmp(cmd_instruction,"CONFIG")) { // Reset mechanism
+
     sprintf(reply,"%s Use mselect config and/or minsert config",who_selected);
     return CMD_OK;
 
-  }
-
-  // Reset the slitmask system
-  
-  else if (!strcasecmp(cmd_instruction,"RESET")) {
+  } else if (!strcasecmp(cmd_instruction,"RESET")) { // RESET the slitmask couple
     rawCommand(device,"PWRFAIL=0",dummy); // reset minsert power bit
     rawCommand(device2,"PWRFAIL=0",dummy); // reset mselect power bit
 
-    if (!mlcBitsBase10(device,"PRINT IO 22",dummy))
+    if(!mlcBitsBase10(device,"PRINT IO 22",dummy))
       sendCommand(device,"HOME",dummy); // RESET Home Mask Insert
 
-    if (!mlcBitsBase10(device,"PRINT IO 21",dummy) && !mlcBitsBase10(device,"PRINT IO 22",dummy))
+    if(!mlcBitsBase10(device,"PRINT IO 21",dummy) && !mlcBitsBase10(device,"PRINT IO 22",dummy))
       ierr = sendCommand(device,"OR_STOW",dummy); // RESET Home Mask Insert
     else
       ierr = sendCommand(device,"STOW",dummy); // RESET Stow Mask Insert
-
     MilliSleep(1000);
 
-    if (!mlcBitsBase10(device,"PRINT IO 22",dummy)) {
+    if(!mlcBitsBase10(device,"PRINT IO 22",dummy)) {
       sprintf(reply,"%s MINSERT=UNKNOWN, GRABBER=UNKNOWN Grabber not in stow position",who_selected);
       return CMD_ERR;
     }
     
-    if (!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
+    if(!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
       ierr=mlcBitsBase10(device2,"PRINT IO 22,IO 21",dummy);
-      if (ierr!=0) {
+      if(ierr!=0) {
 	isisStatusMsg("SLITMASK Recovering from MSELECT limit fault");
-	if (ierr==1)
-	  rawCommand(device2,"MOVR -1",dummy);
-	else if (ierr==2)
-	  rawCommand(device2,"MOVR 1",dummy);
+	if(ierr==1) rawCommand(device2,"MOVR -1",dummy);
+	else if(ierr==2) rawCommand(device2,"MOVR 1",dummy);
 	isisStatusMsg("SLITMASK standard reset continues");
       }
       ierr = sendCommand(device2,"M_RESET",dummy); // Initialize Mask Select
@@ -5620,17 +5494,17 @@ cmd_slitmask(char *args, MsgType msgtype, char *reply)
 
     ierr=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",dummy);
     if (ierr!=12) {
-      sprintf(reply,"%s SLITMASK=%d MOVE FAULT Slitmask reset requested BRACE but moved to position %d, Check sensors with MSELECT RDBITS",who_selected,ierr,ierr);
+      sprintf(reply,"%s SLITMASK=%d Move fault Slitmask reset reqested the BRACE position but moved to position %d, Check position sensors with MSLECET RDBITS",who_selected,ierr,ierr);
       return CMD_ERR;
     }
 
-    if (!mlcBitsBase10(device,"PRINT IO 24",dummy)) {
+    if(!mlcBitsBase10(device,"PRINT IO 24",dummy)) {
       sprintf(reply,"%s SLITMASK=BRACE stow-position bit not asserted",who_selected);
       return CMD_ERR;
     }
 
     ierr = sendCommand(device2,"M_RESET",dummy); // RESET Mask Select to first position
-    if (ierr!=0) {
+    if(ierr!=0) {
       sprintf(reply,"%s MSELECT=UNKNOWN[%d] %s",who_selected,ierr,dummy);
       return CMD_ERR;
     }
@@ -5640,14 +5514,12 @@ cmd_slitmask(char *args, MsgType msgtype, char *reply)
     shm_addr->MODS.pos[device]=positionToShrMem(device,dummy);
     shm_addr->MODS.pos[device2]=positionToShrMem(device2,dummy);
 
-    // Check the mask insert mechanism grabber and occupation sensors
-    
     io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",dummy);
     switch (io20_minsert) {
     case 0:
       strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
       break;
-    case 4:
+    case 4: case 8:
       strcpy(shm_addr->MODS.maskpos,"EMPTY");
       break;
     case 5:
@@ -5682,26 +5554,22 @@ cmd_slitmask(char *args, MsgType msgtype, char *reply)
     }
   }
 
-  // read the mask insert mechanism grabber and occupation sensors
-  
-  io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",dummy);
+  io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",
+			     dummy);
 
   memset(dummy,0,sizeof(dummy));
   smask = getMaskNumber(device2,dummy);
 
-  // read the mask select encoder bits
-  
-  io30_mselect=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",dummy);
+  io30_mselect=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",
+  			     dummy);
 
   if(io30_mselect==12) smask=-1; // make sure that 13 is not used if BRACE
 
-  // No arguments, execute a status query
-
-  if (strlen(args)<=0) {
+  if (strlen(args)<=0) {  // Query when no command is issued
     strcpy(who_selected,"SLITMASK");
 
-    if (!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
-      sprintf(reply,"%s %s=FAULT Mechanism out-of-position, cassette in-position sensor not asserted. Reset %s to recover",who_selected,who_selected,who_selected);
+    if(!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
+      sprintf(reply,"%s %s=FAULT Mechanism out-of-position, in-position sensor not asserted. Reset %s to recover",who_selected,who_selected,who_selected);
       return CMD_ERR;
     }
 
@@ -5715,112 +5583,97 @@ cmd_slitmask(char *args, MsgType msgtype, char *reply)
     shm_addr->MODS.pos[device]=positionToShrMem(device,dummy);
     shm_addr->MODS.pos[device2]=positionToShrMem(device2,dummy);
 
-    // Test all mselect sensor bits
-    
-    if (io30_mselect==3) {
+    /* Check all returned bits */
+    if(io20_mselect==3) {
       sprintf(reply,"%s MSELECT=FAULT Sensor Faults",who_selected);
       return CMD_ERR;
-    }
 
-    // test all minsert sensor bits
-    
-    if (io20_minsert==12) { 
+    }
+    /* Check all returned bits */
+    if(io20_minsert==12) { 
       sprintf(reply,"%s SLITMASK=%d Grabber Sensor Fault, MASKPOS=UNKNOWN GRABBER=FAULT",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
       return CMD_ERR;
 
-    }
-    else if (io20_minsert==14) {
+    } else if (io20_minsert==14) {
       sprintf(reply,"%s SLITMASK=%d Grabber Sensor Fault, MASKPOS=IN GRABBER=FAULT",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"IN");
       return CMD_ERR;
 
-    }
-    else if (io20_minsert==13) {
+    } else if (io20_minsert==13) {
       sprintf(reply,"%s SLITMASK=%d Grabber Sensor Fault, MASKPOS=STOW GRABBER=FAULT",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"STOW");
       return CMD_ERR;
 
-    }
-    else if (io20_minsert==15) {
+    } else if (io20_minsert==15) {
       sprintf(reply,"%s SLITMASK=%d ALL Sensor Faults, MASKPOS=FAULT GRABBER=FAULT",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"FAULT");
       return CMD_ERR;
 
-    }
-    else if (io20_minsert==3) {
+    } else if (io20_minsert==3) {
       sprintf(reply,"%s SLITMASK=%d Mask Sensor Fault, MASKPOS=FAULT GRABBER=UNKNOWN",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"FAULT");
       return CMD_ERR;
 
-    }
-    else if (io20_minsert==7) {
+    } else if (io20_minsert==7) {
       sprintf(reply,"%s SLITMASK=%d Mask Sensor Fault, MASKPOS=FAULT GRABBER=STOW",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"FAULT");
       return CMD_ERR;
 
-    }
-    else if (io20_minsert==11) {
-      if (smask==-1) {
+    } else if (io20_minsert==11) {
+      if(smask==-1) {
 	sprintf(reply,"%s SLITMASK=BRACE Mask Sensor Fault, MASKPOS=FAULT GRABBER=IN",who_selected,smask);
 	strcpy(shm_addr->MODS.maskpos,"IN");
 	shm_addr->MODS.active_smask=smask;
-      }
-      else {
+      } else {
 	sprintf(reply,"%s SLITMASK=%d Mask Sensor Fault, MASKPOS=FAULT GRABBER=IN",who_selected,smask);
 	strcpy(shm_addr->MODS.maskpos,"FAULT");
 	return CMD_ERR;
       }
 
-    }
-    else if (io20_minsert==0) {
+    } else if (io20_minsert==0) {
       sprintf(reply,"%s SLITMASK=%d Mask Sensor Fault, MASKPOS=UNKNOWN GRABBER=UNKNOWN",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
       return CMD_ERR;
 
-    }
-    else if (io20_minsert==9) {
+    } else if (io20_minsert==9) {
       sprintf(reply,"%s SLITMASK=%d Impossible: Mask Stowed but Grabber in Science Position MASKPOS=STOW GRABBER=IN",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"STOW");
       return CMD_ERR;
 
-    }
-    else if (io20_minsert==6) {
+    } else if (io20_minsert==6) {
       sprintf(reply,"%s SLITMASK=%d Impossible: Mask in Science Position but Grabber Stowed MASKPOS=IN GRABBER=STOW",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"IN");
       return CMD_ERR;
       
-    }
-    else if (io20_minsert==10) {
+    } else if (io20_minsert==10) {
       sprintf(reply,"%s SLITMASK=%d MASKPOS=IN MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
       strcpy(shm_addr->MODS.maskpos,"IN");
       shm_addr->MODS.active_smask=smask;
 
-    }
-    else if (io20_minsert==5) {
-      if (io30_mselect==12) {
+    } else if (io20_minsert==5) {
+      if(io30_mselect==12) {
 	sprintf(reply,"%s SLITMASK=BRACE MASKPOS=STOW MASKNAME='BRACE'",who_selected);
 	strcpy(shm_addr->MODS.maskpos,"STOW");
-      }
-      else {
+	//return CMD_ERR;
+
+      } else {
 	sprintf(reply,"%s SLITMASK=%d MASKPOS=STOW MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
 	strcpy(shm_addr->MODS.maskpos,"STOW");
 	shm_addr->MODS.active_smask=smask;
       }
       
-    }
-    else if (io20_minsert==4) {
+    } else if (io20_minsert==4) {
       strcpy(shm_addr->MODS.maskpos,"EMPTY");
-      if (io30_mselect==12) {
+      if(io30_mselect==12) {
 	sprintf(reply,"%s SLITMASK=BRACE MASKPOS=EMPTY MASKNAME='BRACE'",who_selected);
-      }
-      else {
+
+      } else {
 	sprintf(reply,"%s SLITMASK=%d MASKPOS=EMPTY MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
 	shm_addr->MODS.active_smask=smask;
       }
 
-    }
-    else {
+    } else {
       sprintf(reply,"%s MINSERT=UNKNOWN",who_selected);
       strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
 
@@ -5829,115 +5682,76 @@ cmd_slitmask(char *args, MsgType msgtype, char *reply)
     return CMD_OK;
   }
 
-  // Low-level MicroLynx command
-  
-  if (!strncasecmp(args,"M#",2)) {
+  if (!strncasecmp(args,"M#",2)) { // check for low-level command
     ierr=mlcTechCmd(device2,args,who_selected,reply);
-    if (ierr<=-1) return CMD_ERR;
-  }
+    if(ierr<=-1) return CMD_ERR;
 
-  // Insert the mask into the focal plane
-  
-  else if (!strcasecmp(cmd_instruction,"IN")) {
+  } else if (!strcasecmp(cmd_instruction,"IN")) { // Send MASK to Focal Plane(FP)
     io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",dummy);
-    
-    if (io20_minsert<=0) {
-      sprintf(reply,"%s SLITMASK=%d MASKPOS=UNKNOWN GRABBER=UNKNOWN Mask and Grabber Out-of-Position",who_selected,smask);
+    if(io20_minsert<=0) {
+      sprintf(reply,"%s SLITMASK=%d MASKPOS=UNKNOWN GRABBER=UNKNOWN Mask and Grabber Out-of-Position, reset to initialize",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
       return CMD_ERR;
     }
 
-    // Grabber is at the cassette and there is a mask in the cassette, insert into the focal plane
-    
-    if (io20_minsert==5) {
-      ierr = sendCommand(device,"HOME",dummy);
-      sprintf(reply,"%s SLITMASK=%d MASKPOS=IN MASKNAME='%s'",who_selected,smask, shm_addr->MODS.slitmaskName[smask]);
-      strcpy(shm_addr->MODS.maskpos,"IN");
-      shm_addr->MODS.active_smask=smask;
-    }
-
-    // Grabber is at the cassette but no mask is there, do nothing (but)
-
-    else if (io20_minsert==4) {
+    if(io20_minsert==5 || io20_minsert!=10) {
+      if(io20_minsert!=4) {
+	ierr = sendCommand(device,"HOME",dummy);
+	sprintf(reply,"%s SLITMASK=%d MASKPOS=IN MASKNAME='%s'",who_selected,smask, shm_addr->MODS.slitmaskName[smask]);
+	strcpy(shm_addr->MODS.maskpos,"IN");
+	shm_addr->MODS.active_smask=smask;
+      } else {
+	sprintf(reply,"%s SLITMASK=%d MASKPOS=EMPTY MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
+	strcpy(shm_addr->MODS.maskpos,"EMPTY");
+	shm_addr->MODS.active_smask=smask;
+      }
+    } else if(io20_minsert==4) {
       sprintf(reply,"%s SLITMASK=%d MASKPOS=EMPTY MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
       strcpy(shm_addr->MODS.maskpos,"EMPTY");
       shm_addr->MODS.active_smask=smask;
       return CMD_OK;
-    }
 
-    // The mask (and grabber) are already in the focal plane, report back
-    
-    else if (io20_minsert==10) {
+    } else {
       sprintf(reply,"%s SLITMASK=%d MASKPOS=IN MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
-      strcpy(shm_addr->MODS.maskpos,"IN");
+      strcpy(shm_addr->MODS.maskpos,"EMPTY");
       shm_addr->MODS.active_smask=smask;
-      return CMD_OK;
-    }
 
-    // We don't know where things are, report a fault
-    
-    else {
-      sprintf(reply,"%s SLITMASK=%d MASKPOS=UNKNOWN MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
-      strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
-      shm_addr->MODS.active_smask=smask;
     }
-    
     shm_addr->MODS.pos[device]=positionToShrMem(device,dummy);
     shm_addr->MODS.pos[device2]=positionToShrMem(device2,dummy);
 
-  }
-
-  // Retract the mask from the focal plane ("out" or "stow")
-  
-  else if (!strcasecmp(cmd_instruction,"OUT") || !strcasecmp(cmd_instruction,"STOW")) {
+  } else if (!strcasecmp(cmd_instruction,"OUT") ||
+	     !strcasecmp(cmd_instruction,"STOW")) { // STOW or retract the MASK from FP
     io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",dummy);
-    io30_mselect=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",dummy);
+    io30_mselect=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",
+			       dummy);
     
-    if (io30_mselect==12) smask=-1; // make sure that 13 is not used if BRACE
+    if(io30_mselect==12) smask=-1; // make sure that 13 is not used if BRACE
 
-    // Mask and grabber in the focal plane, retract (stow)
-    
-    if (io20_minsert==10) {
+    if(io20_minsert==10 && io20_minsert!=5) {
       ierr = sendCommand(device,"STOW",dummy);
       sprintf(reply,"%s SLITMASK=%d MASKPOS=STOW MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
       strcpy(shm_addr->MODS.maskpos,"STOW");
       shm_addr->MODS.active_smask=smask;
-    }
-
-    // Mask and grabber already stowed, report back
-    
-    else if (io20_minsert==5) {
+      
+    } else if(io20_minsert==5) {
       sprintf(reply,"%s SLITMASK=%d MASKPOS=STOW MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
       strcpy(shm_addr->MODS.maskpos,"STOW");
-      shm_addr->MODS.active_smask=smask;
-      return CMD_OK;
-    }
-
-    // Grabber is already at the stow position, but no mask in the cassette, report back
-    
-    else if (io20_minsert==4) {
+      
+    } else if(io20_minsert==4) {
       sprintf(reply,"%s SLITMASK=%d MASKPOS=EMPTY MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
       strcpy(shm_addr->MODS.maskpos,"EMPTY");
       shm_addr->MODS.active_smask=smask;
-      return CMD_OK;
-    }
-
-    // We don't know where one or more things are, report a fault
-    
-    else {
-      sprintf(reply,"%s %s=%d MASKPOS=UNKNOWN MASKNAME='%s'",who_selected,who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
-      strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
+      
+    } else {
+      sprintf(reply,"%s %s=%d MASKPOS=STOW MASKNAME='%s'",who_selected,who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
+      strcpy(shm_addr->MODS.maskpos,"STOW");
       shm_addr->MODS.active_smask=smask;
     }
-
     shm_addr->MODS.pos[device]=positionToShrMem(device,dummy);
     shm_addr->MODS.pos[device2]=positionToShrMem(device2,dummy);
     
-  }
-
-  // Move the cassette to the brace position
-  
-  else if (!strcasecmp(cmd_instruction,"BRACE")) {
+  } else if (!strcasecmp(cmd_instruction,"BRACE")) {
 
     sprintf(mask_selected,"BRACE");
     ierr = sendCommand(device2,mask_selected,dummy);
@@ -5946,83 +5760,84 @@ cmd_slitmask(char *args, MsgType msgtype, char *reply)
     shm_addr->MODS.pos[device]=positionToShrMem(device,dummy);
     shm_addr->MODS.pos[device2]=positionToShrMem(device2,dummy);
     
-    if (!mlcBitsBase10(device,"PRINT IO 24",dummy)) {
+    if(!mlcBitsBase10(device,"PRINT IO 24",dummy)) {
       sprintf(reply,"%s SLITMASK=BRACE stow-position bit not asserted",who_selected);
       return CMD_ERR;
     }
     cmd_slitmask("",EXEC,reply);
     return CMD_OK;
 
-  }
+  } else if ((atoi(cmd_instruction)>0 && atoi(cmd_instruction)<25)) { 
 
-  // Check mechanism power state
-  
-  else if ((atoi(cmd_instruction)>0 && atoi(cmd_instruction)<25)) { 
-
-    ierr=checkPower(device2,dummy);
-    if (ierr) {
+    ierr=checkPower(device2,dummy); // check the mechanism power 
+    if(ierr) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
 
-    if (!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
+    if(!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
       sprintf(reply,"%s %s=FAULT Mechanism out-of-position, in-position sensor not asserted. Reset %s to recover",who_selected,who_selected,who_selected);
       return CMD_ERR;
     }
 
     io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",dummy);
-
     if(io20_minsert<=0) {
       sprintf(reply,"%s SLITMASK=%d MASKPOS=UNKNOWN GRABBER=UNKNOWN Mask and Grabber Out-of-Position, reset to initialize",who_selected,smask);
       strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
       return CMD_ERR;
     }
 
+    /*
     // If already in requested selected position and is already stowed
-    // move mask into the focal plane ("IN")
-
-    if (smask==atoi(cmd_instruction)) { // same slitmask position requested
-      if (io20_minsert==10) {
+    // move mask into Science Position(SP).
+    */
+    if(smask==atoi(cmd_instruction)) { // same slitmask position requested
+      if(io20_minsert==10) { // already in SP
 	sprintf(reply,"%s SLITMASK=%d MASKPOS=IN MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]);
 	strcpy(shm_addr->MODS.maskpos,"IN");
 	shm_addr->MODS.active_smask=smask;
-      }
-      else if (io20_minsert==5) {  // are we in a stowed position?
+
+      } else if(io20_minsert==5) {  // are we in a stowed position?
+	
 	memset(bc_dummy,0,sizeof(bc_dummy));
 	memset(dummy,0,sizeof(dummy));
 
 	MilliSleep(200);
-	ierr = sendCommand(device,"HOME",dummy); // move mask into the focal plane
+	ierr = sendCommand(device,"HOME",dummy); // move to Science Position
 	
 	if(ierr!=0) {
 	  sprintf(reply,"%s SLITMASK=UNKNOWN home failed",who_selected);
 	  return CMD_ERR;
 	}
+
 	shm_addr->MODS.pos[device]=positionToShrMem(device,dummy);
 	shm_addr->MODS.pos[device2]=positionToShrMem(device2,dummy);
+
 	sprintf(reply,"%s SLITMASK=%d MASKPOS=IN MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]); // get current status
 	strcpy(shm_addr->MODS.maskpos,"IN");
 	shm_addr->MODS.active_smask=smask;
-      }
-      else if (io20_minsert==4) { // no slit mask is in the selected cassette position
+	
+      } else if(io20_minsert==4) { // *NO* slitmask in selected position
 	sprintf(reply,"%s SLITMASK=%d MASKPOS=EMPTY MASKNAME='%s'",who_selected,smask,shm_addr->MODS.slitmaskName[smask]); // get current status
 	strcpy(shm_addr->MODS.maskpos,"EMPTY");
-      }
-      else {
-	sprintf(reply,"%s SLITMASK=%d",who_selected,smask);
+	
+      } else {
+	sprintf(reply,"%s SLITMASK=%d",who_selected,smask);// slitmask in SP.
 	strcpy(shm_addr->MODS.maskpos,"IN");
 	return CMD_ERR;
+
       }
+
       return CMD_OK;
     }
 
     // Send a status message
-    
     ierr=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",dummy);
-    if (ierr<12) ierr++;
+    if(ierr<12) ierr++;
+
     
-    if (io20_minsert==10) {
-      if (!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
+    if(io20_minsert==10) {
+      if(!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
 	sprintf(reply,"%s MSELECT=UNKNOWN, in-position bit not asserted, Reset to recover",who_selected);
 	return CMD_ERR;
       }    
@@ -6041,66 +5856,60 @@ cmd_slitmask(char *args, MsgType msgtype, char *reply)
 
     smask=mlcBitsBase10(device2,"PRINT IO 35,IO 34,IO 33,IO 32,IO 31",dummy)+1;
 
-    if (smask>12) smask--;
+    if(smask>12) smask--;
 
-    if (!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
+    if(!mlcBitsBase10(device2,"PRINT IO 36",dummy)) {
       ierr=mlcBitsBase10(device2,"PRINT IO 22,IO 21",dummy);
       sprintf(reply,"%s MSELECT=FAULT position never reached and asserted limit IO2%d, slitmask reset to recover",who_selected,ierr);
       return CMD_ERR;
     }
 
-    if (smask!=(int)shm_addr->MODS.reqpos[device2]) {
-      sprintf(reply,"%s %s=%d Move Fault, position at end of move %d but requested position %0.0f",
-	      who_selected,who_selected,smask,smask,shm_addr->MODS.reqpos[device2]);
+    if(smask!=(int)shm_addr->MODS.reqpos[device2]) {
+      sprintf(reply,"%s %s=%d Move Fault, position at end of move %d but requested position %0.0f",who_selected,who_selected,smask,smask,shm_addr->MODS.reqpos[device2]);
       return CMD_ERR;
     }
     
     shm_addr->MODS.pos[device2]=(float)smask;
     shm_addr->MODS.active_smask=smask;
 
-    io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",dummy);
+    io20_minsert=mlcBitsBase10(device,"PRINT IO 21,IO 22,IO 23,IO 24",
+			       dummy);
+    if(io20_minsert==5) {
 
-    if (io20_minsert==5) {
       memset(dummy,0,sizeof(dummy));
       memset(bc_dummy,0,sizeof(bc_dummy));
+
       sprintf(dummy,"Inserting %d",smask);
       isisStatusMsg(dummy);
+
       MilliSleep(200);
       ierr = sendCommand(device,"HOME",dummy);
+      
       if(ierr!=0) {
       	sprintf(reply,"%s %s=UNKNOWN home failed",who_selected,who_selected);
       	return CMD_ERR;
       }
+      
       sprintf(reply,"%s SLITMASK=%d MASKPOS=IN MASKNAME='%s'",who_selected,smask, shm_addr->MODS.slitmaskName[smask]);
       strcpy(shm_addr->MODS.maskpos,"IN");
+
       shm_addr->MODS.pos[device]=positionToShrMem(device,dummy);
       shm_addr->MODS.pos[device2]=positionToShrMem(device2,dummy);
       shm_addr->MODS.active_smask=smask;
-    }
-    else if (io20_minsert==10) {
-      sprintf(reply,"%s MSELECT=%d MASKPOS=IN MASKNAME='%s'",who_selected,smask, shm_addr->MODS.slitmaskName[smask]);
-      strcpy(shm_addr->MODS.maskpos,"IN");
-      shm_addr->MODS.active_smask=smask;
-    }
-    else if (io20_minsert==4) {
+
+    } else {
       sprintf(reply,"%s MSELECT=%d MASKPOS=EMPTY MASKNAME='%s'",who_selected,smask, shm_addr->MODS.slitmaskName[smask]);
       strcpy(shm_addr->MODS.maskpos,"EMPTY");
       shm_addr->MODS.active_smask=smask;
-    }
-    else {
-      sprintf(reply,"%s MSELECT=%d MASKPOS=UNKNOWN MASKNAME='%s'",who_selected,smask, shm_addr->MODS.slitmaskName[smask]);
-      strcpy(shm_addr->MODS.maskpos,"UNKNOWN");
-      shm_addr->MODS.active_smask=smask;
-    }
 
-    if (ierr!=0) return CMD_ERR;
+    }
+    if(ierr!=0) { 
+      return CMD_ERR;
+    }
     
-  }
-
-  // Unknown request, send error message
-  
-  else {
-    sprintf(reply,"%s Invalid request '%s', valid range 1..24 or BRACE",who_selected, cmd_instruction);
+  } else {
+    sprintf(reply,"%s Invalid request '%s', valid range 1..24 or BRACE",
+	    who_selected, cmd_instruction);
     return CMD_ERR;
   }
 
@@ -13238,23 +13047,27 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
     if(who_selected[0]=='B') {
       shm_addr->MODS.blueCloseLoop=1;
       shm_addr->MODS.blueCloseLoopON=1;
-      sprintf(reply,"%s %s=CLOSE Running closed loop",who_selected,who_selected);
+      sprintf(reply,"%s %s=CLOSE Running closed loop",who_selected,
+	      who_selected);
     } else if(who_selected[0]=='R') {
       shm_addr->MODS.redCloseLoop=1;
       shm_addr->MODS.redCloseLoopON=1;
-      sprintf(reply,"%s %s=CLOSE Running closed loop",who_selected,who_selected);
+      sprintf(reply,"%s %s=CLOSE Running close loop",who_selected,
+	      who_selected);
     }
 
   } else if (!strcasecmp(cmd_instruction,"OPEN")) {
     if(who_selected[0]=='B') {
       shm_addr->MODS.blueCloseLoop=0;
       shm_addr->MODS.blueCloseLoopON=0;
-      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,who_selected);
+      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,
+	      who_selected);
 
     } else if(who_selected[0]=='R') {
       shm_addr->MODS.redCloseLoop=0;
       shm_addr->MODS.redCloseLoopON=0;
-      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,who_selected);
+      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,
+	      who_selected);
     }
 
   } else if (!strcasecmp(cmd_instruction,"QCMIN")) {

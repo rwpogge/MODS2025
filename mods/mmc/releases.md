@@ -3,6 +3,28 @@ Original Build: 2009 June 15
 
 Last Build: 2026 Feb 15
 
+## Version 3.2.7: 2026 Feb 8
+Seeing seg-faults crashing mmcServer during testing last night. Logs showed that just before the date/time tag
+in the mmc log was >30 characters, and had a second, slightly different microsencds part appended onto it, like 
+this:
+ > 2026-02-18T06:57:58.608389.608392 M1.IE>MC1 DONE: RCAMFOC RCAMFOC=1630
+
+looking at the mmcServer logging code (`mmcServers/mmcLOGGER.c`), the log date/time tag
+is created using the `getDateTime()` function, in which the microseconds part is being appended
+to the string with a `sprintf()` into the string itself.
+
+This is not thread safe, and if two threads hit the `getDateTime()` function at about the same
+time (within 10s of microseconds), you get the extra, intact, microseconds part which sends the
+date/time tag string over its declared length of 30 bytes, causing a seg-fault downstream.
+
+Changes needed:
+ * increased size of declaration of static char `str` from 30 to 64 to buy some extra room
+ * properly initializing str using `memset()`
+ * now reads the microseconds part promptly and builds `str` in one `sprintf()` rather than using an append to `str`.  
+
+While this is not perfectly Posix thread safe (besides, it's using BSD threads not pthreads because the core code
+is 2006 vintage) it is a lot thread safer than before ahd should avoid this problem.
+
 ## Version 3.2.6: 2026 Feb 17
 `mmcServers/redIMCS.cpp` - For MODS2 Red it the wires for QC3 and QC4 are
 swapped **in the dewar**.  Fixing for now in software, hardware fix at the
