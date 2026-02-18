@@ -10,8 +10,7 @@
             (1) thread (x) waits for connection from a MODS mechanism client
             (2) thread (x) sends out command request to instrutils
             (3) instrutils gets/sets information/commmand
-            (4) thread (x) sends MicroLynx requested information or ERROR
-	        to client.
+            (4) thread (x) sends MicroLynx requested information or ERROR to client.
             (5) MODS mechanism client closes the connection.
             (6) go back to step (1)
 
@@ -21,14 +20,14 @@
 
   \section Introduction
  
-  mmcServer is a server used by the MODS mechanism clients
-  It accepts commands from client(s) and moves mechanisms.
-  This is for the MODS mechanism interface library.
+  mmcServer is a server used by the MODS mechanism clients It accepts
+  commands from client(s) and moves mechanisms.  This is for the MODS
+  mechanism interface library.
 
   \section Commands
 
-  Accepts commands from a MODS mechanism client and returns information 
-  or errors.
+  Accepts commands from a MODS mechanism client and returns
+  information or errors.
 
   \section Notes
 
@@ -43,8 +42,11 @@
 		re-transmit didn't seem to work with threads [rdg]
   </pre>
 
+  <pre>
   2025 Aug 8 - Port to AlmaLinux 9.x [rwp/osu]
-
+  2026 Feb 18 - need to add mutex locks to avoid resource conflicts, esp
+                when logging [rwp/osu]
+  </pre>
 */
 
 #include <iostream>
@@ -123,34 +125,46 @@ typedef struct {
 
 agw_errors errmsgs;
 
+// Thread declarations
+
 void *thread_init_func(void *);
 pthread_cond_t new_connection_cond = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t new_connection_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t lock; // generic mutex lock
 
 Thread threads[MAX_THREAD];
 
-void nonblock(int sockfd)
+//------------------------------------------------
+
+// nonblock() function (currently unused)
+
+void
+nonblock(int sockfd)
 {
   int opts;
   opts = fcntl(sockfd, F_GETFL);
-  if(opts < 0)
-    {
-      mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: fcntl(F_GETFL) failed");
-      perror("fcntl(F_GETFL)\n");
-      exit(1);
-    }
+  if (opts < 0) {
+    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: fcntl(F_GETFL) failed");
+    perror("fcntl(F_GETFL)\n");
+    exit(1);
+  }
   opts = (opts | O_NONBLOCK);
-  if(fcntl(sockfd, F_SETFL, opts) < 0)
-    {
-      mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: fcntl(F_SETFL) failed");
-      perror("fcntl(F_SETFL)\n");
-      exit(1);
-    }
+  if (fcntl(sockfd, F_SETFL, opts) < 0) {
+    mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: fcntl(F_SETFL) failed");
+    perror("fcntl(F_SETFL)\n");
+    exit(1);
+  }
 }
 
 extern char *getDateTime(void);
 
-void *thread_init_func(void *arg)
+//------------------------------------------------
+//
+// Thread function: thread_init_func()
+//
+
+void
+*thread_init_func(void *arg)
 {
   int tid = (long long) arg;
 
@@ -179,8 +193,7 @@ void *thread_init_func(void *arg)
 
   time(&ieb_timer); // IEB(s) timer
 
-  memset((int *) &threads[tid].clients, 0,
-  	 sizeof(threads[tid].clients));
+  memset((int *) &threads[tid].clients,0,sizeof(threads[tid].clients));
   memset(buf,0,sizeof(buf));
   memset(tempbuf,0,sizeof(tempbuf));
   shm_addr->MODS.mmcServerCounter=0;
@@ -189,39 +202,39 @@ void *thread_init_func(void *arg)
 
     MilliSleep(1);
 
-    for(i = 0; i < MAX_CLIENT_PER_THREAD; i++) {
+    for (i = 0; i < MAX_CLIENT_PER_THREAD; i++) {
 
-      if(threads[tid].clients[i] != 0) {
+      if (threads[tid].clients[i] != 0) {
 
-	if(readFromListen_port==1) { // Bypass the ISIS server
+	if (readFromListen_port==1) { // Bypass the ISIS server
 	  memset(buf,0,sizeof(buf));
 	  memset(tempbuf,0,sizeof(tempbuf));
 	  n = recv(threads[tid].clients[i], buf, ISIS_MSGSIZE, 0);
 
-	} else if(readFromListen_port==2) { // Bypass the Listen server
+	}
+	else if(readFromListen_port==2) { // Bypass the Listen server
 	  n=charReceived; // Check for ISIS reads
-	}  else n=0;
+	}
+	else
+	  n=0;
 
-	if(n == 0 ) {
-
+	if (n == 0 ) {
 	  threads[tid].clients[i] = 0;
 	  threads[tid].client_count--;
 
-	} else if (n < 0) {
-
-	  if(errno == EAGAIN) {
-
+	}
+	else if (n < 0) {
+	  if (errno == EAGAIN) {
 	    threads[tid].clients[i] = 0;
 	    threads[tid].client_count--;
-
-	  } else {
-
+	  }
+	  else {
 	    threads[tid].clients[i] = 0;
 	    threads[tid].client_count--;
-
 	  }
 
-	} else {
+	}
+	else {
 	  if (strstr(buf,"geterrormsg")) {
 	    readFromListen_port=0;  // reset client.FD listen
 	    for (ierr=0; ierr<errmsgs.err_cnt; ierr++) {
@@ -230,16 +243,18 @@ void *thread_init_func(void *arg)
                    strlen(errmsgs.errors[ierr]), 0); 
 	    }
 	    memset(buf,0,sizeof(buf));
-	    if(threads[tid].clients[i]>0)
+	    if (threads[tid].clients[i]>0)
 	      close(threads[tid].clients[i]);
 	    
-	  } else {
+	  }
+	  else {
 
-	    if(readFromListen_port==1) {  // This bypasses ISIS
+	    if (readFromListen_port==1) {  // This bypasses ISIS
 
 	      readFromListen_port=0;  // reset client.FD listen
 
-	      /* Save time, and who sent command in Shared Memory */
+	      // Save time and who sent command in Shared Memory
+	      
 	      ierr=shm_addr->MODS.mmcServerCounter;
 
 	      mmcLOGGER(shm_addr->MODS.LLOG,buf);
@@ -251,22 +266,25 @@ void *thread_init_func(void *arg)
 	      KeyCommand(buf,getset_reply);
 
 	      send(threads[tid].clients[i], getset_reply, strlen(getset_reply), 0);
-	      mmcLOGGER(shm_addr->MODS.LLOG,getset_reply); // mmc mesi log
+	      mmcLOGGER(shm_addr->MODS.LLOG,getset_reply);
 	      
-	      if(threads[tid].clients[i]>0)
+	      if (threads[tid].clients[i]>0)
 		close(threads[tid].clients[i]);
 
-	      memset(getset_reply, 0, sizeof(getset_reply));
+	      memset(getset_reply,0,sizeof(getset_reply));
 	      memset(buf,0,sizeof(buf));
 	      memset(tempbuf,0,sizeof(tempbuf));
 
 	    }
 
-	    if(readFromListen_port==2) { // This goes through ISIS
+	    // This goes out to the isis server
+	    
+	    if (readFromListen_port==2) {
 
 	      readFromListen_port=0;  // reset client.FD listen
 
-	      /* Save time, and who sent command in Shared Memory */
+	      // Save time and who sent command in Shared Memory
+	      
 	      ierr=shm_addr->MODS.mmcServerCounter;
 
 	      mmcLOGGER(shm_addr->MODS.LLOG,buf);
@@ -280,23 +298,23 @@ void *thread_init_func(void *arg)
 	      memset(tempbuf,0,sizeof(tempbuf));
 	    }
 
-	    /* 
-	       This is a way of terminating the mmcServers via a client
-	       o close all MicroLynx Controller(MLC) communications(COMM)
-	       o exit the mmcServer
-	    */
+	    //----------------------------------------------------------------
+	    //
+	    // This is a way of terminating the mmcServers via a client
+	    //   * close all MicroLynx Controller(MLC) communications(COMM)
+	    //   * exit the mmcServer
+	    //
+	    
+	    // Close all Host to MicroLynx communications and stop the
+	    // mmcServers except the AGW
 
-	    /* 
-	     * Close all Host to MicroLynx communications 
-	     * and stop the mmcServers except the AGW 
-	     */
-	    if(client.KeepGoing==0) { // Close all MLC COMM. except AGW
-	      for(unit=0;unit<MAX_ML-1;unit++) {
-		if(shm_addr->MODS.host[unit]==0);
-		else if(shm_addr->MODS.host[unit]==1 &&
+	    if (client.KeepGoing==0) { // Close all MLC COMM. except AGW
+	      for (unit=0;unit<MAX_ML-1;unit++) {
+		if (shm_addr->MODS.host[unit]==0);
+		else if (shm_addr->MODS.host[unit]==1 &&
 			!strncasecmp(shm_addr->MODS.who[unit],"agw",3));
 		else
-		  if(unit!=MAX_ML-1)
+		  if (unit!=MAX_ML-1)
 		    CloseTTYPort(&shm_addr->MODS.commport[unit]);
 	      }
 	      isisStatusMsg((char*)"mmcServer communication closed and mmcServer halted");
@@ -305,11 +323,12 @@ void *thread_init_func(void *arg)
 	      exit(0); // exit mmcServer
 	    }
 
-	    /* Close all Host to MicroLynx communications except the AGW */
-	    if(client.KeepGoing==2) {
-	      for(unit=0;unit<MAX_ML-1;unit++) {
-		if(shm_addr->MODS.host[unit]==0);
-		else if(shm_addr->MODS.host[unit]==1 &&
+	    // Close all Host to MicroLynx communications except the AGW
+	    
+	    if (client.KeepGoing==2) {
+	      for (unit=0;unit<MAX_ML-1;unit++) {
+		if (shm_addr->MODS.host[unit]==0);
+		else if (shm_addr->MODS.host[unit]==1 &&
 			!strncasecmp(shm_addr->MODS.who[unit],"agw",3));
 		else
 		  CloseTTYPort(&shm_addr->MODS.commport[unit]);
@@ -322,28 +341,27 @@ void *thread_init_func(void *arg)
 	      client.KeepGoing=1;
 	    }
 
-	    /* 
-	     * Open mmcServers restoring communications from Host to
-	     * MicroLynx, except the AGW 
-	     */
-	    if(client.KeepGoing==3) {
+	    // Open mmcServers restoring communications from Host to MicroLynx, except the AGW 
 
-	      /* Make MicroLynx inactive or active depending on config file */
-	      for(unit=0;unit<MAX_ML-1;unit++) {
-		if(strncasecmp(shm_addr->MODS.commport[unit].Port,"NONE",4)) {
+	    if (client.KeepGoing==3) {
+
+	      // Make MicroLynx inactive or active depending on config file
+	      
+	      for (unit=0;unit<MAX_ML-1;unit++) {
+		if (strncasecmp(shm_addr->MODS.commport[unit].Port,"NONE",4)) {
 		  shm_addr->MODS.host[unit]=1;
 		  shm_addr->MODS.busy[unit]=0; // initialize
 		}
 	      }
 
-	      for(unit=0;unit<MAX_ML-1;unit++) {
-		if(shm_addr->MODS.host[unit]==0);
-		else if(shm_addr->MODS.host[unit]==1 &&
+	      for (unit=0;unit<MAX_ML-1;unit++) {
+		if (shm_addr->MODS.host[unit]==0);
+		else if (shm_addr->MODS.host[unit]==1 &&
 			!strncasecmp(shm_addr->MODS.who[unit],"agw",3) ||
 			!strncasecmp(shm_addr->MODS.who[unit],"rimcs",5) ||
 			!strncasecmp(shm_addr->MODS.who[unit],"bimcs",5));
 		else
-		  if(unit!=MAX_ML-1) {
+		  if (unit!=MAX_ML-1) {
 		    OpenTTYPort(&shm_addr->MODS.commport[unit]);
 		  }
 		sprintf(dummy,"%s mechanism opened",shm_addr->MODS.who[unit]);
@@ -358,39 +376,39 @@ void *thread_init_func(void *arg)
 
 	    }
 
-	    /* Reconfigure mmcServers and restore communications 
-	     * except the AGW 
-	     */
-	    if(client.KeepGoing==4) {
+	    // Reconfigure mmcServers and restore communications except the AGW 
 
-	      /* Make MicroLynx inactive or active depending on config file */
-	      for(unit=0;unit<MAX_ML-1;unit++) {
-		if(strncasecmp(shm_addr->MODS.commport[unit].Port,"NONE",4)) {
+	    if (client.KeepGoing==4) {
+
+	      // Make MicroLynx inactive or active depending on config file
+	      
+	      for (unit=0;unit<MAX_ML-1;unit++) {
+		if (strncasecmp(shm_addr->MODS.commport[unit].Port,"NONE",4)) {
 		  shm_addr->MODS.host[unit]=1;
 		  shm_addr->MODS.busy[unit]=0; // initialize
 		}
 	      }
 
-	      for(unit=0;unit<MAX_ML-1;unit++) {
-		if(shm_addr->MODS.host[unit]==0);
-		else if(shm_addr->MODS.host[unit]==1 &&
+	      for (unit=0;unit<MAX_ML-1;unit++) {
+		if (shm_addr->MODS.host[unit]==0);
+		else if (shm_addr->MODS.host[unit]==1 &&
 			!strncasecmp(shm_addr->MODS.who[unit],"agw",3));
 		else
-		  if(unit!=MAX_ML-1) {
+		  if (unit!=MAX_ML-1) {
 		    CloseTTYPort(&shm_addr->MODS.commport[unit]);
 		  }
 	      }
 	      
 	      LoadConfig(DEFAULT_RCFILE);
 	      
-	      for(unit=0;unit<MAX_ML-1;unit++) {
-		if(shm_addr->MODS.host[unit]==0);
-		else if(shm_addr->MODS.host[unit]==1 &&
+	      for (unit=0;unit<MAX_ML-1;unit++) {
+		if (shm_addr->MODS.host[unit]==0);
+		else if (shm_addr->MODS.host[unit]==1 &&
 			!strncasecmp(shm_addr->MODS.who[unit],"rimcs",5) ||
 			!strncasecmp(shm_addr->MODS.who[unit],"bimcs",5) ||
 			!strncasecmp(shm_addr->MODS.who[unit],"agw",3));
 		else
-		  if(unit!=MAX_ML-1) {
+		  if (unit!=MAX_ML-1) {
 		    CloseTTYPort(&shm_addr->MODS.commport[unit]);
 		    OpenTTYPort(&shm_addr->MODS.commport[unit]);
 		  }
@@ -427,7 +445,10 @@ void *thread_init_func(void *arg)
   }
 }
 
-int choose_thread()
+// Thread chooser
+
+int
+choose_thread()
 {
   int i=MAX_THREAD-1;
   int min = 0;
@@ -441,7 +462,12 @@ int choose_thread()
   return min;
 }
 
-int main(int argc, char *argv[])
+//
+// Main Program
+//
+
+int
+main(int argc, char *argv[])
 {
   char c;
   struct sockaddr_in srv, cli;
@@ -463,6 +489,7 @@ int main(int argc, char *argv[])
   static int sel_wid; 
 
   // Basic initializations
+
   setup_ids();
   sel_wid = getdtablesize();
   
@@ -471,12 +498,13 @@ int main(int argc, char *argv[])
   signal(SIGPIPE,SIG_IGN);     // ignore broken pipes
 
   // Allocate the strings for the A/G Camera Filter ID Table
+
   errmsgs.err_cnt=0;
 
   cmdCounter=0; // initialize command counter.
   shm_addr->MODS.mmcServerCounter=0;
     
-  for(unit=0;unit<MAX_ML-1;unit++) { // Make MicroLynx HOST inactive or active!
+  for (unit=0;unit<MAX_ML-1;unit++) { // Make MicroLynx HOST inactive or active!
     sprintf(shm_addr->MODS.commport[unit].Port,"NONE");
     shm_addr->MODS.host[unit]=0;
     shm_addr->MODS.busy[unit]=0; // initialize
@@ -486,7 +514,8 @@ int main(int argc, char *argv[])
   if (argc==2) {
     n = LoadConfig(argv[1]);
     fprintf(stderr,"Loading config file: %s\n",argv[1]);
-  } else n = LoadConfig(DEFAULT_RCFILE);
+  }
+  else n = LoadConfig(DEFAULT_RCFILE);
 
   memset(shm_addr->MODS.LLOG,0,79); // Setup logging file
   sprintf(shm_addr->MODS.LLOG,client.logFile);
@@ -497,20 +526,21 @@ int main(int argc, char *argv[])
   mmcLOGGER(shm_addr->MODS.LLOG,(char*)"(mmcServer and agwServer)"); // now lists services we use at LBTO
   mmcLOGGER(shm_addr->MODS.LLOG,(char*)"######");
 
-  for(unit=0;unit<MAX_ML-1;unit++) { // Make MicroLynx HOST inactive or active!
-
-    if(!strncasecmp(shm_addr->MODS.commport[unit].Port,"NONE",4)) {
+  for (unit=0;unit<MAX_ML-1;unit++) { // Make MicroLynx HOST inactive or active!
+    if (!strncasecmp(shm_addr->MODS.commport[unit].Port,"NONE",4)) {
       shm_addr->MODS.host[unit]=0;
       shm_addr->MODS.busy[unit]=0; // initialize
       sprintf(shm_addr->MODS.who[unit],"MLC%d",unit+1); // initialize
-    } else {
+    }
+    else {
       shm_addr->MODS.host[unit]=1;
       shm_addr->MODS.busy[unit]=0; // initialize
     }
   }
 
-  // In keeping with various other instruments provide by OSU 
-  // we also need to 'listen()'
+  // In keeping with various other instruments provide by OSU we also
+  // need to 'listen()'
+
   readFromListen_port=0;
   charReceived=0;
 
@@ -532,6 +562,7 @@ int main(int argc, char *argv[])
   }
 
   // Open the client network socket port for interprocess communications 
+
   if (OpenClientSocket(&client)<0) {
     cout << "Client socket initialization failed" << endl;
   }
@@ -540,7 +571,8 @@ int main(int argc, char *argv[])
     cout << "Started mmcServer as\nISIS client node " << client.ID 
 	 << " on " << client.Host << " port " << client.Port << " Use:" 
 	 << client.useISIS << endl;
-  }  else {
+  }
+  else {
     cout << "Started mmcServer as standalone " << client.ID 
 	 << " on "  << client.Host << " port " << client.Port  << " Use:" 
 	 << client.useISIS << endl;
@@ -570,28 +602,30 @@ int main(int argc, char *argv[])
 
   allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[utilID],1,513,onoff,1);
 
-  if(allPower<0) {
+  if (allPower<0) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"UTIL UTIL=OFF Utility Box OFF");
     isisStatusMsg((char*)"UTIL UTIL=OFF Utility Box OFF");
 
-  } else {  
+  }
+  else {  
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"UTIL UTIL=ON Utility Box ON");
     isisStatusMsg((char*)"UTIL UTIL=ON Utility Box is ON");
 
   }
 
   llbID=getWagoID((char*)"llb",temp); // Get LLB box ID
-  if(llbID==-1) {
+  if (llbID==-1) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: Lamp/Laser Box (LLB) Identification not found");
   }
 
   allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[llbID],1,515,onoff,1);
 
-  if(allPower<0) {
+  if (allPower<0) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"LLB LLB=OFF Lamp Laser Box OFF");
     isisStatusMsg((char*)"LLB LLB=OFF Lamp Laser Box OFF"); 
     
-  } else { 
+  }
+  else { 
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"LLB LLB=ON Lamp Laser Box is ON");
     isisStatusMsg((char*)"LLB LLB=ON Lamp Laser Box is ON"); 
       
@@ -601,17 +635,18 @@ int main(int argc, char *argv[])
   
   ieb1ID=getWagoID((char*)"ieb2",temp); // Get IEB ID
 
-  if(ieb1ID==-1) {
+  if (ieb1ID==-1) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: Blue Instrument Electronics Box (IEB_B) Identification not found");
     return -1;
   }
 
   allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb1ID],1,514,onoff,1);
-  if(allPower<0) {
+  if (allPower<0) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"IEB IEB_B=OFF Blue IEB is OFF");
     isisStatusMsg((char*)"IEB IEB_B=OFF Blue IEB Box is OFF");
     iebBlueOnOff=0;
-  } else { 
+  }
+  else { 
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"IEB IEB_B=ON Blue IEB is ON");
     isisStatusMsg((char*)"IEB IEB_B=ON Blue IEB Box is ON");
     iebBlueOnOff=2; // BLUE IEB mechanisms are in IEBox 2
@@ -621,16 +656,17 @@ int main(int argc, char *argv[])
   // Red Instrument Electronics Box (ieb1)
   
   ieb2ID=getWagoID((char*)"ieb1",temp); // Get IEB ID
-  if(ieb2ID==-1) {
+  if (ieb2ID==-1) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"mmcServer: Red Instrument Electronics Box (IEB_R) Identification not found");
   }
 
   allPower = wagoSetGet(0,shm_addr->MODS.WAGOIP[ieb2ID],1,514,onoff,1);
-  if(allPower<0) {
+  if (allPower<0) {
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"IEB IEB_R=OFF Red IEB is OFF");
     isisStatusMsg((char*)"IEB IEB_R=OFF Red IEB Box is OFF");
     iebRedOnOff=0;
-  } else { 
+  }
+  else { 
     mmcLOGGER(shm_addr->MODS.LLOG,(char*)"IEB IEB_R=ON Red IEB is ON");
     isisStatusMsg((char*)"IEB IEB_R=ON Red IEB Box is ON");
     iebRedOnOff=1; // Red IEB mechanisms are in IEBox 1
@@ -641,30 +677,33 @@ int main(int argc, char *argv[])
   os << "\n";
   os << "AGWY, AGWX, AGWFOCUS, AGWFILTER - Handled by agwServer\n";
 
-  for(unit=0;unit<MAX_ML-1;unit++) {
-    if(shm_addr->MODS.host[unit]==0) { ;
-    } else if(shm_addr->MODS.host[unit]==1 &&
-	      !strncasecmp(shm_addr->MODS.who[unit],"agw",3) ||
-	      !strncasecmp(shm_addr->MODS.who[unit],"rimcs",5) ||
-	      !strncasecmp(shm_addr->MODS.who[unit],"bimcs",5) ||
-	      !strncasecmp(shm_addr->MODS.who[unit],"red",3) ||
-	      !strncasecmp(shm_addr->MODS.who[unit],"blue",4)) {
+  for (unit=0;unit<MAX_ML-1;unit++) {
+    if (shm_addr->MODS.host[unit]==0) { ;
+    }
+    else if(shm_addr->MODS.host[unit]==1 &&
+	    !strncasecmp(shm_addr->MODS.who[unit],"agw",3) ||
+	    !strncasecmp(shm_addr->MODS.who[unit],"rimcs",5) ||
+	    !strncasecmp(shm_addr->MODS.who[unit],"bimcs",5) ||
+	    !strncasecmp(shm_addr->MODS.who[unit],"red",3) ||
+	    !strncasecmp(shm_addr->MODS.who[unit],"blue",4)) {
       os << "MODS MLC" << unit+1 << ", "  << shm_addr->MODS.who[unit]
 	 << " , " << shm_addr->MODS.commport[unit].Port
 	 << " ,Handled by another service " << endl;
-    } else {
-      if(unit!=MAX_ML-1) {
-	if((shm_addr->MODS.ieb_i[unit]==iebRedOnOff) ||
-	   (shm_addr->MODS.ieb_i[unit]==iebBlueOnOff)) {
+    }
+    else {
+      if (unit!=MAX_ML-1) {
+	if ((shm_addr->MODS.ieb_i[unit]==iebRedOnOff) ||
+	    (shm_addr->MODS.ieb_i[unit]==iebBlueOnOff)) {
 	  CloseTTYPort(&shm_addr->MODS.commport[unit]); // Close before opening
-	  if(OpenTTYPort(&shm_addr->MODS.commport[unit]) < 0) {
+	  if (OpenTTYPort(&shm_addr->MODS.commport[unit]) < 0) {
 	    os << "ERROR: MODS MLC" << unit+1 << " , " 
 	       << shm_addr->MODS.who[unit]
 	       << ", " << shm_addr->MODS.commport[unit].Port
 	       << "\nCannot Open communications, Reason: "
 	       << strerror(errno)
 	       << "\nCheck mechanism.ini file" << endl;
-	  } else
+	  }
+	  else
 	    os << "MODS MLC" << unit+1 << " , " << shm_addr->MODS.who[unit]
 	       << " , " << shm_addr->MODS.commport[unit].Port << " OPENED"
 	       << endl;
@@ -703,7 +742,12 @@ int main(int argc, char *argv[])
 
   //nonblock(client.FD); // Make ISIS client non-blocking
 
-  // create threads
+  // Initialize the mutex lock
+  
+  // pthread_mutex_init(&lock,NULL);
+
+  // Create the threads
+  
   for(i = 0; i < MAX_THREAD; i++) {
     //pthread_create(&threads[i].tid, NULL, &thread_init_func, (void *)i);
     pthread_create(&threads[i].tid, NULL, &thread_init_func, (void *)(long long)(i));
@@ -814,10 +858,13 @@ int main(int argc, char *argv[])
     cout << "errno: " << errno << endl;
   }
 
+  // pthread_mutex_destroy(&lock);
+  
   return 0;
 }
 
 // Here for standalone input system to stop motion.
+
 void
 HandleInt(int signalValue) 
 {
@@ -862,6 +909,7 @@ HandleInt(int signalValue)
 }
 
 // The use of this functions avoids the generation of "zombie" processes.
+
 void sig_chld( int signo )
 {
   pid_t pid;
