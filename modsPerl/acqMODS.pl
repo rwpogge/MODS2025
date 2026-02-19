@@ -127,6 +127,10 @@
 #                 issues associated with mask operations [rwp/osu]
 #   2026 Jan 22 - Strip = from any command string (Archon interface
 #                 issue) [rwp/osu]
+#   2026 Feb 19 - 1Kx1K ROI is too fast, defaulting to 3Kx3K, and
+#                 for now override script request. 3K is 11s readout
+#                 vs 1K reaodut 7s due to irreducible overheads of ~5s,
+#                 so 3K is worth it [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -145,8 +149,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - date in ISO8601 format
 
-$verNum  = "v2.5.3-bino";
-$verDate = "2026-01-22";
+$verNum  = "v2.5.4-bino";
+$verDate = "2026-02-19";
 
 # Make sure text reverts to normal on using color
 
@@ -646,7 +650,8 @@ while (<MSC>) {
 		    print "         acqMODS aborting\n";
 		    &binoExit(1);
 		}
-		$cmd[$numCmd] = "$acqCamera roi $cmdArg";
+		# $cmd[$numCmd] = "$acqCamera roi $cmdArg";
+		$cmd[$numCmd] = "$acqCamera roi 3Kx3K"; # defaulting to 3Kx3K as of 2026 Feb 19
 		$cmdTO[$numCmd] = $shortTO;
 		$numCmd++;
 	    }

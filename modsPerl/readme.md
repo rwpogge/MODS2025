@@ -1,6 +1,6 @@
 # modsPerl - MODS Scripting Engine and Instrument Support Tools
 
-Latest Version: 2026 Jan 30 [rwp/osu]
+Latest Version: 2026 Feb 19 [rwp/osu]
 
 See [Release Notes](releases.md) for details
 

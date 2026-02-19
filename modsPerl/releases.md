@@ -1,6 +1,11 @@
 # modsPerl Release Notes
 
-<b>Last Update: 2026 Jan 30 [rwp/osu]</b>
+<b>Last Update: 2026 Feb 19 [rwp/osu]</b>
+
+
+## 2026 Feb 19
+ * `acqMODS` now defaults to 3Kx3K ROI since 1Kx1K is too fast readout for `modsCCD`, and since fixed overhead is longer than the readout time by about 3x, execution time for 3K ROI is 11s vs 7s for 1K ROI, might as well go full 3Kx3K
+
 
 ## 2026 Jan 30: resurrected `mkMaskSnap.pl`
  * Dug `mkMaskSnap.pl` out of the archive of pre-Archon mods machines and made a new version for the Archon system
