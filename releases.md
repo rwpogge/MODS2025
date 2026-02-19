@@ -2,6 +2,11 @@
 
 **Last Release: 2026 Feb 17**
 
+## Version 1.6.8 - 2026 Feb 18
+ * The `mmcServer` was crashing with mystery segmentation faults following an `instconfig` command from the MODS GUI. Red configurations were buggier than blue, but still bad.  Found two problems: the `getDateTime()` function in the `mmcLOGGER.c` code was not thread safe, and the failure mode resulted in a time-tag string that was larger than the compiled size, hence a seg-fault downstream. Fixed and deployd. Details in the mmc release notes.
+ * A second, confusing issue was the `modsUI` dispatcher was not queuing commands during `instconfig` and especially in the red channel we'd see rapid fire commands at the `mmcServer` (every 0.1 msec!) instead of every 500 msec. Found a logic conflict in the dispatcher enable/disable boolean in the GUI code, made a number of changes to address it, see release notes for the `modsUI` GUI for details.
+
+
 ## Version 1.6.7 - 2026 Feb 17
 Fixed MODS2 Red IMCS quad cell problem. Looks like QC3 and QC4 wiring are swapped in the dewar.  Discovered in testing after swapping in a spare QC board.
 Not the board, the wiring.  Made `redIMCS_mods2.cpp` where we swap QC3 and QC4 assignments to the WAGO ADC registers (classic quick-and-dirty fix), verified
