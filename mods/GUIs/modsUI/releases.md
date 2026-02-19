@@ -1,9 +1,13 @@
 # modsUI Release Notes
 Original Build: 2009 Feb 24
 
-**Last Build: 2026 Jan 24**
+**Last Build: 2026 Feb 18**
 
 ## Version 3 - MODS Archon and AlmaLinux Port to Qt6
+
+### VErsion 3.2.4 - 2026 Feb 18
+ * Make the dispatcher default "use", make sure all logic is default "true"
+ * Introduce the "NO" directive as a way to explicitly turn off a feature (opposite of "USE")
 
 ### Version 3.2.3 - 2026 Jan 24
  * Small patches after live test with MODS1, verified most of the issues found during 2026 Jan 19 are now fixed, tested with `modsCmd`

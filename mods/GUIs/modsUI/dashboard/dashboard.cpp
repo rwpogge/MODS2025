@@ -59,7 +59,7 @@ DashBoard::DashBoard(const int &myMODS, const int &myPort, QWidget *parent)
   // Basic initializations
 
   remoteCmd = false;
-  queue = false;   // disable command dispatch queuing by default
+  queue = true;    // enable command dispatch queuing by default
   dispatchCadence = MODS_QUEUE_CADENCE;  // default dispatch queue cadence in msec
   cmdHost.clear(); // clear the command host hash table
   dualCmd.clear(); // clear the implicit dual command hash table

@@ -502,7 +502,7 @@ void MainWindow::loadConfig(const QString &cfgFile)
   itHost   = MODS_ITERM_ID;
   cmHost   = MODS_CONFIG_ID;
   useSupport = false;      // disable engineering support functions by default
-  useDispatcher = false;   // disable implicit message dispatching by default
+  useDispatcher = true;    // enable implicit message dispatching by default
   useHeartBeat = false;    // disable ISIS client heartbeat by default
   useEnvMonitor = false;   // disable the environmental status monitor by default
   dispatchCadence = MODS_QUEUE_CADENCE;  // default dispatcher queue cadence (milliseconds)
@@ -573,9 +573,42 @@ void MainWindow::loadConfig(const QString &cfgFile)
 	  else if (keyWord.compare("MODS2:",Qt::CaseInsensitive)==0) {
 	    modsID = MODS2;
 	  }
+
+	  // No: disable a function explicitly
+	  
+	  else if (keyWord.compare("NO",Qt::CaseInsensitive)==0) {
+	    QString useWhat = itemStr.section(' ',1,1);
+ 	    if (useWhat.compare("MODS1",Qt::CaseInsensitive)==0) 
+	      useMODS[MODS1] = false;
+	    else if (useWhat.compare("MODS2",Qt::CaseInsensitive)==0) 
+	      useMODS[MODS2] = false;
+	    else if (useWhat.compare("HKM",Qt::CaseInsensitive)==0) 
+	      useHKM = false;
+	    else if (useWhat.compare("TCS",Qt::CaseInsensitive)==0) 
+	      useTCS = false;
+	    else if (useWhat.compare("UTILS",Qt::CaseInsensitive)==0) 
+	      useUM = false;
+	    else if (useWhat.compare("ITERM",Qt::CaseInsensitive)==0) 
+	      useITerm = false;
+	    else if (useWhat.compare("SUPPORT",Qt::CaseInsensitive)==0) 
+	      useSupport = false;
+	    else if (useWhat.compare("DISPATCHER",Qt::CaseInsensitive)==0) 
+	      useDispatcher = false;
+	    else if (useWhat.compare("EXPBELL",Qt::CaseInsensitive)==0)
+	      useExpBell = false;
+	    else if (useWhat.compare("BELL",Qt::CaseInsensitive)==0)
+	      useExpBell = false;
+	    else if (useWhat.compare("HEARTBEAT",Qt::CaseInsensitive)==0) 
+	      useHeartBeat = false;
+	    else if (useWhat.compare("ENVMONITOR",Qt::CaseInsensitive)==0) 
+	      useEnvMonitor = false;
+	  }
+
+	  // Use: enable a function explicitly
+	  
 	  else if (keyWord.compare("USE",Qt::CaseInsensitive)==0) {
 	    QString useWhat = itemStr.section(' ',1,1);
-	    if (useWhat.compare("MODS1",Qt::CaseInsensitive)==0) 
+ 	    if (useWhat.compare("MODS1",Qt::CaseInsensitive)==0) 
 	      useMODS[MODS1] = true;
 	    else if (useWhat.compare("MODS2",Qt::CaseInsensitive)==0) 
 	      useMODS[MODS2] = true;

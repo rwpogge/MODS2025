@@ -6,8 +6,8 @@
 //
 
 #define MODS_SESSION_NAME "MODS Control Panel" //!< Window Name for banner
-#define MODS_REV_NUMBER   "v3.2.3-archon"      //!< MODS UI Revision number
-#define MODS_REV_DATE     "2026 Jan 24"        //!< Revision date
+#define MODS_REV_NUMBER   "v3.2.4-archon"      //!< MODS UI Revision number
+#define MODS_REV_DATE     "2026 Feb 18"        //!< Revision date
 
 // Runtime files and paths
 
@@ -100,7 +100,7 @@
 #define MODS_IMMEDIATE_REQUEST 0 //!< Send the command/query immediately
 #define MODS_WAIT_REQUEST   2000 //!< Send the command/query and block for time in msec
 #define MODS_QUEUE_REQUEST    -1 //!< Queue the command/query to the message dispatcher
-#define MODS_QUEUE_CADENCE   500 //!< Message dispatcher queue cadence in msec
+#define MODS_QUEUE_CADENCE   500 //!< Default Message dispatcher queue cadence in msec
 
 // MODS Information
 

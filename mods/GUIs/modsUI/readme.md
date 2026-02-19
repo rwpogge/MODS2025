@@ -1,8 +1,8 @@
 # modsUI - MODS spectrograph user interface
 
-Version: 3.2.3-archon
+Version: 3.2.4-archon
 
-**Updated: 2026 Jan 24**
+**Updated: 2026 Feb 18**
 
 Author: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
