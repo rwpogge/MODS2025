@@ -1,6 +1,11 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2026 Jan 25 [rwp/osu]</b>
+<b>Last Update: 2026 Feb 18 [rwp/osu]</b>
+
+## 2026 Feb 18: modsAlign v3.2
+Updated `modsAlign` to v3.2 to address issues found during recent ECD and cloudy nights.
+ * Changed code for the present position for the `-r` option to work with any ROI, not just 1024x1024. * Introduced using the field image scaling when displaying the mask images for 2-image acquisitions
+ * Fixed bug found by Olga to explain why field image wasn't displaying in -r option.
 
 ## 2026 Jan 25: modsStatus.pl and ccdStatus scripts
  * Updated `modsStatus.pl` to version 2 to include `azcam-mods` and `modsCCD` status, cleaned up display

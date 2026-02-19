@@ -2597,7 +2597,7 @@ if haveMask:
     disp.set("scale limits %.2f %.2f" % (maskScale[0],2.0*maskScale[1]))
 else:
     print("\n%s field image %s" % (instID,fieldRoot))
-    disp.set(f"file [{fieldFile}[{imExt}]")
+    disp.set(f"file {fieldFile}[{imExt}]")
     disp.set("scale limits %.2f %.2f" % (fieldScale[0],fieldScale[1]))
 
 disp.set("zoom to fit")

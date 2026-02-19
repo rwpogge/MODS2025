@@ -1,6 +1,6 @@
 # Public MODS scripts
 
-**Updated: 2026 Jan 27**
+**Updated: 2026 Feb 18**
 
 These are the MODS observing and support scripts that are exposed to
 general LBT mountain users (hence "public" on the mountain
