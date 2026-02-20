@@ -1,7 +1,13 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2026 Feb 15
+Last Build: 2026 Feb 20
+
+## Version 3.2.8: 2026 Feb 20
+We are far enough in we can safely throttle debugging output from `app/wagoSetGet.c`, and refer error
+reporting to the calling programs. Routine "operation now in progress" faults if the WAGO is busy
+trigger re-trys in the calling codes, so debug messages are just noise that obfuscate other more
+actionable errors.
 
 ## Version 3.2.7: 2026 Feb 8
 Seeing seg-faults crashing mmcServer during testing last night. Logs showed that just before the date/time tag
