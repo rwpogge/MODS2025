@@ -132,6 +132,7 @@
 #   2026 Jan 20 - Updates from live testing [rwp/osu]
 #   2026 Feb 17 - Updated xRef/yRef for any acq image size, if we have
 #                 a field image override maskScale for image scaling [rwp/osu]
+#   2026 Feb 20 - Fixes from testing with live images [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -157,8 +158,8 @@ from lbto.sciops.misc import logger, slack, beep, DS9IgnoreTimeoutWithLogger
 
 # Version info
 
-verName = "modsAlign v3.2.0"
-verDate = "2026-02-17"
+verName = "modsAlign v3.2.1"
+verDate = "2026-02-20"
 
 log = logger(f"modsAlign-{os.environ.get('USER','anon')}")
 
@@ -666,12 +667,12 @@ def xyRotTran(mask_xy,star_xy):
 
     # Do the least squares solution for coefficients c
 
-    (coeffs,resid,rank,s) = np.linalg.lstsq(A,B)
+    (coeffs,resid,rank,s) = np.linalg.lstsq(A,B)[0] # new behavior for numpy 2.x
 
     # Convert best fit coefficients to dx,dy in arcsec and rotation in degrees
 
-    dx=float(coeffs[2])
-    dy=float(coeffs[3])
+    dx = float(coeffs[2])
+    dy = float(coeffs[3])
     theta = math.degrees(math.atan2(float(coeffs[0]),float(coeffs[1])))
 
     return dx, dy, theta, coeffs
@@ -1925,11 +1926,11 @@ def getSlitPos(d, inst, mask, useXYRef, useOffset, yOffset, swFac=3, transform=T
     # go into interactive mode and ask to mark the desired position
 
     if useXYRef and hasRef:
-        if verbose:
-            print("\nMeasuring the slit at preset position X=%.1f Y=%.1f pix..." % (xRef,yRef))
         # correct for image size relative to 1024x1024 [rwp/osu - 2026 Feb 17]
         xPix = (xRef-512.0) + 0.5*naxis1
         yPix = (yRef-512.0) + 0.5*naxis2
+        if verbose:
+            print("\nMeasuring the slit at preset position X=%.1f Y=%.1f pix..." % (xPix,yPix))
         try:
             xCen,yCen,boxMed = smsBisector(sciData,xPix,yPix,slitWid,swFac*slitWid,axis='x',clipStars=True,
                                            wfac=1.5,verbose=verbose)
@@ -2590,10 +2591,11 @@ if haveMask:
     print("\n%s thru-mask image %s" % (instID,maskRoot))
     disp.set(f"file {maskFile}[{imExt}]")
     # if we have a field image, use its min/max scale [rwp/osu 2026Feb17]
+    # use min scale of 0.0 because we need to see sky in boxes, and we are now bias subtracting
     if haveField:
-        disp.set("scale limits %.2f %.2f" % (fieldScale[0],fieldScale[1]))
+        disp.set("scale limits %.2f %.2f" % (0.0,fieldScale[1]))
     else:
-        disp.set("scale limits %.2f %.2f" % (maskScale[0],2.0*maskScale[1]))
+        disp.set("scale limits %.2f %.2f" % (0.0,2.0*maskScale[1]))
 else:
     print("\n%s field image %s" % (instID,fieldRoot))
     disp.set(f"file {fieldFile}[{imExt}]")
@@ -2640,7 +2642,11 @@ if longSlit:
 
     if useRefPos and haveField:
         # use the preset reference XY position for initial acquisition
-        xSlit,ySlit = mods.photRef()
+        # xSlit,ySlit = mods.photRef() - fixed for any acqimage size, not just 1024x1024 [rwp/osu]
+        
+        xRef,yRef = mods.photRef()
+        xSlit = (xRef-512.0) + 0.5*naxis1
+        ySlit = (yRef-512.0) + 0.5*naxis2
         print("\nComputing the offset to put the standard star at preset slit position")
         print("X=%.1f Y=%.1f pix." % (xSlit,ySlit))
         # display the nominal wide slit position
