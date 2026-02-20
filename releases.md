@@ -1,6 +1,12 @@
 # MODS2025 Release Notes
 
-**Last Release: 2026 Feb 17**
+**Last Release: 2026 Feb 20**
+
+## Version 1.6.9 - 2026 Feb 20
+Two changes
+ * `modsPerl/modsAcq.pl` now sets the acquisition image ROI to 3Kx3K by default, and will ignore the `ACQROI` commands moving forward (no-op, not error, for silent back-compatibility).  See the modsPerl release notes
+ * `mods/mmc/apps/wagoSetGet.c` throttling debug error/warning messages as these are now handled by calling functions and are just a source of noise. Advanced mmc to version 3.2.8
+
 
 ## Version 1.6.8 - 2026 Feb 18
 The `mmcServer` was crashing with mystery segmentation faults following an `instconfig` command 
