@@ -667,15 +667,17 @@ def xyRotTran(mask_xy,star_xy):
 
     # Do the least squares solution for coefficients c
 
-    (coeffs,resid,rank,s) = np.linalg.lstsq(A,B)[0] # new behavior for numpy 2.x
+    (coeffs,resid,rank,s) = np.linalg.lstsq(A,B)
+
+    c = coeffs.ravel().tolist()[0] # ugh...
 
     # Convert best fit coefficients to dx,dy in arcsec and rotation in degrees
 
-    dx = float(coeffs[2])
-    dy = float(coeffs[3])
-    theta = math.degrees(math.atan2(float(coeffs[0]),float(coeffs[1])))
+    dx = c[2]
+    dy = c[3]
+    theta = math.degrees(math.atan2(c[0],c[1]))
 
-    return dx, dy, theta, coeffs
+    return dx, dy, theta, c
 
 #----------------------------------------------------------------
 #
