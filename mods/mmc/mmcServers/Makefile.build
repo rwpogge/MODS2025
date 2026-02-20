@@ -16,7 +16,7 @@
 #
 ROOTDIR     = /home/dts/mods
 ISISDIR     = /home/dts/ISIS
-VERSION     = mmcServer v3.2.7
+VERSION     = mmcServer v3.2.8
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 

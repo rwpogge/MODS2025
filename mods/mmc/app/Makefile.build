@@ -25,7 +25,7 @@
 #
 ROOTDIR     = /home/dts/mods
 ISISDIR     = /home/dts/ISIS
-VERSION     = ISLUtils v1.1
+VERSION     = ISLUtils v1.2.1
 CC          = /usr/bin/g++
 AR          = /usr/bin/ar
 INCS        = -I$(ROOTDIR)/include -I$(ISISDIR)/lib -I/usr/include/modbus
