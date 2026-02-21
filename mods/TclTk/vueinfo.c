@@ -374,12 +374,12 @@ main(int argc, char *argv[])
     else if (strstr(what,"M4")) printf("%0.1f\n",ms->MODS.motorv[2]);
     else if (strstr(what,"M5")) printf("%0.1f\n",ms->MODS.motorv[3]);
     else if (strstr(what,"M6")) printf("%0.1f\n",ms->MODS.motorv[4]);
-    else if (strstr(what,"ACC1")) printf("%0.0f\n",ms->MODS.pos[23]*60.0);
-    else if (strstr(what,"ACC2")) printf("%0.0f\n",ms->MODS.pos[24]*60.0);
-    else if (strstr(what,"ACC3")) printf("%0.0f\n",ms->MODS.pos[25]*60.0);
-    else if (strstr(what,"ACC4")) printf("%0.0f\n",ms->MODS.pos[2]*60.0);
-    else if (strstr(what,"ACC5")) printf("%0.0f\n",ms->MODS.pos[3]*60.0);
-    else if (strstr(what,"ACC6")) printf("%0.0f\n",ms->MODS.pos[4]*60.0);
+    else if (strstr(what,"ACC1")) printf("%0.0f\n",ms->MODS.pos[21]*60.0); // BCOLTTFA
+    else if (strstr(what,"ACC2")) printf("%0.0f\n",ms->MODS.pos[22]*60.0); // BCOLTTFB
+    else if (strstr(what,"ACC3")) printf("%0.0f\n",ms->MODS.pos[23]*60.0); // BCOLTTFC
+    else if (strstr(what,"ACC4")) printf("%0.0f\n",ms->MODS.pos[2]*60.0);  // RCOLTTFA
+    else if (strstr(what,"ACC5")) printf("%0.0f\n",ms->MODS.pos[3]*60.0);  // RCOLTTFB
+    else if (strstr(what,"ACC6")) printf("%0.0f\n",ms->MODS.pos[4]*60.0);  // RCOLTTFC
     exit(0);
 
   }

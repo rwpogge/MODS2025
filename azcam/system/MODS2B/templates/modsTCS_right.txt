@@ -1,7 +1,7 @@
 #
 # MODS TCS info header template entries for MODS2 at right (DX) direct Gregorian
 #
-# Updated: 2026 Jan 20 [rwp/osu]
+# Updated: 2026 Feb 21 [rwp/osu]
 #
 # YAML format
 #
@@ -34,13 +34,12 @@ DDEntries:
   R_AchievedRAHMS:     ["TELRA","str","DX Telescope Achieved RA [hms]"]
   R_AchievedDECDMS:    ["TELDEC","str","DX Telescope Achieved DEC [dms]"]                    
   R_PosAngle:          ["POSANGLE","float-rad","DX Instrument Celestial PA [deg]"]
-  MountAchievedALTDMS: ["TELALT","str","Telescope Altitude at start of obs [dms]"]
-  MountAchievedAZDMS:  ["TELAZ","str","Telescope Azimuth at start of obs [dms]"]
+  R_AchievedALTDMS:    ["TELALT","str","Telescope Altitude at start of obs [dms]"]
+  R_AchievedAZDMS:     ["TELAZ","str","Telescope Azimuth at start of obs [dms]"]
   MountAchievedHAHMS:  ["HA","str","Telescope Hour Angle at start of obs [hms]"]
   AirMass:             ["AIRMASS","float","Airmass (secZD) at start of obs"]
   ParAngle:            ["PARANGLE","float","Parallactic Angle at start of obs [deg]"]
   LST:                 ["OBS_LST","str","Local Sidereal Time at start of obs"]
-  R_RotAngle:          ["ROTANGLE","float-rad","DX Rotator Angle at start of obs [deg]"]
   R_RotMode:           ["ROTMODE","str","DX Rotator Mode"]
   R_DGRPosition:       ["DGROTPOS","float-as","DX Direct Gregorian Rotator Angle [deg]"]
   #
