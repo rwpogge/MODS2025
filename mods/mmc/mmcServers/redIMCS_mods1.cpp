@@ -28,7 +28,7 @@
   TTF actuator motions.
 
   This version uses the open-source libmodbus utilites to communicate
-  with the WAGO TCP/modbus fieldbust module that operates the WAGO
+  with the WAGO TCP/modbus fieldbus module that operates the WAGO
   750-471 4-channel analog input module.
 
   A design choice here is to use libmodbus explicitly instead of using
