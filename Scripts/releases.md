@@ -1,12 +1,14 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2026 Feb 18 [rwp/osu]</b>
+<b>Last Update: 2026 Feb 20 [rwp/osu]</b>
 
-## 2026 Feb 20: modsAlign v3.2.1
+
+## 2026 Feb 20: modsAlign v3.2.2
 Updates from tests with live images
  * Change min scaling for mask images to 0 since (a) we bias subtract and (b) need to see sky in boxes
  * Bug, forgot to transform reference position for xSlit,ySlit coords
  * np.linalg.lstsq() changed behavior after numpy v2, coeffs coming back goofy, have to do a handstand (`coeffs.ravel().tolist()[0]`) to get a simple list of coefficients to process and pass back. 
+ * added `medSlitScale()` function to do more sensible display scaling when we just have a slit image - derived from `slitRegion()` and `medImgScale()` functions. Rescales after it displays the polygon region around the slit location.
 
 ## 2026 Feb 18: modsAlign v3.2.0
 Updated `modsAlign` to v3.2 to address issues found during recent ECD and cloudy nights.
