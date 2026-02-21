@@ -6,6 +6,7 @@
 Two changes
  * `modsPerl/modsAcq.pl` now sets the acquisition image ROI to 3Kx3K by default, and will ignore the `ACQROI` commands moving forward (no-op, not error, for silent back-compatibility).  See the modsPerl release notes
  * `mods/mmc/apps/wagoSetGet.c` throttling debug error/warning messages as these are now handled by calling functions and are just a source of noise. Advanced mmc to version 3.2.8
+ * `Scripts/Public/modsAlign.py`. Many updates from live testing on-sky and after the ECD run, new scaling methods, fixing issues related to using 3Kx3K ACQROI above, and changes in `numpy.linalg.lstsq()` since version 2 that raised warnings that will soon be errors.
 
 
 ## Version 1.6.8 - 2026 Feb 18
