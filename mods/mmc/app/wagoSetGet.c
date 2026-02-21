@@ -37,6 +37,8 @@
 //                 in an active network environment [rwp/osu]
 //   2026 Jan 31 - Added a single retry at the modbus_connect() step if it
 //                 gets a fault (usually "Operation now in progress")
+//   2026 Feb 20 - [op] now in progress errors now just noise, not diagnostic
+//                 throttling error messages as we're past port debugging [rwp/osu]
 //
 //---------------------------------------------------------------------------
 
@@ -60,7 +62,7 @@ wagoSetGet(int gs, char* host, int slaveAddr, int startRef, short regArr[], int 
     usleep(50000); // wait a beat before retrying
     ierr = modbus_connect(modbus);
     if (ierr < 0) {
-      printf("ERROR: Cannot connect to WAGO host %s: %s\n",host,modbus_strerror(errno));
+      // printf("ERROR: Cannot connect to WAGO host %s: %s\n",host,modbus_strerror(errno));
       modbus_free(modbus);
       return -1;
     }
@@ -73,7 +75,7 @@ wagoSetGet(int gs, char* host, int slaveAddr, int startRef, short regArr[], int 
   // Set the slave device
 
   if (modbus_set_slave(modbus,slaveAddr) == -1) {
-    printf("ERROR: Slave address %d is invalid: %s\n",slaveAddr,modbus_strerror(errno));
+    // printf("ERROR: Slave address %d is invalid: %s\n",slaveAddr,modbus_strerror(errno));
     modbus_close(modbus);
     modbus_free(modbus);
     return -1;
