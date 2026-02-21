@@ -126,12 +126,13 @@
 #                 discovered when it was run on a mask with no boxes [opk/lbto]
 #   2024 Dec 24 - Updated to astropy-samp-ds9 [mdcb/lbto]
 #
-# ---- version 3.1.x ----
+# ---- Archon controller version ----
 #
 #   2026 Jan 18 - Updates for the MODS Archon controllers - see notes [rwp/osu]
 #   2026 Jan 20 - Updates from live testing [rwp/osu]
 #   2026 Feb 17 - Updated xRef/yRef for any acq image size, if we have
 #                 a field image override maskScale for image scaling [rwp/osu]
+#   2026 Feb 20 - Fixes and enhancements from testing with live images [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -157,8 +158,8 @@ from lbto.sciops.misc import logger, slack, beep, DS9IgnoreTimeoutWithLogger
 
 # Version info
 
-verName = "modsAlign v3.2.0"
-verDate = "2026-02-17"
+verName = "modsAlign v3.2.2"
+verDate = "2026-02-20"
 
 log = logger(f"modsAlign-{os.environ.get('USER','anon')}")
 
@@ -645,6 +646,8 @@ class modsInst:
 #   pogge.1@osu.edu
 #   2013 Dec 10
 #
+# 2026 Feb 20 - fixed for new behavior of np.linalg.lstsq() >v2.0
+#
 
 def xyRotTran(mask_xy,star_xy):
 
@@ -668,13 +671,15 @@ def xyRotTran(mask_xy,star_xy):
 
     (coeffs,resid,rank,s) = np.linalg.lstsq(A,B)
 
+    c = coeffs.ravel().tolist()[0] # ugh...
+    
     # Convert best fit coefficients to dx,dy in arcsec and rotation in degrees
 
-    dx=float(coeffs[2])
-    dy=float(coeffs[3])
-    theta = math.degrees(math.atan2(float(coeffs[0]),float(coeffs[1])))
+    dx = c[2]
+    dy = c[3]
+    theta = math.degrees(math.atan2(c[0],c[1]))
 
-    return dx, dy, theta, coeffs
+    return dx, dy, theta, c
 
 #----------------------------------------------------------------
 #
@@ -1236,6 +1241,66 @@ def slitRegion(instID,sWid,sLen,x0=0.0,y0=0.0,xBin=1,yBin=1,dx=0.0,dy=0.0,color=
     regSlit += ") # color=%s}" % (color)
 
     return regSlit
+
+#---------------------------------------------------------------------------
+#
+# medSlitScale() - given a slit position in mm, image scaling factors
+#                  for just the pixels in the slit
+#
+# Inputs:
+#   image = image data array
+#   instID = MODS instrument instance
+#   sWid = slit width in mm
+#   sLen = slit length in mm
+#   x0,y0 = slit center in mm [default: 0,0]
+#   xBin,yBin = CCD binning factor [default: 1x1]
+#   dx,dy = pixel offset to apply [default: 0,0]
+#
+# Returns:
+#   zMin, zMax, med, sig inside the image slit box
+#
+# See also: medImgScale()
+#
+
+def medSlitScale(image,instID,sWid,sLen,x0=0.0,y0=0.0,xBin=1,yBin=1,dx=0.0,dy=0.0,gain=1.0,fac=1.0):
+
+    # Slit corners in mm: [ll, lr, ur, ul]
+
+    xSmm = [x0-0.5*sWid,x0+0.5*sWid,x0+0.5*sWid,x0-0.5*sWid]
+    ySmm = [y0-0.5*sLen,y0-0.5*sLen,y0+0.5*sLen,y0+0.5*sLen]
+
+    # Transform from mm to unbinned CCD pixels
+
+    xCCD,yCCD = instID.mask2ccd(xSmm,ySmm)
+
+    # Account for binning
+
+    if xBin != 1:
+        xCCD /= xBin
+    if yBin != 1:
+        yCCD /= yBin
+
+    if dx != 0.0:
+        xCCD += dx
+    if dy != 0.0:
+        yCCD += dy
+
+    # Find nearest rectangular coordinates that encompasses the projected
+    # slit image
+
+    sc = int(np.min(xCCD))
+    ec = int(np.max(xCCD))
+    sr = int(np.min(yCCD))
+    er = int(np.max(yCCD))
+
+    # compute relevant stats in the slit box
+    
+    med = np.median(image[sr:er,sc:ec])
+    sig = math.sqrt(med/gain)   # Poisson "sigma" modulo e-/ADU gain
+    zMin = med - 5.0*sig
+    zMax = med + (fac*10.0*sig)
+
+    return zMin, zMax, med, sig
 
 #---------------------------------------------------------------------------
 #
@@ -2070,20 +2135,20 @@ def getSlitPos(d, inst, mask, useXYRef, useOffset, yOffset, swFac=3, transform=T
             dy = 0.0
 
         regSlit = slitRegion(inst,mmWid,mmLen,x0=x0Nom,y0=y0Nom,dx=dx,xBin=xBin,yBin=yBin)
-
+        szMin,szMax,slitFlux,sSig = medSlitScale(sciData,inst,mmWid,mmLen,x0=x0Nom,y0=y0Nom,dx=dx,xBin=xBin,yBin=yBin)
+        
     else: # crude, no coord transform so will be rotated relative to true slit outline
         regSlit = "regions command {box(%6.2f,%6.2f,%.2f,%.2f) # color=cyan}" % (slitXPos, slitYPos, slitWid, slitLen)
-
+        szMin,szMAx,slitFlux,sSig = medImgScale(sciData[int(slitYPos)-2:int(slitYPos)+2, int(slitXPos)-2:int(slitXPos)+2])
+        
     regCross = "regions command {point(%6.2f,%6.2f) # point=cross color=red width=2}" % (slitXPos, slitYPos)
 
     # overlay on the image in displayed in ds9
 
     d.set(regSlit)
     d.set(regCross)
-
-    # flux at the slit position
-
-    slitFlux = np.median(sciData[int(slitYPos)-2:int(slitYPos)+2, int(slitXPos)-2:int(slitXPos)+2], axis=None)
+    d.set(f"scale limits {szMin:.2f} {szMax:.2f}")
+    
     if verbose:
         print("  slitXPos=%.2f slitYPos=%.2f slitFlux=%.2f" % (slitXPos,slitYPos,slitFlux))
 
@@ -2591,9 +2656,9 @@ if haveMask:
     disp.set(f"file {maskFile}[{imExt}]")
     # if we have a field image, use its min/max scale [rwp/osu 2026Feb17]
     if haveField:
-        disp.set("scale limits %.2f %.2f" % (fieldScale[0],fieldScale[1]))
+        disp.set("scale limits %.2f %.2f" % (0.0,fieldScale[1]))
     else:
-        disp.set("scale limits %.2f %.2f" % (maskScale[0],2.0*maskScale[1]))
+        disp.set("scale limits %.2f %.2f" % (0.0,2.0*maskScale[1]))
 else:
     print("\n%s field image %s" % (instID,fieldRoot))
     disp.set(f"file {fieldFile}[{imExt}]")
@@ -2640,7 +2705,11 @@ if longSlit:
 
     if useRefPos and haveField:
         # use the preset reference XY position for initial acquisition
-        xSlit,ySlit = mods.photRef()
+        # fixed xSlit,ySlit for any acq image size, not just 1Kx1K [rwp/osu]
+        
+        xRef,yRef = mods.photRef()
+        xSlit = (xRef-512.0) + 0.5*naxis1
+        ySlit = (yRef-512.0) + 0.5*naxis2
         print("\nComputing the offset to put the standard star at preset slit position")
         print("X=%.1f Y=%.1f pix." % (xSlit,ySlit))
         # display the nominal wide slit position
