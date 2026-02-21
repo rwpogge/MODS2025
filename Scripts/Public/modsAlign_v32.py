@@ -132,11 +132,7 @@
 #   2026 Jan 20 - Updates from live testing [rwp/osu]
 #   2026 Feb 17 - Updated xRef/yRef for any acq image size, if we have
 #                 a field image override maskScale for image scaling [rwp/osu]
-<<<<<<< HEAD
 #   2026 Feb 20 - Fixes and enhancements from testing with live images [rwp/osu]
-=======
-#   2026 Feb 20 - Fixes from testing with live images [rwp/osu]
->>>>>>> a382259241d6b85665e6b5f13d3c721b0abdebf5
 #
 #---------------------------------------------------------------------------
 
@@ -162,11 +158,7 @@ from lbto.sciops.misc import logger, slack, beep, DS9IgnoreTimeoutWithLogger
 
 # Version info
 
-<<<<<<< HEAD
 verName = "modsAlign v3.2.2"
-=======
-verName = "modsAlign v3.2.1"
->>>>>>> a382259241d6b85665e6b5f13d3c721b0abdebf5
 verDate = "2026-02-20"
 
 log = logger(f"modsAlign-{os.environ.get('USER','anon')}")
@@ -680,11 +672,7 @@ def xyRotTran(mask_xy,star_xy):
     (coeffs,resid,rank,s) = np.linalg.lstsq(A,B)
 
     c = coeffs.ravel().tolist()[0] # ugh...
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> a382259241d6b85665e6b5f13d3c721b0abdebf5
     # Convert best fit coefficients to dx,dy in arcsec and rotation in degrees
 
     dx = c[2]
@@ -2718,11 +2706,7 @@ if longSlit:
 
     if useRefPos and haveField:
         # use the preset reference XY position for initial acquisition
-<<<<<<< HEAD
         # fixed xSlit,ySlit for any acq image size, not just 1Kx1K [rwp/osu]
-=======
-        # xSlit,ySlit = mods.photRef() - fixed for any acqimage size, not just 1024x1024 [rwp/osu]
->>>>>>> a382259241d6b85665e6b5f13d3c721b0abdebf5
         
         xRef,yRef = mods.photRef()
         xSlit = (xRef-512.0) + 0.5*naxis1
