@@ -196,7 +196,7 @@ int main(int argc, char *argv[]) {
   // seem reasonable.  These are in shared memory and can be changed
   // during the session using the BIMCS command sent to the IE server
 
-  shm_addr->MODS.blueQC_SampleRate=500;
+  shm_addr->MODS.blueQC_SampleRate=1000;
   shm_addr->MODS.blueQC_Samples=5;       // Number of quad cell measurements to average
   shm_addr->MODS.blueQC_Gain=1.0;
   shm_addr->MODS.blueQC_Threshold[0]=0.05;

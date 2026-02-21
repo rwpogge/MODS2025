@@ -196,7 +196,7 @@ int main(int argc, char *argv[]) {
   // seem reasonable.  These are in shared memory and can be changed
   // during the session using the RIMCS command sent to the IE server
 
-  shm_addr->MODS.redQC_SampleRate=500;
+  shm_addr->MODS.redQC_SampleRate=1000;
   shm_addr->MODS.redQC_Samples=5;       // Number of quad cell measurements to average
   shm_addr->MODS.redQC_Gain=1.0;
   shm_addr->MODS.redQC_Threshold[0]=0.05; // reduced 2025 Dec 31 [rwp/osu]
