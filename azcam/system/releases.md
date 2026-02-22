@@ -1,6 +1,10 @@
 # Archon Configuration File Release Notes
 
-**Last Release: 2026 Jan 14**
+**Last Release: 2026 Feb 21**
+
+## 2026 Feb 21
+ * TCS headers now using `S_AchievedALTDMS` and `S_AchievedAZDMS` instead of the `MountAchieved...` which gives confusing info.
+ * TCS header template removed `S_RotAngle` as it is redundant (modulo 360 or 2*360 deg) with `S_DGRPosition` and could be confused with `POSANGLE` for celestial position angle.
 
 ## 2026 Jan 14
  * Updated `modsTCS_left.txt` and `modsTCS_right.txt` header templates based on feedback from the LBT Archive and LBTO
