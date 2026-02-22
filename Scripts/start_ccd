@@ -112,6 +112,7 @@ endif
 ps h -C modsCCD >& /dev/null
 if ($status) then
    # not running, start in the left pane of the ccdTerm
+   sleep 2
    printf "Starting the ${modsID} modsCCD agent...\n"
    tmux send-keys -t ${tmuxID}:1.0 "${modsBin}/modsCCD" C-m
 else
