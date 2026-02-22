@@ -27,6 +27,8 @@
 # 2026 Jan 15 - first version
 #
 # Modification History:
+#   2026 Feb 22 - added extra pause to give azcam time to start its command
+#                 port server before starting modsCCD [rwp/osu]
 #
 # See also: stop_ccd, start_azcam, start_modsccd
 #
