@@ -645,7 +645,7 @@ int getWagoQC(char *wagoAddr, int regAddr, int* rawData) {
   // Open a Modbus/TCP connection to the WAGO
   modbus = modbus_new_tcp(wagoAddr,502);
   if (modbus_connect(modbus) == -1) {
-    printf("ERROR: Cannot connect to WAGO host %s: %s\n",wagoAddr,modbus_strerror(errno));
+    printf("WARNING: blueIMCS cannot connect to WAGO host %s: %s\n",wagoAddr,modbus_strerror(errno));
     modbus_free(modbus);
     return -1;
   }
