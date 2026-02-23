@@ -292,6 +292,9 @@ int main(int argc, char *argv[]) {
 	// the QC cell readings to zero to keep bad QC values from
 	// turning into bad TTF corrections furhter down
 
+	// Disable for the WAGO readout system [rwp/osu]
+
+	/*
 	if (shm_addr->MODS.blueQC1 == 0 || shm_addr->MODS.blueQC2 == 0 ||
 	    shm_addr->MODS.blueQC3 == 0 || shm_addr->MODS.blueQC4 == 0) {
 	  shm_addr->MODS.blueQC1=0;
@@ -299,6 +302,7 @@ int main(int argc, char *argv[]) {
 	  shm_addr->MODS.blueQC3=0;
 	  shm_addr->MODS.blueQC4=0;
 	}
+	*/
       }
 
       // Convert the raw quad cell signal in ADU to decimal

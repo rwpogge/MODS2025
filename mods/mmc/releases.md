@@ -1,13 +1,21 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2026 Feb 20
+Last Build: 2026 Feb 23
+
+## Version 3.2.9: 2026 Feb 23
+Debugging odd behavior on MODS1R IMCS led to changes in the IMCS quad cell servers
+ * Disable the "if one is 0 all get set to 0" method required by the old CCD controllers which would cause the quad cell readout to "gallop" wildly during CCD readout, sometimes resulting in false flexure corrections. With the very low bias of the WAGO-based system for the Archons, this causes issues
+when the beam is far off the center.
+ * Also need to display 4 digits for the effective voltage as the WAGO ADCs read to 10/37267 = 0.000305 volts.  This change is in the mmcServer response to the `rimcs` and `bimcs` commands in `mmcServers/commands/c`.
+ 
 
 ## Version 3.2.8: 2026 Feb 20
 We are far enough in we can safely throttle debugging output from `app/wagoSetGet.c`, and refer error
 reporting to the calling programs. Routine "operation now in progress" faults if the WAGO is busy
 trigger re-trys in the calling codes, so debug messages are just noise that obfuscate other more
 actionable errors.
+
 
 ## Version 3.2.7: 2026 Feb 8
 Seeing seg-faults crashing mmcServer during testing last night. Logs showed that just before the date/time tag
