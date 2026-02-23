@@ -141,7 +141,7 @@ proc qcells { } {
     set result2 [exec vueinfo qcell6]
     set result3 [exec vueinfo qcell7]
     set result4 [exec vueinfo qcell8]
-    set result9 [format "%.3f" [expr {$result1+$result2+$result3+$result4}]]
+    set result9 [format "%.4f" [expr {$result1+$result2+$result3+$result4}]]
 
     set result5 [exec vueinfo hebqc5]
     set result6 [exec vueinfo hebqc6]

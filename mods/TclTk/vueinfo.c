@@ -443,21 +443,21 @@ main(int argc, char *argv[])
   // IMCS average quad-cell parameters
   else if (strstr(what,"AVERAGE_QCELL")) {
     if (strstr(what,"1"))
-      printf("%0.3f",ms->MODS.blueQC_Average[0]);
+      printf("%0.4f",ms->MODS.blueQC_Average[0]);
     else if (strstr(what,"2"))
-      printf("%0.3f",ms->MODS.blueQC_Average[1]);
+      printf("%0.4f",ms->MODS.blueQC_Average[1]);
     else if (strstr(what,"3"))
-      printf("%0.3f",ms->MODS.blueQC_Average[2]);
+      printf("%0.4f",ms->MODS.blueQC_Average[2]);
     else if (strstr(what,"4"))
-      printf("%0.3f",ms->MODS.blueQC_Average[3]);
+      printf("%0.4f",ms->MODS.blueQC_Average[3]);
     else if (strstr(what,"5"))
-      printf("%0.3f",ms->MODS.redQC_Average[0]);
+      printf("%0.4f",ms->MODS.redQC_Average[0]);
     else if (strstr(what,"6"))
-      printf("%0.3f",ms->MODS.redQC_Average[1]);
+      printf("%0.4f",ms->MODS.redQC_Average[1]);
     else if (strstr(what,"7"))
-      printf("%0.3f",ms->MODS.redQC_Average[2]);
+      printf("%0.4f",ms->MODS.redQC_Average[2]);
     else if (strstr(what,"8"))
-      printf("%0.3f",ms->MODS.redQC_Average[3]);
+      printf("%0.4f",ms->MODS.redQC_Average[3]);
     else {
       printf("Quadcells: %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f",
 	     ms->MODS.blueQC_Average[0],
@@ -526,14 +526,14 @@ main(int argc, char *argv[])
   }
   // IMCS quad-cell parameters
   else if (strstr(what,"QCELL")) {
-    if (strstr(what,"1")) printf("%0.3f",ms->MODS.blueQC[0]);
-    else if (strstr(what,"2")) printf("%0.3f",ms->MODS.blueQC[1]);
-    else if (strstr(what,"3")) printf("%0.3f",ms->MODS.blueQC[2]);
-    else if (strstr(what,"4")) printf("%0.3f",ms->MODS.blueQC[3]);
-    else if (strstr(what,"5")) printf("%0.3f",ms->MODS.redQC[0]);
-    else if (strstr(what,"6")) printf("%0.3f",ms->MODS.redQC[1]);
-    else if (strstr(what,"7")) printf("%0.3f",ms->MODS.redQC[2]);
-    else if (strstr(what,"8")) printf("%0.3f",ms->MODS.redQC[3]);
+    if (strstr(what,"1")) printf("%0.4f",ms->MODS.blueQC[0]);
+    else if (strstr(what,"2")) printf("%0.4f",ms->MODS.blueQC[1]);
+    else if (strstr(what,"3")) printf("%0.4f",ms->MODS.blueQC[2]);
+    else if (strstr(what,"4")) printf("%0.4f",ms->MODS.blueQC[3]);
+    else if (strstr(what,"5")) printf("%0.4f",ms->MODS.redQC[0]);
+    else if (strstr(what,"6")) printf("%0.4f",ms->MODS.redQC[1]);
+    else if (strstr(what,"7")) printf("%0.4f",ms->MODS.redQC[2]);
+    else if (strstr(what,"8")) printf("%0.4f",ms->MODS.redQC[3]);
     else {
       printf("Quadcells (BLUE): %0.4f %0.4f %0.4f %0.4f\n",
 	     ms->MODS.blueQC[0],
@@ -892,13 +892,13 @@ main(int argc, char *argv[])
   }
   // IMCS motor thresholds
   else if (!strcasecmp(what,"STHRESHOLD")) {
-    if (atoi(cmd)==-1) printf("%0.3f\n",ms->MODS.blueQC_Threshold[0]);
+    if (atoi(cmd)==-1) printf("%0.4f\n",ms->MODS.blueQC_Threshold[0]);
     else  ms->MODS.blueQC_Threshold[0] = atof(cmd);
     exit(0);
 
   }
   else if (!strcasecmp(what,"RSTHRESHOLD")) {
-    if (atoi(cmd)==-1) printf("%0.3f\n",ms->MODS.redQC_Threshold[0]);
+    if (atoi(cmd)==-1) printf("%0.4f\n",ms->MODS.redQC_Threshold[0]);
     else  ms->MODS.redQC_Threshold[0] = atof(cmd);
     exit(0);
   }
