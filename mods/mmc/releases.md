@@ -3,11 +3,12 @@ Original Build: 2009 June 15
 
 Last Build: 2026 Feb 23
 
-## Version 3.2.9: 2026 Feb 23
+## Version 3.2.10: 2026 Feb 23
 Debugging odd behavior on MODS1R IMCS led to changes in the IMCS quad cell servers
  * Disable the "if one is 0 all get set to 0" method required by the old CCD controllers which would cause the quad cell readout to "gallop" wildly during CCD readout, sometimes resulting in false flexure corrections. With the very low bias of the WAGO-based system for the Archons, this causes issues
 when the beam is far off the center.
  * Also need to display 4 digits for the effective voltage as the WAGO ADCs read to 10/37267 = 0.000305 volts.  This change is in the mmcServer response to the `rimcs` and `bimcs` commands in `mmcServers/commands/c`.
+ * Also disable QC averaging test that datum >0, now >= 0 so we can properly handle the low bias condition to be fixed in hardware later.
  
 
 ## Version 3.2.8: 2026 Feb 20

@@ -43,6 +43,8 @@
   2025 Jun 26 - start of port to the WAGO-based HEB for the ARCHON
                 CCD controller update [rwp/osu]
   2025 Dec 31 - adjusted default signal threshold [rwp/osu]
+  2026 Feb 23 - updates after live testing [rwp/osu]
+
 </pre>
 
 \todo
@@ -548,7 +550,9 @@ int main(int argc, char *argv[]) {
 	// so add the most recent values to the summation vectors.
 	// However, only do this if we have uncorrupted data
 
-	if (dataArr[0] > 0 && dataArr[1] > 0 && dataArr[2] > 0 && dataArr[3] > 0) {
+	// Temporary hack of >=0 instead of >0 with low QC bias [rwp/osu]
+	
+	if (dataArr[0] >= 0 && dataArr[1] >= 0 && dataArr[2] >= 0 && dataArr[3] >= 0) {
 	  meanQC[0] += dataArr[0];
 	  meanQC[1] += dataArr[1];
 	  meanQC[2] += dataArr[2];

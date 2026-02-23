@@ -1,6 +1,6 @@
 # MODS Mechanism Control (mmc) Servers
  
-**Version 3.2.9**
+**Version 3.2.10**
 
 **Updated: 2026 Feb 23 [rwp/osu]**
 
