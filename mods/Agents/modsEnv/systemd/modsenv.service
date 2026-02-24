@@ -20,8 +20,8 @@
 
 [Unit]
 Description=MODS environmental sensor monitoring agent
-Requires=modsalloc.service
-After=modsalloc.service
+Requires=modsalloc.service isis.service
+After=modsalloc.service isis.service
 
 [Service]
 ExecStart=/usr/local/bin/modsenv.sh
