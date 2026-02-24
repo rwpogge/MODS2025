@@ -29,26 +29,3 @@ to start the `vncserver` by hand.  See `vncserver help` for more options
 
    Killing Xvnc process ID 133444
 ```
-
-### systemd services
-
-To run vncserver as a systemd service
-```
-$ systemctl start vncserver@:x
-```
-Run this as the root user or:
-```
-$ sudo systemctl start vncserver@:x
-```
-Don't forget to replace the `:x` by the actual number you configured in
-the user mapping file. For example:
-```
-$ sudo systemctl start vncserver@:1
-```
-This starts a TigerVNC server for user `test` with GNOME session.
-
-In case you want your server to be automatically started at boot, you
-can run:
-```
-$ sudo systemctl enable vncserver@:1
-```
