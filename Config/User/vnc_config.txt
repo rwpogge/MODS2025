@@ -4,6 +4,7 @@
 ##
 # securitytypes=vncauth,tlsvnc
 # desktop=sandbox
+session=xfce4-session
 geometry=1920x1200
 # localhost
 # alwaysshared
