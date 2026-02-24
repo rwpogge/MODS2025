@@ -80,7 +80,7 @@ and the HDF data stream.
 
 If the shared memory segment is active, you'll see the last read of environmental data:
 ```shell
-$ vueinfo env
+% vueinfo env
 Environmental Sensors:
   Glycol Supply: P=0.01 psi-g  T=13.1 C
          Return: P=34.65 psi-g  T=13.0 C
@@ -108,10 +108,10 @@ check was run shortly after the `vueinfo env` test above.
 If changes need to be made to the `modsenv.service` configuration file, here is how to restart the service
 with the new configuration
 ```shell
-sudo systemctl stop modsenv
-sudo systemctl disable modsenv
-sudo cp modsenv.service /usr/lib/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable modsenv
-sudo systemctl restart modsenv
+% sudo systemctl stop modsenv
+% sudo systemctl disable modsenv
+% sudo cp modsenv.service /usr/lib/systemd/system/
+% sudo systemctl daemon-reload
+% sudo systemctl enable modsenv
+% sudo systemctl restart modsenv
 ```
