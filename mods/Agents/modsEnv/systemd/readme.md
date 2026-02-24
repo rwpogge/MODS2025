@@ -102,3 +102,16 @@ lrwxrwxrwx. 1 root 74 Sep 12 15:02 current.mods1.env.h5 -> /lbt/data/telemetry/i
 ```
 The date on the `current.mods1.env.h5` file, and the symlink at right should be for the current date if it is running. This
 check was run shortly after the `vueinfo env` test above.
+
+## Updating
+
+If changes need to be made to the `modsenv.service` configuration file, here is how to restart the service
+with the new configuration
+```shell
+sudo systemctl stop modsenv
+sudo systemctl disable modsenv
+sudo cp modsenv.service /usr/lib/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable modsenv
+sudo systemctl restart modsenv
+```
