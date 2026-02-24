@@ -459,3 +459,20 @@ mount -a
 df -h
 ```
 You should now see `/data/mods1r` and `/data/mods1b`, and be able to read and write to them
+
+## Logging
+The system `journalctl` service does not have persistent logging by default.  To enable
+```
+sudo vi /etc/systemd/journald.conf
+```
+then edit/uncomment the following:
+```
+Storage=persistent
+MaxRetentionSec=1month
+SystemMaxUse=500M
+```
+and then restart
+```
+sudo systemctl daemon-reload
+sudo systemctl restart systemd-journald
+```
