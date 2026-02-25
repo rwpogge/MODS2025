@@ -2,6 +2,11 @@
 
 **Last Release: 2026 Feb 23**
 
+## Version 1.6.11 - 2026 Feb 25
+Unexpected reboot of mods1 (kernel seg-fault) exposed a few restart issues. Some changes:
+ * Modify the `modsEnv` agent `modsenv.service` systemd service instructions to start After isis.service.  ISIS server was not seeing modsEnv because it started faster than the isis server.  
+ * Added a `handshake` command to the `isis` server to allow re-doing initial handshake "pings" of preset serial and UDP socket ports after server startup. This offers one way to "force" (re)synchronization of the ISIS host tables recovering from a hard modsN server restart like we had the other day.  See [isis Server release notes](ISIS/releases.md) for details.
+ 
 ## Version 1.6.10 - 2026 Feb 23
 Changes to the IMCS servers based on live testing at the LBT during an ECD night. See the [mmc release notes](mods/mmc/releases.md) for details.
 

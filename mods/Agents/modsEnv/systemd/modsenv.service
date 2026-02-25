@@ -20,7 +20,7 @@
 
 [Unit]
 Description=MODS environmental sensor monitoring agent
-Requires=modsalloc.service isis.service
+Requires=modsalloc.service
 After=modsalloc.service isis.service
 
 [Service]
