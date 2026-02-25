@@ -3,7 +3,7 @@
 **Last Release: 2026 Feb 23**
 
 ## Version 1.6.10 - 2026 Feb 23
-Changes to the IMCS servers based on live testing at the LBT during an ECD night.
+Changes to the IMCS servers based on live testing at the LBT during an ECD night.  See `mods/mmc/releases.md` for details.
 
 
 ## Version 1.6.9 - 2026 Feb 20
