@@ -1,6 +1,8 @@
 # ISIS - Integrated Science Instrument Server
 
-Current version: 3.0
+**Current version: 3.1.0**
+
+**Build Date: 2026 Feb 25**
 
 Author: R. Pogge, OSU Astronomy Dept (pogge.1@osu.edu)
 

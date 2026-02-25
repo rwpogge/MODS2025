@@ -332,22 +332,23 @@ handShake()
 
   // Send it out on all serial ports 
 
-  for (iPort=0; iPort<isis.numSerial; iPort++) {
-    serialFD = ttyTab[iPort].fd;
-    if (serialFD > 0) 
-      tcflush(serialFD,TCIOFLUSH);
-    bytesSent = write(serialFD,message,strlen(message));
-    if (bytesSent < 0) {
-      sprintf(errStr,"ERROR: Serial Port write() Error on %s - %s\n",
-	      ttyTab[iPort].devName,strerror(errno));
-      if (isis.useCLI)
-	printf("%s\n",errStr);
-      else
-	logMessage(errStr);
-    }
-
-  } // end of serial port loop 
-
+  if (isis.numSerial > 0) {
+    for (iPort=0; iPort<isis.numSerial; iPort++) {
+      serialFD = ttyTab[iPort].fd;
+      if (serialFD > 0) 
+	tcflush(serialFD,TCIOFLUSH);
+      bytesSent = write(serialFD,message,strlen(message));
+      if (bytesSent < 0) {
+	sprintf(errStr,"ERROR: Serial Port write() Error on %s - %s\n",
+		ttyTab[iPort].devName,strerror(errno));
+	if (isis.useCLI)
+	  printf("%s\n",errStr);
+	else
+	  logMessage(errStr);
+      }
+    } // end of serial port loop 
+  }
+  
   // Now send it out on all preset UDP socket ports
 
   if (isis.numPreset > 0) {

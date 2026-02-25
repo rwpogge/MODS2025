@@ -18,6 +18,10 @@
 //   2005 Aug 08: removed confusing Inst= from CONFIG [rwp/osu]
 //   2009 Mar 18: updates for v2 [rwp/osu]
 //
+//   2026 Feb 25: added handshake command to force known
+//                client handshake (crash recovery) [rwp/osu]
+//
+//---------------------------------------------------------------------------
 
 #include "isisserver.h"
 
@@ -86,14 +90,12 @@ isisCommand(char *cmdStr, char *replyStr)
       strcasecmp(cmdWord,"DONE:")==0) {
 
     return(MSG_ECHO);
-
   }
   else if (strcasecmp(cmdWord,"ERROR:")==0 ||
 	   strcasecmp(cmdWord,"WARNING:")==0 ||
 	   strcasecmp(cmdWord,"FATAL:")==0) {
     
     return(MSG_ECHO);
-
   }
   else if (strcasecmp(cmdWord,"EXEC:")==0) {
     isExec = 1;
@@ -114,7 +116,6 @@ isisCommand(char *cmdStr, char *replyStr)
   if (strcasecmp(cmdWord,"PING")==0) {
     sprintf(replyStr,"PONG");
     return(MSG_REPLY);
-
   }
   
   // PONG: communications initialization acknowledgment.
@@ -122,7 +123,6 @@ isisCommand(char *cmdStr, char *replyStr)
    
   else if (strcasecmp(cmdWord,"PONG")==0) {
     return(MSG_ECHO);
-
   }
 
   // QUIT: kill the server, but only if preceeded by EXEC:
@@ -146,7 +146,6 @@ isisCommand(char *cmdStr, char *replyStr)
   else if (strcasecmp(cmdWord,"RESTART")==0) {
     sprintf(replyStr,"ERROR: RESTART command not yet implemented");
     return(MSG_REPLY);
-
   }
 
   // FLUSH: flush a serial port
@@ -175,7 +174,6 @@ isisCommand(char *cmdStr, char *replyStr)
       sprintf(replyStr,"ERROR: FLUSH serial port %d not enabled",iport);
     }
     return(MSG_REPLY);
-
   }
 
   // REMOVE: remove a host from the client table
@@ -197,7 +195,6 @@ isisCommand(char *cmdStr, char *replyStr)
       sprintf(replyStr,"ERROR: REMOVE Host %s unknown, not removed",cmdArgs);
 
     return(MSG_REPLY);
-
   }
 
   // General Commands
@@ -210,7 +207,6 @@ isisCommand(char *cmdStr, char *replyStr)
 	    ISIS_VERSION,isis.exeFile,isis.iniFile,
 	    isis.userID,ISIS_COMPDATE,ISIS_COMPTIME);
     return(MSG_REPLY);
-
   }
 
   // STATUS: report concise server status 
@@ -218,7 +214,6 @@ isisCommand(char *cmdStr, char *replyStr)
   else if (strcasecmp(cmdWord,"STATUS")==0) {
     serverInfo(replyStr);
     return(MSG_REPLY);
-
   }
 
   // HOST: report information about the one or more hosts
@@ -229,7 +224,6 @@ isisCommand(char *cmdStr, char *replyStr)
       strcpy(cmdArgs,"all");
     hostInfo(cmdArgs,replyStr);
     return(MSG_REPLY);
-
   }
 
   // LOG: report the name of the current runtime log
@@ -237,7 +231,6 @@ isisCommand(char *cmdStr, char *replyStr)
   else if (strcasecmp(cmdWord,"LOG")==0) {
     sprintf(replyStr,"DONE: LOG logFile=%s",isis.logFile);
     return(MSG_REPLY);
-
   }
 
   // HOSTS: alias for HOST ALL
@@ -246,7 +239,6 @@ isisCommand(char *cmdStr, char *replyStr)
     strcpy(cmdArgs,"ALL");
     hostInfo(cmdArgs,replyStr);
     return(MSG_REPLY);
-
   }
 
   // UDPPING: Ping the named UDP socket port
@@ -291,9 +283,17 @@ isisCommand(char *cmdStr, char *replyStr)
   else if (strcasecmp(cmdWord,"PORTS")==0) {
     portInfo(replyStr);
     return(MSG_REPLY);
-
   }
 
+  // HANDSHAKE: shake hands with all preset serial and UDP ports
+
+  else if (strcasecmp(cmdWord,"HANDSHAKE")==0) {
+    handShake();
+    sprintf(replyStr,"DONE: HANDSHAKE preset port handshake initiated");
+    return(MSG_REPLY);
+  }
+  
+      
   // TIME: read system clock and report system UTC date/time to caller
   //       Date in CCYY-MM-DD format, Time in hh:mm:ss (ISO-8601), and
   //       the time system as standard FITS keywords.
@@ -303,7 +303,6 @@ isisCommand(char *cmdStr, char *replyStr)
     sprintf(replyStr,"DONE: TIME DATE=%s TIME=%s ISODATE=%s TIMESYS=UTC",
 	    isis.utcDate,isis.utcTime,getDateTime());
     return(MSG_REPLY);
-
   }
 
   // CONFIG: report the system configuration
@@ -323,7 +322,6 @@ isisCommand(char *cmdStr, char *replyStr)
       }
     }
     return(MSG_REPLY);
-    
   }
 
   // Unknown command, reply with an error message
@@ -331,7 +329,6 @@ isisCommand(char *cmdStr, char *replyStr)
   else {
     sprintf(replyStr,"ERROR: Unrecognized ISIS command - %s",cmdWord);
     return(MSG_REPLY);
-
   } 
 
   // end of the command decision tree 
