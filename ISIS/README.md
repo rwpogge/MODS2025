@@ -6,6 +6,8 @@
 
 Author: R. Pogge, OSU Astronomy Dept (pogge.1@osu.edu)
 
+See the [Release Notes](releases.md) for details
+
 ## Overview
 
 ISIS is a lightweight message-passing server used by the data-taking system of new-generation OSU instruments for interprocess communication and coordination.
