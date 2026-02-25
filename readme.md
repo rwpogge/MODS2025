@@ -2,7 +2,7 @@
 
 **Version 1.6.10**
 
-**Last Update: 2026 Feb 24 [rwp/osu]**
+**Last Update: 2026 Feb 23 [rwp/osu]**
 
 Lead: Richard Pogge (OSU Astronomy) pogge.1@osu.edu
 
