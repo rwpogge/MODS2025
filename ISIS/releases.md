@@ -1,4 +1,4 @@
-# This is ISIS version 3.1 
+# ISIS server and client release notes
 
 Updated: 2026 Feb 25
 
