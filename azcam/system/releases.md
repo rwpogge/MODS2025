@@ -2,8 +2,11 @@
 
 **Last Release: 2026 Feb 21**
 
+## 2026 Feb 26
+ * TCS headers changed to use `S_AchievedALT` and `S_AchievedAZ` and convert datum to floating point degrees (from float radians). Thi sis for LBT Archive back compatibility requested by Martinia Vicinanza (INAF)
+
 ## 2026 Feb 21
- * TCS headers now using `S_AchievedALTDMS` and `S_AchievedAZDMS` instead of the `MountAchieved...` which gives confusing info.
+ * TCS headers now usin `S_AchievedALTDMS` and `S_AchievedAZDMS` instead of the `MountAchieved...` which gives confusing info.g
  * TCS header template removed `S_RotAngle` as it is redundant (modulo 360 or 2*360 deg) with `S_DGRPosition` and could be confused with `POSANGLE` for celestial position angle.
 
 ## 2026 Jan 14

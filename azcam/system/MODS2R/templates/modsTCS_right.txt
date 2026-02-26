@@ -1,7 +1,7 @@
 #
 # MODS TCS info header template entries for MODS2 at right (DX) direct Gregorian
 #
-# Updated: 2026 Feb 21 [rwp/osu]
+# Updated: 2026 Feb 26 [rwp/osu]
 #
 # YAML format
 #
@@ -34,8 +34,8 @@ DDEntries:
   R_AchievedRAHMS:     ["TELRA","str","DX Telescope Achieved RA [hms]"]
   R_AchievedDECDMS:    ["TELDEC","str","DX Telescope Achieved DEC [dms]"]                    
   R_PosAngle:          ["POSANGLE","float-rad","DX Instrument Celestial PA [deg]"]
-  R_AchievedALTDMS:    ["TELALT","str","Telescope Altitude at start of obs [dms]"]
-  R_AchievedAZDMS:     ["TELAZ","str","Telescope Azimuth at start of obs [dms]"]
+  R_AchievedALT:       ["TELALT","float-rad","Telescope Altitude at start of obs [deg]"]
+  R_AchievedAZ:        ["TELAZ","float-rad","Telescope Azimuth at start of obs [deg]"]
   MountAchievedHAHMS:  ["HA","str","Telescope Hour Angle at start of obs [hms]"]
   AirMass:             ["AIRMASS","float","Airmass (secZD) at start of obs"]
   ParAngle:            ["PARANGLE","float","Parallactic Angle at start of obs [deg]"]
