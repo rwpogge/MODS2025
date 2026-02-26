@@ -1,4 +1,4 @@
-Data Dictionary names available in the Instrument Interface (Build 2025B)
+Data Dictionary names available in the Instrument Interface (Build 2026A)
 
 Format:
 Name                             Type    Units   Description
@@ -101,6 +101,9 @@ SunAz                            double  deg     Current sun azimuth
 SunRise                          double  MJD     Sunrise
 SunSet                           double  MJD     Sunset
 AlmanacTime                      double  MJD     Almanac time
+CyclopeSeeingAtZenith            float   arcsec  Cyclope seeing value at zenith
+CyclopeFluxCount                 float   ---     Cyclope flux measurement
+CyclopeTime                      float   sec     Cyclope Time of data measurement in seconds from epoch
 
         [DIMM data]
 DIMMElevation                    float   deg     DIMM elevation angle
@@ -526,6 +529,7 @@ S_AOttmodul                      double  ---     AO tip-tilt modulation
 S_AOStatus                       string  ---     AO adsec status
 S_AOCorrectedModes               int     ---     AO number of corrected modes
 S_AOMode                         string  ---     AO mode
+S_AOObservationMode              string  ---     AO observationi mode
 S_AOslReady                      int     ---     AO seeing limited ready
 S_AOaoReady                      int     ---     AO adaptive ready
 S_AOLoopOn                       int     ---     AO loop on flag
