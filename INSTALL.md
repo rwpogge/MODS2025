@@ -1,6 +1,6 @@
 # MODS Instrument Control and Data-Taking System Installation
 
-**Updated: 2025 Dec 26 [rwp/osu]**
+**Updated: 2026 Feb 26 [rwp/osu]**
 
 ## Preparations
 
