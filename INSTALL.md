@@ -471,7 +471,9 @@ Storage=persistent
 MaxRetentionSec=1month
 SystemMaxUse=500M
 ```
-and then restart
+A copy of the current reference `journald.conf` file is in `Config/System/` on this repository.
+
+Once copied, restart the `journald` service:
 ```
 sudo systemctl daemon-reload
 sudo systemctl restart systemd-journald
