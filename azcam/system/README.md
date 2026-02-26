@@ -1,6 +1,6 @@
 # MODS azcam system files
 
-**Updated: 2026 Feb 21 [rwp/osu]**
+**Updated: 2026 Feb 26 [rwp/osu]**
 
 See the [Release Notes](releases.md) for details.
 
