@@ -12952,20 +12952,19 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
 
   GetArg(args,1,cmd_instruction);
 
-  if(who_selected[0]=='B') {
-
+  if (who_selected[0]=='B') {
     ttfA=getMechanismID("bcolttfa",dummy); // Get mechanism device ID
-    if(ttfA==-1) {
+    if (ttfA==-1) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
     ttfB=getMechanismID("bcolttfb",dummy); // Get mechanism device ID
-    if(ttfB==-1) {
+    if (ttfB==-1) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
     ttfC=getMechanismID("bcolttfc",dummy); // Get mechanism device ID
-    if(ttfC==-1) {
+    if (ttfC==-1) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
@@ -12974,19 +12973,20 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
     ind=0;
     closeOpen=shm_addr->MODS.blueCloseLoop;
 
-  } else if(who_selected[0]=='R') {
+  }
+  else if (who_selected[0]=='R') {
     ttfA=getMechanismID("rcolttfa",dummy); // Get mechanism device ID
-    if(ttfA==-1) {
+    if (ttfA==-1) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
     ttfB=getMechanismID("rcolttfb",dummy); // Get mechanism device ID
-    if(ttfB==-1) {
+    if (ttfB==-1) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
     ttfC=getMechanismID("rcolttfc",dummy); // Get mechanism device ID
-    if(ttfC==-1) {
+    if (ttfC==-1) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
@@ -12996,8 +12996,8 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
     ind=1;
   }
 
-  if(strlen(args)<=0) {
-    if(who_selected[0]=='R') {
+  if (strlen(args)<=0) {
+    if (who_selected[0]=='R') {
       sprintf(reply,"RIMCS IMCS_R=%s CLGAIN_R=%0.2f QCMIN_R=%0.3f QCSAMP_R=%d QCNAVG_R=%d TARGET_R=%s QC1_R=%0.4f QC2_R=%0.4f QC3_R=%0.4f QC4_R=%0.4f",
 	      closeOpen==0 ? "OPEN" : "CLOSE",
 	      shm_addr->MODS.redQC_Gain,
@@ -13009,7 +13009,8 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
 	      shm_addr->MODS.redQC_Average[1],
 	      shm_addr->MODS.redQC_Average[2],
 	      shm_addr->MODS.redQC_Average[3]);
-    } else {
+    }
+    else {
       sprintf(reply,"BIMCS IMCS_B=%s CLGAIN_B=%0.2f QCMIN_B=%0.3f QCSAMP_B=%d QCNAVG_B=%d TARGET_B=%s QC1_B=%0.4f QC2_B=%0.4f QC3_B=%0.4f QC4_B=%0.4f",
 	      closeOpen==0 ? "OPEN" : "CLOSE",
 	      shm_addr->MODS.blueQC_Gain,
@@ -13027,12 +13028,12 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
 
   if (!strncasecmp(args,"M#",2)) { // check for low-level command
 
-    if(who_selected[0]=='R')
+    if (who_selected[0]=='R')
       device=getMechanismID("rimcs",dummy); // Get mechanism device ID
     else if(who_selected[0]=='B')
       device=getMechanismID("bimcs",dummy); // Get mechanism device ID
 
-    if(device==-1) {
+    if (device==-1) {
       sprintf(reply,"%s %s",who_selected,dummy);
       return CMD_ERR;
     }
@@ -13044,69 +13045,77 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
   }
 
   if (!strcasecmp(cmd_instruction,"CLOSE")) {
-    if(who_selected[0]=='B') {
+    if (who_selected[0]=='B') {
       shm_addr->MODS.blueCloseLoop=1;
       shm_addr->MODS.blueCloseLoopON=1;
-      sprintf(reply,"%s %s=CLOSE Running closed loop",who_selected,
-	      who_selected);
-    } else if(who_selected[0]=='R') {
+      sprintf(reply,"%s %s=CLOSE Running closed loop",who_selected,who_selected);
+    }
+    else if (who_selected[0]=='R') {
       shm_addr->MODS.redCloseLoop=1;
       shm_addr->MODS.redCloseLoopON=1;
-      sprintf(reply,"%s %s=CLOSE Running close loop",who_selected,
-	      who_selected);
+      sprintf(reply,"%s %s=CLOSE Running close loop",who_selected,who_selected);
     }
 
-  } else if (!strcasecmp(cmd_instruction,"OPEN")) {
-    if(who_selected[0]=='B') {
+  }
+  else if (!strcasecmp(cmd_instruction,"OPEN")) {
+    if (who_selected[0]=='B') {
       shm_addr->MODS.blueCloseLoop=0;
       shm_addr->MODS.blueCloseLoopON=0;
-      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,
-	      who_selected);
+      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,who_selected);
 
-    } else if(who_selected[0]=='R') {
+    }
+    else if (who_selected[0]=='R') {
       shm_addr->MODS.redCloseLoop=0;
       shm_addr->MODS.redCloseLoopON=0;
-      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,
-	      who_selected);
+      sprintf(reply,"%s %s=OPEN Running open loop",who_selected,who_selected);
     }
 
-  } else if (!strcasecmp(cmd_instruction,"QCMIN")) {
+  }
+  else if (!strcasecmp(cmd_instruction,"QCMIN")) {
     GetArg(args,2,argbuf);
-    if(who_selected[0]=='B') {
+    if (who_selected[0]=='B') {
       shm_addr->MODS.blueQC_Threshold[0]=atof(argbuf);
-    } else if(who_selected[0]=='R') {
+    }
+    else if (who_selected[0]=='R') {
       shm_addr->MODS.redQC_Threshold[0]=atof(argbuf);
     }
-    sprintf(reply,"%s QCMIN_%c=%0.2f",who_selected,who_selected[0],atof(argbuf));
+    sprintf(reply,"%s QCMIN_%c=%0.3f",who_selected,who_selected[0],atof(argbuf));
 
-  } else if (!strcasecmp(cmd_instruction,"QCSAMP")) {
+  }
+  else if (!strcasecmp(cmd_instruction,"QCSAMP")) {
     GetArg(args,2,argbuf);
-    if(who_selected[0]=='B') {
+    if (who_selected[0]=='B') {
       shm_addr->MODS.blueQC_SampleRate=atoi(argbuf);
-    } else if(who_selected[0]=='R') {
+    }
+    else if (who_selected[0]=='R') {
       shm_addr->MODS.redQC_SampleRate=atoi(argbuf);
     }
     sprintf(reply,"%s QCSAMP_%c=%d",who_selected,who_selected[0],atoi(argbuf));
 
-  } else if (!strcasecmp(cmd_instruction,"GAIN")) {
+  }
+  else if (!strcasecmp(cmd_instruction,"GAIN")) {
     GetArg(args,2,argbuf);
-    if(who_selected[0]=='B') {
+    if (who_selected[0]=='B') {
       shm_addr->MODS.blueQC_Gain=atof(argbuf);
-    } else if(who_selected[0]=='R') {
+    }
+    else if (who_selected[0]=='R') {
       shm_addr->MODS.redQC_Gain=atof(argbuf);
     }
     sprintf(reply,"%s CLGAIN_%c=%0.2f",who_selected,who_selected[0],atof(argbuf));
 
-  } else if (!strcasecmp(cmd_instruction,"AVERAGE")) {
+  }
+  else if (!strcasecmp(cmd_instruction,"AVERAGE")) {
     GetArg(args,2,argbuf);
-    if(who_selected[0]=='B') {
+    if (who_selected[0]=='B') {
       shm_addr->MODS.blueQC_Samples=atoi(argbuf);
-    } else if(who_selected[0]=='R') {
+    }
+    else if (who_selected[0]=='R') {
       shm_addr->MODS.redQC_Samples=atoi(argbuf);
     }
     sprintf(reply,"%s QCNAVG_%c=%d",who_selected,who_selected[0],atoi(argbuf));
 
-  } else {
+  }
+  else {
     sprintf(reply,"%s Invalid requset '%s', Usage: cIMCS [close|open][QCMIN lev][QCSAMP msec][AVERAGE n][GAIN g]",
 	    who_selected,args);
     return CMD_ERR;
