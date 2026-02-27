@@ -12998,7 +12998,7 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
 
   if (strlen(args)<=0) {
     if (who_selected[0]=='R') {
-      sprintf(reply,"RIMCS IMCS_R=%s CLGAIN_R=%0.2f QCMIN_R=%0.3f QCSAMP_R=%d QCNAVG_R=%d TARGET_R=%s QC1_R=%0.4f QC2_R=%0.4f QC3_R=%0.4f QC4_R=%0.4f",
+      sprintf(reply,"RIMCS IMCS_R=%s CLGAIN_R=%0.2f QCMIN_R=%0.4f QCSAMP_R=%d QCNAVG_R=%d TARGET_R=%s QC1_R=%0.4f QC2_R=%0.4f QC3_R=%0.4f QC4_R=%0.4f",
 	      closeOpen==0 ? "OPEN" : "CLOSE",
 	      shm_addr->MODS.redQC_Gain,
 	      shm_addr->MODS.redQC_Threshold[0],
@@ -13011,7 +13011,7 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
 	      shm_addr->MODS.redQC_Average[3]);
     }
     else {
-      sprintf(reply,"BIMCS IMCS_B=%s CLGAIN_B=%0.2f QCMIN_B=%0.3f QCSAMP_B=%d QCNAVG_B=%d TARGET_B=%s QC1_B=%0.4f QC2_B=%0.4f QC3_B=%0.4f QC4_B=%0.4f",
+      sprintf(reply,"BIMCS IMCS_B=%s CLGAIN_B=%0.2f QCMIN_B=%0.4f QCSAMP_B=%d QCNAVG_B=%d TARGET_B=%s QC1_B=%0.4f QC2_B=%0.4f QC3_B=%0.4f QC4_B=%0.4f",
 	      closeOpen==0 ? "OPEN" : "CLOSE",
 	      shm_addr->MODS.blueQC_Gain,
 	      shm_addr->MODS.blueQC_Threshold[0],
@@ -13079,7 +13079,7 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
     else if (who_selected[0]=='R') {
       shm_addr->MODS.redQC_Threshold[0]=atof(argbuf);
     }
-    sprintf(reply,"%s QCMIN_%c=%0.3f",who_selected,who_selected[0],atof(argbuf));
+    sprintf(reply,"%s QCMIN_%c=%0.4f",who_selected,who_selected[0],atof(argbuf));
 
   }
   else if (!strcasecmp(cmd_instruction,"QCSAMP")) {
