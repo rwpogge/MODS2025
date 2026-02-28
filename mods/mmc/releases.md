@@ -1,7 +1,10 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2026 Feb 23
+Last Build: 2026 Feb 28
+
+## Version 3.2.11: 2026 Feb 28
+Minor patch following live testing with the IMCS.  Now showing `QCMIN` in full pprecision.
 
 ## Version 3.2.10: 2026 Feb 23
 Debugging odd behavior on MODS1R IMCS led to changes in the IMCS quad cell servers

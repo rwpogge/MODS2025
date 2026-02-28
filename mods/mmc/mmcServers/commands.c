@@ -13074,12 +13074,23 @@ cmd_imcs(char *args, MsgType msgtype, char *reply)
   else if (!strcasecmp(cmd_instruction,"QCMIN")) {
     GetArg(args,2,argbuf);
     if (who_selected[0]=='B') {
-      shm_addr->MODS.blueQC_Threshold[0]=atof(argbuf);
+      if (strlen(argbuf) > 0) {
+	shm_addr->MODS.blueQC_Threshold[0]=atof(argbuf);
+	sprintf(reply,"%s QCMIN_B=%0.4f",who_selected,atof(argbuf));
+      }
+      else {
+	sprintf(reply,"%s QCMIN_B=%0.4f",who_selected,shm_addr->MODS.blueQC_Threshold[0]);
+      }
     }
     else if (who_selected[0]=='R') {
-      shm_addr->MODS.redQC_Threshold[0]=atof(argbuf);
+      if (strlen(argbuf) > 0) {
+	shm_addr->MODS.redQC_Threshold[0]=atof(argbuf);
+	sprintf(reply,"%s QCMIN_R=%0.4f",who_selected,atof(argbuf));
+      }
+      else {
+	sprintf(reply,"%s QCMIN_R=%0.4f",who_selected,shm_addr->MODS.redQC_Threshold[0]);
+      }
     }
-    sprintf(reply,"%s QCMIN_%c=%0.4f",who_selected,who_selected[0],atof(argbuf));
 
   }
   else if (!strcasecmp(cmd_instruction,"QCSAMP")) {
