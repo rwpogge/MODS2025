@@ -4,7 +4,10 @@ Original Build: 2009 June 15
 Last Build: 2026 Feb 28
 
 ## Version 3.2.11: 2026 Feb 28
-Minor patch following live testing with the IMCS.  Now showing `QCMIN` in full pprecision.
+Minor patch following live testing with the IMCS in `mmc/mmcServers/commands.c`:
+ * `ximcs qcmin 0.03` now shows `qcmin_x` value in full precision
+ * `ximcs qcmin` now returns current value, before (bug) it was setting the quadcell threshold to 0.
+
 
 ## Version 3.2.10: 2026 Feb 23
 Debugging odd behavior on MODS1R IMCS led to changes in the IMCS quad cell servers
