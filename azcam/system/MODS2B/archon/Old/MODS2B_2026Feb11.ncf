@@ -590,7 +590,7 @@ RGHIGH; CALL PixelFirst(Pixels)
 X; CALL SkipPixel(PostSkipPixels)
 X; CALL Pixel(OverScanPixels)
 RGHIGH; CALL PixelFirst
-#R1HIGH; X(ST)
+R1HIGH; X(ST)
 CLAMP; CLAMP(10000)
 NOCLAMP; RETURN Line
 

@@ -1,6 +1,13 @@
 # Archon Configuration File Release Notes
 
-**Last Release: 2026 Feb 21**
+**Last Release: 2026 Mar 26**
+
+## 2026 Mar 26
+ * Commented out the `R1HIGH; X(ST)` line in the `Line:` timing script subroutine at suggestion of Mike Lesser to make sure horizontal clock phase 3 does not go high at the end of line readout and stays low during the subsequent vertical transfer.  This was what Greg Breadthauer suggested could cause the slop of charge between columns on either side of the horizontal split readout.
+
+Tested on MODS1R and MODS1B, rolled out to all.
+
+Not the final word, but much closer to final timing instructions.
 
 ## 2026 Feb 26
  * TCS headers changed to use `S_AchievedALT` and `S_AchievedAZ` and convert datum to floating point degrees (from float radians). Thi sis for LBT Archive back compatibility requested by Martinia Vicinanza (INAF)
