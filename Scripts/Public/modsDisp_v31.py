@@ -129,8 +129,8 @@ from lbto.sciops.misc import logger, slack, beep, DS9IgnoreTimeoutWithLogger
 
 # Version number and date, update as needed
 
-versNum  = '3.1.0'
-versDate = '2026-01-18'
+versNum  = '3.1.2'
+versDate = '2026-04-04'
 
 log = logger(f"modsDisp-{os.environ.get('USER','anon')}")
 
@@ -293,7 +293,8 @@ def watcherLoop():
                         except Exception as errStr:
                             print(f'*** ERROR: Cannot read FITS header of {rawFile}')
                             print(f'           Reason: {errStr!r}')
-                            log.error(f"getheader {fitsFile} exception: {errStr!r}")
+                            errMsg = f"getheader {fitsFile} exception: {errStr!r}"
+                            log.error(errMsg)
                         else:
                             imgType = hdr['imagetyp']
                             objName = hdr['object']
@@ -318,18 +319,14 @@ def watcherLoop():
                             if instID in modsList:
                                 md = modsDisp[instID]
                                 try:
-                                    # md.set(f"file {fitsFile}")
-                                    md.set(f"file {fitsFile}[{imExt}]") # is this the correct syntax (like the ds9 command line)? [rwp/osu]
-                                    # md.set(f"fits {fitsFile}[{imExt}]") # alt is use "fits" instead of "file" (also like ds9 command line) [rwp/osu]
-                                except Exception as e:
+                                    md.set(f"file {fitsFile}[{imExt}]")
+                                except Exception as errStr:
                                     print(f'*** ERROR: Cannot display image {rawFile}')
-                                    print(f'           Reason: {e!r}')
-                                    print(f'*** modsDisp must abort - please restart ***')
-                                    log.error(f'displaying {fitsFile} Exception: {e!r}')
-                                    # abort by raising a KeyboardInterrupt exception to break watchLoop() & clean up.
-                                    raise KeyboardInterrupt
+                                    print(f'           Reason: {errStr!r}')
+                                    print("           skipping...")
+                                    errMsg = f"displaying {fitsFile} Exception: {errStr!r}"
+                                    log.error(errMsg)
                                 else:
-                                    #XXX this could also raise ...
                                     md.set(*dispConfigs[dispMode]['presets']['frame'])
 
                             else:
@@ -414,10 +411,11 @@ if __name__ == '__main__':
             print(f'\nmodsDisp stop requested, cleaning up...')
             log.error("modsDisp stop requested (KeyboardInterrupt)")
             break
-        except Exception as e:
-            print(f'\nmodsDisp Exception {e!r}, cleaning up...')
-            log.error("modsDisp crashed: {e!r}")
-            slack('modsDisp', f'modsDisp crashed: {e!r}')
+        except Exception as errStr:
+            print(f'\nmodsDisp Exception {errStr!r}, cleaning up...')
+            errMsg = f"modsDisp crashed: {errStr!r}"
+            log.error(errMsg)
+            slack('modsDisp', errMsg)
             break
 
     close_all_ds9()
