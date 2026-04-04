@@ -115,6 +115,7 @@
 #
 # -------------------
 #   2026 Jan 18 - New version (3.1) for the Archon CCD controllers [rwp/osu]
+#   2026 Apr 04 - Better error handling if file cannot be found/displayed
 #
 #---------------------------------------------------------------------------
 
@@ -243,7 +244,7 @@ def start_ds9(title, timeout):
     try:
         return DS9IgnoreTimeoutWithLogger(log, **kwdsargs)
     except:
-        raise RuntimeError(f"failed to detect any ds9 window with title '{title}'") from None
+        raise RuntimeError(f"Failed to detect any ds9 window with title '{title}'") from None
 
 #----------------------------------------------------------------
 #
@@ -282,16 +283,26 @@ def watcherLoop():
                     newFile = False
 
                 if newFile:
-                    file = open(fileName,'r')
-                    rawFile = file.readline().strip()
+                    try:
+                        with open(fileName,"r") as file:
+                            rawFile = file.readline().strip()
+                    except:
+                        rawFile = ""
+
                     fitsFile = os.path.join(watchDir,rawFile)
-                    file.close()
-                    if os.path.exists(fitsFile):
+
+                    # contents of newFile must be non-zero and the full qualifed path exist to proceed.
+                    # This prevents the case where newFile is detected changed before contents are
+                    # written due to nfs latency or other de-sync issues
+                    
+                    if len(rawFile) > 0 and os.path.exists(fitsFile):
+                        
                         # We have a FITS file to read, open the header and extract info we need
+                        
                         try:
                             hdr = fits.getheader(fitsFile,ext=imExt)
                         except Exception as errStr:
-                            print(f'*** ERROR: Cannot read FITS header of {rawFile}')
+                            print(f'*** ERROR: Cannot read FITS header of {fitsFile}')
                             print(f'           Reason: {errStr!r}')
                             errMsg = f"getheader {fitsFile} exception: {errStr!r}"
                             log.error(errMsg)
@@ -323,7 +334,7 @@ def watcherLoop():
                                 except Exception as errStr:
                                     print(f'*** ERROR: Cannot display image {rawFile}')
                                     print(f'           Reason: {errStr!r}')
-                                    print("           skipping...")
+                                    print("           skipping...") # skip rather than abort
                                     errMsg = f"displaying {fitsFile} Exception: {errStr!r}"
                                     log.error(errMsg)
                                 else:
