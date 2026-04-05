@@ -291,7 +291,8 @@ MODSChannel::MODSChannel(const int &myMODS, const int &myChannel, QWidget *paren
   // Region-of-Interest Readout (defined in ccdroi.tab file)
 
   roiEntry = new SelectEntry("CCD Readout:","",this);
-  roiEntry->addItem(MODS_CCD_FORMAT,"ROI OFF");
+  // change first ROI menu entry to "Full" [rwp/osu - 2026 Apr 5]
+  roiEntry->addItem("Full","ROI OFF");
   connect(roiEntry,SIGNAL(dataReady(const QString &)),
 	  this,SLOT(ccdROI(const QString &)));
   binLayout->addWidget(roiEntry);
@@ -2025,7 +2026,9 @@ void MODSChannel::loadROITable(const QString &fileName)
   // Clear the entry widget menu, add the first entry
 
   roiEntry->clear();
-  roiEntry->addItem(MODS_CCD_FORMAT,"ROI OFF");
+  // change first ROI menu entry to "Full" [rwp/osu - 2026 Apr 5]
+  // roiEntry->addItem(MODS_CCD_FORMAT,"ROI OFF");
+  roiEntry->addItem("Full","ROI OFF");
 
   // Read in the table line-by-line, parsing as we go.  # denotes
   // comments (either whole lines or inline comments), and we skip

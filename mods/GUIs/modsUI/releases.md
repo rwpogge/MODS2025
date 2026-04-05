@@ -1,11 +1,15 @@
 # modsUI Release Notes
+
 Original Build: 2009 Feb 24
 
-**Last Build: 2026 Feb 18**
+**Last Build: 2026 Apr 05**
 
 ## Version 3 - MODS Archon and AlmaLinux Port to Qt6
 
-### VErsion 3.2.4 - 2026 Feb 18
+### Version 3.2.5 - 2026 Apr 05
+ * First, default entry in the CCD ROI menu in the dashboard is "Full" instead of "8Kx3K" (removes redundancy)
+
+### Version 3.2.4 - 2026 Feb 18
  * Make the dispatcher default "use", make sure all logic is default "true"
  * Introduce the "NO" directive as a way to explicitly turn off a feature (opposite of "USE")
 
