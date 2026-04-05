@@ -1,6 +1,11 @@
 # MODS2025 Release Notes
 
-**Last Release: 2026 Feb 23**
+**Last Release: 2026 Apr 05**
+
+## Version 1.6.12 - 2026 Apr 05
+ * Updated Archon configuration files for all 4 channels to address the bad last column readout issue.  Still provisional and tune-up still needed, but the solved the big issue
+ * Minor patch to the modsUI CCD ROI menu to address redundant entries: default first entry is now "Full", to restore full pixel readout mode (aka "roi off").
+
 
 ## Version 1.6.11 - 2026 Feb 25
 Unexpected reboot of mods1 (kernel seg-fault) exposed a few restart issues. Some changes:
