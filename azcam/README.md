@@ -19,8 +19,9 @@ moving forward.
 
 See the release notes:
  * `azcam` [Release Notes](azcam/releases.md)
- * `azcam-mods` [Release Notes](azcam-mods/releases.md)
- * `azcam-console` [Release Notes](azcam-console/releases.md) 
+ * `azcam-mods` [MODS azcam release notes](azcam-mods/releases.md)
+ * `system` [Archon Release Notes](system/releases.md)
+ * `azcam-console` [azcam console release notes](azcam-console/releases.md) 
 
 for details.
 
