@@ -1,6 +1,15 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2026 Feb 20 [rwp/osu]</b>
+<b>Last Update: 2026 Apr 12 [rwp/osu]</b>
+
+## 2026 Apr 12: modsAlign v3.3.0
+Updates from shared-risk observing during the April OSURC run
+
+ * For longslit acquisitions which now use the full 3Kx3K imaging CCD ROI, put in auto zoom (ds9: `zoom to 1` following `zoom to fit`) that zooms in on the central slit used for acquisitions. A little closer zoom than the raw 1Kx1K acquisition, but what the observers were using during an actual acquisition.  This autozoom eliminates at least 3-4 mouse clicks depending on how the user would do it before.
+ * the `-r` option now works with thru-slit confirmation images, providing correct autoscaling and computation of small correction offsets.  The only oddity is that if using a slit offset on the original mask+field acquisition longslit pair (like the usual `-y 11` to avoid the quadrant boundaries), you have to include it *first* on the command line (`modsAlign -y 11 -r mods1r.20260410.0027.fits`), otherwise it raises an exception and quits. Will fix the logic on the next iteration
+ * Restored `-v/--verbose` mode. An LBTO update for DS9 timeouts was assigning the `verbose` boolean in main to the `debug=` option for their function, which overrode the internal verbose output mode and made it damned near impossible to debug the issues described above. Definitely bad programming style to overload things without testing.
+ * Tested on-site (via vnc) with all standard and a couple of non-standard acquisition mods (longslit, std star, MOS mask, longslit refine, MOS turbo mode). 
+ * Minor code cleanup and internal docs in progress
 
 
 ## 2026 Feb 20: modsAlign v3.2.2

@@ -1,6 +1,6 @@
 # MODS observing and support scripts
 
-Latest Version: 2026 Feb 20 [rwp/osu]
+Latest Version: 2026 Apr 12 [rwp/osu]
 
 See [Release Notes](releases.md) for the current verison
 
