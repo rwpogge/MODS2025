@@ -133,12 +133,13 @@
 #   2026 Feb 17 - Updated xRef/yRef for any acq image size, if we have
 #                 a field image override maskScale for image scaling [rwp/osu]
 #   2026 Feb 20 - Fixes and enhancements from testing with live images [rwp/osu]
-#
+#   2026 Apr 12 - Fix zoom for 3x3k slit acq, and -r for thru-slit refinement
+#                 and verbose bug from LBTO DS9IgnoreTimeoutWithLogger that
+#                 changed meaning of -v/--verbose unintentionally [rwp/osu]
 #---------------------------------------------------------------------------
 
 import math
 import time
-import scipy
 import getopt
 import signal
 import os, sys
@@ -154,12 +155,12 @@ from astropy.io import fits
 
 from scipy.optimize import curve_fit
 
-from lbto.sciops.misc import logger, slack, beep, DS9IgnoreTimeoutWithLogger
+from lbto.sciops.misc import logger, DS9IgnoreTimeoutWithLogger
 
 # Version info
 
-verName = "modsAlign v3.2.2"
-verDate = "2026-02-20"
+verName = "modsAlign v3.3.0"
+verDate = "2026-04-12"
 
 log = logger(f"modsAlign-{os.environ.get('USER','anon')}")
 
@@ -1095,8 +1096,8 @@ def findCentroid(img,x0,y0,cenRad,maxiter=5,tol=0.01,verbose=False):
         raise Exception('initial centroid failed - %s' % (errStr))
 
     if verbose:
-        print("  iteration 1: X=%.3f+/-%.3f Y=%.3f+/-%.3f"  % (xCen0+1,yCen0+1,xErr,yErr))
-
+        print(f"  iteration 1: X={xCen0+1:.3f}+/-{xErr:.3f} Y={yCen0+1:.3f}+/-{yErr:.3f}")
+        
     # Iterate until convergence or maxiter
 
     for i in range(maxiter-1):
@@ -1112,7 +1113,7 @@ def findCentroid(img,x0,y0,cenRad,maxiter=5,tol=0.01,verbose=False):
         dX = xCen - xCen0
         dY = yCen - yCen0
         if verbose:
-            print("  iteration %d: X=%.3f+/-%.3f Y=%.3f+/-%.3f dX=%.3f dY=%.3f"  % (i+2,xCen+1,xErr,yCen+1,yErr,dX,dY))
+            print(f"  iteration {i+2}: X={xCen+1:.3f}+/-{xErr:.3f} Y={yCen+1:.3f}+/-{yErr:.3f} dX={dX:.3f} dY={dY:.3f}")
         dR = math.sqrt(dX*dX+dY*dY)
         if dR <= tol:
             return xCen,yCen,xErr,yErr
@@ -1122,7 +1123,7 @@ def findCentroid(img,x0,y0,cenRad,maxiter=5,tol=0.01,verbose=False):
 
     # no convergence, raise exception
 
-    raise Exception('Did not converge within %.2f pix in %d iterations' % (tol,maxiter))
+    raise Exception(f'Did not converge within {tol:.2f} pix in {maxiter} iterations')
 
 #----------------------------------------------------------------
 #
@@ -1723,7 +1724,7 @@ def selectTarget(image,d,verbose=False,cenRad=15):
     print("Commands:")
     print(f"  '{keyMarkAuto}' measure the centroid of the object nearest the cursor")
     print(f"  '{keyMarkExact}' use the current cursor XY position as the target center")
-    print(f"      (best for targets too faint to centroid)")
+    print("      (best for targets too faint to centroid)")
     print(f"  '{keyRadius}' change the target search radius [currently: %.1f pixels]" % (cenRad))
     print(f"  '{keySaveQuit}' quit selection and save choices.")
     print(f"  '{keyAbort}' abort selection and exit modsAlign")
@@ -1798,7 +1799,7 @@ def selectTarget(image,d,verbose=False,cenRad=15):
             print("\nTarget Selection Commands:")
             print(f"  '{keyMarkAuto}' measure the centroid of the object nearest the cursor")
             print(f"  '{keyMarkExact}' use the current cursor XY position as the target center")
-            print(f"      (best for targets too faint to centroid)")
+            print("      (best for targets too faint to centroid)")
             print(f"  '{keyRadius}' change the target search radius [currently %.1f pixels]" % (cenRad))
             print(f"  '{keySaveQuit}' quit selection and save choices")
             print(f"  '{keyAbort}' abort selection and exit modsAlign now")
@@ -1989,10 +1990,18 @@ def getSlitPos(d, inst, mask, useXYRef, useOffset, yOffset, swFac=3, transform=T
     # If we are using a preset reference position, use it, otherwise
     # go into interactive mode and ask to mark the desired position
 
-    if useXYRef and hasRef:
+    if useXYRef:
         # correct for image size relative to 1024x1024 [rwp/osu - 2026 Feb 17]
-        xPix = (xRef-512.0) + 0.5*naxis1
-        yPix = (yRef-512.0) + 0.5*naxis2
+        if hasRef:
+            xPix = (xRef-512.0) + 0.5*naxis1
+            yPix = (yRef-512.0) + 0.5*naxis2
+        else:
+            xsmm = 0.0
+            ysmm = inst.arcsec2mm(yOffset)
+            xPix,yPix = inst.mask2ccd(xsmm,ysmm)
+            xPix /= xBin
+            yPix /= yBin
+            
         if verbose:
             print("\nMeasuring the slit at preset position X=%.1f Y=%.1f pix..." % (xPix,yPix))
         try:
@@ -2071,7 +2080,7 @@ def getSlitPos(d, inst, mask, useXYRef, useOffset, yOffset, swFac=3, transform=T
         xSlit,ySlit = markSlit(disp)
         if len(xSlit)==0:
             print("** ERROR: No slit position marked, modsAlign aborting")
-            log.error(f"No slit position marked, modsAlign aborting")
+            log.error("No slit position marked, modsAlign aborting")
             sys.exit(1)
 
         xPix = xSlit[-1] # use the *last* position marked
@@ -2167,7 +2176,7 @@ def startDS9(ds9ID,timeout=30):
             log,
             title=ds9ID,
             timeout=timeout,
-            debug=verbose,
+            debug=debug,             # if you use verbose, it overrides internal debug output [rwp/osu]
             kill_ds9_on_exit=False,
             kill_on_exit=True,
             singleton=False,
@@ -2329,6 +2338,8 @@ haveField = False
 haveMMS = False
 maskInst = 'None'
 fieldInst = 'None'
+maskFile = 'None'
+fieldFile = 'None'
 
 for inFile in files:
     chkExt = os.path.splitext(inFile)[1]
@@ -2688,7 +2699,7 @@ if longSlit:
 # For standard star acquisition in the wide slit (useRefPos=T), there
 # are two variations:
 #   Initial Acquisition:
-#     1) Define xSlit,ySlit using the preset  reference position.
+#     1) Define xSlit,ySlit using the preset reference position.
 #     2) Display the field image, ask user to identify the standard
 #        star with the cursor and measure the star's centroid.
 #     3) Compute the offset to move the standard star to the nominal
@@ -2728,8 +2739,9 @@ if longSlit:
         if useRefPos:
             # measure the actual slit position for confirmation
             print("\nVerifying target centering in the confirmatory thru-slit image")
+            
         xSlit,ySlit,slitMed,regSlit,regCross = getSlitPos(disp,mods,mask,useRefPos,useSlitPos,ySlitPos)
-
+        
     print("  Desired slit center at X=%.2f and Y=%.2f pix (red cross)" % (xSlit,ySlit))
 
     # Step 2: Identify and measure the center of the target to move into the slit
