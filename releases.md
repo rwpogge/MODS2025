@@ -1,6 +1,10 @@
 # MODS2025 Release Notes
 
-**Last Release: 2026 Apr 05**
+**Last Release: 2026 Apr 12**
+
+## Version 1.6.13 - 2026 Apr 12
+ * released `modsAlign` version 3.3 with updates to improve the workflow acquiring using 3x3K images (auto-zoom), and got the `-r` refinement option working properly for regular thru-slit confirmation images in longslit mode (not using the specphot calibration wide slit mask).
+
 
 ## Version 1.6.12 - 2026 Apr 05
  * Updated Archon configuration files for all 4 channels to address the bad last column readout issue.  Still provisional and tune-up still needed, but the solved the big issue
