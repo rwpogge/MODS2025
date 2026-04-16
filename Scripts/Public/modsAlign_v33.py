@@ -1,142 +1,100 @@
 #!/usr/bin/env python
-#
-# python options:
-#   LBT: /usr/bin/env python (or python3)
-#   OSU: /usr/bin/env python
-#
-# modsAlign - align MODS long-slit and multi-slit masks
-#
-# Version 2 of modsAlign is a ground-up rewrite of the original
-# modsAlign program.  The final release version of old modsAlign is
-# version 1.6.3.
-#
-# This version uses separate named ds9 windows for MODS1 and MODS2 to
-# permit the execution of simultaneous instances on a single machine
-# for performing binocular mask alignment.
-#
-# The biggest change from version 1 is the removal of all of pyraf
-# except for irafdisplay() for CDL-like image interaction (i.e., 99.9%
-# pyraf-free).  This allows use of ds9's tools for changing the
-# display's intensity stretch and scaling (yay!), and eliminates the
-# requirement of marking alignment stars in an exact order (double
-# yay!).  The result is a simplified work flow that makes modsAlign v2
-# very fast and less susceptable to time-wasting mistakes.  This is
-# crucial for efficient binocular operation where the observers need
-# to juggle two mask alignments at the same time.
-#
-# Other features new to version 2:
-#
-#   Flexible command-line parsing so that precise order of file names
-#   on the command line is no longer fixed. It uses a combination of
-#   the file extension and the contents of the FITS headers (as
-#   needed) to distinguish between the mask, field, and MMS files.
-#
-#   A simple yet robust automatic star finding algorithm for MOS
-#   alignment that tries to find the nearest bright object to each
-#   alignment box.  Users can expand the search radius around each box
-#   with the --sw (search window multipler) option, but with the
-#   expected problem that a wider search area reduces the robustness,
-#   especially in low-latitude fields.  An interactive editing mode
-#   lets you correct or delete bad alignment star selections by the
-#   autofinder.
-#
-#   The MOS mask alignment parameters (dX, dY, dRot) are computed by
-#   using an affine transform implemented in numpy.linalg, completely
-#   bypassing IRAF geomap and its discontents.  By getting rid of both
-#   imexam and geomap, this version completely eliminates the need for
-#   the various auxiliary ASCII text files created by IRAF that
-#   cluttered up the place when running the original modsAlign.
-#
-#   Implements a simple iterative fit facility (e.g., --maxiter 5
-#   --reject 2) to allow the system to reject outliers/bad stars, it
-#   is generally less useful than you might think as the number of
-#   alignment boxes gets smaller.  Default is no iterations, as
-#   generally this isn't needed, and with the usual small number of
-#   alignment boxes, iteration is less robust (as you'd expect).
-#
-#   Do you feel lucky?  Try "--turbo" mode.  It'll change your life,
-#   but like life it offers no guarantees.  Surprisingly robust in
-#   most cases...  But, it is only implemented for MOS mask alignment
-#   as there is no sensible way to implement turbo mode for long-slit
-#   or calibration slit alignment.
-#
-#   ds9path is defined to allow use of a "safe" verified version of
-#   ds9.  There are some known bugs in past versions of ds9 that can
-#   cause problems with the pyraf irafdisplay interaction.  If ds9path
-#   is set to "", then whatever the default ds9 in the standard
-#   executable path is used.
-#
-#   MODS instrument/channel parameters and conversion methods (e.g.,
-#   pixels to arcsec) are defined in a new modsInst class to contain
-#   the various data and convenience methods.
-#
-# Environment:
-#   MODS_IMGDIR - default directory for raw images (e.g., /newdata)
-#   MODS_MMSDIR - default directory for MMS files (e.g., ./)
-#
-#   If these are undefined, the default raw image and MMS file paths
-#   are the current working directory (./).
-#
-# Author:
-#   Rick Pogge (OSU Astronomy Dept).
-#   pogge.1@osu.edu
-#
-# Modification History:
-#   2016 Dec 03 - First alpha release version 2 for LBTO, based on the
-#                 mosAlign concept testbed [rwp/osu]
-#   2016 Dec 05 - Iterations based on LBTO comments, addressing
-#                 various bugs and missing features. [rwp/osu]
-#   2016 Dec 06 - Advanced to beta, more bug squashing, refinement of target
-#                 identification and response to comments from Olga
-#                 Kuhn doing beta testing at LBTO [rwp/osu]
-#   2016 Dec 07 - Introduced iterative centroid fitting, encapsulating
-#                 all Gaussian Marginal-Sum centroid calculation in a
-#                 function named findCentroid(), removing all
-#                 gmsCentroid() calls from main. Iterative centroid
-#                 makes for more robust star and target centroids
-#                 [rwp/osu]
-#   2016 Dec 08 - Auto-centering alignment boxes immediately for
-#                 initial and interactive box selection. Moving some
-#                 verbose output to debug mode and taking down
-#                 beta-test scaffolding preparatory to release to
-#                 observers [rwp/osu]
-#   2016 Dec 12 - fixed bug in manual box selection introduced by
-#                 re-organization from the previous version [rwp/osu]
-#   2016 Dec 15 - added try/except for ds9 instance connection, as if
-#                 some other user has a ds9 instance with the same name
-#                 running it raises an exception [rwp/osu]
-#   2016 Dec 20 - First LBTO release ready for night-time use [rwp/osu]
-#   2016 Dec 21 - Added function to flag if a star or box marked in
-#                 the interactive selection routines is already
-#                 selected to avoid duplicates (e.g., accidentally
-#                 marking an alignment box more than once) [rwp/osu]
-#   2016 Dec 22 - Added drawing of the nominal wide slit position on
-#                 top of the field image in -r mode at request of
-#                 O. Kuhn, restoring a feature from V1 inadvertently
-#                 omitted during V2 development [rwp/osu]
-#   2016 Dec 29 - Refined the automatic long-slit centering algorithm
-#                 in response to problems in field testing (tolerances
-#                 for the finder were too tight, causing it to just
-#                 miss the slit in some cases).  [rwp/osu]
-#   2018 May 23 - Experimental support for an offset snap-n-shuffle (sns)
-#                 slit mask [rwp/osu]
-#   2018 Sep 13 - Added --slit option to use a named slit in a MOS
-#                 mask as the acquisition slit [rwp/osu]
-#   2024 Nov 30 - Fixed a small bug with the --slit option that was 
-#                 discovered when it was run on a mask with no boxes [opk/lbto]
-#   2024 Dec 24 - Updated to astropy-samp-ds9 [mdcb/lbto]
-#
-# ---- Archon controller version ----
-#
-#   2026 Jan 18 - Updates for the MODS Archon controllers - see notes [rwp/osu]
-#   2026 Jan 20 - Updates from live testing [rwp/osu]
-#   2026 Feb 17 - Updated xRef/yRef for any acq image size, if we have
-#                 a field image override maskScale for image scaling [rwp/osu]
-#   2026 Feb 20 - Fixes and enhancements from testing with live images [rwp/osu]
-#   2026 Apr 12 - Fix zoom for 3x3k slit acq, and -r for thru-slit refinement
-#                 and verbose bug from LBTO DS9IgnoreTimeoutWithLogger that
-#                 changed meaning of -v/--verbose unintentionally [rwp/osu]
-#---------------------------------------------------------------------------
+
+'''
+modsAlign - align MODS long-slit and multi-slit masks
+
+Overview
+--------
+
+Version 3 of modsAlign is a major update for MODS data taken
+with the Archon CCD controllers.
+
+This version uses separate named ds9 windows for MODS1 and MODS2 to
+permit the execution of simultaneous instances on a single machine
+for performing binocular mask alignment.
+
+The biggest change from version 1 is the removal of all of pyraf
+except for irafdisplay() for CDL-like image interaction (i.e., 99.9%
+pyraf-free).  This allows use of ds9's tools for changing the
+display's intensity stretch and scaling (yay!), and eliminates the
+requirement of marking alignment stars in an exact order (double
+yay!).  The result is a simplified work flow that makes modsAlign v2
+very fast and less susceptable to time-wasting mistakes.  This is
+crucial for efficient binocular operation where the observers need
+to juggle two mask alignments at the same time.
+
+Environment
+-----------
+  MODS_IMGDIR - default directory for raw images (e.g., /newdata)
+  MODS_MMSDIR - default directory for MMS files (e.g., ./)
+
+  If these are undefined, the default raw image and MMS file paths
+  are the current working directory (./).
+
+Author
+------
+  Rick Pogge (OSU Astronomy Dept).
+  pogge.1@osu.edu
+
+Modification History
+--------------------
+  2016 Dec 03 - First alpha release version 2 for LBTO, based on the
+                mosAlign concept testbed [rwp/osu]
+  2016 Dec 05 - Iterations based on LBTO comments, addressing
+                various bugs and missing features. [rwp/osu]
+  2016 Dec 06 - Advanced to beta, more bug squashing, refinement of target
+                identification and response to comments from Olga
+                Kuhn doing beta testing at LBTO [rwp/osu]
+  2016 Dec 07 - Introduced iterative centroid fitting, encapsulating
+                all Gaussian Marginal-Sum centroid calculation in a
+                function named findCentroid(), removing all
+                gmsCentroid() calls from main. Iterative centroid
+                makes for more robust star and target centroids
+                [rwp/osu]
+  2016 Dec 08 - Auto-centering alignment boxes immediately for
+                initial and interactive box selection. Moving some
+                verbose output to debug mode and taking down
+                beta-test scaffolding preparatory to release to
+                observers [rwp/osu]
+  2016 Dec 12 - fixed bug in manual box selection introduced by
+                re-organization from the previous version [rwp/osu]
+  2016 Dec 15 - added try/except for ds9 instance connection, as if
+                some other user has a ds9 instance with the same name
+                running it raises an exception [rwp/osu]
+  2016 Dec 20 - First LBTO release ready for night-time use [rwp/osu]
+  2016 Dec 21 - Added function to flag if a star or box marked in
+                the interactive selection routines is already
+                selected to avoid duplicates (e.g., accidentally
+                marking an alignment box more than once) [rwp/osu]
+  2016 Dec 22 - Added drawing of the nominal wide slit position on
+                top of the field image in -r mode at request of
+                O. Kuhn, restoring a feature from V1 inadvertently
+                omitted during V2 development [rwp/osu]
+  2016 Dec 29 - Refined the automatic long-slit centering algorithm
+                in response to problems in field testing (tolerances
+                for the finder were too tight, causing it to just
+                miss the slit in some cases).  [rwp/osu]
+  2018 May 23 - Experimental support for an offset snap-n-shuffle (sns)
+                slit mask [rwp/osu]
+  2018 Sep 13 - Added --slit option to use a named slit in a MOS
+                mask as the acquisition slit [rwp/osu]
+  2024 Nov 30 - Fixed a small bug with the --slit option that was 
+                discovered when it was run on a mask with no boxes [opk/lbto]
+  2024 Dec 24 - Updated to astropy-samp-ds9 [mdcb/lbto]
+
+Archon Controller History
+-------------------------
+  2026 Jan 18 - Updates for the MODS Archon controllers - see notes [rwp/osu]
+  2026 Jan 20 - Updates from live testing [rwp/osu]
+  2026 Feb 17 - Updated xRef/yRef for any acq image size, if we have
+                a field image override maskScale for image scaling [rwp/osu]
+  2026 Feb 20 - Fixes and enhancements from testing with live images [rwp/osu]
+  2026 Apr 12 - Fix zoom for 3x3k slit acq, and -r for thru-slit refinement
+                and verbose bug from LBTO DS9IgnoreTimeoutWithLogger that
+                changed meaning of -v/--verbose unintentionally [rwp/osu]
+  2026 Apr 15 - fixed bug in thru-slit image autoscaling [rwp/osu]
+
+'''
 
 import math
 import time
@@ -159,8 +117,8 @@ from lbto.sciops.misc import logger, DS9IgnoreTimeoutWithLogger
 
 # Version info
 
-verName = "modsAlign v3.3.0"
-verDate = "2026-04-12"
+verName = "modsAlign v3.3.1"
+verDate = "2026-04-15"
 
 log = logger(f"modsAlign-{os.environ.get('USER','anon')}")
 
@@ -944,7 +902,7 @@ def smsBisector(image,x,y,xWid,yWid,axis='both',clipStars=True,wfac=1,verbose=Fa
         x1=int(x-xhw)
         x2=int(x+xhw)
         bkgMed = np.median(image[y1:y2,x1:x2])
-        bkgSig = math.sqrt(bkgMed)
+        bkgSig = math.sqrt(np.fabs(bkgMed))
         thresh = bkgMed + 2*bkgSig
         if np.any(subImg>thresh):
             subImg[subImg>thresh] = bkgMed
@@ -1134,7 +1092,7 @@ def findCentroid(img,x0,y0,cenRad,maxiter=5,tol=0.01,verbose=False):
 
 def medImgScale(image,gain=1.0,fac=1.0):
     med = np.median(image)
-    sig = math.sqrt(med/gain)   # Poisson "sigma" modulo e-/ADU gain
+    sig = math.sqrt(np.fabs(med/gain))   # Poisson "sigma" modulo e-/ADU gain
     zMin = med - 5.0*sig
     zMax = med + (fac*10.0*sig)
 
@@ -1297,7 +1255,7 @@ def medSlitScale(image,instID,sWid,sLen,x0=0.0,y0=0.0,xBin=1,yBin=1,dx=0.0,dy=0.
     # compute relevant stats in the slit box
     
     med = np.median(image[sr:er,sc:ec])
-    sig = math.sqrt(med/gain)   # Poisson "sigma" modulo e-/ADU gain
+    sig = math.sqrt(np.fabs(med/gain))   # Poisson "sigma" modulo e-/ADU gain
     zMin = med - 5.0*sig
     zMax = med + (fac*10.0*sig)
 
