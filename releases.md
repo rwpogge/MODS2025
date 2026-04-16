@@ -1,6 +1,10 @@
 # MODS2025 Release Notes
 
-**Last Release: 2026 Apr 12**
+**Last Release: 2026 Apr 15**
+
+## Version 1.6.14 - 2026 Apr 15
+ * Patch to `modsAlign` to fix an autoscaling bug.
+
 
 ## Version 1.6.13 - 2026 Apr 12
  * released `modsAlign` version 3.3 with updates to improve the workflow acquiring using 3x3K images (auto-zoom), and got the `-r` refinement option working properly for regular thru-slit confirmation images in longslit mode (not using the specphot calibration wide slit mask).

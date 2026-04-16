@@ -1,6 +1,11 @@
 # mods Scripts Release Notes
 
-<b>Last Update: 2026 Apr 12 [rwp/osu]</b>
+<b>Last Update: 2026 Apr 15 [rwp/osu]</b>
+
+## 2026 Apr 15: modsAlign v3.3.1
+Updates from live testing
+ * Bug in the autoscaling code for slits when short exposures lead to low signal levels in bias-subtracted images. Fixed by computing the Poisson estimated noise with the absolute value of the median signal level to avoid taking the square root of a negative number.  Tested and released.
+
 
 ## 2026 Apr 12: modsAlign v3.3.0
 Updates from shared-risk observing during the April OSURC run
