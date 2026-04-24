@@ -1,8 +1,12 @@
 # dataMan Release Notes
 
-**Latest Version: v1.2.2, 2026 Jan 25**
+**Latest Version: v1.2.3, 2026 Apr 24**
 
 ## Released Versions (v1.0 and later)
+
+### 2026 Apr 24 - v1.2.3
+LBTO Archive is complaining that they can't process `IMAGETYP` header cards if the values are lowercase. Really? Whatever.  Added to the `fixMisc()` method.
+
 
 ### 2026 Jan 25 - v1.2.2
 LBT uses UTC date for all files in the Archive, so changed `obsDate()` to be the same as we use in `azcam-mods` in the `MODS` class definition.

@@ -37,6 +37,7 @@ Modification History
  * 2026 Jan 14 - added fixMisc() method with other header issues from live testing [rwp/osu]
  * 2026 Jan 20 - additions to fixMisc() following ECD time and archive review [rwp/osu]
  * 2026 Jan 25 - changed obsDate() to be the LBTO UTC-style obsDate algorithm [rwp/osu]
+ * 2026 Apr 24 - LBTO Archive wants IMAGETYP to always be uppercase, whatever [rwp/osu]
  
 '''
 
@@ -428,6 +429,7 @@ def fixMisc(hdu):
      * add OBJ/GUI keywords EQUIN, RADEC, and EPOCH not in DD
      * add GUINAME='None' as placeholder for datum not in DD
      * fix blank non-sidereal header keywords for Archive format compliance
+     * LBTO archive requires IMAGETYP values to be upper case
      
     the list is getting bigger, we may split off subsets later.
      
@@ -532,6 +534,16 @@ def fixMisc(hdu):
     except:
         hdu[0].header["NSTYPE"] = ("None","Non-sidereal target type")
         hdu[0].header["NSEPHFIL"] = ("None","Non-sidereal ephemeris file name")
+        
+    # LBTO Archive complains that it cannot handle IMAGETYP values that are
+    # not uppercase. Case-sensitive string comparison for a function-critical
+    # application is sloppy programming 101, but whatever.
+    
+    try:
+        imgType = hdu[0].header["IMAGETYP"].upper()
+        hdu[0].header["IMAGETYP"] = (imgType,"Image type")
+    except:
+        pass
         
     # Other stuff goes here
     
