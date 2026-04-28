@@ -1,6 +1,13 @@
 # MODS2025 Release Notes
 
-**Last Release: 2026 Apr 15**
+**Last Release: 2026 Apr 28**
+
+
+## Version 1.6.15 - 2026 Apr 28
+ * Added code to `dataMan.py` to make sure `IMAGETYP` keyword values are upper case for the LBTO Archive (which can only interpret if uppercase)
+ * Modified `execMODS.pl` to insert a brief pause before executing `GO` and `DGO` commands to make sure instrument state info is synced with the DD via `modsDD`
+ * Modified `acqMODS.pl` to implement the pre-GO pause the same as `execMODS.pl`
+
 
 ## Version 1.6.14 - 2026 Apr 15
  * Patch to `modsAlign` to fix an autoscaling bug.
