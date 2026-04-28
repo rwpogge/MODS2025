@@ -148,6 +148,9 @@
 #   2026 Jan 18 - Updates from Archon MODS live testing [rwp/osu]
 #   2026 Jan 22 - Strip = from any command string (Archon interface
 #                 issue) [rwp/osu]
+#   2026 Apr 28 - Add SSLEEP (silent sleep) from acqMODS, and introduce
+#                 3s silent sleep before GO/DGO for DD sync as a temporary
+#                 fix until we solve the DD/modsDD sync issue [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -166,8 +169,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - dates in ISO8601 format, please.
 
-$verNum  = "v2.5.3-bino";
-$verDate = "2026-01-22";
+$verNum  = "v2.5.4-bino";
+$verDate = "2026-04-28";
 
 # Make sure text reverts to normal on using color
 
@@ -447,8 +450,14 @@ while (<MSC>) {
 	    }
 
 	    # GO and DGO do not use timeouts
-
+	    #
+	    # Temporary: add 3 sec silent sleep before go for DD sync catch-up [rwp/osu]
+	    #
+	    
 	    elsif ($cmdWord eq "dgo" || $cmdWord eq "go"  || $cmdArg eq "go") {
+		$cmd[$numCmd] = "ssleep 3";
+		$cmdTO[$numCmd] = $shortTO;
+		$numCmd++;
 		$cmd[$numCmd] = simplify($cmdStr);
 		$cmdTO[$numCmd] = 0;  
 		$numCmd++;
@@ -721,6 +730,16 @@ while ($execGo) {
 	    }
 	    printf "%c[2K",27;
 	    print CYAN "** Sleep done\n\n";
+	}
+	$iCmd++;
+    }
+
+    # SSLEEP - silently sleep for a specified time in seconds during script execution.
+
+    elsif ($cmdWord eq "ssleep") {
+	$sleepTime = $cmdBits[1];
+	if ($sleepTime > 0) {
+	    sleep $sleepTime;
 	}
 	$iCmd++;
     }

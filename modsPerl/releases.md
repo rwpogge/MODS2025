@@ -1,6 +1,16 @@
 # modsPerl Release Notes
 
-<b>Last Update: 2026 Feb 19 [rwp/osu]</b>
+<b>Last Update: 2026 Apr 28 [rwp/osu]</b>
+
+
+## 2026 Apr 28
+
+### `execMODS.pl`
+ * Added `SSLEEP` (silent sleep) command from `acqMODS.pl`
+ * Temporarily executing a 3s silent sleep before GO/DGO to allow DD/modsDD sync catch-up until we can find a more permanent background solution to syncing shmem with the DD 
+
+### `acqMODS.pl`
+ * re-arranged the 3s silent sleep before ACQGO/SLITGO to match what we do in `execMODS` more closely
 
 
 ## 2026 Feb 19

@@ -127,10 +127,11 @@
 #                 issues associated with mask operations [rwp/osu]
 #   2026 Jan 22 - Strip = from any command string (Archon interface
 #                 issue) [rwp/osu]
-#   2026 Feb 19 - 1Kx1K ROI is too fast, defaulting to 3Kx3K, and
+#   2026 Feb 20 - 1Kx1K ROI is too fast, defaulting to 3Kx3K, and
 #                 for now override script request. 3K is 11s readout
 #                 vs 1K reaodut 7s due to irreducible overheads of ~5s,
 #                 so 3K is worth it [rwp/osu]
+#   2026 Apr 28 - Minor updates from live testing [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -149,8 +150,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - date in ISO8601 format
 
-$verNum  = "v2.5.4-bino";
-$verDate = "2026-02-19";
+$verNum  = "v2.6.1-bino";
+$verDate = "2026-04-28";
 
 # Make sure text reverts to normal on using color
 
@@ -168,6 +169,10 @@ $Term::ANSIColor::AUTORESET = 1;
 # If cmdRetry is 1, prompt for abort/retry/ignore on errors
 
 $cmdRetry = 1; 
+
+# Default acquisition image subframe readout region-of-interest
+
+$acqROI = '3Kx3K'; # defined 2026 Feb 20 [rwp/osu]
 
 # Command option defaults
 
@@ -187,6 +192,7 @@ $useMODS1 = ''; # Use MODS1
 $useMODS2 = ''; # Use MODS2
 
 $binoACQ = ''; # Binocular acquisition
+
 
 # Get the options from the command line
 
@@ -577,6 +583,12 @@ while (<MSC>) {
 		$cmdTO[$numCmd] = $shortTO;
 		$numCmd++;
 
+		# Make sure the readout ROI is set to the default ROI ($acqROI)
+
+		$cmd[$numCmd] = "$acqCamera roi $acqROI";
+		$cmdTO[$numCmd] = $shortTO;
+		$numCmd++;
+		
 	    }
 
 	    # ACQFilter - specify the camera filter for acquisition imaging
@@ -636,24 +648,30 @@ while (<MSC>) {
 	    # ACQROI - specify the CCD region-of-interest (ROI) readout mode for
             #          acquisition imaging
 	    #          Alias: ROI
+	    # With version 2.6, we fix the acquisition ROI to 3Kx3K. For backwards
+	    # compatibility, we ignore aqroi and roi commands
 
 	    elsif ($cmdWord eq "acqroi" || $cmdWord eq "roi") {
-		if (length($cmdArg)==0) {
-		    print RED "** ERROR at line $numLines - no $cmdWord specified for $lineBits[0]\n";
-		    print     "     $cmdWord requires a CCD region-of-interest (ROI) mode.\n";
-		    print     "     acqMODS aborting\n";
-		    &binoExit(1);
-		}
-		if (length($acqCamera)==0) {
-		    print RED "** ERROR at line $numLines - no Camera (ACQCamera) specified for $lineBits[0]\n";
-		    print "         ACQCamera must preceed all other ACQxxx commands in the script\n";
-		    print "         acqMODS aborting\n";
-		    &binoExit(1);
-		}
+		$acqROI = '3Kx3K';
+		#
+		# do nothing in version 2.6 and later
+		#
+		#if (length($cmdArg)==0) {
+		#    print RED "** ERROR at line $numLines - no $cmdWord specified for $lineBits[0]\n";
+		#    print     "     $cmdWord requires a CCD region-of-interest (ROI) mode.\n";
+		#    print     "     acqMODS aborting\n";
+		#    &binoExit(1);
+		#}
+		#if (length($acqCamera)==0) {
+		#    print RED "** ERROR at line $numLines - no Camera (ACQCamera) specified for $lineBits[0]\n";
+		#    print "         ACQCamera must preceed all other ACQxxx commands in the script\n";
+		#    print "         acqMODS aborting\n";
+		#    &binoExit(1);
+		#}
 		# $cmd[$numCmd] = "$acqCamera roi $cmdArg";
-		$cmd[$numCmd] = "$acqCamera roi 3Kx3K"; # defaulting to 3Kx3K as of 2026 Feb 19
-		$cmdTO[$numCmd] = $shortTO;
-		$numCmd++;
+		#$cmd[$numCmd] = "$acqCamera roi 3Kx3K"; # defaulting to 3Kx3K as of 2026 Feb 19
+		#$cmdTO[$numCmd] = $shortTO;
+		#$numCmd++;
 	    }
 
 	    # SLITMASK - select the slitmask to use. If ACQMode=Imaging, the mask
@@ -707,11 +725,11 @@ while (<MSC>) {
 		    $cmd[$numCmd] = "slitmask out";
 		    $cmdTO[$numCmd] = $shortTO;
 		    $numCmd++;
-		    # insert a 3-second silent sleep following slitmask [rwp/osu]
-		    $cmd[$numCmd] = "ssleep 3";
-		    $cmdTO[$numCmd] = $shortTO;
-		    $numCmd++;
 		}
+		# insert a 3-second silent sleep before go for DD sync catch-up [rwp/osu]
+		$cmd[$numCmd] = "ssleep 3";
+		$cmdTO[$numCmd] = $shortTO;
+		$numCmd++;
 		$cmd[$numCmd] = "go";
 		$cmdTO[$numCmd] = $baseTO;
 		$numCmd++;
@@ -734,7 +752,7 @@ while (<MSC>) {
 		$cmd[$numCmd] = "slitmask in";
 		$cmdTO[$numCmd] = $shortTO;
 		$numCmd++;
-		# insert a 3-second silent sleep following slitmask [rwp/osu]
+		# insert a 3-second silent sleep before go for DD sync catch-up [rwp/osu]
 		$cmd[$numCmd] = "ssleep 3";
 		$cmdTO[$numCmd] = $shortTO;
 		$numCmd++;
