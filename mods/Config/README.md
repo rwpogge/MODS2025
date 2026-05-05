@@ -1,6 +1,6 @@
 # MODS runtime configuration files
 
-Last Update: 2026 Feb 01 [rwp/osu]
+Last Update: 2026 May 05 [rwp/osu]
 
 This directory contains the active runtime configuration files
 for the MODS instrument control programs.  These are the
