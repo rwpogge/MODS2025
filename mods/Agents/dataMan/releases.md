@@ -1,8 +1,15 @@
 # dataMan Release Notes
 
-**Latest Version: v1.2.3, 2026 Apr 24**
+**Latest Version: v1.2.4, 2026 May 12**
 
 ## Released Versions (v1.0 and later)
+
+
+### 2026 May 12 - v1.2.4
+Changes for FITS headers from early shared-risk parnter observing with MODS1
+ * `NEXTEND` is returned incorrectly by azcam, but since it is formally undefined under the NOST FITS standard and has no consistent definition, best to just delete it than try to fix it (no standard to fix it to).
+ * `NONSIDER` is returned by the telescope Data Dictionary as integer 1/0 because the DD has no boolean type. We convert integer 1/0 to boolean T/F in the archived header.
+
 
 ### 2026 Apr 24 - v1.2.3
 LBTO Archive is complaining that they can't process `IMAGETYP` header cards if the values are lowercase. Really? Whatever.  Added to the `fixMisc()` method.

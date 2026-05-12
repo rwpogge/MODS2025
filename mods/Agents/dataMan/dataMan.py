@@ -38,7 +38,8 @@ Modification History
  * 2026 Jan 20 - additions to fixMisc() following ECD time and archive review [rwp/osu]
  * 2026 Jan 25 - changed obsDate() to be the LBTO UTC-style obsDate algorithm [rwp/osu]
  * 2026 Apr 24 - LBTO Archive wants IMAGETYP to always be uppercase, whatever [rwp/osu]
- 
+ * 2026 May 12 - header tweaks from shared-risk partner observing [rwp/osu]
+
 '''
 
 import os
@@ -430,6 +431,8 @@ def fixMisc(hdu):
      * add GUINAME='None' as placeholder for datum not in DD
      * fix blank non-sidereal header keywords for Archive format compliance
      * LBTO archive requires IMAGETYP values to be upper case
+     * Remove the NEXTEND keyword (non-standard and poorly defined)
+     * Change NONSIDER boolean from 1/0 to T/F (DD has no boolean type)
      
     the list is getting bigger, we may split off subsets later.
      
@@ -457,7 +460,7 @@ def fixMisc(hdu):
         hdu[0].header["ZD"] = (-99.99,"Zenith distance at start of obs [deg]")
 
     # LBTWLINK is returned by the DD as a 1/0 boolean, old MODS translated to Up/Down
-    
+
     try:
         lbtWLink = int(hdu[0].header["LBTWLINK"])
         if (lbtWLink == 1):
@@ -534,7 +537,26 @@ def fixMisc(hdu):
     except:
         hdu[0].header["NSTYPE"] = ("None","Non-sidereal target type")
         hdu[0].header["NSEPHFIL"] = ("None","Non-sidereal ephemeris file name")
-        
+
+    # NONSIDER is returned by the DD as integer 1/0, convert to
+    # boolean True/False if present
+
+    try:
+        if hdu[0].header["NONSIDER"]:
+            hdu[0].header["NONSIDER"] = (True,"Target is non-sidereal")
+        else:
+            hdu[0].header["NONSIDER"] = (False,"Target is non-sidereal")
+    except:
+        pass
+
+    # azcam uses NEXTEND inconsisently, but since it is not defined in
+    # the NOST FITS standard, remove if present
+
+    try:
+        del hdu[0].header["NEXTEND"]
+    except:
+        pass
+    
     # LBTO Archive complains that it cannot handle IMAGETYP values that are
     # not uppercase. Case-sensitive string comparison for a function-critical
     # application is sloppy programming 101, but whatever.
