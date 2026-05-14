@@ -6,7 +6,7 @@ from time import sleep
 
 # Version info
 
-version = "igTTY v1.0.3 [2026 May 14]"
+version = "igTTY v1.0.4 [2026 May 14]"
 
 # globals
 
@@ -161,9 +161,9 @@ def initIonSocket(address, port, timeout="None",twait=0.5):
     try:
         ionSocket.connect((address, port))
         sleep(twait)
-    except socket.error:
+    except socket.error as err:
         ionSocket.close()
-        raise Exception("Could not connect to ion-gauge.")
+        raise Exception(f"Cannot connect to ion gauge - {err}")
 
     # wait before sending for socket to open
     
@@ -174,7 +174,7 @@ def initIonSocket(address, port, timeout="None",twait=0.5):
         sendIonCommand(ionSocket, "#05VER\r")
     except Exception as err:
         ionSocket.close()
-        raise Exception(f"IG socket I/O error - {err}")
+        raise Exception(f"Cannot send command - {err}")
     
     # Return the connected socket file descriptor
     
@@ -222,8 +222,7 @@ try:
     ionSock.close()
     
 except Exception as err:
-    print(f"Error: cannot connect - {err}")
-    ionSock.close()
+    print(f"ERROR: {err}")
     sys.exit(1)
 
 # Command prompt. Expects valid Micro-Ion Plus gauge RS485 command
