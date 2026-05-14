@@ -181,6 +181,7 @@ elif len(sys.argv) == 2:
     if modsID in modsIDs:
         igHost = modsIPs[modsID]
         igPort = modsPort
+        promptStr = f"{modsID}> "
     else:
         print(f"Error: unrecognized MODS instance {modsID}, must be one of {modsIDs}")
         Usage()
@@ -188,6 +189,7 @@ elif len(sys.argv) == 2:
 else:
     igHost = sys.argv[1]
     igPort = sys.argv[2]
+    promptStr = "IG> "
 
 # try to initialize the ion-gauge socket connection
 
@@ -214,11 +216,10 @@ except Exception as err:
 # if quit, closes socket and exits
     
 while(1):
-    cmdStr = input(">>> ")
-    cmdBits = cmdStr.split(" ")
+    cmdStr = input(promptStr)
     
-    if len(cmdBits) > 0:
-        cmdWord = cmdBits[0]
+    if len(cmdStr) > 0:
+        cmdWord = cmdStr.split(" ")[0]
     else:
         cmdWord = "none"
         
@@ -266,6 +267,7 @@ while(1):
                 igHost = modsIPs[modsID]
                 igPort = modsPort
                 print(f"Connecting to {modsID} ion gauge on {igHost}:{igPort}")
+                promptStr = f"{modsID}> "
             else:
                 print(f"Error: invalid MODS instance {newMODS}, must be one of {modsIDs}")
         elif len(bits) == 3: 
@@ -274,6 +276,7 @@ while(1):
                 modsID = ""
                 igPort = int(bits[2])
                 igHost = bits[1]
+                promptStr = "IG> "
                 print(f"Connecting to ion gauge on {igHost}:{igPort}")
             except:
                 print(f"ERROR: port ID must be an integer, gave {bits[2]}")
@@ -300,10 +303,10 @@ while(1):
         try:
             ionSock = initIonSocket(igHost,igPort,TIMEOUT)
             data = sendIonCommand(ionSock,igCmd)
-            print(f"IG> {data.strip()}")
+            print(f"{data.strip()}")
             ionSock.close()
         except Exception as err:
-            print(f"IG> ERROR: {err}")
+            print(f"ERROR: {err}")
             ionSock.close()
 
 
