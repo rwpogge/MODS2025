@@ -4,6 +4,10 @@ import socket
 
 from time import sleep
 
+# Version info
+
+version = "igTTY v1.0.3 [2026 May 14]"
+
 # globals
 
 modsIDs = ["MODS1B","MODS1R","MODS2B","MODS2R"]
@@ -21,6 +25,15 @@ ttyChan = 5 # MODS ion gauges are configured for RS485 channel 5
 
 MESSAGE_SIZE = 16 # maximum length string returned by ion gauge
 TIMEOUT = 5 # maximum time to wait before aborting socket I/O
+
+# status returned by read ion gauge read commands
+
+statusID = {"IGS":"Gauge Power",
+            "KBS":"Keyboard Lock",
+            "RD":"Pressure",
+            "RE":"Emission Current",
+            "RF":"Filament",
+            "RS":"Module"}
 
 # -----------------------------------
 
@@ -49,13 +62,14 @@ def showHelp():
 
     '''
     print("\nigTTY commands:")
-    print("   quit - disconnect and end session")
-    print("   help - this message")
-    print("   connect [modsID|ipAddr ipPort] - change ion gauge connection")
-    print("   chan [N] - change RS485 channel")
-    print("   info - show igTTY status")
+    print("  quit - disconnect and end session")
+    print("  help - this message")
+    print("  connect [modsID|ipAddr ipPort] - change ion gauge connection")
+    print("  chan [N] - change RS485 channel")
+    print("  info - show igTTY status")
+    print("  status - gauge status")
     print(" ")
-    print("RS-485 Commands:")
+    print("Ion gauge commands:")
     print("  IGS - read gauge status")
     print("  KBS - read keyboard lock/unlock status")
     print("   RD - read vacuum pressure (torr)")
@@ -196,9 +210,9 @@ else:
 try:
     ionSock = initIonSocket(igHost,igPort,TIMEOUT)
     if len(modsID) == 0:
-        print(f"Connected to ion gauge on {igHost}:{igPort} on RS485 channel {ttyChan}")
+        print(f"\nConnected to ion gauge on {igHost}:{igPort} on RS485 channel {ttyChan}")
     else:
-        print(f"Connected to {modsID} ion gauge on {igHost}:{igPort} RS485 channel {ttyChan}")
+        print(f"\nConnected to {modsID} ion gauge on {igHost}:{igPort} RS485 channel {ttyChan}")
     igCmd = f"#{ttyChan:02d}VER\r"
     data = sendIonCommand(ionSock,igCmd)
     bits = data.strip().split(" ")
@@ -283,18 +297,42 @@ while(1):
             
         else:
             print(f"ERROR: unrecognized open directive '{cmdStr}'")
-           
+
+    # current connection info
+    
     elif cmdWord == "info":
+        print(f"\n{version}")
         if len(modsID) == 0:
             print(f"Connected to ion gauge on {igHost}:{igPort} RS485 channel {ttyChan}")
         else:
             print(f"Connected to {modsID} ion gauge on {igHost}:{igPort} RS485 channel {ttyChan}")
-        
+        print("")
+
+    # Status summary
+    
+    elif cmdWord == "status":
+        for statCmd in ["IGS","RD","RF","RE","RS","KBS"]:
+            sleep(1.5) # pause between commands 
+            igCmd = f"#{ttyChan:02d}{statCmd}\r"
+            try:
+                ionSock = initIonSocket(igHost,igPort,TIMEOUT)
+                data = sendIonCommand(ionSock,igCmd)
+                igData = data.strip()
+                print(f"  {statusID[statCmd]}: {igData[4:]}")
+                ionSock.close()
+            except Exception as err:
+                print(f"ERROR: {err}")
+                ionSock.close()
+        print(" ")
+
+    # no-op, do nothing
+    
     elif cmdWord == "none":
         pass
+
     
+    # Assume a valid MicroIon command - build the command string and send it
     else:
-        # Assume a valid MicroIon command - build the command string and send it
     
         igCmd = f"#{ttyChan:02d}{cmdStr.upper()}\r"
     
