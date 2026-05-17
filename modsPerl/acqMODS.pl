@@ -132,6 +132,8 @@
 #                 vs 1K reaodut 7s due to irreducible overheads of ~5s,
 #                 so 3K is worth it [rwp/osu]
 #   2026 Apr 28 - Minor updates from live testing [rwp/osu]
+#   2026 May 17 - Added $expTO of 180s to allow longer acquisition
+#                 exposures, avoiding timeout with 2min exposures [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -150,8 +152,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - date in ISO8601 format
 
-$verNum  = "v2.6.1-bino";
-$verDate = "2026-04-28";
+$verNum  = "v2.7.0-bino";
+$verDate = "2026-05-17";
 
 # Make sure text reverts to normal on using color
 
@@ -192,7 +194,6 @@ $useMODS1 = ''; # Use MODS1
 $useMODS2 = ''; # Use MODS2
 
 $binoACQ = ''; # Binocular acquisition
-
 
 # Get the options from the command line
 
@@ -322,6 +323,7 @@ $haveMode = 0;
 $baseTO = 120;   # base timeout interval in seconds
 $shortTO = 60;   # short timeout interval in seconds
 $presetTO = 300; # long timeout for preset, syncoffset, and offsets
+$expTO = 180;    # base acquisition exposure timeout in seconds
 $acqCamera = '';  
 $acqMode   = '';    
 $objName   = '';
@@ -731,7 +733,7 @@ while (<MSC>) {
 		$cmdTO[$numCmd] = $shortTO;
 		$numCmd++;
 		$cmd[$numCmd] = "go";
-		$cmdTO[$numCmd] = $baseTO;
+		$cmdTO[$numCmd] = $expTO;
 		$numCmd++;
 	    }
 
@@ -758,7 +760,7 @@ while (<MSC>) {
 		$numCmd++;
 		# then execute go
 		$cmd[$numCmd] = "go";
-		$cmdTO[$numCmd] = $baseTO;
+		$cmdTO[$numCmd] = $expTO;
 		$numCmd++;
 	    }
 	    
@@ -903,7 +905,7 @@ if (!exists($startBlock{"ACQUIRE"}) && $acqMode ne "preset") {
 
 #------------------------------------------------------------------------
 #
-# We have an array of target acquisiton commands to execute - run it...
+# We have target acquisition commands to execute
 #
 
 if ($dryRun) {
