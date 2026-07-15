@@ -1,10 +1,10 @@
 #
 # imcsTTFs - measure IMCS TTF zero points for all modes
 #
-# With the telescope at El=60-deg and PA=0-deg (rotAngle=207)
-# for MODS1, run through each of the 6 MODS mods and measure
-# the TTF zero points.  We use redundant imcslock commands
-# to ensure refined values.  Takes a snapshot in a 1Kx1K ROI
+# With the telescope at El=60-deg and PA=0-deg (rotAngle=207), run
+# through each of the six MODS modes and measure the collimator mirror
+# tip/tilt/focus (TTF) actuator zero points.  We use redundant imcslock
+# commands to ensure refined values.  Takes a snapshot in a 3Kx3K ROI
 # for confirmation in each mode.
 #
 # Extract the TTF zero points from the raw FITS image primary
@@ -54,57 +54,66 @@ Exec:
 Imaging:
   nimgs 1
   instconfig dual imaging
-  red roi 1Kx1K
-  blue roi 1Kx1K
+  red roi 3Kx3K
+  blue roi 3Kx3K
   red filter r_sdss
   blue filter g_sdss
   imcslock
+  sleep 3
   go
 
   instconfig red imaging
-  red roi 1Kx1K
+  red roi 3Kx3K
   imcslock
+  sleep 3
   red go
 
   instconfig blue imaging
-  blue roi 1Kx1K
+  blue roi 3Kx3K
   imcslock
+  sleep 3
   blue go
 
 Grating:
   nimgs 1
   instconfig dual grating
-  red roi 1Kx1K
-  blue roi 1Kx1K
+  red roi 3Kx3K
+  blue roi 3Kx3K
   imcslock
+  sleep 3
   go
 
   instconfig red grating
-  red roi 1Kx1K
+  red roi 3Kx3K
   imcslock
+  sleep 3
   red go
 
   instconfig blue grating
-  blue roi 1Kx1K
+  blue roi 3Kx3K
   imcslock
+  sleep 3
   blue go
 
 Prism:
   nimgs 1
   instconfig dual prism
-  red roi 1Kx1K
-  blue roi 1Kx1K
+  red roi 3Kx3K
+  blue roi 3Kx3K
   imcslock
+  sleep 3
   go
 
   instconfig red prism
-  red roi 1Kx1K
+  red roi 3Kx3K
   imcslock
+  sleep 3
   red go
 
   instconfig blue prism
-  blue roi 1Kx1K
+  blue roi 3Kx3K
   imcslock
+  sleep 3
   blue go
 
   lamp off

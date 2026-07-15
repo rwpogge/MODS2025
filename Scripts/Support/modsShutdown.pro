@@ -24,7 +24,9 @@
 # pogge@astronomy.ohio-state.edu
 # 2015 Nov 22 [review]
 #
-# 2025 Dec 23 - updated for the Archon controller system [rwp/osu]
+# Modification History:
+#   2025 Dec 23 - updated for the Archon controller system [rwp/osu]
+#   2026 Jul 10 & 14 - minor tweaks [rwp/osu]
 #
 ###########################################################################
 
@@ -87,10 +89,10 @@ Exec:
 
    print Powering off the red and blue CCD systems
 
-   util heb_b archon off
-   util heb_r archon off
-   util heb_b igpower off
-   util heb_b igpower off
+   heb b archon off
+   heb r archon off
+   heb b igpower off
+   heb r igpower off
    util heb_b off
    util heb_r off
 

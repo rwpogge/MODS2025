@@ -7,7 +7,7 @@
 # coordinate transformations.
 #
 # Puts the MODS instrument into dual imaging mode with
-# a 1Kx1K ROI, clears the exposure tables, gets it into
+# a 3Kx3K ROI, clears the exposure tables, gets it into
 # observing mode (hatch open/calib retracted) and resets
 # the AGw stage.
 #
@@ -54,10 +54,11 @@ Exec:
   nimgs 1
   ccdbin 1 1
   blue filter g_sdss
-  blue roi 1Kx1K
+  blue roi 3Kx3K
+
   #
   red filter r_sdss
-  red roi 1Kx1K
+  red roi 3Kx3K
 
   print Done - MODS ready to run transform_collect.pro
 

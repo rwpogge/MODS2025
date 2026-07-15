@@ -1,5 +1,5 @@
 #
-# Snap images of the Sieve Mask in the blue and red channels
+# Snap images of the imaging mask in the blue and red channels
 #
 # R. Pogge, OSU Astronomy Dept
 # pogge@astronomy.ohio-state.edu
