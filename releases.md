@@ -1,6 +1,9 @@
 # MODS2025 Release Notes
 
-**Last Release: 2026 Apr 28**
+**Last Release: 2026 Aug 05**
+
+## Version 1.6.16 - 2026 Aug 05
+ * Installed the hardware dongle to address the MODS2 Red quad cell Q3/Q4 wiring swap inside the dewar, and retired the hacked `redIMCS_mods2.cpp` temporary software fix.
 
 
 ## Version 1.6.15 - 2026 Apr 28
