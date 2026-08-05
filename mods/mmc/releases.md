@@ -1,7 +1,11 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2026 Feb 28
+Last Build: 2026 Aug 05
+
+## Version 3.2.12: 2026 Aug 5
+Installed the MODS2 Red Q3/Q4 wire swap dongle on MODS2 Red HEB that provides a hardware fix for the Q3/Q4 quad cell wire swap inside the MODS2 Red dewar. This allows us to retire (but archive) the `redIMCS_mods2.cpp` code in `mmc/mmcServers` and use the same IMCS code for both instruments.
+
 
 ## Version 3.2.11: 2026 Feb 28
 Minor patch following live testing with the IMCS in `mmc/mmcServers/commands.c`:

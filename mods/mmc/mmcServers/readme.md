@@ -1,8 +1,8 @@
 # MODS Mechanism Control (mmc) Servers
  
-**Version 3.2.10**
+**Version 3.2.12**
 
-**Updated: 2026 Feb 23 [rwp/osu]**
+**Updated: 2026 Aug 5 [rwp/osu]**
 
 See [release notes](../releases.md) for details.
 
@@ -46,4 +46,5 @@ instance on another machine.
 These are programs from earlier development stages of MODS that are present but
 not used in practice
  * `mlcRecover.cpp` - Recover data lost to a reboot (seemed like a good idea at the time, in practice not so much)
+ * `redIMCS_mods2.cpp` - hacked version of `redIMCS.cpp` that hard-coded a fix for the Q3/Q4 internal wire swap on MODS2 Red camera IMCS quad cell. We retired this in August 2026 when we installed a hardware solution (M2R Q3/4 dongle) to address the wiring issue so we can use the same red-channel IMCS software on both instruments
 
