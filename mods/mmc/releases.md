@@ -1,7 +1,14 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2026 Aug 05
+Last Build: 2026 Aug 30
+
+## Version 3.2.13: 2026 Aug 30
+Patches to IMCS servers (`redIMCS.cpp` and `blueIMCS.cpp`) for -10..10VDC readout
+ * Remove hack that checked for average >= 0, since we now allow negative voltages
+
+This is an interim solution until we can write, test, and qualify active bias subtraction of the quad cells.
+
 
 ## Version 3.2.12: 2026 Aug 5
 Installed the MODS2 Red Q3/Q4 wire swap dongle on MODS2 Red HEB that provides a hardware fix for the Q3/Q4 quad cell wire swap inside the MODS2 Red dewar. This allows us to retire (but archive) the `redIMCS_mods2.cpp` code in `mmc/mmcServers` and use the same IMCS code for both instruments.

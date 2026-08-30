@@ -44,6 +44,7 @@
                 CCD controller update [rwp/osu]
   2025 Dec 31 - adjusted default signal threshold [rwp/osu]
   2026 Feb 23 - updates after live testing [rwp/osu]
+  2026 Aug 30 - updates after IMCS WAGO reconfiguration [rwp/osu]
 
 </pre>
 
@@ -307,7 +308,7 @@ int main(int argc, char *argv[]) {
       }
 
       // Convert the raw quad cell signal in ADU to decimal
-      // equivalents in DC volts, range 0..10.0 VDC
+      // equivalents in DC volts, range -10.0..10.0 VDC
 
       shm_addr->MODS.redQC[0] = qc2vdc(shm_addr->MODS.redQC1);
       shm_addr->MODS.redQC[1] = qc2vdc(shm_addr->MODS.redQC2);
@@ -363,7 +364,7 @@ int main(int argc, char *argv[]) {
 	 *            +------+------+
 	 */
 
-	if (shm_addr->MODS.redQC_Average==0) // divide by 0 check
+	if (shm_addr->MODS.redQC_Samples==0) // divide by 0 check
 	  shm_addr->MODS.redQC_Samples=1;
 
 	// Average the Quad Cell Signals - this is where we would
@@ -545,24 +546,17 @@ int main(int argc, char *argv[]) {
 	
       } 
       else {
-
 	// We don't yet have a full complement of quad cell samples,
 	// so add the most recent values to the summation vectors.
-	// However, only do this if we have uncorrupted data
 
-	// Temporary hack of >=0 instead of >0 with low QC bias [rwp/osu]
-	
-	if (dataArr[0] >= 0 && dataArr[1] >= 0 && dataArr[2] >= 0 && dataArr[3] >= 0) {
-	  meanQC[0] += dataArr[0];
-	  meanQC[1] += dataArr[1];
-	  meanQC[2] += dataArr[2];
-	  meanQC[3] += dataArr[3];
-	  if (numQCSamp > shm_addr->MODS.redQC_Samples) 
-	    numQCSamp = 0;
-	  else 
-	    numQCSamp++;
-	}
-
+	meanQC[0] += dataArr[0];
+	meanQC[1] += dataArr[1];
+	meanQC[2] += dataArr[2];
+	meanQC[3] += dataArr[3];
+	if (numQCSamp > shm_addr->MODS.redQC_Samples) 
+	  numQCSamp = 0;
+	else 
+	  numQCSamp++;
       }
 
       // Record the loop state (open or closed) during this pass
@@ -594,13 +588,14 @@ int main(int argc, char *argv[]) {
 /*!
   \brief Convert raw quad cell ADC datum to DC volts
 
-  \param rawQC integer with raw quad cell ADC value (0..2^15-1)
+  \param rawQC integer with raw quad cell ADC value (0..2^16-1)
 
   Convenience function to convert raw WAGO analog input module ADC out
   datum to DC volts. Assumes the WAGO 750-471 module is properly
-  configured for -10..10VDC conversion
+  configured for -10..10 VDC conversion
 
-  Output is a floating-point voltage.  Discretization is ~0.3mVDC
+  Output is a floating-point voltage. Quantization is 0.305 mV
+  (20.0V into 16 bits: 20.0/2^16 = 0.00030518)
 
 */
 
