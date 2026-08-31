@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
 
   // Arbitrary DC bias voltage to add to measured voltages, set to 0.0 to disable
 
-  qcBias0 = 0.02; // VDC
+  qcBias0 = 0.01; // VDC
 
   // Turn on BLUE IMCS<-WAGO data taking
   
