@@ -121,7 +121,8 @@ int main(int argc, char *argv[]) {
   float dataArr[4];   // working quad cell data array (single readout)
   float meanQC[4];    // average quad cell data array (multiple reads)
   int rawQC[4];       // raw quad cell data (integers in units of ADU)
-
+  float qcBias0;      // arbitrary DC bias in volts
+  
   float tiltErr, tipErr;
   float topRight,topLeft,bottomRight,bottomLeft;
   float topSum, bottomSum, leftSum, rightSum, sumQcells;
@@ -159,8 +160,14 @@ int main(int argc, char *argv[]) {
     meanQC[i]=0.0;
     dataArr[i]=0.0;
   }
+
+  // Arbitrary DC bias voltage to add to measured values, set to 0.0 to disable
+
+  qcBias0 = 0.02; // VDC
+
+  // Turn ON Red IMCS<-WAGO data taking
   
-  shm_addr->MODS.redIMCS_OnOff=1; // Turn ON the Red IMCS<-WAGO data taking.
+  shm_addr->MODS.redIMCS_OnOff = 1; 
 
   // Red channel HEB WAGO ID
   
@@ -310,10 +317,12 @@ int main(int argc, char *argv[]) {
       // Convert the raw quad cell signal in ADU to decimal
       // equivalents in DC volts, range -10.0..10.0 VDC
 
-      shm_addr->MODS.redQC[0] = qc2vdc(shm_addr->MODS.redQC1);
-      shm_addr->MODS.redQC[1] = qc2vdc(shm_addr->MODS.redQC2);
-      shm_addr->MODS.redQC[2] = qc2vdc(shm_addr->MODS.redQC3);
-      shm_addr->MODS.redQC[3] = qc2vdc(shm_addr->MODS.redQC4);
+      // hack [2026 Aug 31] - add qcBias0 to voltages, set to 0.0 to disable [rwp/osu]
+      
+      shm_addr->MODS.redQC[0] = qc2vdc(shm_addr->MODS.redQC1) + qcBias0;
+      shm_addr->MODS.redQC[1] = qc2vdc(shm_addr->MODS.redQC2) + qcBias0;
+      shm_addr->MODS.redQC[2] = qc2vdc(shm_addr->MODS.redQC3) + qcBias0;
+      shm_addr->MODS.redQC[3] = qc2vdc(shm_addr->MODS.redQC4) + qcBias0;
 
       // Check the IR laser state - open the control loop if it is off
 
