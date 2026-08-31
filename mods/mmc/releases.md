@@ -1,11 +1,12 @@
 # MODS Mechanism Control (MMC) Server Release Notes
 Original Build: 2009 June 15
 
-Last Build: 2026 Aug 30
+Last Build: 2026 Aug 31
 
-## Version 3.2.13: 2026 Aug 30
+## Version 3.2.13: 2026 Aug 31
 Patches to IMCS servers (`redIMCS.cpp` and `blueIMCS.cpp`) for -10..10VDC readout
  * Remove hack that checked for average >= 0, since we now allow negative voltages
+ * Add arbitrary qcBias0 in VDC to keep dark counts positive. Using `qcBias0=0.01` (10mV) as a test
 
 This is an interim solution until we can write, test, and qualify active bias subtraction of the quad cells.
 

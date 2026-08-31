@@ -2,7 +2,7 @@
  
 **Version 3.2.13**
 
-**Updated: 2026 Aug 30 [rwp/osu]**
+**Updated: 2026 Aug 31 [rwp/osu]**
 
 See [release notes](releases.md) for details.
 

@@ -1,6 +1,11 @@
 # MODS2025 Release Notes
 
-**Last Release: 2026 Aug 05**
+**Last Release: 2026 Aug 31**
+
+## Version 1.6.17 - 2026 Aug 31
+ * Changes to `redIMCS.cpp` and `blueIMCS.cpp` in `mods/mmc/mmcServers` to update code to handle reading out the WAGO ADCs for the quad cells with full -10..10VDC range. Things will look weird, but bias will be better defined. Also adding arbitrary 0.01VDC to derived voltages to keep dark bias counts mildly negative.
+
+ NOTE: the raw IMCS readouts (`imcsTools`) will look odd in that it can show counts of `65xyz` ADU, but normal looking voltages. The second column on the monitors is zero-corrected DC volts, the third column is the original, **uncorrected** ADU reading (0..32k for >0V, 32k..65k for <0V).  Ignore the raw data in ADU.
 
 ## Version 1.6.16 - 2026 Aug 05
  * Installed the hardware dongle to address the MODS2 Red quad cell Q3/Q4 wiring swap inside the dewar, and retired the hacked `redIMCS_mods2.cpp` temporary software fix.
