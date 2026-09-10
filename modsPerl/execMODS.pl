@@ -151,6 +151,7 @@
 #   2026 Apr 28 - Add SSLEEP (silent sleep) from acqMODS, and introduce
 #                 3s silent sleep before GO/DGO for DD sync as a temporary
 #                 fix until we solve the DD/modsDD sync issue [rwp/osu]
+#   2026 Sep 10 - increased imcsTO to 150s [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -169,8 +170,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - dates in ISO8601 format, please.
 
-$verNum  = "v2.5.4-bino";
-$verDate = "2026-04-28";
+$verNum  = "v2.5.5-bino";
+$verDate = "2026-09-10";
 
 # Make sure text reverts to normal on using color
 
@@ -334,7 +335,7 @@ $useLamps = 0;   # are we using calibration lamps?
 
 $baseTO   =  60;  # base timeout for most commands
 $configTO =  90;  # Instrument configuration command timeout (longer)
-$imcsTO   = 120;  # IMCS initial setup/recentering timeout
+$imcsTO   = 150;  # IMCS initial setup/recentering timeout
 $presetTO = 300;  # Telescope preset timeout (same as for LBT IIF)
 
 # Open the script file and parse it into the command array, counting

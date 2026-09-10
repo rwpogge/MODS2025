@@ -1,6 +1,14 @@
 # modsPerl Release Notes
 
-<b>Last Update: 2026 Apr 28 [rwp/osu]</b>
+<b>Last Update: 2026 Sep 10 [rwp/osu]</b>
+
+## 2026 Sept 10
+ 
+### `acqMODS.pl`
+ * Added `imcsTO` parameter like in `execMODS.pl` to allow tuning `IMCSLOCK` timeout.  Set to 150sec
+
+### `execMODS.pl`
+ * Increased `imcsTO` to 150s like `acqMODS.pl`
 
 
 ## 2026 Apr 28

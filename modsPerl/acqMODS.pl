@@ -134,6 +134,8 @@
 #   2026 Apr 28 - Minor updates from live testing [rwp/osu]
 #   2026 May 17 - Added $expTO of 180s to allow longer acquisition
 #                 exposures, avoiding timeout with 2min exposures [rwp/osu]
+#   2026 Sep 10 - added $imcsTO of 150s to allow longer IMCSLOCK
+#                 timeout (was 120s). [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -152,8 +154,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - date in ISO8601 format
 
-$verNum  = "v2.7.0-bino";
-$verDate = "2026-05-17";
+$verNum  = "v2.7.1-bino";
+$verDate = "2026-09-10";
 
 # Make sure text reverts to normal on using color
 
@@ -323,6 +325,7 @@ $haveMode = 0;
 $baseTO = 120;   # base timeout interval in seconds
 $shortTO = 60;   # short timeout interval in seconds
 $presetTO = 300; # long timeout for preset, syncoffset, and offsets
+$imcsTO = 150;   # IMCS control lock timeout in seconds
 $expTO = 180;    # base acquisition exposure timeout in seconds
 $acqCamera = '';  
 $acqMode   = '';    
@@ -493,7 +496,7 @@ while (<MSC>) {
 			# if -p set, follow the PRESET with IMCSLOCK
 			if ($runPreset) {
 			    $cmd[$numCmd] = "IMCSLOCK";
-			    $cmdTO[$numCmd] = $baseTO;
+			    $cmdTO[$numCmd] = $imcsTO;
 			    $numCmd++;
 			}
 		    }
@@ -576,7 +579,7 @@ while (<MSC>) {
 		    $numCmd++;
 		}
 		$cmd[$numCmd] = "IMCSLOCK";
-		$cmdTO[$numCmd] = $baseTO;
+		$cmdTO[$numCmd] = $imcsTO;
 		$numCmd++;
 		
 		# Make sure multiple images from previous observations are not sticky
