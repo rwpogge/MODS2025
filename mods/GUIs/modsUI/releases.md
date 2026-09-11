@@ -2,9 +2,12 @@
 
 Original Build: 2009 Feb 24
 
-**Last Build: 2026 Apr 05**
+**Last Build: 2026 Sept 11**
 
 ## Version 3 - MODS Archon and AlmaLinux Port to Qt6
+
+### Version 3.2.6 - 2026 Sep 11
+ * Increased `MODS_IMCS_LOCKTIME` to 180s from 120s in `mods.h`.  Issues may stem from the lower sampling pace with the WAGO-based quadcell readout system.
 
 ### Version 3.2.5 - 2026 Apr 05
  * First, default entry in the CCD ROI menu in the dashboard is "Full" instead of "8Kx3K" (removes redundancy)

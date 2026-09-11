@@ -4,7 +4,7 @@ These are the graphical user interfaces for MODS observing and engineering suppo
 
 ## modsUI
 
-Current Version: 3.0.0-archon (2025 July)
+Current Version: 3.2.6-archon (2026 Sept)
 
 `modsUI` is the primary user interface for the MODS spectrograph. It is written in C++ with the Qt6 GUI framework.
 

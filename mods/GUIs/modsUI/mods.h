@@ -6,8 +6,8 @@
 //
 
 #define MODS_SESSION_NAME "MODS Control Panel" //!< Window Name for banner
-#define MODS_REV_NUMBER   "v3.2.5-archon"      //!< MODS UI Revision number
-#define MODS_REV_DATE     "2026 Apr 05"        //!< Revision date
+#define MODS_REV_NUMBER   "v3.2.6-archon"      //!< MODS UI Revision number
+#define MODS_REV_DATE     "2026 Sep 11"        //!< Revision date
 
 // Runtime files and paths
 
@@ -83,7 +83,7 @@
 #define MODS_ESTATUS_TIME     120 //!< Environmental status query time in seconds
 #define MODS_MAX_LAMPTIME    3600 //!< Maximum time for a lamp to be lit in seconds
 #define MODS_IMCS_CYCLETIME  2500 //!< Typical IMCS cycle time in milleseconds
-#define MODS_IMCS_LOCKTIME    120 //!< Default wait-for-lock time in seconds
+#define MODS_IMCS_LOCKTIME    180 //!< Default wait-for-lock time in seconds
 #define MODS_IMCS_MINWAIT       5 //!< Minimum IMCS wait-for-lock time in seconds
 #define MODS_IMCS_NUMLOCK       3 //!< Number of cycles the IMCS must be locked to be "converged"
 
