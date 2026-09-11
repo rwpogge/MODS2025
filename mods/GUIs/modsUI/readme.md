@@ -40,4 +40,4 @@ for engineering check out only.
 ### Normal Use
 
 Only one (1) instance of `modsUI` may be running at a time. To ensure this we execute `modsUI` using a wrapper script named `modsGUI` that avoids conflicts.  See
-See [`modsUI.sh`](../../../Scripts/modsUI.sh) for details.
+See [`modsUI.sh`](../../Scripts/modsUI.sh) for details.
