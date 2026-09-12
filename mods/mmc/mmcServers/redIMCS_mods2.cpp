@@ -1,4 +1,4 @@
-//*!
+/*!
   \mainpage redIMCS - Red Channel Image Motion Compensation System agent for MODS.
   
   \author R. Pogge, X. Carroll, OSU Astronomy Dept.
