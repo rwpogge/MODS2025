@@ -3934,7 +3934,7 @@ void DashBoard::imcsState(const QString &channel, const bool &isLocked)
     if (isRed) {
       redIMCSLock = isLocked;
       if (isLocked)
-	imcsMsg = QString("ERROR: RED IMCSLOCK Red-Channel IMCS locked-on RedIMCS=LockedOn");
+	imcsMsg = QString("DONE: RED IMCSLOCK Red-Channel IMCS locked-on RedIMCS=LockedOn");
       else
 	imcsMsg = QString("ERROR: RED IMCSLOCK Red-Channel IMCS failed to lock-on RedIMCS=Fail");
     }
@@ -3943,7 +3943,7 @@ void DashBoard::imcsState(const QString &channel, const bool &isLocked)
       if (isLocked)
 	imcsMsg = QString("DONE: BLUE IMCSLOCK Blue-Channel IMCS locked-on BlueIMCS=LockedOn");
       else
-	imcsMsg = QString("DONE: BLUE IMCSLOCK Blue-Channel IMCS failed to lock-on BlueIMCS=Fail");
+	imcsMsg = QString("ERROR: BLUE IMCSLOCK Blue-Channel IMCS failed to lock-on BlueIMCS=Fail");
     }
 
   }
