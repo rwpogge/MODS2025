@@ -8,6 +8,7 @@ Original Build: 2009 Feb 24
 
 ### Version 3.2.6 - 2026 Sep 11
  * Increased `MODS_IMCS_LOCKTIME` to 180s from 120s in `mods.h`.  Issues may stem from the lower sampling pace with the WAGO-based quadcell readout system.
+ * Fixed bug on IMCS timeout that was sending `DONE:` instead of `ERROR:`, which sends wrong status information to any clients requesting IMCS lock
 
 ### Version 3.2.5 - 2026 Apr 05
  * First, default entry in the CCD ROI menu in the dashboard is "Full" instead of "8Kx3K" (removes redundancy)

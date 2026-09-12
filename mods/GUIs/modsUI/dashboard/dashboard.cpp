@@ -3934,9 +3934,9 @@ void DashBoard::imcsState(const QString &channel, const bool &isLocked)
     if (isRed) {
       redIMCSLock = isLocked;
       if (isLocked)
-	imcsMsg = QString("DONE: RED IMCSLOCK Red-Channel IMCS locked-on RedIMCS=LockedOn");
+	imcsMsg = QString("ERROR: RED IMCSLOCK Red-Channel IMCS locked-on RedIMCS=LockedOn");
       else
-	imcsMsg = QString("DONE: RED IMCSLOCK Red-Channel IMCS failed to lock-on RedIMCS=Fail");
+	imcsMsg = QString("ERROR: RED IMCSLOCK Red-Channel IMCS failed to lock-on RedIMCS=Fail");
     }
     else {
       blueIMCSLock = isLocked;
