@@ -814,7 +814,7 @@ while ($execGo) {
 	    print RED "\n** $scriptFile aborted after PAUSE.\n\n";
 	    &binoExit(1);
 	}
-	print CYAN "\n** Target Acquisition Resuming...\n";
+	print CYAN "\n** WFSWAIT done, resuming execution...\n";
 	$iCmd++;
     }
 
@@ -824,40 +824,63 @@ while ($execGo) {
 
     else {
 	if ($dryRun) {
+	    # dry run - print to screen and advance the command pointer
 	    print ">> $cmd[$iCmd]\n";
 	    $iCmd++;
 	}
 	else {
 	    print ">> $cmd[$iCmd]\n";
 	    if (sendCommand($uiHost,"$cmd[$iCmd]",$cmdTO[$iCmd])) {
+		#
+		# success, print and advance the command pointer
+		#
 		printf "%c[2K",27;
 		$outStr = stripFirst($ISIS::reply);
 		print CYAN "$outStr\n";
 		$iCmd++;
 	    }
 	    else {
+		#
+		# error, process
+		#
 		printf "%c[2K",27;
 		$outStr = stripFirst($ISIS::reply);
 		print RED "** $outStr\a\n";
 		$errLine = $iCmd+1;
-		if ($cmdAbort) { # unattended operation, all command errors abort
+		if ($cmdAbort) {
+		    #
+		    # unattended operation, all command errors abort
+		    #
 		    print RED "   $scriptFile terminated with errors at line $errLine command '$cmd[$iCmd]'\n";
 		    &binoExit(2);
 		}
-		else { # prompt the user to abort/retry/ignore in response to errors
+		else {
+		    #
+		    # prompt the user to abort/retry/ignore in response to errors
+		    #
 		    print RED "** Abort, Retry, or Ignore? > ";
 		    $kbdIn = <STDIN>;
 		    last unless defined $kbdIn;
 		    chomp($kbdIn);
 		    $retryOpt = substr($kbdIn,0,1);
 		    if (uc $retryOpt eq "R") {
+			#
+			# retry
+			# 
 			print CYAN "** Retrying command \'$cmd[$iCmd]\'\n";
+			# any pre-retry clean up must be done here.
 		    }
 		    elsif (uc $retryOpt eq "I") {
+			#
+			# ignore - advance command pointer and move on
+			#
 			print CYAN "** Ignoring error and continuing...\n";
 			$iCmd++;
 		    }
 		    else {
+			#
+			# abort - stop execution and clean up
+			#
 			print RED "\n** $scriptFile aborted with errors at line $errLine command '$cmd[$iCmd]'\n";
 			&scriptCleanup;
 			&binoExit(2);
@@ -955,15 +978,16 @@ sub myUsage {
 # Provides for more graceful Ctrl+C interruption of script execution,
 # including post-abort scriptCleanup
 #
-
+# fixed error in keyboard input processing [rwp/osu]
+#
 sub intHandler {
-    print RED "** Script interrupted by Ctrl+C during the '$cmd[$iCmd]' command.\n";
+    print RED "** MODS${useMODS} script interrupted by Ctrl+C during the '$cmd[$iCmd]' command.\n";
     print CYAN "   Is this what you want to do <Y|N>? ";
     $kbdIn = <STDIN>;
     last unless defined $kbdIn;
     chomp($kbdIn);
-    $abortOpt = uc $kbdIn;
-    if ($abortOpt eq "Y") {
+    $abortOpt = substr($kbdIn,0,1);
+    if (uc $abortOpt eq "Y") {
 	print RED "** Script aborting...\n";
 	print CYAN "** post-abort clean up...\n";
 	&scriptCleanup;
