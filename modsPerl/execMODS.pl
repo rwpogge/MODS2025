@@ -151,7 +151,7 @@
 #   2026 Apr 28 - Add SSLEEP (silent sleep) from acqMODS, and introduce
 #                 3s silent sleep before GO/DGO for DD sync as a temporary
 #                 fix until we solve the DD/modsDD sync issue [rwp/osu]
-#   2026 Sep 10 - increased imcsTO to 150s [rwp/osu]
+#   2026 Sep 10 - increased imcsTO to internal 180s + 10s timing margin
 #
 #---------------------------------------------------------------------------
 
@@ -333,10 +333,10 @@ $useLamps = 0;   # are we using calibration lamps?
 
 # Command Execution Timeouts - all are in seconds
 
-$baseTO   =  60;  # base timeout for most commands
-$configTO =  90;  # Instrument configuration command timeout (longer)
-$imcsTO   = 150;  # IMCS initial setup/recentering timeout
-$presetTO = 300;  # Telescope preset timeout (same as for LBT IIF)
+$baseTO   =  60;     # base timeout for most commands
+$configTO =  90;     # Instrument configuration command timeout (longer)
+$imcsTO   = 180+10;  # IMCS lock-on timeout = internal TO+10s margin
+$presetTO = 300;     # Telescope preset timeout (same as for LBT IIF)
 
 # Open the script file and parse it into the command array, counting
 # commands as we go and keeping track of command block labels.  We do

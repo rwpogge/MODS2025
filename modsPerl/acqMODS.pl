@@ -134,8 +134,8 @@
 #   2026 Apr 28 - Minor updates from live testing [rwp/osu]
 #   2026 May 17 - Added $expTO of 180s to allow longer acquisition
 #                 exposures, avoiding timeout with 2min exposures [rwp/osu]
-#   2026 Sep 10 - added $imcsTO of 150s to allow longer IMCSLOCK
-#                 timeout (was 120s). [rwp/osu]
+#   2026 Sep 10 - added $imcsTO of 180s + 10s to allow longer IMCSLOCK
+#                 timeout (internal IMCS TO is 180s). [rwp/osu]
 #
 #---------------------------------------------------------------------------
 
@@ -325,7 +325,7 @@ $haveMode = 0;
 $baseTO = 120;   # base timeout interval in seconds
 $shortTO = 60;   # short timeout interval in seconds
 $presetTO = 300; # long timeout for preset, syncoffset, and offsets
-$imcsTO = 150;   # IMCS control lock timeout in seconds
+$imcsTO = 180+10;   # IMCS lock-on timeout (internal + 10s margin)
 $expTO = 180;    # base acquisition exposure timeout in seconds
 $acqCamera = '';  
 $acqMode   = '';    
