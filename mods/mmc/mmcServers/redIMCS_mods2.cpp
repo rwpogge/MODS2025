@@ -1,4 +1,4 @@
-/*!
+//*!
   \mainpage redIMCS - Red Channel Image Motion Compensation System agent for MODS.
   
   \author R. Pogge, X. Carroll, OSU Astronomy Dept.
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
 
   // Arbitrary DC bias voltage to add to measured values, set to 0.0 to disable
 
-  qcBias0 = 0.01; // VDC
+  qcBias0 = 0.02; // VDC
 
   // Turn ON Red IMCS<-WAGO data taking
   
