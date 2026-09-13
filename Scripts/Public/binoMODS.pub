@@ -104,7 +104,7 @@ if ( $testStr == "enter" || $testStr == "ret" || $testStr == "return") then
    set respStr = ""
 endif
 
-# If "halt", sends Ctrl+C to immediately halt (abort) script execution
+# If "halt", sends Ctrl+C and "Y" to immediately halt (abort) script execution
 
 if ( $testStr == "halt" ) then
    set respStr = "C-c Y"
