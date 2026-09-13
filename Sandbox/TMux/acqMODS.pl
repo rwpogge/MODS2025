@@ -136,8 +136,7 @@
 #                 exposures, avoiding timeout with 2min exposures [rwp/osu]
 #   2026 Sep 10 - added $imcsTO of 180s + 10s to allow longer IMCSLOCK
 #                 timeout (internal IMCS TO is 180s). [rwp/osu]
-#   2026 Sep 12 - cleaned up issues in intHandler revealed by tmux
-#                 interaction [rwp/osu]
+#
 #---------------------------------------------------------------------------
 
 # Custom ISIS.pm module.  These are all the places it can be on the
@@ -1153,7 +1152,6 @@ sub intHandler {
     $abortOpt = substr($kbdIn,0,1);
     if (uc $abortOpt eq "Y") {
 	print RED "** MODS${useMODS} Acquisition script aborting...\n";
-	print CYAN "** post-abort clean up...\n";
 	&cleanup;
 	&binoExit(1);
     }
@@ -1246,6 +1244,5 @@ sub binoExit {
 	# last unless defined $kbdIn;
 	# print CYAN "Bye!\n";
     }
-    print CLEAR "\n";
     exit $exStatus;
 }

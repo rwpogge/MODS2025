@@ -34,7 +34,8 @@
 #
 # Modification History:
 #   2026 Jan 27 - added "halt" directive to send Ctrl+C to one or both panes
-#
+#   2026 Sep 12 - fixed bug where by "halt" sends the Ctrl+C, but in effect
+#                 answers No for you.
 #---------------------------------------------------------------------------
 
 setenv modsBin /lbt/lbto/mods/bin
@@ -106,7 +107,7 @@ endif
 # If "halt", sends Ctrl+C to immediately halt (abort) script execution
 
 if ( $testStr == "halt" ) then
-   set respStr = "C-c"
+   set respStr = "C-c Y"
 endif
 
 #

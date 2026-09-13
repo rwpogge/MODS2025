@@ -1,0 +1,8 @@
+#!/bin/csh
+#
+
+set respStr = "C-c Y"
+
+tmux send-keys -t qcTest ${respStr} C-m
+
+exit 0

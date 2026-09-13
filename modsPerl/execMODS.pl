@@ -152,6 +152,7 @@
 #                 3s silent sleep before GO/DGO for DD sync as a temporary
 #                 fix until we solve the DD/modsDD sync issue [rwp/osu]
 #   2026 Sep 10 - increased imcsTO to internal 180s + 10s timing margin
+#   2026 Sep 12 - fixed bugs in interrupt handling and tmux interaction
 #
 #---------------------------------------------------------------------------
 
@@ -170,8 +171,8 @@ use Term::ANSIColor qw(:constants);  # color output
 
 # Version number and date - dates in ISO8601 format, please.
 
-$verNum  = "v2.5.5-bino";
-$verDate = "2026-09-10";
+$verNum  = "v2.5.6-bino";
+$verDate = "2026-09-12";
 
 # Make sure text reverts to normal on using color
 
@@ -978,7 +979,8 @@ sub myUsage {
 # Provides for more graceful Ctrl+C interruption of script execution,
 # including post-abort scriptCleanup
 #
-# fixed error in keyboard input processing [rwp/osu]
+# fixed error in keyboard input processing which should now
+# accept the Y from tmux send-keys [rwp/osu]
 #
 sub intHandler {
     print RED "** MODS${useMODS} script interrupted by Ctrl+C during the '$cmd[$iCmd]' command.\n";
@@ -1110,5 +1112,6 @@ sub binoExit {
 	# last unless defined $kbdIn;
 	# print CYAN "Bye!\n";
     }
+    print CLEAR "\n";
     exit $exStatus;
 }
