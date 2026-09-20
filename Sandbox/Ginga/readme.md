@@ -2,6 +2,9 @@
 
 Ginga version 7.4.0
 
+Development Start: 2026 Sept 26 [rwp]
+
+
 ## Overview
 
 Sandbox to test adopting Ginga as our raw image display tool to replace
@@ -13,6 +16,11 @@ Began work on 2026 Sept 19, largely in response to on-going complaints
 about latency and mis-display with modsDisp, not being able to look back
 at images, or do sensible quick-look (PSF measurement, line plots) with
 ds9.
+
+### Downloads
+
+ * `Ginga` github: https://github.com/ejeschke/ginga
+ * `Ginga` readthedocs: https://ginga.readthedocs.io/en/stable/
 
 ## Ginga Startup Notes
 
