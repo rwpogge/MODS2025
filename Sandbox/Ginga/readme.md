@@ -2,7 +2,7 @@
 
 Ginga version 7.4.0
 
-Development Start: 2026 Sept 26 [rwp]
+Development Start: 2026 Sept 19 [rwp]
 
 
 ## Overview
