@@ -68,3 +68,8 @@ to reset to grayscale, use `gray` or `gray_r` for inverse
    channel.load_np(filePath.name,hdul[6].data,'fits',dict(hdul[0].header))
 ```
 
+### Inspiration/examples
+
+ * https://pypeit.readthedocs.io/en/latest/_modules/pypeit/display/display.html
+
+
