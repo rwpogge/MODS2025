@@ -28,14 +28,15 @@ Start app with remote control and port defined
 ```
    ginga --modules=RC --rcport=12345
 ```
-Add the image picker (measuring stars) and cuts (plot along lines)
+Add the image picker (measuring stars) and cuts (plot along lines), and zoom
+tools on startup
 ```
-   ginga --modules=RC,Pick,Cuts --rcport=12345
+   ginga --modules=RC,Zoom,Pick,Cuts --rcport=12345
 ```
 
-Change app geometry
+Change app geometry, add
 ```
-   --geometery 1800x600
+   ginga --modules=RC,Zoom,Pick,Cuts --rcport=12345 --geometery=1800x600
 ```
 works pretty well for MODS 8x3K full frame flanked by info/zoom
 and Pick/Cuts 
