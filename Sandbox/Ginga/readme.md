@@ -25,12 +25,22 @@ ds9.
 ## Ginga Startup Notes
 
 Start app with remote control and port defined
-
+```
    ginga --modules=RC --rcport=12345
-
+```
 Add the image picker (measuring stars) and cuts (plot along lines)
-
+```
    ginga --modules=RC,Pick,Cuts --rcport=12345
+```
+
+Change app geometry
+```
+   --geometery 1800x600
+```
+works pretty well for MODS 8x3K full frame flanked by info/zoom
+and Pick/Cuts 
+
+### Remote Ports
 
 Which ports?  Follow convention for B/R using 1/2 in range
 
@@ -41,6 +51,18 @@ Which ports?  Follow convention for B/R using 1/2 in range
  
  * `testGinga.py` - ipython stub for playing with Ginga and python
 
+### Color Maps
 
+For distinctive blue/red appearance
+```
+   channel.set_color_map('ds9_cool')
+   channel.set_color_map('ds9_b')
+```
+to reset to grayscale, use `gray` or `gray_r` for inverse
 
+### loading numpy array
+
+```
+   channel.load_np(filePath.name,hdul[6].data,'fits',dict(hdul[0].header))
+```
 
