@@ -62,15 +62,43 @@ Which ports?  Follow convention for B/R using 1/2 in range
 
 For distinctive blue/red appearance
 ```
-   channel.set_color_map('ds9_cool')
-   channel.set_color_map('ds9_b')
+   out = channel.set_color_map('ds9_cool')
+   out = channel.set_color_map('ds9_b')
 ```
 to reset to grayscale, use `gray` or `gray_r` for inverse
+
+### change display cut levels
+```
+   out = channel.cut_levels(-20,100)
+```
+
+### restore color algorithm, color map (after user mucks with it)
+```
+   out = channel.set_color_algorithm('linear')
+   out = channel.restore_contrast()
+   out = channel.restore_cmap()
+```
+
+Lots more image viewer options: https://ginga.readthedocs.io/en/stable/dev_manual/image_viewer.html
+
 
 ### loading numpy array
 
 ```
    channel.load_np(filePath.name,hdul[6].data,'fits',dict(hdul[0].header))
+```
+
+### Make sure Zoom global plugin is focused
+
+```
+   sh = viewer.shell()
+   out = sh.start_global_plugin('Zoom')
+```
+
+### Kill the `ginga` app
+```
+   sh = viewer.shell()
+   out = sh.stop()
 ```
 
 ### Inspiration/examples
