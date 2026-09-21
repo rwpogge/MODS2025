@@ -26,20 +26,24 @@ ds9.
 
 Start app with remote control and port defined
 ```
-   ginga --modules=RC --rcport=12345
+   ginga --modules=RC --rcport=11711
 ```
 Add the image picker (measuring stars) and cuts (plot along lines), and zoom
 tools on startup
 ```
-   ginga --modules=RC,Zoom,Pick,Cuts --rcport=12345
+   ginga --modules=RC,Zoom --rcport=11711
 ```
+Can add others (Pick, Cuts) but it confuses the initial setup.  Better to
+start those as needed.
 
 Change app geometry, add
 ```
-   ginga --modules=RC,Zoom,Pick,Cuts --rcport=12345 --geometry=1800x600
+   ginga --modules=RC,Zoom --rcport=11711 --geometry=1600x600
 ```
-works pretty well for MODS 8x3K full frame flanked by info/zoom
-and Pick/Cuts 
+works pretty well for MODS 8x3K full frame.  Starts with 
+Thumbnails at the right, which if you shrink a little
+horizontally looks good, and you can navigate the last 10
+images displayed with the thumbnails.
 
 ### Remote Ports
 
@@ -51,7 +55,8 @@ Which ports?  Follow convention for B/R using 1/2 in range
 
 ## Code stubs
  
- * `testGinga.py` - ipython stub for playing with Ginga and python
+ * `testGinga.py` - python stub for playing with Ginga and python
+ * `imDisp.py` - ipython stub, defines a test `modsDisp(filepath)` function for testing
 
 ### Color Maps
 
