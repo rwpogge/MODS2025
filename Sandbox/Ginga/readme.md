@@ -36,7 +36,7 @@ tools on startup
 
 Change app geometry, add
 ```
-   ginga --modules=RC,Zoom,Pick,Cuts --rcport=12345 --geometery=1800x600
+   ginga --modules=RC,Zoom,Pick,Cuts --rcport=12345 --geometry=1800x600
 ```
 works pretty well for MODS 8x3K full frame flanked by info/zoom
 and Pick/Cuts 
