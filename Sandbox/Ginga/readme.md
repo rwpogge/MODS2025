@@ -44,9 +44,10 @@ and Pick/Cuts
 ### Remote Ports
 
 Which ports?  Follow convention for B/R using 1/2 in range
-
+```
    MODSxB - 11711
    MODSxR - 11712
+```
 
 ## Code stubs
  
