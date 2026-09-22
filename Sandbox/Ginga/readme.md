@@ -1,9 +1,10 @@
 # MODS Ginga Display Notes
 
+**Updated: 2026 Sept 22 [rwp]**
+
 Ginga version 7.4.0
 
 Development Start: 2026 Sept 19 [rwp]
-
 
 ## Overview
 
