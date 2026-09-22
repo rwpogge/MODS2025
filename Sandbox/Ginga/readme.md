@@ -17,7 +17,7 @@ about latency and mis-display with modsDisp, not being able to look back
 at images, or do sensible quick-look (PSF measurement, line plots) with
 ds9.
 
-### Downloads
+### Reference Docs
 
  * `Ginga` github: https://github.com/ejeschke/ginga
  * `Ginga` readthedocs: https://ginga.readthedocs.io/en/stable/
@@ -45,6 +45,14 @@ Thumbnails at the right, which if you shrink a little
 horizontally looks good, and you can navigate the last 10
 images displayed with the thumbnails.
 
+### Configuration
+
+Arrangement of the contents of the app and its size are better dealt
+with using the `general.cfg` and `layout.json` files in the `~/.ginga`
+folder.  This takes some playing, like manipulationg `save_layout` in `general.cfg` to capture the JSON layout file then setting a custom layout
+to use (`layout_file = 'modsDisp.json'`) is the best way to ensure
+that have a workable layout and simplify the startup commands.
+
 ### Remote Ports
 
 Which ports?  Follow convention for B/R using 1/2 in range
@@ -57,6 +65,7 @@ Which ports?  Follow convention for B/R using 1/2 in range
  
  * `testGinga.py` - python stub for playing with Ginga and python
  * `imDisp.py` - ipython stub, defines a test `modsDisp(filepath)` function for testing
+ * `imDisp2.py` - ipython stub supporting 2 ginga instances
 
 ### Color Maps
 
