@@ -26,19 +26,19 @@ ds9.
 
 Start app with remote control and port defined
 ```
-   ginga --modules=RC --rcport=11711
+ginga --modules=RC --rcport=11711
 ```
 Add the image picker (measuring stars) and cuts (plot along lines), and zoom
 tools on startup
 ```
-   ginga --modules=RC,Zoom --rcport=11711
+ginga --modules=RC,Zoom --rcport=11711
 ```
 Can add others (Pick, Cuts) but it confuses the initial setup.  Better to
 start those as needed.
 
 Change app geometry, add
 ```
-   ginga --modules=RC,Zoom --rcport=11711 --geometry=1600x600
+ginga --modules=RC,Zoom --rcport=11711 --geometry=1600x600
 ```
 works pretty well for MODS 8x3K full frame.  Starts with 
 Thumbnails at the right, which if you shrink a little
@@ -62,21 +62,43 @@ Which ports?  Follow convention for B/R using 1/2 in range
 
 For distinctive blue/red appearance
 ```
-   out = channel.set_color_map('ds9_cool')
-   out = channel.set_color_map('ds9_b')
+out = channel.set_color_map('ds9_cool')
+out = channel.set_color_map('ds9_b')
 ```
 to reset to grayscale, use `gray` or `gray_r` for inverse
 
 ### change display cut levels
 ```
-   out = channel.cut_levels(-20,100)
+out = channel.cut_levels(-20,100)
 ```
+
+### enable initializations for new images
+```
+out = channel.enable_auto_orient(True)
+out = channel.enable_autocenter('on')
+out = channel.enable_autocuts('on')
+out = channel.enable_autozoom('on')
+```
+Options for the last 3 are:
+ * 'on' - apply to every new image
+ * 'off' - never apply
+ * 'once' - only to first image in the set, then off
+ * 'override' - apply to each image until manual override by user, then 'off'
 
 ### restore color algorithm, color map (after user mucks with it)
 ```
-   out = channel.set_color_algorithm('linear')
-   out = channel.restore_contrast()
-   out = channel.restore_cmap()
+out = channel.set_color_algorithm('linear')
+out = channel.restore_contrast()
+out = channel.restore_cmap()
+out = channel.set_autocut_params('zscale')
+```
+
+### chnage the autocut algorithm and its parameters
+```
+out = channel.set_autocut_params('zscale')
+out = channel.set_autocut_params('zscale',contrast=0.1)
+
+out = channel.set_autocut_params('median')
 ```
 
 Lots more image viewer options: https://ginga.readthedocs.io/en/stable/dev_manual/image_viewer.html
