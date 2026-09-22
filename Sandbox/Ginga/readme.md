@@ -120,11 +120,16 @@ Lots more image viewer options: https://ginga.readthedocs.io/en/stable/dev_manua
 channel.load_np(filePath.name,hdul[6].data,'fits',dict(hdul[0].header))
 ```
 
-### Make sure Zoom global plugin is focused
+### Zoom and Header plugins
+
+Add Zoom and Header global plugins to the app, send Zoom
+last so it is focused
 
 ```
 sh = viewer.shell()
+out = sh.start_global_plugin('Header')
 out = sh.start_global_plugin('Zoom')
+
 ```
 
 ### Kill the `ginga` app
