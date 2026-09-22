@@ -107,20 +107,20 @@ Lots more image viewer options: https://ginga.readthedocs.io/en/stable/dev_manua
 ### loading numpy array
 
 ```
-   channel.load_np(filePath.name,hdul[6].data,'fits',dict(hdul[0].header))
+channel.load_np(filePath.name,hdul[6].data,'fits',dict(hdul[0].header))
 ```
 
 ### Make sure Zoom global plugin is focused
 
 ```
-   sh = viewer.shell()
-   out = sh.start_global_plugin('Zoom')
+sh = viewer.shell()
+out = sh.start_global_plugin('Zoom')
 ```
 
 ### Kill the `ginga` app
 ```
-   sh = viewer.shell()
-   out = sh.stop()
+sh = viewer.shell()
+out = sh.stop()
 ```
 
 ### Inspiration/examples
