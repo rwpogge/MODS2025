@@ -86,7 +86,7 @@ out = channel.cut_levels(-20,100)
 ```
 out = channel.enable_auto_orient(True)
 out = channel.enable_autocenter('on')
-out = channel.enable_autocuts('on')
+out = channel.enable_autocuts('override')
 out = channel.enable_autozoom('on')
 ```
 Options for the last 3 are:
