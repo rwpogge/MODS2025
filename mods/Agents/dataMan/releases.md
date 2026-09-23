@@ -1,9 +1,11 @@
 # dataMan Release Notes
 
-**Latest Version: v1.2.4, 2026 May 12**
+**Latest Version: v1.2.5, 2026 Sept 23**
 
 ## Released Versions (v1.0 and later)
 
+### 2026 Sept 23 - v1.2.5
+ * `HIERARCH AZCAM-HEAD` is a misuse of HIERARCH for a >8 character header keyword (AZCAM-HEAD), giving warnings in astropy.  Now remove from headers.
 
 ### 2026 May 12 - v1.2.4
 Changes for FITS headers from early shared-risk parnter observing with MODS1

@@ -39,7 +39,7 @@ Modification History
  * 2026 Jan 25 - changed obsDate() to be the LBTO UTC-style obsDate algorithm [rwp/osu]
  * 2026 Apr 24 - LBTO Archive wants IMAGETYP to always be uppercase, whatever [rwp/osu]
  * 2026 May 12 - header tweaks from shared-risk partner observing [rwp/osu]
-
+ * 2026 Sep 23 - remove HIERARCH AZCAM-HEAD from header, misuse of HIERARCH [rwp/osu]
 '''
 
 import os
@@ -432,6 +432,7 @@ def fixMisc(hdu):
      * fix blank non-sidereal header keywords for Archive format compliance
      * LBTO archive requires IMAGETYP values to be upper case
      * Remove the NEXTEND keyword (non-standard and poorly defined)
+     * Remove "HIERARCH AZCAM-HEAD" keyword, misuse of HIERARCH
      * Change NONSIDER boolean from 1/0 to T/F (DD has no boolean type)
      
     the list is getting bigger, we may split off subsets later.
@@ -554,6 +555,13 @@ def fixMisc(hdu):
 
     try:
         del hdu[0].header["NEXTEND"]
+    except:
+        pass
+    
+    # azcam uses HIERARCH incorrectly for a >8 character keyword
+
+    try:
+        del hdu[0].header["HIERARCH AZCAM-HEAD"]
     except:
         pass
     
