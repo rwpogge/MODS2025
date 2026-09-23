@@ -19,5 +19,5 @@ PI_NAME   NOTSPECIFIED         / Project PI Name(s)
 SUPPORT   None                 / LBT Support Scientist(s) on duty
 TELOPS    None                 / LBT Telescope Operator(s) on duty
 GRORDER                      1 / Grating order used
-RADECSYS  FK5                  / Coordinate System
+RADESYSA  FK5                  / Coordinate System
 EQUINOX                 2000.0 / Equinox of coordinates

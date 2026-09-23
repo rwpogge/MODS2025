@@ -54,6 +54,18 @@ folder.  This takes some playing, like manipulationg `save_layout` in `general.c
 to use (`layout_file = 'modsDisp.json'`) is the best way to ensure
 that have a workable layout and simplify the startup commands.
 
+Creating separate `MODSxy` folders allows channel-level configuration 
+on startup.
+```
+ginga --modules=RC --rcport=11712 --basedir ~/.ginga/MODS1R
+```
+will use MODS1R-specific configuration. This provides a way to
+set default configurations without hardcoding them into the
+actual display agent.
+
+An example is setting the default color map to be blue/red
+tinted for visual identification of the channel.
+
 ### Remote Ports
 
 Which ports?  Follow convention for B/R using 1/2 in range

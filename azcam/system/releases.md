@@ -2,6 +2,10 @@
 
 **Last Release: 2026 Mar 26**
 
+## 2026 Sep 23
+ * Deprecation warnings from astropy regarding the `RADECSYS` keyword.  This was formally deprected in NOST FITS (didn't know that!), changed
+to be preferred `RADESYSA` keyword.  Changes are in `MODSnc/templates/header_MODSnc.txt`
+
 ## 2026 Mar 26
  * Commented out the `R1HIGH; X(ST)` line in the `Line:` timing script subroutine at suggestion of Mike Lesser to make sure horizontal clock phase 3 does not go high at the end of line readout and stays low during the subsequent vertical transfer.  This was what Greg Breadthauer suggested could cause the slop of charge between columns on either side of the horizontal split readout.
 
