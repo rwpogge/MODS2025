@@ -1078,11 +1078,11 @@ while 1:
                 logger.debug(f"started processing image {filename}")
                 t = threading.Thread(target=modsFITSProc,args=[filename])
                 t.start()                
+
         # unknown command received, log it
         
         else:
             logger.error(f"Unknown command {cmdWord} received")
-
 
 # all done
 
